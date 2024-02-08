@@ -53,7 +53,7 @@ const HomePage: React.FC = () => {
           >
             <CardBody>
               <Text color='white' fontWeight='bold'>
-                MEINE FAVORITEN
+                <p className="text-red-700">MEINE FAVORITEN Styled by tailwind</p>
               </Text>
               <Flex
                 mt='4'
