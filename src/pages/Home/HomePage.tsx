@@ -19,7 +19,8 @@ import Drucker from '@/assets/icons/Drucker.png';
 import Raumbuchung from '@/assets/icons/Raumbuchung.png';
 import Filesharing from '@/assets/icons/Filesharing.png';
 import Cloud from '@/assets/icons/Cloud.png';
-import MenuBar_sh from "@/pages/MenuBar/MenuBar_sh.tsx";
+import MainLayout from "@/components/layout/MainLayout.tsx";
+
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -33,8 +34,8 @@ const HomePage: React.FC = () => {
   return (
 
     <Flex direction='column' backgroundColor='#3B3B3B' color='#FFFFFE'>
-      <MenuBar_sh></MenuBar_sh>
       {/* Main Navigation */}
+      <MainLayout></MainLayout>
       <Sidebar />
       {/* Content Area */}
       {/* Main Content */}

@@ -20,6 +20,12 @@ const MenubarSub = MenubarPrimitive.Sub
 
 const MenubarRadioGroup = MenubarPrimitive.RadioGroup
 
+interface MenubarTriggerProps extends React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Trigger> {
+  icon?: React.ReactNode;
+  className?: string;
+}
+
+
 const Menubar = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
@@ -35,10 +41,28 @@ const Menubar = React.forwardRef<
 ))
 Menubar.displayName = MenubarPrimitive.Root.displayName
 
+
+const VerticalMenubar = React.forwardRef<
+  React.ElementRef<typeof MenubarPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <MenubarPrimitive.Root
+    ref={ref}
+    className={cn(
+      "flex flex-col items-start space-y-1 rounded-md border bg-background p-1 shadow-sm max-w-[12.25vw]",
+      className
+    )}
+    {...props}
+  />
+));
+VerticalMenubar.displayName = MenubarPrimitive.Root.displayName;
+
+
+
 const MenubarTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+  MenubarTriggerProps
+>(({ className, icon = "", children, ...props }, ref) => (
   <MenubarPrimitive.Trigger
     ref={ref}
     className={cn(
@@ -46,9 +70,13 @@ const MenubarTrigger = React.forwardRef<
       className
     )}
     {...props}
-  />
-))
-MenubarTrigger.displayName = MenubarPrimitive.Trigger.displayName
+  >
+    {/* The icon prop now uses a default icon if one isn't provided */}
+    <span className="mr-2">{icon}</span>
+    {children}
+  </MenubarPrimitive.Trigger>
+));
+
 
 const MenubarSubTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubTrigger>,
@@ -237,4 +265,5 @@ export {
   MenubarGroup,
   MenubarSub,
   MenubarShortcut,
+  VerticalMenubar,
 }
