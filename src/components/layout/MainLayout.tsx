@@ -1,12 +1,20 @@
 import React, { PropsWithChildren } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { Outlet } from 'react-router-dom';
+import Header from '@/components/ui/Header';
+import Footer from '@/components/ui/Footer';
+import Sidebar from '../ui/Sidebar';
 
-const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
+const MainLayout: React.FC<PropsWithChildren> = () => {
   return (
-    <div>
-      <header>{/* Add your header content here */}</header>
-      <main>{children}</main>
-      <footer>{/* Add your footer content here */}</footer>
-    </div>
+    <Box bg='background.main'>
+      <Flex px='20' direction='column' minHeight='100vh'>
+        <Header />
+        <Sidebar />
+        <Box flex='1'>{<Outlet />}</Box>
+        <Footer />
+      </Flex>
+    </Box>
   );
 };
 

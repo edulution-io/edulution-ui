@@ -2,5 +2,6 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome Ms. Mustermann",
-  "content": "Lorem ipsum dolor sit amet, consetetur sadip- scing elitr, sed diam  nonumy eirmod tempor invi- dunt ut labore et dolore magna aliquyam erat, sed"
+  "content": "Lorem ipsum dolor sit amet, consetetur sadip- scing elitr, sed diam  nonumy eirmod tempor invi- dunt ut labore et dolore magna aliquyam erat, sed",
+  "conferences": "conferences"
 }
