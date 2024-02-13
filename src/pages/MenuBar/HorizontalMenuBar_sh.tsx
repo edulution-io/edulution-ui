@@ -11,9 +11,14 @@ const HorizontalMenuBar_sh = () => {
         navigate("/fileSharing")
     }
 
+    const handelHomeNavigation = () => {
+        navigate("/")
+    }
+
     return (
         <Menubar>
             <MenubarMenu>
+                <MenubarTrigger onClick={handelHomeNavigation}>Home</MenubarTrigger>
                 <MenubarTrigger onClick={handelNavigationToFileSharing}>File Sharing</MenubarTrigger>
                 <MenubarTrigger onClick={() => console.log("Hallo Welt")}>Time Table</MenubarTrigger>
                 <MenubarTrigger onClick={() => console.log("Hallo Welt")}>Chat</MenubarTrigger>
