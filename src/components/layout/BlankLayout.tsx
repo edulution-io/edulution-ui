@@ -1,13 +1,10 @@
-import React, { PropsWithChildren } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Box } from '@chakra-ui/react';
+import React, { PropsWithChildren } from "react";
+import { Outlet } from "react-router-dom";
 
-const BlankLayout: React.FC<PropsWithChildren> = () => {
+export const BlankLayout: React.FC<PropsWithChildren> = () => {
   return (
-    <Box>
+    <div>
       <main>{<Outlet />}</main>
-    </Box>
+    </div>
   );
 };
-
-export default BlankLayout;

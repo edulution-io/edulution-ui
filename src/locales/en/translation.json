@@ -3,5 +3,20 @@
   "changeLang": "Change Language",
   "heading": "Welcome Ms. Mustermann",
   "content": "Lorem ipsum dolor sit amet, consetetur sadip- scing elitr, sed diam  nonumy eirmod tempor invi- dunt ut labore et dolore magna aliquyam erat, sed",
-  "conferences": "conferences"
+  "conferences": "Conferences",
+  "firewall": "Firewall",
+  "learningManagement": "Learning Management",
+  "virtualization": "Virtualization",
+  "fileSharing": "File Sharing",
+  "desktopDeployment": "Desktop Deployment",
+  "network": "Network",
+  "roomBooking": "Room Booking",
+  "mail": "Mail",
+  "wlan": "WLAN",
+  "forums": "Forums",
+  "schoolInformation": "School Information",
+  "knowledgeBase": "Knowledge Base",
+  "printer": "Printer",
+  "chat": "Chat",
+  "menu": "MENU"
 }

@@ -1,210 +1,209 @@
-import {
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerContent,
-  useDisclosure,
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListIcon,
-  Text,
-  Box,
-} from '@chakra-ui/react';
-import {
-  HamburgerIcon,
-  CalendarIcon,
-  LockIcon,
-  StarIcon,
-} from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
-import { translateKey } from '@/utils/common';
+import { Button } from "@/components/shared/Button";
+import { NavLink } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import MobileLogo from "@/assets/logos/edulution-logo-small-colorfull.svg";
+import Firewall from "@/assets/icons/firewall-light.svg";
+import Conferences from "@/assets/icons/edulution/Konferenzen.svg";
+import LearningManagement from "@/assets/icons/edulution/Lernmanagement.svg";
+import FileSharing from "@/assets/icons/edulution/Filesharing.svg";
+import Virtualization from "@/assets/icons/edulution/Computer_Steuerung.svg";
+import DesktopDeployment from "@/assets/icons/edulution/Virtual_Desktop.svg";
+import Network from "@/assets/icons/edulution/Netzwerk.svg";
+import Mail from "@/assets/icons/edulution/Mail.svg";
+import SchoolInformation from "@/assets/icons/edulution/Information.svg";
+import Printer from "@/assets/icons/edulution/Drucker.svg";
+import RoomBooking from "@/assets/icons/edulution/Raumbuchung.svg";
+import Forums from "@/assets/icons/edulution/Foren.svg";
+import Chat from "@/assets/icons/edulution/Chat.svg";
+import Wlan from "@/assets/icons/edulution/Wlan.svg";
+import KnowledgeBase from "@/assets/icons/edulution/Wissensdatenbank.svg";
+import User from "@/assets/icons/edulution/Benutzer.svg";
+import { translateKey } from "@/utils/common";
+import { useTranslation } from "react-i18next";
+import { useMediaQuery, useToggle } from "usehooks-ts";
 
-const Sidebar = () => {
-  const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handleNavigate = (link: string) => {
-    navigate(link);
-    onClose();
-  };
+export const Sidebar = () => {
+  const { t } = useTranslation();
+  const [isOpen, toggle] = useToggle(false);
+  const { pathname } = useLocation();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   // TODO: will move to separate file later
   const MENU_ITEMS = [
     {
-      title: 'About',
-      link: '/about',
-      icon: StarIcon,
+      title: translateKey("conferences"),
+      link: "/conferences",
+      icon: Conferences,
     },
     {
-      title: translateKey('conferences'),
-      link: '/conferences',
-      icon: HamburgerIcon,
+      title: translateKey("firewall"),
+      link: "/firewall",
+      icon: Firewall,
     },
     {
-      title: 'Firewall',
-      link: '/firewall',
-      icon: CalendarIcon,
+      title: translateKey("virtualization"),
+      link: "/virtualization",
+      icon: Virtualization,
     },
     {
-      title: 'Virtualisierung',
-      link: '/firewall',
-      icon: CalendarIcon,
+      title: translateKey("learningManagement"),
+      link: "/learning-management",
+      icon: LearningManagement,
     },
     {
-      title: 'Lernmanagement',
-      link: '/firewall',
-      icon: CalendarIcon,
+      title: translateKey("fileSharing"),
+      link: "/file-sharing",
+      icon: FileSharing,
     },
     {
-      title: 'Filesharing',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("desktopDeployment"),
+      link: "/desktop-deployment",
+      icon: DesktopDeployment,
     },
     {
-      title: 'Desktop-Bereitstellung',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("network"),
+      link: "/network",
+      icon: Network,
     },
     {
-      title: 'Netzwerk',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("mail"),
+      link: "/mail",
+      icon: Mail,
     },
     {
-      title: 'Mail',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("schoolInformation"),
+      link: "/school-information",
+      icon: SchoolInformation,
     },
     {
-      title: 'Schulinformation',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("printer"),
+      link: "/printer",
+      icon: Printer,
     },
     {
-      title: 'Drucker',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("roomBooking"),
+      link: "/room-booking",
+      icon: RoomBooking,
     },
     {
-      title: 'Raumbuchung',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("forums"),
+      link: "/forums",
+      icon: Forums,
     },
     {
-      title: 'Foren',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("chat"),
+      link: "/chat",
+      icon: Chat,
     },
     {
-      title: 'Chat',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("wlan"),
+      link: "/wlan",
+      icon: Wlan,
     },
     {
-      title: 'WLAN',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
-    },
-    {
-      title: 'Wissensdatenbank',
-      link: '/fire-sharing',
-      icon: CalendarIcon,
+      title: translateKey("knowledgeBase"),
+      link: "/knowledge-base",
+      icon: KnowledgeBase,
     },
   ];
-  return (
-    <>
-      <Button
-        variant='outline'
-        mr={3}
-        onClick={onOpen}
-        position='absolute'
-        top='4'
-        right='4'
-        zIndex='overlay'
-        border='3px solid'
-        borderRadius='16px'
-        color='white'
-      >
-        MENÜ
-      </Button>
 
-      {/* Drawer Component */}
-      <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
-        <DrawerContent backgroundColor='#1B1C1D' color='#FFFFFE'>
-          <DrawerHeader textAlign='right' m={'24px 24px 80px'}>
+  const FINAL_ITEMS = isDesktop
+    ? [
+        {
+          title: "Home",
+          link: "/",
+          icon: MobileLogo,
+        },
+        ...MENU_ITEMS,
+      ]
+    : MENU_ITEMS;
+
+  const renderListItem = () => {
+    return (
+      <div className="fixed right-0 top-0 z-50 bg-black md:bg-none">
+        {isOpen && (
+          <div className="mb-[80px] ml-[24px] text-right md:hidden">
             <Button
-              variant='outline'
-              mr={3}
-              onClick={onClose}
-              color='white'
-              border='3px solid'
-              borderRadius='16px'
+              variant="btn-primary"
+              className="mb-4 mr-3 mt-4 rounded-[16px] border-[3px] border-solid bg-[#434343] text-white "
+              onClick={toggle}
             >
-              MENÜ
+              {t("menu")}
             </Button>
-          </DrawerHeader>
-
-          <DrawerBody p='unset'>
-            <List>
-              {MENU_ITEMS.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <Box key={index}>
-                    {index === 0 && <Divider />}
-                    <ListItem
-                      cursor={'pointer'}
-                      onClick={() => {
-                        handleNavigate(item.link);
-                      }}
-                      mb='2'
-                      width='100%'
-                      justifyContent='flex-end'
-                      borderX='none'
-                      display='flex'
-                      alignItems='center'
-                      gap='4'
-                      pr='2'
-                      py='1'
-                    >
-                      <Text fontSize='md' fontWeight='bold'>
-                        {item.title}
-                      </Text>
-                      <ListIcon as={Icon} width='40px' height='40px' />
-                    </ListItem>
-                    <Divider />
-                  </Box>
-                );
-              })}
-
-              <ListItem
-                cursor={'pointer'}
-                onClick={() => {
-                  alert('Logout');
-                }}
-                key='logout'
-                mb='2'
-                width='100%'
-                justifyContent='flex-end'
-                borderX='none'
-                display='flex'
-                alignItems='center'
-                gap='4'
-                pr='2'
-                py='1'
+          </div>
+        )}
+        {FINAL_ITEMS.map((item, index) => {
+          return (
+            <div className="" key={index}>
+              <NavLink
+                to={item.link}
+                className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === item.link ? "bg-gradient-to-r from-[#94D15C] to-[#4087B3]" : ""}`}
               >
-                <Text fontSize='md' fontWeight='bold'>
-                  Logout
-                </Text>
-                <ListIcon as={LockIcon} width='40px' height='40px' />
-              </ListItem>
-            </List>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </>
-  );
-};
+                <p className="text-md font-bold text-white md:hidden">
+                  {item.title}
+                </p>
+                <img
+                  src={item.icon}
+                  width="32px"
+                  height="32px"
+                  className="relative z-0"
+                />
+                <div className="absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-[#3E76AC] pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
+                  <p className="text-md whitespace-nowrap font-bold text-white">
+                    {item.title}
+                  </p>
+                  <img src={item.icon} width="32px" height="32px" />
+                </div>
+              </NavLink>
+            </div>
+          );
+        })}
 
-export default Sidebar;
+        <div className="" key={"logout"}>
+          <NavLink
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Logout");
+            }}
+            to={"/logout"}
+            className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === "/logout" ? "bg-gradient-to-r from-[#94D15C] to-[#4087B3]" : ""}`}
+          >
+            <p className="text-md font-bold text-white md:hidden">Logout</p>
+            <img
+              src={User}
+              width="32px"
+              height="32px"
+              className="relative z-0"
+            />
+            <div className="absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-[#3E76AC] pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
+              <p className="text-md whitespace-nowrap font-bold text-white">
+                {"Logout"}
+              </p>
+              <img src={User} width="32px" height="32px" />
+            </div>
+          </NavLink>
+        </div>
+      </div>
+    );
+  };
+
+  if (!isDesktop) {
+    return (
+      <div>
+        {!isOpen && (
+          <Button
+            className="fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid bg-[#434343] md:hidden"
+            variant="btn-primary"
+            onClick={toggle}
+          >
+            {t("menu")}
+          </Button>
+        )}
+        <div className="bg-[#1B1C1D] text-[#FFFFFE]">
+          {isOpen && renderListItem()}
+        </div>
+      </div>
+    );
+  }
+  return renderListItem();
+};

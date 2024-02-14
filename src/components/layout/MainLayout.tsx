@@ -1,21 +1,20 @@
-import React, { PropsWithChildren } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
-import { Outlet } from 'react-router-dom';
-import Header from '@/components/ui/Header';
-import Footer from '@/components/ui/Footer';
-import Sidebar from '../ui/Sidebar';
+import React, { PropsWithChildren } from "react";
+import { Outlet } from "react-router-dom";
+import { Header } from "@/components/ui/Header";
+import { Footer } from "@/components/ui/Footer";
+import { Sidebar } from "../ui/Sidebar";
 
-const MainLayout: React.FC<PropsWithChildren> = () => {
+export const MainLayout: React.FC<PropsWithChildren> = () => {
   return (
-    <Box bg='background.main'>
-      <Flex px='20' direction='column' minHeight='100vh'>
-        <Header />
-        <Sidebar />
-        <Box flex='1'>{<Outlet />}</Box>
-        <Footer />
-      </Flex>
-    </Box>
+    <>
+      <Sidebar />
+      <div className="bg-[#3B3B3B]">
+        <div className="flex min-h-[100vh] flex-col px-5 lg:px-20">
+          <Header />
+          <div className="flex-1">{<Outlet />}</div>
+          <Footer />
+        </div>
+      </div>
+    </>
   );
 };
-
-export default MainLayout;

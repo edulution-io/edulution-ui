@@ -1,17 +1,22 @@
-import { Box, Flex, Heading } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import DesktopLogo from "@/assets/logos/edulution-logo-long-colorfull.svg";
+import MobileLogo from "@/assets/logos/edulution-logo-long-colorfull-white.svg";
+import { useMediaQuery } from "usehooks-ts";
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   return (
-    <Box py={4} mb='20'>
-      <Flex maxW='container.xl' align='center' justify='space-between'>
-        <Heading as='h1' size='lg' color='white'>
-          <Link to='/'> edulution.io</Link>
-        </Heading>
+    <div className="mb-3 pb-1">
+      <div className="flex max-w-[1440px] justify-between align-middle">
+        <div
+          className={`w-[150px] rounded-b-[8px] ${isDesktop ? "mt-0 w-[250px] bg-white" : "mt-4"}`}
+        >
+          <Link to="/">
+            <img src={isDesktop ? DesktopLogo : MobileLogo} alt="edulution" />
+          </Link>
+        </div>
         {/* Add your navigation links or other content here */}
-      </Flex>
-    </Box>
+      </div>
+    </div>
   );
 };
-
-export default Header;

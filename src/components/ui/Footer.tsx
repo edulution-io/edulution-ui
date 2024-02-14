@@ -1,15 +1,9 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
-
-const Footer = () => {
+export const Footer = () => {
   return (
-    <Box py={4}>
-      <Flex justify='center'>
-        <Text fontSize='sm' color='white'>
-          © 2024 Netzint GmbH. All rights reserved.
-        </Text>
-      </Flex>
-    </Box>
+    <footer className="py-1 text-white">
+      <div className="container mx-auto text-center">
+        <p>&copy; {new Date().getFullYear()} Edulution. All rights reserved.</p>
+      </div>
+    </footer>
   );
 };
-
-export default Footer;
