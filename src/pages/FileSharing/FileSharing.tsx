@@ -6,23 +6,30 @@ import {DataTable} from "@/pages/FileSharing/data-table.tsx";
 import {columns} from "@/pages/FileSharing/columns.tsx";
 import {useEffect, useState} from "react";
 import {DirectoryFile} from "../../../datatypes/filesystem.ts";
-import WebDavClientProxy from "@/webdavclient/WebDavClientProxy.ts";
+import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
-
+import {MdOutlineDeleteOutline, MdOutlineNoteAdd} from "react-icons/md";
+import {FiUpload} from "react-icons/fi";
+import {HiOutlineFolderAdd} from "react-icons/hi";
+import {TooltipContent, TooltipProvider, TooltipTrigger} from "@radix-ui/react-tooltip";
+import {Tooltip} from "@/components/ui/tooltip.tsx";
 
 const FileSharing = () => {
-    const webDavClientProxy = new WebDavClientProxy();
+    const webDavFileManager = new WebDavFileManager();
     const [files, setFiles] = useState<DirectoryFile[]>([]);
 
     const fetchFiles = async (path: string) => {
         try {
-            const directoryFiles = await webDavClientProxy.getAllFilesAndDirectories(path);
+            const directoryFiles = await webDavFileManager.getContentList(path);
             setFiles(directoryFiles);
         } catch (error) {
             console.error("Error fetching directory contents:", error);
         }
     };
 
+    const createDirectory = (path: string) => {
+        webDavFileManager.createDirectory(path).then(r => console.log("TEST" + r ))
+    }
     const handleRowClick = (row: DirectoryFile) => {
         fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
     };
@@ -30,7 +37,7 @@ const FileSharing = () => {
 
     useEffect(() => {
         fetchFiles("/").catch((error: string) => console.log("Error" + error))
-    },[]);
+    }, []);
 
     return (
         <MainLayout>
@@ -67,10 +74,59 @@ const FileSharing = () => {
                 </div>
                 <div className="flex-1 container mx-auto py-10">
                     <p className="text-white">Current Directory: </p>
-                        <div className="flex">
-                            <FaAngleLeft />
-                            <FaAngleRight />
-                        </div>
+                    <div className="flex justify-between pt-3 pb-3">
+                        <TooltipProvider>
+                            <div className="flex space-x-4">
+                                <Tooltip>
+                                    <TooltipTrigger><FaAngleLeft className="bg-gray-500"></FaAngleLeft></TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Forwards</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger><FaAngleRight
+                                        className="bg-gray-500"></FaAngleRight></TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Backwards</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
+                            <div className="flex space-x-4">
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <MdOutlineNoteAdd className="text-green-700"/>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Add File</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <HiOutlineFolderAdd className="text-green-700" onClick={() => createDirectory("/teachers/netzint-teacher/TEST2")}/>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Forwards</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <FiUpload className="text-green-700"/>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Backwards</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <MdOutlineDeleteOutline className="text-green-700"/>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Backwards</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
+                        </TooltipProvider>
+                    </div>
                     <DataTable columns={columns} data={files} onRowClick={handleRowClick}/>
                 </div>
             </div>
