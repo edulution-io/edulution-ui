@@ -6,3 +6,8 @@ export interface DirectoryFile {
   size?: number;
   type?: string;
 }
+
+export enum ContentType {
+  file= "File",
+  directory="Directory"
+}

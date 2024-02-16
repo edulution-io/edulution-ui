@@ -66,7 +66,11 @@ export function DataTable<TData, TValue>({
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="text-white">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {cell.id.includes("filename")? (
+                        <p>{(cell.row.original as DirectoryFile).filename.split("/").pop()}</p>
+                    ) : (
+                        flexRender(cell.column.columnDef.cell, cell.getContext())
+                      )}
                   </TableCell>
                 ))}
               </TableRow>
