@@ -20,7 +20,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
-            <Route path="/fileSharing" element={<FileSharing />} />
+            <Route path="/file-sharing" element={<FileSharing />} />
             <Route path="/" element={<HomePage />} />
           </Routes>
         </Router>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/shared/Button";
 import { NavLink } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import MobileLogo from "@/assets/logos/edulution-logo-small-colorfull.svg";
 import Firewall from "@/assets/icons/firewall-light.svg";
 import Conferences from "@/assets/icons/edulution/Konferenzen.svg";

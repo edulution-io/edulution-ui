@@ -38,8 +38,8 @@ const FileSharing = () => {
             setIsSuccessfull(true)
 
         }).catch(() => {
-             setIsSuccessfull(false)
-         });
+            setIsSuccessfull(false)
+        });
         setTimeout(() => setShowPopUp(false), 5000);
         setShowPopUp(true)
         fetchFiles(currentPath).catch((error) => console.error(error))
@@ -47,11 +47,11 @@ const FileSharing = () => {
 
 
     const createFile = async (path: string): Promise<void> => {
-         await webDavFileManager.createFile(path).then(() => {
-             setIsSuccessfull(true)
-         }).catch(() => {
-             setIsSuccessfull(false)
-         });
+        await webDavFileManager.createFile(path).then(() => {
+            setIsSuccessfull(true)
+        }).catch(() => {
+            setIsSuccessfull(false)
+        });
         setTimeout(() => setShowPopUp(false), 5000);
         setShowPopUp(true)
         fetchFiles(currentPath).catch((error) => console.error(error))
@@ -68,102 +68,105 @@ const FileSharing = () => {
 
     return (
         <MainLayout>
-            <div>
-                {showPopUp &&
-                    <StatusAlert success={isSuccessfull}></StatusAlert>
-                }
-            </div>
-            <div className="flex flex-col md:flex-row">
-                <div className="flex-shrink-0">
-                    <VerticalMenubar>
-                        <div className="flex  justify-center items-center  w-full h-full">
-                            <div className="flex-row">
-                                <Icon.SideBarImageIcon src="src/assets/icons/House.png" alt="Home"/>
-                                <p className="font-bold text-white">File Sharing</p>
-                            </div>
-                        </div>
-                        <div className="text-white font-bold">
-                            <MenubarMenu>
-                                <MenubarSeparator></MenubarSeparator>
-                                <MenubarTrigger
-                                    icon={<Icon.ItemImageIcon
-                                        src={"src/assets/icons/House.png"}/>}>Home</MenubarTrigger>
-                                <MenubarSeparator></MenubarSeparator>
-                                <MenubarTrigger
-                                    icon={<Icon.ItemImageIcon
-                                        src={"src/assets/icons/House.png"}/>}>Programs</MenubarTrigger>
-                                <MenubarSeparator></MenubarSeparator>
-                                <MenubarTrigger
-                                    icon={<Icon.ItemImageIcon
-                                        src={"src/assets/icons/House.png"}/>}>Share</MenubarTrigger>
-                                <MenubarSeparator></MenubarSeparator>
-                                <MenubarTrigger
-                                    icon={<Icon.ItemImageIcon
-                                        src={"src/assets/icons/House.png"}/>}>Students</MenubarTrigger>
-                            </MenubarMenu>
-                        </div>
-                    </VerticalMenubar>
+            <>
+                <div>
+                    {showPopUp &&
+                        <StatusAlert success={isSuccessfull}></StatusAlert>
+                    }
                 </div>
-                <div className="flex-1 container mx-auto py-10">
-                    <div className="flex justify-between pt-3 pb-3">
-                        <TooltipProvider>
-                            <div className="flex space-x-4">
-                                <div className="flex">
-                                    <p className="text-white mr-2">Current Directory:</p>
-                                    <DirectoryBreadcrumb path={currentPath} onNavigate={fetchFiles}/>
+
+                <div className="flex flex-col md:flex-row">
+                    <div className="flex-shrink-0 py-10">
+                        <VerticalMenubar>
+                            <div className="flex  justify-center items-center  w-full h-full">
+                                <div className="flex-row">
+                                    <Icon.SideBarImageIcon src="src/assets/icons/filesharing-light.svg" alt="Home"/>
+                                    <p className="font-bold text-white">File Sharing</p>
                                 </div>
                             </div>
-                            <div className="flex space-x-4">
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        {<CreateNewContentDialog
-                                            trigger={<MdOutlineNoteAdd className="text-green-700"
-                                                                       onClick={() => console.log("HALLO")}/>}
-                                            createContent={(path: string) => createFile(currentPath + "/" + path)}
-                                            contentType={ContentType.file}
-                                        />}
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Add File</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        {<CreateNewContentDialog
-                                            trigger={<HiOutlineFolderAdd className="text-green-700"
-                                                                         onClick={() => console.log("HALLO")}/>}
-                                            createContent={(path: string) => createDirectory(currentPath + "/" + path)}
-                                            contentType={ContentType.directory}
-                                        />}
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Forwards</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        <FiUpload className="text-green-700"/>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Backwards</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        <MdOutlineDeleteOutline className="text-green-700"/>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Backwards</p>
-                                    </TooltipContent>
-                                </Tooltip>
+                            <div className="text-white font-bold">
+                                <MenubarMenu>
+                                    <MenubarSeparator></MenubarSeparator>
+                                    <MenubarTrigger
+                                        icon={<Icon.ItemImageIcon
+                                            src={"src/assets/icons/buildings-light.svg"}/>}>Home</MenubarTrigger>
+                                    <MenubarSeparator></MenubarSeparator>
+                                    <MenubarTrigger
+                                        icon={<Icon.ItemImageIcon
+                                            src={"src/assets/icons/buildings-light.svg"}/>}>Programs</MenubarTrigger>
+                                    <MenubarSeparator></MenubarSeparator>
+                                    <MenubarTrigger
+                                        icon={<Icon.ItemImageIcon
+                                            src={"src/assets/icons/buildings-light.svg"}/>}>Share</MenubarTrigger>
+                                    <MenubarSeparator></MenubarSeparator>
+                                    <MenubarTrigger
+                                        icon={<Icon.ItemImageIcon
+                                            src={"src/assets/icons/buildings-light.svg"}/>}>Students</MenubarTrigger>
+                                </MenubarMenu>
                             </div>
-                        </TooltipProvider>
+                        </VerticalMenubar>
                     </div>
-                    <DataTable columns={columns} data={files} onRowClick={handleRowClick}/>
+                    <div className="flex-1 container mx-auto py-10">
+                        <div className="flex justify-between pt-3 pb-3">
+                            <TooltipProvider>
+                                <div className="flex space-x-4">
+                                    <div className="flex">
+                                        <p className="text-white mr-2">Current Directory:</p>
+                                        <DirectoryBreadcrumb path={currentPath} onNavigate={fetchFiles}/>
+                                    </div>
+                                </div>
+                                <div className="flex space-x-4">
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            {<CreateNewContentDialog
+                                                trigger={<MdOutlineNoteAdd className="text-green-700"
+                                                                           onClick={() => console.log("HALLO")}/>}
+                                                createContent={(path: string) => createFile(currentPath + "/" + path)}
+                                                contentType={ContentType.file}
+                                            />}
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Add File</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            {<CreateNewContentDialog
+                                                trigger={<HiOutlineFolderAdd className="text-green-700"
+                                                                             onClick={() => console.log("HALLO")}/>}
+                                                createContent={(path: string) => createDirectory(currentPath + "/" + path)}
+                                                contentType={ContentType.directory}
+                                            />}
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Forwards</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            <FiUpload className="text-green-700"/>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Backwards</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            <MdOutlineDeleteOutline className="text-green-700"/>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Backwards</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </div>
+                            </TooltipProvider>
+                        </div>
+                        <DataTable columns={columns} data={files} onRowClick={handleRowClick}/>
+                    </div>
                 </div>
-            </div>
+                </>
         </MainLayout>
-    )
+)
 }
 
 export default FileSharing;
