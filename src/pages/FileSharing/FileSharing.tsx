@@ -26,7 +26,6 @@ const FileSharing = () => {
         try {
             const directoryFiles = await webDavFileManager.getContentList(path);
             setCurrentPath(path)
-            console.log(directoryFiles)
             setFiles(directoryFiles);
         } catch (error) {
             console.error("Error fetching directory contents:", error);

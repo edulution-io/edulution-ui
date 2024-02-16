@@ -4,12 +4,17 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
-    getSortedRowModel, SortingState,
+    getSortedRowModel,
+    SortingState,
     useReactTable,
 } from "@tanstack/react-table"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {DirectoryFile} from "../../../datatypes/filesystem.ts";
 import React from "react";
+
+const shouldApplyClickHandler = (rowId: string):boolean =>  {
+    return rowId.includes("filename")
+};
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -18,6 +23,7 @@ interface DataTableProps<TData, TValue> {
     onRowClick(row: DirectoryFile): void
 }
 
+
 export function DataTable<TData, TValue>({
                                              columns,
                                              data,
@@ -25,6 +31,7 @@ export function DataTable<TData, TValue>({
                                          }: DataTableProps<TData, TValue>) {
 
     const [sorting, setSorting] = React.useState<SortingState>([])
+
 
     const table = useReactTable({
         data,
@@ -64,11 +71,11 @@ export function DataTable<TData, TValue>({
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
-                                onClick={() => onRowClick(row.original as DirectoryFile)}
-                                className="cursor-pointer"
                             >
                                 {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id} className="text-white">
+                                    <TableCell key={cell.id}
+                                               onClick={() => shouldApplyClickHandler(cell.id) && onRowClick(row.original as DirectoryFile)}
+                                               className={`cursor-pointer text-white ${shouldApplyClickHandler(cell.id) ? '' : 'cursor-default'}`}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
                                 ))}
