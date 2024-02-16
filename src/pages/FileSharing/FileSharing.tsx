@@ -1,5 +1,4 @@
 import {MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar.tsx";
-import MainLayout from "@/components/layout/MainLayout.tsx";
 import {MenubarMenu} from "@radix-ui/react-menubar";
 import Icon from "@/components/ui/Icon.tsx";
 import {DataTable} from "@/pages/FileSharing/data-table.tsx";
@@ -15,6 +14,7 @@ import {Tooltip} from "@/components/ui/tooltip.tsx";
 import {CreateNewContentDialog} from "@/pages/FileSharing/CreateNewContentDialog.tsx";
 import {DirectoryBreadcrumb} from "@/pages/FileSharing/DirectoryBreadcrumb.tsx";
 import StatusAlert from "@/pages/FileSharing/StatusAlert.tsx";
+import {MainLayout} from "@/components/layout/MainLayout.tsx";
 
 const FileSharing = () => {
     const webDavFileManager = new WebDavFileManager();

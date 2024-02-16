@@ -2,5 +2,22 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen Frau Mustermann",
-  "content": "Lorem ipsum dolor sit amet, consetetur sadip- scing elitr, sed diam  nonumy eirmod tempor invi- dunt ut labore et dolore magna aliquyam erat, sed"
+  "content": "Lorem ipsum dolor sit amet, consetetur sadip- scing elitr, sed diam  nonumy eirmod tempor invi- dunt ut labore et dolore magna aliquyam erat, sed",
+  "conferences": "Konferenzen",
+  "firewall": "Firewall",
+  "virtualization": "Virtualisierung",
+  "learningManagement": "Lernmanagement",
+  "fireSharing": "Filesharing",
+  "desktopDeployment": "Desktop-Bereitstellung",
+  "network": "Netzwerk",
+  "roomBooking": "Raumbuchung",
+  "mail": "Mail",
+  "schoolInformation": "Schulinformation",
+  "knowledgeBase": "Wissensdatenbank",
+  "wlan": "WLAN",
+  "forums": "Foren",
+  "printer": "Drucker",
+  "fileSharing": "Filesharing",
+  "chat": "Chat",
+  "menu": "MENÜ"
 }
