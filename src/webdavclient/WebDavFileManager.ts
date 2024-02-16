@@ -11,7 +11,7 @@ export class WebDavFileManager implements IWebDavFileManager {
             "http://localhost:5173/webdav/",
             {
                 username: "netzint-teacher",
-                password: ""
+                password: "Muster!"
             },
         );
     }

@@ -5,6 +5,7 @@ export interface DirectoryFile {
   lastmod?: string;
   size?: number;
   type?: string;
+  [key: string]: any;
 }
 
 export enum ContentType {
