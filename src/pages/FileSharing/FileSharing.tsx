@@ -15,6 +15,7 @@ import {CreateNewContentDialog} from "@/pages/FileSharing/CreateNewContentDialog
 import {DirectoryBreadcrumb} from "@/pages/FileSharing/DirectoryBreadcrumb.tsx";
 import StatusAlert from "@/pages/FileSharing/StatusAlert.tsx";
 import {MainLayout} from "@/components/layout/MainLayout.tsx";
+import {DeleteAlert} from "@/pages/FileSharing/DeleteAlert.tsx";
 
 const FileSharing = () => {
     const webDavFileManager = new WebDavFileManager();
@@ -151,7 +152,7 @@ const FileSharing = () => {
                                     </Tooltip>
                                     <Tooltip>
                                         <TooltipTrigger>
-                                            <MdOutlineDeleteOutline className="text-green-700"/>
+                                            {<DeleteAlert trigger ={<MdOutlineDeleteOutline className="text-green-700"/>}/>}
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <p>Backwards</p>
