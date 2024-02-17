@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {DirectoryFile} from "../../../datatypes/filesystem.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const shouldApplyClickHandler = (rowId: string): boolean => {
     return rowId.includes("filename")
@@ -28,6 +28,8 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
 
     const [sorting, setSorting] = useState<SortingState>([])
     const [rowSelection, setRowSelection] = useState({})
+    const [selectedItems, setSelectedItems] = useState<DirectoryFile[]>([]);
+
 
     const table = useReactTable({
         data,
@@ -42,12 +44,25 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
         },
     })
 
+    useEffect(() => {
+        const selectedItemFilenames = table.getFilteredSelectedRowModel().rows.map(row => {
+            return (row.original as DirectoryFile);
+        });
+        setSelectedItems(selectedItemFilenames);
+    }, [table.getFilteredSelectedRowModel().rows]);
+
+
+    useEffect(() => {
+        console.log(selectedItems);
+    }, [selectedItems]);
 
     return (
         <div>
-            {table.getFilteredSelectedRowModel().rows.length > 0 &&(
-                <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredSelectedRowModel().rows.length > 0 && (
+                <div className="flex-1 text-sm text-muted-foreground text-white">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                    {table.getFilteredSelectedRowModel().rows.map((a) =>
+                        <p>{(a.original as DirectoryFile).filename}</p>)}
                     {table.getFilteredRowModel().rows.length} row(s) selected.
                 </div>
             )}
