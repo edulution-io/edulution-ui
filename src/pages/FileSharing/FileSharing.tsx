@@ -1,8 +1,8 @@
 import {MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar.tsx";
 import {MenubarMenu} from "@radix-ui/react-menubar";
 import Icon from "@/components/ui/Icon.tsx";
-import {DataTable} from "@/pages/FileSharing/data-table.tsx";
-import {columns} from "@/pages/FileSharing/columns.tsx";
+import {DataTable} from "@/pages/FileSharing/DataTable.tsx";
+import {columns} from "@/pages/FileSharing/Columns.tsx";
 import {useEffect, useState} from "react";
 import {ContentType, DirectoryFile} from "../../../datatypes/filesystem.ts";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
@@ -73,7 +73,6 @@ const FileSharing = () => {
                         <StatusAlert success={isSuccessfull}></StatusAlert>
                     }
                 </div>
-
                 <div className="flex flex-col md:flex-row">
                     <div className="flex-shrink-0 py-10">
                         <VerticalMenubar>
@@ -106,10 +105,11 @@ const FileSharing = () => {
                         </VerticalMenubar>
                     </div>
                     <div className="flex-1 container mx-auto py-10">
+
                         <div className="flex justify-between pt-3 pb-3">
                             <TooltipProvider>
-                                <div className="flex space-x-4">
-                                    <div className="flex">
+                                <div className="flex flex-col ">
+                                    <div className="flex space-x-2">
                                         <p className="text-white mr-2">Current Directory:</p>
                                         <DirectoryBreadcrumb path={currentPath} onNavigate={fetchFiles}/>
                                     </div>
