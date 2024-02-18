@@ -4,7 +4,10 @@ import {ArrowUpDown} from "lucide-react";
 import {FaFileAlt, FaFolder} from "react-icons/fa";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import { MdDriveFileRenameOutline , MdOutlineDeleteOutline} from "react-icons/md";
+import {MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineDriveFileMove} from "react-icons/md";
+import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
+import {useFileManagerStore} from "@/store/appDataStore.ts";
+
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
         id: "select",
@@ -120,12 +123,22 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                 )
             },
         cell:
-            () => {
+            ({row}) => {
+                const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
                 return (
-                    <div className="flex justify-end">
-                        <Button><MdDriveFileRenameOutline/></Button>
-                        <Button><MdOutlineDeleteOutline/></Button>
-                    </div>
+                    selectedItems.length == 0 && (
+                        <div className="flex justify-end">
+                            <Button>
+                                <DeleteAlert trigger={<MdDriveFileRenameOutline/>} files={[(row.original as DirectoryFile)]}></DeleteAlert>
+                            </Button>
+                            <Button>
+                                <DeleteAlert trigger={<MdOutlineDriveFileMove/>} files={[(row.original as DirectoryFile)]}></DeleteAlert>
+                            </Button>
+                            <Button>
+                                <DeleteAlert trigger={<MdOutlineDeleteOutline/>} files={[(row.original as DirectoryFile)]}></DeleteAlert>
+                            </Button>
+                        </div>
+                    )
                 )
             }
     }

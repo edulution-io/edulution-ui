@@ -1,10 +1,10 @@
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
-    DialogTitle,
     DialogDescription,
     DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog.tsx";
 
 import React, {ReactNode, useState} from "react";
@@ -13,33 +13,64 @@ import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {ContentType} from "../../../../datatypes/filesystem.ts";
 import {FileCreationForm} from "@/pages/FileSharing/dialog/FileCreationForm.tsx";
 import {DirectoryCreationForm} from "@/pages/FileSharing/dialog/DirectoryCreationForm.tsx";
+import {useWebDavActions} from "@/utils/webDavHooks.ts";
+import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 
 interface CreateNewContentDialogProps {
     trigger: ReactNode;
-    createContent: (path: string) => Promise<void>;
     contentType: ContentType
+    onSuccess: () => void;
+    onFailure: () => void;
 }
 
 export const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({
                                                                                   trigger,
                                                                                   contentType,
-                                                                                  createContent
+                                                                                  onSuccess,
+                                                                                  onFailure,
                                                                               }) => {
+
     const [isOpen, setIsOpen] = useState(false);
     const fileName = useFileManagerStore((state) => state.fileName);
     const setFileName = useFileManagerStore((state) => state.setFileName);
     const directoryName = useFileManagerStore((state) => state.directoryName);
     const setDirectoryName = useFileManagerStore((state) => state.setDirectoryName);
-    const handleCreateContent = () => {
-        if (contentType === ContentType.file) {
 
-            createContent(fileName);
-            setIsOpen(false)
-        } else {
-            createContent(directoryName);
-            setIsOpen(false)
+    const {currentPath, fetchFiles, handleWebDavAction} = useWebDavActions("/teachers/netzint-teacher");
+    const webDavFileManager = new WebDavFileManager();
+
+    const createFile = async (path: string): Promise<boolean> => {
+        const isSuccess = await handleWebDavAction(() => webDavFileManager.createFile(currentPath + "/" + path));
+        if (isSuccess) {
+            await fetchFiles(currentPath);
         }
-    }
+        return isSuccess;
+    };
+
+    const createDirectory = async (path: string): Promise<boolean> => {
+        const isSuccess = await handleWebDavAction(() => webDavFileManager.createDirectory(currentPath + "/" + path));
+        if (isSuccess) {
+            await fetchFiles(currentPath);
+        }
+        return isSuccess;
+    };
+
+    const handleCreateContent = async () => {
+        let success = false;
+        if (contentType === ContentType.file) {
+            success = await createFile(fileName);
+        } else {
+            success = await createDirectory(directoryName);
+        }
+        if (success) {
+            setIsOpen(false);
+            onSuccess();
+        } else {
+            setIsOpen(false);
+            onFailure();
+        }
+    };
+
 
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open);

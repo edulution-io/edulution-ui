@@ -56,6 +56,28 @@ export class WebDavFileManager implements IWebDavFileManager {
             return false
         }
     }
+
+    public async deleteItem(path: string): Promise<boolean> {
+        try{
+            await this.client.deleteFile(path)
+            return true
+        }catch (e){
+            console.error("Creation failed!")
+            return false
+        }
+    }
+
+    public async moveItem(path: string, toPath: string): Promise<boolean>{
+          try{
+            await this.client.copyFile(path, toPath)
+            return true
+        }catch (e){
+            console.error("Creation failed!")
+            return false
+        }
+    }
+
+
 }
 
 

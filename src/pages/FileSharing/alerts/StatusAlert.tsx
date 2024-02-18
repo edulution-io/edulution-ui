@@ -2,14 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {Ban, PartyPopper} from "lucide-react";
 
-
-interface AlertComponentProps {
-    success: boolean
+interface StatusAlertProps {
+    success: boolean;
 }
 
-export const StatusAlert: React.FC<AlertComponentProps> = ({success}) => {
+export const StatusAlert: React.FC<StatusAlertProps> = ({success}) => {
     const [showAlert, setShowAlert] = useState(true);
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowAlert(false);

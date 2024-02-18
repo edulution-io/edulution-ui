@@ -9,15 +9,17 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger
-} from "@/components/ui/alert-dialog.tsx";
-import {useFileManagerStore} from "@/store/appDataStore.ts";
+} from "@/components/ui/alert-dialog";
+import {DirectoryFile} from "../../../../datatypes/filesystem";
 
-interface CreateNewContentDialogProps {
+interface DeleteDialogProps {
     trigger: ReactNode;
+    files: DirectoryFile[];
 }
 
-export const DeleteAlert: React.FC<CreateNewContentDialogProps> = ({trigger}) => {
-    const selectedItems = useFileManagerStore((state) => state.selectedItems)
+export const DeleteAlert: React.FC<DeleteDialogProps> = ({trigger, files = []}) => {
+
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -26,16 +28,16 @@ export const DeleteAlert: React.FC<CreateNewContentDialogProps> = ({trigger}) =>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone. This will permanently delete the following files:
-                        {selectedItems.map((item) => (
+                        {files.length > 0 ? files.map((item) => (
                             <p key={item.etag}>{item.filename}</p>
-                        ))}
+                        )) : <p>No files to delete.</p>}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogAction >Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
-}
+    );
+};
