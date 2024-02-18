@@ -1,9 +1,9 @@
 import {ColumnDef} from "@tanstack/react-table";
-import {DirectoryFile} from "../../../datatypes/filesystem.ts";
+import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {ArrowUpDown} from "lucide-react";
 import {FaFileAlt, FaFolder} from "react-icons/fa";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import {Button} from "@/components/ui/Button.tsx";
+import { Button } from "@/components/ui/button.tsx";
 
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
@@ -109,6 +109,7 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                     </Button>
                 )
             },
-    }
-    ,
+    },
+
+
 ]

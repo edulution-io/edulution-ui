@@ -9,7 +9,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {DirectoryFile} from "../../../datatypes/filesystem.ts";
+import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {useEffect, useState} from "react";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
 

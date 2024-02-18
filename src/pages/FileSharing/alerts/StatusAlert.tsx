@@ -7,7 +7,7 @@ interface AlertComponentProps {
     success: boolean
 }
 
-const AlertComponent: React.FC<AlertComponentProps> = ({success}) => {
+export const StatusAlert: React.FC<AlertComponentProps> = ({success}) => {
     const [showAlert, setShowAlert] = useState(true);
 
     useEffect(() => {
@@ -42,5 +42,3 @@ const AlertComponent: React.FC<AlertComponentProps> = ({success}) => {
         </div>
     );
 };
-
-export default AlertComponent;

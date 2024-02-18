@@ -1,28 +1,30 @@
 import {MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar.tsx";
 import {MenubarMenu} from "@radix-ui/react-menubar";
 import Icon from "@/components/ui/Icon.tsx";
-import {DataTable} from "@/pages/FileSharing/DataTable.tsx";
-import {columns} from "@/pages/FileSharing/Columns.tsx";
+import {DataTable} from "@/pages/FileSharing/table/DataTable.tsx";
+import {columns} from "@/pages/FileSharing/table/Columns.tsx";
 import {useEffect, useState} from "react";
 import {ContentType, DirectoryFile} from "../../../datatypes/filesystem.ts";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
-import {MdOutlineDeleteOutline, MdOutlineNoteAdd} from "react-icons/md";
+import {MdOutlineDeleteOutline, MdOutlineDriveFileMove, MdOutlineNoteAdd} from "react-icons/md";
 import {FiUpload} from "react-icons/fi";
 import {HiOutlineFolderAdd} from "react-icons/hi";
-import {TooltipContent, TooltipProvider, TooltipTrigger} from "@radix-ui/react-tooltip";
-import {Tooltip} from "@/components/ui/tooltip.tsx";
-import {CreateNewContentDialog} from "@/pages/FileSharing/CreateNewContentDialog.tsx";
+import {CreateNewContentDialog} from "@/pages/FileSharing/dialog/CreateNewContentDialog.tsx";
 import {DirectoryBreadcrumb} from "@/pages/FileSharing/DirectoryBreadcrumb.tsx";
-import StatusAlert from "@/pages/FileSharing/StatusAlert.tsx";
 import {MainLayout} from "@/components/layout/MainLayout.tsx";
-import {DeleteAlert} from "@/pages/FileSharing/DeleteAlert.tsx";
+import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
+import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
+import {TooltipProvider} from "@radix-ui/react-tooltip";
+import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 
-const FileSharing = () => {
+export const FileSharing = () => {
     const webDavFileManager = new WebDavFileManager();
     const [files, setFiles] = useState<DirectoryFile[]>([]);
     const [currentPath, setCurrentPath] = useState<string>('');
     const [isSuccessfull, setIsSuccessfull] = useState<boolean>(false);
     const [showPopUp, setShowPopUp] = useState<boolean>(false);
+    const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
     const fetchFiles = async (path: string) => {
         try {
             const directoryFiles = await webDavFileManager.getContentList(path);
@@ -33,28 +35,28 @@ const FileSharing = () => {
         }
     };
 
-    const createDirectory = async (path: string): Promise<void> => {
-        await webDavFileManager.createDirectory(path).then(() => {
-            setIsSuccessfull(true)
+    const handleWebDavAction = async (action: () => Promise<boolean>) => {
+        try {
+            const isSuccess = await action();
+            setIsSuccessfull(isSuccess);
+            setShowPopUp(true);
+            setTimeout(() => setShowPopUp(false), 5000);
+            if (isSuccess) {
+                await fetchFiles(currentPath);
+            }
+        } catch (error) {
+            console.error(error);
+            setIsSuccessfull(false);
+            setShowPopUp(true);
+            setTimeout(() => setShowPopUp(false), 5000);
+        }
+    };
 
-        }).catch(() => {
-            setIsSuccessfull(false)
-        });
-        setTimeout(() => setShowPopUp(false), 5000);
-        setShowPopUp(true)
-        fetchFiles(currentPath).catch((error) => console.error(error))
-    }
+    const createDirectory = (path: string) => handleWebDavAction(() => webDavFileManager.createDirectory(path));
+    const createFile = (path: string) => handleWebDavAction(() => webDavFileManager.createFile(path));
 
-
-    const createFile = async (path: string): Promise<void> => {
-        await webDavFileManager.createFile(path).then(() => {
-            setIsSuccessfull(true)
-        }).catch(() => {
-            setIsSuccessfull(false)
-        });
-        setTimeout(() => setShowPopUp(false), 5000);
-        setShowPopUp(true)
-        fetchFiles(currentPath).catch((error) => console.error(error))
+    const uploadItem = (path: string): Promise<void> => {
+        console.log("Upload to" + path)
     }
 
     const handleRowClick = (row: DirectoryFile) => {
@@ -116,57 +118,66 @@ const FileSharing = () => {
                                     </div>
                                 </div>
                                 <div className="flex space-x-4">
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            {<CreateNewContentDialog
-                                                trigger={<MdOutlineNoteAdd className="text-green-700"
-                                                                           onClick={() => console.log("HALLO")}/>}
-                                                createContent={(path: string) => createFile(currentPath + "/" + path)}
-                                                contentType={ContentType.file}
-                                            />}
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Add File</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            {<CreateNewContentDialog
-                                                trigger={<HiOutlineFolderAdd className="text-green-700"
-                                                                             onClick={() => console.log("HALLO")}/>}
-                                                createContent={(path: string) => createDirectory(currentPath + "/" + path)}
-                                                contentType={ContentType.directory}
-                                            />}
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Forwards</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <FiUpload className="text-green-700"/>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Backwards</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            {<DeleteAlert trigger ={<MdOutlineDeleteOutline className="text-green-700"/>}/>}
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Backwards</p>
-                                        </TooltipContent>
-                                    </Tooltip>
+                                    {selectedItems.length == 0 && (
+                                        <>
+                                            <ActionTooltip
+                                                onAction={() => console.log("Add File Clicked")}
+                                                tooltipText="Add File"
+                                                trigger={<CreateNewContentDialog
+                                                        trigger={<MdOutlineNoteAdd className="text-green-700"
+                                                                                     onClick={() => console.log("HALLO")}/>}
+                                                        createContent={(path: string) => createFile(currentPath + "/" + path)}
+                                                        contentType={ContentType.file}/>}
+                                            />
+                                             <ActionTooltip
+                                                onAction={() => console.log("Add Folder Clicked")}
+                                                tooltipText="Add Folder"
+                                                trigger={<CreateNewContentDialog
+                                                        trigger={<HiOutlineFolderAdd className="text-green-700"
+                                                                                     onClick={() => console.log("HALLO")}/>}
+                                                        createContent={(path: string) => createDirectory(currentPath + "/" + path)}
+                                                        contentType={ContentType.directory}/>}
+                                            />
+                                            <ActionTooltip
+                                                onAction={() => console.log("Upload item Clicked")}
+                                                tooltipText="Upload item"
+                                                trigger={<CreateNewContentDialog
+                                                        trigger={<FiUpload className="text-green-700"
+                                                                                     onClick={() => console.log("Wanna Upload")}/>}
+                                                        createContent={(path: string) => uploadItem(currentPath + "/" + path)}
+                                                        contentType={ContentType.directory}/>}
+                                            />
+                                        </>
+                                    )}
+                                    {selectedItems.length > 0 && (
+                                        <>
+                                            <ActionTooltip
+                                                onAction={() => console.log("Upload item Clicked")}
+                                                tooltipText="Upload item"
+                                                trigger={<DeleteAlert
+                                                        trigger={<MdOutlineDriveFileMove className="text-green-700"
+                                                                                     onClick={() => console.log("Wanna Upload")}/>}
+                                                        />}
+                                            />
+
+                                            <ActionTooltip
+                                                onAction={() => console.log("Upload item Clicked")}
+                                                tooltipText="Upload item"
+                                                trigger={<DeleteAlert
+                                                        trigger={<MdOutlineDeleteOutline className="text-green-700"
+                                                                                     onClick={() => console.log("Wanna Upload")}/>}
+                                                        />}
+
+                                            />
+                                        </>
+                                    )}
                                 </div>
                             </TooltipProvider>
                         </div>
                         <DataTable columns={columns} data={files} onRowClick={handleRowClick}/>
                     </div>
                 </div>
-                </>
+            </>
         </MainLayout>
-)
+    )
 }
-
-export default FileSharing;

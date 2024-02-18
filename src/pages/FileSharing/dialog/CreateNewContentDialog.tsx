@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/dialog.tsx";
 
 import React, {ReactNode, useState} from "react";
-import {ContentType} from "../../../datatypes/filesystem.ts";
-import {Button} from "@/components/ui/Button.tsx";
-import {FileCreationForm} from "@/pages/FileSharing/FileCreationForm.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
-import {DirectoryCreationForm} from "@/pages/FileSharing/DirectoryCreationForm.tsx";
+import {ContentType} from "../../../../datatypes/filesystem.ts";
+import {FileCreationForm} from "@/pages/FileSharing/dialog/FileCreationForm.tsx";
+import {DirectoryCreationForm} from "@/pages/FileSharing/dialog/DirectoryCreationForm.tsx";
 
 interface CreateNewContentDialogProps {
     trigger: ReactNode;

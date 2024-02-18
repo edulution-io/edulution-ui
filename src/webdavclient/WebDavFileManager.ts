@@ -37,12 +37,24 @@ export class WebDavFileManager implements IWebDavFileManager {
         }
     }
 
-    public async createDirectory(path: string): Promise<void> {
-        await this.client.createDirectory(path);
+    public async createDirectory(path: string): Promise<boolean> {
+        try{
+            await this.client.createDirectory(path);
+            return true
+        }catch (e){
+            console.error("Creation failed!")
+            return false
+        }
+
     }
 
     public async createFile(path: string): Promise<boolean> {
-        return await this.client.putFileContents(path, "test");
+        try{
+            return await this.client.putFileContents(path, " ");
+        }catch (e){
+            console.error("Creation failed!")
+            return false
+        }
     }
 }
 

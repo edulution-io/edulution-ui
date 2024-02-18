@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import i18n from "@/i18n";
 import useLanguage from "@/store/useLanguage";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import FileSharing from "@/pages/FileSharing/FileSharing.tsx";
+import {FileSharing} from "@/pages/FileSharing/FileSharing.tsx";
 import {HomePage} from "@/pages/Home";
 
 const queryClient = new QueryClient();

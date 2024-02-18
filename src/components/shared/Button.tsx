@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button as SHButton } from "@/components/ui/Button.tsx";
+import { Button as SHButton } from "@/components/ui/button.tsx";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
