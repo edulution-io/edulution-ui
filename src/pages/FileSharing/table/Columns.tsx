@@ -3,8 +3,8 @@ import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {ArrowUpDown} from "lucide-react";
 import {FaFileAlt, FaFolder} from "react-icons/fa";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import { Button } from "@/components/ui/button.tsx";
-
+import {Button} from "@/components/ui/button.tsx";
+import { MdDriveFileRenameOutline , MdOutlineDeleteOutline} from "react-icons/md";
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
         id: "select",
@@ -111,5 +111,22 @@ export const columns: ColumnDef<DirectoryFile>[] = [
             },
     },
 
-
+    {
+        accessorKey: "delete",
+        header:
+            () => {
+                return (
+                    <div></div>
+                )
+            },
+        cell:
+            () => {
+                return (
+                    <div className="flex justify-end">
+                        <Button><MdDriveFileRenameOutline/></Button>
+                        <Button><MdOutlineDeleteOutline/></Button>
+                    </div>
+                )
+            }
+    }
 ]
