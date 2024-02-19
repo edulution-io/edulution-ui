@@ -15,7 +15,7 @@ export const MyFavourites = () => {
           <Button variant="btn-primary" className="w-fit">
             Filesharing
             <img
-              src={FileSharing}
+              src={FileSharing.src}
               alt="Filesharing"
               width="40px"
               height="40px"
@@ -27,7 +27,7 @@ export const MyFavourites = () => {
           >
             Raumbuchung
             <img
-              src={RoomBooking}
+              src={RoomBooking.src}
               alt="Raumbuchung"
               width="40px"
               height="40px"
@@ -35,7 +35,7 @@ export const MyFavourites = () => {
           </Button>
           <Button variant="btn-info" className="w-fit">
             Drucker
-            <img src={Printer} alt="Drucker" width="40px" height="40px" />
+            <img src={Printer.src} alt="Drucker" width="40px" height="40px" />
           </Button>
         </div>
       </CardContent>

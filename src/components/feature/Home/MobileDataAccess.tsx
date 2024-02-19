@@ -16,7 +16,7 @@ export const MobileDataAccess = () => {
             variant="btn-info"
             className="flex w-fit justify-between gap-2"
           >
-            <img src={Cloud} alt="Cloud" width="40px" height="40px" />
+            <img src={Cloud.src} alt="Cloud" width="40px" height="40px" />
             Anleitung
           </Button>
         </div>

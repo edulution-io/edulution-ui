@@ -356,3 +356,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Next.js
+.next
+next-env.d.ts
+dist

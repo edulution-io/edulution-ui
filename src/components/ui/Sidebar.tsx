@@ -143,7 +143,7 @@ export const Sidebar = () => {
                   {item.title}
                 </p>
                 <img
-                  src={item.icon}
+                  src={item.icon.src}
                   width="32px"
                   height="32px"
                   className="relative z-0"
@@ -152,7 +152,7 @@ export const Sidebar = () => {
                   <p className="text-md whitespace-nowrap font-bold text-white">
                     {item.title}
                   </p>
-                  <img src={item.icon} width="32px" height="32px" />
+                  <img src={item.icon.src} width="32px" height="32px" />
                 </div>
               </NavLink>
             </div>
@@ -170,7 +170,7 @@ export const Sidebar = () => {
           >
             <p className="text-md font-bold text-white md:hidden">Logout</p>
             <img
-              src={User}
+              src={User.src}
               width="32px"
               height="32px"
               className="relative z-0"
@@ -179,7 +179,7 @@ export const Sidebar = () => {
               <p className="text-md whitespace-nowrap font-bold text-white">
                 {"Logout"}
               </p>
-              <img src={User} width="32px" height="32px" />
+              <img src={User.src} width="32px" height="32px" />
             </div>
           </NavLink>
         </div>

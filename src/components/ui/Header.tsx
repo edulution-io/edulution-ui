@@ -12,7 +12,7 @@ export const Header: React.FC = () => {
           className={`w-[150px] rounded-b-[8px] ${isDesktop ? "mt-0 w-[250px] bg-white" : "mt-4"}`}
         >
           <Link to="/">
-            <img src={isDesktop ? DesktopLogo : MobileLogo} alt="edulution" />
+            <img src={isDesktop ? DesktopLogo.src : MobileLogo.src} alt="edulution" />
           </Link>
         </div>
         {/* Add your navigation links or other content here */}
