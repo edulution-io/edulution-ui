@@ -9,6 +9,6 @@ export interface DirectoryFile {
 }
 
 export enum ContentType {
-  file= "File",
-  directory="Directory"
+  file= "file",
+  directory="directory"
 }

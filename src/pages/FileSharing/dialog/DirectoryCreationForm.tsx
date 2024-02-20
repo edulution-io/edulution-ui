@@ -1,32 +1,29 @@
 import React, {useState} from 'react';
 import {Input} from "@/components/ui/input.tsx";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {validateDirectoryName} from "@/utils/common.ts";
 
 export const DirectoryCreationForm = () => {
     const [localDirectoryName, setLocalDirectoryName] = useState('');
     const setDirectoryName= useFileManagerStore((state) => state.setDirectoryName);
     const [error, setError] = useState('');
 
-    const validateDirectoryName = (name: string) => {
+    const handleValidateDirectoryName = (name: string) => {
+        const validationResult = validateDirectoryName(name);
 
-        if (/\s/.test(name)) {
-            setError('Directroy name should not contain spaces.');
-            setDirectoryName('');
-        } else if (name.includes(".")) {
-            setError('Directroy is not allowed to have a file extension');
-
-            setDirectoryName('');
-        } else {
+        if (validationResult.isValid) {
             setError('');
-            console.log(name)
             setDirectoryName(name);
+        } else {
+            setError(validationResult.error);
+            setDirectoryName('');
         }
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const name = event.target.value;
         setLocalDirectoryName(name)
-        validateDirectoryName(name);
+        handleValidateDirectoryName(name);
     };
 
     return (

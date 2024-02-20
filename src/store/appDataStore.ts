@@ -1,5 +1,6 @@
 import {create} from 'zustand';
 import {DirectoryFile} from "../../datatypes/filesystem.ts";
+import {RowSelectionState} from "@tanstack/react-table";
 
 type Store = {
     appName: string;
@@ -10,9 +11,15 @@ type FileManager = {
     fileName: string;
     directoryName: string;
     selectedItems: DirectoryFile[]
+    fileOperationSuccessful: boolean,
+    currentPath: string
+    selectedRows: RowSelectionState;
+    setSelectedRows: (rows: RowSelectionState) => void;
+    setCurrentPath: (path: string) => void;
     setFileName: (fileName: string) => void;
     setDirectoryName: (directoryName: string) => void;
     setSelectedItems: (items: DirectoryFile[]) => void;
+    setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void;
 }
 
 export const useAppDataStore = create<Store>((set) => ({
@@ -26,15 +33,14 @@ export const useFileManagerStore = create<FileManager>((set) => ({
     fileName: '',
     directoryName: '',
     selectedItems: [],
-    setFileName: (fileName: string) => {
-        set((state) => ({fileName: state.fileName = fileName}));
-    },
-    setDirectoryName: (directoryName: string) => {
-        set((state) => ({directoryName: state.directoryName = directoryName}))
-    },
-
-    setSelectedItems: (items: DirectoryFile[]) => {
-        set(state => ({...state, selectedItems: items}));
-    }
+    fileOperationSuccessful: false,
+    currentPath: "/",
+    selectedRows: {},
+    setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+    setCurrentPath: (currentPath: string) => set({currentPath}),
+    setFileName: (fileName: string) => set({fileName}),
+    setDirectoryName: (directoryName: string) => set({directoryName}),
+    setSelectedItems: (items: DirectoryFile[]) => set({selectedItems: items}),
+    setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => set(() => ({fileOperationSuccessful})),
 }));
 

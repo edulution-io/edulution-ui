@@ -19,33 +19,34 @@ import {useWebDavActions} from "@/utils/webDavHooks.ts";
 import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
 
 export const FileSharing = () => {
-    const {files, currentPath, fetchFiles} = useWebDavActions("/teachers/netzint-teacher");
+    const {files, currentPath, fetchFiles} = useWebDavActions();
     const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
+    const fileOperationSuccessful: boolean = useFileManagerStore(state => state.fileOperationSuccessful);
+    const setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void = useFileManagerStore(state => state.setFileOperationSuccessful);
     const [showPopUp, setShowPopUp] = useState<boolean>(false);
-    const [isSuccessfull, setIsSuccessfull] = useState<boolean>(false);
 
     useEffect(() => {
         fetchFiles().catch(console.error);
     }, []);
 
-    const handleSuccess = () => {
-        setIsSuccessfull(true);
+    useEffect(() => {
+    if (fileOperationSuccessful !== undefined) {
         setShowPopUp(true);
-        fetchFiles(currentPath);
-        setTimeout(() => {
+        fetchFiles().catch(console.error);
+        const timer = setTimeout(() => {
             setShowPopUp(false);
-        }, 5000);
-    };
+        }, 3000);
+        const resetTimer = setTimeout(() => {
+            setFileOperationSuccessful(undefined);
+        }, 3500);
 
-    const handleFailure = () => {
-        setIsSuccessfull(false);
-        setShowPopUp(true);
+        return () => {
+            clearTimeout(timer);
+            clearTimeout(resetTimer);
+        };
+    }
+}, [fileOperationSuccessful, setFileOperationSuccessful]);
 
-        // Similar adjustment for failure case
-        setTimeout(() => {
-            setShowPopUp(false);
-        }, 5000);
-    };
 
     const handleRowClick = (row: DirectoryFile) => {
         fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
@@ -57,7 +58,7 @@ export const FileSharing = () => {
             <>
                 <div>
                     {showPopUp &&
-                        <StatusAlert success={isSuccessfull}></StatusAlert>
+                        <StatusAlert success={fileOperationSuccessful}></StatusAlert>
                     }
                 </div>
                 <div className="flex flex-col md:flex-row">
@@ -110,8 +111,6 @@ export const FileSharing = () => {
                                                 trigger={<CreateNewContentDialog
                                                     trigger={<MdOutlineNoteAdd className="text-green-700"
                                                                                onClick={() => console.log("HALLO")}/>}
-                                                    onSuccess={() => handleSuccess()}
-                                                    onFailure={() => handleFailure()}
                                                     contentType={ContentType.file}/>}
                                             />
                                             <ActionTooltip
@@ -120,8 +119,7 @@ export const FileSharing = () => {
                                                 trigger={<CreateNewContentDialog
                                                     trigger={<HiOutlineFolderAdd className="text-green-700"
                                                                                  onClick={() => console.log("HALLO")}/>}
-                                                    onSuccess={() => handleSuccess()}
-                                                    onFailure={() => handleFailure()}
+
                                                     contentType={ContentType.directory}/>
                                                 }
                                             />
@@ -131,8 +129,6 @@ export const FileSharing = () => {
                                                 trigger={<CreateNewContentDialog
                                                     trigger={<FiUpload className="text-green-700"
                                                                        onClick={() => console.log("Wanna Upload")}/>}
-                                                    onSuccess={() => handleSuccess()}
-                                                    onFailure={() => handleFailure()}
                                                     contentType={ContentType.directory}/>}
                                             />
                                         </>
@@ -145,7 +141,7 @@ export const FileSharing = () => {
                                                 trigger={<DeleteAlert
                                                     trigger={<MdOutlineDriveFileMove className="text-green-700"
                                                                                      onClick={() => console.log("Wanna Upload")}/>}
-                                                    files={selectedItems}
+                                                    file={selectedItems}
                                                 />}
                                             />
 
@@ -155,7 +151,7 @@ export const FileSharing = () => {
                                                 trigger={<DeleteAlert
                                                     trigger={<MdOutlineDeleteOutline className="text-green-700"
                                                                                      onClick={() => console.log("Wanna Upload")}/>}
-                                                    files={selectedItems}
+                                                    file={selectedItems}
                                                 />}
 
                                             />

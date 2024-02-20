@@ -1,28 +1,30 @@
 import React, {useState} from 'react';
 import {Input} from "@/components/ui/input.tsx";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {validateFileName} from "@/utils/common.ts";
 
 export const FileCreationForm = () => {
     const [localFileName, setLocalFileName] = useState('');
     const setFileName= useFileManagerStore((state) => state.setFileName);
     const [error, setError] = useState('');
 
-    const validateFileName = (name: string) => {
-        if (/\s/.test(name)) {
-            setError('File name should not contain spaces.');
-            setFileName('');
-        } else if (!name.endsWith('.txt')) {
-            setError('File name must end with .txt');
-            setFileName('');
-        } else {
+
+    const handleValidateFileName = (name: string) => {
+        const validationResult = validateFileName(name);
+
+        if (validationResult.isValid) {
             setError('');
             setFileName(name);
+        } else {
+            setError(validationResult.error);
+            setFileName('');
         }
     };
 
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const name = event.target.value;
-        validateFileName(name);
+        handleValidateFileName(name);
         setLocalFileName(name)
     };
 

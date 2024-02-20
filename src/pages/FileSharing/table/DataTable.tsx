@@ -4,7 +4,7 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
-    getSortedRowModel,
+    getSortedRowModel, OnChangeFn, RowSelectionState,
     SortingState,
     useReactTable,
 } from "@tanstack/react-table"
@@ -28,9 +28,14 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableProps<TData, TValue>) {
 
     const [sorting, setSorting] = useState<SortingState>([])
-    const [rowSelection, setRowSelection] = useState({})
     const setSelectedItems = useFileManagerStore((state) => state.setSelectedItems);
 
+    const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+        const newValue = typeof updaterOrValue === 'function'
+            ? updaterOrValue(useFileManagerStore.getState().selectedRows)
+            : updaterOrValue;
+        useFileManagerStore.getState().setSelectedRows(newValue);
+    };
 
     const table = useReactTable({
         data,
@@ -38,10 +43,10 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
-        onRowSelectionChange: setRowSelection,
+        onRowSelectionChange: handleRowSelectionChange,
         state: {
             sorting,
-            rowSelection,
+            rowSelection: useFileManagerStore((state) => state.selectedRows),
         },
     })
 
@@ -51,7 +56,6 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
         });
         setSelectedItems(selectedItemFilenames);
     }, [table.getFilteredSelectedRowModel().rows]);
-
 
     return (
         <div>

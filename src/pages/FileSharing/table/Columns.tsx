@@ -4,9 +4,12 @@ import {ArrowUpDown} from "lucide-react";
 import {FaFileAlt, FaFolder} from "react-icons/fa";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineDriveFileMove} from "react-icons/md";
+import {MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineDriveFileMove,} from "react-icons/md";
 import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {RenameItemDialog} from "@/pages/FileSharing/dialog/RenameItemDialog.tsx";
+import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
+import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
@@ -125,19 +128,38 @@ export const columns: ColumnDef<DirectoryFile>[] = [
         cell:
             ({row}) => {
                 const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
+
                 return (
+
                     selectedItems.length == 0 && (
-                        <div className="flex justify-end">
-                            <Button>
-                                <DeleteAlert trigger={<MdDriveFileRenameOutline/>} files={[(row.original as DirectoryFile)]}></DeleteAlert>
-                            </Button>
-                            <Button>
-                                <DeleteAlert trigger={<MdOutlineDriveFileMove/>} files={[(row.original as DirectoryFile)]}></DeleteAlert>
-                            </Button>
-                            <Button>
-                                <DeleteAlert trigger={<MdOutlineDeleteOutline/>} files={[(row.original as DirectoryFile)]}></DeleteAlert>
-                            </Button>
-                        </div>
+                        <TooltipProvider>
+
+
+                            <div className="flex justify-end space-x-4">
+                                <ActionTooltip
+                                    onAction={() => console.log("HHH")}
+                                    tooltipText="Add File"
+                                    trigger={<RenameItemDialog
+                                        trigger={<MdDriveFileRenameOutline/>}
+                                        item={(row.original as DirectoryFile)}
+                                    />}
+                                />
+                                <ActionTooltip
+                                    onAction={() => console.log("HHH")}
+                                    tooltipText="Add File"
+                                    trigger={<DeleteAlert trigger={<MdOutlineDriveFileMove/>}
+                                                          file={[(row.original as DirectoryFile)]}></DeleteAlert>}
+                                >
+                                </ActionTooltip>
+                                <ActionTooltip
+                                    onAction={() => console.log("HHH")}
+                                    tooltipText="Add File"
+                                    trigger={<DeleteAlert trigger={<MdOutlineDeleteOutline/>}
+                                                          file={[(row.original as DirectoryFile)]}></DeleteAlert>}
+                                >
+                                </ActionTooltip>
+                            </div>
+                        </TooltipProvider>
                     )
                 )
             }

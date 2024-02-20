@@ -19,24 +19,20 @@ import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 interface CreateNewContentDialogProps {
     trigger: ReactNode;
     contentType: ContentType
-    onSuccess: () => void;
-    onFailure: () => void;
 }
 
 export const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({
                                                                                   trigger,
-                                                                                  contentType,
-                                                                                  onSuccess,
-                                                                                  onFailure,
+                                                                                  contentType
                                                                               }) => {
-
+    const setFileOperationSuccessful: (fileOperationSuccessful: boolean) => void = useFileManagerStore(state => state.setFileOperationSuccessful);
     const [isOpen, setIsOpen] = useState(false);
     const fileName = useFileManagerStore((state) => state.fileName);
     const setFileName = useFileManagerStore((state) => state.setFileName);
     const directoryName = useFileManagerStore((state) => state.directoryName);
     const setDirectoryName = useFileManagerStore((state) => state.setDirectoryName);
-
-    const {currentPath, fetchFiles, handleWebDavAction} = useWebDavActions("/teachers/netzint-teacher");
+    const currentPath = useFileManagerStore((state) => state.currentPath )
+    const {fetchFiles, handleWebDavAction} = useWebDavActions();
     const webDavFileManager = new WebDavFileManager();
 
     const createFile = async (path: string): Promise<boolean> => {
@@ -64,10 +60,10 @@ export const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({
         }
         if (success) {
             setIsOpen(false);
-            onSuccess();
+            setFileOperationSuccessful(true)
         } else {
             setIsOpen(false);
-            onFailure();
+            setFileOperationSuccessful(false)
         }
     };
 

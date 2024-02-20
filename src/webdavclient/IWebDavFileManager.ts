@@ -7,4 +7,5 @@ export interface IWebDavFileManager {
   createFile(path: string):  Promise<boolean>
   deleteItem(path: string): Promise<boolean>
   moveItem(path: string, toPath: string): Promise<boolean>
+  renameItem(path: string, toPath: string): Promise<boolean>
 }
