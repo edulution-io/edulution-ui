@@ -4,6 +4,8 @@ import {createClient, WebDAVClient} from "webdav";
 import {DirectoryFile} from "../../datatypes/filesystem.ts";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
 
+
+
 export class WebDavFileManager implements IWebDavFileManager {
     private client: WebDAVClient;
     private setFileOperationSuccessfull = useFileManagerStore(state => state.setFileOperationSuccessful)
@@ -107,6 +109,13 @@ public async renameItem(path: string, toPath: string): Promise<boolean> {
         }
     }
 
+    public async getDownloadLink(path: string): Promise<string> {
+        return this.client.getFileDownloadLink(path);
+    }
+
+     public async getUploadLink(path: string): Promise<string> {
+        return this.client.getFileDownloadLink(path);
+    }
 
 }
 

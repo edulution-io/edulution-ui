@@ -8,4 +8,6 @@ export interface IWebDavFileManager {
   deleteItem(path: string): Promise<boolean>
   moveItem(path: string, toPath: string): Promise<boolean>
   renameItem(path: string, toPath: string): Promise<boolean>
+  getDownloadLink(path: string): Promise<string>
+  getUploadLink(path: string): Promise<string>
 }

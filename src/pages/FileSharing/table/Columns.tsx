@@ -11,7 +11,7 @@ import {RenameItemDialog} from "@/pages/FileSharing/dialog/RenameItemDialog.tsx"
 import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
-
+import { FaDownload } from "react-icons/fa6";
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
         id: "select",
@@ -150,6 +150,13 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                                     tooltipText="Add File"
                                     trigger={<MoveItemDialog trigger={<MdOutlineDriveFileMove/>}
                                                           item={(row.original as DirectoryFile)}></MoveItemDialog>}
+                                >
+                                </ActionTooltip>
+                                <ActionTooltip
+                                    onAction={() => console.log("HHH")}
+                                    tooltipText="Add File"
+                                    trigger={<DeleteAlert trigger={<FaDownload/>}
+                                                          file={[(row.original as DirectoryFile)]}></DeleteAlert>}
                                 >
                                 </ActionTooltip>
                                 <ActionTooltip
