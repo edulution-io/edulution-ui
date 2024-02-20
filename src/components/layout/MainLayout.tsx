@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from "react";
-import { Outlet } from "react-router-dom";
-import { Header } from "@/components/ui/Header";
-import { Footer } from "@/components/ui/Footer";
-import { Sidebar } from "../ui/Sidebar";
+import React, { PropsWithChildren } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/ui/Footer';
+import { Sidebar } from '../ui/Sidebar';
 
 export const MainLayout: React.FC<PropsWithChildren> = () => {
   return (

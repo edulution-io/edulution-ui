@@ -1,108 +1,108 @@
-import { Button } from "@/components/shared/Button";
-import { NavLink } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom";
-import MobileLogo from "@/assets/logos/edulution-logo-small-colorfull.svg";
-import Firewall from "@/assets/icons/firewall-light.svg";
-import Conferences from "@/assets/icons/edulution/Konferenzen.svg";
-import LearningManagement from "@/assets/icons/edulution/Lernmanagement.svg";
-import FileSharing from "@/assets/icons/edulution/Filesharing.svg";
-import Virtualization from "@/assets/icons/edulution/Computer_Steuerung.svg";
-import DesktopDeployment from "@/assets/icons/edulution/Virtual_Desktop.svg";
-import Network from "@/assets/icons/edulution/Netzwerk.svg";
-import Mail from "@/assets/icons/edulution/Mail.svg";
-import SchoolInformation from "@/assets/icons/edulution/Information.svg";
-import Printer from "@/assets/icons/edulution/Drucker.svg";
-import RoomBooking from "@/assets/icons/edulution/Raumbuchung.svg";
-import Forums from "@/assets/icons/edulution/Foren.svg";
-import Chat from "@/assets/icons/edulution/Chat.svg";
-import Wlan from "@/assets/icons/edulution/Wlan.svg";
-import KnowledgeBase from "@/assets/icons/edulution/Wissensdatenbank.svg";
-import User from "@/assets/icons/edulution/Benutzer.svg";
-import { translateKey } from "@/utils/common";
-import { useTranslation } from "react-i18next";
-import { useMediaQuery, useToggle } from "usehooks-ts";
+import { Button } from '@/components/shared/Button';
+import { NavLink } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import MobileLogo from '@/assets/logos/edulution-logo-small-colorfull.svg';
+import Firewall from '@/assets/icons/firewall-light.svg';
+import Conferences from '@/assets/icons/edulution/Konferenzen.svg';
+import LearningManagement from '@/assets/icons/edulution/Lernmanagement.svg';
+import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
+import Virtualization from '@/assets/icons/edulution/Computer_Steuerung.svg';
+import DesktopDeployment from '@/assets/icons/edulution/Virtual_Desktop.svg';
+import Network from '@/assets/icons/edulution/Netzwerk.svg';
+import Mail from '@/assets/icons/edulution/Mail.svg';
+import SchoolInformation from '@/assets/icons/edulution/Information.svg';
+import Printer from '@/assets/icons/edulution/Drucker.svg';
+import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
+import Forums from '@/assets/icons/edulution/Foren.svg';
+import Chat from '@/assets/icons/edulution/Chat.svg';
+import Wlan from '@/assets/icons/edulution/Wlan.svg';
+import KnowledgeBase from '@/assets/icons/edulution/Wissensdatenbank.svg';
+import User from '@/assets/icons/edulution/Benutzer.svg';
+import { translateKey } from '@/utils/common';
+import { useTranslation } from 'react-i18next';
+import { useMediaQuery, useToggle } from 'usehooks-ts';
 
 export const Sidebar = () => {
   const { t } = useTranslation();
   const [isOpen, toggle] = useToggle(false);
   const { pathname } = useLocation();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   // TODO: will move to separate file later
   const MENU_ITEMS = [
     {
-      title: translateKey("conferences"),
-      link: "/conferences",
+      title: translateKey('conferences'),
+      link: '/conferences',
       icon: Conferences,
     },
     {
-      title: translateKey("firewall"),
-      link: "/firewall",
+      title: translateKey('firewall'),
+      link: '/firewall',
       icon: Firewall,
     },
     {
-      title: translateKey("virtualization"),
-      link: "/virtualization",
+      title: translateKey('virtualization'),
+      link: '/virtualization',
       icon: Virtualization,
     },
     {
-      title: translateKey("learningManagement"),
-      link: "/learning-management",
+      title: translateKey('learningManagement'),
+      link: '/learning-management',
       icon: LearningManagement,
     },
     {
-      title: translateKey("fileSharing"),
-      link: "/file-sharing",
+      title: translateKey('fileSharing'),
+      link: '/file-sharing',
       icon: FileSharing,
     },
     {
-      title: translateKey("desktopDeployment"),
-      link: "/desktop-deployment",
+      title: translateKey('desktopDeployment'),
+      link: '/desktop-deployment',
       icon: DesktopDeployment,
     },
     {
-      title: translateKey("network"),
-      link: "/network",
+      title: translateKey('network'),
+      link: '/network',
       icon: Network,
     },
     {
-      title: translateKey("mail"),
-      link: "/mail",
+      title: translateKey('mail'),
+      link: '/mail',
       icon: Mail,
     },
     {
-      title: translateKey("schoolInformation"),
-      link: "/school-information",
+      title: translateKey('schoolInformation'),
+      link: '/school-information',
       icon: SchoolInformation,
     },
     {
-      title: translateKey("printer"),
-      link: "/printer",
+      title: translateKey('printer'),
+      link: '/printer',
       icon: Printer,
     },
     {
-      title: translateKey("roomBooking"),
-      link: "/room-booking",
+      title: translateKey('roomBooking'),
+      link: '/room-booking',
       icon: RoomBooking,
     },
     {
-      title: translateKey("forums"),
-      link: "/forums",
+      title: translateKey('forums'),
+      link: '/forums',
       icon: Forums,
     },
     {
-      title: translateKey("chat"),
-      link: "/chat",
+      title: translateKey('chat'),
+      link: '/chat',
       icon: Chat,
     },
     {
-      title: translateKey("wlan"),
-      link: "/wlan",
+      title: translateKey('wlan'),
+      link: '/wlan',
       icon: Wlan,
     },
     {
-      title: translateKey("knowledgeBase"),
-      link: "/knowledge-base",
+      title: translateKey('knowledgeBase'),
+      link: '/knowledge-base',
       icon: KnowledgeBase,
     },
   ];
@@ -110,8 +110,8 @@ export const Sidebar = () => {
   const FINAL_ITEMS = isDesktop
     ? [
         {
-          title: "Home",
-          link: "/",
+          title: 'Home',
+          link: '/',
           icon: MobileLogo,
         },
         ...MENU_ITEMS,
@@ -128,20 +128,21 @@ export const Sidebar = () => {
               className="mb-4 mr-3 mt-4 rounded-[16px] border-[3px] border-solid bg-[#434343] text-white "
               onClick={toggle}
             >
-              {t("menu")}
+              {t('menu')}
             </Button>
           </div>
         )}
         {FINAL_ITEMS.map((item, index) => {
           return (
-            <div className="" key={index}>
+            <div
+              className=""
+              key={index}
+            >
               <NavLink
                 to={item.link}
-                className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === item.link ? "bg-gradient-to-r from-[#94D15C] to-[#4087B3]" : ""}`}
+                className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === item.link ? 'bg-gradient-to-r from-[#94D15C] to-[#4087B3]' : ''}`}
               >
-                <p className="text-md font-bold text-white md:hidden">
-                  {item.title}
-                </p>
+                <p className="text-md font-bold text-white md:hidden">{item.title}</p>
                 <img
                   src={item.icon}
                   width="32px"
@@ -149,24 +150,29 @@ export const Sidebar = () => {
                   className="relative z-0"
                 />
                 <div className="absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-[#3E76AC] pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-                  <p className="text-md whitespace-nowrap font-bold text-white">
-                    {item.title}
-                  </p>
-                  <img src={item.icon} width="32px" height="32px" />
+                  <p className="text-md whitespace-nowrap font-bold text-white">{item.title}</p>
+                  <img
+                    src={item.icon}
+                    width="32px"
+                    height="32px"
+                  />
                 </div>
               </NavLink>
             </div>
           );
         })}
 
-        <div className="" key={"logout"}>
+        <div
+          className=""
+          key={'logout'}
+        >
           <NavLink
             onClick={(e) => {
               e.preventDefault();
-              alert("Logout");
+              alert('Logout');
             }}
-            to={"/logout"}
-            className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === "/logout" ? "bg-gradient-to-r from-[#94D15C] to-[#4087B3]" : ""}`}
+            to={'/logout'}
+            className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === '/logout' ? 'bg-gradient-to-r from-[#94D15C] to-[#4087B3]' : ''}`}
           >
             <p className="text-md font-bold text-white md:hidden">Logout</p>
             <img
@@ -176,10 +182,12 @@ export const Sidebar = () => {
               className="relative z-0"
             />
             <div className="absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-[#3E76AC] pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-              <p className="text-md whitespace-nowrap font-bold text-white">
-                {"Logout"}
-              </p>
-              <img src={User} width="32px" height="32px" />
+              <p className="text-md whitespace-nowrap font-bold text-white">{'Logout'}</p>
+              <img
+                src={User}
+                width="32px"
+                height="32px"
+              />
             </div>
           </NavLink>
         </div>
@@ -196,12 +204,10 @@ export const Sidebar = () => {
             variant="btn-primary"
             onClick={toggle}
           >
-            {t("menu")}
+            {t('menu')}
           </Button>
         )}
-        <div className="bg-[#1B1C1D] text-[#FFFFFE]">
-          {isOpen && renderListItem()}
-        </div>
+        <div className="bg-[#1B1C1D] text-[#FFFFFE]">{isOpen && renderListItem()}</div>
       </div>
     );
   }

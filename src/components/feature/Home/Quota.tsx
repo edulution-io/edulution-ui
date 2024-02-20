@@ -1,5 +1,5 @@
-import { CardContent, Card } from "@/components/shared/Card";
-import { Separator } from "@/components/ui/separator";
+import { CardContent, Card } from '@/components/shared/Card';
+import { Separator } from '@/components/ui/separator';
 
 const Quota = () => {
   return (
