@@ -10,6 +10,7 @@ import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {RenameItemDialog} from "@/pages/FileSharing/dialog/RenameItemDialog.tsx";
 import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
+import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
@@ -147,8 +148,8 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                                 <ActionTooltip
                                     onAction={() => console.log("HHH")}
                                     tooltipText="Add File"
-                                    trigger={<DeleteAlert trigger={<MdOutlineDriveFileMove/>}
-                                                          file={[(row.original as DirectoryFile)]}></DeleteAlert>}
+                                    trigger={<MoveItemDialog trigger={<MdOutlineDriveFileMove/>}
+                                                          item={(row.original as DirectoryFile)}></MoveItemDialog>}
                                 >
                                 </ActionTooltip>
                                 <ActionTooltip

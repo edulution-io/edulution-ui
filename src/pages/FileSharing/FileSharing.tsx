@@ -17,6 +17,7 @@ import {TooltipProvider} from "@radix-ui/react-tooltip";
 import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {useWebDavActions} from "@/utils/webDavHooks.ts";
 import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
+import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 
 export const FileSharing = () => {
     const {files, currentPath, fetchFiles} = useWebDavActions();
@@ -138,10 +139,10 @@ export const FileSharing = () => {
                                             <ActionTooltip
                                                 onAction={() => console.log("Upload item Clicked")}
                                                 tooltipText="Upload item"
-                                                trigger={<DeleteAlert
+                                                trigger={<MoveItemDialog
                                                     trigger={<MdOutlineDriveFileMove className="text-green-700"
                                                                                      onClick={() => console.log("Wanna Upload")}/>}
-                                                    file={selectedItems}
+                                                    item={selectedItems}
                                                 />}
                                             />
 

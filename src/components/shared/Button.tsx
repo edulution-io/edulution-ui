@@ -3,6 +3,7 @@ import { Button as SHButton } from "@/components/ui/button.tsx";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
+import {ReactNode} from "react";
 
 const originButtonVariants = cva(
   ["text-white p-4 hover:bg-orange-700 rounded-[8px]"],
@@ -20,11 +21,12 @@ const originButtonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof originButtonVariants> {
-  asChild?: boolean;
+    asChild?: boolean;
+    icon? : ReactNode
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, variant, icon, ...props }, ref) => {
     return (
       <SHButton
         className={cn(originButtonVariants({ variant, className }))}
