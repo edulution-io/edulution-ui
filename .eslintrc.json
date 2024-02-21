@@ -3,11 +3,333 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["standard-with-typescript", "plugin:react/recommended"],
+  "extends": ["airbnb", "airbnb-typescript", "plugin:react/recommended"],
   "parserOptions": {
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "plugins": ["react"],
-  "rules": {}
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "plugins": ["react", "jsx-a11y", "prettier"],
+      "extends": ["airbnb/hooks", "plugin:prettier/recommended"],
+      "rules": {
+        "no-empty": "off",
+        "no-undef": "warn",
+        "no-fallthrough": "warn",
+        "no-case-declarations": "warn",
+        "no-prototype-builtins": "warn",
+
+        "prefer-const": "warn",
+        "prefer-template": "warn",
+
+        "react/prop-types": "warn",
+
+        "react/no-access-state-in-setstate": "warn",
+        "react/jsx-props-no-spreading": "off",
+
+        "jsx-a11y/anchor-is-valid": [
+          "warn",
+          {
+            "components": ["Link"],
+            "specialLink": ["hrefLeft", "hrefRight"],
+            "aspects": ["noHref", "invalidHref", "preferButton"]
+          }
+        ],
+
+        // ----------------------------------------
+        // Airbnb rules
+        // In the future these rules should throw an error (set them to "error")
+        // syntax
+        "strict": "warn",
+        "semi-style": "warn",
+        "semi-spacing": "warn",
+        "no-extra-semi": "warn",
+        "curly": "warn",
+        "camelcase": "warn",
+        "yoda": "warn",
+        "new-cap": "warn",
+        "eol-last": "warn",
+
+        // spacing
+        "spaced-comment": "warn",
+        "space-in-parens": "warn",
+        "keyword-spacing": "warn",
+        "space-infix-ops": "warn",
+        "space-before-blocks": "warn",
+        "space-before-function-paren": "warn",
+        "no-trailing-spaces": "warn",
+        "no-multi-spaces": "warn",
+
+        // linebreaks
+        "operator-linebreak": "warn",
+        "implicit-arrow-linebreak": "warn",
+        "nonblock-statement-body-position": "warn",
+        "no-multi-str": "warn",
+        "lines-between-class-members": "warn",
+        "lines-around-directive": "warn",
+        "default-param-last": "warn",
+        "default-case-last": "warn",
+        "comma-spacing": "warn",
+        "comma-dangle": "off",
+        "object-curly-newline": "off",
+        "object-property-newline": "off",
+
+        // semantic
+        "eqeqeq": "warn",
+        "radix": "warn",
+        "max-classes-per-file": "warn",
+        "class-methods-use-this": "warn",
+        "consistent-return": "warn",
+        "global-require": "warn",
+        "guard-for-in": "warn",
+        "no-undef-init": "warn",
+        "no-bitwise": "off",
+        "no-lonely-if": "warn",
+        "no-redeclare": "warn",
+        "no-restricted-globals": "warn",
+        "no-restricted-properties": "warn",
+        "no-unsafe-optional-chaining": "warn",
+        "no-var": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "no-mixed-operators": "warn",
+        "no-confusing-arrow": "warn",
+        "no-return-assign": "warn",
+        "no-return-await": "warn",
+        "no-await-in-loop": "warn",
+        "no-unreachable": "warn",
+        "prefer-exponentiation-operator": "warn",
+        "prefer-rest-params": "warn",
+        "prefer-destructuring": "off",
+        "prefer-arrow-callback": "warn",
+        "prefer-regex-literals": "warn",
+        "default-case": "warn",
+        "quote-props": "warn",
+        "object-shorthand": "warn",
+        "no-else-return": "warn",
+        "no-unused-expressions": "off",
+        "no-multiple-empty-lines": "warn",
+        "no-useless-return": "warn",
+        "no-useless-constructor": "off",
+        "no-unneeded-ternary": "warn",
+
+        // Airbnb/REACT || Airbnb/JSX-ALLY
+        "jsx-a11y/no-static-element-interactions": "warn",
+        "jsx-a11y/no-noninteractive-tabindex": "warn",
+        "jsx-a11y/no-noninteractive-element-interactions": "warn",
+        "jsx-a11y/control-has-associated-label": "warn",
+        "jsx-a11y/label-has-associated-control": "warn",
+        "jsx-a11y/alt-text": "warn",
+        "react/jsx-no-bind": "warn",
+        "react/react-in-jsx-scope": "warn",
+        "react/no-unstable-nested-components": "warn",
+        "react/no-arrow-function-lifecycle": "warn",
+        "react/destructuring-assignment": "warn",
+        "react/jsx-boolean-value": "warn",
+        "react/jsx-wrap-multilines": "warn",
+        "react/jsx-first-prop-new-line": "warn",
+        "react/jsx-one-expression-per-line": "warn",
+        "react/jsx-closing-bracket-location": "warn",
+        "react/jsx-closing-tag-location": "warn",
+        "react/button-has-type": "warn",
+        "react/self-closing-comp": "warn",
+        "react/no-array-index-key": "warn",
+        "react/no-unused-prop-types": "warn",
+        "react/no-unused-class-component-methods": "warn",
+        "react/jsx-filename-extension": "warn",
+        "react/jsx-no-useless-fragment": "warn",
+        "react/jsx-curly-newline": "warn",
+        "react/require-default-props": "warn",
+        "react/jsx-tag-spacing": "off",
+
+        // others
+        "no-promise-executor-return": "warn",
+        "array-callback-return": "warn",
+        "no-restricted-syntax": "warn",
+        "no-dupe-class-members": "warn",
+        "no-shadow": "warn",
+        "no-continue": "warn",
+        "padded-blocks": "warn",
+        "arrow-body-style": "warn",
+        "no-useless-concat": "warn",
+
+        "react-hooks/exhaustive-deps": "warn",
+
+        // Typescript-eslint
+        "@typescript-eslint/return-await": "warn",
+        "@typescript-eslint/require-await": "warn",
+        "@typescript-eslint/await-thenable": "warn",
+
+        "@typescript-eslint/no-empty-function": "warn",
+        "@typescript-eslint/no-var-requires": "warn",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-unused-expressions": "warn",
+
+        "@typescript-eslint/no-unsafe-member-access": "warn",
+        "@typescript-eslint/no-unsafe-assignment": "warn",
+        "@typescript-eslint/no-unsafe-argument": "warn",
+        "@typescript-eslint/no-unsafe-call": "warn",
+        "@typescript-eslint/no-unsafe-return": "warn",
+        "@typescript-eslint/no-misused-promises": "warn",
+        "@typescript-eslint/no-shadow": "warn",
+
+        "@typescript-eslint/unbound-method": "warn",
+
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+        "@typescript-eslint/no-floating-promises": "warn",
+
+        "@typescript-eslint/restrict-plus-operands": "warn",
+
+        "@typescript-eslint/ban-types": "warn",
+
+        "@typescript-eslint/naming-convention": "warn",
+
+        "@typescript-eslint/keyword-spacing": "warn",
+        "@typescript-eslint/space-infix-ops": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-non-null-assertion": "warn",
+
+        "@typescript-eslint/no-inferrable-types": "warn",
+        "@typescript-eslint/no-extra-semi": "warn",
+
+        "@typescript-eslint/comma-spacing": "warn",
+
+        "@typescript-eslint/lines-between-class-members": "warn",
+
+        "@typescript-eslint/ban-ts-comment": ["warn"],
+
+        // IMPORTs
+        "import/no-unresolved": "error",
+        "import/no-duplicates": "warn",
+        "import/prefer-default-export": "off",
+        "import/order": "warn",
+        "import/no-named-as-default": "warn",
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "": "never",
+            "mjs": "never",
+            "js": "never",
+            "jsx": "never",
+            "ts": "never",
+            "tsx": "never"
+          }
+        ],
+        "import/no-cycle": "warn",
+        "import/newline-after-import": "warn",
+        "import/no-useless-path-segments": "warn",
+        "no-restricted-imports": "warn",
+
+        // PRETTIER
+        "prettier/prettier": [
+          "warn",
+          {},
+          {
+            "usePrettierrc": true
+          }
+        ],
+
+        // OWN DEFINITIONS
+        "max-len": [
+          "warn",
+          {
+            "code": 140,
+            "comments": 120
+          }
+        ],
+        "no-unused-vars": [
+          "warn",
+          {
+            "vars": "local",
+            "argsIgnorePattern": "^_"
+          }
+        ],
+        "import/no-extraneous-dependencies": [
+          "warn",
+          {
+            "packageDir": "./"
+          }
+        ],
+        "function-call-argument-newline": ["warn", "consistent"],
+
+        "vars-on-top": "off",
+        "no-empty-function": "off",
+
+        "object-curly-spacing": ["warn", "always"],
+        "template-curly-spacing": ["warn", "always"],
+        "react/jsx-curly-spacing": [
+          "warn",
+          {
+            "attributes": { "when": "always", "allowMultiline": true },
+            "children": { "when": "never", "allowMultiline": true }
+          }
+        ],
+        "@typescript-eslint/object-curly-spacing": ["warn", "always"],
+
+        "@typescript-eslint/dot-notation": "off",
+
+        "no-param-reassign": "warn", // [
+        //  "error", {
+        //    "props": false
+        //  }],
+        "arrow-parens": "warn", // ["error", "as-needed"],
+        "array-bracket-spacing": ["warn", "never"],
+
+        // (DM) Assumptions
+        // "no-console": "off",
+        "no-plusplus": "off",
+        "no-underscore-dangle": "off",
+        "react/jsx-curly-brace-presence": [
+          // "warn",
+          "off",
+          {
+            "props": "string",
+            "children": "string",
+            "propElementValues": "string"
+          },
+          "error"
+        ],
+        "react/function-component-definition": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "prefer-object-spread": "off",
+
+        // (DM) Definitions i made similar to Prettier (adjustible in prettier)
+        // These are the rules introduced by a plugin above that contradict prettier
+        "semi": "warn", // "error,
+        "@typescript-eslint/semi": "warn", // "error,
+
+        "@typescript-eslint/comma-dangle": ["warn"], // ["error", "only-multiline"],
+
+        // non changeable prettier rules, that we may want to override in
+        // lint --fix has to overwrite (fixed in prettier)
+        "function-paren-newline": "off", // "warn",
+        "indent": "off", // "warn",
+        "@typescript-eslint/indent": "off", // "warn",
+        "react/jsx-indent": "off", // "warn",
+        "react/jsx-indent-props": "off", // "warn",
+
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.js"],
+      "rules": {
+        "quotes": ["warn", "single"], // ["error", "single"],
+        "jsx-quotes": ["warn", "prefer-single"], // ["error", "prefer-single"],
+        "@typescript-eslint/quotes": ["warn", "single"] // ["error", "single"],
+      }
+    },
+    {
+      "files": ["*.tsx", "*.jsx"],
+      "rules": {
+        "quotes": ["warn", "single"], // ["error", "single"],
+        "jsx-quotes": ["warn", "prefer-double"], // ["error", "prefer-single"],
+        "@typescript-eslint/quotes": ["warn", "single"] // ["error", "single"],
+      }
+    }
+  ]
 }
