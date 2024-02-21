@@ -17,7 +17,8 @@ import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
-
+import {useState} from "react";
+import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
 
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
@@ -137,12 +138,26 @@ export const columns: ColumnDef<DirectoryFile>[] = [
             ({row}) => {
                 const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
                 const webDavFileManager = new WebDavFileManager();
-
+                const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
+                const handleDownload = async (item: DirectoryFile) => {
+                    setShowLoadingPopUp(true);
+                    try {
+                        await webDavFileManager.triggerFolderDownload(item.filename);
+                    } catch (error) {
+                        console.error("Download failed:", error);
+                    } finally {
+                        setShowLoadingPopUp(false);
+                    }
+                };
                 return (
 
                     selectedItems.length == 0 && (
                         <TooltipProvider>
-
+                            <div>
+                                {showLoadingPopUp && (
+                                    <LoadPopUp isOpen={showLoadingPopUp}/>
+                                )}
+                            </div>
 
                             <div className="flex justify-end space-x-4">
                                 <ActionTooltip
@@ -165,7 +180,7 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                                         if ((row.original as DirectoryFile).type == ContentType.file) {
                                             webDavFileManager.triggerFileDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
                                         } else {
-                                            webDavFileManager.triggerFolderDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
+                                           handleDownload((row.original as DirectoryFile)).catch((error) => console.log(error))
                                         }
                                     }}
                                     tooltipText="Add File"

@@ -5,7 +5,7 @@ import {DataTable} from "@/pages/FileSharing/table/DataTable.tsx";
 import {columns} from "@/pages/FileSharing/table/Columns.tsx";
 import {useEffect, useState} from "react";
 import {ContentType, DirectoryFile} from "../../../datatypes/filesystem.ts";
-import {MdOutlineDeleteOutline, MdOutlineDriveFileMove, MdOutlineNoteAdd} from "react-icons/md";
+import {MdOutlineDeleteOutline, MdOutlineDriveFileMove, MdOutlineFileDownload, MdOutlineNoteAdd} from "react-icons/md";
 import {FiUpload} from "react-icons/fi";
 import {HiOutlineFolderAdd} from "react-icons/hi";
 import {CreateNewContentDialog} from "@/pages/FileSharing/dialog/CreateNewContentDialog.tsx";
@@ -18,8 +18,8 @@ import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {useWebDavActions} from "@/utils/webDavHooks.ts";
 import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
-import { MdOutlineFileDownload } from "react-icons/md";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
+import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
 
 export const FileSharing = () => {
     const {files, currentPath, fetchFiles} = useWebDavActions();
@@ -27,11 +27,25 @@ export const FileSharing = () => {
     const fileOperationSuccessful: boolean = useFileManagerStore(state => state.fileOperationSuccessful);
     const setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void = useFileManagerStore(state => state.setFileOperationSuccessful);
     const [showPopUp, setShowPopUp] = useState<boolean>(false);
+    const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
     const webDavFileManager = new WebDavFileManager()
 
     useEffect(() => {
         fetchFiles().catch(console.error);
     }, []);
+
+
+    const handleDownload = async (items: DirectoryFile[]) => {
+        setShowLoadingPopUp(true);
+        try {
+            await webDavFileManager.triggerMultipleFolderDownload(items);
+        } catch (error) {
+            console.error("Download failed:", error);
+        } finally {
+            setShowLoadingPopUp(false);
+        }
+    };
+
 
     useEffect(() => {
         if (fileOperationSuccessful !== undefined) {
@@ -61,6 +75,9 @@ export const FileSharing = () => {
         <MainLayout>
             <>
                 <div>
+                    {showLoadingPopUp && (
+                        <LoadPopUp isOpen={showLoadingPopUp}/>
+                    )}
                     {showPopUp &&
                         <StatusAlert success={fileOperationSuccessful}></StatusAlert>
                     }
@@ -159,14 +176,10 @@ export const FileSharing = () => {
                                                 />}
                                             />
                                             <ActionTooltip
-                                                onAction={() => {
-                                                    webDavFileManager.triggerMultipleFolderDownload(selectedItems).catch((error) => console.log(error))
-                                                }}
-                                                tooltipText="Add File123"
+                                                onAction={() => handleDownload(selectedItems)}
+                                                tooltipText="Download Selected Items"
                                                 trigger={<MdOutlineFileDownload className="text-green-700"/>}
-                                            >
-                                            </ActionTooltip>
-
+                                            />
                                         </>
                                     )}
                                 </div>

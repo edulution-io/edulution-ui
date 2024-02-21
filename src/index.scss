@@ -21,3 +21,9 @@
     animation: slideInFromRight 0.5s reverse forwards;
     animation-delay: 4.5s;
 }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
