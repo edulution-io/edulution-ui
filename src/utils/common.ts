@@ -22,6 +22,13 @@ function getPathWithoutFileName(path: string): string {
 }
 
 
+function getPrecedingPath(fullPath: string): string {
+    const parts = fullPath.split("/").filter(Boolean);
+    parts.pop();
+    return `${fullPath.startsWith('/') ? '/' : ''}${parts.join("/")}`;
+}
+
+
 function validateDirectoryName(path: string): ValidateNameResult {
     const filename = getFileNameFromPath(path)
     if (/\s/.test(filename) && !(filename.length <= 0)) {
@@ -45,4 +52,4 @@ function validateFileName(path: string): ValidateNameResult {
 }
 
 
-export { translateKey, getPathWithoutFileName ,getFileNameFromPath, validateFileName, validateDirectoryName };
+export { translateKey, getPathWithoutFileName ,getFileNameFromPath, validateFileName, validateDirectoryName, getPrecedingPath };

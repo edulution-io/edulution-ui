@@ -108,13 +108,19 @@ export class WebDavFileManager implements IWebDavFileManager {
         }
     }
 
-    public async getFileDownloadLink(path: string): Promise<string> {
-        const downloadLink = this.client.getFileDownloadLink(path)
-        console.log(downloadLink)
-        return downloadLink;
+    public async triggerFileDownload(path: string): Promise<void> {
+        const downloadLink = this.client.getFileDownloadLink(path);
+        console.log(downloadLink);
+        const anchor = document.createElement('a');
+        anchor.href = downloadLink;
+        anchor.setAttribute(getFileNameFromPath(path), '');
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
     }
 
-    public async getFolderDownloadLink(path: string): Promise<void> {
+    //TODO move it later to backend or to lmn server
+    public async triggerFolderDownload(path: string): Promise<void> {
         const zip = new JSZip();
         await this.addItemsToZip(zip, path);
 
@@ -129,45 +135,72 @@ export class WebDavFileManager implements IWebDavFileManager {
                 document.body.removeChild(a);
             });
     }
+    //TODO move it later to backend or to lmn server
+     public async triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void> {
+        console.log(folders.map((item) => {
+            console.log(item.filename)
+        }))
+         const zip = new JSZip();
+         for(const item of folders){
+             await this.addItemsToZip(zip, item.filename);
+         }
+         zip.generateAsync({type: "blob"})
+             .then((content: Blob | MediaSource) => {
+                 const url = URL.createObjectURL(content);
+                 const a = document.createElement("a");
+                 a.href = url;
+                 a.download = "download.zip"
+                 document.body.appendChild(a);
+                 a.click();
+                 document.body.removeChild(a);
+             });
+     }
 
     public async getUploadLink(path: string): Promise<string> {
         return this.client.getFileDownloadLink(path);
     }
 
     private async addItemsToZip(zip: JSZip, path: string): Promise<void> {
-    const contentList = await this.getContentList(path);
-    for (const item of contentList) {
-        if (item.type === 'file') {
-            try {
-                const result = await this.client.getFileContents(`${item.filename}`, {format: "binary"});
-                console.log(`Result type for ${item.filename}:`, typeof result, ArrayBuffer.isView(result));
+        const folderName = path.split('/').filter(Boolean).pop() || 'Folder';
 
-                if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
-                    zip.file(item.basename, result);
-                } else if (result instanceof Blob) {
-                    zip.file(item.basename, result);
-                } else if (typeof result === 'object' && result !== null && 'data' in result) {
-                    const data = result.data;
-                    if (typeof data === 'string' || ArrayBuffer.isView(data)) {
-                        zip.file(item.basename, data);
+        const folderZip = zip.folder(folderName);
+        const contentList = await this.getContentList(path);
+
+        for (const item of contentList) {
+            console.log(item.filename.split("/"), "LLLLLLL")
+            if (item.type === 'file') {
+                try {
+                    const result = await this.client.getFileContents(`${item.filename}`, {format: "binary"});
+                    console.log(`Result type for ${item.filename}:`, typeof result, ArrayBuffer.isView(result));
+
+                    if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
+                        if(folderZip != null){
+                            folderZip.file(item.basename, result);
+                        }
+                    } else if (result instanceof Blob && folderZip != null) {
+                        folderZip.file(item.basename, result);
+                    } else if (typeof result === 'object' && result !== null && 'data' in result && folderZip != null) {
+                        const data = result.data;
+                        if (typeof data === 'string' || ArrayBuffer.isView(data)) {
+                            zip.file(item.basename, data);
+                        } else {
+                            console.error(`Unsupported data type within ResponseDataDetailed for file: ${item.filename}`);
+                        }
                     } else {
-                        console.error(`Unsupported data type within ResponseDataDetailed for file: ${item.filename}`);
+                        console.error(`Unsupported data type for file: ${item.filename}`);
                     }
-                } else {
-                    console.error(`Unsupported data type for file: ${item.filename}`);
+                } catch (error) {
+                    console.error(`Error fetching file content for ${item.filename}:`, error);
                 }
-            } catch (error) {
-                console.error(`Error fetching file content for ${item.filename}:`, error);
-            }
-        } else if (item.type === 'directory') {
-            const folderPath = `${path}/${item.basename}`;
-            const folder = zip.folder(item.basename);
-            if (folder !== null) {
-                await this.addItemsToZip(folder, folderPath);
+            } else if (item.type === 'directory') {
+                const folderPath = `${path}/${item.basename}`;
+                const folder = zip.folder(item.basename);
+                if (folder !== null) {
+                    await this.addItemsToZip(folder, folderPath);
+                }
             }
         }
     }
-}
 
 
 }

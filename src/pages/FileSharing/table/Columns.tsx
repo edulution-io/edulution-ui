@@ -4,14 +4,18 @@ import {ArrowUpDown} from "lucide-react";
 import {FaFileAlt, FaFolder} from "react-icons/fa";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineDriveFileMove,} from "react-icons/md";
+import {
+    MdDriveFileRenameOutline,
+    MdOutlineDeleteOutline,
+    MdOutlineDriveFileMove,
+    MdOutlineFileDownload,
+} from "react-icons/md";
 import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {RenameItemDialog} from "@/pages/FileSharing/dialog/RenameItemDialog.tsx";
 import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
-import {FaDownload} from "react-icons/fa6";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 
 
@@ -159,21 +163,13 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                                 <ActionTooltip
                                     onAction={() => {
                                         if ((row.original as DirectoryFile).type == ContentType.file) {
-                                            webDavFileManager.getFileDownloadLink((row.original as DirectoryFile).filename)
-                                                .then(link => {
-                                                    const a = document.createElement('a');
-                                                    a.href = link;
-                                                    a.download = link.split('/').pop() as string; // Optional: if you want to suggest a filename
-                                                    document.body.appendChild(a);
-                                                    a.click();
-                                                    document.body.removeChild(a);
-                                                });
+                                            webDavFileManager.triggerFileDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
                                         } else {
-                                            webDavFileManager.getFolderDownloadLink((row.original as DirectoryFile).filename)
+                                            webDavFileManager.triggerFolderDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
                                         }
                                     }}
                                     tooltipText="Add File"
-                                    trigger={<FaDownload/>}
+                                    trigger={<MdOutlineFileDownload/>}
                                 >
                                 </ActionTooltip>
                                 <ActionTooltip

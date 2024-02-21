@@ -18,6 +18,8 @@ import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {useWebDavActions} from "@/utils/webDavHooks.ts";
 import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
+import { MdOutlineFileDownload } from "react-icons/md";
+import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 
 export const FileSharing = () => {
     const {files, currentPath, fetchFiles} = useWebDavActions();
@@ -25,28 +27,29 @@ export const FileSharing = () => {
     const fileOperationSuccessful: boolean = useFileManagerStore(state => state.fileOperationSuccessful);
     const setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void = useFileManagerStore(state => state.setFileOperationSuccessful);
     const [showPopUp, setShowPopUp] = useState<boolean>(false);
+    const webDavFileManager = new WebDavFileManager()
 
     useEffect(() => {
         fetchFiles().catch(console.error);
     }, []);
 
     useEffect(() => {
-    if (fileOperationSuccessful !== undefined) {
-        setShowPopUp(true);
-        fetchFiles().catch(console.error);
-        const timer = setTimeout(() => {
-            setShowPopUp(false);
-        }, 3000);
-        const resetTimer = setTimeout(() => {
-            setFileOperationSuccessful(undefined);
-        }, 3500);
+        if (fileOperationSuccessful !== undefined) {
+            setShowPopUp(true);
+            fetchFiles().catch(console.error);
+            const timer = setTimeout(() => {
+                setShowPopUp(false);
+            }, 3000);
+            const resetTimer = setTimeout(() => {
+                setFileOperationSuccessful(undefined);
+            }, 3500);
 
-        return () => {
-            clearTimeout(timer);
-            clearTimeout(resetTimer);
-        };
-    }
-}, [fileOperationSuccessful, setFileOperationSuccessful]);
+            return () => {
+                clearTimeout(timer);
+                clearTimeout(resetTimer);
+            };
+        }
+    }, [fileOperationSuccessful, setFileOperationSuccessful]);
 
 
     const handleRowClick = (row: DirectoryFile) => {
@@ -154,8 +157,16 @@ export const FileSharing = () => {
                                                                                      onClick={() => console.log("Wanna Upload")}/>}
                                                     file={selectedItems}
                                                 />}
-
                                             />
+                                            <ActionTooltip
+                                                onAction={() => {
+                                                    webDavFileManager.triggerMultipleFolderDownload(selectedItems).catch((error) => console.log(error))
+                                                }}
+                                                tooltipText="Add File123"
+                                                trigger={<MdOutlineFileDownload className="text-green-700"/>}
+                                            >
+                                            </ActionTooltip>
+
                                         </>
                                     )}
                                 </div>
