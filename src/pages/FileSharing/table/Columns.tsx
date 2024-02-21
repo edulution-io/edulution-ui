@@ -1,5 +1,5 @@
 import {ColumnDef} from "@tanstack/react-table";
-import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
+import {ContentType, DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {ArrowUpDown} from "lucide-react";
 import {FaFileAlt, FaFolder} from "react-icons/fa";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
@@ -11,7 +11,10 @@ import {RenameItemDialog} from "@/pages/FileSharing/dialog/RenameItemDialog.tsx"
 import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
-import { FaDownload } from "react-icons/fa6";
+import {FaDownload} from "react-icons/fa6";
+import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
+
+
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
         id: "select",
@@ -129,6 +132,7 @@ export const columns: ColumnDef<DirectoryFile>[] = [
         cell:
             ({row}) => {
                 const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
+                const webDavFileManager = new WebDavFileManager();
 
                 return (
 
@@ -149,14 +153,27 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                                     onAction={() => console.log("HHH")}
                                     tooltipText="Add File"
                                     trigger={<MoveItemDialog trigger={<MdOutlineDriveFileMove/>}
-                                                          item={(row.original as DirectoryFile)}></MoveItemDialog>}
+                                                             item={(row.original as DirectoryFile)}></MoveItemDialog>}
                                 >
                                 </ActionTooltip>
                                 <ActionTooltip
-                                    onAction={() => console.log("HHH")}
+                                    onAction={() => {
+                                        if ((row.original as DirectoryFile).type == ContentType.file) {
+                                            webDavFileManager.getFileDownloadLink((row.original as DirectoryFile).filename)
+                                                .then(link => {
+                                                    const a = document.createElement('a');
+                                                    a.href = link;
+                                                    a.download = link.split('/').pop() as string; // Optional: if you want to suggest a filename
+                                                    document.body.appendChild(a);
+                                                    a.click();
+                                                    document.body.removeChild(a);
+                                                });
+                                        } else {
+                                            webDavFileManager.getFolderDownloadLink((row.original as DirectoryFile).filename)
+                                        }
+                                    }}
                                     tooltipText="Add File"
-                                    trigger={<DeleteAlert trigger={<FaDownload/>}
-                                                          file={[(row.original as DirectoryFile)]}></DeleteAlert>}
+                                    trigger={<FaDownload/>}
                                 >
                                 </ActionTooltip>
                                 <ActionTooltip

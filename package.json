@@ -32,6 +32,7 @@
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.3",
     "i18next": "^23.8.2",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.323.0",
     "path": "^0.12.7",
     "postcss": "^8.4.35",
