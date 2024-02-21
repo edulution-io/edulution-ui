@@ -1,26 +1,30 @@
-import { Button } from '@/components/shared/Button';
-import { NavLink } from 'react-router-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
-import MobileLogo from '@/assets/logos/edulution-logo-small-colorfull.svg';
-import Firewall from '@/assets/icons/firewall-light.svg';
-import Conferences from '@/assets/icons/edulution/Konferenzen.svg';
-import LearningManagement from '@/assets/icons/edulution/Lernmanagement.svg';
-import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
-import Virtualization from '@/assets/icons/edulution/Computer_Steuerung.svg';
-import DesktopDeployment from '@/assets/icons/edulution/Virtual_Desktop.svg';
-import Network from '@/assets/icons/edulution/Netzwerk.svg';
-import Mail from '@/assets/icons/edulution/Mail.svg';
-import SchoolInformation from '@/assets/icons/edulution/Information.svg';
-import Printer from '@/assets/icons/edulution/Drucker.svg';
-import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
-import Forums from '@/assets/icons/edulution/Foren.svg';
-import Chat from '@/assets/icons/edulution/Chat.svg';
-import Wlan from '@/assets/icons/edulution/Wlan.svg';
-import KnowledgeBase from '@/assets/icons/edulution/Wissensdatenbank.svg';
-import User from '@/assets/icons/edulution/Benutzer.svg';
-import { translateKey } from '@/utils/common';
+import { NavLink, useLocation } from 'react-router-dom';
+
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useToggle } from 'usehooks-ts';
+import { Button } from '@/components/shared/Button';
+import { translateKey } from '@/utils/common';
+
+import {
+  MobileLogo,
+  Firewall,
+  Conferences,
+  LearningManagement,
+  FileSharing,
+  Virtualization,
+  DesktopDeployment,
+  Network,
+  Mail,
+  SchoolInformation,
+  Printer,
+  RoomBooking,
+  Forums,
+  Chat,
+  Wlan,
+  KnowledgeBase,
+  User,
+  Settings,
+} from '@/assets/icons';
 
 export const Sidebar = () => {
   const { t } = useTranslation();
@@ -104,6 +108,11 @@ export const Sidebar = () => {
       title: translateKey('knowledgeBase'),
       link: '/knowledge-base',
       icon: KnowledgeBase,
+    },
+    {
+      title: translateKey('settings'),
+      link: '/settings',
+      icon: Settings,
     },
   ];
 

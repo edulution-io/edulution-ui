@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
 import { NotFoundPage } from '@/pages/NotFound/NotFoundPage';
 import { HomePage } from '../pages/Home/HomePage';
-import { ConferencePage } from '../pages/ConferencePage';
+import { ConferencePage } from '@/pages/ConferencePage';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { BlankLayout } from '@/components/layout/BlankLayout';
+import { SettingsPage } from '@/pages/Settings';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,6 +17,10 @@ const router = createBrowserRouter(
         <Route
           path="/conferences"
           element={<ConferencePage />}
+        />
+        <Route
+          path="/settings"
+          element={<SettingsPage />}
         />
       </Route>
 
