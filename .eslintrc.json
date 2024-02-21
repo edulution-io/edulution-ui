@@ -10,6 +10,7 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["react"],
+  "include": ["prettier.config.cjs"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
