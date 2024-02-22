@@ -1,9 +1,9 @@
 import React, {useRef, useState} from 'react';
 import {Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger} from '@/components/ui/dialog.tsx';
-import {Label} from '@/components/ui/label.tsx';
 import {Button} from '@/components/shared/Button.tsx';
 import {WebDavFileManager} from '@/webdavclient/WebDavFileManager.ts';
 import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {DropZone} from "@/pages/FileSharing/utilities/DropZone.tsx";
 
 interface UploadItemDialogProps {
     trigger: React.ReactNode;
@@ -37,9 +37,11 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) =
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent>
                 <DialogTitle>Upload Your Item</DialogTitle>
+                <DropZone className={undefined}></DropZone>
                 <DialogDescription>
-                    <Label>Select a file to upload:</Label>
-                    <input type="file" ref={fileInputRef}/>
+
+                    {/*<Label>Select a file to upload:</Label>*/}
+                    {/*<input type="file" ref={fileInputRef}/>*/}
                 </DialogDescription>
                 <Button onClick={uploadFile}>Upload</Button>
             </DialogContent>
