@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import {ReactNode} from "react";
 
 const originButtonVariants = cva(
-  ["text-white p-4 hover:bg-orange-700 rounded-[8px]"],
+  ["text-white p-4 bg-green-500 hover:bg-green-700 rounded-[8px]"],
   {
     variants: {
       variant: {

@@ -1,15 +1,16 @@
 import React, {useRef, useState} from 'react';
-import {Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger} from '@/components/ui/dialog.tsx';
+import {Dialog, DialogContent, DialogTitle, DialogTrigger} from '@/components/ui/dialog.tsx';
 import {Button} from '@/components/shared/Button.tsx';
 import {WebDavFileManager} from '@/webdavclient/WebDavFileManager.ts';
 import {useFileManagerStore} from "@/store/appDataStore.ts";
-import {DropZone} from "@/pages/FileSharing/utilities/DropZone.tsx";
+import {DropZone, FileWithPreview} from "@/pages/FileSharing/utilities/DropZone.tsx";
 
 interface UploadItemDialogProps {
     trigger: React.ReactNode;
 }
 export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     const currentPath = useFileManagerStore((state) => state.currentPath)
+    const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const webDavFileManager = new WebDavFileManager();
@@ -37,13 +38,12 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) =
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent>
                 <DialogTitle>Upload Your Item</DialogTitle>
-                <DropZone className={undefined}></DropZone>
-                <DialogDescription>
-
-                    {/*<Label>Select a file to upload:</Label>*/}
-                    {/*<input type="file" ref={fileInputRef}/>*/}
-                </DialogDescription>
-                <Button onClick={uploadFile}>Upload</Button>
+                <DropZone files={selectedFiles} setFiles={setSelectedFiles} />
+                {selectedFiles.length == 0 ? (
+                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0} onClick={uploadFile}>Select upto 5 items a time</Button>
+                ): (
+                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0} onClick={uploadFile}>Upload: {selectedFiles.length} items</Button>
+                )}
             </DialogContent>
         </Dialog>
     );
