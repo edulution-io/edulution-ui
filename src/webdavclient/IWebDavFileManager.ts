@@ -10,5 +10,6 @@ export interface IWebDavFileManager {
   renameItem(path: string, toPath: string): Promise<boolean>
   triggerFileDownload(path: string): Promise<void>
   triggerFolderDownload(path: string): Promise<void>
-  getUploadLink(path: string): Promise<string>
+  triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void>
+  uploadFile(file: File, remotePath: string): Promise<void>
 }

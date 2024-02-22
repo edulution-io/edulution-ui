@@ -108,6 +108,45 @@ export class WebDavFileManager implements IWebDavFileManager {
         }
     }
 
+    public async uploadFile(file: File, remotePath: string): Promise<void> {
+        try {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const arrayBuffer = reader.result;
+                if (arrayBuffer instanceof ArrayBuffer) {
+                    try {
+                        await this.client.putFileContents(remotePath, arrayBuffer, {
+                            overwrite: true,
+                            headers: {
+                                "Content-Type": file.type || "application/octet-stream",
+                            }
+                        });
+                        console.log("File uploaded successfully");
+                        this.setFileOperationSuccessfull(true);
+                    }
+                    catch {
+                        console.error("File uploaded wasn´t successfully")
+                         this.setFileOperationSuccessfull(false);
+                    }
+
+                } else {
+                    this.setFileOperationSuccessfull(false);
+                    throw new Error("Failed to read file as ArrayBuffer");
+                }
+            };
+            reader.onerror = () => {
+                this.setFileOperationSuccessfull(false);
+                throw new Error(`Error reading file: ${reader.error?.toString()}`);
+            };
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            this.setFileOperationSuccessfull(false);
+            throw error;
+        }
+    }
+
+
     public async triggerFileDownload(path: string): Promise<void> {
         const downloadLink = this.client.getFileDownloadLink(path);
         console.log(downloadLink);
@@ -135,30 +174,28 @@ export class WebDavFileManager implements IWebDavFileManager {
                 document.body.removeChild(a);
             });
     }
+
     //TODO move it later to backend or to lmn server
-     public async triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void> {
+    public async triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void> {
         console.log(folders.map((item) => {
             console.log(item.filename)
         }))
-         const zip = new JSZip();
-         for(const item of folders){
-             await this.addItemsToZip(zip, item.filename);
-         }
-         zip.generateAsync({type: "blob"})
-             .then((content: Blob | MediaSource) => {
-                 const url = URL.createObjectURL(content);
-                 const a = document.createElement("a");
-                 a.href = url;
-                 a.download = "download.zip"
-                 document.body.appendChild(a);
-                 a.click();
-                 document.body.removeChild(a);
-             });
-     }
-
-    public async getUploadLink(path: string): Promise<string> {
-        return this.client.getFileDownloadLink(path);
+        const zip = new JSZip();
+        for (const item of folders) {
+            await this.addItemsToZip(zip, item.filename);
+        }
+        zip.generateAsync({type: "blob"})
+            .then((content: Blob | MediaSource) => {
+                const url = URL.createObjectURL(content);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "download.zip"
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
     }
+
 
     private async addItemsToZip(zip: JSZip, path: string): Promise<void> {
         const folderName = path.split('/').filter(Boolean).pop() || 'Folder';
@@ -174,7 +211,7 @@ export class WebDavFileManager implements IWebDavFileManager {
                     console.log(`Result type for ${item.filename}:`, typeof result, ArrayBuffer.isView(result));
 
                     if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
-                        if(folderZip != null){
+                        if (folderZip != null) {
                             folderZip.file(item.basename, result);
                         }
                     } else if (result instanceof Blob && folderZip != null) {

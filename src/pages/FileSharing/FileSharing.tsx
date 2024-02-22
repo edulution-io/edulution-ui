@@ -20,6 +20,7 @@ import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
+import {UploadItemDialog} from "@/pages/FileSharing/dialog/UploadItemDialog.tsx";
 
 export const FileSharing = () => {
     const {files, currentPath, fetchFiles} = useWebDavActions();
@@ -147,10 +148,10 @@ export const FileSharing = () => {
                                             <ActionTooltip
                                                 onAction={() => console.log("Upload item Clicked")}
                                                 tooltipText="Upload item"
-                                                trigger={<CreateNewContentDialog
+                                                trigger={<UploadItemDialog
                                                     trigger={<FiUpload className="text-green-700"
                                                                        onClick={() => console.log("Wanna Upload")}/>}
-                                                    contentType={ContentType.directory}/>}
+                                                    />}
                                             />
                                         </>
                                     )}

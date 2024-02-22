@@ -33,12 +33,12 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
         setCurrentPath(path)
     };
 
-    const handleOpenChange = (open: boolean) => {
-        setIsOpen(open);
-        if (open) {
-            fetchDirectory(currentPath).then(setItems);
-        }
-    };
+        const handleOpenChange = (open: boolean) => {
+            setIsOpen(open);
+            if (open) {
+                fetchDirectory(currentPath).then(setItems);
+            }
+        };
 
     const handleNextFolder = (item: DirectoryFile) => {
         if (item.type === ContentType.directory) {
