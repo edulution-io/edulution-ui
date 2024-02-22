@@ -8,7 +8,8 @@ import {DropZone, FileWithPreview} from "@/pages/FileSharing/utilities/DropZone.
 interface UploadItemDialogProps {
     trigger: React.ReactNode;
 }
-export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
+
+export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({trigger}) => {
     const currentPath = useFileManagerStore((state) => state.currentPath)
     const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
     const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,10 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) =
 
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open);
+        setIsOpen(open);
+        if (!open) {
+            setSelectedFiles([]);
+        }
     };
 
     const uploadFile = async () => {
@@ -38,11 +43,13 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) =
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent>
                 <DialogTitle>Upload Your Item</DialogTitle>
-                <DropZone files={selectedFiles} setFiles={setSelectedFiles} />
+                <DropZone files={selectedFiles} setFiles={setSelectedFiles}/>
                 {selectedFiles.length == 0 ? (
-                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0} onClick={uploadFile}>Select upto 5 items a time</Button>
-                ): (
-                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0} onClick={uploadFile}>Upload: {selectedFiles.length} items</Button>
+                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0} onClick={uploadFile}>Select
+                        upto 5 items a time</Button>
+                ) : (
+                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0}
+                            onClick={uploadFile}>Upload: {selectedFiles.length} items</Button>
                 )}
             </DialogContent>
         </Dialog>

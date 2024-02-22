@@ -2,6 +2,7 @@ import React, {FC, useCallback} from "react";
 import {useDropzone} from "react-dropzone";
 import {XMarkIcon} from "@heroicons/react/24/solid";
 import {DocumentIcon} from "@heroicons/react/16/solid";
+import { MdOutlineCloudUpload } from "react-icons/md";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {Button} from "@/components/shared/Button.tsx";
 
@@ -51,7 +52,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
                         <p className="text-gray-700 font-semibold">
                             {isDragActive ? "Drop the files here..." : "Drag 'n' drop some files here, or click to select files"}
                         </p>
-                        <DocumentIcon className="w-12 h-12 text-gray-500"/>
+                        <MdOutlineCloudUpload className="w-12 h-12 text-gray-500"/>
                     </div>
                 ) : (
                     <div>
