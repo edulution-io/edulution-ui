@@ -53,11 +53,6 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
         }
     };
 
-    const handleRowClick = (item: DirectoryFile) => {
-        console.log("Row clicked:", item.filename);
-        setSelectedRow(item);
-    };
-
 
     const renderAvailablePaths = () => {
         return (
@@ -79,7 +74,10 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
                                 {items.map((item) => (
                                     <TableRow
                                         key={item.filename}
-                                        onClick={() => handleRowClick(item)}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            setSelectedRow(item)
+                                        }}
                                         style={{
                                             backgroundColor: selectedRow?.filename === item.filename ? "#f0f0f0" : "transparent",
                                             cursor: "pointer",
