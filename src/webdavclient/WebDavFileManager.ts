@@ -6,6 +6,10 @@ import {useFileManagerStore} from "@/store/appDataStore.ts";
 import JSZip from 'jszip';
 import {getFileNameFromPath} from "@/utils/common.ts";
 
+/**
+ * WebDavFileManager is a class that provides various methods for managing files and directories in a WebDAV server.
+ * @implements {IWebDavFileManager}
+ */
 export class WebDavFileManager implements IWebDavFileManager {
     private client: WebDAVClient;
     private setFileOperationSuccessfull = useFileManagerStore(state => state.setFileOperationSuccessful)
@@ -20,6 +24,12 @@ export class WebDavFileManager implements IWebDavFileManager {
         );
     }
 
+    /**
+     * Asynchronously retrieves a list of directory files from the given path.
+     *
+     * @param {string} path - The path of the directory.
+     * @returns {Promise<DirectoryFile[]>} - A promise that resolves to an array of DirectoryFile objects.
+     */
     public getContentList = async (path: string): Promise<DirectoryFile[]> => {
         const result = await this.client.getDirectoryContents(path, {
             data: '<?xml version="1.0"?>\n' +
@@ -41,6 +51,13 @@ export class WebDavFileManager implements IWebDavFileManager {
         }
     }
 
+    /**
+     * Creates a directory at the specified path.
+     *
+     * @param {string} path - The path where the directory should be created.
+     * @return {Promise<boolean>} - A promise that resolves to true if the directory was successfully created,
+     *                             and false otherwise.
+     */
     public async createDirectory(path: string): Promise<boolean> {
         return await this.client.createDirectory(path)
             .then(() => {
@@ -55,6 +72,12 @@ export class WebDavFileManager implements IWebDavFileManager {
 
     }
 
+    /**
+     * Creates a new file at the specified path.
+     *
+     * @param {string} path - The path where the file will be created.
+     * @returns {Promise<boolean>} - A promise that resolves to true if the file creation is successful, or false otherwise.
+     */
     public async createFile(path: string): Promise<boolean> {
         return await this.client.putFileContents(path, " ")
             .then(() => {
@@ -69,6 +92,12 @@ export class WebDavFileManager implements IWebDavFileManager {
 
     }
 
+    /**
+     * Deletes an item from the specified path.
+     *
+     * @param {string} path - The path of the item to delete.
+     * @returns {Promise<boolean>} - A Promise that resolves to true if the item is successfully deleted, or false otherwise.
+     */
     public async deleteItem(path: string): Promise<boolean> {
         return this.client.deleteFile(path)
             .then(() => {
@@ -82,6 +111,14 @@ export class WebDavFileManager implements IWebDavFileManager {
             });
     }
 
+    /**
+     * Renames a file or directory from the given path to the given target path.
+     * Logs the process and handles any errors that occur during the rename operation.
+     *
+     * @param {string} path - The current path of the file or directory.
+     * @param {string} toPath - The target path to rename the file or directory to.
+     * @return {Promise<boolean>} A promise that resolves to true if the rename operation is successful, false otherwise.
+     */
     public async renameItem(path: string, toPath: string): Promise<boolean> {
         try {
             console.log(`Attempting to move from ${path} to ${toPath}`);
@@ -98,6 +135,13 @@ export class WebDavFileManager implements IWebDavFileManager {
     }
 
 
+    /**
+     * Moves an item from one location to another.
+     *
+     * @param {string} path - The path of the item to be moved.
+     * @param {string} toPath - The destination path where the item should be moved to.
+     * @returns {Promise<boolean>} - A promise that resolves to true if the item was successfully moved, otherwise false.
+     */
     public async moveItem(path: string, toPath: string): Promise<boolean> {
         try {
             await this.client.copyFile(path, toPath)
@@ -108,6 +152,16 @@ export class WebDavFileManager implements IWebDavFileManager {
         }
     }
 
+    /**
+     * Uploads a file to a remote path.
+     *
+     * @param {File} file - The file to be uploaded.
+     * @param {string} remotePath - The remote path where the file will be uploaded to.
+     *
+     * @return {Promise<void>} - A promise that resolves when the file is successfully uploaded or rejects with an error if the upload fails.
+     *
+     * @throws {Error} - If there is an error reading the file or uploading the file.
+     */
     public async uploadFile(file: File, remotePath: string): Promise<void> {
         try {
             const reader = new FileReader();
