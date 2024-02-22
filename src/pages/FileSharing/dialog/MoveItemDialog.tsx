@@ -24,7 +24,6 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
     const {fetchDirectory} = useWebDavActions();
 
     useEffect(() => {
-
         if (isOpen) {
             fetchDirectory(currentPath).then(setItems).catch(console.error);
         }

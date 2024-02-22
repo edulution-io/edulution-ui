@@ -1,24 +1,21 @@
 import React from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog.tsx";
+import {Dialog, DialogContent, DialogDescription, DialogHeader,} from "@/components/ui/dialog.tsx";
+import {CircleLoader} from "@/components/ui/circleLoader.tsx";
 
 interface LoadPopUpProps {
     isOpen: boolean;
 }
 
-export const LoadPopUp: React.FC<LoadPopUpProps> = ({ isOpen }) => {
+export const LoadPopUp: React.FC<LoadPopUpProps> = ({isOpen}) => {
     return (
         <Dialog open={isOpen}>
-            <DialogContent>
+            <DialogContent showCloseButton={false}>
                 <DialogHeader>
-                    <DialogTitle>Loading...</DialogTitle>
                     <DialogDescription>
-                        Please wait while we process your request.
+                        <div className="flex flex-col items-center justify-center space-y-4">
+                            <CircleLoader/>
+                            <p>Please wait while we process your request...</p>
+                        </div>
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
