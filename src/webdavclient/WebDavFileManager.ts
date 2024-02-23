@@ -121,36 +121,54 @@ export class WebDavFileManager implements IWebDavFileManager {
      */
     public async renameItem(path: string, toPath: string): Promise<boolean> {
         try {
-            console.log(`Attempting to move from ${path} to ${toPath}`);
-            await this.client.moveFile(path, toPath)
+            await this.moveFile(path, toPath)
             this.setFileOperationSuccessfull(true);
-            console.log(`Moved successfully from ${path} to ${toPath}`);
             return true;
         } catch (error) {
             this.setFileOperationSuccessfull(false);
-            console.error("Error moving file:", error);
-            console.log(`Failed to move from ${path} to ${toPath}`);
             return false;
         }
     }
 
+    //TODO nice to have: moveFile should be supported with fullPath
+    private async moveFile(sourcePath: string, destinationPath: string): Promise<void> {
+        const fullDestinationPath = `${destinationPath}`;
+        const resp = await this.client.customRequest(sourcePath, {
+            method: "MOVE",
+            headers: {
+                "Destination": fullDestinationPath
+            }
+        });
 
-    /**
-     * Moves an item from one location to another.
-     *
-     * @param {string} path - The path of the item to be moved.
-     * @param {string} toPath - The destination path where the item should be moved to.
-     * @returns {Promise<boolean>} - A promise that resolves to true if the item was successfully moved, otherwise false.
-     */
-    public async moveItem(path: string, toPath: string): Promise<boolean> {
-        try {
-            await this.client.copyFile(path, toPath)
-            return true
-        } catch (e) {
-            console.error("Creation failed!")
-            return false
+        if (resp.status >= 200 && resp.status < 300) {
+            console.log(`Moved ${sourcePath} to ${destinationPath} successfully.`);
+        } else {
+            throw new Error(`Failed to move ${sourcePath} to ${destinationPath}. Status code: ${resp.status}`);
         }
     }
+
+    public async moveItems(items: DirectoryFile[] | DirectoryFile, toPath: string | undefined): Promise<boolean> {
+        if (!toPath) {
+            throw new Error("Destination path is undefined");
+        }
+
+        try {
+            if (Array.isArray(items)) {
+                for (const item of items) {
+                    const destination = `${toPath}/${getFileNameFromPath(item.filename)}`;
+                    await this.moveFile(item.filename, destination);
+                }
+            } else {
+                const destination = `${toPath}/${getFileNameFromPath(items.filename)}`;
+                await this.moveFile(items.filename, destination);
+            }
+            return true;
+        } catch (e) {
+            console.error("Move operation failed!", e);
+            return false;
+        }
+    }
+
 
     /**
      * Uploads a file to a remote path.
@@ -177,10 +195,9 @@ export class WebDavFileManager implements IWebDavFileManager {
                         });
                         console.log("File uploaded successfully");
                         this.setFileOperationSuccessfull(true);
-                    }
-                    catch {
+                    } catch {
                         console.error("File uploaded wasn´t successfully")
-                         this.setFileOperationSuccessfull(false);
+                        this.setFileOperationSuccessfull(false);
                     }
 
                 } else {

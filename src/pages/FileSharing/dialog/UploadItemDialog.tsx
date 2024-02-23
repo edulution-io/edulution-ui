@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from '@/components/ui/dialog.tsx';
 import {Button} from '@/components/shared/Button.tsx';
 import {WebDavFileManager} from '@/webdavclient/WebDavFileManager.ts';
@@ -13,7 +13,6 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({trigger}) => 
     const currentPath = useFileManagerStore((state) => state.currentPath)
     const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
     const [isOpen, setIsOpen] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const webDavFileManager = new WebDavFileManager();
 
     const handleOpenChange = (open: boolean) => {
@@ -24,11 +23,9 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({trigger}) => 
         }
     };
 
-    const uploadFile = async () => {
-        if (fileInputRef.current?.files && fileInputRef.current.files.length > 0) {
-            const file = fileInputRef.current.files[0];
-            console.log(file)
-            const remotePath = currentPath + "/" + file.name;
+    const uploadFiles = async () => {
+        for (const file of selectedFiles) {
+            const remotePath = `${currentPath}/${file.name}`;
             try {
                 await webDavFileManager.uploadFile(file, remotePath);
                 console.log("Upload successful");
@@ -36,6 +33,8 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({trigger}) => 
                 console.error("Upload failed", error);
             }
         }
+        setIsOpen(false)
+        setSelectedFiles([]);
     };
 
     return (
@@ -45,11 +44,11 @@ export const UploadItemDialog: React.FC<UploadItemDialogProps> = ({trigger}) => 
                 <DialogTitle>Upload Your Item</DialogTitle>
                 <DropZone files={selectedFiles} setFiles={setSelectedFiles}/>
                 {selectedFiles.length == 0 ? (
-                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0} onClick={uploadFile}>Select
+                    <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0}>Select
                         upto 5 items a time</Button>
                 ) : (
                     <Button disabled={selectedFiles.length > 5 || selectedFiles.length == 0}
-                            onClick={uploadFile}>Upload: {selectedFiles.length} items</Button>
+                            onClick={uploadFiles}>Upload: {selectedFiles.length} items</Button>
                 )}
             </DialogContent>
         </Dialog>

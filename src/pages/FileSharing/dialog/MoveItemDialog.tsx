@@ -9,6 +9,7 @@ import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {Button} from "@/components/shared/Button.tsx";
 import {DirectoryBreadcrumb} from "@/pages/FileSharing/DirectoryBreadcrumb.tsx";
 import {FaLongArrowAltRight} from "react-icons/fa";
+import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 
 
 interface MoveItemDialogProps {
@@ -18,14 +19,15 @@ interface MoveItemDialogProps {
 
 export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [items, setItems] = useState<DirectoryFile[]>([]);
+    const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
     const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
     const [currentPath, setCurrentPath] = useState("/");
     const {fetchDirectory} = useWebDavActions();
+    const webDavManger = new WebDavFileManager();
 
     useEffect(() => {
         if (isOpen) {
-            fetchDirectory(currentPath).then(setItems).catch(console.error);
+            fetchDirectory(currentPath).then(setDirectorys).catch(console.error);
         }
     }, [currentPath, isOpen]);
 
@@ -36,7 +38,7 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
         const handleOpenChange = (open: boolean) => {
             setIsOpen(open);
             if (open) {
-                fetchDirectory(currentPath).then(setItems);
+                fetchDirectory(currentPath).then(setDirectorys);
             }
         };
 
@@ -70,7 +72,7 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
                         </TableHeader>
                         <ScrollArea className="h-[200px]">
                             <TableBody>
-                                {items.map((item) => (
+                                {directorys.map((item) => (
                                     <TableRow
                                         key={item.filename}
                                         onClick={(e) => {
@@ -133,7 +135,12 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
                 <div>{renderAvailablePaths()}</div>
                 <div className="flex justify-between pt-3">
                     <p className="pt-4">Move to: {selectedRow?.filename}</p>
-                    <Button>Move</Button>
+                    {selectedRow != undefined ? (
+                        <Button onClick={() => webDavManger.moveItems(item, selectedRow.filename)}>Move</Button>
+                    ):(
+                          <Button disabled={true}>Move</Button>
+                    )}
+
                 </div>
             </>
         );

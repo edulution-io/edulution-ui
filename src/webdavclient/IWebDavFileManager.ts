@@ -6,7 +6,7 @@ export interface IWebDavFileManager {
   createDirectory(path: string): Promise<boolean>
   createFile(path: string):  Promise<boolean>
   deleteItem(path: string): Promise<boolean>
-  moveItem(path: string, toPath: string): Promise<boolean>
+  moveItems(items: DirectoryFile[] | DirectoryFile , toPath: string | undefined): Promise<boolean>
   renameItem(path: string, toPath: string): Promise<boolean>
   triggerFileDownload(path: string): Promise<void>
   triggerFolderDownload(path: string): Promise<void>
