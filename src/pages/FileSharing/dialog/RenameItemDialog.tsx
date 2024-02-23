@@ -49,9 +49,9 @@ export const RenameItemDialog: FC<RenameContentDialogProps> = ({trigger, item}) 
     };
 
     const renameFile = (oldName: string, newName: string) => {
-        console.log(oldName)
-        console.log(newName)
-        webDavFileManager.renameItem(oldName, newName).then(() => console.log("SUCCESS")).catch(() => console.log("FAILED"))
+        webDavFileManager.renameItem(oldName, newName).then(() => {
+            setIsOpen(false)
+        })
     }
 
 

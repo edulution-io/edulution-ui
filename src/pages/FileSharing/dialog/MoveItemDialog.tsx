@@ -54,6 +54,11 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
         }
     };
 
+    const moveItem = (items: DirectoryFile | DirectoryFile[], toPath: string | undefined) => {
+        webDavManger.moveItems(items, toPath).then(() => {
+                setIsOpen(false)
+        })
+    }
 
     const renderAvailablePaths = () => {
         return (
@@ -136,11 +141,10 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
                 <div className="flex justify-between pt-3">
                     <p className="pt-4">Move to: {selectedRow?.filename}</p>
                     {selectedRow != undefined ? (
-                        <Button onClick={() => webDavManger.moveItems(item, selectedRow.filename)}>Move</Button>
+                        <Button onClick={() => moveItem(item,selectedRow?.filename)}>Move</Button>
                     ):(
                           <Button disabled={true}>Move</Button>
                     )}
-
                 </div>
             </>
         );

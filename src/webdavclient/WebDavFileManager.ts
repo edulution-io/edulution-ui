@@ -122,10 +122,8 @@ export class WebDavFileManager implements IWebDavFileManager {
     public async renameItem(path: string, toPath: string): Promise<boolean> {
         try {
             await this.moveFile(path, toPath)
-            this.setFileOperationSuccessfull(true);
             return true;
         } catch (error) {
-            this.setFileOperationSuccessfull(false);
             return false;
         }
     }
@@ -142,7 +140,9 @@ export class WebDavFileManager implements IWebDavFileManager {
 
         if (resp.status >= 200 && resp.status < 300) {
             console.log(`Moved ${sourcePath} to ${destinationPath} successfully.`);
+            this.setFileOperationSuccessfull(true);
         } else {
+            this.setFileOperationSuccessfull(false);
             throw new Error(`Failed to move ${sourcePath} to ${destinationPath}. Status code: ${resp.status}`);
         }
     }
