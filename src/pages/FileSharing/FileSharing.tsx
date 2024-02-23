@@ -23,7 +23,8 @@ import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
 import {UploadItemDialog} from "@/pages/FileSharing/dialog/UploadItemDialog.tsx";
 
 export const FileSharing = () => {
-    const {files, currentPath, fetchFiles} = useWebDavActions();
+    const {files, currentPath, fetchFiles, fetchMountPoints} = useWebDavActions();
+    const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([])
     const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
     const fileOperationSuccessful: boolean = useFileManagerStore(state => state.fileOperationSuccessful);
     const setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void = useFileManagerStore(state => state.setFileOperationSuccessful);
@@ -33,6 +34,10 @@ export const FileSharing = () => {
 
     useEffect(() => {
         fetchFiles().catch(console.error);
+        fetchMountPoints().then((result) => {
+            setMountPoints(result)
+        })
+        console.log(mountPoints)
     }, []);
 
 

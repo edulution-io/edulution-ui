@@ -18,9 +18,12 @@ export const useWebDavActions = () => {
             setFiles(directoryFiles);
         } catch (error) {
             console.error("Error fetching directory contents:", error);
-
         }
     };
+
+    const fetchMountPoints = async () : Promise<DirectoryFile[]> => {
+        return await webDavFileManager.getContentList("/teachers/");
+    }
 
     const fetchDirectory = async (path: string = "/teachers/netzint-teacher"): Promise<DirectoryFile[]> => {
          try {
@@ -40,5 +43,5 @@ export const useWebDavActions = () => {
         return await action();
     };
 
-    return { files, fetchDirectory,currentPath, fetchFiles, handleWebDavAction};
+    return { files, fetchDirectory,currentPath, fetchFiles, handleWebDavAction, fetchMountPoints};
 };

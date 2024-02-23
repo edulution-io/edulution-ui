@@ -6,8 +6,6 @@ interface DirectoryBreadcrumbProps {
 
 export const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate }) => {
   const segments = path.split('/').filter(Boolean);
-  console.log(segments)
-
   const handleSegmentClick = (segmentIndex: number) => {
     const pathTo = '/' + segments.slice(0, segmentIndex + 1).join('/');
     onNavigate(pathTo);
