@@ -21,7 +21,7 @@ export const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
     const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
-    const [currentPath, setCurrentPath] = useState("/");
+    const [currentPath, setCurrentPath] = useState("/teachers/netzint-teacher");
     const {fetchDirectory} = useWebDavActions();
     const webDavManger = new WebDavFileManager();
 

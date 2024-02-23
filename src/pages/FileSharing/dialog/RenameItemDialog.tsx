@@ -54,7 +54,6 @@ export const RenameItemDialog: FC<RenameContentDialogProps> = ({trigger, item}) 
         })
     }
 
-
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
