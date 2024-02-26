@@ -19,5 +19,9 @@
   "printer": "Printer",
   "chat": "Chat",
   "menu": "MENU",
-  "settings": "Settings"
+  "settings": "Settings",
+  "path": "Path",
+  "save": "Save",
+  "conferencePath": "Conference",
+  "conferencePath.description": "Set URL to conference app"
 }

@@ -20,5 +20,9 @@
   "fileSharing": "Filesharing",
   "chat": "Chat",
   "menu": "MENÜ",
-  "settings": "Einstellungen"
+  "settings": "Einstellungen",
+  "path": "Pfad",
+  "save": "Speichern",
+  "conferencePath": "Konferenz",
+  "conferencePath.description": "Hier die URL zur Konferenz-App eintragen."
 }
