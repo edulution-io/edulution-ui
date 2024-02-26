@@ -4,7 +4,7 @@ import {MainLayout} from "@/components/layout/MainLayout.tsx";
 
 export const HomePage: React.FC = () => {
   return (
-      <MainLayout>
+      <MainLayout showLogo={true}>
          <Home />
       </MainLayout>
   );

@@ -18,6 +18,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        left_sideBar_background: '#272828',
         default_background: '#3B3B3B',
         default_text_color: '#FFFFFE',
         border: "hsl(var(--border))",
