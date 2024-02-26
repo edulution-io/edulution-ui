@@ -4,7 +4,9 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
-    getSortedRowModel, OnChangeFn, RowSelectionState,
+    getSortedRowModel,
+    OnChangeFn,
+    RowSelectionState,
     SortingState,
     useReactTable,
 } from "@tanstack/react-table"
@@ -12,10 +14,13 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {useEffect, useState} from "react";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 
 const shouldApplyClickHandler = (rowId: string): boolean => {
     return rowId.includes("filename")
 };
+
+
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -65,26 +70,25 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
                     {table.getFilteredRowModel().rows.length} row(s) selected.
                 </div>
             )}
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className="text-green-700">
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
+
+
+        <div className="flex flex-col w-full">
+            <Table className="w-full">
+                <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                         <TableRow key={headerGroup.id} className=" text-white">
+                            {headerGroup.headers.map((header) => (
+                                <TableHead key={header.id}>
+                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                </TableHead>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableHeader>
+            </Table>
+            {/* ScrollArea wraps only the TableBody */}
+            <ScrollArea className="w-full max-h-[600px] overflow-auto">
+                <Table className="w-full min-w-full">
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
@@ -110,7 +114,9 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
                         )}
                     </TableBody>
                 </Table>
-            </div>
+            </ScrollArea>
         </div>
+        </div>
+
     )
 }

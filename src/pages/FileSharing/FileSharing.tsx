@@ -1,26 +1,30 @@
-import {MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar.tsx";
-import {MenubarMenu} from "@radix-ui/react-menubar";
-import Icon from "@/components/ui/Icon.tsx";
-import {DataTable} from "@/pages/FileSharing/table/DataTable.tsx";
-import {columns} from "@/pages/FileSharing/table/Columns.tsx";
 import {useEffect, useState} from "react";
 import {ContentType, DirectoryFile} from "../../../datatypes/filesystem.ts";
-import {MdOutlineDeleteOutline, MdOutlineDriveFileMove, MdOutlineFileDownload, MdOutlineNoteAdd} from "react-icons/md";
+import {
+    MdOutlineDeleteOutline,
+    MdOutlineDriveFileMove,
+    MdOutlineFileDownload,
+    MdOutlineHome,
+    MdOutlineNoteAdd
+} from "react-icons/md";
+import {useFileManagerStore} from "@/store/appDataStore.ts";
+import {useWebDavActions} from "@/utils/webDavHooks.ts";
+import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
+import {BasicPageLayout} from "@/components/layout/BasicPageLayout.tsx";
+import {MenuItem} from "../../../datatypes/types.ts";
+import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
+import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
+import {TooltipProvider} from "@/components/ui/tooltip.tsx";
+import {DirectoryBreadcrumb} from "@/pages/FileSharing/DirectoryBreadcrumb.tsx";
+import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
+import {CreateNewContentDialog} from "@/pages/FileSharing/dialog/CreateNewContentDialog.tsx";
+import {UploadItemDialog} from "@/pages/FileSharing/dialog/UploadItemDialog.tsx";
 import {FiUpload} from "react-icons/fi";
 import {HiOutlineFolderAdd} from "react-icons/hi";
-import {CreateNewContentDialog} from "@/pages/FileSharing/dialog/CreateNewContentDialog.tsx";
-import {DirectoryBreadcrumb} from "@/pages/FileSharing/DirectoryBreadcrumb.tsx";
-import {MainLayout} from "@/components/layout/MainLayout.tsx";
-import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
-import {useFileManagerStore} from "@/store/appDataStore.ts";
-import {TooltipProvider} from "@radix-ui/react-tooltip";
-import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
-import {useWebDavActions} from "@/utils/webDavHooks.ts";
-import {StatusAlert} from "@/pages/FileSharing/alerts/StatusAlert.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
-import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
-import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
-import {UploadItemDialog} from "@/pages/FileSharing/dialog/UploadItemDialog.tsx";
+import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
+import {DataTable} from "@/pages/FileSharing/table/DataTable.tsx";
+import {columns} from "@/pages/FileSharing/table/Columns.tsx";
 
 export const FileSharing = () => {
     const {files, currentPath, fetchFiles, fetchMountPoints} = useWebDavActions();
@@ -75,126 +79,114 @@ export const FileSharing = () => {
     const handleRowClick = (row: DirectoryFile) => {
         fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
     };
+    const menuItems: MenuItem[] = [
+        {
+            label: 'Home',
+            IconComponent: MdOutlineHome,
+            action: () => console.log('Home clicked'),
+        }, {
+            label: 'Programs',
+            IconComponent: MdOutlineHome,
+            action: () => console.log('Home clicked'),
+        },
+        {
+            label: 'Share',
+            IconComponent: MdOutlineHome,
+            action: () => console.log('Home clicked'),
+        },
+        {
+            label: 'Students',
+            IconComponent: MdOutlineHome,
+            action: () => console.log('Home clicked'),
+        },
+    ];
 
 
     return (
-        <MainLayout>
-            <>
-                <div>
-                    {showLoadingPopUp && (
-                        <LoadPopUp isOpen={showLoadingPopUp}/>
-                    )}
-                    {showPopUp &&
-                        <StatusAlert success={fileOperationSuccessful}></StatusAlert>
-                    }
-                </div>
-                <div className="flex flex-col md:flex-row">
-                    <div className="flex-shrink-0 py-10">
-                        <VerticalMenubar>
-                            <div className="flex  justify-center items-center  w-full h-full">
-                                <div className="flex-row">
-                                    <Icon.SideBarImageIcon src="src/assets/icons/filesharing-light.svg" alt="Home"/>
-                                    <p className="font-bold text-white">File Sharing</p>
+        <BasicPageLayout menuItems={menuItems} title={"MEINE DATEIEN"} logoImagePath={"src/assets/icons/filesharing-light.svg"}>
+            <div>
+                {showLoadingPopUp && (
+                    <LoadPopUp isOpen={showLoadingPopUp}/>
+                )}
+                {showPopUp &&
+                    <StatusAlert success={fileOperationSuccessful}></StatusAlert>
+                }
+            </div>
+            <div className="">
+            <div className="pt-20 p-4 mr-20 flex-col md:flex-row">
+                    <div className="flex justify-between pt-3 pb-3">
+                        <TooltipProvider>
+                            <div className="flex flex-col ">
+                                <div className="flex space-x-2">
+                                    <p className="text-white mr-2">Current Directory:</p>
+                                    <DirectoryBreadcrumb path={currentPath} onNavigate={fetchFiles}/>
                                 </div>
                             </div>
-                            <div className="text-white font-bold">
-                                <MenubarMenu>
-                                    <MenubarSeparator></MenubarSeparator>
-                                    <MenubarTrigger
-                                        icon={<Icon.ItemImageIcon
-                                            src={"src/assets/icons/buildings-light.svg"}/>}>Home</MenubarTrigger>
-                                    <MenubarSeparator></MenubarSeparator>
-                                    <MenubarTrigger
-                                        icon={<Icon.ItemImageIcon
-                                            src={"src/assets/icons/buildings-light.svg"}/>}>Programs</MenubarTrigger>
-                                    <MenubarSeparator></MenubarSeparator>
-                                    <MenubarTrigger
-                                        icon={<Icon.ItemImageIcon
-                                            src={"src/assets/icons/buildings-light.svg"}/>}>Share</MenubarTrigger>
-                                    <MenubarSeparator></MenubarSeparator>
-                                    <MenubarTrigger
-                                        icon={<Icon.ItemImageIcon
-                                            src={"src/assets/icons/buildings-light.svg"}/>}>Students</MenubarTrigger>
-                                </MenubarMenu>
+                            <div className="flex space-x-4">
+                                {selectedItems.length == 0 && (
+                                    <>
+                                        <ActionTooltip
+                                            onAction={() => console.log("Add File Clicked")}
+                                            tooltipText="Add File"
+                                            trigger={<CreateNewContentDialog
+                                                trigger={<MdOutlineNoteAdd className="text-white font-bold"
+                                                                           onClick={() => console.log("HALLO")}/>}
+                                                contentType={ContentType.file}/>}
+                                        />
+                                        <ActionTooltip
+                                            onAction={() => console.log("Add Folder Clicked")}
+                                            tooltipText="Add Folder"
+                                            trigger={<CreateNewContentDialog
+                                                trigger={<HiOutlineFolderAdd className="text-white font-bold"
+                                                                             onClick={() => console.log("HALLO")}/>}
+
+                                                contentType={ContentType.directory}/>
+                                            }
+                                        />
+                                        <ActionTooltip
+                                            onAction={() => console.log("Upload item Clicked")}
+                                            tooltipText="Upload item"
+                                            trigger={<UploadItemDialog
+                                                trigger={<FiUpload className="text-white font-bold"
+                                                                   onClick={() => console.log("Wanna Upload")}/>}
+                                                />}
+                                        />
+                                    </>
+                                )}
+                                {selectedItems.length > 0 && (
+                                    <>
+                                        <ActionTooltip
+                                            onAction={() => console.log("Upload item Clicked")}
+                                            tooltipText="Upload item"
+                                            trigger={<MoveItemDialog
+                                                trigger={<MdOutlineDriveFileMove className="text-white font-bold"
+                                                                                 onClick={() => console.log("Wanna Upload")}/>}
+                                                item={selectedItems}
+                                            />}
+                                        />
+
+                                        <ActionTooltip
+                                            onAction={() => console.log("Upload item Clicked")}
+                                            tooltipText="Upload item"
+                                            trigger={<DeleteAlert
+                                                trigger={<MdOutlineDeleteOutline className="text-white font-bold"
+                                                                                 onClick={() => console.log("Wanna Upload")}/>}
+                                                file={selectedItems}
+                                            />}
+                                        />
+                                        <ActionTooltip
+                                            onAction={() => handleDownload(selectedItems)}
+                                            tooltipText="Download Selected Items"
+                                            trigger={<MdOutlineFileDownload className="text-white"/>}
+                                        />
+                                    </>
+                                )}
                             </div>
-                        </VerticalMenubar>
+                        </TooltipProvider>
                     </div>
-                    <div className="flex-1 container mx-auto py-10">
-
-                        <div className="flex justify-between pt-3 pb-3">
-                            <TooltipProvider>
-                                <div className="flex flex-col ">
-                                    <div className="flex space-x-2">
-                                        <p className="text-white mr-2">Current Directory:</p>
-                                        <DirectoryBreadcrumb path={currentPath} onNavigate={fetchFiles}/>
-                                    </div>
-                                </div>
-                                <div className="flex space-x-4">
-                                    {selectedItems.length == 0 && (
-                                        <>
-                                            <ActionTooltip
-                                                onAction={() => console.log("Add File Clicked")}
-                                                tooltipText="Add File"
-                                                trigger={<CreateNewContentDialog
-                                                    trigger={<MdOutlineNoteAdd className="text-green-700"
-                                                                               onClick={() => console.log("HALLO")}/>}
-                                                    contentType={ContentType.file}/>}
-                                            />
-                                            <ActionTooltip
-                                                onAction={() => console.log("Add Folder Clicked")}
-                                                tooltipText="Add Folder"
-                                                trigger={<CreateNewContentDialog
-                                                    trigger={<HiOutlineFolderAdd className="text-green-700"
-                                                                                 onClick={() => console.log("HALLO")}/>}
-
-                                                    contentType={ContentType.directory}/>
-                                                }
-                                            />
-                                            <ActionTooltip
-                                                onAction={() => console.log("Upload item Clicked")}
-                                                tooltipText="Upload item"
-                                                trigger={<UploadItemDialog
-                                                    trigger={<FiUpload className="text-green-700"
-                                                                       onClick={() => console.log("Wanna Upload")}/>}
-                                                    />}
-                                            />
-                                        </>
-                                    )}
-                                    {selectedItems.length > 0 && (
-                                        <>
-                                            <ActionTooltip
-                                                onAction={() => console.log("Upload item Clicked")}
-                                                tooltipText="Upload item"
-                                                trigger={<MoveItemDialog
-                                                    trigger={<MdOutlineDriveFileMove className="text-green-700"
-                                                                                     onClick={() => console.log("Wanna Upload")}/>}
-                                                    item={selectedItems}
-                                                />}
-                                            />
-
-                                            <ActionTooltip
-                                                onAction={() => console.log("Upload item Clicked")}
-                                                tooltipText="Upload item"
-                                                trigger={<DeleteAlert
-                                                    trigger={<MdOutlineDeleteOutline className="text-green-700"
-                                                                                     onClick={() => console.log("Wanna Upload")}/>}
-                                                    file={selectedItems}
-                                                />}
-                                            />
-                                            <ActionTooltip
-                                                onAction={() => handleDownload(selectedItems)}
-                                                tooltipText="Download Selected Items"
-                                                trigger={<MdOutlineFileDownload className="text-green-700"/>}
-                                            />
-                                        </>
-                                    )}
-                                </div>
-                            </TooltipProvider>
-                        </div>
-                        <DataTable columns={columns} data={files} onRowClick={handleRowClick}/>
-                    </div>
+                    <DataTable columns={columns} data={files} onRowClick={handleRowClick}/>
                 </div>
-            </>
-        </MainLayout>
+            </div>
+        </BasicPageLayout>
     )
 }

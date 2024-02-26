@@ -52,12 +52,14 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        Type
-                        <ArrowUpDown className="ml-2 h-4 w-4"/>
+                        <div className="flex justify-between items-center">
+                            Type
+                            <ArrowUpDown className="ml-2 h-4 w-4"/>
+                        </div>
                     </Button>
-                )
+            )
             },
-        cell:
+            cell:
             ({row}) => {
                 const type: string = row.getValue("type")
                 return type === "file" ? <FaFileAlt/> : <FaFolder/>
@@ -71,8 +73,10 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                     <Button
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        File Name
-                        <ArrowUpDown className="ml-2 h-4 w-4"/>
+                        <div className="flex justify-between items-center">
+                            File Name
+                            <ArrowUpDown className="ml-2"/>
+                        </div>
                     </Button>
                 )
             },
@@ -89,12 +93,16 @@ export const columns: ColumnDef<DirectoryFile>[] = [
         header:
             ({column}) => (
                 <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                    Last Modified
-                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    <div className="flex justify-between items-center">
+                        Last Modified
+                        <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    </div>
                 </Button>
-            ),
-        cell:
-            ({row}) => {
+),
+cell:
+({
+row
+}) => {
                 const lastModValue: string = row.getValue('lastmod');
                 const date = new Date(lastModValue);
                 if (!isNaN(date.getTime())) {
@@ -119,15 +127,17 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                     <Button
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        Size
-                        <ArrowUpDown className="ml-2 h-4 w-4"/>
+                        <div className="flex justify-between items-center">
+                            Size
+                            <ArrowUpDown className="ml-2 h-4 w-4"/>
+                        </div>
                     </Button>
-                )
+            )
             },
-    },
+            },
 
-    {
-        accessorKey: "delete",
+            {
+                accessorKey: "delete",
         header:
             () => {
                 return (
