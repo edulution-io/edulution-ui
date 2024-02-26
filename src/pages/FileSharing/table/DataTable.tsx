@@ -18,7 +18,7 @@ import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 
 const shouldApplyClickHandler = (row: Row<DirectoryFile>): boolean => {
-    return row.original.type === ContentType.file;
+    return row.original.type === ContentType.file || row.original.type === ContentType.directory ;
 };
 
 

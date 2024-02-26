@@ -44,6 +44,7 @@ export const FileSharing = () => {
         console.log(mountPoints)
     }, []);
 
+
     const handleDownload = async (items: DirectoryFile[]) => {
         setShowLoadingPopUp(true);
         try {
@@ -74,9 +75,11 @@ export const FileSharing = () => {
         }
     }, [fileOperationSuccessful, setFileOperationSuccessful]);
 
+
     const handleRowClick = (row: DirectoryFile) => {
         fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
     };
+
     const menuItems: MenuItem[] = mountPoints.map((mountPoint) => {
         return {
             label: getFileNameFromPath(mountPoint.filename),

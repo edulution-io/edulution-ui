@@ -17,23 +17,40 @@ import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
-import React, {useState} from "react";
+import {useState} from "react";
 import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
+import {formatBytes} from "@/utils/common.ts";
+
+
+const filenameColumnWidth = "w-1/2";
+const lastModColumnWidth = "w-1/3";
+const sizeColumnWidth = "w-1/3";
+const operationsColumnWidth = "w-1/12";
 
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
         id: 'select-filename',
-        enableSorting: false,
-        header: ({table}) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
+        header: ({table, column}) => (
+            <div className={`flex justify-between items-center ${filenameColumnWidth}`}>
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+                    onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+                    aria-label="Select all"
+                />
+                <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    <div className="flex justify-between items-center">
+                        File Name
+                        <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    </div>
+                </Button>
+            </div>
+
         ),
+        accessorFn: (row) => row.type + row.filename,
+
         cell: ({row}) => {
             const filename: string = row.original.filename;
-            const formatted = filename.split('/').pop();
+            const formattedFilename = filename.split('/').pop();
             const Icon = filename.includes('.txt') ? FaFileAlt : FaFolder;
 
             const handleCheckboxChange = () => {
@@ -47,44 +64,54 @@ export const columns: ColumnDef<DirectoryFile>[] = [
 
             return (
                 <div className="flex items-center cursor-pointer" onClick={handleRowClick}>
-                    <div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+                    <div className={`flex items-center ${filenameColumnWidth}`}>
                         <Checkbox
                             checked={row.getIsSelected()}
-                            onCheckedChange={handleCheckboxChange}
-                            onCheckboxClick={(e) => e.stopPropagation()}
+                            onCheckedChange={() => row.toggleSelected()}
                             aria-label="Select row"
                         />
+                        <Icon className="ml-2 mr-2"/>
+                        <span className="text-left font-medium">{formattedFilename}</span>
                     </div>
-                    <Icon className="ml-2"/>
-                    <div className="text-left font-medium ml-2">{formatted}</div>
+
+
                 </div>
             );
         },
         enableHiding: false,
+        sortingFn: (rowA, rowB) => {
+            const valueA = rowA.original.type + rowA.original.filename;
+            const valueB = rowB.original.type + rowB.original.filename;
+            return valueA.localeCompare(valueB);
+        },
     },
     {
         accessorKey: 'lastmod',
         header:
             ({column}) => (
                 <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                    <div className="flex justify-between items-center">
+                    <div className={`flex justify-between items-center ${lastModColumnWidth}`}>
                         Last Modified
                         <ArrowUpDown className="ml-2 h-4 w-4"/>
                     </div>
                 </Button>
             ),
-        cell:
-            ({
-                 row
-             }) => {
-                const lastModValue: string = row.getValue('lastmod');
-                const date = new Date(lastModValue);
-                if (!isNaN(date.getTime())) {
-                    return <div className="text-left font-medium">{date.toLocaleDateString()}</div>;
-                } else {
-                    return <div className="text-left font-medium">Invalid Date</div>;
-                }
-            },
+        cell: ({row}) => {
+            const directoryFile = row.original as DirectoryFile;
+            let formattedDate: string;
+
+            if (directoryFile.lastmod) {
+                const date = new Date(directoryFile.lastmod);
+                formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString() : 'Invalid Date';
+            } else {
+                formattedDate = 'Date not provided';  // fallback message or value
+            }
+            return (
+                <div className={`flex items-center justify-center ${lastModColumnWidth}`}>
+                    <span className="text-center font-medium">{formattedDate}</span>
+                </div>
+            );
+        },
         sortingFn:
             (rowA, rowB, columnId) => {
                 const dateA = new Date(rowA.original[columnId]);
@@ -95,29 +122,37 @@ export const columns: ColumnDef<DirectoryFile>[] = [
     ,
     {
         accessorKey: "size",
-        header:
-            ({column}) => {
-                return (
-                    <Button
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        <div className="flex justify-between items-center">
-                            Size
-                            <ArrowUpDown className="ml-2 h-4 w-4"/>
-                        </div>
-                    </Button>
-                )
-            },
+        header: ({column}) => (
+            <Button
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                <div className={`flex justify-between items-center ${sizeColumnWidth}`}>
+                    Size
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                </div>
+            </Button>
+        ),
+        cell: ({row}) => {
+            let fileSize = 0
+            if((row.original).size != undefined){
+                 fileSize = (row.original).size;
+            }
+            return (
+                <div className={`flex flex-row  ${sizeColumnWidth}`}>
+                    <p className="text-right font-medium">{formatBytes(fileSize)}</p>
+                </div>
+            );
+        }
     },
 
     {
         accessorKey: "delete",
         header:
-            () => {
-                return (
-                    <div></div>
-                )
-            },
+            () => (
+                <div className={`flex justify-between items-center ${operationsColumnWidth}`}>
+                    <p></p>
+                </div>
+            ),
         cell:
             ({row}) => {
                 const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
@@ -134,7 +169,6 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                     }
                 };
                 return (
-
                     selectedItems.length == 0 && (
                         <TooltipProvider>
                             <div>
@@ -142,44 +176,52 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                                     <LoadPopUp isOpen={showLoadingPopUp}/>
                                 )}
                             </div>
-
-                            <div className="flex justify-end space-x-4">
-                                <ActionTooltip
-                                    onAction={() => console.log("HHH")}
-                                    tooltipText="Add File"
-                                    trigger={<RenameItemDialog
-                                        trigger={<MdDriveFileRenameOutline/>}
-                                        item={(row.original as DirectoryFile)}
-                                    />}
-                                />
-                                <ActionTooltip
-                                    onAction={() => console.log("HHH")}
-                                    tooltipText="Add File"
-                                    trigger={<MoveItemDialog trigger={<MdOutlineDriveFileMove/>}
-                                                             item={(row.original as DirectoryFile)}></MoveItemDialog>}
-                                >
-                                </ActionTooltip>
-                                <ActionTooltip
-                                    onAction={() => {
-                                        if ((row.original as DirectoryFile).type == ContentType.file) {
-                                            webDavFileManager.triggerFileDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
-                                        } else {
-                                            handleDownload((row.original as DirectoryFile)).catch((error) => console.log(error))
-                                        }
-                                    }}
-                                    tooltipText="Add File"
-                                    trigger={<MdOutlineFileDownload/>}
-                                >
-                                </ActionTooltip>
-                                <ActionTooltip
-                                    onAction={() => console.log("HHH")}
-                                    tooltipText="Add File"
-                                    trigger={<DeleteAlert trigger={<MdOutlineDeleteOutline/>}
-                                                          file={[(row.original as DirectoryFile)]}></DeleteAlert>}
-                                >
-                                </ActionTooltip>
+                            <div className={`flex items-center justify-end`}>
+                                <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
+                                    <ActionTooltip
+                                        onAction={() => console.log("HHH")}
+                                        tooltipText="Add File"
+                                        trigger={<RenameItemDialog
+                                            trigger={<MdDriveFileRenameOutline/>}
+                                            item={(row.original as DirectoryFile)}
+                                        />}
+                                    />
+                                </div>
+                                <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
+                                    <ActionTooltip
+                                        onAction={() => console.log("HHH")}
+                                        tooltipText="Add File"
+                                        trigger={<MoveItemDialog trigger={<MdOutlineDriveFileMove/>}
+                                                                 item={(row.original as DirectoryFile)}></MoveItemDialog>}
+                                    >
+                                    </ActionTooltip>
+                                </div>
+                                <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
+                                    <ActionTooltip
+                                        onAction={() => {
+                                            if ((row.original as DirectoryFile).type == ContentType.file) {
+                                                webDavFileManager.triggerFileDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
+                                            } else {
+                                                handleDownload((row.original as DirectoryFile)).catch((error) => console.log(error))
+                                            }
+                                        }}
+                                        tooltipText="Add File"
+                                        trigger={<MdOutlineFileDownload/>}
+                                    >
+                                    </ActionTooltip>
+                                </div>
+                                <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
+                                    <ActionTooltip
+                                        onAction={() => console.log("HHH")}
+                                        tooltipText="Add File"
+                                        trigger={<DeleteAlert trigger={<MdOutlineDeleteOutline/>}
+                                                              file={[(row.original as DirectoryFile)]}></DeleteAlert>}
+                                    >
+                                    </ActionTooltip>
+                                </div>
                             </div>
                         </TooltipProvider>
+
                     )
                 )
             }
