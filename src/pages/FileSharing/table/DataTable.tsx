@@ -6,20 +6,20 @@ import {
     getCoreRowModel,
     getSortedRowModel,
     OnChangeFn,
+    Row,
     RowSelectionState,
     SortingState,
     useReactTable,
 } from "@tanstack/react-table"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
+import {ContentType, DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {useEffect, useState} from "react";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 
-const shouldApplyClickHandler = (rowId: string): boolean => {
-    return rowId.includes("filename")
+const shouldApplyClickHandler = (row: Row<DirectoryFile>): boolean => {
+    return row.original.type === ContentType.file;
 };
-
 
 
 interface DataTableProps<TData, TValue> {
@@ -72,50 +72,54 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
             )}
 
 
-        <div className="flex flex-col w-full">
-            <Table className="w-full">
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                         <TableRow key={headerGroup.id} className=" text-white">
-                            {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
-                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-            </Table>
-            {/* ScrollArea wraps only the TableBody */}
-            <ScrollArea className="w-full max-h-[600px] overflow-auto">
-                <Table className="w-full min-w-full">
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}
-                                                   onClick={() => shouldApplyClickHandler(cell.id) && onRowClick(row.original as DirectoryFile)}
-                                                   className={`cursor-pointer text-white ${shouldApplyClickHandler(cell.id) ? '' : 'cursor-default'}`}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
+            <div className="flex flex-col w-full">
+                <Table className="w-full">
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id} className=" text-white">
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id}>
+                                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                    </TableHead>
+                                ))}
                             </TableRow>
-                        )}
-                    </TableBody>
+                        ))}
+                    </TableHeader>
                 </Table>
-            </ScrollArea>
-        </div>
+                {/* ScrollArea wraps only the TableBody */}
+                <ScrollArea className="w-full max-h-[600px] overflow-auto">
+                    <Table className="w-full min-w-full">
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() ? "selected" : undefined}
+                                        onClick={() => {
+                                            if (shouldApplyClickHandler(row as Row<DirectoryFile>)) {
+                                                onRowClick(row.original as DirectoryFile);
+                                            }
+                                        }}
+                                        className={`cursor-pointer ${shouldApplyClickHandler(row as Row<DirectoryFile>) ? '' : 'cursor-default'}`}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id} className="text-white">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </ScrollArea>
+            </div>
         </div>
 
     )

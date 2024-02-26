@@ -17,77 +17,51 @@ import {ActionTooltip} from "@/pages/FileSharing/utilities/ActionTooltip.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
-import {useState} from "react";
+import React, {useState} from "react";
 import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
 
 export const columns: ColumnDef<DirectoryFile>[] = [
     {
-        id: "select",
+        id: 'select-filename',
+        enableSorting: false,
         header: ({table}) => (
             <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+                onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
-        cell: ({row}) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
+        cell: ({row}) => {
+            const filename: string = row.original.filename;
+            const formatted = filename.split('/').pop();
+            const Icon = filename.includes('.txt') ? FaFileAlt : FaFolder;
+
+            const handleCheckboxChange = () => {
+                console.log('CheckBox was clicked');
+                row.toggleSelected(!row.getIsSelected());
+            };
+
+            const handleRowClick = () => {
+                console.log('Filename was clicked');
+            };
+
+            return (
+                <div className="flex items-center cursor-pointer" onClick={handleRowClick}>
+                    <div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+                        <Checkbox
+                            checked={row.getIsSelected()}
+                            onCheckedChange={handleCheckboxChange}
+                            onCheckboxClick={(e) => e.stopPropagation()}
+                            aria-label="Select row"
+                        />
+                    </div>
+                    <Icon className="ml-2"/>
+                    <div className="text-left font-medium ml-2">{formatted}</div>
+                </div>
+            );
+        },
         enableHiding: false,
     },
-    {
-        accessorKey: "type",
-        header:
-            ({column}) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        <div className="flex justify-between items-center">
-                            Type
-                            <ArrowUpDown className="ml-2 h-4 w-4"/>
-                        </div>
-                    </Button>
-            )
-            },
-            cell:
-            ({row}) => {
-                const type: string = row.getValue("type")
-                return type === "file" ? <FaFileAlt/> : <FaFolder/>
-            },
-    },
-    {
-        accessorKey: "filename",
-        header:
-            ({column}) => {
-                return (
-                    <Button
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        <div className="flex justify-between items-center">
-                            File Name
-                            <ArrowUpDown className="ml-2"/>
-                        </div>
-                    </Button>
-                )
-            },
-        cell:
-            ({row}) => {
-                const filename: string = row.getValue("filename")
-                const formatted = filename.split("/").pop()
-                return <div className="text-left font-medium">{formatted}</div>
-            },
-    }
-    ,
     {
         accessorKey: 'lastmod',
         header:
@@ -98,11 +72,11 @@ export const columns: ColumnDef<DirectoryFile>[] = [
                         <ArrowUpDown className="ml-2 h-4 w-4"/>
                     </div>
                 </Button>
-),
-cell:
-({
-row
-}) => {
+            ),
+        cell:
+            ({
+                 row
+             }) => {
                 const lastModValue: string = row.getValue('lastmod');
                 const date = new Date(lastModValue);
                 if (!isNaN(date.getTime())) {
@@ -132,12 +106,12 @@ row
                             <ArrowUpDown className="ml-2 h-4 w-4"/>
                         </div>
                     </Button>
-            )
+                )
             },
-            },
+    },
 
-            {
-                accessorKey: "delete",
+    {
+        accessorKey: "delete",
         header:
             () => {
                 return (
@@ -190,7 +164,7 @@ row
                                         if ((row.original as DirectoryFile).type == ContentType.file) {
                                             webDavFileManager.triggerFileDownload((row.original as DirectoryFile).filename).catch((error) => console.log(error))
                                         } else {
-                                           handleDownload((row.original as DirectoryFile)).catch((error) => console.log(error))
+                                            handleDownload((row.original as DirectoryFile)).catch((error) => console.log(error))
                                         }
                                     }}
                                     tooltipText="Add File"
