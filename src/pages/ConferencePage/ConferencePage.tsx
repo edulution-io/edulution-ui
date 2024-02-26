@@ -1,7 +1,12 @@
-export const ConferencePage: React.FC = () => {
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
+const ConferencePage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="text-white">
-      <h1 className="mb-1 text-lg">ConferencePage</h1>
+      <h1 className="mb-1 text-lg">{t('conferencePage')}</h1>
       <p className="text-lg">
         Welcome to our website! We are a team of passionate individuals dedicated to providing high-quality software
         solutions.
@@ -13,3 +18,5 @@ export const ConferencePage: React.FC = () => {
     </div>
   );
 };
+
+export default ConferencePage;

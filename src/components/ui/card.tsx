@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import cn from '@/lib/utils';
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div
@@ -28,7 +28,9 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
       ref={ref}
       className={cn('font-semibold leading-none tracking-tight', className)}
       {...props}
-    />
+    >
+      {' '}
+    </h3>
   ),
 );
 CardTitle.displayName = 'CardTitle';

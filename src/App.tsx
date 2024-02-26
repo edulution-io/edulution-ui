@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Router from '@/routes/Router';
@@ -11,7 +11,10 @@ const App = () => {
   const { lang } = useLanguage();
 
   useEffect(() => {
-    i18n.changeLanguage(lang);
+    i18n
+      .changeLanguage(lang)
+      .then(() => {})
+      .catch(() => {});
   }, [lang, i18n]);
 
   return (

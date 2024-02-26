@@ -1,9 +1,10 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import MobileLogo from '@/assets/logos/edulution-logo-long-colorfull-white.svg';
 import { useMediaQuery } from 'usehooks-ts';
 
-export const Header: React.FC = () => {
+const Header: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   return (
     <div className="mb-3 pb-1">
@@ -21,3 +22,5 @@ export const Header: React.FC = () => {
     </div>
   );
 };
+
+export default Header;

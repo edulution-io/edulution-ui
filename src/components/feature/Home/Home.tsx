@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MyFavourites } from './MyFavourites';
-import { MobileDataAccess } from './MobileDataAccess';
-import { AccountInformation } from './AccountInformation';
+import MyFavourites from './MyFavourites';
+import MobileDataAccess from './MobileDataAccess';
+import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import { Groups } from './Groups';
 

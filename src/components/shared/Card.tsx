@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
+import cn from '@/lib/utils';
 import { Card as SHCard, CardContent as SHCardContent } from '@/components/ui/card';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -16,24 +16,40 @@ const cardVariants = cva('border-4 border-solid', {
   },
 });
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof cardVariants> {}
+type CardProps = React.HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof cardVariants> & {
+    asChild?: boolean;
+  };
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, variant, ...props }, ref) => (
-  <SHCard
-    ref={ref}
-    className={cn(cardVariants({ variant }), 'border-4 border-solid', className)}
-    {...props}
-  />
-));
+const defaultProps: Partial<CardProps> = {
+  asChild: false,
+};
 
-const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <SHCardContent
+const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, variant, ...props }, ref) => {
+  Card.displayName = 'Card';
+
+  return (
+    <SHCard
       ref={ref}
-      className={cn('p-[20px]', className)}
+      className={cn(cardVariants({ variant }), 'border-4 border-solid', className)}
       {...props}
     />
-  ),
+  );
+});
+
+Card.defaultProps = defaultProps;
+
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref): JSX.Element => {
+    CardContent.displayName = 'CardContent';
+    return (
+      <SHCardContent
+        ref={ref}
+        className={cn('p-[20px]', className)}
+        {...props}
+      />
+    );
+  },
 );
 
 export { Card, CardContent };

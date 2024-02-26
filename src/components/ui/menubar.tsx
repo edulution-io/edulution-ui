@@ -4,7 +4,7 @@ import * as React from 'react';
 import { CheckIcon, ChevronRightIcon, DotFilledIcon } from '@radix-ui/react-icons';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
 
-import { cn } from '@/lib/utils';
+import cn from '@/lib/utils';
 
 const MenubarMenu = MenubarPrimitive.Menu;
 
@@ -62,6 +62,11 @@ const MenubarSubTrigger = React.forwardRef<
     <ChevronRightIcon className="ml-auto h-4 w-4" />
   </MenubarPrimitive.SubTrigger>
 ));
+
+MenubarSubTrigger.defaultProps = {
+  inset: false,
+};
+
 MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
 
 const MenubarSubContent = React.forwardRef<
@@ -115,6 +120,11 @@ const MenubarItem = React.forwardRef<
     {...props}
   />
 ));
+
+MenubarItem.defaultProps = {
+  inset: false,
+};
+
 MenubarItem.displayName = MenubarPrimitive.Item.displayName;
 
 const MenubarCheckboxItem = React.forwardRef<
@@ -174,6 +184,11 @@ const MenubarLabel = React.forwardRef<
     {...props}
   />
 ));
+
+MenubarLabel.defaultProps = {
+  inset: false,
+};
+
 MenubarLabel.displayName = MenubarPrimitive.Label.displayName;
 
 const MenubarSeparator = React.forwardRef<
@@ -188,14 +203,13 @@ const MenubarSeparator = React.forwardRef<
 ));
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
 
-const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
-  return (
-    <span
-      className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)}
-      {...props}
-    />
-  );
-};
+const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
+  <span
+    className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)}
+    {...props}
+  />
+);
+
 MenubarShortcut.displayname = 'MenubarShortcut';
 
 export {

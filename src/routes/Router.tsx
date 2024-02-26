@@ -1,10 +1,10 @@
+import React from 'react';
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
 import { NotFoundPage } from '@/pages/NotFound/NotFoundPage';
-import { HomePage } from '../pages/Home/HomePage';
+import { HomePage } from '@/pages/Home';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { BlankLayout } from '@/components/layout/BlankLayout';
-import { SettingsPage } from '@/pages/Settings';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,15 +18,11 @@ const router = createBrowserRouter(
           path="/conferences"
           element={<ConferencePage />}
         />
-        <Route
-          path="/settings"
-          element={<SettingsPage />}
-        />
       </Route>
 
       <Route element={<BlankLayout />}>
         <Route
-          path={'*'}
+          path="*"
           element={<NotFoundPage />}
         />
       </Route>
@@ -34,8 +30,5 @@ const router = createBrowserRouter(
   ),
 );
 
-const AppRouter = () => {
-  return <RouterProvider router={router} />;
-};
-
+const AppRouter = () => <RouterProvider router={router} />;
 export default AppRouter;
