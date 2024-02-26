@@ -1,1 +1,1 @@
-export * from './useAuthMutation';
+export { default as useAuth } from './useAuthMutation';

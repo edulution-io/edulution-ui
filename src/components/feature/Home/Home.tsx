@@ -1,10 +1,10 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { MyFavourites } from "./MyFavourites";
-import { MobileDataAccess } from "./MobileDataAccess";
-import { AccountInformation } from "./AccountInformation";
-import Quota from "./Quota";
-import { Groups } from "./Groups";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import MyFavourites from './MyFavourites';
+import MobileDataAccess from './MobileDataAccess';
+import AccountInformation from './AccountInformation';
+import Quota from './Quota';
+import { Groups } from './Groups';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -15,8 +15,8 @@ const Home: React.FC = () => {
 
       {/* Main Content */}
       <div>
-        <h2 className="text-3xl font-bold">{t("heading")}</h2>
-        <p className="mt-4">{t("content")}</p>
+        <h2 className="text-3xl font-bold">{t('heading')}</h2>
+        <p className="mt-4">{t('content')}</p>
       </div>
 
       <div className="my-10 md:my-20">
