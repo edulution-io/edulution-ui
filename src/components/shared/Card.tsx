@@ -16,14 +16,7 @@ const cardVariants = cva('border-4 border-solid', {
   },
 });
 
-type CardProps = React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof cardVariants> & {
-    asChild?: boolean;
-  };
-
-const defaultProps: Partial<CardProps> = {
-  asChild: false,
-};
+type CardProps = React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof cardVariants>;
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, variant, ...props }, ref) => {
   Card.displayName = 'Card';
@@ -36,8 +29,6 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, variant, 
     />
   );
 });
-
-Card.defaultProps = defaultProps;
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref): JSX.Element => {

@@ -4,7 +4,7 @@ import MyFavourites from './MyFavourites';
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
-import { Groups } from './Groups';
+import Groups from './Groups';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();

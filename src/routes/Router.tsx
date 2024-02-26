@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
-import { NotFoundPage } from '@/pages/NotFound/NotFoundPage';
+import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import { HomePage } from '@/pages/Home';
 import { ConferencePage } from '@/pages/ConferencePage';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { BlankLayout } from '@/components/layout/BlankLayout';
+import MainLayout from '@/components/layout/MainLayout';
+import BlankLayout from '@/components/layout/BlankLayout';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
