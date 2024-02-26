@@ -22,7 +22,7 @@ export const useWebDavActions = () => {
     };
 
     const fetchMountPoints = async () : Promise<DirectoryFile[]> => {
-        return await webDavFileManager.getContentList("/teachers/");
+        return await webDavFileManager.getContentList("/");
     }
 
     const fetchDirectory = async (path: string = "/teachers/netzint-teacher"): Promise<DirectoryFile[]> => {

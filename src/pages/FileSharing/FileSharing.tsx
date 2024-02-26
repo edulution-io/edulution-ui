@@ -4,7 +4,6 @@ import {
     MdOutlineDeleteOutline,
     MdOutlineDriveFileMove,
     MdOutlineFileDownload,
-    MdOutlineHome,
     MdOutlineNoteAdd
 } from "react-icons/md";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
@@ -25,6 +24,7 @@ import {MoveItemDialog} from "@/pages/FileSharing/dialog/MoveItemDialog.tsx";
 import {DeleteAlert} from "@/pages/FileSharing/alerts/DeleteAlert.tsx";
 import {DataTable} from "@/pages/FileSharing/table/DataTable.tsx";
 import {columns} from "@/pages/FileSharing/table/Columns.tsx";
+import {getFileNameFromPath} from "@/utils/common.ts";
 
 export const FileSharing = () => {
     const {files, currentPath, fetchFiles, fetchMountPoints} = useWebDavActions();
@@ -79,27 +79,13 @@ export const FileSharing = () => {
     const handleRowClick = (row: DirectoryFile) => {
         fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
     };
-    const menuItems: MenuItem[] = [
-        {
-            label: 'Home',
-            IconComponent: MdOutlineHome,
-            action: () => console.log('Home clicked'),
-        }, {
-            label: 'Programs',
-            IconComponent: MdOutlineHome,
-            action: () => console.log('Home clicked'),
-        },
-        {
-            label: 'Share',
-            IconComponent: MdOutlineHome,
-            action: () => console.log('Home clicked'),
-        },
-        {
-            label: 'Students',
-            IconComponent: MdOutlineHome,
-            action: () => console.log('Home clicked'),
-        },
-    ];
+    const menuItems: MenuItem[] = mountPoints.map((mountPoint) => {
+        return {
+            label: getFileNameFromPath(mountPoint.filename),
+            IconComponent: MdOutlineNoteAdd,
+            action: () => fetchFiles(mountPoint.filename),
+        };
+    });
 
 
     return (
@@ -113,7 +99,7 @@ export const FileSharing = () => {
                 }
             </div>
             <div className="">
-            <div className="pt-20 p-4 mr-20 flex-col md:flex-row">
+            <div className="pt-10 p-4 mr-20 flex-col md:flex-row">
                     <div className="flex justify-between pt-3 pb-3">
                         <TooltipProvider>
                             <div className="flex flex-col ">
