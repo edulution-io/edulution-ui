@@ -19,7 +19,7 @@ export const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuI
                     <div className="bg-left_sideBar_background text-white h-full overflow-y-auto">
                         <div className="flex flex-col items-center justify-center w-full pt-4">
                             <img src={logoImagePath} alt=""
-                                 className="w-16 h-16 object-contain "/> {/* Adjust the size as needed */}
+                                 className="w-16 h-16 object-contain "/>
                             <span className="text-xl font-bold mt-4">{title}</span>
                             <MenubarSeparator/>
                         </div>
