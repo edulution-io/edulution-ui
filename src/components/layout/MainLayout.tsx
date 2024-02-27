@@ -1,12 +1,10 @@
 import React, {PropsWithChildren} from 'react';
-import {Outlet, useLocation} from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import Sidebar from '../ui/Sidebar';
 
-const MainLayout: React.FC<PropsWithChildren> = () => {
-
-        return (
+const MainLayout: React.FC<PropsWithChildren> = () => (
             <>
                 <Sidebar/>
                 <div className="bg-[#3B3B3B]">
@@ -19,8 +17,5 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
                     </div>
                 </div>
             </>
-        )
-    }
-;
-
+        );
 export default MainLayout;
