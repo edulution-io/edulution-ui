@@ -50,6 +50,21 @@ const MenubarTrigger = React.forwardRef<
 ))
 MenubarTrigger.displayName = MenubarPrimitive.Trigger.displayName
 
+const VerticalMenubar = React.forwardRef<
+  React.ElementRef<typeof MenubarPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <MenubarPrimitive.Root
+    ref={ref}
+    className={cn(
+      " sm:flex-row items-start space-y-1 rounded-md border bg-background p-1 shadow-sm md:max-w-[10vw] md:min-w-[10vw]",
+      className
+    )}
+    {...props}
+  />
+));
+VerticalMenubar.displayName = MenubarPrimitive.Root.displayName;
+
 const MenubarSubTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubTrigger>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.SubTrigger> & {
