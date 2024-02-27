@@ -1,0 +1,1 @@
+export { RoomBookingPage } from './RoomBookingPage';
