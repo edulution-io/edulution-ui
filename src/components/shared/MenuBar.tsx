@@ -1,21 +1,18 @@
 import React from 'react';
 
-import MainLayout from "@/components/layout/MainLayout";
 import {MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar";
 import MenuItem from "../../../datatypes/types";
 
 
 interface BasicPageLayoutProps {
-    children: React.ReactNode;
     menuItems: MenuItem[];
     title: string
     logoImagePath: string
 }
 
-const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuItems, title, logoImagePath}) => (
-        <MainLayout showLogo={false}>
-            <div className="flex  h-screen  overflow-hidden">
-                <VerticalMenubar className="w-1/12" style={{ width: '10px' }}>
+const MenuBar: React.FC<BasicPageLayoutProps> = ({ menuItems ,title, logoImagePath}) => (
+    <div className="flex  h-screen  overflow-hidden">
+                <VerticalMenubar className="w-1/12" style={{width: '10px'}}>
                     <div className="bg-left_sideBar_background text-white h-full overflow-y-auto">
                         <div className="flex flex-col items-center justify-center w-full pt-4">
                             <img src={logoImagePath} alt=""
@@ -40,13 +37,8 @@ const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuItems, t
                         </MenubarMenu>
                     </div>
                 </VerticalMenubar>
-                <div className="flex-1 w-full h-full">
-                    <p className="text-red-700">erjfiorewhnireöghoh</p>
-                    {children}
-                </div>
             </div>
-        </MainLayout>
-    );
+);
 
-export default BasicPageLayout;
+export default MenuBar;
 

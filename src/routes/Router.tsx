@@ -10,7 +10,7 @@ import FileSharing from "@/pages/FileSharing/FileSharing";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route element={<MainLayout />}>
+      <Route element={<MainLayout/>}>
         <Route
           path="/"
           element={<HomePage />}
