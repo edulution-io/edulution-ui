@@ -1,23 +1,19 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import {
-  CheckIcon,
-  ChevronRightIcon,
-  DotFilledIcon,
-} from "@radix-ui/react-icons"
-import * as MenubarPrimitive from "@radix-ui/react-menubar"
-import cn from "@/lib/utils"
+import * as React from 'react';
+import { CheckIcon, ChevronRightIcon, DotFilledIcon } from '@radix-ui/react-icons';
+import * as MenubarPrimitive from '@radix-ui/react-menubar';
+import cn from '@/lib/utils';
 
-const MenubarMenu = MenubarPrimitive.Menu
+const MenubarMenu = MenubarPrimitive.Menu;
 
-const MenubarGroup = MenubarPrimitive.Group
+const MenubarGroup = MenubarPrimitive.Group;
 
-const MenubarPortal = MenubarPrimitive.Portal
+const MenubarPortal = MenubarPrimitive.Portal;
 
-const MenubarSub = MenubarPrimitive.Sub
+const MenubarSub = MenubarPrimitive.Sub;
 
-const MenubarRadioGroup = MenubarPrimitive.RadioGroup
+const MenubarRadioGroup = MenubarPrimitive.RadioGroup;
 
 const Menubar = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Root>,
@@ -53,8 +49,8 @@ const VerticalMenubar = React.forwardRef<
   <MenubarPrimitive.Root
     ref={ref}
     className={cn(
-      " sm:flex-row items-start space-y-1 rounded-md border bg-background p-1 shadow-sm md:max-w-[10vw] md:min-w-[10vw]",
-      className
+      ' items-start space-y-1 rounded-md border bg-background p-1 shadow-sm sm:flex-row md:min-w-[10vw] md:max-w-[10vw]',
+      className,
     )}
     {...props}
   />
@@ -69,7 +65,8 @@ const MenubarSubTrigger = React.forwardRef<
 >(({ className, inset, children, ...props }, ref) => (
   <MenubarPrimitive.SubTrigger
     ref={ref}
-    className={cn('flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+    className={cn(
+      'flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
       inset && 'pl-8',
       className,
     )}
@@ -247,4 +244,4 @@ export {
   MenubarSub,
   MenubarShortcut,
   VerticalMenubar,
-}
+};
