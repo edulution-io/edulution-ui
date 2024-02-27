@@ -13,6 +13,7 @@ export const useWebDavActions = () => {
 
     const fetchFiles = async (path: string = currentPath): Promise<void> => {
         try {
+            console.log(path)
             const directoryFiles = await webDavFileManager.getContentList(path);
             setCurrentPath(path);
             setFiles(directoryFiles);

@@ -20,6 +20,7 @@ import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
 import {useState} from "react";
 import {LoadPopUp} from "@/components/shared/LoadPopUp.tsx";
 import {formatBytes} from "@/utils/common.ts";
+import {useWebDavActions} from "@/utils/webDavHooks.ts";
 
 
 const filenameColumnWidth = "w-1/2";
@@ -52,32 +53,34 @@ export const columns: ColumnDef<DirectoryFile>[] = [
             const filename: string = row.original.filename;
             const formattedFilename = filename.split('/').pop();
             const Icon = filename.includes('.txt') ? FaFileAlt : FaFolder;
+            const {fetchFiles} = useWebDavActions()
+            const handleFilenameClick = (filename:string) => {
+                fetchFiles(filename).catch((error) => console.log(error))
+            };
 
             const handleCheckboxChange = () => {
                 console.log('CheckBox was clicked');
                 row.toggleSelected(!row.getIsSelected());
             };
 
-            const handleRowClick = () => {
-                console.log('Filename was clicked');
-            };
-
             return (
-                <div className="flex items-center cursor-pointer" onClick={handleRowClick}>
+                <div className="flex items-center">
                     <div className={`flex items-center ${filenameColumnWidth}`}>
                         <Checkbox
                             checked={row.getIsSelected()}
-                            onCheckedChange={() => row.toggleSelected()}
+                            onCheckedChange={handleCheckboxChange}
                             aria-label="Select row"
                         />
                         <Icon className="ml-2 mr-2"/>
-                        <span className="text-left font-medium">{formattedFilename}</span>
+                        <span className="text-left font-medium cursor-pointer"
+                              onClick={() => {
+                                  return handleFilenameClick(row.original.filename);}
+                        }>{formattedFilename}</span>
                     </div>
-
-
                 </div>
             );
         },
+
         enableHiding: false,
         sortingFn: (rowA, rowB) => {
             const valueA = rowA.original.type + rowA.original.filename;
@@ -134,8 +137,8 @@ export const columns: ColumnDef<DirectoryFile>[] = [
         ),
         cell: ({row}) => {
             let fileSize = 0
-            if((row.original).size != undefined){
-                 fileSize = (row.original).size;
+            if ((row.original).size != undefined) {
+                fileSize = (row.original).size;
             }
             return (
                 <div className={`flex flex-row  ${sizeColumnWidth}`}>

@@ -1,11 +1,6 @@
 import {useEffect, useState} from "react";
 import {ContentType, DirectoryFile} from "../../../datatypes/filesystem.ts";
-import {
-    MdOutlineDeleteOutline,
-    MdOutlineDriveFileMove,
-    MdOutlineFileDownload,
-    MdOutlineNoteAdd
-} from "react-icons/md";
+import {MdOutlineDeleteOutline, MdOutlineDriveFileMove, MdOutlineFileDownload, MdOutlineNoteAdd} from "react-icons/md";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {useWebDavActions} from "@/utils/webDavHooks.ts";
 import {WebDavFileManager} from "@/webdavclient/WebDavFileManager.ts";
@@ -27,7 +22,7 @@ import {columns} from "@/pages/FileSharing/table/Columns.tsx";
 import {getFileNameFromPath} from "@/utils/common.ts";
 
 export const FileSharing = () => {
-    const {files, currentPath, fetchFiles, fetchMountPoints} = useWebDavActions();
+    const {files, currentPath, fetchFiles, fetchMountPoints} = useWebDavActions()
     const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([])
     const selectedItems: DirectoryFile[] = useFileManagerStore(state => state.selectedItems);
     const fileOperationSuccessful: boolean = useFileManagerStore(state => state.fileOperationSuccessful);
@@ -42,7 +37,7 @@ export const FileSharing = () => {
             setMountPoints(result)
         })
         console.log(mountPoints)
-    }, []);
+    }, [currentPath]);
 
 
     const handleDownload = async (items: DirectoryFile[]) => {
@@ -77,7 +72,8 @@ export const FileSharing = () => {
 
 
     const handleRowClick = (row: DirectoryFile) => {
-        fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
+        console.log(row.filename)
+         // fetchFiles(row.filename).catch((error: string) => console.log("Error" + error))
     };
 
     const menuItems: MenuItem[] = mountPoints.map((mountPoint) => {
@@ -90,7 +86,8 @@ export const FileSharing = () => {
 
 
     return (
-        <BasicPageLayout menuItems={menuItems} title={"MEINE DATEIEN"} logoImagePath={"src/assets/icons/filesharing-light.svg"}>
+        <BasicPageLayout menuItems={menuItems} title={"MEINE DATEIEN"}
+                         logoImagePath={"src/assets/icons/filesharing-light.svg"}>
             <div>
                 {showLoadingPopUp && (
                     <LoadPopUp isOpen={showLoadingPopUp}/>
@@ -100,7 +97,7 @@ export const FileSharing = () => {
                 }
             </div>
             <div className="">
-            <div className="pt-10 p-4 mr-20 flex-col md:flex-row">
+                <div className="pt-10 p-4 mr-20 flex-col md:flex-row">
                     <div className="flex justify-between pt-3 pb-3">
                         <TooltipProvider>
                             <div className="flex flex-col ">
@@ -136,7 +133,7 @@ export const FileSharing = () => {
                                             trigger={<UploadItemDialog
                                                 trigger={<FiUpload className="text-white font-bold"
                                                                    onClick={() => console.log("Wanna Upload")}/>}
-                                                />}
+                                            />}
                                         />
                                     </>
                                 )}

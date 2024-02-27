@@ -6,20 +6,15 @@ import {
     getCoreRowModel,
     getSortedRowModel,
     OnChangeFn,
-    Row,
     RowSelectionState,
     SortingState,
     useReactTable,
 } from "@tanstack/react-table"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {ContentType, DirectoryFile} from "../../../../datatypes/filesystem.ts";
+import {DirectoryFile} from "../../../../datatypes/filesystem.ts";
 import {useEffect, useState} from "react";
 import {useFileManagerStore} from "@/store/appDataStore.ts";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
-
-const shouldApplyClickHandler = (row: Row<DirectoryFile>): boolean => {
-    return row.original.type === ContentType.file || row.original.type === ContentType.directory ;
-};
 
 
 interface DataTableProps<TData, TValue> {
@@ -86,7 +81,6 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
                         ))}
                     </TableHeader>
                 </Table>
-                {/* ScrollArea wraps only the TableBody */}
                 <ScrollArea className="w-full max-h-[600px] overflow-auto">
                     <Table className="w-full min-w-full">
                         <TableBody>
@@ -95,12 +89,8 @@ export function DataTable<TData, TValue>({columns, data, onRowClick}: DataTableP
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() ? "selected" : undefined}
-                                        onClick={() => {
-                                            if (shouldApplyClickHandler(row as Row<DirectoryFile>)) {
-                                                onRowClick(row.original as DirectoryFile);
-                                            }
-                                        }}
-                                        className={`cursor-pointer ${shouldApplyClickHandler(row as Row<DirectoryFile>) ? '' : 'cursor-default'}`}
+                                        onClick={() => {onRowClick(row.original as DirectoryFile);}}
+                                        className="cursor-pointer"
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <TableCell key={cell.id} className="text-white">
