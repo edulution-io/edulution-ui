@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 type Store = {
   lang: string;
@@ -6,7 +6,7 @@ type Store = {
 };
 
 const useLanguage = create<Store>()((set) => ({
-  lang: "en",
+  lang: 'de',
   changeLang: (lang) => set({ lang }),
 }));
 

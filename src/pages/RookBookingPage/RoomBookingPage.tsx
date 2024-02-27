@@ -1,11 +1,12 @@
-import { FiArrowRightCircle } from "react-icons/fi";
-import { RoomBooking } from "@/components/feature/RookBooking";
+import React from 'react';
+import { FiArrowRightCircle } from 'react-icons/fi';
+import { RoomBooking } from '@/components/feature/RookBooking';
 
-export const RoomBookingPage: React.FC = () => {
-  return (
-    <div>
-      <FiArrowRightCircle />
-      <RoomBooking />
-    </div>
-  );
-};
+const RoomBookingPage: React.FC = () => (
+  <div>
+    <FiArrowRightCircle />
+    <RoomBooking />
+  </div>
+);
+
+export default RoomBookingPage;
