@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {MainLayout} from "@/components/layout/MainLayout.tsx";
-import {MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar.tsx";
-import {MenuItem} from "../../../datatypes/types.ts";
+import MainLayout from "@/components/layout/MainLayout";
+import {MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar";
+import MenuItem from "../../../datatypes/types";
 
 
 interface BasicPageLayoutProps {
@@ -12,8 +12,7 @@ interface BasicPageLayoutProps {
     logoImagePath: string
 }
 
-export const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuItems, title, logoImagePath}) => {
-    return (
+const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuItems, title, logoImagePath}) => (
         <MainLayout showLogo={false}>
             <div className="flex  h-screen  overflow-hidden">
                 <VerticalMenubar className="w-1/12" style={{ width: '10px' }}>
@@ -26,13 +25,13 @@ export const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuI
                         </div>
                         <MenubarMenu>
                             <MenubarSeparator/>
-                            {menuItems.map((item, index) => (
-                                <React.Fragment key={index}>
+                            {menuItems.map((item) => (
+                                <React.Fragment key={item.label}>
                                     <MenubarTrigger
                                         className="flex items-center px-4 py-4 cursor-pointer hover:bg-blue-800 w-full"
                                         onClick={item.action}
                                     >
-                                        {<p className="text-white text-lg mr-3"/>}
+                                        <p className="text-white text-lg mr-3"/>
                                         <span className="font-medium">{item.label}</span>
                                     </MenubarTrigger>
                                     <MenubarSeparator/>
@@ -48,5 +47,6 @@ export const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuI
             </div>
         </MainLayout>
     );
-};
+
+export default BasicPageLayout;
 
