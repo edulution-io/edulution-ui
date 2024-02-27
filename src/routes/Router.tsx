@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { NotFoundPage } from "@/pages/NotFound/NotFoundPage";
 import { HomePage } from "../pages/Home/HomePage";
+import { FileSharing } from "../pages/FileSharing/FileSharing";
 import { ConferencePage } from "../pages/ConferencePage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { BlankLayout } from "@/components/layout/BlankLayout";
@@ -13,9 +14,10 @@ import { BlankLayout } from "@/components/layout/BlankLayout";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route element={<MainLayout />}>
+      <Route element={<MainLayout showLogo={false} children={undefined} />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/conferences" element={<ConferencePage />} />
+        <Route path="/file-sharing" element={<FileSharing />} />
       </Route>
 
       <Route element={<BlankLayout />}>

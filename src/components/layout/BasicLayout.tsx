@@ -2,7 +2,7 @@ import React from 'react';
 
 import {MainLayout} from "@/components/layout/MainLayout.tsx";
 import {MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar} from "@/components/ui/menubar.tsx";
-import {MenuItem} from "../../../datatypes/types.ts";
+
 
 interface BasicPageLayoutProps {
     children: React.ReactNode;

@@ -252,4 +252,5 @@ export {
   MenubarGroup,
   MenubarSub,
   MenubarShortcut,
+  VerticalMenubar,
 }
