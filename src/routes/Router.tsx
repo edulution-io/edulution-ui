@@ -5,9 +5,9 @@ import {
   Route,
 } from "react-router-dom";
 import { NotFoundPage } from "@/pages/NotFound/NotFoundPage";
-import { HomePage } from "../pages/Home/HomePage";
+import { HomePage } from "@/pages/Home";
 import { FileSharing } from "../pages/FileSharing/FileSharing";
-import { ConferencePage } from "../pages/ConferencePage";
+import { ConferencePage } from "@/pages/ConferencePage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { BlankLayout } from "@/components/layout/BlankLayout";
 

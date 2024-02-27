@@ -29,9 +29,25 @@ export const FileSharing = () => {
 
 
     return (
-        <BasicPageLayout menuItems={demoMenuItems} title={"DEMO"} logoImagePath={"/"}>
-            <p>This is just a Demo</p>
-        </BasicPageLayout>
-    )
+        <div>
+                <BasicPageLayout menuItems={demoMenuItems} title={"MEINE DATEIEN"}
+                                 logoImagePath={"src/assets/icons/filesharing-light.svg"}>
+                    <div className="">
+                        <div className="pt-10 p-4 mr-20 flex-col md:flex-row">
+                            <div className="flex justify-between pt-3 pb-3">
+                                <div className="flex flex-col ">
+                                    <div className="flex space-x-2">
+                                        <p className="text-white mr-2">Current Directory:</p>
+                                    </div>
+                                </div>
+                                <div className="flex space-x-4">
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </BasicPageLayout>
+        </div>
+
+)
 }

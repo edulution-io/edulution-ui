@@ -42,6 +42,7 @@ export const BasicPageLayout: React.FC<BasicPageLayoutProps> = ({children, menuI
                     </div>
                 </VerticalMenubar>
                 <div className="flex-1 w-full h-full">
+                    <p className="text-red-700">erjfiorewhnireöghoh</p>
                     {children}
                 </div>
             </div>
