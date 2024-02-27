@@ -1,7 +1,9 @@
-import React from "react";
+import React from 'react';
 
-export interface MenuItem {
+interface MenuItem {
   label: string;
-  IconComponent: React.ElementType; // Using React.ElementType to accept a component type
+  IconComponent: React.ElementType;
   action: () => void;
 }
+
+export default MenuItem;
