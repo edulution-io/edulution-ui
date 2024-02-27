@@ -10,7 +10,7 @@ interface BasicPageLayoutProps {
 }
 
 const MenuBar: React.FC<BasicPageLayoutProps> = ({ menuItems, title, logoImagePath }) => (
-  <div className="flex  h-screen  overflow-hidden">
+  <div className="flex h-screen  overflow-hidden">
     <VerticalMenubar
       className="w-1/12"
       style={{ width: '10px' }}
