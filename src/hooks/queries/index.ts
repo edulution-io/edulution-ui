@@ -1,1 +1,1 @@
-export * from './useRepoDataQuery';
+export { default as useRepoData } from './useRepoDataQuery';
