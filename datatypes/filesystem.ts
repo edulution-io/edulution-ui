@@ -5,10 +5,10 @@ export interface DirectoryFile {
   lastmod?: string;
   size?: number;
   type?: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | undefined;
 }
 
 export enum ContentType {
-  file= "file",
-  directory="directory"
+  file = 'file',
+  directory = 'directory',
 }

@@ -1,21 +1,25 @@
 import React from 'react';
+
 interface DirectoryBreadcrumbProps {
   path: string;
   onNavigate: (path: string) => void;
 }
 
-export const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate }) => {
+const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate }) => {
   const segments = path.split('/').filter(Boolean);
+
   const handleSegmentClick = (segmentIndex: number) => {
-    const pathTo = '/' + segments.slice(0, segmentIndex + 1).join('/');
+    const pathTo = `/${segments.slice(0, segmentIndex + 1).join('/')}`;
+    console.log(pathTo);
     onNavigate(pathTo);
   };
 
   return (
     <div className="flex space-x-2">
       {segments.map((segment, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={segment}>
           <button
+            type="button"
             onClick={() => handleSegmentClick(index)}
             className="text-blue-500 hover:underline"
           >
@@ -27,3 +31,5 @@ export const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, 
     </div>
   );
 };
+
+export default DirectoryBreadcrumb;

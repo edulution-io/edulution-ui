@@ -1,20 +1,21 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 
-export function CircleLoader() {
-  return (
-    <div className="relative w-12 h-12 box-border">
-      <motion.span
-        className="block w-12 h-12 border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full absolute box-border top-0 left-0"
-        animate={{ rotate: 360 }}
-        transition={{
-          loop: Infinity,
-          ease: "linear",
-          duration: 1000,
-        }}
-        style={{
-          animation: 'spin 1s linear infinite',
-        }}
-      />
-    </div>
-  );
-}
+const CircleLoader = () => (
+  <div className="relative box-border h-12 w-12">
+    <motion.span
+      className="absolute left-0 top-0 box-border block h-12 w-12 rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500"
+      animate={{ rotate: 360 }}
+      transition={{
+        loop: Infinity,
+        ease: 'linear',
+        duration: 1000,
+      }}
+      style={{
+        animation: 'spin 1s linear infinite',
+      }}
+    />
+  </div>
+);
+
+export default CircleLoader;
