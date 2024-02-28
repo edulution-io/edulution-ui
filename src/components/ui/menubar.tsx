@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { CheckIcon, ChevronRightIcon, DotFilledIcon } from '@radix-ui/react-icons';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
-
 import cn from '@/lib/utils';
 
 const MenubarMenu = MenubarPrimitive.Menu;
@@ -42,6 +41,21 @@ const MenubarTrigger = React.forwardRef<
   />
 ));
 MenubarTrigger.displayName = MenubarPrimitive.Trigger.displayName;
+
+const VerticalMenubar = React.forwardRef<
+  React.ElementRef<typeof MenubarPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <MenubarPrimitive.Root
+    ref={ref}
+    className={cn(
+      ' items-start space-y-1 rounded-md border bg-background p-1 shadow-sm sm:flex-row md:min-w-[10vw] md:max-w-[10vw]',
+      className,
+    )}
+    {...props}
+  />
+));
+VerticalMenubar.displayName = MenubarPrimitive.Root.displayName;
 
 const MenubarSubTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubTrigger>,
@@ -197,7 +211,7 @@ const MenubarSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Separator
     ref={ref}
-    className={cn('-mx-1 my-1 h-px bg-muted', className)}
+    className={cn('-mx-1 my-1 h-px bg-muted bg-white', className)}
     {...props}
   />
 ));
@@ -229,4 +243,5 @@ export {
   MenubarGroup,
   MenubarSub,
   MenubarShortcut,
+  VerticalMenubar,
 };
