@@ -31,7 +31,7 @@ const Sidebar = () => {
   // TODO: will move to separate file later
   const MENU_ITEMS = [
     {
-      title: translateKey('conferences'),
+      title: translateKey('conferences.sidebar'),
       link: '/conferences',
       icon: Conferences,
     },
@@ -51,7 +51,7 @@ const Sidebar = () => {
       icon: LearningManagement,
     },
     {
-      title: translateKey('fileSharing'),
+      title: translateKey('fileSharing.sidebar'),
       link: '/file-sharing',
       icon: FileSharing,
     },
