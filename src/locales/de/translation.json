@@ -17,7 +17,11 @@
   "wlan": "WLAN",
   "forums": "Foren",
   "printer": "Drucker",
-  "fileSharing": "Filesharing",
+  "fileSharing": "MEINE DATEIEN",
   "chat": "Chat",
-  "menu": "MENÜ"
+  "menu": "MENÜ",
+  "home": "Home",
+  "programs": "Programme",
+  "share": "Share",
+  "students": "Schüler"
 }
