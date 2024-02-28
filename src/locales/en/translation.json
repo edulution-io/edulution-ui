@@ -18,5 +18,11 @@
   "knowledgeBase": "Knowledge Base",
   "printer": "Printer",
   "chat": "Chat",
-  "menu": "MENU"
+  "menu": "MENU",
+  "home": "Home",
+  "programs": "Programs",
+  "share": "Share",
+  "students": "Students",
+
+  "common": { "add": "Add", "reload": "Reload" }
 }

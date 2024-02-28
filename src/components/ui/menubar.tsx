@@ -45,7 +45,7 @@ const VerticalMenubar = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Root
     ref={ref}
-    className={cn('items-start space-y-1 shadow-sm sm:flex-row md:min-w-[12vw] md:max-w-[12vw]', className)}
+    className={cn('items-start space-y-1 shadow-sm sm:flex-row md:max-w-[256px]', className)}
     {...props}
   />
 ));
@@ -205,7 +205,7 @@ const MenubarSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Separator
     ref={ref}
-    className={cn('h-px bg-muted bg-white', className)}
+    className={cn('h-px w-full bg-muted bg-white', className)}
     {...props}
   />
 ));

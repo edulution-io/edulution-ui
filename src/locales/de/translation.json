@@ -23,5 +23,7 @@
   "home": "Home",
   "programs": "Programme",
   "share": "Share",
-  "students": "Schüler"
+  "students": "Schüler",
+
+  "common": { "add": "Hinzufügen", "reload": "Neu laden" }
 }
