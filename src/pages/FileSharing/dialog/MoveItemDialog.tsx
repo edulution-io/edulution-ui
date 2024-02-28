@@ -8,7 +8,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import { FaLongArrowAltRight } from 'react-icons/fa';
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
+import { useFileManagerStore } from '@/store';
 import { ContentType, DirectoryFile } from '../../../../datatypes/filesystem';
 
 interface MoveItemDialogProps {
@@ -22,11 +23,12 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
   const [currentPath, setCurrentPath] = useState('/teachers/netzint-teacher');
   const { fetchDirectory } = useWebDavActions();
-  const webDavManger = new WebDavFileManager();
-
+  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
   useEffect(() => {
     if (isOpen) {
-      fetchDirectory(currentPath).then(setDirectorys).catch(console.error);
+      fetchDirectory(currentPath)
+        .then(setDirectorys)
+        .catch(() => null);
     }
   }, [currentPath, isOpen]);
 
@@ -39,9 +41,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     if (open) {
       fetchDirectory(currentPath)
         .then(setDirectorys)
-        .catch((error) => {
-          console.error('Error fetching directories:', error);
-        });
+        .catch(() => null);
     }
   };
 
@@ -59,7 +59,13 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
 
   const moveItem = async (items: DirectoryFile | DirectoryFile[], toPath: string | undefined) => {
     try {
-      await webDavManger.moveItems(items, toPath);
+      await WebDavFunctions.moveItems(items, toPath)
+        .then((resp) => {
+          setFileOperationSuccessful(resp.success);
+        })
+        .catch(() => {
+          setFileOperationSuccessful(false);
+        });
       setIsOpen(false);
     } catch (error) {
       /* empty */
@@ -154,13 +160,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
           {selectedRow !== undefined ? (
             <Button
               onClick={() => {
-                moveItem(item, selectedRow?.filename)
-                  .then(() => {
-                    console.log('Move successful');
-                  })
-                  .catch((error) => {
-                    console.error('Error moving item:', error);
-                  });
+                moveItem(item, selectedRow?.filename).catch(() => null);
               }}
             >
               Move

@@ -7,7 +7,7 @@ import {
 } from 'react-icons/md';
 import { useFileManagerStore } from '@/store/appDataStore';
 import useWebDavActions from '@/utils/webDavHooks';
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadPopUp from '@/components/shared/LoadPopUp';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { FiUpload } from 'react-icons/fi';
@@ -31,12 +31,9 @@ const FileSharing = () => {
   const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([]);
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const fileOperationSuccessful: boolean = useFileManagerStore((state) => state.fileOperationSuccessful);
-  const setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void = useFileManagerStore(
-    (state) => state.setFileOperationSuccessful,
-  );
+
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
-  const webDavFileManager = new WebDavFileManager();
 
   const fetchMounts = async () => {
     try {
@@ -59,12 +56,10 @@ const FileSharing = () => {
   const handleDownload = async (items: DirectoryFile[]) => {
     setShowLoadingPopUp(true);
     try {
-      await webDavFileManager.triggerMultipleFolderDownload(items);
+      await WebDavFunctions.triggerMultipleFolderDownload(items);
       console.log('Download successful');
-      setFileOperationSuccessful(true);
     } catch (error) {
       console.error('Download failed:', error);
-      setFileOperationSuccessful(false);
     } finally {
       setShowLoadingPopUp(false);
       setShowPopUp(true);
@@ -82,7 +77,7 @@ const FileSharing = () => {
         setShowPopUp(false);
       }, 3000);
       const resetTimer = setTimeout(() => {
-        setFileOperationSuccessful(undefined);
+        // setFileOperationSuccessful(undefined);
       }, 3500);
 
       return () => {
@@ -91,7 +86,7 @@ const FileSharing = () => {
       };
     }
     return () => {};
-  }, [fileOperationSuccessful, setFileOperationSuccessful]);
+  }, [fileOperationSuccessful]);
 
   const menuItems: MenuItem[] = mountPoints.map((mountPoint) => ({
     label: getFileNameFromPath(mountPoint.filename),

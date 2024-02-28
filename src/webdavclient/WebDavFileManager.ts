@@ -1,316 +1,293 @@
-import { createClient, WebDAVClient } from 'webdav';
-import { useFileManagerStore } from '@/store/appDataStore';
+import { createClient } from 'webdav';
 import JSZip from 'jszip';
 import { getFileNameFromPath } from '@/utils/common';
+import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../../datatypes/filesystem';
 
-/**
- * WebDavFileManager is a class that provides various methods for managing files and directories in a WebDAV server.
- * @implements {IWebDavFileManager}
- */
-class WebDavFileManager implements IWebDavFileManager {
-  private client: WebDAVClient;
+const handleApiResponse = (resp: { statusText: string; status: number }) =>
+  ApiResponseHandler.handleApiResponse(
+    new Response(null, {
+      status: resp?.status || 200,
+      statusText: resp?.statusText || 'OK',
+    }),
+  );
 
-  private setFileOperationSuccessfull = useFileManagerStore((state) => state.setFileOperationSuccessful);
-
-  constructor() {
-    this.client = createClient('http://localhost:5173/webdav/', {
-      username: 'netzint-teacher',
-      password: 'Muster!',
-    });
+const handleApiError = (error: Response) => {
+  let status = 500;
+  let statusText = 'Internal Server Error';
+  if (error instanceof Error && 'status' in error) {
+    status = typeof error.status === 'number' ? error.status : 500;
+    statusText = error.message || 'Error';
   }
+  return ApiResponseHandler.handleApiResponse(
+    new Response(null, {
+      status,
+      statusText,
+    }),
+  );
+};
 
-  /**
-   * Asynchronously retrieves a list of directory files from the given path.
-   *
-   * @param {string} path - The path of the directory.
-   * @returns {Promise<DirectoryFile[]>} - A promise that resolves to an array of DirectoryFile objects.
-   */
-  public getContentList = async (path: string): Promise<DirectoryFile[]> => {
-    const result = await this.client.getDirectoryContents(path, {
-      data:
-        '<?xml version="1.0"?>\n' +
-        '<d:propfind  xmlns:d="DAV:">\n' +
-        '  <d:prop>\n' +
-        '        <d:getlastmodified />\n' +
-        '        <d:getetag />\n' +
-        '        <d:getcontenttype />\n' +
-        '        <d:getcontentlength />\n' +
-        '        <d:displayname />\n' +
-        '        <d:creationdate />\n' +
-        '  </d:prop>\n' +
-        '</d:propfind>',
-    });
-    if ('data' in result && Array.isArray(result.data)) {
-      return result.data as DirectoryFile[];
-    }
-    return result as DirectoryFile[];
-  };
+const client = createClient('http://localhost:5173/webdav/', {
+  username: 'netzint-teacher',
+  password: 'Muster!',
+});
 
-  /**
-   * Creates a directory at the specified path.
-   *
-   * @param {string} path - The path where the directory should be created.
-   * @return {Promise<boolean>} - A promise that resolves to true if the directory was successfully created,
-   *                             and false otherwise.
-   */
-  public async createDirectory(path: string): Promise<boolean> {
-    return this.client
-      .createDirectory(path)
-      .then(() => {
-        this.setFileOperationSuccessfull(true);
-        return true;
-      })
-      .catch((error) => {
-        this.setFileOperationSuccessfull(false);
-        console.error('Error deleting file:', error);
-        return false;
-      });
+const getContentList: IWebDavFileManager['getContentList'] = async (path: string): Promise<DirectoryFile[]> => {
+  const result = await client.getDirectoryContents(path, {
+    data:
+      '<?xml version="1.0"?>\n' +
+      '<d:propfind  xmlns:d="DAV:">\n' +
+      '  <d:prop>\n' +
+      '        <d:getlastmodified />\n' +
+      '        <d:getetag />\n' +
+      '        <d:getcontenttype />\n' +
+      '        <d:getcontentlength />\n' +
+      '        <d:displayname />\n' +
+      '        <d:creationdate />\n' +
+      '  </d:prop>\n' +
+      '</d:propfind>',
+  });
+  if ('data' in result && Array.isArray(result.data)) {
+    return result.data as DirectoryFile[];
   }
+  return result as DirectoryFile[];
+};
 
-  /**
-   * Creates a new file at the specified path.
-   *
-   * @param {string} path - The path where the file will be created.
-   * @returns {Promise<boolean>} - A promise that resolves to true if the file creation is successful, or false otherwise.
-   */
-  public async createFile(path: string): Promise<boolean> {
-    return this.client
-      .putFileContents(path, ' ')
-      .then(() => {
-        this.setFileOperationSuccessfull(true);
-        return true;
-      })
-      .catch((error) => {
-        this.setFileOperationSuccessfull(false);
-        console.error('Error deleting file:', error);
-        return false;
-      });
+const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string) => {
+  try {
+    await client.createDirectory(path);
+    return handleApiResponse({ status: 200, statusText: 'OK' });
+  } catch (error) {
+    return handleApiError(error as Response);
   }
+};
 
-  /**
-   * Deletes an item from the specified path.
-   *
-   * @param {string} path - The path of the item to delete.
-   * @returns {Promise<boolean>} - A Promise that resolves to true if the item is successfully deleted, or false otherwise.
-   */
-  public async deleteItem(path: string): Promise<boolean> {
-    return this.client
-      .deleteFile(path)
-      .then(() => {
-        this.setFileOperationSuccessfull(true);
-        return true;
-      })
-      .catch((error) => {
-        this.setFileOperationSuccessfull(false);
-        console.error('Error deleting file:', error);
-        return false;
-      });
+const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
+  try {
+    await client.putFileContents(path, ' ');
+    return handleApiResponse({ status: 200, statusText: 'OK' });
+  } catch (error) {
+    console.error('Error creating file:', error);
+    return handleApiError(error as Response);
   }
+};
 
-  /**
-   * Renames a file or directory from the given path to the given target path.
-   * Logs the process and handles any errors that occur during the rename operation.
-   *
-   * @param {string} path - The current path of the file or directory.
-   * @param {string} toPath - The target path to rename the file or directory to.
-   * @return {Promise<boolean>} A promise that resolves to true if the rename operation is successful, false otherwise.
-   */
-  public async renameItem(path: string, toPath: string): Promise<boolean> {
-    try {
-      await this.moveFile(path, toPath);
-      return true;
-    } catch (error) {
-      return false;
-    }
+const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
+  try {
+    await client.deleteFile(path);
+    return handleApiResponse({ status: 200, statusText: 'OK' });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    return handleApiError(error as Response);
   }
+};
 
-  // TODO nice to have: moveFile should be supported with fullPath
-  private async moveFile(sourcePath: string, destinationPath: string): Promise<void> {
-    const fullDestinationPath = `${destinationPath}`;
-    const resp = await this.client.customRequest(sourcePath, {
+const moveFile = async (
+  sourcePath: string,
+  destinationPath: string,
+): Promise<{ success: boolean; message: string; status: number }> => {
+  try {
+    const response = await client.customRequest(sourcePath, {
       method: 'MOVE',
-      headers: {
-        Destination: fullDestinationPath,
-      },
+      headers: { Destination: `${destinationPath}` },
     });
 
-    if (resp.status >= 200 && resp.status < 300) {
-      console.log(`Moved ${sourcePath} to ${destinationPath} successfully.`);
-      this.setFileOperationSuccessfull(true);
-    } else {
-      this.setFileOperationSuccessfull(false);
-      throw new Error(`Failed to move ${sourcePath} to ${destinationPath}. Status code: ${resp.status}`);
+    // Checking response status to determine success/failure
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: 'Move successful', status: response.status };
     }
-  }
-
-  public async moveItems(items: DirectoryFile[] | DirectoryFile, toPath: string | undefined): Promise<boolean> {
-    if (!toPath) {
-      throw new Error('Destination path is undefined');
-    }
-    try {
-      if (Array.isArray(items)) {
-        const movePromises = items.map((item) => {
-          const destination = `${toPath}/${getFileNameFromPath(item.filename)}`;
-          return this.moveFile(item.filename, destination);
-        });
-        await Promise.all(movePromises);
-      } else {
-        const destination = `${toPath}/${getFileNameFromPath(items.filename)}`;
-        await this.moveFile(items.filename, destination);
+    return { success: false, message: 'Move failed', status: response.status };
+  } catch (error) {
+    let errorMessage = 'Unexpected error occurred';
+    let errorCode = 500;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      if ('status' in error && typeof error.status === 'number') {
+        errorCode = error.status;
       }
-      return true;
-    } catch (e) {
-      console.error('Move operation failed!', e);
-      return false;
     }
+    return {
+      success: false,
+      message: errorMessage,
+      status: errorCode,
+    };
+  }
+};
+
+const renameItem: IWebDavFileManager['renameItem'] = async (path: string, toPath: string) => {
+  try {
+    return await moveFile(path, toPath);
+  } catch (error) {
+    return handleApiError(error as Response);
+  }
+};
+
+// TODO nice to have: moveFile should be supported with fullPath
+
+const moveItems: IWebDavFileManager['moveItems'] = async (
+  items: DirectoryFile[] | DirectoryFile,
+  toPath: string | undefined,
+) => {
+  if (!toPath) {
+    return { success: false, message: 'Destination path is undefined', status: 400 };
   }
 
-  /**
-   * Uploads a file to a remote path.
-   *
-   * @param {File} file - The file to be uploaded.
-   * @param {string} remotePath - The remote path where the file will be uploaded to.
-   *
-   * @return {Promise<void>} - A promise that resolves when the file is successfully uploaded or rejects with an error if the upload fails.
-   *
-   * @throws {Error} - If there is an error reading the file or uploading the file.
-   */
-  public uploadFile(file: File, remotePath: string): void {
-    try {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const arrayBuffer = reader.result;
-        if (arrayBuffer instanceof ArrayBuffer) {
-          try {
-            await this.client.putFileContents(remotePath, arrayBuffer, {
-              overwrite: true,
-              headers: {
-                'Content-Type': file.type || 'application/octet-stream',
-              },
-            });
-            console.log('File uploaded successfully');
-            this.setFileOperationSuccessfull(true);
-          } catch {
-            console.error('File uploaded wasn´t successfully');
-            this.setFileOperationSuccessfull(false);
-          }
-        } else {
-          this.setFileOperationSuccessfull(false);
-          throw new Error('Failed to read file as ArrayBuffer');
-        }
-      };
-      reader.onerror = () => {
-        this.setFileOperationSuccessfull(false);
-        throw new Error(`Error reading file: ${reader.error?.toString()}`);
-      };
-      reader.readAsArrayBuffer(file);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      this.setFileOperationSuccessfull(false);
-      throw error;
-    }
-  }
-
-  public triggerFileDownload(path: string): void {
-    const downloadLink = this.client.getFileDownloadLink(path);
-    console.log(downloadLink);
-    const anchor = document.createElement('a');
-    anchor.href = downloadLink;
-    anchor.setAttribute(getFileNameFromPath(path), '');
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-  }
-
-  // TODO move it later to backend or to lmn server
-  public async triggerFolderDownload(path: string): Promise<void> {
-    const zip = new JSZip();
-    await this.addItemsToZip(zip, path);
-
-    await zip.generateAsync({ type: 'blob' }).then((content: Blob | MediaSource) => {
-      const url = URL.createObjectURL(content);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = getFileNameFromPath(path);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+  let results: Array<{ success: boolean; message: string; status: number }>;
+  if (Array.isArray(items)) {
+    const movePromises = items.map((item) => {
+      const destination = `${toPath}/${getFileNameFromPath(item.filename)}`;
+      return moveFile(item.filename, destination);
     });
+    results = await Promise.all(movePromises);
+  } else {
+    const destination = `${toPath}/${getFileNameFromPath(items.filename)}`;
+    results = [await moveFile(items.filename, destination)];
   }
 
-  // TODO move it later to backend or to lmn server
-  public async triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void> {
-    const zip = new JSZip();
-    try {
-      const addItemsPromises = folders.map((folder) => this.addItemsToZip(zip, folder.filename));
-      await Promise.all(addItemsPromises);
-    } catch (error) {
-      console.error('Error adding items to zip:', error);
-    }
-    await zip.generateAsync({ type: 'blob' }).then((content: Blob | MediaSource) => {
-      const url = URL.createObjectURL(content);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'download.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    });
+  const failed = results.find((result) => !result.success);
+  return failed ? { ...failed } : { success: true, message: 'All items moved successfully', status: 200 };
+};
+
+const uploadFile: IWebDavFileManager['uploadFile'] = (file: File, remotePath: string) => {
+  try {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const arrayBuffer = reader.result;
+      if (arrayBuffer instanceof ArrayBuffer) {
+        await client.putFileContents(remotePath, arrayBuffer, {
+          overwrite: true,
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream',
+          },
+        });
+        console.log('File uploaded successfully');
+        handleApiResponse({ status: 200, statusText: 'OK' });
+      } else {
+        throw new Error('Failed to read file as ArrayBuffer');
+      }
+    };
+    reader.onerror = () => {
+      throw new Error(`Error reading file: ${reader.error?.toString()}`);
+    };
+    reader.readAsArrayBuffer(file);
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    handleApiError(error as Response);
   }
+};
 
-  private async addItemsToZip(zip: JSZip, path: string): Promise<void> {
-    const folderName = path.split('/').filter(Boolean).pop() || 'Folder';
+const addItemsToZip = async (zip: JSZip, path: string) => {
+  const folderName = path.split('/').filter(Boolean).pop() || 'Folder';
 
-    const folderZip = zip.folder(folderName);
-    const contentList = await this.getContentList(path);
-    try {
-      const operations = contentList.map(async (item) => {
-        console.log(item.filename.split('/'), 'LLLLLLL');
-        if (item.type === 'file') {
-          try {
-            const result = await this.client.getFileContents(`${item.filename}`, { format: 'binary' });
-            console.log(`Result type for ${item.filename}:`, typeof result, ArrayBuffer.isView(result));
+  const folderZip = zip.folder(folderName);
+  const contentList = await getContentList(path);
+  try {
+    const operations = contentList.map(async (item) => {
+      console.log(item.filename.split('/'), 'LLLLLLL');
+      if (item.type === 'file') {
+        try {
+          const result = await client.getFileContents(`${item.filename}`, { format: 'binary' });
+          console.log(`Result type for ${item.filename}:`, typeof result, ArrayBuffer.isView(result));
 
-            // Your existing logic for handling file results
-            if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
-              if (folderZip != null) {
-                folderZip.file(item.basename, result);
-              }
-            } else if (result instanceof Blob && folderZip != null) {
+          if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
+            if (folderZip != null) {
               folderZip.file(item.basename, result);
-            } else if (typeof result === 'object' && result !== null && 'data' in result && folderZip != null) {
-              const { data } = result;
-              if (typeof data === 'string' || ArrayBuffer.isView(data)) {
-                zip.file(item.basename, data);
-              } else {
-                console.error(`Unsupported data type within ResponseDataDetailed for file: ${item.filename}`);
-              }
-            } else {
-              console.error(`Unsupported data type for file: ${item.filename}`);
             }
-          } catch (error) {
-            console.error(`Error fetching file content for ${item.filename}:`, error);
+          } else if (result instanceof Blob && folderZip != null) {
+            folderZip.file(item.basename, result);
+          } else if (typeof result === 'object' && result !== null && 'data' in result && folderZip != null) {
+            const { data } = result;
+            if (typeof data === 'string' || ArrayBuffer.isView(data)) {
+              zip.file(item.basename, data);
+            } else {
+              console.error(`Unsupported data type within ResponseDataDetailed for file: ${item.filename}`);
+            }
+          } else {
+            console.error(`Unsupported data type for file: ${item.filename}`);
           }
-          return null;
-        }
-        if (item.type === 'directory') {
-          const folderPath = `${path}/${item.basename}`;
-          const folder = zip.folder(item.basename);
-          if (folder !== null) {
-            return this.addItemsToZip(folder, folderPath);
-          }
-          return null;
+        } catch (error) {
+          console.error(`Error fetching file content for ${item.filename}:`, error);
         }
         return null;
-      });
+      }
+      if (item.type === 'directory') {
+        const folderPath = `${path}/${item.basename}`;
+        const folder = zip.folder(item.basename);
+        if (folder !== null) {
+          return addItemsToZip(folder, folderPath);
+        }
+        return null;
+      }
+      return null;
+    });
 
-      await Promise.all(operations);
-    } catch (error) {
-      console.error('Error processing content list:', error);
-    }
+    await Promise.all(operations);
+  } catch (error) {
+    console.error('Error processing content list:', error);
   }
-}
+};
 
-export default WebDavFileManager;
+const triggerFileDownload: IWebDavFileManager['triggerFileDownload'] = (path: string) => {
+  const downloadLink = client.getFileDownloadLink(path);
+  console.log(downloadLink);
+  const anchor = document.createElement('a');
+  anchor.href = downloadLink;
+  anchor.setAttribute(getFileNameFromPath(path), '');
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+};
+
+// TODO move it later to backend or to lmn server
+const triggerFolderDownload: IWebDavFileManager['triggerFolderDownload'] = async (path: string) => {
+  const zip = new JSZip();
+  await addItemsToZip(zip, path);
+
+  await zip.generateAsync({ type: 'blob' }).then((content: Blob | MediaSource) => {
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = getFileNameFromPath(path);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+};
+
+// TODO move it later to backend or to lmn server
+const triggerMultipleFolderDownload: IWebDavFileManager['triggerMultipleFolderDownload'] = async (
+  folders: DirectoryFile[],
+) => {
+  const zip = new JSZip();
+  try {
+    const addItemsPromises = folders.map((folder) => addItemsToZip(zip, folder.filename));
+    await Promise.all(addItemsPromises);
+  } catch (error) {
+    console.error('Error adding items to zip:', error);
+  }
+  await zip.generateAsync({ type: 'blob' }).then((content: Blob | MediaSource) => {
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'download.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+};
+
+const webDavFunctions: IWebDavFileManager = {
+  getContentList,
+  createDirectory,
+  createFile,
+  deleteItem,
+  moveItems,
+  renameItem,
+  triggerFileDownload,
+  triggerFolderDownload,
+  triggerMultipleFolderDownload,
+  uploadFile,
+};
+
+export default webDavFunctions;

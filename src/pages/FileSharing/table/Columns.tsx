@@ -14,7 +14,7 @@ import {
 import { useFileManagerStore } from '@/store/appDataStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadPopUp from '@/components/shared/LoadPopUp';
 import { formatBytes } from '@/utils/common';
 import useWebDavActions from '@/utils/webDavHooks';
@@ -175,12 +175,11 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     ),
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-      const webDavFileManager = new WebDavFileManager();
       const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
       const handleDownload = async (item: DirectoryFile) => {
         setShowLoadingPopUp(true);
         try {
-          await webDavFileManager.triggerFolderDownload(item.filename);
+          await WebDavFunctions.triggerFolderDownload(item.filename);
         } catch (error) {
           console.error('Download failed:', error);
         } finally {
@@ -220,7 +219,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                 <ActionTooltip
                   onAction={() => {
                     if (row.original.type === ContentType.file) {
-                      webDavFileManager.triggerFileDownload(row.original.filename);
+                      WebDavFunctions.triggerFileDownload(row.original.filename);
                     } else {
                       handleDownload(row.original).catch((error) => console.log(error));
                     }

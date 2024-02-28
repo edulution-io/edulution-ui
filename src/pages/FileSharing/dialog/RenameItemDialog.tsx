@@ -4,7 +4,7 @@ import Label from '@/components/ui/label';
 import { getFileNameFromPath, getPathWithoutFileName, validateDirectoryName, validateFileName } from '@/utils/common';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/shared/Button';
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType, DirectoryFile } from '../../../../datatypes/filesystem';
 
 interface RenameContentDialogProps {
@@ -18,7 +18,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [localFileName, setLocalFileName] = useState('');
   const fileName = getFileNameFromPath(item.filename);
   const placeholderText = fileName.length > 0 ? `to ${fileName}` : 'File name is empty';
-  const webDavFileManager = new WebDavFileManager();
+
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -47,14 +47,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   };
 
   const renameFile = (oldName: string, newName: string) => {
-    webDavFileManager
-      .renameItem(oldName, newName)
-      .then(() => {
-        setIsOpen(false);
-      })
-      .catch((error) => {
-        console.error('Failed to rename file', error);
-      });
+    WebDavFunctions.renameItem(oldName, newName).catch(() => null);
   };
 
   return (

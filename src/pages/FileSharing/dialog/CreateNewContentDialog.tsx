@@ -9,10 +9,10 @@ import {
 
 import React, { ReactNode, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import DirectoryCreationForm from '@/pages/FileSharing/dialog/DirectoryCreationForm';
-import FileCreationForm from '@/pages/FileSharing/dialog/FileCreationForm';
+import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
+import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import { useFileManagerStore } from '@/store';
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useWebDavActions from '@/utils/webDavHooks';
 import { ContentType } from '../../../../datatypes/filesystem';
 
@@ -22,9 +22,6 @@ interface CreateNewContentDialogProps {
 }
 
 const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
-  const setFileOperationSuccessful: (fileOperationSuccessful: boolean) => void = useFileManagerStore(
-    (state) => state.setFileOperationSuccessful,
-  );
   const [isOpen, setIsOpen] = useState(false);
   const fileName = useFileManagerStore((state) => state.fileName);
   const setFileName = useFileManagerStore((state) => state.setFileName);
@@ -32,39 +29,37 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
   const setDirectoryName = useFileManagerStore((state) => state.setDirectoryName);
   const currentPath = useFileManagerStore((state) => state.currentPath);
   const { fetchFiles, handleWebDavAction } = useWebDavActions();
-  const webDavFileManager = new WebDavFileManager();
+  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
 
-  const createFile = async (path: string): Promise<boolean> => {
-    const isSuccess = await handleWebDavAction(() => webDavFileManager.createFile(`${currentPath}/${path}`));
-    if (isSuccess) {
-      await fetchFiles(currentPath);
-    }
-    return isSuccess;
+  const createFile = async (path: string): Promise<void> => {
+    await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
+      .then(async (resp) => {
+        setFileOperationSuccessful(resp.success);
+        await fetchFiles(currentPath);
+      })
+      .catch(() => {
+        setFileOperationSuccessful(false);
+      });
   };
 
-  const createDirectory = async (path: string): Promise<boolean> => {
-    const isSuccess = await handleWebDavAction(() => webDavFileManager.createDirectory(`${currentPath}/${path}`));
-    if (isSuccess) {
-      await fetchFiles(currentPath);
-    }
-    return isSuccess;
+  const createDirectory = async (path: string): Promise<void> => {
+    await handleWebDavAction(() => WebDavFunctions.createDirectory(`${currentPath}/${path}`))
+      .then(async (resp) => {
+        setFileOperationSuccessful(resp.success);
+        await fetchFiles(currentPath);
+      })
+      .catch(() => {
+        setFileOperationSuccessful(false);
+      });
   };
 
   const handleCreateContent = async () => {
-    console.log('Create new content');
-    let success = false;
     if (contentType === ContentType.file) {
-      success = await createFile(fileName);
+      await createFile(fileName);
     } else {
-      success = await createDirectory(directoryName);
+      await createDirectory(directoryName);
     }
-    if (success) {
-      setIsOpen(false);
-      setFileOperationSuccessful(true);
-    } else {
-      setIsOpen(false);
-      setFileOperationSuccessful(false);
-    }
+    setIsOpen(false);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -72,7 +67,6 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     if (!open) {
       setDirectoryName('');
       setFileName('');
-      console.log('Dialog just closed.');
     }
   };
 
@@ -104,9 +98,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
               className="w-1/4 rounded bg-blue-500 px-4 py-2 text-white"
               disabled={directoryName.length <= 0 && fileName.length <= 0}
               onClick={() => {
-                handleCreateContent().catch((error) => {
-                  console.error('An error occurred:', error);
-                });
+                handleCreateContent().catch(() => null);
               }}
             >
               Create

@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import * as WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store/appDataStore';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DirectoryFile } from '../../../../datatypes/filesystem';
@@ -25,14 +25,14 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
-  const webDavFileManager = new WebDavFileManager();
+
   const deleteItems = async (): Promise<void> => {
     try {
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : file;
 
       await Promise.all(
         itemsToDelete.map(async (item) => {
-          await webDavFileManager.deleteItem(item.filename);
+          await WebDavFunctions.default.deleteItem(item.filename);
         }),
       );
 

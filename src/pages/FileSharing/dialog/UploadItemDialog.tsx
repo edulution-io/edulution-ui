@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/shared/Button';
-import WebDavFileManager from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store/appDataStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 
@@ -13,8 +13,6 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const currentPath = useFileManagerStore((state) => state.currentPath);
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const webDavFileManager = new WebDavFileManager();
-
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -25,16 +23,11 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const uploadFiles = async () => {
     const uploadPromises = selectedFiles.map((file) => {
       const remotePath = `${currentPath}/${file.name}`;
-      return webDavFileManager.uploadFile(file, remotePath);
+      return WebDavFunctions.uploadFile(file, remotePath);
     });
-
-    try {
-      await Promise.all(uploadPromises);
-      setIsOpen(false);
-      setSelectedFiles([]);
-    } catch (error) {
-      console.error('Some files failed to upload', error);
-    }
+    await Promise.all(uploadPromises);
+    setIsOpen(false);
+    setSelectedFiles([]);
   };
 
   return (
