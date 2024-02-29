@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="bg-[#3B3B3B] text-[#FFFFFE]">
+    <div className="text-[#FFFFFE]">
       {/* Content Area */}
 
       {/* Main Content */}

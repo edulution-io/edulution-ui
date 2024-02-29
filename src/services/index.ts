@@ -9,7 +9,7 @@ export const fetchRepoData = async () => {
     const result: ResponseData = await axios.get('https://api.github.com/repos/tannerlinsley/react-query');
     return result.data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return undefined;
   }
 };
@@ -19,7 +19,7 @@ export const authenticate = async () => {
     const result: ResponseData = await axios.get('https://api.github.com/repos/tannerlinsley/react-query');
     return result.data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return undefined;
   }
 };
