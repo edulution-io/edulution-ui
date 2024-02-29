@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Footer = () => (
-  <footer className="py-1 text-white">
+  <footer className="py-1">
     <div className="container mx-auto text-center">
       <p>&copy; {new Date().getFullYear()} Edulution. All rights reserved.</p>
     </div>

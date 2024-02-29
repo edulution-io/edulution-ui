@@ -1,23 +1,27 @@
 import React from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
-import MobileLogo from '@/assets/logos/edulution-logo-small-colorfull.svg';
-import Firewall from '@/assets/icons/firewall-light.svg';
-import Conferences from '@/assets/icons/edulution/Konferenzen.svg';
-import LearningManagement from '@/assets/icons/edulution/Lernmanagement.svg';
-import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
-import Virtualization from '@/assets/icons/edulution/Computer_Steuerung.svg';
-import DesktopDeployment from '@/assets/icons/edulution/Virtual_Desktop.svg';
-import Network from '@/assets/icons/edulution/Netzwerk.svg';
-import Mail from '@/assets/icons/edulution/Mail.svg';
-import SchoolInformation from '@/assets/icons/edulution/Information.svg';
-import Printer from '@/assets/icons/edulution/Drucker.svg';
-import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
-import Forums from '@/assets/icons/edulution/Foren.svg';
-import Chat from '@/assets/icons/edulution/Chat.svg';
-import Wlan from '@/assets/icons/edulution/Wlan.svg';
-import KnowledgeBase from '@/assets/icons/edulution/Wissensdatenbank.svg';
-import User from '@/assets/icons/edulution/Benutzer.svg';
+
+import {
+  MobileLogo,
+  Firewall,
+  Conferences,
+  LearningManagement,
+  FileSharing,
+  Virtualization,
+  DesktopDeployment,
+  Network,
+  Mail,
+  SchoolInformation,
+  Printer,
+  RoomBooking,
+  Forums,
+  Chat,
+  Wlan,
+  KnowledgeBase,
+  User,
+} from '@/assets/icons';
+
 import translateKey from '@/utils/common';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useToggle } from 'usehooks-ts';
@@ -34,76 +38,91 @@ const Sidebar = () => {
       title: translateKey('conferences.sidebar'),
       link: '/conferences',
       icon: Conferences,
+      color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('firewall'),
       link: '/firewall',
       icon: Firewall,
+      color: 'bg-ciGreenToBlue',
     },
     {
       title: translateKey('virtualization'),
       link: '/virtualization',
       icon: Virtualization,
+      color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('learningManagement'),
       link: '/learning-management',
       icon: LearningManagement,
+      color: 'bg-ciLightBlue',
     },
     {
       title: translateKey('fileSharing.sidebar'),
       link: '/file-sharing',
       icon: FileSharing,
+      color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('desktopDeployment'),
       link: '/desktop-deployment',
       icon: DesktopDeployment,
+      color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('network'),
       link: '/network',
       icon: Network,
+      color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('mail'),
       link: '/mail',
       icon: Mail,
+      color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('schoolInformation'),
       link: '/school-information',
       icon: SchoolInformation,
+      color: 'bg-ciLightBlue',
     },
     {
       title: translateKey('printer'),
       link: '/printer',
       icon: Printer,
+      color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('roomBooking'),
       link: '/room-booking',
       icon: RoomBooking,
+      color: 'bg-ciLightBlue',
     },
     {
       title: translateKey('forums'),
       link: '/forums',
       icon: Forums,
+      color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('chat'),
       link: '/chat',
       icon: Chat,
+      color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('wlan'),
       link: '/wlan',
       icon: Wlan,
+      color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('knowledgeBase'),
       link: '/knowledge-base',
       icon: KnowledgeBase,
+      color: 'bg-ciDarkBlue',
     },
   ];
 
@@ -113,18 +132,19 @@ const Sidebar = () => {
           title: 'Home',
           link: '/',
           icon: MobileLogo,
+          color: 'bg-ciGreenToBlue',
         },
         ...MENU_ITEMS,
       ]
     : MENU_ITEMS;
 
   const renderListItem = () => (
-    <div className="fixed right-0 top-0 z-50 bg-black md:bg-none">
+    <div className="fixed right-0 top-0 z-50 bg-stone-900 md:bg-none">
       {isOpen && (
         <div className="mb-[80px] ml-[24px] text-right md:hidden">
           <Button
             variant="btn-primary"
-            className="mb-4 mr-3 mt-4 rounded-[16px] border-[3px] border-solid bg-[#434343] text-white "
+            className="mb-4 mr-3 mt-4 rounded-[16px] border-[3px] border-solid"
             onClick={toggle}
           >
             {t('menu')}
@@ -138,9 +158,9 @@ const Sidebar = () => {
         >
           <NavLink
             to={item.link}
-            className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === item.link ? 'bg-gradient-to-r from-[#94D15C] to-[#4087B3]' : ''}`}
+            className={`border-ciLightGrey group relative flex cursor-pointer items-center justify-end gap-4 border-b  px-4 py-2 hover:border-stone-900 md:block md:px-2 ${pathname === item.link && pathname !== '/' ? item.color : ''}`}
           >
-            <p className="text-md font-bold text-white md:hidden">{item.title}</p>
+            <p className="text-md font-bold md:hidden">{item.title}</p>
             <img
               src={item.icon}
               width="32px"
@@ -148,8 +168,10 @@ const Sidebar = () => {
               className="relative z-0"
               alt=""
             />
-            <div className="absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-[#3E76AC] pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-              <p className="text-md whitespace-nowrap font-bold text-white">{item.title}</p>
+            <div
+              className={`${item.color} absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full`}
+            >
+              <p className="text-md whitespace-nowrap font-bold">{item.title}</p>
               <img
                 src={item.icon}
                 width="32px"
@@ -171,9 +193,9 @@ const Sidebar = () => {
             // alert('Logout');
           }}
           to="/logout"
-          className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === '/logout' ? 'bg-gradient-to-r from-[#94D15C] to-[#4087B3]' : ''}`}
+          className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-stone-900 px-4 py-2 hover:border-stone-900 md:block md:px-2 ${pathname === '/logout' ? 'bg-ciGreenToBlue' : ''}`}
         >
-          <p className="text-md font-bold text-white md:hidden">Logout</p>
+          <p className="text-md font-bold md:hidden">Logout</p>
           <img
             src={User}
             width="32px"
@@ -181,8 +203,8 @@ const Sidebar = () => {
             className="relative z-0"
             alt=""
           />
-          <div className="absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-[#3E76AC] pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-            <p className="text-md whitespace-nowrap font-bold text-white">{t('Logout')}</p>
+          <div className="bg-ciLightGrey absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
+            <p className="text-md whitespace-nowrap font-bold">{t('Logout')}</p>
             <img
               src={User}
               width="32px"
@@ -200,14 +222,14 @@ const Sidebar = () => {
       <div>
         {!isOpen && (
           <Button
-            className="fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid bg-[#434343] md:hidden"
+            className="bg-ciLightGrey fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid md:hidden"
             variant="btn-primary"
             onClick={toggle}
           >
             {t('menu')}
           </Button>
         )}
-        <div className="bg-[#1B1C1D] text-[#FFFFFE]">{isOpen && renderListItem()}</div>
+        <div className="bg-stone-900">{isOpen && renderListItem()}</div>
       </div>
     );
   }

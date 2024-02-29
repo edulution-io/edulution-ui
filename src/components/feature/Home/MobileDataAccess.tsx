@@ -4,10 +4,10 @@ import Cloud from '@/assets/icons/cloud-dark.svg';
 import { CardContent, Card } from '@/components/shared/Card';
 
 const MobileDataAccess = () => (
-  <Card variant="info">
+  <Card variant="infrastructure">
     <CardContent>
       <div className="flex flex-col gap-6">
-        <p className="text-md font-bold text-white">MOBILER DATENZUGRIFF</p>
+        <p className="text-md font-bold">MOBILER DATENZUGRIFF</p>
         <p>
           You can access the school server from many mobile devices. Select your ope- rating system to see how it works.
         </p>

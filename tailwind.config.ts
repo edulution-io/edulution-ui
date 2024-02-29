@@ -10,13 +10,13 @@ module.exports = {
       screens: {
         '2xl': '1400px',
       },
-      text: 'text-white',
     },
     extend: {
       colors: {
         ciDarkBlue: '#0081C6',
         ciLightBlue: '#66B2DF',
         ciLightGreen: '#88D840',
+        ciLightGrey: '#848493',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -51,6 +51,10 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
+      backgroundImage: {
+        ciGreenToBlue: 'linear-gradient(90deg, #88D840, #0081C6)',
+      },
+      border: { ciGreenToBlue: 'linear-gradient(90deg, #88D840, #0081C6)' },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

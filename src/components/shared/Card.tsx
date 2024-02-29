@@ -6,13 +6,14 @@ import { cva, type VariantProps } from 'class-variance-authority';
 const cardVariants = cva('border-4 border-solid', {
   variants: {
     variant: {
-      default: 'border-[#8CBB64]',
-      primary: 'border-[#3E76AC]',
-      info: 'border-[#8CBB64]',
+      collaboration: 'border-ciDarkBlue',
+      organisation: 'border-ciLightBlue',
+      infrastructure: 'border-ciLightGreen',
+      security: 'boarder-ciGreenToBlue',
     },
   },
   defaultVariants: {
-    variant: 'default',
+    variant: 'collaboration',
   },
 });
 

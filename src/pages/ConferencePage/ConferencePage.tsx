@@ -5,7 +5,7 @@ const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="text-white">
+    <div>
       <h1 className="mb-1 text-lg">{t('conferencePage')}</h1>
       <p className="text-lg">
         Welcome to our website! We are a team of passionate individuals dedicated to providing high-quality software

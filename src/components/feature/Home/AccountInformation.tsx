@@ -4,11 +4,11 @@ import { Button } from '@/components/shared/Button';
 
 const AccountInformation = () => (
   <Card
-    variant="primary"
+    variant="collaboration"
     className="min-h-[100%]"
   >
     <CardContent>
-      <div className="text-white">
+      <>
         <div className="flex flex-col gap-3">
           <p className="font-bold">KONTO-INFORMATIONEN</p>
           <p>Name: Netzint Testlehrer</p>
@@ -22,9 +22,9 @@ const AccountInformation = () => (
         >
           Passwort ändern
         </Button>
-      </div>
+      </>
 
-      <div className="mt-8 text-white">
+      <>
         <p className="font-bold">MEINE INFORMATIONEN</p>
         <p>Mail Alias: teachertest@sgmaulbronn.de</p>
         <Button
@@ -33,7 +33,7 @@ const AccountInformation = () => (
         >
           Meine Daten ändern
         </Button>
-      </div>
+      </>
     </CardContent>
   </Card>
 );

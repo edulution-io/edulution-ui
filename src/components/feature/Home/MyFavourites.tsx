@@ -7,7 +7,7 @@ import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
 
 const MyFavourites = () => (
   <Card
-    variant="primary"
+    variant="collaboration"
     className="min-h-[100%]"
   >
     <CardContent>

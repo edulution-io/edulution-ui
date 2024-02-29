@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="text-[#FFFFFE]">
+    <>
       {/* Content Area */}
 
       {/* Main Content */}
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
