@@ -7,7 +7,7 @@ const MobileDataAccess = () => (
   <Card variant="infrastructure">
     <CardContent>
       <div className="flex flex-col gap-6">
-        <p className="text-md font-bold">MOBILER DATENZUGRIFF</p>
+        <h4 className="text-md font-bold">MOBILER DATENZUGRIFF</h4>
         <p>
           You can access the school server from many mobile devices. Select your ope- rating system to see how it works.
         </p>

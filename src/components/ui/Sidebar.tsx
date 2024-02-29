@@ -95,7 +95,7 @@ const Sidebar = () => {
       color: 'bg-ciLightGreen',
     },
     {
-      title: translateKey('roomBooking'),
+      title: translateKey('roomBooking.sidebar'),
       link: '/room-booking',
       icon: RoomBooking,
       color: 'bg-ciLightBlue',

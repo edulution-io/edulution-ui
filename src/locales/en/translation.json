@@ -10,7 +10,7 @@
   "fileSharing": { "title": "MEINE DATEIEN", "sidebar": "Meine Dateien" },
   "desktopDeployment": "Desktop Deployment",
   "network": "Network",
-  "roomBooking": "Room Booking",
+  "roomBooking": { "title": "ROOMBOOKING", "sidebar": "Room Booking", "rooms": "Rooms" },
   "mail": "Mail",
   "wlan": "WLAN",
   "forums": "Forums",

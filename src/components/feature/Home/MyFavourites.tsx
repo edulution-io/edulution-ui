@@ -11,12 +11,12 @@ const MyFavourites = () => (
     className="min-h-[100%]"
   >
     <CardContent>
-      <p
+      <h4
         color="white"
         className="font-bold"
       >
         MEINE FAVORITEN
-      </p>
+      </h4>
       <div className="mt-4 flex flex-col justify-between gap-6">
         <Button
           variant="btn-primary"

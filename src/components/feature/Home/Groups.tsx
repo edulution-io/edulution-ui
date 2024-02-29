@@ -8,7 +8,7 @@ const Groups = () => (
   >
     <CardContent>
       <div className="flex flex-col gap-1">
-        <p className="text-md font-bold">GRUPPEN</p>
+        <h4 className="text-md font-bold">GRUPPEN</h4>
 
         <p>Lehrer</p>
         <p>1b</p>

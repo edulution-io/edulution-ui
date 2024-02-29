@@ -10,7 +10,7 @@
   "fireSharing": "Filesharing",
   "desktopDeployment": "Desktop-Bereitstellung",
   "network": "Netzwerk",
-  "roomBooking": "Raumbuchung",
+  "roomBooking": { "title": "RAUMBUCHUNG", "sidebar": "Raumbuchung", "rooms": "Räume" },
   "mail": "Mail",
   "schoolInformation": "Schulinformation",
   "knowledgeBase": "Wissensdatenbank",

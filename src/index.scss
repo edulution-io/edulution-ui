@@ -2,6 +2,7 @@
 @layer base {
   html {
     @apply text-white;
+    font-family: 'Lato Bold', sans-serif;
   }
 }
 @tailwind components;

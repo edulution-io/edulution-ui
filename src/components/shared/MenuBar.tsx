@@ -19,7 +19,7 @@ const MenuBar: React.FC = () => {
             alt=""
             className="h-20 w-20 object-contain"
           />
-          <div className="mb-4 mt-4 text-lg font-bold">{menuBarEntries.title}</div>
+          <h3 className="mb-4 mt-4 font-bold">{menuBarEntries.title}</h3>
         </div>
         <MenubarSeparator />
         <MenubarMenu>
@@ -34,7 +34,7 @@ const MenuBar: React.FC = () => {
                   alt=""
                   className="h-12 w-12 object-contain "
                 />
-                <div className="text-base">{item.label}</div>
+                <p>{item.label}</p>
               </MenubarTrigger>
               <MenubarSeparator />
             </React.Fragment>

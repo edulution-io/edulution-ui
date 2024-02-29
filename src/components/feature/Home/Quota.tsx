@@ -6,7 +6,7 @@ const Quota = () => (
   <Card variant="security">
     <CardContent>
       <div className="flex flex-col gap-1">
-        <p className="text-md font-bold">QUOTAS</p>
+        <h4 className="text-md font-bold">QUOTAS</h4>
 
         <p>sgm</p>
         <Separator className="bg-ciLightGrey my-1" />

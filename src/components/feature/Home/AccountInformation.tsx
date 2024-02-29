@@ -10,7 +10,7 @@ const AccountInformation = () => (
     <CardContent>
       <>
         <div className="flex flex-col gap-3">
-          <p className="font-bold">KONTO-INFORMATIONEN</p>
+          <h4 className="font-bold">KONTO-INFORMATIONEN</h4>
           <p>Name: Netzint Testlehrer</p>
           <p>E-Mail: frau.mustermann@netzint.de</p>
           <p>Schule: Testschule</p>
@@ -25,7 +25,7 @@ const AccountInformation = () => (
       </>
 
       <>
-        <p className="font-bold">MEINE INFORMATIONEN</p>
+        <h4 className="font-bold">MEINE INFORMATIONEN</h4>
         <p>Mail Alias: teachertest@sgmaulbronn.de</p>
         <Button
           variant="btn-primary"

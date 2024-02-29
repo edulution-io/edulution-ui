@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import plugin from 'tailwindcss/plugin';
+
 module.exports = {
   darkMode: ['class'],
   content: ['./pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
@@ -12,6 +14,7 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt' },
       colors: {
         ciDarkBlue: '#0081C6',
         ciLightBlue: '#66B2DF',
@@ -54,7 +57,6 @@ module.exports = {
       backgroundImage: {
         ciGreenToBlue: 'linear-gradient(90deg, #88D840, #0081C6)',
       },
-      border: { ciGreenToBlue: 'linear-gradient(90deg, #88D840, #0081C6)' },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -79,5 +81,17 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    plugin(function ({ addBase, theme }) {
+      addBase({
+        html: { textColor: theme('text-white') },
+        h1: { fontSize: theme('fontSize.h1') },
+        h2: { fontSize: theme('fontSize.h2') },
+        h3: { fontSize: theme('fontSize.h3') },
+        h4: { fontSize: theme('fontSize.h4') },
+        p: { fontSize: theme('fontSize.p') },
+      });
+    }),
+  ],
 };
