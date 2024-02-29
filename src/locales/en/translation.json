@@ -3,6 +3,8 @@
   "changeLang": "Change Language",
   "heading": "Welcome Ms. Mustermann",
   "content": "Here is your personal edulution.io dashboard. The place where all your applications for digital education are collected.",
+  "dashboard": { "mobileAccess": { "title": "MOBILER DATENZUGRIFF", "manual": "Manual" } },
+
   "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
   "firewall": "Firewall",
   "learningManagement": "Learning Management",

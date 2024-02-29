@@ -143,7 +143,7 @@ const Sidebar = () => {
       {isOpen && (
         <div className="mb-[80px] ml-[24px] text-right md:hidden">
           <Button
-            variant="btn-primary"
+            variant="btn-collaboration"
             className="mb-4 mr-3 mt-4 rounded-[16px] border-[3px] border-solid"
             onClick={toggle}
           >
@@ -223,7 +223,7 @@ const Sidebar = () => {
         {!isOpen && (
           <Button
             className="bg-ciLightGrey fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid md:hidden"
-            variant="btn-primary"
+            variant="btn-collaboration"
             onClick={toggle}
           >
             {t('menu')}

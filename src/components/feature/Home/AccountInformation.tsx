@@ -17,7 +17,7 @@ const AccountInformation = () => (
           <p>Rolle: Lehrer</p>
         </div>
         <Button
-          variant="btn-primary"
+          variant="btn-collaboration"
           className="mt-4"
         >
           Passwort ändern
@@ -28,7 +28,7 @@ const AccountInformation = () => (
         <h4 className="font-bold">MEINE INFORMATIONEN</h4>
         <p>Mail Alias: teachertest@sgmaulbronn.de</p>
         <Button
-          variant="btn-primary"
+          variant="btn-collaboration"
           className="mt-4"
         >
           Meine Daten ändern

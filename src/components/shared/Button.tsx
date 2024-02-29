@@ -7,9 +7,10 @@ import cn from '@/lib/utils';
 const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
   variants: {
     variant: {
-      'btn-primary': 'bg-ciDarkBlue',
-      'btn-secondary': 'bg-ciLightBlue',
-      'btn-info': 'bg-ciLightGreen',
+      'btn-collaboration': 'bg-ciDarkBlue',
+      'btn-organisation': 'bg-ciLightBlue',
+      'btn-infrastructure': 'bg-ciLightGreen',
+      'btn-security': 'bg-ciGreenToBlue',
     },
   },
 });
