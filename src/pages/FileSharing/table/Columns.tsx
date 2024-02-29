@@ -21,7 +21,7 @@ import useWebDavActions from '@/utils/webDavHooks';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
-import { ContentType, DirectoryFile } from '../../../../datatypes/filesystem';
+import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 const filenameColumnWidth = 'w-1/2';
 const lastModColumnWidth = 'w-1/3';

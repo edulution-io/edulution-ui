@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
-import MenuItem from '../../../datatypes/types';
+import MenuItem from '@/datatypes/types';
 
 interface VerticalMenuBarProps {
   menuItems: MenuItem[];
@@ -15,7 +15,7 @@ const VerticalMenuBar: React.FC<VerticalMenuBarProps> = ({ menuItems, title, log
       className="w-1/12"
       style={{ width: '10px' }}
     >
-      <div className="h-full overflow-y-auto bg-left_sideBar_background text-white">
+      <div className="bg-left_sideBar_background h-full overflow-y-auto text-white">
         <div className="flex w-full flex-col items-center justify-center pt-4">
           <img
             src={logoImagePath}

@@ -18,7 +18,7 @@ import Chat from '@/assets/icons/edulution/Chat.svg';
 import Wlan from '@/assets/icons/edulution/Wlan.svg';
 import KnowledgeBase from '@/assets/icons/edulution/Wissensdatenbank.svg';
 import User from '@/assets/icons/edulution/Benutzer.svg';
-import translateKey from '@/utils/common';
+import { translateKey } from '@/utils/common';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useToggle } from 'usehooks-ts';
 

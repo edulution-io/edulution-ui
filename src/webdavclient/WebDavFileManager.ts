@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { getFileNameFromPath } from '@/utils/common';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
-import { DirectoryFile } from '../../datatypes/filesystem';
+import { DirectoryFile } from '../datatypes/filesystem';
 
 function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
   return {
@@ -164,43 +164,64 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   return failed ? { ...failed } : { success: true, message: 'All items moved successfully', status: 200 };
 };
 
-const uploadFile: IWebDavFileManager['uploadFile'] = (file: File, remotePath: string) =>
+const uploadFile: IWebDavFileManager['uploadFile'] = (
+  file: File,
+  remotePath: string,
+  onProgress: (percentage: number) => void,
+) =>
   new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', client.getFileUploadLink(remotePath), true);
 
-    reader.onload = async () => {
-      try {
-        const arrayBuffer = reader.result;
-        if (arrayBuffer instanceof ArrayBuffer) {
-          await client.putFileContents(remotePath, arrayBuffer, {
-            overwrite: true,
-            headers: {
-              'Content-Type': file.type || 'application/octet-stream',
-            },
-          });
-          console.log('File uploaded successfully');
-          resolve(
-            handleApiResponse(
-              new Response('OK', { status: 200, statusText: `File ${file.name} uploaded successfully` }),
-            ),
-          );
-        } else {
-          reject(new Error('Failed to read file as ArrayBuffer'));
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          reject(error);
-        } else {
-          reject(new Error('An unknown error occurred'));
-        }
+    xhr.setRequestHeader('Authorization', `Basic ${btoa('netzint-teacher:Muster!')}`);
+    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const progress = (event.loaded / event.total) * 100;
+        console.log(`Upload progress for ${file.name}: ${progress}%`);
+        onProgress(progress);
+      }
+    };
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        console.log('File uploaded successfully');
+        resolve(
+          handleApiResponse(
+            new Response('OK', {
+              status: 200,
+              statusText: `File ${file.name} uploaded successfully`,
+            }),
+          ),
+        );
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`));
       }
     };
 
-    reader.onerror = () => {
-      reject(new Error(`Error reading file: ${reader.error?.message || 'Unknown error'}`));
+    xhr.onerror = () => {
+      reject(new Error('Network error occurred during the upload'));
     };
-    reader.readAsArrayBuffer(file);
+
+    xhr.send(file);
   });
+
+const uploadMultipleFiles: IWebDavFileManager['uploadMultipleFiles'] = (
+  files: File[],
+  remotePath: string,
+  updateUI: (file: File, progress: number) => void,
+) => {
+  const uploadPromises = files.map((file) => {
+    const filePath = `${remotePath}/${file.name}`;
+    return uploadFile(file, filePath, (progress) => updateUI(file, progress)).catch((error) => ({
+      success: false,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      message: `Upload failed for ${file.name}: ${error.message}`,
+    }));
+  });
+
+  return Promise.all(uploadPromises);
+};
 
 const addItemsToZip = async (zip: JSZip, path: string) => {
   const folderName = path.split('/').filter(Boolean).pop() || 'Folder';
@@ -311,6 +332,7 @@ const webDavFunctions: IWebDavFileManager = {
   triggerFileDownload,
   triggerFolderDownload,
   triggerMultipleFolderDownload,
+  uploadMultipleFiles,
   uploadFile,
 };
 

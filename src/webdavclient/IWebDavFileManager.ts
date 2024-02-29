@@ -1,4 +1,4 @@
-import { DirectoryFile } from '../../datatypes/filesystem';
+import { DirectoryFile } from '@/datatypes/filesystem';
 
 export interface IWebDavFileManager {
   getContentList(path: string): Promise<DirectoryFile[]>;
@@ -41,13 +41,16 @@ export interface IWebDavFileManager {
   triggerFileDownload(path: string): void;
   triggerFolderDownload(path: string): Promise<void>;
   triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void>;
+
   uploadFile(
     file: File,
     remotePath: string,
-  ): Promise<
-    | { success: boolean; message: string; status: number }
-    | {
-        success: boolean;
-      }
-  >;
+    onProgress: (percentage: number) => void,
+  ): Promise<{ success: boolean; message: string; status: number } | { success: boolean }>;
+
+  uploadMultipleFiles(
+    files: File[],
+    remotePath: string,
+    updateUI: (file: File, progress: number) => void,
+  ): Promise<Array<{ success: boolean; message: string; status: number } | { success: boolean }>>;
 }

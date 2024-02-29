@@ -7,7 +7,7 @@ import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store';
 import useWebDavActions from '@/utils/webDavHooks';
-import { ContentType, DirectoryFile } from '../../../../datatypes/filesystem';
+import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;

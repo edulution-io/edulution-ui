@@ -12,7 +12,7 @@ import LoadPopUp from '@/components/shared/LoadPopUp';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
-import { getFileNameFromPath } from '@/utils/common';
+// import { getFileNameFromPath } from '@/utils/common';
 import StatusAlert from '@/pages/FileSharing/alerts/StatusAlert';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
@@ -21,25 +21,27 @@ import UploadItemDialog from '@/pages/FileSharing/dialog/UploadItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
 import DataTable from '@/pages/FileSharing/table/DataTable';
-import VerticalMenuBar from '@/components/layout/VerticalMenuBar';
 import Columns from '@/pages/FileSharing/table/Columns';
-import { ContentType, DirectoryFile } from '../../../datatypes/filesystem';
-import MenuItem from '../../../datatypes/types';
+import UploadToast from '@/pages/FileSharing/toast/UploadToast';
+import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
+// import { IconBaseProps } from 'react-icons';
 
 const FileSharing = () => {
-  const { files, currentPath, fetchFiles, fetchMountPoints } = useWebDavActions();
-  const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([]);
+  const { files, currentPath, fetchFiles } = useWebDavActions();
+  // const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([]);
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const fileOperationSuccessful: boolean = useFileManagerStore((state) => state.fileOperationSuccessful);
   const fileOperationMessage: string = useFileManagerStore((state) => state.fileOperationMessage);
 
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
-
+  const { t } = useTranslation();
+  // eslint-disable-next-line @typescript-eslint/require-await
   const fetchMounts = async () => {
     try {
-      const result = await fetchMountPoints();
-      setMountPoints(result);
+      // const result = await fetchMountPoints();
+      // setMountPoints(result);
       console.log('Got new Data');
     } catch (error) {
       console.error('Failed to fetch mount points', error);
@@ -89,19 +91,18 @@ const FileSharing = () => {
     return () => {};
   }, [fileOperationSuccessful]);
 
-  const menuItems: MenuItem[] = mountPoints.map((mountPoint) => ({
-    label: getFileNameFromPath(mountPoint.filename),
-    IconComponent: MdOutlineNoteAdd,
-    action: () => fetchFiles(mountPoint.filename),
-  }));
+  // const menuItems: {
+  //   action: () => Promise<void>;
+  //   label: string;
+  //   IconComponent: (props: IconBaseProps) => JSX.Element;
+  // }[] = mountPoints.map((mountPoint) => ({
+  //   label: getFileNameFromPath(mountPoint.filename),
+  //   IconComponent: MdOutlineNoteAdd,
+  //   action: () => fetchFiles(mountPoint.filename),
+  // }));
 
   return (
-    <div className="flex h-screen pr-20">
-      <VerticalMenuBar
-        title="MEINE DATEIEN"
-        logoImagePath=""
-        menuItems={menuItems}
-      />
+    <div className="flex  ">
       <div>
         {showLoadingPopUp && <LoadPopUp isOpen={showLoadingPopUp} />}
         {showPopUp && (
@@ -111,8 +112,9 @@ const FileSharing = () => {
           />
         )}
       </div>
-      <div className="flex flex-1 flex-col">
+      <div>
         <div className="flex-1 overflow-auto pl-3 pr-3.5">
+          <h1 className="mb-1 text-lg">{t('conferencePage')}</h1>
           <div className="flex justify-between pb-3 pt-3">
             <TooltipProvider>
               <div className="flex flex-col ">
@@ -232,6 +234,7 @@ const FileSharing = () => {
             columns={Columns}
             data={files}
           />
+          <UploadToast />
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store/appDataStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
+import Progress from '@/components/ui/progress.tsx';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;
@@ -14,7 +15,8 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
-
+  const setProgress = useFileManagerStore((state) => state.setUploadProgress);
+  const resetProgress = useFileManagerStore((state) => state.resetProgress);
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -22,31 +24,25 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     }
   };
 
+  const handleProgressUpdate = (file: File, progress: number) => {
+    console.log(`Progress for ${progress}%`);
+    setProgress(file.name, progress);
+  };
+
   const uploadFiles = async () => {
     setFileOperationSuccessful(undefined, '');
-    const uploadPromises = selectedFiles.map((file) => {
-      const remotePath = `${currentPath}/${file.name}`;
-      return WebDavFunctions.uploadFile(file, remotePath);
-    });
-    await Promise.all(uploadPromises)
-      .then((resp) => {
-        const messages: string[] = [];
-        resp.forEach((item) => {
-          if ('message' in item) {
-            console.log('Message:', item.message);
-            messages.push(item.message);
-          }
-        });
-        const combinedMessage = messages.join('; ');
-        setFileOperationSuccessful(true, combinedMessage);
-      })
-      .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        setFileOperationSuccessful(false, errorMessage);
-      });
-
     setIsOpen(false);
-    setSelectedFiles([]);
+    try {
+      await WebDavFunctions.uploadMultipleFiles(selectedFiles, currentPath, handleProgressUpdate);
+      setFileOperationSuccessful(true, 'Files uploaded successfully');
+      resetProgress();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      setFileOperationSuccessful(false, errorMessage);
+      resetProgress();
+    } finally {
+      setSelectedFiles([]);
+    }
   };
 
   return (
@@ -56,6 +52,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
+        <Progress value={33} />
         <DialogTitle>Upload Your Item</DialogTitle>
         <DropZone
           files={selectedFiles}

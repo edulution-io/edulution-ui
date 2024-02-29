@@ -2,7 +2,7 @@ import { useState } from 'react';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 
 import { useFileManagerStore } from '@/store';
-import { ContentType, DirectoryFile } from '../../datatypes/filesystem';
+import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 const useWebDavActions = () => {
   const [files, setFiles] = useState<DirectoryFile[]>([]);

@@ -14,7 +14,7 @@ import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import { useFileManagerStore } from '@/store';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useWebDavActions from '@/utils/webDavHooks';
-import { ContentType } from '../../../../datatypes/filesystem';
+import { ContentType } from '@/datatypes/filesystem';
 
 interface CreateNewContentDialogProps {
   trigger: ReactNode;

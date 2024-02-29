@@ -10,7 +10,7 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import { FaLongArrowAltRight } from 'react-icons/fa';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store';
-import { ContentType, DirectoryFile } from '../../../../datatypes/filesystem';
+import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;

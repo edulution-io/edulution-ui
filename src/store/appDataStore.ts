@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
-import { DirectoryFile } from '../../datatypes/filesystem';
+import { DirectoryFile } from '@/datatypes/filesystem';
 
 type Store = {
   appName: string;
@@ -13,7 +13,10 @@ type FileManager = {
   selectedItems: DirectoryFile[];
   fileOperationSuccessful: boolean;
   currentPath: string;
+  uploadProgresses: { [key: string]: number };
   fileOperationMessage: string;
+  setUploadProgress: (fileName: string, percentage: number) => void;
+  resetProgress: () => void;
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
@@ -38,6 +41,7 @@ export const useFileManagerStore = create<FileManager>((set) => ({
   fileOperationMessage: '',
   currentPath: '/',
   selectedRows: {},
+  uploadProgresses: {},
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
   setCurrentPath: (currentPath: string) => set({ currentPath }),
   setFileName: (fileName: string) => set({ fileName }),
@@ -45,4 +49,12 @@ export const useFileManagerStore = create<FileManager>((set) => ({
   setSelectedItems: (items: DirectoryFile[]) => set({ selectedItems: items }),
   setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined, message: string) =>
     set({ fileOperationSuccessful, fileOperationMessage: message }),
+  setUploadProgress: (fileName, percentage) =>
+    set((state) => ({
+      uploadProgresses: {
+        ...state.uploadProgresses,
+        [fileName]: percentage,
+      },
+    })),
+  resetProgress: () => set({ uploadProgresses: {} }),
 }));

@@ -14,7 +14,7 @@ import {
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store/appDataStore';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { DirectoryFile } from '../../../../datatypes/filesystem';
+import { DirectoryFile } from '@/datatypes/filesystem';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
