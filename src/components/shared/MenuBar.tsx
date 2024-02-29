@@ -4,11 +4,11 @@ import { useLocation } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
 
+import cn from '@/lib/utils';
+
 const MenuBar: React.FC = () => {
   const location = useLocation();
   const menuBarEntries = useMenuBarConfig(location.pathname);
-
-  const hoverColor = `hover:${menuBarEntries.color}`;
 
   return (
     <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-10 text-white">
@@ -26,7 +26,7 @@ const MenuBar: React.FC = () => {
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
               <MenubarTrigger
-                className={`${hoverColor} flex w-full cursor-pointer items-center gap-5 px-10 py-1`}
+                className={cn('flex w-full cursor-pointer items-center gap-5 px-10 py-1', menuBarEntries.color)}
                 onClick={item.action}
               >
                 <img

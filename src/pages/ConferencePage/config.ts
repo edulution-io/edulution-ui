@@ -3,7 +3,7 @@ import { FileSharing, Desktop, Conferences } from '@/assets/icons';
 const CONFERENCES_MENUBAR_CONFIG = {
   title: 'conferences.title',
   icon: Conferences,
-  color: 'bg-ciDarkBlue',
+  color: 'hover:bg-ciLightGreen',
   menuItems: [
     {
       label: 'common.add',
