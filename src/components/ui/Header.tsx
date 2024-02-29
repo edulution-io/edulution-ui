@@ -18,6 +18,7 @@ const Header: React.FC = () => {
               <img
                 src={isDesktop ? DesktopLogo : MobileLogo}
                 alt="edulution"
+                className="m-4"
               />
             </Link>
           </div>
