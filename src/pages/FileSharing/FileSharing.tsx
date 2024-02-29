@@ -31,6 +31,7 @@ const FileSharing = () => {
   const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([]);
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const fileOperationSuccessful: boolean = useFileManagerStore((state) => state.fileOperationSuccessful);
+  const fileOperationMessage: string = useFileManagerStore((state) => state.fileOperationMessage);
 
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
@@ -103,7 +104,12 @@ const FileSharing = () => {
       />
       <div>
         {showLoadingPopUp && <LoadPopUp isOpen={showLoadingPopUp} />}
-        {showPopUp && <StatusAlert success={fileOperationSuccessful} />}
+        {showPopUp && (
+          <StatusAlert
+            success={fileOperationSuccessful}
+            message={fileOperationMessage}
+          />
+        )}
       </div>
       <div className="flex flex-1 flex-col">
         <div className="flex-1 overflow-auto pl-3 pr-3.5">

@@ -50,13 +50,20 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   };
 
   const renameFile = async (oldName: string, newName: string) => {
-    setFileOperationSuccessful(undefined);
+    setFileOperationSuccessful(undefined, '');
     await handleWebDavAction(() => WebDavFunctions.renameItem(oldName, newName))
       .then((resp) => {
-        setFileOperationSuccessful(resp.success);
+        if ('message' in resp) {
+          setFileOperationSuccessful(resp.success, resp.message);
+        } else {
+          setFileOperationSuccessful(resp.success, '');
+        }
+        setIsOpen(false);
       })
-      .catch(() => {
-        setFileOperationSuccessful(false);
+      .catch((error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setFileOperationSuccessful(false, errorMessage);
+        setIsOpen(false);
       });
   };
 

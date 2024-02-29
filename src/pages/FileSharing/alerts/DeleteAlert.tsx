@@ -28,28 +28,30 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
 
   const deleteItems = async (): Promise<void> => {
-    setFileOperationSuccessful(undefined);
+    setFileOperationSuccessful(undefined, '');
+
     try {
-      const itemsToDelete = selectedItems.length > 1 ? selectedItems : file;
-      console.log(itemsToDelete);
+      const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
+      console.log('Items to delete:', JSON.stringify(itemsToDelete, null, 2));
+      const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));
+      const deleteResults = await Promise.all(deletePromises);
+      const allSuccessful = deleteResults.every((result) => result.success);
+      const combinedMessage = deleteResults
+        .map((result, index) => `Item ${index + 1}: ${'message' in result ? result.message : 'No message provided'}`)
+        .join('; ');
 
-      const deleteResults = await Promise.all(
-        itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename).then((response) => response.success)),
-      );
+      setFileOperationSuccessful(allSuccessful, combinedMessage);
 
-      console.log(deleteResults);
-      const allSuccessful = deleteResults.every((success) => success);
-      console.log(allSuccessful);
-      setFileOperationSuccessful(allSuccessful);
       if (allSuccessful) {
         setRowSelection({});
         setSelectedItems([]);
       } else {
-        console.error('Not all delete operations were successful.');
+        console.error('Not all delete operations were successful:', combinedMessage);
       }
-    } catch (error) {
-      console.error('Error during delete operations:', error);
-      setFileOperationSuccessful(false);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
+      console.error('Error during delete operations:', errorMessage);
+      setFileOperationSuccessful(false, errorMessage);
     }
   };
 

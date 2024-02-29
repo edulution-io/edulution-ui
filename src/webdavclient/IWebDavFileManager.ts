@@ -41,5 +41,13 @@ export interface IWebDavFileManager {
   triggerFileDownload(path: string): void;
   triggerFolderDownload(path: string): Promise<void>;
   triggerMultipleFolderDownload(folders: DirectoryFile[]): Promise<void>;
-  uploadFile(file: File, remotePath: string): void;
+  uploadFile(
+    file: File,
+    remotePath: string,
+  ): Promise<
+    | { success: boolean; message: string; status: number }
+    | {
+        success: boolean;
+      }
+  >;
 }

@@ -4,9 +4,10 @@ import { Ban, PartyPopper } from 'lucide-react';
 
 interface StatusAlertProps {
   success: boolean;
+  message: string;
 }
 
-const StatusAlert: React.FC<StatusAlertProps> = ({ success }) => {
+const StatusAlert: React.FC<StatusAlertProps> = ({ success, message }) => {
   const [showAlert, setShowAlert] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -25,15 +26,15 @@ const StatusAlert: React.FC<StatusAlertProps> = ({ success }) => {
       {success && (
         <Alert className="bg-green-600">
           <PartyPopper className="h-4 w-4" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>The Creation was successfull</AlertDescription>
+          <AlertTitle>Heads up</AlertTitle>
+          <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
       {!success && (
         <Alert className="bg-red-600">
           <Ban className="h-4 w-4" />
           <AlertTitle>Failed</AlertTitle>
-          <AlertDescription>The Creation wasn´t successfull</AlertDescription>
+          <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
     </div>

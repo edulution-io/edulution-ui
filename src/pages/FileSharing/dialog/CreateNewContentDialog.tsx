@@ -32,26 +32,37 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
 
   const createFile = async (path: string): Promise<void> => {
-    setFileOperationSuccessful(undefined);
+    setFileOperationSuccessful(undefined, '');
     await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
       .then(async (resp) => {
-        setFileOperationSuccessful(resp.success);
+        console.log('Response:', JSON.stringify(resp, null, 2));
+        if ('message' in resp) {
+          setFileOperationSuccessful(resp.success, resp.message);
+        } else {
+          setFileOperationSuccessful(resp.success, 'no message');
+        }
         await fetchFiles(currentPath);
       })
-      .catch(() => {
-        setFileOperationSuccessful(false);
+      .catch((error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setFileOperationSuccessful(false, errorMessage);
       });
   };
 
   const createDirectory = async (path: string): Promise<void> => {
-    setFileOperationSuccessful(undefined);
+    setFileOperationSuccessful(undefined, '');
     await handleWebDavAction(() => WebDavFunctions.createDirectory(`${currentPath}/${path}`))
       .then(async (resp) => {
-        setFileOperationSuccessful(resp.success);
+        if ('message' in resp) {
+          setFileOperationSuccessful(resp.success, resp.message);
+        } else {
+          setFileOperationSuccessful(resp.success, '');
+        }
         await fetchFiles(currentPath);
       })
-      .catch(() => {
-        setFileOperationSuccessful(false);
+      .catch((error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setFileOperationSuccessful(false, errorMessage);
       });
   };
 

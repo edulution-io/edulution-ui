@@ -13,13 +13,14 @@ type FileManager = {
   selectedItems: DirectoryFile[];
   fileOperationSuccessful: boolean;
   currentPath: string;
+  fileOperationMessage: string;
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
   setFileName: (fileName: string) => void;
   setDirectoryName: (directoryName: string) => void;
   setSelectedItems: (items: DirectoryFile[]) => void;
-  setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) => void;
+  setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined, message: string) => void;
 };
 
 export const useAppDataStore = create<Store>((set) => ({
@@ -34,6 +35,7 @@ export const useFileManagerStore = create<FileManager>((set) => ({
   directoryName: '',
   selectedItems: [],
   fileOperationSuccessful: false,
+  fileOperationMessage: '',
   currentPath: '/',
   selectedRows: {},
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
@@ -41,6 +43,6 @@ export const useFileManagerStore = create<FileManager>((set) => ({
   setFileName: (fileName: string) => set({ fileName }),
   setDirectoryName: (directoryName: string) => set({ directoryName }),
   setSelectedItems: (items: DirectoryFile[]) => set({ selectedItems: items }),
-  setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined) =>
-    set(() => ({ fileOperationSuccessful })),
+  setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined, message: string) =>
+    set({ fileOperationSuccessful, fileOperationMessage: message }),
 }));

@@ -5,13 +5,13 @@ import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../../datatypes/filesystem';
 
-const handleApiResponse = (resp: { statusText: string; status: number }) =>
-  ApiResponseHandler.handleApiResponse(
-    new Response(null, {
-      status: resp?.status || 200,
-      statusText: resp?.statusText || 'OK',
-    }),
-  );
+function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
+  return {
+    success: true,
+    message: response.statusText || 'Action created successfully',
+    status: response.status,
+  };
+}
 
 const handleApiError = (error: Response) => {
   let status = 500;
@@ -57,7 +57,11 @@ const getContentList: IWebDavFileManager['getContentList'] = async (path: string
 const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string) => {
   try {
     await client.createDirectory(path);
-    return handleApiResponse({ status: 200, statusText: 'OK' });
+    const response = new Response('OK', {
+      status: 200,
+      statusText: `Directory ${getFileNameFromPath(path)} created successfully`,
+    });
+    return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
   }
@@ -66,7 +70,12 @@ const createDirectory: IWebDavFileManager['createDirectory'] = async (path: stri
 const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
   try {
     await client.putFileContents(path, ' ');
-    return handleApiResponse({ status: 200, statusText: 'OK' });
+    const response = new Response('OK', {
+      status: 200,
+      statusText: `File ${getFileNameFromPath(path)} created successfully`,
+    });
+    console.log(response.statusText, response.status, response.url, response.type, response.bodyUsed, response.body);
+    return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
   }
@@ -76,7 +85,11 @@ const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
   try {
     console.log('Deleting item:', path);
     await client.deleteFile(path);
-    return handleApiResponse({ status: 200, statusText: 'OK' });
+    const response = new Response('OK', {
+      status: 200,
+      statusText: `File ${getFileNameFromPath(path)} was deleted successfully`,
+    });
+    return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
   }
@@ -93,7 +106,11 @@ const moveFile = async (
     });
 
     if (response.status >= 200 && response.status < 300) {
-      return { success: true, message: 'Move successful', status: response.status };
+      return {
+        success: true,
+        message: `Move successful ${getFileNameFromPath(sourcePath)} to ${destinationPath}`,
+        status: response.status,
+      };
     }
     return { success: false, message: 'Move failed', status: response.status };
   } catch (error) {
@@ -147,32 +164,43 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   return failed ? { ...failed } : { success: true, message: 'All items moved successfully', status: 200 };
 };
 
-const uploadFile: IWebDavFileManager['uploadFile'] = (file: File, remotePath: string) => {
-  try {
+const uploadFile: IWebDavFileManager['uploadFile'] = (file: File, remotePath: string) =>
+  new Promise((resolve, reject) => {
     const reader = new FileReader();
+
     reader.onload = async () => {
-      const arrayBuffer = reader.result;
-      if (arrayBuffer instanceof ArrayBuffer) {
-        await client.putFileContents(remotePath, arrayBuffer, {
-          overwrite: true,
-          headers: {
-            'Content-Type': file.type || 'application/octet-stream',
-          },
-        });
-        console.log('File uploaded successfully');
-        handleApiResponse({ status: 200, statusText: 'OK' });
-      } else {
-        throw new Error('Failed to read file as ArrayBuffer');
+      try {
+        const arrayBuffer = reader.result;
+        if (arrayBuffer instanceof ArrayBuffer) {
+          await client.putFileContents(remotePath, arrayBuffer, {
+            overwrite: true,
+            headers: {
+              'Content-Type': file.type || 'application/octet-stream',
+            },
+          });
+          console.log('File uploaded successfully');
+          resolve(
+            handleApiResponse(
+              new Response('OK', { status: 200, statusText: `File ${file.name} uploaded successfully` }),
+            ),
+          );
+        } else {
+          reject(new Error('Failed to read file as ArrayBuffer'));
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          reject(error);
+        } else {
+          reject(new Error('An unknown error occurred'));
+        }
       }
     };
+
     reader.onerror = () => {
-      throw new Error(`Error reading file: ${reader.error?.toString()}`);
+      reject(new Error(`Error reading file: ${reader.error?.message || 'Unknown error'}`));
     };
     reader.readAsArrayBuffer(file);
-  } catch (error) {
-    handleApiError(error as Response);
-  }
-};
+  });
 
 const addItemsToZip = async (zip: JSZip, path: string) => {
   const folderName = path.split('/').filter(Boolean).pop() || 'Folder';

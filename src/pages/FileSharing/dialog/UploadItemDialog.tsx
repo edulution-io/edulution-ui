@@ -13,6 +13,8 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const currentPath = useFileManagerStore((state) => state.currentPath);
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
+
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -21,11 +23,28 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   };
 
   const uploadFiles = async () => {
+    setFileOperationSuccessful(undefined, '');
     const uploadPromises = selectedFiles.map((file) => {
       const remotePath = `${currentPath}/${file.name}`;
       return WebDavFunctions.uploadFile(file, remotePath);
     });
-    await Promise.all(uploadPromises);
+    await Promise.all(uploadPromises)
+      .then((resp) => {
+        const messages: string[] = [];
+        resp.forEach((item) => {
+          if ('message' in item) {
+            console.log('Message:', item.message);
+            messages.push(item.message);
+          }
+        });
+        const combinedMessage = messages.join('; ');
+        setFileOperationSuccessful(true, combinedMessage);
+      })
+      .catch((error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setFileOperationSuccessful(false, errorMessage);
+      });
+
     setIsOpen(false);
     setSelectedFiles([]);
   };
