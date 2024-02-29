@@ -11,7 +11,7 @@ const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig(location.pathname);
 
   return (
-    <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-10 text-white">
+    <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40 text-white">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center py-6">
           <img

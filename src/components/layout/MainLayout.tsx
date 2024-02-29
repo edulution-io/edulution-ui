@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
+import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import Sidebar from '../ui/Sidebar';
@@ -11,7 +12,10 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
 
   return (
     <>
-      <div className="flex bg-[#3B3B3B]">
+      <div
+        className="flex bg-cover bg-center opacity-90"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
         {location.pathname !== '/' ? <MenuBar /> : null}
         <div className="flex min-h-[100vh] flex-col px-5 lg:px-20">
           <Header />
