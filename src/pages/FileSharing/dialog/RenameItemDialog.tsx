@@ -5,6 +5,8 @@ import { getFileNameFromPath, getPathWithoutFileName, validateDirectoryName, val
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
+import { useFileManagerStore } from '@/store';
+import useWebDavActions from '@/utils/webDavHooks';
 import { ContentType, DirectoryFile } from '../../../../datatypes/filesystem';
 
 interface RenameContentDialogProps {
@@ -18,7 +20,8 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [localFileName, setLocalFileName] = useState('');
   const fileName = getFileNameFromPath(item.filename);
   const placeholderText = fileName.length > 0 ? `to ${fileName}` : 'File name is empty';
-
+  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
+  const { handleWebDavAction } = useWebDavActions();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -46,8 +49,15 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
     setLocalFileName(name);
   };
 
-  const renameFile = (oldName: string, newName: string) => {
-    WebDavFunctions.renameItem(oldName, newName).catch(() => null);
+  const renameFile = async (oldName: string, newName: string) => {
+    setFileOperationSuccessful(undefined);
+    await handleWebDavAction(() => WebDavFunctions.renameItem(oldName, newName))
+      .then((resp) => {
+        setFileOperationSuccessful(resp.success);
+      })
+      .catch(() => {
+        setFileOperationSuccessful(false);
+      });
   };
 
   return (
@@ -72,7 +82,9 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
             <Button
               className="bg-green-600"
               disabled={!isNameValid}
-              onClick={() => renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`)}
+              onClick={() => {
+                renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch(() => {});
+              }}
             >
               Rename
             </Button>

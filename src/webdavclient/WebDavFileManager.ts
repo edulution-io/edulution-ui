@@ -68,17 +68,16 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
     await client.putFileContents(path, ' ');
     return handleApiResponse({ status: 200, statusText: 'OK' });
   } catch (error) {
-    console.error('Error creating file:', error);
     return handleApiError(error as Response);
   }
 };
 
 const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
   try {
+    console.log('Deleting item:', path);
     await client.deleteFile(path);
     return handleApiResponse({ status: 200, statusText: 'OK' });
   } catch (error) {
-    console.error('Error deleting file:', error);
     return handleApiError(error as Response);
   }
 };
@@ -93,7 +92,6 @@ const moveFile = async (
       headers: { Destination: `${destinationPath}` },
     });
 
-    // Checking response status to determine success/failure
     if (response.status >= 200 && response.status < 300) {
       return { success: true, message: 'Move successful', status: response.status };
     }
@@ -172,7 +170,6 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (file: File, remotePath: st
     };
     reader.readAsArrayBuffer(file);
   } catch (error) {
-    console.error('Error uploading file:', error);
     handleApiError(error as Response);
   }
 };
@@ -184,7 +181,6 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
   const contentList = await getContentList(path);
   try {
     const operations = contentList.map(async (item) => {
-      console.log(item.filename.split('/'), 'LLLLLLL');
       if (item.type === 'file') {
         try {
           const result = await client.getFileContents(`${item.filename}`, { format: 'binary' });

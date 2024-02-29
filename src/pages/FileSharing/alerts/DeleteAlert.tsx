@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import * as WebDavFunctions from '@/webdavclient/WebDavFileManager';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store/appDataStore';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DirectoryFile } from '../../../../datatypes/filesystem';
@@ -25,23 +25,34 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
+  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
 
   const deleteItems = async (): Promise<void> => {
+    setFileOperationSuccessful(undefined);
     try {
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : file;
+      console.log(itemsToDelete);
 
-      await Promise.all(
-        itemsToDelete.map(async (item) => {
-          await WebDavFunctions.default.deleteItem(item.filename);
-        }),
+      const deleteResults = await Promise.all(
+        itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename).then((response) => response.success)),
       );
 
-      setRowSelection({});
-      setSelectedItems([]);
-    } catch {
-      /* empty */
+      console.log(deleteResults);
+      const allSuccessful = deleteResults.every((success) => success);
+      console.log(allSuccessful);
+      setFileOperationSuccessful(allSuccessful);
+      if (allSuccessful) {
+        setRowSelection({});
+        setSelectedItems([]);
+      } else {
+        console.error('Not all delete operations were successful.');
+      }
+    } catch (error) {
+      console.error('Error during delete operations:', error);
+      setFileOperationSuccessful(false);
     }
   };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
