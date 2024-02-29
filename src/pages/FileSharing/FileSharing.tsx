@@ -24,7 +24,7 @@ import DataTable from '@/pages/FileSharing/table/DataTable';
 import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 // import { IconBaseProps } from 'react-icons';
 
 const FileSharing = () => {
@@ -36,7 +36,7 @@ const FileSharing = () => {
 
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   // eslint-disable-next-line @typescript-eslint/require-await
   const fetchMounts = async () => {
     try {
@@ -102,7 +102,7 @@ const FileSharing = () => {
   // }));
 
   return (
-    <div className="flex  ">
+    <div className="relative overflow-x-auto">
       <div>
         {showLoadingPopUp && <LoadPopUp isOpen={showLoadingPopUp} />}
         {showPopUp && (
@@ -114,7 +114,6 @@ const FileSharing = () => {
       </div>
       <div>
         <div className="flex-1 overflow-auto pl-3 pr-3.5">
-          <h1 className="mb-1 text-lg">{t('conferencePage')}</h1>
           <div className="flex justify-between pb-3 pt-3">
             <TooltipProvider>
               <div className="flex flex-col ">
@@ -230,10 +229,12 @@ const FileSharing = () => {
               </div>
             </TooltipProvider>
           </div>
-          <DataTable
-            columns={Columns}
-            data={files}
-          />
+          <div className="container mx-auto py-10">
+            <DataTable
+              columns={Columns}
+              data={files}
+            />
+          </div>
           <UploadToast />
         </div>
       </div>
