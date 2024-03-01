@@ -25,6 +25,7 @@
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@react-pdf/renderer": "^3.3.8",
     "@tanstack/react-query": "^5.18.1",
     "@tanstack/react-query-devtools": "^5.18.1",
     "@tanstack/react-table": "^8.11.8",
@@ -44,6 +45,7 @@
     "react-dropzone": "^14.2.3",
     "react-i18next": "^14.0.3",
     "react-icons": "^5.0.1",
+    "react-pdf": "^7.7.1",
     "react-player": "^2.15.0",
     "react-router-dom": "^6.22.0",
     "sass": "^1.70.0",
@@ -86,6 +88,7 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vite-plugin-static-copy": "^1.0.1"
   }
 }
