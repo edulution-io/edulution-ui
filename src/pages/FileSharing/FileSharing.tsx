@@ -24,6 +24,7 @@ import DataTable from '@/pages/FileSharing/table/DataTable';
 import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import HexagonButton from '@/components/shared/HexagonButton.tsx';
 // import { useTranslation } from 'react-i18next';
 // import { IconBaseProps } from 'react-icons';
 
@@ -138,10 +139,9 @@ const FileSharing = () => {
                       trigger={
                         <CreateNewContentDialog
                           trigger={
-                            <MdOutlineNoteAdd
-                              className="font-bold text-white"
-                              onClick={() => console.log('HALLO')}
-                            />
+                            <HexagonButton onClick={() => console.log('Wanna Upload')}>
+                              <MdOutlineNoteAdd className="font-bold text-white" />
+                            </HexagonButton>
                           }
                           contentType={ContentType.file}
                         />
@@ -153,10 +153,9 @@ const FileSharing = () => {
                       trigger={
                         <CreateNewContentDialog
                           trigger={
-                            <HiOutlineFolderAdd
-                              className="font-bold text-white"
-                              onClick={() => console.log('HALLO')}
-                            />
+                            <HexagonButton onClick={() => console.log('Wanna Upload')}>
+                              <HiOutlineFolderAdd className="font-bold text-white" />
+                            </HexagonButton>
                           }
                           contentType={ContentType.directory}
                         />
@@ -168,10 +167,9 @@ const FileSharing = () => {
                       trigger={
                         <UploadItemDialog
                           trigger={
-                            <FiUpload
-                              className="font-bold text-white"
-                              onClick={() => console.log('Wanna Upload')}
-                            />
+                            <HexagonButton onClick={() => console.log('Wanna Upload')}>
+                              <FiUpload className="font-bold text-white" />
+                            </HexagonButton>
                           }
                         />
                       }

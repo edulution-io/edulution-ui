@@ -7,7 +7,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
-import { FaLongArrowAltRight } from 'react-icons/fa';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
@@ -94,7 +93,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
           </TableRow>
         </TableHeader>
         <ScrollArea className="h-[200px]">
-          <TableBody>
+          <TableBody className="flex w-full flex-col">
             {directorys.map((row) => (
               <TableRow
                 key={row.filename}
@@ -102,23 +101,18 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
                   e.preventDefault();
                   setSelectedRow(row);
                 }}
+                onDoubleClick={(event) => {
+                  event.stopPropagation();
+                  handleNextFolder(row);
+                }}
                 style={{
                   backgroundColor: selectedRow?.filename === row.filename ? '#f0f0f0' : 'transparent',
                   cursor: 'pointer',
                 }}
               >
                 <TableCell>
-                  <div className="flex justify-between">
+                  <div className="flex flex-row justify-between space-x-4">
                     <p>{getFileNameFromPath(row.filename)}</p>
-                    <Button
-                      className="bg-gray-50"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleNextFolder(row);
-                      }}
-                    >
-                      <FaLongArrowAltRight />
-                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
