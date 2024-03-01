@@ -22,8 +22,8 @@ import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
 
-const filenameColumnWidth = 'w-1/2';
 const lastModColumnWidth = 'w-1/3';
 const sizeColumnWidth = 'w-1/3';
 const operationsColumnWidth = 'w-1/12';
@@ -40,7 +40,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
     header: ({ table, column }) => (
-      <div className={`flex items-center justify-between ${filenameColumnWidth}`}>
+      <div className="">
         <Checkbox
           checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
           onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
@@ -57,12 +57,18 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorFn: (row) => row.type + row.filename,
 
     cell: ({ row }) => {
+      const [isPreviewOpen, setPreviewOpen] = useState(false);
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
       const Icon = filename.includes('.txt') ? FaFileAlt : FaFolder;
       const { fetchFiles } = useWebDavActions();
       const handleFilenameClick = (filenamePath: string) => {
-        fetchFiles(filenamePath).catch((error) => console.log(error));
+        if (row.original.type === ContentType.file) {
+          setPreviewOpen(true);
+        }
+        if (row.original.type === ContentType.directory) {
+          fetchFiles(filenamePath).catch((error) => console.log(error));
+        }
       };
 
       const handleCheckboxChange = () => {
@@ -72,7 +78,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
       return (
         <div className="flex items-center">
-          <div className={`flex items-center ${filenameColumnWidth}`}>
+          <div className="flex items-center">
             <Checkbox
               checked={row.getIsSelected()}
               onCheckedChange={handleCheckboxChange}
@@ -93,6 +99,13 @@ const Columns: ColumnDef<DirectoryFile>[] = [
             >
               {formattedFilename}
             </span>
+            {isPreviewOpen && (
+              <FilePreview
+                file={row.original}
+                isOpen={isPreviewOpen}
+                onClose={() => setPreviewOpen(false)}
+              />
+            )}
           </div>
         </div>
       );
@@ -109,10 +122,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'lastmod',
     header: ({ column }) => (
       <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <div className={`flex items-center justify-between ${lastModColumnWidth}`}>
-          Last Modified
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
+        <div className="">Last Modified</div>
       </Button>
     ),
     cell: ({ row }) => {
@@ -147,10 +157,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'size',
     header: ({ column }) => (
       <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <div className={`flex items-center justify-between ${sizeColumnWidth}`}>
-          Size
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
+        <div className="">Size</div>
       </Button>
     ),
     cell: ({ row }) => {

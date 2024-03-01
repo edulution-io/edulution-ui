@@ -58,6 +58,10 @@ function formatBytes(bytes: number, decimals = 2): string {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
+function getFileTyp(fullPath: string): string {
+  return <string>fullPath.split('.').pop();
+}
+
 export {
   translateKey,
   getPathWithoutFileName,
@@ -66,4 +70,5 @@ export {
   validateDirectoryName,
   getPrecedingPath,
   formatBytes,
+  getFileTyp,
 };
