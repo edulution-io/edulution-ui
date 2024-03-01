@@ -102,7 +102,7 @@ const FileSharing = () => {
   // }));
 
   return (
-    <div className="relative overflow-x-auto">
+    <div className="  w-full overflow-x-auto">
       <div>
         {showLoadingPopUp && <LoadPopUp isOpen={showLoadingPopUp} />}
         {showPopUp && (
@@ -113,8 +113,8 @@ const FileSharing = () => {
         )}
       </div>
       <div>
-        <div className="flex-1 overflow-auto pl-3 pr-3.5">
-          <div className="flex justify-between pb-3 pt-3">
+        <div className="container  flex-1 justify-between overflow-auto pl-3 pr-3.5">
+          <div className="flex w-full justify-between pb-3 pt-3">
             <TooltipProvider>
               <div className="flex flex-col ">
                 <div className="flex space-x-2">
@@ -229,7 +229,7 @@ const FileSharing = () => {
               </div>
             </TooltipProvider>
           </div>
-          <div className="container mx-auto py-10">
+          <div className="mx-auto w-full  py-10">
             <DataTable
               columns={Columns}
               data={files}

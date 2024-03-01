@@ -58,9 +58,9 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
         </div>
       )}
 
-      <div className="flex flex-col">
+      <div className="container mx-auto w-full">
         <ScrollArea className="max-h-[600px]  overflow-auto">
-          <Table className="max-w-22">
+          <Table className="">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
@@ -75,7 +75,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody>
+            <TableBody className="container">
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
