@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import Label from '@/components/ui/label';
 import { getFileTyp } from '@/utils/common';
-import fileTypePreviews from '@/pages/FileSharing/Previews/FileTypePreviews';
+import fileTypePreviews from '@/pages/FileSharing/previews/FileTypePreviews';
 import { FileTypePreviewProps } from '@/datatypes/types';
 
 interface FilePreviewProps {
@@ -29,12 +29,11 @@ const FilePreview: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
     onClose();
   };
   return (
-    <div className="h-full w-full">
+    <div className="container w-full">
       <Dialog
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <DialogTrigger />
         <DialogContent>{renderTypeSpecificPreview({ file })}</DialogContent>
       </Dialog>
     </div>
