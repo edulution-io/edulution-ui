@@ -13,7 +13,10 @@ const MobileDataAccess = () => {
         <div className="flex flex-col gap-6">
           <h4 className="text-md font-bold">{t('dashboard.mobileAccess.title')}</h4>
           <p>{t('dashboard.mobileAccess.content')}</p>
-          <Button variant="btn-infrastructure">
+          <Button
+            variant="btn-infrastructure"
+            size="lg"
+          >
             <img
               src={AppleLogo}
               alt="AppleLogo"

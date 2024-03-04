@@ -19,6 +19,7 @@ const AccountInformation = () => (
         <Button
           variant="btn-collaboration"
           className="mt-4"
+          size="sm"
         >
           Passwort ändern
         </Button>
@@ -30,6 +31,7 @@ const AccountInformation = () => (
         <Button
           variant="btn-collaboration"
           className="mt-4"
+          size="sm"
         >
           Meine Daten ändern
         </Button>

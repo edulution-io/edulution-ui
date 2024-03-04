@@ -154,6 +154,85 @@ const Sidebar = () => {
     setDownButtonVisible(rect.bottom > window.innerHeight - 58);
   }, [size, translate, MENU_ITEMS]);
 
+  const handleWheel = (e: WheelEvent) => {
+    e.preventDefault();
+    setTranslate((prevTranslate) => {
+      if (sidebarIconsRef.current == null) {
+        return prevTranslate;
+      }
+      if (downButtonVisible && e.deltaY > 0) return prevTranslate + TRANSLATE_AMOUNT;
+      if (upButtonVisible && e.deltaY < 0 && translate > 0) return prevTranslate - TRANSLATE_AMOUNT;
+      return prevTranslate;
+    });
+  };
+
+  useEffect(() => {
+    const container = sidebarIconsRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, [handleWheel]);
+
+  const [startY, setStartY] = useState<number | null>(null);
+
+  const handleTouchStart = (event: TouchEvent) => {
+    setStartY(event.touches[0].clientY);
+  };
+
+  const handleTouchMove = (event: TouchEvent) => {
+    event.preventDefault();
+    if (!startY) return;
+
+    const deltaY = event.touches[0].clientY - startY;
+
+    setTranslate((prevTranslate) => {
+      if (sidebarIconsRef.current == null) {
+        return prevTranslate;
+      }
+      if (downButtonVisible && deltaY > 0) return prevTranslate + 3;
+      if (upButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
+      return prevTranslate;
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setStartY(null);
+  };
+
+  useEffect(() => {
+    const container = sidebarIconsRef.current;
+    if (container) {
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchstart', handleTouchStart, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+
+  const menuButton = () => (
+    <Button
+      variant="btn-outline"
+      size="sm"
+      className="rounded-[16px] border-[3px]"
+      onClick={toggle}
+    >
+      {t('menu')}
+    </Button>
+  );
+
   const homeButton = () => (
     <div key="home">
       <NavLink
@@ -186,7 +265,7 @@ const Sidebar = () => {
     <div key="up">
       <button
         type="button"
-        className="border-ciLightGrey relative right-0 z-[99] w-full cursor-pointer border-b-2 bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2"
+        className={`border-ciLightGrey relative right-0 z-[50] w-full cursor-pointer border-b-2 bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? '' : 'top-0 h-[58px] border-t-2'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
             const newTranslate = prevTranslate - TRANSLATE_AMOUNT;
@@ -208,7 +287,7 @@ const Sidebar = () => {
     <div key="down">
       <button
         type="button"
-        className="border-ciLightGrey absolute bottom-10 right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2"
+        className={`border-ciLightGrey absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-10' : 'bottom-0 h-[58px] border-t-0'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
             if (sidebarIconsRef.current == null) {
@@ -237,7 +316,7 @@ const Sidebar = () => {
           // alert('Logout');
         }}
         to="/logout"
-        className={`border-ciLightGrey group fixed bottom-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
+        className={`border-ciLightGrey group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
@@ -248,7 +327,7 @@ const Sidebar = () => {
           alt=""
         />
         <div
-          className={`border-ciLightGrey absolute bottom-0 left-full z-[50] flex items-center gap-4 rounded-l-xl bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
+          className={`border-ciLightGrey absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-xl bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
         >
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img
@@ -263,62 +342,44 @@ const Sidebar = () => {
   );
 
   const renderListItem = () => (
-    <div className="fixed right-0 h-screen bg-black  md:bg-none">
-      {isOpen && (
-        <div className="mb-[80px] ml-[24px] text-right md:hidden">
-          <Button
-            variant="btn-collaboration"
-            className="mb-4 mr-3 mt-4 rounded-[16px] border-[3px] border-solid"
-            onClick={toggle}
-          >
-            {t('menu')}
-          </Button>
-        </div>
-      )}
-      {homeButton()}
+    <div className="fixed right-0 h-screen bg-black bg-opacity-90 md:bg-none">
+      {!isDesktop && isOpen ? (
+        <>
+          <div className="relative right-0 top-0 z-[50] h-[100px] bg-black" />
+          <div className="fixed right-0 top-0 z-[99] pr-4 pt-4">{menuButton()}</div>
+        </>
+      ) : null}
+      {isDesktop ? homeButton() : null}
       {upButtonVisible ? upButton() : null}
+
       <div
         ref={sidebarIconsRef}
-        className="top-30"
-        style={{ transform: `translateY(-${translate}px)` }}
-        onWheel={(e) => {
-          setTranslate((prevTranslate) => {
-            if (sidebarIconsRef.current == null) {
-              return prevTranslate;
-            }
-            if (downButtonVisible && e.deltaY > 0) return prevTranslate + TRANSLATE_AMOUNT;
-            if (upButtonVisible && e.deltaY < 0 && translate > 0) return prevTranslate - TRANSLATE_AMOUNT;
-            return prevTranslate;
-          });
-        }}
+        style={{ transform: `translateY(-${translate}px)`, overflowY: !isDesktop ? 'scroll' : 'clip' }}
+        onClickCapture={toggle}
+        onWheel={() => handleWheel}
+        onTouchStart={() => handleTouchStart}
+        onTouchMove={() => handleTouchMove}
+        onTouchEnd={() => handleTouchEnd}
       >
         {MENU_ITEMS.map((item) => (
           <SidebarItem
             key={item.title}
             menuItem={item}
-            isDesktop
+            isDesktop={isDesktop}
             pathname={pathname}
             translate={translate}
           />
         ))}
       </div>
       {downButtonVisible ? downButton() : null}
-      {logoutButton()}
+      {isDesktop ? logoutButton() : null}
     </div>
   );
 
   if (!isDesktop) {
     return (
       <div>
-        {!isOpen && (
-          <Button
-            className="bg-ciLightGrey fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid md:hidden"
-            variant="btn-collaboration"
-            onClick={toggle}
-          >
-            {t('menu')}
-          </Button>
-        )}
+        {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
         <div className="bg-black">{isOpen && renderListItem()}</div>
       </div>
     );
