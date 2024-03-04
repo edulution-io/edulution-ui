@@ -24,9 +24,7 @@ import DataTable from '@/pages/FileSharing/table/DataTable';
 import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import HexagonButton from '@/components/shared/HexagonButton.tsx';
-// import { useTranslation } from 'react-i18next';
-// import { IconBaseProps } from 'react-icons';
+import HexagonButton from '@/components/shared/HexagonButton';
 
 const FileSharing = () => {
   const { files, currentPath, fetchFiles } = useWebDavActions();
@@ -37,8 +35,7 @@ const FileSharing = () => {
 
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
-  // const { t } = useTranslation();
-  // eslint-disable-next-line @typescript-eslint/require-await
+
   const fetchMounts = async () => {
     try {
       // const result = await fetchMountPoints();
