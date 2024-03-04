@@ -1,13 +1,12 @@
 import React from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import { getFileNameFromPath } from '@/utils/common.ts';
+import { getFileNameFromPath } from '@/utils/common';
 
 interface GraphicPreviewProps {
   file: DirectoryFile;
 }
 
 const GraphicPreview: React.FC<GraphicPreviewProps> = ({ file }) => {
-  // Ensure that the mediaUrl is the correct URL pointing to where the file is served.
   const mediaUrl = `http://localhost:5173/webdav/${file.filename}`;
 
   return (
