@@ -2,7 +2,7 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen Frau Mustermann",
-  "content": "Hier ist ihre persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
       "title": "MOBILER DATENZUGRIFF",
@@ -33,5 +33,5 @@
   "share": "Share",
   "students": "Schüler",
 
-  "common": { "add": "Hinzufügen", "reload": "Neu laden" }
+  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout" }
 }

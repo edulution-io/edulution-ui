@@ -26,5 +26,5 @@
   "share": "Share",
   "students": "Students",
 
-  "common": { "add": "Add", "reload": "Reload" }
+  "common": { "add": "Add", "reload": "Reload", "logout": "Logout" }
 }
