@@ -29,8 +29,8 @@ const handleApiError = (error: Response) => {
 };
 
 const client = createClient('http://localhost:5173/webdav/', {
-  username: 'netzint-teacher',
-  password: 'Muster!',
+  username: import.meta.env.VITE_USERNAME as string,
+  password: import.meta.env.VITE_PASSWORD as string,
 });
 
 const getContentList: IWebDavFileManager['getContentList'] = async (path: string): Promise<DirectoryFile[]> => {
@@ -173,7 +173,10 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', client.getFileUploadLink(remotePath), true);
 
-    xhr.setRequestHeader('Authorization', `Basic ${btoa('netzint-teacher:Muster!')}`);
+    xhr.setRequestHeader(
+      'Authorization',
+      `Basic ${btoa(`${import.meta.env.VITE_USERNAME}:${import.meta.env.VITE_PASSWORD}`)}`,
+    );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 
     xhr.upload.onprogress = (event) => {
