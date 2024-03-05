@@ -1,1 +1,0 @@
-export { RoomBookingPage } from './RoomBookingPage';

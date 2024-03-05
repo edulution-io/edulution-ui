@@ -1,8 +1,6 @@
-import React from 'react';
-
 interface MenuItem {
   label: string;
-  IconComponent: React.ElementType;
+  icon: string;
   action: () => void;
 }
 

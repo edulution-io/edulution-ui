@@ -33,10 +33,7 @@ const MenubarTrigger = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Trigger
     ref={ref}
-    className={cn(
-      'flex cursor-default select-none items-center rounded-sm px-3 py-1 text-sm font-medium outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
-      className,
-    )}
+    className={cn('', className)}
     {...props}
   />
 ));
@@ -48,10 +45,7 @@ const VerticalMenubar = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Root
     ref={ref}
-    className={cn(
-      ' items-start space-y-1 rounded-md border bg-background p-1 shadow-sm sm:flex-row md:min-w-[10vw] md:max-w-[10vw]',
-      className,
-    )}
+    className={cn('items-start space-y-1 shadow-sm sm:flex-row md:max-w-[256px]', className)}
     {...props}
   />
 ));
@@ -211,7 +205,7 @@ const MenubarSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Separator
     ref={ref}
-    className={cn('-mx-1 my-1 h-px bg-muted bg-white', className)}
+    className={cn('h-px w-full bg-muted bg-white', className)}
     {...props}
   />
 ));

@@ -10,9 +10,7 @@ type Store = {
 const useAuthStore = create<Store>()((set) => ({
   isAuthenticated: false,
   user: null,
-  login: async (username: string, password: string): Promise<void> => {
-    // Perform login logic...
-    console.log('Logging in...', password);
+  login: async (username: string): Promise<void> => {
     set({ isAuthenticated: true, user: { name: username } });
     await Promise.resolve();
   },
