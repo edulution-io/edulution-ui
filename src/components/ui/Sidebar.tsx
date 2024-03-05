@@ -168,7 +168,6 @@ const Sidebar = () => {
         <NavLink
           onClick={(e) => {
             e.preventDefault();
-            // alert('Logout');
           }}
           to="/logout"
           className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === '/logout' ? 'bg-gradient-to-r from-[#94D15C] to-[#4087B3]' : ''}`}
