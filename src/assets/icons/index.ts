@@ -19,3 +19,4 @@ export { default as Settings } from '@/assets/icons/edulution/Wartung.svg';
 export { default as Share } from '@/assets/icons/edulution/Aus_einer_Hand.svg';
 export { default as Students } from '@/assets/icons/edulution/Education.svg';
 export { default as Desktop } from '@/assets/icons/edulution/Desktop.svg';
+export { default as Lernmanagement } from '@/assets/icons/edulution/Lernmanagement.svg';
