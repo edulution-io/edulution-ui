@@ -6,6 +6,7 @@ import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 
+
 const useMenuBarConfig = (location: string) => {
   const { t } = useTranslation();
   const navigate = useNavigate();

@@ -12,6 +12,7 @@ module.exports = {
       screens: {
         '2xl': '1400px',
       },
+      text: 'text-white',
     },
     extend: {
       fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt' },
@@ -89,7 +90,7 @@ module.exports = {
         h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em', fontWeight: '700' },
         h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
-        p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em', fontStyle: 'bold' },
+        p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
       });
     }),
   ],

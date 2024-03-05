@@ -16,6 +16,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
     size: {
       lg: 'h-10 rounded-md px-8',
       sm: 'h-8 rounded-md px-3 text-xs',
+
     },
   },
 });

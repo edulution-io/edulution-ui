@@ -10,7 +10,6 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
-
   "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
   "firewall": "Firewall",
   "virtualization": "Virtualisierung",
@@ -32,6 +31,6 @@
   "programs": "Programme",
   "share": "Share",
   "students": "Schüler",
-
+  
   "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout" }
 }
