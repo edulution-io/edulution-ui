@@ -26,7 +26,10 @@ const MenuBar: React.FC = () => {
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
               <MenubarTrigger
-                className={cn('flex w-full cursor-pointer items-center gap-5 px-10 py-1', menuBarEntries.color)}
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
+                  menuBarEntries.color,
+                )}
                 onClick={item.action}
               >
                 <img
