@@ -36,6 +36,10 @@ const useMenuBarConfig = (location: string) => {
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
     label: t(item.label),
     action: () => (pathname === '/file-sharing' ? fetchFiles(item.label) : navigate(item.label)),
+
+  const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
+    label: t(item.label),
+    action: () => navigate(item.link),
     icon: item.icon,
   }));
 

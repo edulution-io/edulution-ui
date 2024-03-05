@@ -18,7 +18,7 @@ import Chat from '@/assets/icons/edulution/Chat.svg';
 import Wlan from '@/assets/icons/edulution/Wlan.svg';
 import KnowledgeBase from '@/assets/icons/edulution/Wissensdatenbank.svg';
 import User from '@/assets/icons/edulution/Benutzer.svg';
-import { translateKey } from '@/utils/common';
+import translateKey from '@/utils/common';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useToggle } from 'usehooks-ts';
 
@@ -168,7 +168,6 @@ const Sidebar = () => {
         <NavLink
           onClick={(e) => {
             e.preventDefault();
-            // alert('Logout');
           }}
           to="/logout"
           className={`group relative flex cursor-pointer items-center justify-end gap-4 border-t border-gray-500 bg-black px-4 py-2 hover:border-black md:block md:px-2 ${pathname === '/logout' ? 'bg-gradient-to-r from-[#94D15C] to-[#4087B3]' : ''}`}
@@ -195,20 +194,23 @@ const Sidebar = () => {
     </div>
   );
 
-  return (
-    <div>
-      {!isDesktop && !isOpen && (
-        <Button
-          className="fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid bg-[#434343] md:hidden"
-          variant="btn-primary"
-          onClick={toggle}
-        >
-          {t('menu')}
-        </Button>
-      )}
-      {isOpen || isDesktop ? renderListItem() : null}
-    </div>
-  );
+  if (!isDesktop) {
+    return (
+      <div>
+        {!isOpen && (
+          <Button
+            className="fixed right-0 top-4 z-50 mr-3 rounded-[16px] border-[3px] border-solid bg-[#434343] md:hidden"
+            variant="btn-primary"
+            onClick={toggle}
+          >
+            {t('menu')}
+          </Button>
+        )}
+        <div className="bg-[#1B1C1D] text-[#FFFFFE]">{isOpen && renderListItem()}</div>
+      </div>
+    );
+  }
+  return renderListItem();
 };
 
 export default Sidebar;

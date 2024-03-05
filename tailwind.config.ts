@@ -10,6 +10,7 @@ module.exports = {
       screens: {
         '2xl': '1400px',
       },
+      text: 'text-white',
     },
     extend: {
       colors: {
