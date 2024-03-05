@@ -9,7 +9,7 @@ import MenuBar from '../shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const location = useLocation();
-
+  
   return (
     <>
       <div
