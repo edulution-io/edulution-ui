@@ -9,29 +9,40 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/shared/Button';
+import { SETTINGS_FORWARDED_PAGES } from '@/constants';
 
-export const SettingsForm: React.FC = () => {
+const SettingsForm: React.FC = () => {
   const { t } = useTranslation();
 
+  enum ForwardedPagesEnum {
+    Conference = 'conference',
+    Firewall = 'firewall',
+    Virtualization = 'virtualization',
+  }
+
   type ConfigType = {
-    conferencePath?: string;
+    conference?: string;
+    firewall?: string;
+    virtualization?: string;
   };
 
   const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
 
   const formSchema = z.object({
-    conferencePath: z.string().optional(),
+    conference: z.string().optional(),
+    firewall: z.string().optional(),
+    virtualization: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      conferencePath: config.conferencePath || '',
-    },
+    defaultValues: { ...config },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
+
+    // TODO: Save conifg on server (eg mongoDB)
     setConfig(values);
   };
 
@@ -39,9 +50,29 @@ export const SettingsForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="text-inherit"
+        className="text-white "
       >
-        <FormField
+        {SETTINGS_FORWARDED_PAGES.map((item) => (
+          <FormField
+            key={item.id}
+            control={form.control}
+            name={item.label as ForwardedPagesEnum}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t(`${field.name}.name`)}</FormLabel>
+                <FormControl>
+                  <Input
+                    // placeholder={t('path')}
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>{t(`${field.name}.description`)}</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+        {/* <FormField
           control={form.control}
           name="conferencePath"
           render={({ field }) => (
@@ -58,7 +89,29 @@ export const SettingsForm: React.FC = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">{t('save')}</Button>
+        <FormField
+          control={form.control}
+          name="firewallPath"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t(`${field.name}`)}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={t('path')}
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>{t(`${field.name}.description`)}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+        <Button
+          variant="btn-primary"
+          type="submit"
+        >
+          {t('save')}
+        </Button>
       </form>
     </Form>
   );
