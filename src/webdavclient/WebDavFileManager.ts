@@ -74,7 +74,6 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
       status: 200,
       statusText: `File ${getFileNameFromPath(path)} created successfully`,
     });
-    console.log(response.statusText, response.status, response.url, response.type, response.bodyUsed, response.body);
     return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
@@ -83,7 +82,6 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
 
 const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
   try {
-    console.log('Deleting item:', path);
     await client.deleteFile(path);
     const response = new Response('OK', {
       status: 200,
@@ -182,13 +180,11 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const progress = (event.loaded / event.total) * 100;
-        console.log(`Upload progress for ${file.name}: ${progress}%`);
         onProgress(progress);
       }
     };
     xhr.onload = () => {
       if (xhr.status === 200) {
-        console.log('File uploaded successfully');
         resolve(
           handleApiResponse(
             new Response('OK', {
@@ -236,7 +232,6 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
       if (item.type === 'file') {
         try {
           const result = await client.getFileContents(`${item.filename}`, { format: 'binary' });
-          console.log(`Result type for ${item.filename}:`, typeof result, ArrayBuffer.isView(result));
 
           if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
             if (folderZip != null) {
@@ -278,7 +273,6 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
 
 const triggerFileDownload: IWebDavFileManager['triggerFileDownload'] = (path: string) => {
   const downloadLink = client.getFileDownloadLink(path);
-  console.log(downloadLink);
   const anchor = document.createElement('a');
   anchor.href = downloadLink;
   anchor.setAttribute(getFileNameFromPath(path), '');

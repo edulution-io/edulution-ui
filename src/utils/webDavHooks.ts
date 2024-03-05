@@ -11,13 +11,11 @@ const useWebDavActions = () => {
 
   const fetchFiles = async (path: string = currentPath): Promise<void> => {
     try {
-      console.log(path);
-      console.log('Fetching files');
       const directoryFiles = await WebDavFunctions.getContentList(path);
       setCurrentPath(path);
       setFiles(directoryFiles);
     } catch (error) {
-      console.error('Error fetching directory contents:', error);
+      /* empty */
     }
   };
 

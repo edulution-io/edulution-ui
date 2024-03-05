@@ -32,10 +32,9 @@ const useMenuItems = () => {
       }
     };
 
-    fetchAndPrepareMenuItems().catch(() => console.log('Error fetching mount points'));
+    fetchAndPrepareMenuItems().catch(() => {});
   }, []);
 
-  console.log(menuItems);
   return menuItems;
 };
 

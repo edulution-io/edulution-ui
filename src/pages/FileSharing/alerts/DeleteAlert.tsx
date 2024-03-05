@@ -32,7 +32,6 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
 
     try {
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
-      console.log('Items to delete:', JSON.stringify(itemsToDelete, null, 2));
       const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));
       const deleteResults = await Promise.all(deletePromises);
       const allSuccessful = deleteResults.every((result) => result.success);
@@ -45,12 +44,9 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
       if (allSuccessful) {
         setRowSelection({});
         setSelectedItems([]);
-      } else {
-        console.error('Not all delete operations were successful:', combinedMessage);
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
-      console.error('Error during delete operations:', errorMessage);
       setFileOperationSuccessful(false, errorMessage);
     }
   };
@@ -61,28 +57,29 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete those files:
-            <br />
-            {selectedItems.length > 0 ? (
-              <>
-                <strong>Selected Items:</strong>
-                <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-                  {selectedItems.map((item) => (
-                    <p key={item.etag}>{item.filename}</p>
-                  ))}
-                </ScrollArea>
-              </>
-            ) : (
+        </AlertDialogHeader>
+        <AlertDialogDescription>
+          This action cannot be undone. This will permanently delete those files:
+          <br />
+          {selectedItems.length > 0 ? (
+            <>
+              <strong>Selected Items:</strong>
               <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-                <strong>Selected Items:</strong>
-                {file.map((item) => (
-                  <p key={item.etag}>{item.filename}</p>
+                {selectedItems.map((item) => (
+                  <div key={item.etag}>{item.filename}</div>
                 ))}
               </ScrollArea>
-            )}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+            </>
+          ) : (
+            <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
+              <strong>Selected Items:</strong>
+              {file.map((item) => (
+                <div key={item.etag}>{item.filename}</div>
+              ))}
+            </ScrollArea>
+          )}
+        </AlertDialogDescription>
+
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
@@ -100,4 +97,5 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   );
 };
 
+DeleteAlert.displayName = 'DeleteAlert';
 export default DeleteAlert;

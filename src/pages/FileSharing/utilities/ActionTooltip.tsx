@@ -8,23 +8,33 @@ interface ActionTooltipProps {
   tooltipText: string;
 }
 
-const ActionTooltip: React.FC<ActionTooltipProps> = ({ trigger, onAction, tooltipText }) => (
-  <Tooltip>
-    <TooltipTrigger asChild>
-      <button
-        type="button"
-        onClick={onAction}
+const ActionTooltip: React.FC<ActionTooltipProps> = ({ trigger, onAction, tooltipText }) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      onAction();
+    }
+  };
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={onAction}
+          onKeyDown={handleKeyDown}
+        >
+          {trigger}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent
+        side="top"
+        align="center"
       >
-        {trigger}
-      </button>
-    </TooltipTrigger>
-    <TooltipContent
-      side="top"
-      align="center"
-    >
-      {tooltipText}
-    </TooltipContent>
-  </Tooltip>
-);
+        {tooltipText}
+      </TooltipContent>
+    </Tooltip>
+  );
+};
 
 export default ActionTooltip;

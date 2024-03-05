@@ -10,7 +10,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
 
   const handleSegmentClick = (segmentIndex: number) => {
     const pathTo = `/${segments.slice(0, segmentIndex + 1).join('/')}`;
-    console.log(pathTo);
     onNavigate(pathTo);
   };
 

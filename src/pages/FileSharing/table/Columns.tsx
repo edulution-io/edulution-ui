@@ -67,12 +67,11 @@ const Columns: ColumnDef<DirectoryFile>[] = [
           setPreviewOpen(true);
         }
         if (row.original.type === ContentType.directory) {
-          fetchFiles(filenamePath).catch((error) => console.log(error));
+          fetchFiles(filenamePath).catch(() => {});
         }
       };
 
       const handleCheckboxChange = () => {
-        console.log('CheckBox was clicked');
         row.toggleSelected(!row.getIsSelected());
       };
 
@@ -200,11 +199,15 @@ const Columns: ColumnDef<DirectoryFile>[] = [
             <div className="flex items-center justify-end">
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
-                  onAction={() => console.log('HHH')}
+                  onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
                     <RenameItemDialog
-                      trigger={<MdDriveFileRenameOutline />}
+                      trigger={
+                        <div>
+                          <MdDriveFileRenameOutline />
+                        </div>
+                      }
                       item={row.original}
                     />
                   }
@@ -212,11 +215,15 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               </div>
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
-                  onAction={() => console.log('HHH')}
+                  onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
                     <MoveItemDialog
-                      trigger={<MdOutlineDriveFileMove />}
+                      trigger={
+                        <div>
+                          <MdOutlineDriveFileMove />
+                        </div>
+                      }
                       item={row.original}
                     />
                   }
@@ -228,20 +235,28 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                     if (row.original.type === ContentType.file) {
                       WebDavFunctions.triggerFileDownload(row.original.filename);
                     } else {
-                      handleDownload(row.original).catch((error) => console.log(error));
+                      handleDownload(row.original).catch(() => {});
                     }
                   }}
                   tooltipText="Add File"
-                  trigger={<MdOutlineFileDownload />}
+                  trigger={
+                    <div>
+                      <MdOutlineFileDownload />
+                    </div>
+                  }
                 />
               </div>
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
-                  onAction={() => console.log('HHH')}
+                  onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
                     <DeleteAlert
-                      trigger={<MdOutlineDeleteOutline />}
+                      trigger={
+                        <div>
+                          <MdOutlineDeleteOutline />
+                        </div>
+                      }
                       file={[row.original]}
                     />
                   }

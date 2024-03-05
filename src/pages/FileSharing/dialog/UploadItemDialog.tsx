@@ -4,7 +4,6 @@ import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { useFileManagerStore } from '@/store/appDataStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
-import Progress from '@/components/ui/progress.tsx';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;
@@ -25,7 +24,6 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   };
 
   const handleProgressUpdate = (file: File, progress: number) => {
-    console.log(`Progress for ${progress}%`);
     setProgress(file.name, progress);
   };
 
@@ -52,7 +50,6 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <Progress value={33} />
         <DialogTitle>Upload Your Item</DialogTitle>
         <DropZone
           files={selectedFiles}

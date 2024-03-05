@@ -12,7 +12,6 @@ import LoadPopUp from '@/components/shared/LoadPopUp';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
-// import { getFileNameFromPath } from '@/utils/common';
 import StatusAlert from '@/pages/FileSharing/alerts/StatusAlert';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
@@ -36,31 +35,16 @@ const FileSharing = () => {
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
 
-  const fetchMounts = async () => {
-    try {
-      // const result = await fetchMountPoints();
-      // setMountPoints(result);
-      console.log('Got new Data');
-    } catch (error) {
-      console.error('Failed to fetch mount points', error);
-    }
-  };
-
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath]);
-
-  useEffect(() => {
-    fetchMounts().catch(console.error);
-  }, []);
 
   const handleDownload = async (items: DirectoryFile[]) => {
     setShowLoadingPopUp(true);
     try {
       await WebDavFunctions.triggerMultipleFolderDownload(items);
-      console.log('Download successful');
-    } catch (error) {
-      console.error('Download failed:', error);
+    } catch {
+      /* empty */
     } finally {
       setShowLoadingPopUp(false);
       setShowPopUp(true);
@@ -131,12 +115,12 @@ const FileSharing = () => {
                 {selectedItems.length === 0 && (
                   <>
                     <ActionTooltip
-                      onAction={() => console.log('Add File Clicked')}
+                      onAction={() => {}}
                       tooltipText="Add File"
                       trigger={
                         <CreateNewContentDialog
                           trigger={
-                            <HexagonButton onClick={() => console.log('Wanna Upload')}>
+                            <HexagonButton onClick={() => {}}>
                               <MdOutlineNoteAdd className="font-bold text-white" />
                             </HexagonButton>
                           }
@@ -145,12 +129,12 @@ const FileSharing = () => {
                       }
                     />
                     <ActionTooltip
-                      onAction={() => console.log('Add Folder Clicked')}
+                      onAction={() => {}}
                       tooltipText="Add Folder"
                       trigger={
                         <CreateNewContentDialog
                           trigger={
-                            <HexagonButton onClick={() => console.log('Wanna Upload')}>
+                            <HexagonButton onClick={() => {}}>
                               <HiOutlineFolderAdd className="font-bold text-white" />
                             </HexagonButton>
                           }
@@ -159,12 +143,12 @@ const FileSharing = () => {
                       }
                     />
                     <ActionTooltip
-                      onAction={() => console.log('Upload item Clicked')}
+                      onAction={() => {}}
                       tooltipText="Upload item"
                       trigger={
                         <UploadItemDialog
                           trigger={
-                            <HexagonButton onClick={() => console.log('Wanna Upload')}>
+                            <HexagonButton onClick={() => {}}>
                               <FiUpload className="font-bold text-white" />
                             </HexagonButton>
                           }
@@ -174,17 +158,16 @@ const FileSharing = () => {
                   </>
                 )}
                 {selectedItems.length > 0 && (
-                  <>
+                  <div>
                     <ActionTooltip
-                      onAction={() => console.log('Upload item Clicked')}
+                      onAction={() => {}}
                       tooltipText="Upload item"
                       trigger={
                         <MoveItemDialog
                           trigger={
-                            <MdOutlineDriveFileMove
-                              className="font-bold text-white"
-                              onClick={() => console.log('Wanna Upload')}
-                            />
+                            <div>
+                              <MdOutlineDriveFileMove className="font-bold text-white" />
+                            </div>
                           }
                           item={selectedItems}
                         />
@@ -192,15 +175,14 @@ const FileSharing = () => {
                     />
 
                     <ActionTooltip
-                      onAction={() => console.log('Upload item Clicked')}
+                      onAction={() => {}}
                       tooltipText="Upload item"
                       trigger={
                         <DeleteAlert
                           trigger={
-                            <MdOutlineDeleteOutline
-                              className="font-bold text-white"
-                              onClick={() => console.log('Wanna Upload')}
-                            />
+                            <div>
+                              <MdOutlineDeleteOutline className="font-bold text-white" />
+                            </div>
                           }
                           file={selectedItems}
                         />
@@ -208,18 +190,16 @@ const FileSharing = () => {
                     />
                     <ActionTooltip
                       onAction={() => {
-                        handleDownload(selectedItems)
-                          .then(() => {
-                            console.log('Download successful');
-                          })
-                          .catch((error) => {
-                            console.error('Download failed:', error);
-                          });
+                        handleDownload(selectedItems).catch(() => {});
                       }}
                       tooltipText="Download Selected Items"
-                      trigger={<MdOutlineFileDownload className="text-white" />}
+                      trigger={
+                        <div>
+                          <MdOutlineFileDownload className="text-white" />
+                        </div>
+                      }
                     />
-                  </>
+                  </div>
                 )}
               </div>
             </TooltipProvider>

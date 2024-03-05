@@ -129,17 +129,20 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
 
     return (
       <>
-        <p className="pb-3.5">
+        <div className="pb-3.5">
           {itemCount > 1 ? (
-            itemMessage
+            <p>{itemMessage}</p>
           ) : (
             <div>
               <div className="justify space-x-2 pb-2">
-                {itemMessage}: {getFileNameFromPath(!Array.isArray(item) ? item.filename : '')}
+                <p>
+                  {itemMessage}: {getFileNameFromPath(!Array.isArray(item) ? item.filename : '')}
+                </p>
               </div>
             </div>
           )}
-        </p>
+        </div>
+
         {Array.isArray(item) && (
           <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
             <div>
@@ -182,7 +185,9 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       <DialogContent>
         <DialogTitle>Change Directory</DialogTitle>
         <DialogDescription>
-          <Label>{renderItemInfo()}</Label>
+          <Label>
+            <p>{renderItemInfo()}</p>
+          </Label>
         </DialogDescription>
       </DialogContent>
     </Dialog>
