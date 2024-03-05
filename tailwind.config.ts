@@ -87,10 +87,10 @@ module.exports = {
       addBase({
         html: { textColor: theme('text-white') },
         h1: { fontSize: theme('fontSize.h1') },
-        h2: { fontSize: theme('fontSize.h2') },
-        h3: { fontSize: theme('fontSize.h3') },
-        h4: { fontSize: theme('fontSize.h4') },
-        p: { fontSize: theme('fontSize.p') },
+        h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em' },
+        h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em' },
+        h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em' },
+        p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
       });
     }),
   ],
