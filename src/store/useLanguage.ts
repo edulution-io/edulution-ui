@@ -6,7 +6,7 @@ type Store = {
 };
 
 const useLanguage = create<Store>()((set) => ({
-  lang: 'en',
+  lang: 'de',
   changeLang: (lang) => set({ lang }),
 }));
 

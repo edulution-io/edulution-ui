@@ -3,16 +3,19 @@ import cn from '@/lib/utils';
 import { Card as SHCard, CardContent as SHCardContent } from '@/components/ui/card';
 import { cva, type VariantProps } from 'class-variance-authority';
 
+import styles from './card.module.scss';
+
 const cardVariants = cva('border-4 border-solid', {
   variants: {
     variant: {
-      default: 'border-[#8CBB64]',
-      primary: 'border-[#3E76AC]',
-      info: 'border-[#8CBB64]',
+      collaboration: 'border-ciDarkBlue',
+      organisation: 'border-ciLightBlue',
+      infrastructure: 'border-ciLightGreen',
+      security: styles['gradient-box'],
     },
   },
   defaultVariants: {
-    variant: 'default',
+    variant: 'collaboration',
   },
 });
 

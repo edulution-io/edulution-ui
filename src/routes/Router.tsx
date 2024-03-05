@@ -1,11 +1,12 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import { HomePage } from '@/pages/Home';
 import { ConferencePage } from '@/pages/ConferencePage';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import { SettingsPage } from '@/pages/Settings';
+import FileSharing from '@/pages/FileSharing/FileSharing';
+import { RoomBookingPage } from '@/pages/RoomBookingPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,8 +21,12 @@ const router = createBrowserRouter(
           element={<ConferencePage />}
         />
         <Route
-          path="/settings"
-          element={<SettingsPage />}
+          path="/file-sharing"
+          element={<FileSharing />}
+        />
+        <Route
+          path="/room-booking"
+          element={<RoomBookingPage />}
         />
       </Route>
 
