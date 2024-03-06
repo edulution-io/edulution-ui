@@ -7,17 +7,17 @@ const FILESHARING_MENUBAR_CONFIG = {
   menuItems: [
     {
       label: 'home',
-      link: '/file-sharing',
+      link: '/filesharing',
       icon: FileSharing,
     },
     {
       label: 'programs',
-      link: '/file-sharing/profile',
+      link: '/filesharing/profile',
       icon: Desktop,
     },
     {
       label: 'share',
-      link: '/file-sharing/settings',
+      link: '/filesharing/settings',
       icon: Share,
     },
     {

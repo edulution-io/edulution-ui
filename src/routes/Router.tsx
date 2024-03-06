@@ -22,11 +22,11 @@ const router = createBrowserRouter(
           element={<ConferencePage />}
         />
         <Route
-          path="/file-sharing"
+          path="/filesharing"
           element={<FileSharing />}
         />
         <Route
-          path="/room-booking"
+          path="/roombooking"
           element={<RoomBookingPage />}
         />
         <Route

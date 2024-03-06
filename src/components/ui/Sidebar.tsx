@@ -2,33 +2,14 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
-import {
-  MobileLogo,
-  Firewall,
-  Conferences,
-  LearningManagement,
-  FileSharing,
-  Virtualization,
-  DesktopDeployment,
-  Network,
-  Mail,
-  SchoolInformation,
-  Printer,
-  RoomBooking,
-  Forums,
-  Chat,
-  Wlan,
-  KnowledgeBase,
-  User,
-  Settings,
-} from '@/assets/icons';
+import { MobileLogo, Settings, User } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
-import translateKey from '@/utils/common';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -46,100 +27,22 @@ const Sidebar = () => {
 
   const TRANSLATE_AMOUNT = 58;
 
-  // TODO: will move to separate file later
-  const MENU_ITEMS = [
+  type ConfigType = {
+    [key: string]: { linkPath: string };
+  };
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+
+  const sidebarItems = [
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.name.toLowerCase().split('.')[0]] !== undefined).map(
+      (item) => ({
+        title: t(item.name),
+        link: item.name.split('.')[0],
+        icon: item.icon,
+        color: item.color,
+      }),
+    ),
     {
-      title: translateKey('conferences.sidebar'),
-      link: '/conferences',
-      icon: Conferences,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('firewall.sidebar'),
-      link: '/firewall',
-      icon: Firewall,
-      color: 'bg-ciGreenToBlue',
-    },
-    {
-      title: translateKey('virtualization.sidebar'),
-      link: '/virtualization',
-      icon: Virtualization,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('learningManagement.sidebar'),
-      link: '/learning-management',
-      icon: LearningManagement,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('fileSharing.sidebar'),
-      link: '/file-sharing',
-      icon: FileSharing,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('desktopDeployment.sidebar'),
-      link: '/desktop-deployment',
-      icon: DesktopDeployment,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('network.sidebar'),
-      link: '/network',
-      icon: Network,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('mail.sidebar'),
-      link: '/mail',
-      icon: Mail,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('schoolInformation.sidebar'),
-      link: '/school-information',
-      icon: SchoolInformation,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('printer.sidebar'),
-      link: '/printer',
-      icon: Printer,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('roomBooking.sidebar'),
-      link: '/room-booking',
-      icon: RoomBooking,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('forums.sidebar'),
-      link: '/forums',
-      icon: Forums,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('chat.sidebar'),
-      link: '/chat',
-      icon: Chat,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('wlan.sidebar'),
-      link: '/wlan',
-      icon: Wlan,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('knowledgeBase.sidebar'),
-      link: '/knowledge-base',
-      icon: KnowledgeBase,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('settings.sidebar'),
+      title: t('settings.sidebar'),
       link: '/settings',
       icon: Settings,
       color: 'bg-ciGreenToBlue',
@@ -159,7 +62,7 @@ const Sidebar = () => {
 
     const rect = sidebarIconsRef.current.getBoundingClientRect();
     setDownButtonVisible(rect.bottom > window.innerHeight - 58);
-  }, [size, translate, MENU_ITEMS]);
+  }, [size, translate, sidebarItems]);
 
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault();
@@ -367,7 +270,7 @@ const Sidebar = () => {
         onTouchMove={() => handleTouchMove}
         onTouchEnd={() => handleTouchEnd}
       >
-        {MENU_ITEMS.map((item) => (
+        {sidebarItems.map((item) => (
           <SidebarItem
             key={item.title}
             menuItem={item}

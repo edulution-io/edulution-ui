@@ -37,13 +37,13 @@ const useMenuBarConfig = () => {
     const rootPathName = `/${location.pathname.split('/')[1]}`;
 
     switch (rootPathName) {
-      case '/file-sharing': {
+      case '/filesharing': {
         return FILESHARING_MENUBAR_CONFIG;
       }
       case '/conferences': {
         return CONFERENCES_MENUBAR_CONFIG;
       }
-      case '/room-booking': {
+      case '/roombooking': {
         return ROOMBOOKING_MENUBAR_CONFIG;
       }
       case '/settings': {

@@ -116,6 +116,7 @@ const SettingsPage: React.FC = () => {
               <Button
                 type="submit"
                 variant="btn-collaboration"
+                size="lg"
               >
                 {t('common.save')}
               </Button>
@@ -176,6 +177,7 @@ const SettingsPage: React.FC = () => {
               <Button
                 type="button"
                 variant="btn-collaboration"
+                size="lg"
                 onClick={() => {
                   setSearchParams('');
                   setConfig((prevConfig) => ({
