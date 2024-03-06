@@ -1,18 +1,42 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocalStorage } from 'usehooks-ts';
 
 import MenuItem from '@/datatypes/types';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
+import SETTINGS_MENUBAR_CONFIG from '@/pages/Settings/config';
 
-
-const useMenuBarConfig = (location: string) => {
+const useMenuBarConfig = () => {
+  const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+
+  type ConfigType = {
+    [key: string]: { linkPath: string };
+  };
+
+  const settingsMenubarConfig = {
+    ...SETTINGS_MENUBAR_CONFIG,
+    menuItems: [
+      ...SETTINGS_APPSELECT_OPTIONS.filter(
+        (option) => config[option.name.toLowerCase().split('.')[0]] !== undefined,
+      ).map((item) => ({
+        label: item.name,
+        link: item.link,
+        icon: item.icon,
+      })),
+      ...SETTINGS_MENUBAR_CONFIG.menuItems,
+    ],
+  };
 
   const menuBarConfigSwitch = () => {
-    switch (location) {
+    const rootPathName = `/${location.pathname.split('/')[1]}`;
+
+    switch (rootPathName) {
       case '/file-sharing': {
         return FILESHARING_MENUBAR_CONFIG;
       }
@@ -21,6 +45,9 @@ const useMenuBarConfig = (location: string) => {
       }
       case '/room-booking': {
         return ROOMBOOKING_MENUBAR_CONFIG;
+      }
+      case '/settings': {
+        return settingsMenubarConfig;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '' };

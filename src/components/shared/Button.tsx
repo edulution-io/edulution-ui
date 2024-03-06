@@ -4,6 +4,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import cn from '@/lib/utils';
 
+import styles from './button.module.scss';
+
 const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
   variants: {
     variant: {
@@ -12,11 +14,11 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
       'btn-infrastructure': 'bg-ciLightGreen',
       'btn-security': 'bg-ciGreenToBlue',
       'btn-outline': 'border border-input shadow-sm hover:bg-accent hover:text-accent-foreground',
+      'btn-hexagon': cn('inline-block relative px-7 bg-ciGreenToBlue', styles.button),
     },
     size: {
       lg: 'h-10 rounded-md px-8',
       sm: 'h-8 rounded-md px-3 text-xs',
-
     },
   },
 });

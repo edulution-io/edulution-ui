@@ -55,19 +55,19 @@ const Sidebar = () => {
       color: 'bg-ciDarkBlue',
     },
     {
-      title: translateKey('firewall'),
+      title: translateKey('firewall.sidebar'),
       link: '/firewall',
       icon: Firewall,
       color: 'bg-ciGreenToBlue',
     },
     {
-      title: translateKey('virtualization'),
+      title: translateKey('virtualization.sidebar'),
       link: '/virtualization',
       icon: Virtualization,
       color: 'bg-ciLightGreen',
     },
     {
-      title: translateKey('learningManagement'),
+      title: translateKey('learningManagement.sidebar'),
       link: '/learning-management',
       icon: LearningManagement,
       color: 'bg-ciLightBlue',
@@ -79,31 +79,31 @@ const Sidebar = () => {
       color: 'bg-ciDarkBlue',
     },
     {
-      title: translateKey('desktopDeployment'),
+      title: translateKey('desktopDeployment.sidebar'),
       link: '/desktop-deployment',
       icon: DesktopDeployment,
       color: 'bg-ciLightGreen',
     },
     {
-      title: translateKey('network'),
+      title: translateKey('network.sidebar'),
       link: '/network',
       icon: Network,
       color: 'bg-ciLightGreen',
     },
     {
-      title: translateKey('mail'),
+      title: translateKey('mail.sidebar'),
       link: '/mail',
       icon: Mail,
       color: 'bg-ciDarkBlue',
     },
     {
-      title: translateKey('schoolInformation'),
+      title: translateKey('schoolInformation.sidebar'),
       link: '/school-information',
       icon: SchoolInformation,
       color: 'bg-ciLightBlue',
     },
     {
-      title: translateKey('printer'),
+      title: translateKey('printer.sidebar'),
       link: '/printer',
       icon: Printer,
       color: 'bg-ciLightGreen',
@@ -115,31 +115,31 @@ const Sidebar = () => {
       color: 'bg-ciLightBlue',
     },
     {
-      title: translateKey('forums'),
+      title: translateKey('forums.sidebar'),
       link: '/forums',
       icon: Forums,
       color: 'bg-ciDarkBlue',
     },
     {
-      title: translateKey('chat'),
+      title: translateKey('chat.sidebar'),
       link: '/chat',
       icon: Chat,
       color: 'bg-ciDarkBlue',
     },
     {
-      title: translateKey('wlan'),
+      title: translateKey('wlan.sidebar'),
       link: '/wlan',
       icon: Wlan,
       color: 'bg-ciLightGreen',
     },
     {
-      title: translateKey('knowledgeBase'),
+      title: translateKey('knowledgeBase.sidebar'),
       link: '/knowledge-base',
       icon: KnowledgeBase,
       color: 'bg-ciDarkBlue',
     },
     {
-      title: translateKey('settings'),
+      title: translateKey('settings.sidebar'),
       link: '/settings',
       icon: Settings,
       color: 'bg-ciGreenToBlue',
@@ -244,7 +244,7 @@ const Sidebar = () => {
     <div key="home">
       <NavLink
         to="/"
-        className={`border-ciLightGrey group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 bg-black px-4 py-2 hover:bg-black md:block md:px-2 ${pathname === '/' && pathname !== '/' ? 'bg-black' : ''}`}
+        className={`group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-black md:block md:px-2 ${pathname === '/' && pathname !== '/' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
@@ -272,7 +272,7 @@ const Sidebar = () => {
     <div key="up">
       <button
         type="button"
-        className={`border-ciLightGrey relative right-0 z-[50] w-full cursor-pointer border-b-2 bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? '' : 'top-0 h-[58px] border-t-2'}`}
+        className={`relative right-0 z-[50] w-full cursor-pointer border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? '' : 'top-0 h-[58px] border-t-2'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
             const newTranslate = prevTranslate - TRANSLATE_AMOUNT;
@@ -294,7 +294,7 @@ const Sidebar = () => {
     <div key="down">
       <button
         type="button"
-        className={`border-ciLightGrey absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-10' : 'bottom-0 h-[58px] border-t-0'}`}
+        className={`absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-10' : 'bottom-0 h-[58px] border-t-0'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
             if (sidebarIconsRef.current == null) {
@@ -322,7 +322,7 @@ const Sidebar = () => {
           e.preventDefault();
         }}
         to="/logout"
-        className={`border-ciLightGrey group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
+        className={`group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 border-ciLightGrey bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
@@ -333,7 +333,7 @@ const Sidebar = () => {
           alt=""
         />
         <div
-          className={`border-ciLightGrey absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-xl bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
+          className={`absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-xl border-ciLightGrey bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
         >
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img

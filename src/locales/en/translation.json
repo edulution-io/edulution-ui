@@ -19,6 +19,7 @@
   "schoolInformation": "School Information",
   "knowledgeBase": "Knowledge Base",
   "printer": "Printer",
+  "settings": { "title": "SETTINGS", "sidebar": "Settings" },
   "chat": "Chat",
   "menu": "MENU",
   "home": "Home",
@@ -26,5 +27,5 @@
   "share": "Share",
   "students": "Students",
 
-  "common": { "add": "Add", "reload": "Reload", "logout": "Logout" }
+  "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save" }
 }

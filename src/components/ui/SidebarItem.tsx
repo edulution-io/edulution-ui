@@ -21,6 +21,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
 
+  const rootPathName = `/${pathname.split('/')[1]}`;
+
   useEffect(() => {
     if (buttonRef.current == null) return;
 
@@ -36,7 +38,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
     >
       <NavLink
         to={menuItem.link}
-        className={`border-ciLightGrey group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 px-4 py-2 md:block md:px-2 ${pathname === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
         <p className="text-md font-bold md:hidden">{menuItem.title}</p>
         <img

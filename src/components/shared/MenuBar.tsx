@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
@@ -7,8 +6,7 @@ import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '
 import cn from '@/lib/utils';
 
 const MenuBar: React.FC = () => {
-  const location = useLocation();
-  const menuBarEntries = useMenuBarConfig(location.pathname);
+  const menuBarEntries = useMenuBarConfig();
 
   return (
     <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40">
