@@ -14,6 +14,7 @@ import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { TrashIcon } from '@/assets/icons';
+import { Cross2Icon } from '@radix-ui/react-icons';
 
 const SettingsPage: React.FC = () => {
   const location = useLocation();
@@ -128,6 +129,12 @@ const SettingsPage: React.FC = () => {
     return null;
   };
 
+  const filteredAppOptions = () => {
+    const existingOptions = Object.keys(config).map((key) => key);
+
+    return SETTINGS_APPSELECT_OPTIONS.filter((itm) => !existingOptions.includes(itm.name.split('.')[0]));
+  };
+
   return (
     <>
       <div className="flex justify-between">
@@ -145,6 +152,7 @@ const SettingsPage: React.FC = () => {
                 const { [settingLocation]: omittedValue, ...rest } = prevConfig;
                 return rest;
               });
+              navigate('/settings');
             }}
           >
             <img
@@ -164,9 +172,20 @@ const SettingsPage: React.FC = () => {
           <DialogHeader>
             <DialogTitle>{t('settings.title')}</DialogTitle>
             <DialogDescription>{t('settings.addApp.description')}</DialogDescription>
+            <DialogClose asChild>
+              <button
+                type="button"
+                className="absolute right-5 top-5 text-black"
+                onClick={() => {
+                  setSearchParams('');
+                }}
+              >
+                <Cross2Icon />
+              </button>
+            </DialogClose>
           </DialogHeader>
           <DropdownMenu
-            options={SETTINGS_APPSELECT_OPTIONS}
+            options={filteredAppOptions()}
             selectedVal={t(option)}
             handleChange={(opt) => {
               setOption(opt);
