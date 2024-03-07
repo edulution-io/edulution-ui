@@ -34,7 +34,7 @@
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
-    "addApp": { "description": "Please select an app:" },
+    "addApp": { "title": "Add app", "description": "Please select an app:" },
     "description": "Here you can make all settings."
   },
 
