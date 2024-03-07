@@ -2,7 +2,14 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen Frau Mustermann",
-  "content": "Hier ist ihre persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "dashboard": {
+    "mobileAccess": {
+      "title": "MOBILER DATENZUGRIFF",
+      "manual": "Anleitung",
+      "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
+    }
+  },
   "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
   "firewall": "Firewall",
   "virtualization": "Virtualisierung",
@@ -10,7 +17,7 @@
   "fireSharing": "Filesharing",
   "desktopDeployment": "Desktop-Bereitstellung",
   "network": "Netzwerk",
-  "roomBooking": "Raumbuchung",
+  "roomBooking": { "title": "RAUMBUCHUNG", "sidebar": "Raumbuchung", "rooms": "Räume" },
   "mail": "Mail",
   "schoolInformation": "Schulinformation",
   "knowledgeBase": "Wissensdatenbank",
@@ -24,6 +31,6 @@
   "programs": "Programme",
   "share": "Share",
   "students": "Schüler",
-
-  "common": { "add": "Hinzufügen", "reload": "Neu laden" }
+  
+  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout" }
 }

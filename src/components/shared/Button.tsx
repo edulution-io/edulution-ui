@@ -4,12 +4,19 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import cn from '@/lib/utils';
 
-const originButtonVariants = cva(['text-white p-4 hover:opacity-90 rounded-[8px]'], {
+const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
   variants: {
     variant: {
-      'btn-primary': 'bg-ciDarkBlue',
-      'btn-secondary': 'bg-ciLightBlue',
-      'btn-info': 'bg-ciLightGreen',
+      'btn-collaboration': 'bg-ciDarkBlue',
+      'btn-organisation': 'bg-ciLightBlue',
+      'btn-infrastructure': 'bg-ciLightGreen',
+      'btn-security': 'bg-ciGreenToBlue',
+      'btn-outline': 'border border-input shadow-sm hover:bg-accent hover:text-accent-foreground',
+    },
+    size: {
+      lg: 'h-10 rounded-md px-8',
+      sm: 'h-8 rounded-md px-3 text-xs',
+
     },
   },
 });
