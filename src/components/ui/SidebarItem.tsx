@@ -1,3 +1,4 @@
+import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
@@ -36,13 +37,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
     >
       <NavLink
         to={menuItem.link}
-        className={`border-ciLightGrey group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 px-4 py-2 md:block md:px-2 ${pathname === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${pathname === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
-        <p className="text-md font-bold md:hidden">{menuItem.title}</p>
+        <p className="md:hidden">{menuItem.title}</p>
         <img
           src={menuItem.icon}
-          width="40px"
-          height="40px"
+          width={SIDEBAR_ICON_WIDTH}
           className="relative z-0"
           alt=""
         />
@@ -50,11 +50,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
           <div
             className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-xl pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
-            <p className="text-md whitespace-nowrap font-bold">{menuItem.title}</p>
+            <p className="whitespace-nowrap font-bold">{menuItem.title}</p>
             <img
               src={menuItem.icon}
-              width="40px"
-              height="40px"
+              width={SIDEBAR_ICON_WIDTH}
               alt=""
             />
           </div>

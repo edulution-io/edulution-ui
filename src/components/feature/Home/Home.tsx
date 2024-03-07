@@ -15,7 +15,7 @@ const Home: React.FC = () => {
 
       {/* Main Content */}
       <div>
-        <h2 className="">{t('heading')}</h2>
+        <h2>{t('heading')}</h2>
         <p className="mt-4">{t('content')}</p>
       </div>
 
