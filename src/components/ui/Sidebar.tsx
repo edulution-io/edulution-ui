@@ -10,12 +10,13 @@ import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage, useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
   const [translate, setTranslate] = useState(0);
-  const [upButtonVisible, setUpButtonVisible] = useState(false);
-  const [downButtonVisible, setDownButtonVisible] = useState(false);
+  const [isUpButtonVisible, setIsUpButtonVisible] = useState(false);
+  const [isDownButtonVisible, setIsDownButtonVisible] = useState(false);
 
   const sidebarIconsRef = useRef<HTMLDivElement>(null);
 
@@ -24,8 +25,6 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
-
-  const TRANSLATE_AMOUNT = 58;
 
   type ConfigType = {
     [key: string]: { linkPath: string };
@@ -56,12 +55,12 @@ const Sidebar = () => {
   }, [size]);
 
   useEffect(() => {
-    setUpButtonVisible(translate > 0);
+    setIsUpButtonVisible(translate > 0);
 
     if (sidebarIconsRef.current == null) return;
 
     const rect = sidebarIconsRef.current.getBoundingClientRect();
-    setDownButtonVisible(rect.bottom > window.innerHeight - 58);
+    setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
   }, [size, translate, sidebarItems]);
 
   const handleWheel = (e: WheelEvent) => {
@@ -70,8 +69,12 @@ const Sidebar = () => {
       if (sidebarIconsRef.current == null) {
         return prevTranslate;
       }
-      if (downButtonVisible && e.deltaY > 0) return prevTranslate + TRANSLATE_AMOUNT;
-      if (upButtonVisible && e.deltaY < 0 && translate > 0) return prevTranslate - TRANSLATE_AMOUNT;
+      if (isDownButtonVisible && e.deltaY > 0) {
+          return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
+      }
+      if (isUpButtonVisible && e.deltaY < 0 && translate > 0) {
+          return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
+      }
       return prevTranslate;
     });
   };
@@ -105,8 +108,8 @@ const Sidebar = () => {
       if (sidebarIconsRef.current == null) {
         return prevTranslate;
       }
-      if (downButtonVisible && deltaY > 0) return prevTranslate + 3;
-      if (upButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
+      if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
+      if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
       return prevTranslate;
     });
   };
@@ -152,8 +155,7 @@ const Sidebar = () => {
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
           src={MobileLogo}
-          width="40px"
-          height="40px"
+          width={SIDEBAR_ICON_WIDTH}
           alt=""
         />
         <div
@@ -162,8 +164,7 @@ const Sidebar = () => {
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
           <img
             src={MobileLogo}
-            width="40px"
-            height="40px"
+            width={SIDEBAR_ICON_WIDTH}
             alt=""
           />
         </div>
@@ -178,7 +179,7 @@ const Sidebar = () => {
         className={`relative right-0 z-[50] w-full cursor-pointer border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? '' : 'top-0 h-[58px] border-t-2'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
-            const newTranslate = prevTranslate - TRANSLATE_AMOUNT;
+            const newTranslate = prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
             if (newTranslate <= 0) return 0;
             return newTranslate;
           });
@@ -204,7 +205,7 @@ const Sidebar = () => {
               return prevTranslate;
             }
 
-            const newTranslate = prevTranslate + TRANSLATE_AMOUNT;
+            const newTranslate = prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
             return newTranslate;
           });
         }}
@@ -230,8 +231,7 @@ const Sidebar = () => {
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
           src={User}
-          width="40px"
-          height="40px"
+          width={SIDEBAR_ICON_WIDTH}
           className="relative z-0 "
           alt=""
         />
@@ -241,8 +241,7 @@ const Sidebar = () => {
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img
             src={User}
-            width="40px"
-            height="40px"
+            width={SIDEBAR_ICON_WIDTH}
             alt=""
           />
         </div>
@@ -259,7 +258,7 @@ const Sidebar = () => {
         </>
       ) : null}
       {isDesktop ? homeButton() : null}
-      {upButtonVisible ? upButton() : null}
+      {isUpButtonVisible ? upButton() : null}
 
       <div
         ref={sidebarIconsRef}
@@ -280,7 +279,7 @@ const Sidebar = () => {
           />
         ))}
       </div>
-      {downButtonVisible ? downButton() : null}
+      {isDownButtonVisible ? downButton() : null}
       {isDesktop ? logoutButton() : null}
     </div>
   );

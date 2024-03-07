@@ -11,13 +11,15 @@ import MenuBar from '../shared/MenuBar';
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const location = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isMainPage = location.pathname === '/';
+  const isMenuBarVisible = !isMainPage && isDesktop;
 
   return (
     <div
       className="flex bg-cover bg-center opacity-90"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {location.pathname !== '/' && isDesktop ? <MenuBar /> : null}
+      {isMenuBarVisible ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
         <Header />
         <main className="flex-1">

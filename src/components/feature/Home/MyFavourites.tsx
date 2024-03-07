@@ -6,6 +6,7 @@ import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
 import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
 import { Firewall } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
+import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 
 const MyFavourites = () => {
   const { t } = useTranslation();
@@ -28,8 +29,7 @@ const MyFavourites = () => {
             <img
               src={FileSharing}
               alt="Filesharing"
-              width="40px"
-              height="40px"
+              width={BUTTONS_ICON_WIDTH}
             />
           </Button>
           <Button variant="btn-organisation">
@@ -37,8 +37,7 @@ const MyFavourites = () => {
             <img
               src={RoomBooking}
               alt="Raumbuchung"
-              width="40px"
-              height="40px"
+              width={BUTTONS_ICON_WIDTH}
             />
           </Button>
           <Button variant="btn-infrastructure">
@@ -46,8 +45,7 @@ const MyFavourites = () => {
             <img
               src={Printer}
               alt="Drucker"
-              width="40px"
-              height="40px"
+              width={BUTTONS_ICON_WIDTH}
             />
           </Button>
           <Button variant="btn-security">
@@ -55,8 +53,7 @@ const MyFavourites = () => {
             <img
               src={Firewall}
               alt="Firewall"
-              width="40px"
-              height="40px"
+              width={BUTTONS_ICON_WIDTH}
             />
           </Button>
         </div>
