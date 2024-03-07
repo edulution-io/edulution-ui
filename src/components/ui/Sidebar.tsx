@@ -70,10 +70,10 @@ const Sidebar = () => {
         return prevTranslate;
       }
       if (isDownButtonVisible && e.deltaY > 0) {
-          return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
+        return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
       }
       if (isUpButtonVisible && e.deltaY < 0 && translate > 0) {
-          return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
+        return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
       }
       return prevTranslate;
     });
@@ -150,7 +150,7 @@ const Sidebar = () => {
     <div key="home">
       <NavLink
         to="/"
-        className={`group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-black md:block md:px-2 ${pathname === '/' && pathname !== '/' ? 'bg-black' : ''}`}
+        className={`group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-black md:block md:px-2 ${pathname === '/' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
