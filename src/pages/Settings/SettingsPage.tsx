@@ -29,7 +29,7 @@ const SettingsPage: React.FC = () => {
   const settingsVisible = settingLocation !== '';
 
   type ConfigType = {
-    [key: string]: { linkPath: string };
+    [key: string]: { linkPath: string; icon: string };
   };
   const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
 
@@ -88,6 +88,7 @@ const SettingsPage: React.FC = () => {
           ...prevConfig,
           [appName]: {
             linkPath: value[appName] || '',
+            icon: selectedOption.icon,
           },
         }));
       }
@@ -200,7 +201,7 @@ const SettingsPage: React.FC = () => {
                 onClick={() => {
                   setSearchParams('');
                   setConfig((prevConfig) => ({
-                    [option.toLowerCase().split('.')[0]]: { linkPath: '' },
+                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '' },
                     ...prevConfig,
                   }));
                 }}

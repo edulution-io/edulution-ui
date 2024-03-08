@@ -1,13 +1,14 @@
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
-import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import { HomePage } from '@/pages/Home';
-import { ConferencePage } from '@/pages/ConferencePage';
+// import { ConferencePage } from '@/pages/ConferencePage';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
+import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
+import { ConferencePage } from '@/pages/ConferencePage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,10 +17,6 @@ const router = createBrowserRouter(
         <Route
           path="/"
           element={<HomePage />}
-        />
-        <Route
-          path="/conferences"
-          element={<ConferencePage />}
         />
         <Route
           path="/filesharing"
@@ -38,7 +35,15 @@ const router = createBrowserRouter(
       <Route element={<BlankLayout />}>
         <Route
           path="*"
-          element={<NotFoundPage />}
+          element={<HomePage />}
+        />
+        <Route
+          path="/mail"
+          element={<ForwardingPage />}
+        />
+        <Route
+          path="/conferences"
+          element={<ConferencePage />}
         />
       </Route>
     </>,
