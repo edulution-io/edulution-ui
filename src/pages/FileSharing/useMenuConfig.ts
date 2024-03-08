@@ -30,7 +30,7 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile): string => {
 
 const useMenuItems = () => {
   const { fetchMountPoints, fetchFiles } = useWebDavActions();
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]); // Initialize as an empty array
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {

@@ -4,7 +4,7 @@ import { FileTypePreviewProps } from '@/datatypes/types';
 
 const MediaPreview: FC<FileTypePreviewProps> = ({ file }) => {
   const [playing, setPlaying] = useState(false);
-  const mediaUrl = `http://localhost:5173/webdav/${file.filename}`;
+  const mediaUrl = `webdav/${file.filename}`;
 
   const startPlaying = () => {
     setPlaying(true);

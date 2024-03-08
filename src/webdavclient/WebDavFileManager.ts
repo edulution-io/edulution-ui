@@ -28,7 +28,7 @@ const handleApiError = (error: Response) => {
   );
 };
 
-const client = createClient('http://localhost:5173/webdav/', {
+const client = createClient(import.meta.env.VITE_SERVER_URL as string, {
   username: import.meta.env.VITE_USERNAME as string,
   password: import.meta.env.VITE_PASSWORD as string,
 });

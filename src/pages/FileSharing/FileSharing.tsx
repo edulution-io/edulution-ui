@@ -27,26 +27,25 @@ import HexagonButton from '@/components/shared/HexagonButton';
 
 const FileSharing = () => {
   const { files, currentPath, fetchFiles } = useWebDavActions();
-  // const [mountPoints, setMountPoints] = useState<DirectoryFile[]>([]);
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const fileOperationSuccessful: boolean = useFileManagerStore((state) => state.fileOperationSuccessful);
   const fileOperationMessage: string = useFileManagerStore((state) => state.fileOperationMessage);
 
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
-  const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath]);
 
   const handleDownload = async (items: DirectoryFile[]) => {
-    setShowLoadingPopUp(true);
+    setIsLoading(true);
     try {
       await WebDavFunctions.triggerMultipleFolderDownload(items);
     } catch {
       /* empty */
     } finally {
-      setShowLoadingPopUp(false);
+      setIsLoading(false);
       setShowPopUp(true);
 
       const timer = setTimeout(() => setShowPopUp(false), 3000);
@@ -73,20 +72,10 @@ const FileSharing = () => {
     return () => {};
   }, [fileOperationSuccessful]);
 
-  // const menuItems: {
-  //   action: () => Promise<void>;
-  //   label: string;
-  //   IconComponent: (props: IconBaseProps) => JSX.Element;
-  // }[] = mountPoints.map((mountPoint) => ({
-  //   label: getFileNameFromPath(mountPoint.filename),
-  //   IconComponent: MdOutlineNoteAdd,
-  //   action: () => fetchFiles(mountPoint.filename),
-  // }));
-
   return (
     <div className="  w-full overflow-x-auto">
       <div>
-        {showLoadingPopUp && <LoadPopUp isOpen={showLoadingPopUp} />}
+        {isLoading && <LoadPopUp isOpen={isLoading} />}
         {showPopUp && (
           <StatusAlert
             success={fileOperationSuccessful}

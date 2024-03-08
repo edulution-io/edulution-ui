@@ -7,7 +7,7 @@ interface GraphicPreviewProps {
 }
 
 const GraphicPreview: React.FC<GraphicPreviewProps> = ({ file }) => {
-  const mediaUrl = `http://localhost:5173/webdav/${file.filename}`;
+  const mediaUrl = `/webdav${file.filename}`;
 
   return (
     <div>
