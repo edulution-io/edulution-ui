@@ -4,11 +4,12 @@ import { HomePage } from '@/pages/Home';
 // import { ConferencePage } from '@/pages/ConferencePage';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import FileSharing from '@/pages/FileSharing/FileSharing';
+// import FileSharing from '@/pages/FileSharing/FileSharing';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import { ConferencePage } from '@/pages/ConferencePage';
+import IframeLayout from '@/components/layout/IframeLayout';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,9 +20,13 @@ const router = createBrowserRouter(
           element={<HomePage />}
         />
         <Route
+          path="/conferences"
+          element={<ConferencePage />}
+        />
+        {/* <Route
           path="/filesharing"
           element={<FileSharing />}
-        />
+        /> */}
         <Route
           path="/roombooking"
           element={<RoomBookingPage />}
@@ -41,11 +46,11 @@ const router = createBrowserRouter(
           path="/mail"
           element={<ForwardingPage />}
         />
-        <Route
-          path="/conferences"
-          element={<ConferencePage />}
-        />
       </Route>
+      <Route
+        path="/filesharing"
+        element={<IframeLayout />}
+      />
     </>,
   ),
 );

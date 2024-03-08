@@ -1,7 +1,7 @@
 import { FileSharing, Desktop, Share, Students } from '@/assets/icons';
 
 const FILESHARING_MENUBAR_CONFIG = {
-  title: 'fileSharing.title',
+  title: 'filesharing.title',
   icon: FileSharing,
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
