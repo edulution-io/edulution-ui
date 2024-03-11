@@ -38,6 +38,11 @@
     "description": "Here you can make all settings."
   },
 
+  "forwardingpage": {
+    "action": "This link will take you to the external site of the provider.",
+    "description": "The application opens in a new window. No further authorization is required."
+  },
+
   "menu": "MENU",
   "home": "Home",
   "programs": "Programs",

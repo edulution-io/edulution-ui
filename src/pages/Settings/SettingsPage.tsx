@@ -83,12 +83,12 @@ const SettingsPage: React.FC = () => {
 
   const settingsForm = () => {
     const onSubmit = (value: z.infer<typeof formSchema>) => {
-      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) =>
-        [`/settings/${item.id}`].includes(settingLocation),
-      );
+      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
+
       if (selectedOption) {
         const appName = selectedOption.id;
         // TODO: Save config on server (eg mongoDB)
+
         setConfig((prevConfig) => ({
           ...prevConfig,
           [appName]: {
@@ -163,6 +163,7 @@ const SettingsPage: React.FC = () => {
             }}
           >
             <img
+              className="m-7"
               src={TrashIcon}
               alt="trash"
               width="25px"

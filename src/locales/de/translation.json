@@ -37,6 +37,10 @@
     "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
     "description": "Hier können Sie alle Einstellungen vornehmen."
   },
+  "forwardingpage": {
+    "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig."
+  },
 
   "menu": "MENÜ",
   "home": "Home",

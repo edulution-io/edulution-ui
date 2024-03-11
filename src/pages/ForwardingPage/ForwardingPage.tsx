@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@/components/shared/Button';
-import { HexagonIcon, RoundArrowIcon } from '@/assets/layout';
+import { RoundArrowIcon } from '@/assets/layout';
 // import { BigBlueButtonLogo } from '@/assets/logos';
 
 const ForwardingPage: React.FC = () => {
@@ -11,6 +11,7 @@ const ForwardingPage: React.FC = () => {
   const location = useLocation();
 
   const [isForwarded, setIsForwarded] = useState<boolean>(false);
+  const [isShowForwarded, setShowIsForwarded] = useState(false);
 
   type ConfigType = {
     [key: string]: { linkPath: string; icon: string };
@@ -20,6 +21,7 @@ const ForwardingPage: React.FC = () => {
   useEffect(() => {
     if (isForwarded) {
       setIsForwarded(false);
+      setShowIsForwarded(true);
       const navigateToExternalPage = () => {
         const path = location.pathname.split('/')[1];
         const externalLink = config[path]?.linkPath;
@@ -33,45 +35,34 @@ const ForwardingPage: React.FC = () => {
   }, [isForwarded]);
 
   return (
-    <div className="absolute right-[20%] top-[25%]">
-      <div className="flex h-full flex-col items-center justify-center">
-        <h2 className="pb-20">{t('Sie werden jetzt weitergeleitet zu...')}</h2>
-        <div className="absolute right-[70%] top-[18%] w-[400px]">
-          <img
-            src={RoundArrowIcon}
-            alt=""
-            width="400px"
-            style={{ width: '100%' }}
-          />
-        </div>
-        <div className="absolute right-[32%] top-[18%] w-[400px]">
-          <img
-            src={HexagonIcon}
-            alt=""
-            width="400px"
-            style={{ width: '100%' }}
-          />
-        </div>
-        <div>
-          <img
-            src={config[location.pathname.split('/')[1]].icon}
-            alt=""
-            width="400px"
-            style={{ width: '100%' }}
-          />
-        </div>
-        <h3 className="pb-30 pt-20">
-          Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.
-        </h3>
+    <div className="grid h-[80%] items-center justify-center ">
+      <h2 className="text-center">{t('forwardingpage.action')}</h2>
+
+      <div className="mt-20 flex justify-center">
+        <img
+          className="hidden md:flex"
+          src={RoundArrowIcon}
+          alt=""
+          width="200px"
+        />
         <Button
-          variant="btn-collaboration"
-          size="lg"
+          type="button"
+          variant="btn-hexagon"
           onClick={() => {
             setIsForwarded((prevVal) => !prevVal);
           }}
         >
-          Weiter
+          <img
+            className="m-10 w-[200px] md:m-[20] md:w-[200px]"
+            src={config[location.pathname.split('/')[1]].icon}
+            alt="icon"
+            // width="200px"
+          />
         </Button>
+      </div>
+      <div>
+        {' '}
+        {isShowForwarded ? <h3 className="hidden text-center md:flex">{t('forwardingpage.description')}</h3> : null}
       </div>
     </div>
   );
