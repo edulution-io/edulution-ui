@@ -4,10 +4,13 @@ import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
 
 import cn from '@/lib/utils';
+import { useLocation } from 'react-router-dom';
 
 const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
-  const [isSelected, setIsSelected] = useState('');
+  const location = useLocation();
+
+  const [isSelected, setIsSelected] = useState(location.pathname.split('/')[2]);
 
   return (
     <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40">
@@ -28,11 +31,11 @@ const MenuBar: React.FC = () => {
                 className={cn(
                   'transition-color flex w-full cursor-pointer items-center gap-5 px-10 py-1',
                   menuBarEntries.color,
-                  isSelected === item.label ? menuBarEntries.color.split(':')[1] : '',
+                  isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
                 )}
                 onClick={() => {
                   item.action();
-                  setIsSelected(item.label);
+                  setIsSelected(item.id);
                 }}
               >
                 <img

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 
-type MenuItem = {
+type SidebarMenuItem = {
   title: string;
   link: string;
   icon: string;
@@ -11,7 +11,7 @@ type MenuItem = {
 };
 
 interface SidebarItemProps {
-  menuItem: MenuItem;
+  menuItem: SidebarMenuItem;
   isDesktop: boolean;
   pathname: string;
   translate: number;

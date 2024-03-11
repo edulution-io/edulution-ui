@@ -6,6 +6,7 @@ const ROOMBOOKING_MENUBAR_CONFIG = {
   color: 'hover:bg-ciLightBlue',
   menuItems: [
     {
+      id: 'rooms',
       label: 'roombooking.rooms',
       link: '/roombooking/rooms',
       icon: RoomBooking,

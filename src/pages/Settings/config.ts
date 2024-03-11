@@ -6,6 +6,7 @@ const SETTINGS_MENUBAR_CONFIG = {
   color: 'hover:bg-ciGreenToBlue',
   menuItems: [
     {
+      id: 'add',
       label: 'common.add',
       link: '/settings?mode=add',
       icon: PlusIcon,

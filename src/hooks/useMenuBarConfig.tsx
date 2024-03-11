@@ -23,6 +23,7 @@ const useMenuBarConfig = () => {
     ...SETTINGS_MENUBAR_CONFIG,
     menuItems: [
       ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
+        id: item.id,
         label: `${item.id}.sidebar`,
         link: `/settings/${item.id}`,
         icon: item.icon,
@@ -56,9 +57,10 @@ const useMenuBarConfig = () => {
   const configValues = menuBarConfigSwitch();
 
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
+    id: item.id,
     label: t(item.label),
-    action: () => navigate(item.link),
     icon: item.icon,
+    action: () => navigate(item.link),
   }));
 
   interface MenuBarEntryProps {

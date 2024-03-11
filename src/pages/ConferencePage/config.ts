@@ -6,15 +6,12 @@ const CONFERENCES_MENUBAR_CONFIG = {
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
     {
+      id: 'add',
       label: 'common.add',
       link: '/conferences',
       icon: FileSharing,
     },
-    {
-      label: 'common.reload',
-      link: '/',
-      icon: Desktop,
-    },
+    { id: 'reload', label: 'common.reload', link: '/', icon: Desktop },
   ],
 };
 
