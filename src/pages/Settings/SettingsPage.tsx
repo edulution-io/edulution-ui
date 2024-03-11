@@ -31,9 +31,12 @@ const SettingsPage: React.FC = () => {
   type ConfigType = {
     [key: string]: { linkPath: string; icon: string };
   };
+
+  // isIframe: boolean; isForwarding: boolean; isEmbedded: boolean
+
   const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
 
-  const [option, setOption] = useState(t(SETTINGS_APPSELECT_OPTIONS[0].name));
+  const [option, setOption] = useState(t(`${SETTINGS_APPSELECT_OPTIONS[0].id}.sidebar`));
 
   const formSchema = z.object({
     [settingLocation]: z.string().url().optional(),
@@ -80,9 +83,11 @@ const SettingsPage: React.FC = () => {
 
   const settingsForm = () => {
     const onSubmit = (value: z.infer<typeof formSchema>) => {
-      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((opt) => opt.link.includes(settingLocation));
+      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) =>
+        [`/settings/${item.id}`].includes(settingLocation),
+      );
       if (selectedOption) {
-        const appName = selectedOption.name.toLowerCase().split('.')[0];
+        const appName = selectedOption.id;
         // TODO: Save config on server (eg mongoDB)
         setConfig((prevConfig) => ({
           ...prevConfig,
@@ -132,8 +137,9 @@ const SettingsPage: React.FC = () => {
 
   const filteredAppOptions = () => {
     const existingOptions = Object.keys(config).map((key) => key);
+    const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
-    return SETTINGS_APPSELECT_OPTIONS.filter((itm) => !existingOptions.includes(itm.name.split('.')[0]));
+    return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
   };
 
   return (

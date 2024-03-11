@@ -4,20 +4,18 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './dropdownmenu.module.scss';
 
-interface Options {
+type DropdownOptions = {
   id: string;
   name: string;
-  link: string;
-  icon: string;
-}
+};
 
-interface Props {
-  options: Options[];
+interface DropdownProps {
+  options: DropdownOptions[];
   selectedVal: string;
   handleChange: (value: string) => void;
 }
 
-const DropdownMenu: React.FC<Props> = ({ options, selectedVal, handleChange }) => {
+const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -39,7 +37,7 @@ const DropdownMenu: React.FC<Props> = ({ options, selectedVal, handleChange }) =
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const selectOption = (option: Options) => {
+  const selectOption = (option: DropdownOptions) => {
     setQuery(() => '');
     handleChange(option.name);
     setIsOpen((prevVal) => !prevVal);
@@ -52,7 +50,7 @@ const DropdownMenu: React.FC<Props> = ({ options, selectedVal, handleChange }) =
     return '';
   };
 
-  const filter = (opts: Options[]): Options[] =>
+  const filter = (opts: DropdownOptions[]): DropdownOptions[] =>
     opts.filter((option) => {
       const optionName = t(option.name);
       return optionName.toLowerCase().indexOf(query.toLowerCase()) > -1;

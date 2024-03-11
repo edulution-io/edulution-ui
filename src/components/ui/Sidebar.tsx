@@ -32,14 +32,12 @@ const Sidebar = () => {
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
   const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.name.toLowerCase().split('.')[0]] !== undefined).map(
-      (item) => ({
-        title: t(item.name),
-        link: item.name.split('.')[0],
-        icon: item.icon,
-        color: item.color,
-      }),
-    ),
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
+      title: t(`${item.id}.sidebar`),
+      link: `/${item.id}`,
+      icon: item.icon,
+      color: item.color,
+    })),
     {
       title: t('settings.sidebar'),
       link: '/settings',
@@ -271,7 +269,7 @@ const Sidebar = () => {
       >
         {sidebarItems.map((item) => (
           <SidebarItem
-            key={item.title}
+            key={item.link}
             menuItem={item}
             isDesktop={isDesktop}
             pathname={pathname}

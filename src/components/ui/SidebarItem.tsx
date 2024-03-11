@@ -1,7 +1,7 @@
-import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
+import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 
 type MenuItem = {
   title: string;

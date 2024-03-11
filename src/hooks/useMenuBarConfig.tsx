@@ -22,11 +22,9 @@ const useMenuBarConfig = () => {
   const settingsMenubarConfig = {
     ...SETTINGS_MENUBAR_CONFIG,
     menuItems: [
-      ...SETTINGS_APPSELECT_OPTIONS.filter(
-        (option) => config[option.name.toLowerCase().split('.')[0]] !== undefined,
-      ).map((item) => ({
-        label: item.name,
-        link: item.link,
+      ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
+        label: `${item.id}.sidebar`,
+        link: `/settings/${item.id}`,
         icon: item.icon,
       })),
       ...SETTINGS_MENUBAR_CONFIG.menuItems,
@@ -34,19 +32,19 @@ const useMenuBarConfig = () => {
   };
 
   const menuBarConfigSwitch = () => {
-    const rootPathName = `/${location.pathname.split('/')[1]}`;
+    const rootPathName = `${location.pathname.split('/')[1]}`;
 
     switch (rootPathName) {
-      case '/filesharing': {
+      case 'filesharing': {
         return FILESHARING_MENUBAR_CONFIG;
       }
-      case '/conferences': {
+      case 'conferences': {
         return CONFERENCES_MENUBAR_CONFIG;
       }
-      case '/roombooking': {
+      case 'roombooking': {
         return ROOMBOOKING_MENUBAR_CONFIG;
       }
-      case '/settings': {
+      case 'settings': {
         return settingsMenubarConfig;
       }
       default: {

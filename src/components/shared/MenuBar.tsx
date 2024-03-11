@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
@@ -7,6 +7,7 @@ import cn from '@/lib/utils';
 
 const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
+  const [isSelected, setIsSelected] = useState('');
 
   return (
     <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40">
@@ -25,10 +26,14 @@ const MenuBar: React.FC = () => {
             <React.Fragment key={item.label}>
               <MenubarTrigger
                 className={cn(
-                  'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
+                  'transition-color flex w-full cursor-pointer items-center gap-5 px-10 py-1',
                   menuBarEntries.color,
+                  isSelected === item.label ? menuBarEntries.color.split(':')[1] : '',
                 )}
-                onClick={item.action}
+                onClick={() => {
+                  item.action();
+                  setIsSelected(item.label);
+                }}
               >
                 <img
                   src={item.icon}

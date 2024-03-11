@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
 import { HomePage } from '@/pages/Home';
 // import { ConferencePage } from '@/pages/ConferencePage';
 import MainLayout from '@/components/layout/MainLayout';
@@ -20,7 +20,7 @@ const router = createBrowserRouter(
           element={<HomePage />}
         />
         <Route
-          path="/conferences"
+          path="conferences"
           element={<ConferencePage />}
         />
         {/* <Route
@@ -28,11 +28,11 @@ const router = createBrowserRouter(
           element={<FileSharing />}
         /> */}
         <Route
-          path="/roombooking"
+          path="roombooking"
           element={<RoomBookingPage />}
         />
         <Route
-          path="/settings/*"
+          path="settings/*"
           element={<SettingsPage />}
         />
       </Route>
@@ -40,17 +40,21 @@ const router = createBrowserRouter(
       <Route element={<BlankLayout />}>
         <Route
           path="*"
-          element={<HomePage />}
+          element={
+            <Navigate
+              replace
+              to="/"
+            />
+          }
         />
         <Route
-          path="/mail"
+          path="mail"
           element={<ForwardingPage />}
         />
       </Route>
-      <Route
-        path="/filesharing"
-        element={<IframeLayout />}
-      />
+      <Route element={<IframeLayout />}>
+        <Route path="filesharing" />
+      </Route>
     </>,
   ),
 );
