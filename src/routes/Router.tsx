@@ -45,7 +45,11 @@ const router = (config: ConfigType) =>
             path="/"
             element={<HomePage />}
           />
-          <Route path="settings">
+
+          <Route
+            path="settings"
+            element={<SettingsPage />}
+          >
             {Object.keys(config).map((key) => (
               <Route
                 key={key}
