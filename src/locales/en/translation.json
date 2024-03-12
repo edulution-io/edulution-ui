@@ -50,5 +50,13 @@
   "students": "Students",
 
   "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save" },
-  "form": { "path": "Link", "pathDescription": "Please enter a URL." }
+  "form": {
+    "path": "Path",
+    "pathDescription": "Please enter a valid URL.",
+    "apptype": "Link Type",
+    "native": "Native Support",
+    "forwarded": "Forwarded",
+    "embedded": "Embedded",
+    "saved": "Configuration saved!"
+  }
 }
