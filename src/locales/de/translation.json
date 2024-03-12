@@ -53,7 +53,7 @@
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
     "apptype": "Verknüpfungsart",
-    "nativ": "Native Unterstützung",
+    "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
     "saved": "Konfiguration gespeichert"

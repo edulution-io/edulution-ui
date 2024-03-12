@@ -41,7 +41,7 @@ const SettingsPage: React.FC = () => {
 
   SETTINGS_APPSELECT_OPTIONS.forEach((item) => {
     formSchemaObject[`${item.id}.path`] = z.string().optional();
-    formSchemaObject[`${item.id}.appType`] = z.enum(['nativ', 'forwarded', 'embedded']).optional();
+    formSchemaObject[`${item.id}.appType`] = z.enum(['native', 'forwarded', 'embedded']).optional();
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -80,7 +80,7 @@ const SettingsPage: React.FC = () => {
             [settingLocation]: {
               linkPath: getValues(`${settingLocation}.path`) as string,
               icon: selectedOption.icon,
-              appType: getValues(`${settingLocation}.appType`) as 'nativ' | 'forwarded' | 'embedded',
+              appType: getValues(`${settingLocation}.appType`) as 'native' | 'forwarded' | 'embedded',
             },
           }),
         );
@@ -133,9 +133,9 @@ const SettingsPage: React.FC = () => {
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="nativ" />
+                                    <RadioGroupItem value="native" />
                                   </FormControl>
-                                  <p>{t('form.nativ')}</p>
+                                  <p>{t('form.native')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
@@ -249,7 +249,7 @@ const SettingsPage: React.FC = () => {
                 onClick={() => {
                   setSearchParams('');
                   setConfig((prevConfig) => ({
-                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: 'nativ' },
+                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: 'native' },
                     ...prevConfig,
                   }));
                 }}
