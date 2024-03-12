@@ -45,23 +45,24 @@ const router = (config: ConfigType) =>
             path="/"
             element={<HomePage />}
           />
-          <Route
-            path="settings/*"
-            element={<SettingsPage />}
-          />
+          <Route path="settings">
+            {Object.keys(config).map((key) => (
+              <Route
+                key={key}
+                path={key}
+                element={<SettingsPage />}
+              />
+            ))}
+          </Route>
           {Object.keys(config).map((key) =>
             config[key].appType === 'native' ? (
               <Route
                 key={key}
-                path={`${key}`}
+                path={key}
                 element={pageSwitch(key)}
               />
             ) : null,
           )}
-          <Route
-            path="settings/*"
-            element={<SettingsPage />}
-          />
         </Route>
 
         <Route element={<BlankLayout />}>
@@ -78,7 +79,7 @@ const router = (config: ConfigType) =>
             config[key].appType === 'forwarded' ? (
               <Route
                 key={key}
-                path={`${key}`}
+                path={key}
                 element={<ForwardingPage />}
               />
             ) : null,
@@ -90,7 +91,7 @@ const router = (config: ConfigType) =>
             config[key].appType === 'embedded' ? (
               <Route
                 key={key}
-                path={`${key}`}
+                path={key}
                 element={null}
               />
             ) : null,

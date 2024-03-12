@@ -19,7 +19,7 @@ const IframeLayout: React.FC = () => {
         <iframe
           className="h-screen w-full pr-[58px]"
           title={location.pathname}
-          src={config[location.pathname.split('/')[1]].linkPath}
+          src={config[location.pathname.split('/')[1]]?.linkPath}
         />
       </div>
       <Sidebar />

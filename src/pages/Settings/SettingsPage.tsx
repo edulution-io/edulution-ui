@@ -54,8 +54,8 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (settingsVisible) {
-      setValue(`${settingLocation}.path`, config[`${settingLocation}`].linkPath);
-      setValue(`${settingLocation}.appType`, config[`${settingLocation}`].appType);
+      setValue(`${settingLocation}.path`, config[`${settingLocation}`]?.linkPath);
+      setValue(`${settingLocation}.appType`, config[`${settingLocation}`]?.appType);
     }
   }, [settingsVisible, settingLocation]);
 

@@ -8,7 +8,7 @@ const SETTINGS_MENUBAR_CONFIG = {
     {
       id: 'add',
       label: 'common.add',
-      link: '/settings?mode=add',
+      link: '?mode=add',
       icon: PlusIcon,
     },
   ],
