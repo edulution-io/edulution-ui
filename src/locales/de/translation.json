@@ -49,5 +49,12 @@
   "students": "Schüler",
 
   "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout", "save": "Speichern" },
-  "form": { "path": "Link", "pathDescription": "Bitte eine URL eintragen." }
+  "form": {
+    "path": "Link",
+    "pathDescription": "Bitte eine URL eintragen.",
+    "apptype": "Verknüpfungsart",
+    "nativ": "Native Unterstützung",
+    "forwarded": "Weiterleitung",
+    "embedded": "Eingebettet"
+  }
 }
