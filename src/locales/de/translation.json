@@ -55,6 +55,7 @@
     "apptype": "Verknüpfungsart",
     "nativ": "Native Unterstützung",
     "forwarded": "Weiterleitung",
-    "embedded": "Eingebettet"
+    "embedded": "Eingebettet",
+    "saved": "Konfiguration gespeichert"
   }
 }

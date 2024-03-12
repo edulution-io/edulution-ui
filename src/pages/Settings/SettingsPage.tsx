@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useLocalStorage } from 'usehooks-ts';
+import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/input';
 import { DropdownMenu } from '@/components';
@@ -16,6 +17,7 @@ import { DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { TrashIcon } from '@/assets/icons';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import Toaster from '@/components/ui/sonner';
 
 const SettingsPage: React.FC = () => {
   const location = useLocation();
@@ -82,6 +84,9 @@ const SettingsPage: React.FC = () => {
             },
           }),
         );
+        toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('form.saved')}`, {
+          description: new Date().toLocaleString(),
+        });
       }
     };
     if (settingsVisible) {
@@ -255,6 +260,7 @@ const SettingsPage: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Toaster />
     </>
   );
 };
