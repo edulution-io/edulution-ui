@@ -42,7 +42,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
       {variant === 'btn-hexagon' ? (
         <div className="relative flex items-center justify-center ">
           <img
-            className="absolute z-[99]"
+            className="absolute"
             src={HexagonIcon}
             alt=""
           />
