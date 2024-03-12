@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
-// import { BigBlueButtonLogo } from '@/assets/logos';
+import { ConfigType } from '@/datatypes/types';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -13,9 +13,6 @@ const ForwardingPage: React.FC = () => {
   const [isForwarded, setIsForwarded] = useState<boolean>(false);
   const [isShowForwarded, setShowIsForwarded] = useState(false);
 
-  type ConfigType = {
-    [key: string]: { linkPath: string; icon: string };
-  };
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
   useEffect(() => {

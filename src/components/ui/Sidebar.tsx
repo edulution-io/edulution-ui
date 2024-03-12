@@ -9,6 +9,7 @@ import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage, useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import SidebarItem from './SidebarItem';
@@ -26,9 +27,6 @@ const Sidebar = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
 
-  type ConfigType = {
-    [key: string]: { linkPath: string };
-  };
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
   const sidebarItems = [

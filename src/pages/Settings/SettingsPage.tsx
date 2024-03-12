@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { TrashIcon } from '@/assets/icons';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Toaster from '@/components/ui/sonner';
+import { ConfigType } from '@/datatypes/types';
 
 const SettingsPage: React.FC = () => {
   const location = useLocation();
@@ -28,10 +29,6 @@ const SettingsPage: React.FC = () => {
 
   const settingLocation =
     location.pathname !== '/settings' ? location.pathname.split('/').filter((part) => part !== '')[1] : '';
-
-  type ConfigType = {
-    [key: string]: { linkPath: string; icon: string; appType: string };
-  };
 
   const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
 

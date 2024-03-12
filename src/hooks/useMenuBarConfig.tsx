@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
 
-import MenuItem from '@/datatypes/types';
+import { MenuItem, ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
@@ -14,10 +14,6 @@ const useMenuBarConfig = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
-
-  type ConfigType = {
-    [key: string]: { linkPath: string };
-  };
 
   const settingsMenubarConfig = {
     ...SETTINGS_MENUBAR_CONFIG,

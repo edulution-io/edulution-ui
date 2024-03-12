@@ -12,11 +12,8 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 
+import { ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
-
-type ConfigType = {
-  [key: string]: { linkPath: string; icon: string; appType: string };
-};
 
 const pageSwitch = (page: string) => {
   switch (page) {
