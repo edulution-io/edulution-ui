@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "nx serve frontend",
-    "dev": "vite",
-    "build": "tsc && nx build",
-    "lint": "nx lint",
-    "preview": "nx preview"
+    "dev": "nx serve frontend",
+    "build": "tsc && nx build frontend --emptyOutDir",
+    "lint": "nx lint frontend",
+    "preview": "nx preview frontend"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
