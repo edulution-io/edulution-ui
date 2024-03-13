@@ -22,5 +22,6 @@
       }
     }
   ],
+  "neverConnectToCloud": true,
   "nxCloudAccessToken": "N2MyYjY3NDYtZjYwYi00YTYwLWE1MTktY2IwMjhlYTFlYzMxfHJlYWQtd3JpdGU="
 }
