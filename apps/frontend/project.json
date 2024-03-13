@@ -2,12 +2,16 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/frontend/src",
   "projectType": "application",
+  "styles": ["./src/index.scss"],
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
+      "defaultConfiguration": "production",
+
       "options": {
-        "outputPath": "../../dist/apps/frontend",
-        "configFile": "./vite.config.ts"
+        "outputPath": "./dist/apps/frontend",
+        "configFile": "./vite.config.ts",
+        "postcssConfig": "./postcss.config.js"
       }
     },
     "serve": {
@@ -27,5 +31,6 @@
         }
       }
     }
-  }
+  },
+  "neverConnectToCloud": true
 }
