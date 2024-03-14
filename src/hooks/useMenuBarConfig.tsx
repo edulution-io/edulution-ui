@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FileSharing } from '@/assets/icons';
 import MenuItem from '@/datatypes/types';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
+import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useMenuItems from '@/pages/FileSharing/useMenuConfig';
 import useWebDavActions from '@/utils/webDavHooks';
 
@@ -24,6 +25,9 @@ const useMenuBarConfig = (location: string) => {
       }
       case '/conferences': {
         return CONFERENCES_MENUBAR_CONFIG;
+      }
+      case '/room-booking': {
+        return ROOMBOOKING_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '' };

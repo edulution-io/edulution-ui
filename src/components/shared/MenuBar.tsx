@@ -11,7 +11,7 @@ const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig(location.pathname);
 
   return (
-    <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40 text-white">
+    <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center py-6">
           <img
@@ -19,14 +19,17 @@ const MenuBar: React.FC = () => {
             alt=""
             className="h-20 w-20 object-contain"
           />
-          <div className="mb-4 mt-4 text-lg font-bold">{menuBarEntries.title}</div>
+          <h3 className="mb-4 mt-4 font-bold">{menuBarEntries.title}</h3>
         </div>
         <MenubarSeparator />
         <MenubarMenu>
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
               <MenubarTrigger
-                className={cn('flex w-full cursor-pointer items-center gap-5 px-10 py-1', menuBarEntries.color)}
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
+                  menuBarEntries.color,
+                )}
                 onClick={item.action}
               >
                 <img
@@ -34,7 +37,7 @@ const MenuBar: React.FC = () => {
                   alt=""
                   className="h-12 w-12 object-contain "
                 />
-                <div className="text-base">{item.label}</div>
+                <p>{item.label}</p>
               </MenubarTrigger>
               <MenubarSeparator />
             </React.Fragment>

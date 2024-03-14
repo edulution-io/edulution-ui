@@ -3,12 +3,12 @@ import { CardContent, Card } from '@/components/shared/Card';
 
 const Groups = () => (
   <Card
-    variant="primary"
+    variant="organisation"
     className="h-full"
   >
     <CardContent>
       <div className="flex flex-col gap-1">
-        <p className="text-md font-bold text-white">GRUPPEN</p>
+        <h4 className="text-md font-bold">GRUPPEN</h4>
 
         <p>Lehrer</p>
         <p>1b</p>

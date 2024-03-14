@@ -13,11 +13,12 @@ const Header: React.FC = () => {
     <div className="mb-3 pb-1">
       <div className="flex max-w-[1440px] justify-between align-middle">
         {showLogo ? (
-          <div className={`w-[150px] rounded-b-[8px] ${isDesktop ? 'mt-0 w-[250px] bg-white' : 'mt-4'}`}>
+          <div className={`w-[150px] rounded-b-[8px] ${isDesktop ? 'mt-0 w-[250px] bg-white' : 'mt-3'}`}>
             <Link to="/">
               <img
                 src={isDesktop ? DesktopLogo : MobileLogo}
                 alt="edulution"
+                className={isDesktop ? 'm-4' : 'm-1'}
               />
             </Link>
           </div>

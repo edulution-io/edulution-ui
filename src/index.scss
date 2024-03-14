@@ -1,4 +1,10 @@
 @tailwind base;
+@layer base {
+  html {
+    @apply text-white;
+    font-family: 'Lato';
+  }
+}
 @tailwind components;
 @tailwind utilities;
 
