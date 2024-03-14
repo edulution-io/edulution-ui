@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
-import { FaFileAlt, FaFolder } from 'react-icons/fa';
 import Checkbox from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,9 +22,14 @@ import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
+import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
+import { Icon } from '@radix-ui/react-select';
+import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
 
-const lastModColumnWidth = 'w-1/3';
-const sizeColumnWidth = 'w-1/3';
+const selectFileNameWidth = 'w-4/12';
+const lastModColumnWidth = 'w-5/12';
+const sizeColumnWidth = 'w-1/12';
+const typeColumnWidth = 'w-1/12';
 const operationsColumnWidth = 'w-1/12';
 
 const parseDate = (value: unknown): Date | null => {
@@ -39,8 +43,10 @@ const parseDate = (value: unknown): Date | null => {
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
+    // In your columns definition
+
     header: ({ table, column }) => (
-      <div className="">
+      <div className={`flex items-center ${selectFileNameWidth}`}>
         <Checkbox
           checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
           onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
@@ -60,7 +66,6 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const [isPreviewOpen, setPreviewOpen] = useState(false);
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
-      const Icon = filename.includes('.txt') ? FaFileAlt : FaFolder;
       const { fetchFiles } = useWebDavActions();
       const handleFilenameClick = (filenamePath: string) => {
         if (row.original.type === ContentType.file) {
@@ -76,14 +81,20 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className="flex items-center">
+        <div className={`${selectFileNameWidth} flex items-center `}>
           <div className="flex items-center">
             <Checkbox
               checked={row.getIsSelected()}
               onCheckedChange={handleCheckboxChange}
               aria-label="Select row"
             />
-            <Icon className="ml-2 mr-2" />
+            <Icon
+              className="ml-2 mr-2"
+              style={{ fontSize: '16px', width: '16px', height: '16px' }}
+            >
+              <FileIconComponent filename={filename} />
+            </Icon>
+
             <span
               className="cursor-pointer text-left font-medium"
               onClick={() => handleFilenameClick(row.original.filename)}
@@ -120,9 +131,11 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'lastmod',
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <div className="">Last Modified</div>
-      </Button>
+      <div className={lastModColumnWidth}>
+        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <div className="">Last Modified</div>
+        </Button>
+      </div>
     ),
     cell: ({ row }) => {
       const directoryFile = row.original;
@@ -155,9 +168,11 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'size',
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <div className="">Size</div>
-      </Button>
+      <div className={sizeColumnWidth}>
+        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <div className="">Size</div>
+        </Button>
+      </div>
     ),
     cell: ({ row }) => {
       let fileSize = 0;
@@ -173,10 +188,31 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   },
 
   {
+    accessorKey: 'type',
+    header: ({ column }) => (
+      <div className={typeColumnWidth}>
+        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <div className="">Type</div>
+        </Button>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const fileCategory = getFileCategorie(row.original.filename);
+      return (
+        <div className={`flex flex-row  ${typeColumnWidth}`}>
+          <p className="text-right font-medium">{fileCategory}</p>
+        </div>
+      );
+    },
+  },
+
+  {
     accessorKey: 'delete',
     header: () => (
-      <div className={`flex items-center justify-between ${operationsColumnWidth}`}>
-        <p />
+      <div className={operationsColumnWidth}>
+        <div className={`flex items-center justify-between ${operationsColumnWidth}`}>
+          <p />
+        </div>
       </div>
     ),
     cell: ({ row }) => {
