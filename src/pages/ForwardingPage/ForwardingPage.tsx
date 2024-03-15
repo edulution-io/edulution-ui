@@ -10,15 +10,15 @@ const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const [isForwarded, setIsForwarded] = useState<boolean>(false);
-  const [isShowForwarded, setShowIsForwarded] = useState(false);
+  const [isForwarding, setIsForwaring] = useState(false);
+  const [showIsForwarding, setShowIsForwarding] = useState(false);
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
   useEffect(() => {
-    if (isForwarded) {
-      setIsForwarded(false);
-      setShowIsForwarded(true);
+    if (isForwarding) {
+      setIsForwaring(false);
+      setShowIsForwarding(true);
       const navigateToExternalPage = () => {
         const path = location.pathname.split('/')[1];
         const externalLink = config[path]?.linkPath;
@@ -28,11 +28,11 @@ const ForwardingPage: React.FC = () => {
       };
       navigateToExternalPage();
     }
-    setIsForwarded(false);
-  }, [isForwarded]);
+    setIsForwaring(false);
+  }, [isForwarding]);
 
   return (
-    <div className="grid h-[80%] items-center justify-center ">
+    <div className="grid h-[80%] items-center justify-center">
       <h2 className="text-center">{t('forwardingpage.action')}</h2>
       <div className="mt-20 flex justify-center">
         <img
@@ -45,20 +45,17 @@ const ForwardingPage: React.FC = () => {
           type="button"
           variant="btn-hexagon"
           onClick={() => {
-            setIsForwarded((prevVal) => !prevVal);
+            setIsForwaring((prevVal) => !prevVal);
           }}
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
             src={config[location.pathname.split('/')[1]].icon}
             alt="icon"
-            // width="200px"
           />
         </Button>
       </div>
-      <div>
-        {isShowForwarded ? <h3 className="hidden text-center md:flex">{t('forwardingpage.description')}</h3> : null}
-      </div>
+      <h3>{showIsForwarding ? t('forwardingpage.description') : '\u00A0'}</h3>
     </div>
   );
 };
