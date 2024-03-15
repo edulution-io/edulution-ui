@@ -21,40 +21,11 @@ import {
   Virtualization,
   Wlan,
 } from '@/assets/icons';
+import { APPS } from '@/datatypes/types';
 
 export const QUERY_KEY: Record<string, string> = {
   repoData: 'repoData',
 };
-
-export enum APPS {
-  TICKETSYSTEM = 'ticketsystem',
-  MAIL = 'mail',
-  CHAT = 'chat',
-  CONFERENCES = 'conferences',
-  KNOWLEDGEBASE = 'knowledgebase',
-  FILESHARING = 'filesharing',
-  FORUMS = 'forums',
-  ROOMBOOKING = 'roombooking',
-  LEARNINGMANAGEMENT = 'learningmanagement',
-  SCHOOLINFORMATION = 'schoolinformation',
-  SCHOOLMANAGEMENT = 'schoolmanagement',
-  PRINTER = 'printer',
-  NETWORK = 'network',
-  LOCATIONSERVICES = 'locationservices',
-  DESKTOPDEPLOYMENT = 'desktopdeployment',
-  WLAN = 'wlan',
-  MOBILEDEVICES = 'mobiledevices',
-  VIRTUALIZATION = 'virtualization',
-  FIREWALL = 'firewall',
-  ANTIMALWARE = 'antimalware',
-  BACKUP = 'backup',
-}
-
-export enum AppType {
-  NATIVE = 'native',
-  FORWARDED = 'forwarded',
-  EMBEDDED = 'embedded',
-}
 
 type SettingsOptions = {
   id: string;

@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
 
-import { MenuItem, ConfigType, MenuBarEntryProps } from '@/datatypes/types';
-import { APPS, SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { MenuItem, ConfigType, MenuBarEntryProps, APPS } from '@/datatypes/types';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';

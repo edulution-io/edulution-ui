@@ -12,9 +12,8 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 
-import { ConfigType } from '@/datatypes/types';
+import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
-import { APPS, AppType } from '@/constants';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {

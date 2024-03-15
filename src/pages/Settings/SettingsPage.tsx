@@ -11,14 +11,14 @@ import { Input } from '@/components/ui/input';
 import { DropdownMenu } from '@/components';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/shared/Button';
-import { AppType, SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { TrashIcon } from '@/assets/icons';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Toaster from '@/components/ui/sonner';
-import { ConfigType } from '@/datatypes/types';
+import { AppType, ConfigType } from '@/datatypes/types';
 
 const SettingsPage: React.FC = () => {
   const location = useLocation();
