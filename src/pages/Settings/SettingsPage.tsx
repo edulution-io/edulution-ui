@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { DropdownMenu } from '@/components';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/shared/Button';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { AppType, SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -38,7 +38,7 @@ const SettingsPage: React.FC = () => {
 
   SETTINGS_APPSELECT_OPTIONS.forEach((item) => {
     formSchemaObject[`${item.id}.path`] = z.string().optional();
-    formSchemaObject[`${item.id}.appType`] = z.enum(['native', 'forwarded', 'embedded']).optional();
+    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppType).optional();
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -77,7 +77,7 @@ const SettingsPage: React.FC = () => {
             [settingLocation]: {
               linkPath: getValues(`${settingLocation}.path`) as string,
               icon: selectedOption.icon,
-              appType: getValues(`${settingLocation}.appType`) as 'native' | 'forwarded' | 'embedded',
+              appType: getValues(`${settingLocation}.appType`) as AppType,
             },
           }),
         );
@@ -130,19 +130,19 @@ const SettingsPage: React.FC = () => {
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="native" />
+                                    <RadioGroupItem value={AppType.NATIVE} />
                                   </FormControl>
                                   <p>{t('form.native')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="forwarded" />
+                                    <RadioGroupItem value={AppType.FORWARDED} />
                                   </FormControl>
                                   <p>{t('form.forwarded')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="embedded" />
+                                    <RadioGroupItem value={AppType.EMBEDDED} />
                                   </FormControl>
                                   <p>{t('form.embedded')}</p>
                                 </FormItem>
@@ -246,7 +246,7 @@ const SettingsPage: React.FC = () => {
                 onClick={() => {
                   setSearchParams('');
                   setConfig((prevConfig) => ({
-                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: 'native' },
+                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
                     ...prevConfig,
                   }));
                 }}

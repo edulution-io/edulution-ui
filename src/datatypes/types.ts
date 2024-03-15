@@ -1,5 +1,7 @@
+import { AppType } from '@/constants';
+
 export type ConfigType = {
-  [key: string]: { linkPath: string; icon: string; appType: string };
+  [key: string]: { linkPath: string; icon: string; appType: AppType };
 };
 
 export interface MenuItem {

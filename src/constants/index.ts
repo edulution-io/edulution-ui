@@ -50,6 +50,12 @@ export enum APPS {
   BACKUP = 'backup',
 }
 
+export enum AppType {
+  NATIVE = 'native',
+  FORWARDED = 'forwarded',
+  EMBEDDED = 'embedded',
+}
+
 type SettingsOptions = {
   id: string;
   icon: string;

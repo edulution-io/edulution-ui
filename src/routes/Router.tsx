@@ -14,7 +14,7 @@ import { SettingsPage } from '@/pages/Settings';
 
 import { ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
-import { APPS } from '@/constants';
+import { APPS, AppType } from '@/constants';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -60,7 +60,7 @@ const router = (config: ConfigType) =>
             ))}
           </Route>
           {Object.keys(config).map((key) =>
-            config[key].appType === 'native' ? (
+            config[key].appType === AppType.NATIVE ? (
               <Route
                 key={key}
                 path={key}
@@ -81,7 +81,7 @@ const router = (config: ConfigType) =>
             }
           />
           {Object.keys(config).map((key) =>
-            config[key].appType === 'forwarded' ? (
+            config[key].appType === AppType.FORWARDED ? (
               <Route
                 key={key}
                 path={key}
@@ -93,7 +93,7 @@ const router = (config: ConfigType) =>
 
         <Route element={<IframeLayout />}>
           {Object.keys(config).map((key) =>
-            config[key].appType === 'embedded' ? (
+            config[key].appType === AppType.EMBEDDED ? (
               <Route
                 key={key}
                 path={key}
