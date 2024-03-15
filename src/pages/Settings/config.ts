@@ -1,6 +1,7 @@
 import { Settings, PlusIcon } from '@/assets/icons';
+import { MenuBarEntryProps } from '@/datatypes/types';
 
-const SETTINGS_MENUBAR_CONFIG = {
+const SETTINGS_MENUBAR_CONFIG: MenuBarEntryProps = {
   title: 'settings.title',
   icon: Settings,
   color: 'hover:bg-ciGreenToBlue',
@@ -8,8 +9,8 @@ const SETTINGS_MENUBAR_CONFIG = {
     {
       id: 'add',
       label: 'common.add',
-      link: '?mode=add',
       icon: PlusIcon,
+      action: () => {},
     },
   ],
 };

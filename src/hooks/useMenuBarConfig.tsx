@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
 
-import { MenuItem, ConfigType } from '@/datatypes/types';
+import { MenuItem, ConfigType, MenuBarEntryProps } from '@/datatypes/types';
 import { APPS, SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
@@ -21,10 +21,10 @@ const useMenuBarConfig = () => {
       ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
         id: item.id,
         label: `${item.id}.sidebar`,
-        link: `/settings/${item.id}`,
         icon: item.icon,
+        action: () => navigate(`/settings/${item.id}`),
       })),
-      ...SETTINGS_MENUBAR_CONFIG.menuItems,
+      ...SETTINGS_MENUBAR_CONFIG.menuItems.map((items) => ({ ...items, action: () => navigate('?mode=add') })),
     ],
   };
 
@@ -55,15 +55,8 @@ const useMenuBarConfig = () => {
     id: item.id,
     label: t(item.label),
     icon: item.icon,
-    action: () => navigate(item.link),
+    action: () => item.action(),
   }));
-
-  interface MenuBarEntryProps {
-    menuItems: MenuItem[];
-    title: string;
-    icon: string;
-    color: string;
-  }
 
   const menuBarEntries: MenuBarEntryProps = {
     menuItems,

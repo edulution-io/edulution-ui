@@ -8,3 +8,10 @@ export interface MenuItem {
   icon: string;
   action: () => void;
 }
+
+export interface MenuBarEntryProps {
+  menuItems: MenuItem[];
+  title: string;
+  icon: string;
+  color: string;
+}
