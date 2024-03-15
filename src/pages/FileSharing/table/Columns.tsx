@@ -8,6 +8,7 @@ import {
   MdOutlineDeleteOutline,
   MdOutlineDriveFileMove,
   MdOutlineFileDownload,
+  MdFolder,
 } from 'react-icons/md';
 
 import { useFileManagerStore } from '@/store/appDataStore';
@@ -80,6 +81,13 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         row.toggleSelected(!row.getIsSelected());
       };
 
+      const renderFileIcon = (item: DirectoryFile) => {
+        if (row.original.type === ContentType.file) {
+          return <FileIconComponent filename={item.filename} />;
+        }
+        return <MdFolder />;
+      };
+
       return (
         <div className={`${selectFileNameWidth} flex items-center `}>
           <div className="flex items-center">
@@ -92,7 +100,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               className="ml-2 mr-2"
               style={{ fontSize: '16px', width: '16px', height: '16px' }}
             >
-              <FileIconComponent filename={filename} />
+              {renderFileIcon(row.original)}
             </Icon>
 
             <span
@@ -197,12 +205,14 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const fileCategory = getFileCategorie(row.original.filename);
-      return (
-        <div className={`flex flex-row  ${typeColumnWidth}`}>
-          <p className="text-right font-medium">{fileCategory}</p>
-        </div>
-      );
+      const rederFileCategegorie = (item: DirectoryFile) => {
+        if (row.original.type === ContentType.file) {
+          return getFileCategorie(item.filename);
+        }
+        return 'Folder';
+      };
+
+      return <div className={`flex flex-row  ${typeColumnWidth}`}>{rederFileCategegorie(row.original)}</div>;
     },
   },
 

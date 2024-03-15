@@ -13,7 +13,7 @@ const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename }) => {
   return (
     <FileIcon
       extension={getFileNameFromPath(filename).split('.').pop() || ''}
-      type={fileType !== undefined ? fileType : 'drive'}
+      type={fileType !== undefined ? fileType : 'document'}
     />
   );
 };
