@@ -29,6 +29,7 @@ import translateKey from '@/utils/common';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+import { useAuth } from 'react-oidc-context';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -43,6 +44,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
+  const auth = useAuth();
 
   // TODO: will move to separate file later
   const MENU_ITEMS = [
@@ -314,10 +316,10 @@ const Sidebar = () => {
   const logoutButton = () => (
     <div key="logout">
       <NavLink
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
+          auth.removeUser().catch(() => {});
         }}
-        to="/logout"
+        to="/"
         className={`group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 border-ciLightGrey bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
