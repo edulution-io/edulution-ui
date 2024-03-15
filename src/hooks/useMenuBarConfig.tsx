@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
 
 import { MenuItem, ConfigType } from '@/datatypes/types';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { APPS, SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
@@ -31,18 +31,17 @@ const useMenuBarConfig = () => {
   const menuBarConfigSwitch = () => {
     const rootPathName = `${location.pathname.split('/')[1]}`;
 
-    switch (rootPathName) {
-      case 'filesharing': {
+    if (rootPathName === 'settings') return settingsMenubarConfig;
+
+    switch (rootPathName as APPS) {
+      case APPS.FILESHARING: {
         return FILESHARING_MENUBAR_CONFIG;
       }
-      case 'conferences': {
+      case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
       }
-      case 'roombooking': {
+      case APPS.ROOMBOOKING: {
         return ROOMBOOKING_MENUBAR_CONFIG;
-      }
-      case 'settings': {
-        return settingsMenubarConfig;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '' };

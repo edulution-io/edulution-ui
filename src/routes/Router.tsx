@@ -14,15 +14,16 @@ import { SettingsPage } from '@/pages/Settings';
 
 import { ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
+import { APPS } from '@/constants';
 
 const pageSwitch = (page: string) => {
-  switch (page) {
-    case 'conferences':
+  switch (page as APPS) {
+    case APPS.CONFERENCES:
       return <ConferencePage />;
-    case 'filesharing': {
+    case APPS.FILESHARING: {
       return <FileSharing />;
     }
-    case 'roombooking': {
+    case APPS.ROOMBOOKING: {
       return <RoomBookingPage />;
     }
     default: {

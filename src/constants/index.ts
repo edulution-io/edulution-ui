@@ -26,84 +26,108 @@ export const QUERY_KEY: Record<string, string> = {
   repoData: 'repoData',
 };
 
-interface SettingsOptions {
+export enum APPS {
+  TICKETSYSTEM = 'ticketsystem',
+  MAIL = 'mail',
+  CHAT = 'chat',
+  CONFERENCES = 'conferences',
+  KNOWLEDGEBASE = 'knowledgebase',
+  FILESHARING = 'filesharing',
+  FORUMS = 'forums',
+  ROOMBOOKING = 'roombooking',
+  LEARNINGMANAGEMENT = 'learningmanagement',
+  SCHOOLINFORMATION = 'schoolinformation',
+  SCHOOLMANAGEMENT = 'schoolmanagement',
+  PRINTER = 'printer',
+  NETWORK = 'network',
+  LOCATIONSERVICES = 'locationservices',
+  DESKTOPDEPLOYMENT = 'desktopdeployment',
+  WLAN = 'wlan',
+  MOBILEDEVICES = 'mobiledevices',
+  VIRTUALIZATION = 'virtualization',
+  FIREWALL = 'firewall',
+  ANTIMALWARE = 'antimalware',
+  BACKUP = 'backup',
+}
+
+type SettingsOptions = {
   id: string;
   icon: string;
   color: string;
-}
+};
 
 export const SETTINGS_APPSELECT_OPTIONS: SettingsOptions[] = [
   {
-    id: 'ticketsystem',
+    id: APPS.TICKETSYSTEM,
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
   },
-  { id: 'mail', icon: Mail, color: 'bg-ciDarkBlue' },
-  { id: 'chat', icon: Chat, color: 'bg-ciDarkBlue' },
+  { id: APPS.MAIL, icon: Mail, color: 'bg-ciDarkBlue' },
+  { id: APPS.CHAT, icon: Chat, color: 'bg-ciDarkBlue' },
   {
-    id: 'conferences',
+    id: APPS.CONFERENCES,
     icon: Conferences,
     color: 'bg-ciDarkBlue',
   },
   {
-    id: 'knowledgebase',
+    id: APPS.KNOWLEDGEBASE,
     icon: KnowledgeBase,
     color: 'bg-ciDarkBlue',
   },
   {
-    id: 'filesharing',
+    id: APPS.FILESHARING,
     icon: FileSharing,
     color: 'bg-ciDarkBlue',
   },
-  { id: 'forums', icon: Forums, color: 'bg-ciDarkBlue' },
+  { id: APPS.FORUMS, icon: Forums, color: 'bg-ciDarkBlue' },
   {
-    id: 'roombooking',
+    id: APPS.ROOMBOOKING,
     icon: RoomBooking,
     color: 'bg-ciLightBlue',
   },
   {
-    id: 'learningmanagement',
+    id: APPS.LEARNINGMANAGEMENT,
     icon: LearningManagement,
     color: 'bg-ciLightBlue',
   },
   {
-    id: 'schoolinformation',
+    id: APPS.SCHOOLINFORMATION,
     icon: SchoolInformation,
     color: 'bg-ciLightBlue',
   },
   {
-    id: 'schoolmanagement',
+    id: APPS.SCHOOLMANAGEMENT,
     icon: SchoolManagementIcon,
     color: 'bg-ciLightBlue',
   },
-  { id: 'printer', icon: Printer, color: 'bg-ciLightGreen' },
-  { id: 'network', icon: Network, color: 'bg-ciLightGreen' },
+  { id: APPS.PRINTER, icon: Printer, color: 'bg-ciLightGreen' },
+  { id: APPS.NETWORK, icon: Network, color: 'bg-ciLightGreen' },
   {
-    id: 'locationservices',
+    id: APPS.LOCATIONSERVICES,
     icon: LocationServicesIcon,
     color: 'bg-ciLightGreen',
   },
   {
-    id: 'desktopdeployment',
+    id: APPS.DESKTOPDEPLOYMENT,
     icon: DesktopDeployment,
     color: 'bg-ciLightGreen',
   },
-  { id: 'wlan', icon: Wlan, color: 'bg-ciLightGreen' },
+  { id: APPS.WLAN, icon: Wlan, color: 'bg-ciLightGreen' },
   {
-    id: 'mobiledevices',
+    id: APPS.MOBILEDEVICES,
     icon: MobileDevicesIcon,
     color: 'bg-ciLightGreen',
   },
   {
-    id: 'virtualization',
+    id: APPS.VIRTUALIZATION,
     icon: Virtualization,
     color: 'bg-ciLightGreen',
   },
-  { id: 'firewall', icon: Firewall, color: 'bg-ciGreenToBlue' },
+  { id: APPS.FIREWALL, icon: Firewall, color: 'bg-ciGreenToBlue' },
   {
-    id: 'antimalware',
+    id: APPS.ANTIMALWARE,
     icon: AntiMalwareIcon,
     color: 'bg-ciGreenToBlue',
   },
-  { id: 'backup', icon: BackupIcon, color: 'bg-ciGreenToBlue' },
+  { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue' },
 ];
