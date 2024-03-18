@@ -57,13 +57,9 @@ const FileSharing = () => {
       const timer = setTimeout(() => {
         setPopUpVisibility(false);
       }, 3000);
-      const resetTimer = setTimeout(() => {
-        // setFileOperationSuccessful(undefined);
-      }, 3500);
 
       return () => {
         clearTimeout(timer);
-        clearTimeout(resetTimer);
       };
     }
     return () => {};
