@@ -18,6 +18,7 @@ const App = () => {
       .catch(() => {});
   }, [lang, i18n]);
 
+  // TODO: Move config to backend
   const oidcConfig = {
     authority: 'http://localhost:8080/realms/master',
     client_id: 'edulution-ui',
