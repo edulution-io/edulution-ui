@@ -19,9 +19,8 @@ const App = () => {
   }, [lang, i18n]);
 
   const oidcConfig = {
-    authority: 'http://localhost:8080/realms/master/',
+    authority: 'http://localhost:8080/realms/master',
     client_id: 'edulution-ui',
-    redirect_uri: 'http://localhost:5173',
   };
 
   return (

@@ -38,6 +38,7 @@
     "logout": "Abmelden",
     "login": "Anmelden",
     "username": "Benutzername",
-    "password": "Passwort"
+    "password": "Passwort",
+    "loading": "Laden..."
   }
 }

@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
                     {...field}
                     disabled={isLoading}
                     placeholder={t('common.username')}
-                    className="placeholder:color:ciLightGrey rounded-xl placeholder:text-p"
+                    className="placeholder:color:ciLightGrey rounded placeholder:text-p"
                   />
                 </FormControl>
                 <FormMessage className="text-p" />
@@ -87,7 +87,7 @@ const LoginPage: React.FC = () => {
                     {...field}
                     type="password"
                     disabled={isLoading}
-                    className="placeholder:color:ciLightGrey rounded-xl placeholder:text-p"
+                    className="placeholder:color:ciLightGrey rounded placeholder:text-p"
                   />
                 </FormControl>
                 <FormMessage className="text-p" />
@@ -100,7 +100,7 @@ const LoginPage: React.FC = () => {
             variant="btn-collaboration"
             size="lg"
           >
-            {isLoading ? 'Loading...' : t('common.login')}
+            {isLoading ? t('common.loading') : t('common.login')}
           </Button>
         </form>
       </Form>
