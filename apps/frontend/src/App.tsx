@@ -12,10 +12,7 @@ const App = () => {
   const { lang } = useLanguage();
 
   useEffect(() => {
-    i18n
-      .changeLanguage(lang)
-      .then(() => {})
-      .catch(() => {});
+    i18n.changeLanguage(lang).catch(() => {});
   }, [lang, i18n]);
 
   // TODO: Move config to backend
