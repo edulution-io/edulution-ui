@@ -3,6 +3,7 @@ import path from 'path';
 import { createRequire } from 'node:module';
 import { defineConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 const require = createRequire(import.meta.url);
 const cMapsDir = normalizePath(path.join(path.dirname(require.resolve('pdfjs-dist/package.json')), 'cmaps'));
@@ -20,9 +21,10 @@ export default defineConfig({
       ],
     }),
   ],
+  plugins: [react(), nxViteTsPaths()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './apps/frontend/src'),
     },
   },
   server: {
