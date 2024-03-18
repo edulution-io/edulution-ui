@@ -2,11 +2,11 @@ import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/dialog';
 import CircleLoader from '@/components/ui/circleLoader';
 
-interface LoadPopUpProps {
+interface LoadingIndicatorProps {
   isOpen: boolean;
 }
 
-const LoadPopUp: React.FC<LoadPopUpProps> = ({ isOpen }) => (
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => (
   <Dialog open={isOpen}>
     <DialogContent showCloseButton={false}>
       <DialogHeader>
@@ -20,4 +20,4 @@ const LoadPopUp: React.FC<LoadPopUpProps> = ({ isOpen }) => (
     </DialogContent>
   </Dialog>
 );
-export default LoadPopUp;
+export default LoadingIndicator;

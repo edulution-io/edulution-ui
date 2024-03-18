@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   MdOutlineDeleteOutline,
   MdOutlineDriveFileMove,
@@ -8,7 +8,7 @@ import {
 import { useFileManagerStore } from '@/store/appDataStore';
 import useWebDavActions from '@/utils/webDavHooks';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import LoadPopUp from '@/components/shared/LoadPopUp';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
@@ -24,41 +24,38 @@ import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import HexagonButton from '@/components/shared/HexagonButton';
+import usePopUpStore from '@/store/popUpStore';
 
 const FileSharing = () => {
   const { files, currentPath, fetchFiles } = useWebDavActions();
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const fileOperationSuccessful: boolean = useFileManagerStore((state) => state.fileOperationSuccessful);
   const fileOperationMessage: string = useFileManagerStore((state) => state.fileOperationMessage);
-
-  const [showPopUp, setShowPopUp] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const setCurrentPath = useFileManagerStore((state) => state.setCurrentPath);
+  const { setPopUpVisibility, setLoading, isLoading, isVisible } = usePopUpStore();
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath]);
 
   const handleDownload = async (items: DirectoryFile[]) => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       await WebDavFunctions.triggerMultipleFolderDownload(items);
-    } catch {
-      /* empty */
     } finally {
-      setIsLoading(false);
-      setShowPopUp(true);
+      setLoading(false);
+      setPopUpVisibility(true);
 
-      const timer = setTimeout(() => setShowPopUp(false), 3000);
+      const timer = setTimeout(() => setPopUpVisibility(false), 3000);
       clearTimeout(timer);
     }
   };
 
   useEffect(() => {
     if (fileOperationSuccessful !== undefined) {
-      setShowPopUp(true);
+      setPopUpVisibility(true);
       fetchFiles().catch(console.error);
       const timer = setTimeout(() => {
-        setShowPopUp(false);
+        setPopUpVisibility(false);
       }, 3000);
       const resetTimer = setTimeout(() => {
         // setFileOperationSuccessful(undefined);
@@ -75,8 +72,8 @@ const FileSharing = () => {
   return (
     <div className="  w-full overflow-x-auto">
       <div>
-        {isLoading && <LoadPopUp isOpen={isLoading} />}
-        {showPopUp && (
+        {isLoading && <LoadingIndicator isOpen={isLoading} />}
+        {isVisible && (
           <StatusAlert
             success={fileOperationSuccessful}
             message={fileOperationMessage}
@@ -93,9 +90,7 @@ const FileSharing = () => {
                   <DirectoryBreadcrumb
                     path={currentPath}
                     onNavigate={(path) => {
-                      fetchFiles(path).catch((error) => {
-                        console.error('Something went wrong:', error);
-                      });
+                      setCurrentPath(path);
                     }}
                   />
                 </div>

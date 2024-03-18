@@ -14,6 +14,7 @@ const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename }) => {
     <FileIcon
       extension={getFileNameFromPath(filename).split('.').pop() || ''}
       type={fileType !== undefined ? fileType : 'document'}
+      labelColor="green"
     />
   );
 };

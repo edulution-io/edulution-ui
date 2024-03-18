@@ -58,23 +58,19 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
 
   const moveItem = async (items: DirectoryFile | DirectoryFile[], toPath: string | undefined) => {
     setFileOperationSuccessful(undefined, '');
-    try {
-      await WebDavFunctions.moveItems(items, toPath)
-        .then((resp) => {
-          if ('message' in resp) {
-            setFileOperationSuccessful(resp.success, resp.message);
-          } else {
-            setFileOperationSuccessful(resp.success, '');
-          }
-        })
-        .catch((error: unknown) => {
-          const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-          setFileOperationSuccessful(false, errorMessage);
-        });
-      setIsOpen(false);
-    } catch (error) {
-      /* empty */
-    }
+    await WebDavFunctions.moveItems(items, toPath)
+      .then((resp) => {
+        if ('message' in resp) {
+          setFileOperationSuccessful(resp.success, resp.message);
+        } else {
+          setFileOperationSuccessful(resp.success, '');
+        }
+      })
+      .catch((error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setFileOperationSuccessful(false, errorMessage);
+      });
+    setIsOpen(false);
   };
 
   const renderAvailablePaths = () => (

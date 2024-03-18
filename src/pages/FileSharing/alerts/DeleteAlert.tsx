@@ -27,7 +27,7 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
 
-  const deleteItems = async (): Promise<void> => {
+  const deleteItems = async () => {
     setFileOperationSuccessful(undefined, '');
 
     try {
@@ -83,11 +83,8 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => {
-              deleteItems().catch((error) => {
-                console.error('Failed to delete items', error);
-              });
-            }}
+            /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+            onClick={deleteItems}
           >
             Continue
           </AlertDialogAction>

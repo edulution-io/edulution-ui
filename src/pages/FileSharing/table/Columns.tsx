@@ -15,7 +15,7 @@ import { useFileManagerStore } from '@/store/appDataStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import LoadPopUp from '@/components/shared/LoadPopUp';
+import LoadingIndicator from '@/components/shared/LoadingIndicator.tsx';
 import { formatBytes } from '@/utils/common';
 import useWebDavActions from '@/utils/webDavHooks';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
@@ -26,6 +26,7 @@ import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import usePopUpStore from '@/store/popUpStore.ts';
 
 const selectFileNameWidth = 'w-4/12';
 const lastModColumnWidth = 'w-5/12';
@@ -205,14 +206,14 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const rederFileCategegorie = (item: DirectoryFile) => {
+      const renderFileCategorize = (item: DirectoryFile) => {
         if (row.original.type === ContentType.file) {
           return getFileCategorie(item.filename);
         }
         return 'Folder';
       };
 
-      return <div className={`flex flex-row  ${typeColumnWidth}`}>{rederFileCategegorie(row.original)}</div>;
+      return <div className={`flex flex-row  ${typeColumnWidth}`}>{renderFileCategorize(row.original)}</div>;
     },
   },
 
@@ -220,28 +221,26 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'delete',
     header: () => (
       <div className={operationsColumnWidth}>
-        <div className={`flex items-center justify-between ${operationsColumnWidth}`}>
-          <p />
-        </div>
+        <div className={`flex items-center justify-between ${operationsColumnWidth}`} />
       </div>
     ),
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-      const [showLoadingPopUp, setShowLoadingPopUp] = useState<boolean>(false);
+      const { setLoading, isLoading } = usePopUpStore();
       const handleDownload = async (item: DirectoryFile) => {
-        setShowLoadingPopUp(true);
+        setLoading(true);
         try {
           await WebDavFunctions.triggerFolderDownload(item.filename);
         } catch (error) {
           console.error('Download failed:', error);
         } finally {
-          setShowLoadingPopUp(false);
+          setLoading(false);
         }
       };
       return (
         selectedItems.length === 0 && (
           <TooltipProvider>
-            <div>{showLoadingPopUp && <LoadPopUp isOpen={showLoadingPopUp} />}</div>
+            <div>{isLoading && <LoadingIndicator isOpen={isLoading} />}</div>
             <div className="flex items-center justify-end">
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
