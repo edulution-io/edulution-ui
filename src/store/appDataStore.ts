@@ -11,7 +11,7 @@ type FileManager = {
   fileName: string;
   directoryName: string;
   selectedItems: DirectoryFile[];
-  fileOperationSuccessful: boolean;
+  fileOperationSuccessful: boolean | undefined;
   currentPath: string;
   uploadProgresses: { [key: string]: number };
   fileOperationMessage: string;
@@ -23,7 +23,7 @@ type FileManager = {
   setFileName: (fileName: string) => void;
   setDirectoryName: (directoryName: string) => void;
   setSelectedItems: (items: DirectoryFile[]) => void;
-  setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined, message: string) => void;
+  setFileOperationSuccessful: (fileOperationSuccessful: undefined | boolean, message: string) => void;
 };
 
 export const useAppDataStore = create<Store>((set) => ({
@@ -37,7 +37,7 @@ export const useFileManagerStore = create<FileManager>((set) => ({
   fileName: '',
   directoryName: '',
   selectedItems: [],
-  fileOperationSuccessful: false,
+  fileOperationSuccessful: undefined,
   fileOperationMessage: '',
   currentPath: '/',
   selectedRows: {},
