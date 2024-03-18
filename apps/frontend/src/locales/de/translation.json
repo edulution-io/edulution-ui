@@ -1,7 +1,7 @@
 {
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
-  "heading": "Herzlich Willkommen Frau Mustermann",
+  "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
@@ -31,6 +31,13 @@
   "programs": "Programme",
   "share": "Share",
   "students": "Schüler",
-  
-  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout" }
+
+  "common": {
+    "add": "Hinzufügen",
+    "reload": "Neu laden",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "username": "Benutzername",
+    "password": "Passwort"
+  }
 }

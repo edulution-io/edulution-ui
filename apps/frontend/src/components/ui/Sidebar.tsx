@@ -231,7 +231,7 @@ const Sidebar = () => {
     <Button
       variant="btn-outline"
       size="sm"
-      className="rounded-[16px] border-[3px]"
+      className="rounded-xl border-[3px]"
       onClick={toggle}
     >
       {t('menu')}
@@ -252,7 +252,7 @@ const Sidebar = () => {
           alt=""
         />
         <div
-          className={`absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+          className={`absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
         >
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
           <img
@@ -330,7 +330,7 @@ const Sidebar = () => {
           alt=""
         />
         <div
-          className={`absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-xl border-ciLightGrey bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
+          className={`absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] border-ciLightGrey bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
         >
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img

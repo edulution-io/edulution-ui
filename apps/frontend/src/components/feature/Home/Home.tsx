@@ -1,5 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
+
 import MyFavourites from './MyFavourites';
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
@@ -8,6 +10,7 @@ import Groups from './Groups';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
+  const auth = useAuth();
 
   return (
     <>
@@ -15,7 +18,9 @@ const Home: React.FC = () => {
 
       {/* Main Content */}
       <div>
-        <h2>{t('heading')}</h2>
+        <h2>
+          {t('heading', { givenName: auth?.user?.profile?.given_name, familyName: auth?.user?.profile?.family_name })}
+        </h2>
         <p className="mt-4">{t('content')}</p>
       </div>
 
