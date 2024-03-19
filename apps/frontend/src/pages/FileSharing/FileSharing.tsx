@@ -20,7 +20,6 @@ import HexagonButton from '@/components/shared/HexagonButton';
 
 const FileSharing = () => {
     const {
-        setPopUpVisibility,
         handleDownload,
         isLoading,
         isVisible,
@@ -38,19 +37,7 @@ const FileSharing = () => {
 
 
     useEffect(() => {
-        if (fileOperationSuccessful !== undefined) {
-            setPopUpVisibility(true);
-            fetchFiles().catch(console.error);
-            const timer = setTimeout(() => {
-                setPopUpVisibility(false);
-            }, 3000);
-
-            return () => {
-                clearTimeout(timer);
-            };
-        }
-        return () => {
-        };
+        fetchFiles().catch(console.error);
     }, [fileOperationSuccessful]);
 
     return (

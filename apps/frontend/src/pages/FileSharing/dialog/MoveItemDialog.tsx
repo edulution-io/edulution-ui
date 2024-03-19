@@ -58,7 +58,6 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
     };
 
     const moveItem = async (items: DirectoryFile | DirectoryFile[], toPath: string | undefined) => {
-        setFileOperationSuccessful(undefined, '');
         await WebDavFunctions.moveItems(items, toPath)
             .then((resp) => {
                 if ('message' in resp) {

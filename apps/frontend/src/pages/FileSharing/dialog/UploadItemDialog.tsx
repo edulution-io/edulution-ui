@@ -28,7 +28,6 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   };
 
   const uploadFiles = async () => {
-    setFileOperationSuccessful(undefined, '');
     setIsOpen(false);
     try {
       await WebDavFunctions.uploadMultipleFiles(selectedFiles, currentPath, handleProgressUpdate);

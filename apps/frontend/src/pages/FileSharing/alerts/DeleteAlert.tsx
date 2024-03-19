@@ -28,8 +28,6 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
 
   const deleteItems = async () => {
-    setFileOperationSuccessful(undefined, '');
-
     try {
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
       const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));

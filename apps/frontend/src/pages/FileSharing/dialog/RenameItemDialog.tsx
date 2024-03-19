@@ -51,7 +51,6 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   };
 
   const renameFile = async (oldName: string, newName: string) => {
-    setFileOperationSuccessful(undefined, '');
     await handleWebDavAction(() => WebDavFunctions.renameItem(oldName, newName))
       .then((resp) => {
         if ('message' in resp) {

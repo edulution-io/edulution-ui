@@ -34,7 +34,6 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
   } = useFileManagerStore()
 
   const createFile = async (path: string): Promise<void> => {
-    setFileOperationSuccessful(undefined, '');
     await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
       .then(async (resp) => {
         if ('message' in resp) {
@@ -51,7 +50,6 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
   };
 
   const createDirectory = async (path: string): Promise<void> => {
-    setFileOperationSuccessful(undefined, '');
     await handleWebDavAction(() => WebDavFunctions.createDirectory(`${currentPath}/${path}`))
       .then(async (resp) => {
         if ('message' in resp) {
