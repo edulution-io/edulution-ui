@@ -13,10 +13,10 @@ interface FilePreviewProps {
 }
 
 const DefaultPreview: React.FC<FileTypePreviewProps> = ({ file }) => (
-  <div>
+  <>
     <p>Unsupported file type: {getFileType(file.filename)}</p>
     <Label>File</Label>
-  </div>
+  </>
 );
 
 const renderTypeSpecificPreview: React.FC<FileTypePreviewProps> = ({ file }) => {

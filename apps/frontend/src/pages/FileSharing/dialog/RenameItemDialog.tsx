@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import React, { FC, ReactNode, useState } from 'react';
 import Label from '@/components/ui/label';
 import { getFileNameFromPath, getPathWithoutFileName, validateDirectoryName, validateFileName } from '@/utils/common';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import  useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 interface RenameContentDialogProps {
@@ -19,10 +19,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [localFileName, setLocalFileName] = useState('');
   const fileName = getFileNameFromPath(item.filename);
   const placeholderText = fileName.length > 0 ? `to ${fileName}` : 'File name is empty';
-  const {
-    setFileOperationSuccessful,
-      handleWebDavAction,
-  } = useFileManagerStore();
+  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -77,7 +74,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
         <DialogTitle>
           Rename your {item.type === ContentType.directory ? ContentType.directory : ContentType.file}
         </DialogTitle>
-        <DialogDescription>
+        <>
           <Label className="font-bold">{getFileNameFromPath(item.filename)}</Label>
           <Input
             className="mt-3"
@@ -96,7 +93,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
               Rename
             </Button>
           </div>
-        </DialogDescription>
+        </>
       </DialogContent>
     </Dialog>
   );

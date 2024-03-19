@@ -55,9 +55,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <div>
-            <p className="font-bold text-red-700">You can´t upload more than 5 items at a time</p>
-          </div>
+          <p className="font-bold text-red-700">You can´t upload more than 5 items at a time</p>
         )}
       </div>
 
@@ -89,7 +87,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           </li>
         ))}
       </ul>
-      <p className="pt-4 underline text-black">Files to upload:</p>
+      <p className="pt-4 text-black underline">Files to upload:</p>
       <ScrollArea className="h-[200px]">
         <ol type="1">
           {files.map((file, i) => (

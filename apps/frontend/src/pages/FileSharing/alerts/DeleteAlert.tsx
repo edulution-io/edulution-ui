@@ -4,7 +4,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -12,7 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DirectoryFile } from '@/datatypes/filesystem';
 
@@ -56,7 +55,7 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogDescription>
+        <>
           This action cannot be undone. This will permanently delete those files:
           <br />
           {selectedItems.length > 0 ? (
@@ -72,13 +71,13 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
             <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
               <strong>Selected Items:</strong>
               <div className="text-black">
-              {file.map((item) => (
-                <div key={item.etag}>{item.filename}</div>
-              ))}
-                </div>
+                {file.map((item) => (
+                  <div key={item.etag}>{item.filename}</div>
+                ))}
+              </div>
             </ScrollArea>
           )}
-        </AlertDialogDescription>
+        </>
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

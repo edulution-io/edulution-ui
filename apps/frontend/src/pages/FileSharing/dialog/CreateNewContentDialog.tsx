@@ -1,17 +1,10 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 import React, { ReactNode, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
-import  useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType } from '@/datatypes/filesystem';
 
@@ -31,7 +24,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     setFileOperationSuccessful,
     fetchFiles,
     handleWebDavAction,
-  } = useFileManagerStore()
+  } = useFileManagerStore();
 
   const createFile = async (path: string): Promise<void> => {
     await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
@@ -93,16 +86,12 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
           {contentType === ContentType.file ? (
             <>
               <DialogTitle>Name your new File</DialogTitle>
-              <DialogDescription>
-                <FileCreationForm />
-              </DialogDescription>
+              <FileCreationForm />
             </>
           ) : (
             <>
               <DialogTitle>Create New Directory</DialogTitle>
-              <DialogDescription>
-                <DirectoryCreationForm />
-              </DialogDescription>
+              <DirectoryCreationForm />
             </>
           )}
           <div className="container mx-auto flex justify-end p-4">

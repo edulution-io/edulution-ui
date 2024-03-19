@@ -11,7 +11,7 @@ import {
   MdFolder,
 } from 'react-icons/md';
 
-import useFileManagerStore from "@/store/fileManagerStore"
+import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
@@ -238,21 +238,23 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       return (
         selectedItems.length === 0 && (
           <TooltipProvider>
-            <div>{isLoading && <LoadingIndicator isOpen={isLoading} />}</div>
+            {isLoading && <LoadingIndicator isOpen={isLoading} />}
             <div className="flex items-center justify-end">
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
-                    <RenameItemDialog
-                      trigger={
-                        <div>
-                          <MdDriveFileRenameOutline />
-                        </div>
-                      }
-                      item={row.original}
-                    />
+                    <span>
+                      <RenameItemDialog
+                        trigger={
+                          <span>
+                            <MdDriveFileRenameOutline />
+                          </span>
+                        }
+                        item={row.original}
+                      />
+                    </span>
                   }
                 />
               </div>
