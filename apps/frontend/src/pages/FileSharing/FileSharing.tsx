@@ -165,8 +165,7 @@ const FileSharing = () => {
                                             tooltipText="Download Selected Items"
 
                                             trigger={
-                                              <HexagonButton onClick={() => {
-                                                        }}>
+                                              <HexagonButton onClick={() => {}}>
                                                 <div>
                                                     <MdOutlineFileDownload className="text-white"/>
                                                 </div>
