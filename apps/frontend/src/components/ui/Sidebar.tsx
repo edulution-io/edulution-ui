@@ -25,7 +25,7 @@ import {
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
-import translateKey from '@/utils/common';
+import { translateKey } from '@/utils/common';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
