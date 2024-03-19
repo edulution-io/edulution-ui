@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
-import { defineConfig, normalizePath } from 'vite';
+import { defineConfig } from 'vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 // https://vitejs.dev/config/
