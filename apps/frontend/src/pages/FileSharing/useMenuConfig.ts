@@ -1,4 +1,4 @@
-import { FileSharing, Desktop, Share, Students, Lernmanagement } from '@/assets/icons';
+import {FileSharing, teacher, project, iso, programm, share, students} from '@/assets/icons';
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
 import { getFileNameFromPath } from '@/utils/common';
@@ -8,22 +8,22 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 
 const findCorrespondingMountPointIcon = (mounts: DirectoryFile): string => {
   if (mounts.filename.includes('teachers')) {
-    return Lernmanagement;
+    return teacher;
   }
   if (mounts.filename.includes('projects')) {
-    return Share;
+    return project;
   }
   if (mounts.filename.includes('iso')) {
-    return Share;
+    return iso;
   }
   if (mounts.filename.includes('programs')) {
-    return Desktop;
+    return programm;
   }
   if (mounts.filename.includes('share')) {
-    return Share;
+    return share;
   }
   if (mounts.filename.includes('students')) {
-    return Students;
+    return students;
   }
   return FileSharing;
 };
