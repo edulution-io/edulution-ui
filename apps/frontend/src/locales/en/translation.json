@@ -3,29 +3,112 @@
   "changeLang": "Change Language",
   "heading": "Welcome Ms. Mustermann",
   "content": "Here is your personal edulution.io dashboard. The place where all your applications for digital education are collected.",
-  "dashboard": { "mobileAccess": { "title": "MOBILER DATENZUGRIFF", "manual": "Manual" } },
-
-  "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
+  "dashboard": {
+    "mobileAccess": {
+      "title": "MOBILE DATA ACCESS",
+      "manual": "Manual",
+      "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
+    }
+  },
+  "conferences": {
+    "title": "CONFERENCES",
+    "sidebar": "Conferences"
+  },
   "firewall": "Firewall",
-  "learningManagement": "Learning Management",
   "virtualization": "Virtualization",
-  "fileSharing": { "title": "MEINE DATEIEN", "sidebar": "Meine Dateien" },
+  "learningManagement": "Learning Management",
+  "fireSharing": "File Sharing",
   "desktopDeployment": "Desktop Deployment",
   "network": "Network",
-  "roomBooking": { "title": "ROOMBOOKING", "sidebar": "Room Booking", "rooms": "Rooms" },
+  "roomBooking": {
+    "title": "ROOM BOOKING",
+    "sidebar": "Room Booking",
+    "rooms": "Rooms"
+  },
   "mail": "Mail",
-  "wlan": "WLAN",
-  "forums": "Forums",
   "schoolInformation": "School Information",
   "knowledgeBase": "Knowledge Base",
+  "wlan": "WLAN",
+  "forums": "Forums",
   "printer": "Printer",
+  "fileSharing": {
+    "title": "MY FILES",
+    "sidebar": "My Files"
+  },
   "chat": "Chat",
   "menu": "MENU",
   "home": "Home",
   "programs": "Programs",
   "share": "Share",
   "students": "Students",
-  "fileSharingTable": {"filename":  "File Name", "size": "Size", "lastModified": "Last Modified" , "type": "Type"},
-
-  "common": { "add": "Add", "reload": "Reload", "logout": "Logout" }
+  "fileOperationSuccessful": "File operation successful",
+  "unknownErrorOccurred": "An unknown error occurred",
+  "fileSharingTable": {
+    "filename": "File Name",
+    "size": "Size",
+    "lastModified": "Last Modified",
+    "type": "Type"
+  },
+  "fileSharingUpload": {
+    "title": "Upload Files",
+    "upload": "Upload",
+    "selectFile": "Select up to 5 files at a time",
+    "uploadItems": "Upload: {{count}} items",
+    "dragDropClick": "Drag files here or click to select files",
+    "filesToUpload": "Files to upload"
+  },
+  "table": {
+    "rowsSelected": "{{selected}} of {{total}} row(s) selected"
+  },
+  "loadingIndicator": {
+    "message": "Please wait while we process your request..."
+  },
+  "fileCategory": {
+    "folder": "Folder",
+    "document": "Document",
+    "image": "Image",
+    "video": "Video",
+    "audio": "Audio",
+    "acrobat": "PDF"
+  },
+  "fileCreateNewContent": {
+    "fileDialogTitle": "Create a new file",
+    "directoryDialogTitle": "Create a new directory",
+    "createButtonText": "Create",
+    "fileOperationSuccessful": "File creation successful",
+    "noMessageAvailable": "No message available",
+    "unknownErrorOccurred": "An unknown error occurred"
+  },
+  "fileRenameContent": {
+    "renameYourDirectory": "Rename your directory",
+    "renameYourFile": "Rename your file",
+    "to": "to",
+    "rename": "Rename",
+    "unknownErrorOccurred": "An unknown error occurred"
+  },
+  "moveItemDialog": {
+    "changeDirectory": "Change directory",
+    "currentDirectory": "Current directory",
+    "folderName": "Folder name",
+    "movingItems": {
+      "one": "Moving 1 item",
+      "other": "Moving {{count}} items"
+    },
+    "moveTo": "Move to",
+    "move": "Move",
+    "unknownErrorOccurred": "An unknown error occurred"
+  },
+  "deleteDialog": {
+    "areYouSure": "Are you absolutely sure?",
+    "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",
+    "selectedItems": "Selected Items:",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion"
+  },
+  "common": {
+    "add": "Add",
+    "reload": "Reload",
+    "logout": "Logout"
+  }
 }
