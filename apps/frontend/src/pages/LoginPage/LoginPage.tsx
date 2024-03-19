@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
+import { Link } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -68,7 +69,7 @@ const LoginPage: React.FC = () => {
                     {...field}
                     disabled={isLoading}
                     placeholder={t('common.username')}
-                    className="placeholder:color:ciLightGrey rounded placeholder:text-p"
+                    variant="login"
                   />
                 </FormControl>
                 <FormMessage className="text-p" />
@@ -87,17 +88,34 @@ const LoginPage: React.FC = () => {
                     {...field}
                     type="password"
                     disabled={isLoading}
-                    className="placeholder:color:ciLightGrey rounded placeholder:text-p"
+                    variant="login"
                   />
                 </FormControl>
                 <FormMessage className="text-p" />
               </FormItem>
             )}
           />
+          <div className="flex justify-between">
+            <div className="my-4 block font-bold text-gray-500">
+              <input
+                type="checkbox"
+                className="mr-2 leading-loose"
+              />
+              <span className="mr-4 text-p">{t('login.remember_me')}</span>
+            </div>
+            <div className="my-4 block font-bold text-gray-500">
+              <Link
+                to="/" // TODO: Add valid Password reset page
+                className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
+              >
+                <p>{t('login.forgot_password')}</p>
+              </Link>
+            </div>
+          </div>
           <Button
-            className="mx-auto pt-4 text-white"
+            className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
             type="submit"
-            variant="btn-collaboration"
+            variant="btn-security"
             size="lg"
           >
             {isLoading ? t('common.loading') : t('common.login')}

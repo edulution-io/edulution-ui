@@ -20,3 +20,5 @@ export { default as Share } from '@/assets/icons/edulution/Aus_einer_Hand.svg';
 export { default as Students } from '@/assets/icons/edulution/Education.svg';
 export { default as Desktop } from '@/assets/icons/edulution/Desktop.svg';
 export { default as AppleLogo } from '@/assets/icons/apple.png';
+export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
+export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';

@@ -31,6 +31,7 @@
   "programs": "Programme",
   "share": "Share",
   "students": "Schüler",
+  "login": { "forgot_password": "Passwort vergessen?", "remember_me": "Merken" },
 
   "common": {
     "add": "Hinzufügen",
