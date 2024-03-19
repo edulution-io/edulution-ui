@@ -1,6 +1,6 @@
-# Anleitung zur Installation und Verwendung von Keycloak lokal
+# Setup Keycloak local
 
-## Schritt 1: Docker Compose installieren
+## Step 1: Install Docker
 
 ### Add Docker's official GPG key:
 
@@ -28,9 +28,17 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-## Schritt 2: Container starten
+## Step 2: Start Container
 
 ```bash
 cd compose/folder/path
 docker compose up -d
 ```
+
+## Step 3: Configure Keycloak
+
+- Add realm "edulution"
+- Add client "edulution-ui"
+  -- Web origins: http://localhost:5173
+  -- Checkbox Direct access grants -> true
+- Add user or connect to ldap
