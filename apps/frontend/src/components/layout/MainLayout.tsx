@@ -10,7 +10,7 @@ import MenuBar from '../shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const location = useLocation();
-const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const isMainPage = location.pathname === '/';
   const isMenuBarVisible = !isMainPage && isDesktop;
   return (
