@@ -59,6 +59,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
           <Button disabled={selectedFiles.length > 5 || selectedFiles.length === 0}>Select upto 5 items a time</Button>
         ) : (
           <Button
+              className="bg-green-600"
             disabled={selectedFiles.length > 5 || selectedFiles.length === 0}
             onClick={() => {
               uploadFiles().catch((error) => console.error('Failed to upload files', error));

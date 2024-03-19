@@ -155,10 +155,11 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
                     </ScrollArea>
                 )}
                 <div>{renderAvailablePaths()}</div>
-                <div className="flex justify-between pt-3">
+                <div className="flex justify-between pt-3 text-black">
                     <p className="pt-4">Move to: {selectedRow?.filename}</p>
                     {selectedRow !== undefined ? (
                         <Button
+                            className="bg-green-600"
                             onClick={() => {
                                 moveItem(item, selectedRow?.filename).catch(() => null);
                             }}
@@ -166,7 +167,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
                             Move
                         </Button>
                     ) : (
-                        <Button disabled>Move</Button>
+                        <Button className="bg-green-600" disabled>Move</Button>
                     )}
                 </div>
             </>
