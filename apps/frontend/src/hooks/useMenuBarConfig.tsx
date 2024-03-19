@@ -17,7 +17,7 @@ const useMenuBarConfig = (location: string) => {
       case '/file-sharing': {
         return {
           menuItems: fileSharingMenuItems,
-          title: 'File Sharing',
+          title: t('fileSharing.title'),
           icon: FileSharing,
           color: 'hover:bg-ciDarkBlue',
           action: () => fileSharingMenuItems[0].action(),

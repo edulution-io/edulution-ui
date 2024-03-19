@@ -25,6 +25,7 @@
   "programs": "Programs",
   "share": "Share",
   "students": "Students",
+  "fileSharingTable": {"filename":  "File Name", "size": "Size", "lastModified": "Last Modified" , "type": "Type"},
 
   "common": { "add": "Add", "reload": "Reload", "logout": "Logout" }
 }
