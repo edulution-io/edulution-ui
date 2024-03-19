@@ -9,11 +9,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/AlertDialog';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore  from '@/store/fileManagerStore';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import useFileManagerStore from '@/store/fileManagerStore';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 
 interface DeleteDialogProps {
@@ -72,10 +72,10 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
             <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
               <strong>Selected Items:</strong>
               <div className="text-black">
-              {file.map((item) => (
-                <div key={item.etag}>{item.filename}</div>
-              ))}
-                </div>
+                {file.map((item) => (
+                  <div key={item.etag}>{item.filename}</div>
+                ))}
+              </div>
             </ScrollArea>
           )}
         </AlertDialogDescription>

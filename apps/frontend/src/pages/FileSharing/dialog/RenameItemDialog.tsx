@@ -1,16 +1,16 @@
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { FC, ReactNode, useState } from 'react';
-import Label from '@/components/ui/label';
+import Label from '@/components/ui/Label';
 import {
   getFileNameFromPath,
   getPathWithoutFileName,
   validateDirectoryName,
   validateFileName,
 } from '@/pages/FileSharing/utilities/common';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import  useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 interface RenameContentDialogProps {
@@ -24,10 +24,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [localFileName, setLocalFileName] = useState('');
   const fileName = getFileNameFromPath(item.filename);
   const placeholderText = fileName.length > 0 ? `to ${fileName}` : 'File name is empty';
-  const {
-    setFileOperationSuccessful,
-      handleWebDavAction,
-  } = useFileManagerStore();
+  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {

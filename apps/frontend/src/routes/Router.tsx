@@ -5,7 +5,7 @@ import { HomePage } from '@/pages/Home';
 import { ConferencePage } from '@/pages/ConferencePage';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import FileSharingPage from '@/pages/FileSharing/FileSharingPage.tsx';
+import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 
 const router = createBrowserRouter(

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button as SHButton } from '@/components/ui/button';
+import { Button as SHButton } from '@/components/ui/Button';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import cn from '@/lib/utils';
@@ -16,7 +16,6 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
     size: {
       lg: 'h-10 rounded-md px-8',
       sm: 'h-8 rounded-md px-3 text-xs',
-
     },
   },
 });

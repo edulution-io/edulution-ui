@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -58,7 +58,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
           <Button disabled={selectedFiles.length > 5 || selectedFiles.length === 0}>Select upto 5 items a time</Button>
         ) : (
           <Button
-              className="bg-green-600"
+            className="bg-green-600"
             disabled={selectedFiles.length > 5 || selectedFiles.length === 0}
             onClick={() => {
               uploadFiles().catch((error) => console.error('Failed to upload files', error));

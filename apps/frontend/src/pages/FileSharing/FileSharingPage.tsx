@@ -7,7 +7,7 @@ import {
 } from 'react-icons/md';
 import useFileManagerStore from '@/store/fileManagerStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import StatusAlert from '@/pages/FileSharing/alerts/StatusAlert';

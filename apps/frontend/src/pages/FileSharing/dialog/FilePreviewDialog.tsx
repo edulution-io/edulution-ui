@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import Label from '@/components/ui/label';
+import { Dialog, DialogContent } from '@/components/ui/Dialog';
+import Label from '@/components/ui/Label';
 import { getFileType } from '@/pages/FileSharing/utilities/common';
 import fileTypePreviews from '@/pages/FileSharing/previews/FileTypePreviews';
 import { FileTypePreviewProps } from '@/datatypes/types';

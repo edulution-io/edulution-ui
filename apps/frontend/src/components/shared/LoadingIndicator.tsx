@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/dialog';
-import CircleLoader from '@/components/ui/circleLoader';
+import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/Dialog';
+import CircleLoader from "@/components/ui/CircleLoader";
+
 
 interface LoadingIndicatorProps {
   isOpen: boolean;

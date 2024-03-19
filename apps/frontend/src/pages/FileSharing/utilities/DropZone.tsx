@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { DocumentIcon } from '@heroicons/react/16/solid';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 
 export interface FileWithPreview extends File {
@@ -89,7 +89,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           </li>
         ))}
       </ul>
-      <p className="pt-4 underline text-black">Files to upload:</p>
+      <p className="pt-4 text-black underline">Files to upload:</p>
       <ScrollArea className="h-[200px]">
         <ol type="1">
           {files.map((file, i) => (

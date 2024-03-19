@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert';
 import { Ban, PartyPopper } from 'lucide-react';
 
 interface StatusAlertProps {

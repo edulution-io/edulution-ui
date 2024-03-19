@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
-import Checkbox from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
+import Checkbox from '@/components/ui/Checkbox';
+import { Button } from '@/components/ui/Button';
 import {
   MdDriveFileRenameOutline,
   MdOutlineDeleteOutline,
@@ -13,7 +13,7 @@ import {
 
 import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { formatBytes } from '@/pages/FileSharing/utilities/common';
