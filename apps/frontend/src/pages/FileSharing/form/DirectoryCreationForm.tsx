@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { useFileManagerStore } from '@/store/appDataStore';
+import useFileManagerStore  from '@/store/fileManagerStore';
 import { validateDirectoryName } from '@/utils/common';
 
 const DirectoryCreationForm = () => {

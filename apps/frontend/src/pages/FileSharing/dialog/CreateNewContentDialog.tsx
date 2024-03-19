@@ -11,9 +11,8 @@ import React, { ReactNode, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
-import { useFileManagerStore } from '@/store';
+import  useFileManagerStore  from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useWebDavActions from '@/utils/webDavHooks';
 import { ContentType } from '@/datatypes/filesystem';
 
 interface CreateNewContentDialogProps {
@@ -23,13 +22,16 @@ interface CreateNewContentDialogProps {
 
 const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const fileName = useFileManagerStore((state) => state.fileName);
-  const setFileName = useFileManagerStore((state) => state.setFileName);
-  const directoryName = useFileManagerStore((state) => state.directoryName);
-  const setDirectoryName = useFileManagerStore((state) => state.setDirectoryName);
-  const currentPath = useFileManagerStore((state) => state.currentPath);
-  const { fetchFiles, handleWebDavAction } = useWebDavActions();
-  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
+  const {
+    fileName,
+    setFileName,
+    directoryName,
+    setDirectoryName,
+    currentPath,
+    setFileOperationSuccessful,
+    fetchFiles,
+    handleWebDavAction,
+  } = useFileManagerStore()
 
   const createFile = async (path: string): Promise<void> => {
     setFileOperationSuccessful(undefined, '');

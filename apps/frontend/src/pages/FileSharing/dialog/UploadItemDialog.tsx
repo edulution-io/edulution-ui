@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import { useFileManagerStore } from '@/store/appDataStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 
 interface UploadItemDialogProps {

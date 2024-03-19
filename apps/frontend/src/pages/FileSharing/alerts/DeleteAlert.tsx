@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import { useFileManagerStore } from '@/store/appDataStore';
+import useFileManagerStore  from '@/store/fileManagerStore';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DirectoryFile } from '@/datatypes/filesystem';
 

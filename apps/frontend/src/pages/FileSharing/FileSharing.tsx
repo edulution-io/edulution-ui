@@ -5,8 +5,7 @@ import {
   MdOutlineFileDownload,
   MdOutlineNoteAdd,
 } from 'react-icons/md';
-import { useFileManagerStore } from '@/store/appDataStore';
-import useWebDavActions from '@/utils/webDavHooks';
+import useFileManagerStore from "@/store/fileManagerStore"
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -24,15 +23,21 @@ import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import HexagonButton from '@/components/shared/HexagonButton';
-import usePopUpStore from '@/store/popUpStore';
 
 const FileSharing = () => {
-  const { files, currentPath, fetchFiles } = useWebDavActions();
-  const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-  const fileOperationSuccessful: boolean | undefined = useFileManagerStore((state) => state.fileOperationSuccessful);
-  const fileOperationMessage: string = useFileManagerStore((state) => state.fileOperationMessage);
-  const setCurrentPath = useFileManagerStore((state) => state.setCurrentPath);
-  const { setPopUpVisibility, setLoading, isLoading, isVisible } = usePopUpStore();
+  const {
+    setPopUpVisibility,
+    setLoading,
+    isLoading,
+    isVisible,
+      fileOperationMessage,
+        fileOperationSuccessful,
+      setCurrentPath,
+      selectedItems,
+      fetchFiles,
+      files,
+      currentPath
+    } = useFileManagerStore();
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath]);

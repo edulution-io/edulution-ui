@@ -5,10 +5,10 @@ import MenuItem from '@/datatypes/types';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useMenuItems from '@/pages/FileSharing/useMenuConfig';
-import useWebDavActions from '@/utils/webDavHooks';
+import useFileManagerStore from '@/store/fileManagerStore';
 
 const useMenuBarConfig = (location: string) => {
-  const { fetchFiles } = useWebDavActions();
+  const { fetchFiles } = useFileManagerStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fileSharingMenuItems = useMenuItems();

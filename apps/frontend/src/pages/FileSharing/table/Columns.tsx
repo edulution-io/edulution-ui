@@ -11,13 +11,12 @@ import {
   MdFolder,
 } from 'react-icons/md';
 
-import { useFileManagerStore } from '@/store/appDataStore';
+import useFileManagerStore from "@/store/fileManagerStore"
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import LoadingIndicator from '@/components/shared/LoadingIndicator.tsx';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { formatBytes } from '@/utils/common';
-import useWebDavActions from '@/utils/webDavHooks';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
@@ -26,7 +25,6 @@ import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
-import usePopUpStore from '@/store/popUpStore.ts';
 
 const selectFileNameWidth = 'w-4/12';
 const lastModColumnWidth = 'w-5/12';
@@ -68,7 +66,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const [isPreviewOpen, setPreviewOpen] = useState(false);
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
-      const { fetchFiles } = useWebDavActions();
+      const fetchFiles = useFileManagerStore((state) => state.fetchFiles);
       const handleFilenameClick = (filenamePath: string) => {
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
@@ -226,7 +224,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     ),
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-      const { setLoading, isLoading } = usePopUpStore();
+      const { setLoading, isLoading } = useFileManagerStore();
       const handleDownload = async (item: DirectoryFile) => {
         setLoading(true);
         try {

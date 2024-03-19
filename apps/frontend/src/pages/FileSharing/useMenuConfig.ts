@@ -2,7 +2,7 @@ import { FileSharing, Desktop, Share, Students, Lernmanagement } from '@/assets/
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
 import { getFileNameFromPath } from '@/utils/common';
-import useWebDavActions from '@/utils/webDavHooks';
+import  useFileManagerStore  from '@/store/fileManagerStore';
 import MenuItem from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
 
@@ -29,7 +29,7 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile): string => {
 };
 
 const useMenuItems = () => {
-  const { fetchMountPoints, fetchFiles } = useWebDavActions();
+  const { fetchMountPoints, fetchFiles } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   useEffect(() => {
