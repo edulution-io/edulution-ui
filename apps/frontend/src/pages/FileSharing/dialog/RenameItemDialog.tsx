@@ -1,7 +1,12 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import React, { FC, ReactNode, useState } from 'react';
 import Label from '@/components/ui/label';
-import { getFileNameFromPath, getPathWithoutFileName, validateDirectoryName, validateFileName } from '@/utils/common';
+import {
+  getFileNameFromPath,
+  getPathWithoutFileName,
+  validateDirectoryName,
+  validateFileName,
+} from '@/pages/FileSharing/utilities/common';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';

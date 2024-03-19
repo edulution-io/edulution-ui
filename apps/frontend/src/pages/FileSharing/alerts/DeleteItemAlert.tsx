@@ -21,7 +21,7 @@ interface DeleteDialogProps {
   file: DirectoryFile[];
 }
 
-const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
+const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
@@ -94,5 +94,5 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   );
 };
 
-DeleteAlert.displayName = 'DeleteAlert';
-export default DeleteAlert;
+DeleteItemAlert.displayName = 'DeleteItemAlert';
+export default DeleteItemAlert;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import { getFileNameFromPath } from '@/utils/common';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/common';
 
 interface GraphicPreviewProps {
   file: DirectoryFile;

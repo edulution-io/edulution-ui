@@ -16,10 +16,10 @@ import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { formatBytes } from '@/utils/common';
+import { formatBytes } from '@/pages/FileSharing/utilities/common';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
-import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
+import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
@@ -294,7 +294,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                   onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
-                    <DeleteAlert
+                    <DeleteItemAlert
                       trigger={
                         <div>
                           <MdOutlineDeleteOutline />

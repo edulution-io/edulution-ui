@@ -1,14 +1,14 @@
 import React, {FC, ReactNode, useEffect, useState} from 'react';
 import {Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import Label from '@/components/ui/label';
-import {getFileNameFromPath} from '@/utils/common';
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
-import {ScrollArea} from '@/components/ui/scroll-area';
-import {Button} from '@/components/shared/Button';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from "@/store/fileManagerStore"
 import {ContentType, DirectoryFile} from '@/datatypes/filesystem';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/common';
 
 interface MoveItemDialogProps {
     trigger: ReactNode;
