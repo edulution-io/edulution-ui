@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
 
 import { MenuItem, ConfigType, MenuBarEntryProps, APPS } from '@/datatypes/types';
@@ -13,6 +13,7 @@ const useMenuBarConfig = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
   const settingsMenubarConfig = {
@@ -24,7 +25,10 @@ const useMenuBarConfig = () => {
         icon: item.icon,
         action: () => navigate(`/settings/${item.id}`),
       })),
-      ...SETTINGS_MENUBAR_CONFIG.menuItems.map((items) => ({ ...items, action: () => navigate('?mode=add') })),
+      ...SETTINGS_MENUBAR_CONFIG.menuItems.map((items) => ({
+        ...items,
+        action: () => setSearchParams({ mode: 'add' }),
+      })),
     ],
   };
 

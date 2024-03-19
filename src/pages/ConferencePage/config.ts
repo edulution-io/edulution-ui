@@ -7,7 +7,7 @@ const CONFERENCES_MENUBAR_CONFIG: MenuBarEntryProps = {
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
     {
-      id: 'add',
+      id: 'join',
       label: 'common.add',
       icon: FileSharing,
       action: () => {},
