@@ -1,41 +1,21 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocation } from 'react-router-dom';
 
-import { MenuItem, ConfigType, MenuBarEntryProps, APPS } from '@/datatypes/types';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-import SETTINGS_MENUBAR_CONFIG from '@/pages/Settings/config';
+import useSettingsMenuConfig from '@/pages/Settings/config';
 
 const useMenuBarConfig = () => {
   const location = useLocation();
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [, setSearchParams] = useSearchParams();
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
-
-  const settingsMenubarConfig = {
-    ...SETTINGS_MENUBAR_CONFIG,
-    menuItems: [
-      ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
-        id: item.id,
-        label: `${item.id}.sidebar`,
-        icon: item.icon,
-        action: () => navigate(`/settings/${item.id}`),
-      })),
-      ...SETTINGS_MENUBAR_CONFIG.menuItems.map((items) => ({
-        ...items,
-        action: () => setSearchParams({ mode: 'add' }),
-      })),
-    ],
-  };
+  const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
 
   const menuBarConfigSwitch = () => {
     const rootPathName = `${location.pathname.split('/')[1]}`;
 
-    if (rootPathName === 'settings') return settingsMenubarConfig;
+    if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
 
     switch (rootPathName as APPS) {
       case APPS.FILE_SHARING: {
