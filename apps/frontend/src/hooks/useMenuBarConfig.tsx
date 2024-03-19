@@ -1,20 +1,27 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
+import { FileSharing } from '@/assets/icons';
 import MenuItem from '@/datatypes/types';
-import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-
+import useMenuItems from '@/pages/FileSharing/useMenuConfig';
+import useFileManagerStore from '@/store/fileManagerStore';
 
 const useMenuBarConfig = (location: string) => {
+  const { fetchFiles } = useFileManagerStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const fileSharingMenuItems = useMenuItems();
   const menuBarConfigSwitch = () => {
     switch (location) {
       case '/file-sharing': {
-        return FILESHARING_MENUBAR_CONFIG;
+        return {
+          menuItems: fileSharingMenuItems,
+          title: 'File Sharing',
+          icon: FileSharing,
+          color: 'hover:bg-ciDarkBlue',
+          action: () => fileSharingMenuItems[0].action(),
+        };
       }
       case '/conferences': {
         return CONFERENCES_MENUBAR_CONFIG;
@@ -29,10 +36,10 @@ const useMenuBarConfig = (location: string) => {
   };
 
   const configValues = menuBarConfigSwitch();
-
+  const { pathname } = useLocation();
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
     label: t(item.label),
-    action: () => navigate(item.link),
+    action: () => (pathname === '/file-sharing' ? fetchFiles(item.label) : navigate(item.label)),
     icon: item.icon,
   }));
 
