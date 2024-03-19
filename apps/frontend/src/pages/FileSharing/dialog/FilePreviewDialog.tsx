@@ -24,7 +24,7 @@ const renderTypeSpecificPreview: React.FC<FileTypePreviewProps> = ({ file }) => 
   return <FileTypeComponent file={file} />;
 };
 
-const FilePreview: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
+const FilePreviewDialog: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
   const handleOpenChange = () => {
     onClose();
   };
@@ -40,4 +40,4 @@ const FilePreview: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
   );
 };
 
-export default FilePreview;
+export default FilePreviewDialog;

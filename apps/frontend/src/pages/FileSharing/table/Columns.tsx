@@ -11,7 +11,7 @@ import {
   MdFolder,
 } from 'react-icons/md';
 
-import useFileManagerStore from "@/store/fileManagerStore"
+import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
@@ -21,7 +21,7 @@ import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
+import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
@@ -117,7 +117,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               {formattedFilename}
             </span>
             {isPreviewOpen && (
-              <FilePreview
+              <FilePreviewDialog
                 file={row.original}
                 isOpen={isPreviewOpen}
                 onClose={() => setPreviewOpen(false)}

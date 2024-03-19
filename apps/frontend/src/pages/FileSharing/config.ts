@@ -1,29 +1,29 @@
-import { FileSharing, Desktop, Share, Students } from '@/assets/icons';
+import { FileSharingIcon, DesktopIcon, OneSourceIcon, EducationIcon } from '@/assets/icons';
 
 const FILESHARING_MENUBAR_CONFIG = {
   title: 'fileSharing.title',
-  icon: FileSharing,
+  icon: FileSharingIcon,
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
     {
       label: 'home',
       link: '/file-sharing',
-      icon: FileSharing,
+      icon: FileSharingIcon,
     },
     {
       label: 'programs',
       link: '/file-sharing/profile',
-      icon: Desktop,
+      icon: DesktopIcon,
     },
     {
       label: 'share',
       link: '/file-sharing/settings',
-      icon: Share,
+      icon: OneSourceIcon,
     },
     {
       label: 'students',
       link: '/',
-      icon: Students,
+      icon: EducationIcon,
     },
   ],
 };

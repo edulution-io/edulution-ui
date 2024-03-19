@@ -1,4 +1,12 @@
-import { FileSharing, teacher, project, iso, programm, share, students } from '@/assets/icons';
+import {
+  FileSharingIcon,
+  TeacherIcon,
+  ProjectIcon,
+  IsoIcon,
+  ProgrammIcon,
+  ShareIcon,
+  StudentsIcon,
+} from '@/assets/icons';
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/common';
@@ -8,24 +16,24 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 
 const findCorrespondingMountPointIcon = (mounts: DirectoryFile): string => {
   if (mounts.filename.includes('teachers')) {
-    return teacher;
+    return TeacherIcon;
   }
   if (mounts.filename.includes('projects')) {
-    return project;
+    return ProjectIcon;
   }
   if (mounts.filename.includes('iso')) {
-    return iso;
+    return IsoIcon;
   }
   if (mounts.filename.includes('programs')) {
-    return programm;
+    return ProgrammIcon;
   }
   if (mounts.filename.includes('share')) {
-    return share;
+    return ShareIcon;
   }
   if (mounts.filename.includes('students')) {
-    return students;
+    return StudentsIcon;
   }
-  return FileSharing;
+  return FileSharingIcon;
 };
 
 const useMenuItems = () => {

@@ -4,7 +4,7 @@ import { Button } from '@/components/shared/Button';
 import Printer from '@/assets/icons/edulution/Drucker.svg';
 import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
 import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
-import { Firewall } from '@/assets/icons';
+import { FirewallIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 
@@ -51,7 +51,7 @@ const MyFavourites = () => {
           <Button variant="btn-security">
             <p>{t('firewall')}</p>
             <img
-              src={Firewall}
+              src={FirewallIcon}
               alt="Firewall"
               width={BUTTONS_ICON_WIDTH}
             />
