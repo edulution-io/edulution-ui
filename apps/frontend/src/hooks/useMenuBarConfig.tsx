@@ -19,7 +19,7 @@ const useMenuBarConfig = (location: string) => {
           menuItems: fileSharingMenuItems,
           title: 'File Sharing',
           icon: FileSharing,
-          color: '',
+          color: 'hover:bg-ciDarkBlue',
           action: () => fileSharingMenuItems[0].action(),
         };
       }

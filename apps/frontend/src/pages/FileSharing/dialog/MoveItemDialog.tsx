@@ -127,7 +127,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
             <>
                 <div className="pb-3.5">
                     {itemCount > 1 ? (
-                        <p>{itemMessage}</p>
+                        <p className="text-black">{itemMessage}</p>
                     ) : (
                         <div>
                             <div className="justify space-x-2 pb-2">
@@ -141,7 +141,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({trigger, item}) => {
 
                 {Array.isArray(item) && (
                     <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-                        <div>
+                        <div className="text-black">
                             {item.map((files) => (
                                 <p
                                     className="p-1"

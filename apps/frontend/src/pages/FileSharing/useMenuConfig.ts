@@ -39,6 +39,7 @@ const useMenuItems = () => {
         const items = mounts.map((mountPoint) => ({
           label: getFileNameFromPath(mountPoint.filename),
           IconComponent: MdOutlineNoteAdd,
+          hoverColor: 'bg-blue-500',
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {

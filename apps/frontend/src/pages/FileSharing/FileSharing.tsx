@@ -119,20 +119,23 @@ const FileSharing = () => {
                                     </>
                                 )}
                                 {selectedItems.length > 0 && (
-                                    <div>
+                                    <div className="flex flex-row space-x-4">
                                         <ActionTooltip
                                             onAction={() => {
                                             }}
                                             tooltipText="Upload item"
                                             trigger={
-                                                <MoveItemDialog
-                                                    trigger={
-                                                        <div>
-                                                            <MdOutlineDriveFileMove className="font-bold text-white"/>
-                                                        </div>
-                                                    }
-                                                    item={selectedItems}
-                                                />
+                                                <HexagonButton onClick={() => {
+                                                        }}>
+                                                  <MoveItemDialog
+                                                      trigger={
+                                                          <div>
+                                                              <MdOutlineDriveFileMove className="font-bold text-white"/>
+                                                          </div>
+                                                      }
+                                                      item={selectedItems}
+                                                  />
+                                                    </HexagonButton>
                                             }
                                         />
 
@@ -141,6 +144,8 @@ const FileSharing = () => {
                                             }}
                                             tooltipText="Upload item"
                                             trigger={
+                                              <HexagonButton onClick={() => {
+                                                        }}>
                                                 <DeleteAlert
                                                     trigger={
                                                         <div>
@@ -149,6 +154,7 @@ const FileSharing = () => {
                                                     }
                                                     file={selectedItems}
                                                 />
+                                              </HexagonButton>
                                             }
                                         />
                                         <ActionTooltip
@@ -157,10 +163,14 @@ const FileSharing = () => {
                                                 });
                                             }}
                                             tooltipText="Download Selected Items"
+
                                             trigger={
+                                              <HexagonButton onClick={() => {
+                                                        }}>
                                                 <div>
                                                     <MdOutlineFileDownload className="text-white"/>
                                                 </div>
+                                              </HexagonButton>
                                             }
                                         />
                                     </div>
