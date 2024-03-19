@@ -3,7 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Ban, PartyPopper } from 'lucide-react';
 
 interface StatusAlertProps {
-  success: boolean;
+  success: boolean | undefined;
   message: string;
 }
 

@@ -29,7 +29,7 @@ import usePopUpStore from '@/store/popUpStore';
 const FileSharing = () => {
   const { files, currentPath, fetchFiles } = useWebDavActions();
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-  const fileOperationSuccessful: boolean = useFileManagerStore((state) => state.fileOperationSuccessful);
+  const fileOperationSuccessful: boolean | undefined = useFileManagerStore((state) => state.fileOperationSuccessful);
   const fileOperationMessage: string = useFileManagerStore((state) => state.fileOperationMessage);
   const setCurrentPath = useFileManagerStore((state) => state.setCurrentPath);
   const { setPopUpVisibility, setLoading, isLoading, isVisible } = usePopUpStore();
