@@ -34,13 +34,13 @@ const useMenuBarConfig = () => {
     if (rootPathName === 'settings') return settingsMenubarConfig;
 
     switch (rootPathName as APPS) {
-      case APPS.FILESHARING: {
+      case APPS.FILE_SHARING: {
         return FILESHARING_MENUBAR_CONFIG;
       }
       case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
       }
-      case APPS.ROOMBOOKING: {
+      case APPS.ROOM_BOOKING: {
         return ROOMBOOKING_MENUBAR_CONFIG;
       }
       default: {

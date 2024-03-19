@@ -35,7 +35,7 @@ type SettingsOptions = {
 
 export const SETTINGS_APPSELECT_OPTIONS: SettingsOptions[] = [
   {
-    id: APPS.TICKETSYSTEM,
+    id: APPS.TICKET_SYSTEM,
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
   },
@@ -47,51 +47,51 @@ export const SETTINGS_APPSELECT_OPTIONS: SettingsOptions[] = [
     color: 'bg-ciDarkBlue',
   },
   {
-    id: APPS.KNOWLEDGEBASE,
+    id: APPS.KNOWLEDGE_BASE,
     icon: KnowledgeBase,
     color: 'bg-ciDarkBlue',
   },
   {
-    id: APPS.FILESHARING,
+    id: APPS.FILE_SHARING,
     icon: FileSharing,
     color: 'bg-ciDarkBlue',
   },
   { id: APPS.FORUMS, icon: Forums, color: 'bg-ciDarkBlue' },
   {
-    id: APPS.ROOMBOOKING,
+    id: APPS.ROOM_BOOKING,
     icon: RoomBooking,
     color: 'bg-ciLightBlue',
   },
   {
-    id: APPS.LEARNINGMANAGEMENT,
+    id: APPS.LEARNING_MANAGEMENT,
     icon: LearningManagement,
     color: 'bg-ciLightBlue',
   },
   {
-    id: APPS.SCHOOLINFORMATION,
+    id: APPS.SCHOOL_INFORMATION,
     icon: SchoolInformation,
     color: 'bg-ciLightBlue',
   },
   {
-    id: APPS.SCHOOLMANAGEMENT,
+    id: APPS.SCHOOL_MANAGEMENT,
     icon: SchoolManagementIcon,
     color: 'bg-ciLightBlue',
   },
   { id: APPS.PRINTER, icon: Printer, color: 'bg-ciLightGreen' },
   { id: APPS.NETWORK, icon: Network, color: 'bg-ciLightGreen' },
   {
-    id: APPS.LOCATIONSERVICES,
+    id: APPS.LOCATION_SERVICES,
     icon: LocationServicesIcon,
     color: 'bg-ciLightGreen',
   },
   {
-    id: APPS.DESKTOPDEPLOYMENT,
+    id: APPS.DESKTOP_DEPLOYMENT,
     icon: DesktopDeployment,
     color: 'bg-ciLightGreen',
   },
   { id: APPS.WLAN, icon: Wlan, color: 'bg-ciLightGreen' },
   {
-    id: APPS.MOBILEDEVICES,
+    id: APPS.MOBILE_DEVICES,
     icon: MobileDevicesIcon,
     color: 'bg-ciLightGreen',
   },

@@ -19,10 +19,10 @@ const pageSwitch = (page: string) => {
   switch (page as APPS) {
     case APPS.CONFERENCES:
       return <ConferencePage />;
-    case APPS.FILESHARING: {
+    case APPS.FILE_SHARING: {
       return <FileSharing />;
     }
-    case APPS.ROOMBOOKING: {
+    case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
     }
     default: {
