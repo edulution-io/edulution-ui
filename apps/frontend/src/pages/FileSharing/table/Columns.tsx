@@ -11,7 +11,7 @@ import {
   MdFolder,
 } from 'react-icons/md';
 
-import useFileManagerStore from "@/store/fileManagerStore"
+import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
@@ -24,7 +24,7 @@ import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
-import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getFileCategorie, timeAgo } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 
 const selectFileNameWidth = 'w-4/12';
 const lastModColumnWidth = 'w-5/12';
@@ -43,7 +43,6 @@ const parseDate = (value: unknown): Date | null => {
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
-    // In your columns definition
 
     header: ({ table, column }) => (
       <div className={`flex items-center ${selectFileNameWidth}`}>
@@ -96,8 +95,8 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               aria-label="Select row"
             />
             <Icon
-              className="ml-2 mr-2"
-              style={{ fontSize: '16px', width: '16px', height: '16px' }}
+              className="mb-3 ml-2 mr-2 mt-3"
+              style={{ fontSize: '32px', width: '32px', height: '32px' }}
             >
               {renderFileIcon(row.original)}
             </Icon>
@@ -114,7 +113,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               tabIndex={0}
               style={{ userSelect: 'none' }}
             >
-              {formattedFilename}
+              <span className="text-md text-ellipsis font-medium">{formattedFilename}</span>
             </span>
             {isPreviewOpen && (
               <FilePreview
@@ -150,13 +149,14 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
       if (directoryFile.lastmod) {
         const date = new Date(directoryFile.lastmod);
-        formattedDate = !Number.isNaN(date.getTime()) ? date.toLocaleDateString() : 'Invalid Date';
+        console.log(date);
+        formattedDate = timeAgo(date);
       } else {
         formattedDate = 'Date not provided';
       }
       return (
         <div className={`flex items-center justify-center ${lastModColumnWidth}`}>
-          <span className="text-center font-medium">{formattedDate}</span>
+          <span className="text-md text-center font-medium">{formattedDate}</span>
         </div>
       );
     },
@@ -211,15 +211,19 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         return 'Folder';
       };
 
-      return <div className={`flex flex-row  ${typeColumnWidth}`}>{renderFileCategorize(row.original)}</div>;
+      return (
+        <div className={`flex flex-row text-right text-base font-medium ${typeColumnWidth}`}>
+          {renderFileCategorize(row.original)}
+        </div>
+      );
     },
   },
 
   {
     accessorKey: 'delete',
     header: () => (
-      <div className={operationsColumnWidth}>
-        <div className={`flex items-center justify-between ${operationsColumnWidth}`} />
+      <div className="w-full">
+        <div className="flex w-full items-center justify-end" />
       </div>
     ),
     cell: ({ row }) => {
