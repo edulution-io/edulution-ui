@@ -9,9 +9,9 @@ const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
       default:
-        'flex h-9 w-full border border-input bg-transparent px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'placeholder:color:ciLightGrey placeholder:text-p placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-gray-500 focus:outline-none',
       login:
-        'placeholder:color:ciLightGrey text-md block w-full border-2  border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-gray-500 focus:outline-none',
+        'block w-full border-2 border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-gray-500 focus:outline-none',
     },
   },
 });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import useFileManagerStore  from '@/store/fileManagerStore';
+import Input from '@/components/shared/Input';
+import useFileManagerStore from '@/store/fileManagerStore';
 import { validateDirectoryName } from '@/utils/common';
 
 const DirectoryCreationForm = () => {
@@ -27,14 +27,15 @@ const DirectoryCreationForm = () => {
   };
 
   return (
-    <div>
+    <>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
+        variant="default"
         placeholder="ExampleName.txt"
         value={localDirectoryName}
         onChange={handleInputChange}
       />
-    </div>
+    </>
   );
 };
 export default DirectoryCreationForm;
