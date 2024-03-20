@@ -24,6 +24,8 @@ i18n
       escapeValue: false, // react already safes from xss
     },
   })
-  .catch(() => {});
+  .catch((e) => {
+    console.error(e);
+  });
 
 export default i18n;

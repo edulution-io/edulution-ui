@@ -41,7 +41,7 @@ const LoginPage: React.FC = () => {
         password: form.getValues('password') as string,
       });
     } catch (e) {
-      //
+      console.error(e);
     }
   };
 
