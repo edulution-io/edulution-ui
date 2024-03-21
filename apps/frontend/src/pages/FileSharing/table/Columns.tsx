@@ -86,7 +86,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className={`${selectFileNameWidth} flex items-center justify-between `}>
+        <div className={`${selectFileNameWidth} flex items-center justify-between space-x-2 sm:justify-start `}>
           <div className="flex items-center">
             <Checkbox
               checked={row.getIsSelected()}
