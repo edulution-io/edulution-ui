@@ -71,7 +71,7 @@ const FileSharing = () => {
             </div>
           </TooltipProvider>
         </div>
-        <div className="min-w-[100vh]">
+        <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
           <DataTable
             columns={Columns}
             data={files}

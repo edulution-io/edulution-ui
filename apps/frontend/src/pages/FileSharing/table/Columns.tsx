@@ -26,12 +26,11 @@ import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import { getFileCategorie, timeAgo } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 
-const selectFileNameWidth = 'w-4/12';
-const lastModColumnWidth = 'w-5/12';
-const sizeColumnWidth = 'w-1/12';
-const typeColumnWidth = 'w-1/12';
-const operationsColumnWidth = 'w-1/12';
-
+const lastModColumnWidth = 'w-5/12 sm:w-1/12';
+const sizeColumnWidth = 'w-1/12 sm:w-1/12';
+const typeColumnWidth = 'w-1/12 sm:w-1/12';
+const selectFileNameWidth = 'w-3/5 sm:w-1/4 lg:w-1/4 xl:w-1/4';
+const operationsColumnWidth = 'w-2/5 sm:w-3/4 lg:w-3/4 xl:w-3/4';
 const parseDate = (value: unknown): Date | null => {
   if (typeof value === 'string' || typeof value === 'number') {
     const date = new Date(value);
@@ -52,7 +51,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
           aria-label="Select all"
         />
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center">
             File Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </div>
@@ -87,7 +86,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className={`${selectFileNameWidth} flex items-center `}>
+        <div className={`${selectFileNameWidth} flex items-center justify-between `}>
           <div className="flex items-center">
             <Checkbox
               checked={row.getIsSelected()}
@@ -102,7 +101,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
             </Icon>
 
             <span
-              className="cursor-pointer text-left font-medium"
+              className="cursor-pointer truncate text-left font-medium"
               onClick={() => handleFilenameClick(row.original.filename)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === 'Space') {
@@ -137,7 +136,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'lastmod',
     header: ({ column }) => (
-      <div className={lastModColumnWidth}>
+      <div className={`${lastModColumnWidth} hidden sm:block`}>
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Last Modified</div>
         </Button>
@@ -155,7 +154,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         formattedDate = 'Date not provided';
       }
       return (
-        <div className={`flex items-center justify-center ${lastModColumnWidth}`}>
+        <div className={`hidden items-center justify-center sm:block ${lastModColumnWidth}`}>
           <span className="text-md text-center font-medium">{formattedDate}</span>
         </div>
       );
@@ -175,7 +174,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'size',
     header: ({ column }) => (
-      <div className={sizeColumnWidth}>
+      <div className={`${sizeColumnWidth} hidden sm:block`}>
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Size</div>
         </Button>
@@ -187,7 +186,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         fileSize = row.original.size;
       }
       return (
-        <div className={`flex flex-row  ${sizeColumnWidth}`}>
+        <div className={`hidden flex-row sm:block ${sizeColumnWidth}`}>
           <p className="text-right font-medium">{formatBytes(fileSize)}</p>
         </div>
       );
@@ -197,7 +196,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'type',
     header: ({ column }) => (
-      <div className={typeColumnWidth}>
+      <div className={`${sizeColumnWidth} hidden sm:block`}>
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Type</div>
         </Button>
@@ -212,7 +211,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className={`flex flex-row text-right text-base font-medium ${typeColumnWidth}`}>
+        <div className={` hidden flex-row text-right text-base font-medium sm:block ${typeColumnWidth}`}>
           {renderFileCategorize(row.original)}
         </div>
       );
@@ -221,11 +220,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
   {
     accessorKey: 'delete',
-    header: () => (
-      <div className="w-full">
-        <div className="flex w-full items-center justify-end" />
-      </div>
-    ),
+    header: () => <div className="hidden w-full justify-end md:flex" />,
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
       const { setLoading, isLoading } = useFileManagerStore();
