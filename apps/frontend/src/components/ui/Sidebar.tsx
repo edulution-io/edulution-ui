@@ -318,6 +318,8 @@ const Sidebar = () => {
       <NavLink
         onClick={() => {
           auth.removeUser().catch(console.error);
+          // TODO: Remove if webdav is stored in backend
+          sessionStorage.clear();
         }}
         to="/"
         className={`group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 border-ciLightGrey bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}

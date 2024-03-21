@@ -1,4 +1,5 @@
 import i18n from '@/i18n';
+import CryptoJS from 'crypto-js';
 
 const translateKey = (key: string) => i18n.t(key);
 
@@ -63,6 +64,11 @@ function getFileType(fullPath: string): string {
   return parts.length > 1 ? parts.pop() || '' : '';
 }
 
+const decryptPassword = ({ data, key }: { data: string; key: string }) => {
+  const bytes: CryptoJS.lib.WordArray = CryptoJS.AES.decrypt(data, key);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};
+
 export {
   translateKey,
   getPathWithoutFileName,
@@ -72,4 +78,5 @@ export {
   getPrecedingPath,
   formatBytes,
   getFileType,
+  decryptPassword,
 };

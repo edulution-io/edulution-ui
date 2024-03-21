@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { useEncryption } from '@/hooks/mutations';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -11,6 +12,7 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { Link } from 'react-router-dom';
+import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -35,6 +37,21 @@ const LoginPage: React.FC = () => {
   }, [auth.error]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
+    // TODO: Remove if webdav is stored in backend
+
+    const encryptedPassword = useEncryption({
+      mode: 'encrypt',
+      data: form.getValues('password') as string,
+      key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb',
+    });
+
+    sessionStorage.setItem('webdav', encryptedPassword);
+    sessionStorage.setItem('user', form.getValues('username') as string);
+
+    createWebdavClient();
+
+    // --------------------------------------------------
+
     try {
       await auth.signinResourceOwnerCredentials({
         username: form.getValues('username') as string,
