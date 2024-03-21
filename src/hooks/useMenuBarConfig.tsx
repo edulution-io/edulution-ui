@@ -1,53 +1,31 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocation } from 'react-router-dom';
 
-import MenuItem from '@/datatypes/types';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
 import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-import SETTINGS_MENUBAR_CONFIG from '@/pages/Settings/config';
+import useSettingsMenuConfig from '@/pages/Settings/config';
 
 const useMenuBarConfig = () => {
   const location = useLocation();
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
-
-  type ConfigType = {
-    [key: string]: { linkPath: string };
-  };
-
-  const settingsMenubarConfig = {
-    ...SETTINGS_MENUBAR_CONFIG,
-    menuItems: [
-      ...SETTINGS_APPSELECT_OPTIONS.filter(
-        (option) => config[option.name.toLowerCase().split('.')[0]] !== undefined,
-      ).map((item) => ({
-        label: item.name,
-        link: item.link,
-        icon: item.icon,
-      })),
-      ...SETTINGS_MENUBAR_CONFIG.menuItems,
-    ],
-  };
+  const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
 
   const menuBarConfigSwitch = () => {
-    const rootPathName = `/${location.pathname.split('/')[1]}`;
+    const rootPathName = `${location.pathname.split('/')[1]}`;
 
-    switch (rootPathName) {
-      case '/filesharing': {
+    if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
+
+    switch (rootPathName as APPS) {
+      case APPS.FILE_SHARING: {
         return FILESHARING_MENUBAR_CONFIG;
       }
-      case '/conferences': {
+      case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
       }
-      case '/roombooking': {
+      case APPS.ROOM_BOOKING: {
         return ROOMBOOKING_MENUBAR_CONFIG;
-      }
-      case '/settings': {
-        return settingsMenubarConfig;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '' };
@@ -58,17 +36,11 @@ const useMenuBarConfig = () => {
   const configValues = menuBarConfigSwitch();
 
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
+    id: item.id,
     label: t(item.label),
-    action: () => navigate(item.link),
     icon: item.icon,
+    action: () => item.action(),
   }));
-
-  interface MenuBarEntryProps {
-    menuItems: MenuItem[];
-    title: string;
-    icon: string;
-    color: string;
-  }
 
   const menuBarEntries: MenuBarEntryProps = {
     menuItems,

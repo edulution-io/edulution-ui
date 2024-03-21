@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useLocalStorage } from 'usehooks-ts';
+import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/input';
 import { DropdownMenu } from '@/components';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogFooter, DialogHeader } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { TrashIcon } from '@/assets/icons';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import Toaster from '@/components/ui/sonner';
+import { AppType, ConfigType } from '@/datatypes/types';
 
 const SettingsPage: React.FC = () => {
   const location = useLocation();
@@ -26,51 +30,34 @@ const SettingsPage: React.FC = () => {
   const settingLocation =
     location.pathname !== '/settings' ? location.pathname.split('/').filter((part) => part !== '')[1] : '';
 
-  const settingsVisible = settingLocation !== '';
-
-  type ConfigType = {
-    [key: string]: { linkPath: string };
-  };
   const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
 
-  const [option, setOption] = useState(t(SETTINGS_APPSELECT_OPTIONS[0].name));
+  const [option, setOption] = useState(t(`${SETTINGS_APPSELECT_OPTIONS[0].id}.sidebar`));
 
-  const formSchema = z.object({
-    [settingLocation]: z.string().url().optional(),
+  const formSchemaObject: { [key: string]: z.Schema } = {};
+
+  SETTINGS_APPSELECT_OPTIONS.forEach((item) => {
+    formSchemaObject[`${item.id}.path`] = z.string().optional();
+    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppType).optional();
   });
+
+  const formSchema = z.object(formSchemaObject);
 
   const form = useForm<z.infer<typeof formSchema>>({
+    mode: 'onChange',
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      ticketsystem: '',
-      mail: '',
-      chat: '',
-      conferences: '',
-      knowledgebase: '',
-      filesharing: '',
-      forums: '',
-      roombooking: '',
-      learningmanagement: '',
-      schoolinformation: '',
-      schoolmanagement: '',
-      printer: '',
-      network: '',
-      locationservices: '',
-      desktopdeployment: '',
-      wlan: '',
-      mobiledevices: '',
-      virtualization: '',
-      firewall: '',
-      antimalware: '',
-      backup: '',
-    },
   });
+
+  const { control, handleSubmit, setValue, getValues } = form;
+
+  const settingsVisible = settingLocation !== '';
 
   useEffect(() => {
     if (settingsVisible) {
-      form.setValue(settingLocation, config[settingLocation]?.linkPath);
+      setValue(`${settingLocation}.path`, config[`${settingLocation}`]?.linkPath);
+      setValue(`${settingLocation}.appType`, config[`${settingLocation}`]?.appType);
     }
-  }, [settingLocation]);
+  }, [settingsVisible, settingLocation]);
 
   useEffect(() => {
     if (Object.keys(config).length === 0) {
@@ -79,49 +66,106 @@ const SettingsPage: React.FC = () => {
   }, [config]);
 
   const settingsForm = () => {
-    const onSubmit = (value: z.infer<typeof formSchema>) => {
-      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((opt) => opt.link.includes(settingLocation));
+    const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
+      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
+
       if (selectedOption) {
-        const appName = selectedOption.name.toLowerCase().split('.')[0];
         // TODO: Save config on server (eg mongoDB)
-        setConfig((prevConfig) => ({
-          ...prevConfig,
-          [appName]: {
-            linkPath: value[appName] || '',
-          },
-        }));
+        setConfig(
+          (prevConfig): ConfigType => ({
+            ...prevConfig,
+            [settingLocation]: {
+              linkPath: getValues(`${settingLocation}.path`) as string,
+              icon: selectedOption.icon,
+              appType: getValues(`${settingLocation}.appType`) as AppType,
+            },
+          }),
+        );
+        toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('form.saved')}`, {
+          description: new Date().toLocaleString(),
+        });
       }
     };
     if (settingsVisible) {
       return (
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="column"
+            onSubmit={handleSubmit(onSubmit)}
+            className="column w-2/3 space-y-6"
           >
-            <FormField
-              control={form.control}
-              name={settingLocation}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('form.path')}</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormDescription>{t('form.pathDescription')}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="absolute right-20">
-              <Button
-                type="submit"
-                variant="btn-collaboration"
-                size="lg"
+            {SETTINGS_APPSELECT_OPTIONS.map((item) => (
+              <div
+                key={item.id}
+                className="m-5"
               >
-                {t('common.save')}
-              </Button>
-            </div>
+                {settingLocation === item.id ? (
+                  <>
+                    <FormField
+                      control={control}
+                      name={`${item.id}.path`}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <FormItem>
+                          <h4>{t('form.path')}</h4>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <p>{t('form.pathDescription')}</p>
+                          <FormMessage className="text-p" />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="pt-10">
+                      <FormField
+                        control={control}
+                        name={`${item.id}.appType`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <h4>{t('form.apptype')}</h4>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={config[`${settingLocation}`].appType}
+                                className="flex flex-col space-y-1"
+                              >
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value={AppType.NATIVE} />
+                                  </FormControl>
+                                  <p>{t('form.native')}</p>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value={AppType.FORWARDED} />
+                                  </FormControl>
+                                  <p>{t('form.forwarded')}</p>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value={AppType.EMBEDDED} />
+                                  </FormControl>
+                                  <p>{t('form.embedded')}</p>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="absolute right-20">
+                      <Button
+                        type="submit"
+                        variant="btn-collaboration"
+                        size="lg"
+                      >
+                        {t('common.save')}
+                      </Button>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            ))}
           </form>
         </Form>
       );
@@ -131,8 +175,9 @@ const SettingsPage: React.FC = () => {
 
   const filteredAppOptions = () => {
     const existingOptions = Object.keys(config).map((key) => key);
+    const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
-    return SETTINGS_APPSELECT_OPTIONS.filter((itm) => !existingOptions.includes(itm.name.split('.')[0]));
+    return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
   };
 
   return (
@@ -156,6 +201,7 @@ const SettingsPage: React.FC = () => {
             }}
           >
             <img
+              className="m-7"
               src={TrashIcon}
               alt="trash"
               width="25px"
@@ -200,7 +246,7 @@ const SettingsPage: React.FC = () => {
                 onClick={() => {
                   setSearchParams('');
                   setConfig((prevConfig) => ({
-                    [option.toLowerCase().split('.')[0]]: { linkPath: '' },
+                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
                     ...prevConfig,
                   }));
                 }}
@@ -211,6 +257,7 @@ const SettingsPage: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Toaster />
     </>
   );
 };

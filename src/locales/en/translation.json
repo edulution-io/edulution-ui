@@ -38,6 +38,11 @@
     "description": "Here you can make all settings."
   },
 
+  "forwardingpage": {
+    "action": "This link will take you to the external site of the provider.",
+    "description": "The application opens in a new window. No further authorization is required."
+  },
+
   "menu": "MENU",
   "home": "Home",
   "programs": "Programs",
@@ -45,5 +50,13 @@
   "students": "Students",
 
   "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save" },
-  "form": { "path": "Link", "pathDescription": "Please enter a URL." }
+  "form": {
+    "path": "Path",
+    "pathDescription": "Please enter a valid URL.",
+    "apptype": "Link Type",
+    "native": "Native Support",
+    "forwarded": "Forwarded",
+    "embedded": "Embedded",
+    "saved": "Configuration saved!"
+  }
 }

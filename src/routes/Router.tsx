@@ -1,49 +1,113 @@
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
-import NotFoundPage from '@/pages/NotFound/NotFoundPage';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
 import { HomePage } from '@/pages/Home';
-import { ConferencePage } from '@/pages/ConferencePage';
+
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
+import IframeLayout from '@/components/layout/IframeLayout';
+import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
+
 import FileSharing from '@/pages/FileSharing/FileSharing';
+import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route element={<MainLayout />}>
-        <Route
-          path="/"
-          element={<HomePage />}
-        />
-        <Route
-          path="/conferences"
-          element={<ConferencePage />}
-        />
-        <Route
-          path="/filesharing"
-          element={<FileSharing />}
-        />
-        <Route
-          path="/roombooking"
-          element={<RoomBookingPage />}
-        />
-        <Route
-          path="/settings/*"
-          element={<SettingsPage />}
-        />
-      </Route>
+import { APPS, AppType, ConfigType } from '@/datatypes/types';
+import { useLocalStorage } from 'usehooks-ts';
 
-      <Route element={<BlankLayout />}>
-        <Route
-          path="*"
-          element={<NotFoundPage />}
+const pageSwitch = (page: string) => {
+  switch (page as APPS) {
+    case APPS.CONFERENCES:
+      return <ConferencePage />;
+    case APPS.FILE_SHARING: {
+      return <FileSharing />;
+    }
+    case APPS.ROOM_BOOKING: {
+      return <RoomBookingPage />;
+    }
+    default: {
+      return (
+        <Navigate
+          replace
+          to="/"
         />
-      </Route>
-    </>,
-  ),
-);
+      );
+    }
+  }
+};
 
-const AppRouter = () => <RouterProvider router={router} />;
+const router = (config: ConfigType) =>
+  createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route element={<MainLayout />}>
+          <Route
+            path="/"
+            element={<HomePage />}
+          />
+
+          <Route
+            path="settings"
+            element={<SettingsPage />}
+          >
+            {Object.keys(config).map((key) => (
+              <Route
+                key={key}
+                path={key}
+                element={<SettingsPage />}
+              />
+            ))}
+          </Route>
+          {Object.keys(config).map((key) =>
+            config[key].appType === AppType.NATIVE ? (
+              <Route
+                key={key}
+                path={key}
+                element={pageSwitch(key)}
+              />
+            ) : null,
+          )}
+        </Route>
+
+        <Route element={<BlankLayout />}>
+          <Route
+            path="*"
+            element={
+              <Navigate
+                replace
+                to="/"
+              />
+            }
+          />
+          {Object.keys(config).map((key) =>
+            config[key].appType === AppType.FORWARDED ? (
+              <Route
+                key={key}
+                path={key}
+                element={<ForwardingPage />}
+              />
+            ) : null,
+          )}
+        </Route>
+
+        <Route element={<IframeLayout />}>
+          {Object.keys(config).map((key) =>
+            config[key].appType === AppType.EMBEDDED ? (
+              <Route
+                key={key}
+                path={key}
+                element={null}
+              />
+            ) : null,
+          )}
+        </Route>
+      </>,
+    ),
+  );
+const AppRouter = () => {
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+
+  return <RouterProvider router={router(config)} />;
+};
+
 export default AppRouter;

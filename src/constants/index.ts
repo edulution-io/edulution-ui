@@ -21,99 +21,90 @@ import {
   Virtualization,
   Wlan,
 } from '@/assets/icons';
+import { APPS } from '@/datatypes/types';
 
 export const QUERY_KEY: Record<string, string> = {
   repoData: 'repoData',
 };
 
-interface Options {
+type SettingsOptions = {
   id: string;
-  name: string;
-  link: string;
   icon: string;
   color: string;
-}
+};
 
-export const SETTINGS_APPSELECT_OPTIONS: Options[] = [
+export const SETTINGS_APPSELECT_OPTIONS: SettingsOptions[] = [
   {
-    id: '1',
-    name: 'ticketsystem.sidebar',
-    link: '/settings/ticketsystem',
+    id: APPS.TICKET_SYSTEM,
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
   },
-  { id: '2', name: 'mail.sidebar', link: '/settings/mail', icon: Mail, color: 'bg-ciDarkBlue' },
-  { id: '3', name: 'chat.sidebar', link: '/settings/chat', icon: Chat, color: 'bg-ciDarkBlue' },
-  { id: '4', name: 'conferences.sidebar', link: '/settings/conferences', icon: Conferences, color: 'bg-ciDarkBlue' },
+  { id: APPS.MAIL, icon: Mail, color: 'bg-ciDarkBlue' },
+  { id: APPS.CHAT, icon: Chat, color: 'bg-ciDarkBlue' },
   {
-    id: '5',
-    name: 'knowledgebase.sidebar',
-    link: '/settings/knowledgebase',
+    id: APPS.CONFERENCES,
+    icon: Conferences,
+    color: 'bg-ciDarkBlue',
+  },
+  {
+    id: APPS.KNOWLEDGE_BASE,
     icon: KnowledgeBase,
     color: 'bg-ciDarkBlue',
   },
-  { id: '6', name: 'filesharing.sidebar', link: '/settings/filesharing', icon: FileSharing, color: 'bg-ciDarkBlue' },
-  { id: '7', name: 'forums.sidebar', link: '/settings/forums', icon: Forums, color: 'bg-ciDarkBlue' },
-  { id: '8', name: 'roombooking.sidebar', link: '/settings/roombooking', icon: RoomBooking, color: 'bg-ciLightBlue' },
   {
-    id: '9',
-    name: 'learningmanagement.sidebar',
-    link: '/settings/learningmanagement',
+    id: APPS.FILE_SHARING,
+    icon: FileSharing,
+    color: 'bg-ciDarkBlue',
+  },
+  { id: APPS.FORUMS, icon: Forums, color: 'bg-ciDarkBlue' },
+  {
+    id: APPS.ROOM_BOOKING,
+    icon: RoomBooking,
+    color: 'bg-ciLightBlue',
+  },
+  {
+    id: APPS.LEARNING_MANAGEMENT,
     icon: LearningManagement,
     color: 'bg-ciLightBlue',
   },
   {
-    id: '10',
-    name: 'schoolinformation.sidebar',
-    link: '/settings/schoolinformation',
+    id: APPS.SCHOOL_INFORMATION,
     icon: SchoolInformation,
     color: 'bg-ciLightBlue',
   },
   {
-    id: '11',
-    name: 'schoolmanagement.sidebar',
-    link: '/settings/schoolmanagement',
+    id: APPS.SCHOOL_MANAGEMENT,
     icon: SchoolManagementIcon,
     color: 'bg-ciLightBlue',
   },
-  { id: '12', name: 'printer.sidebar', link: '/settings/printer', icon: Printer, color: 'bg-ciLightGreen' },
-  { id: '13', name: 'network.sidebar', link: '/settings/network', icon: Network, color: 'bg-ciLightGreen' },
+  { id: APPS.PRINTER, icon: Printer, color: 'bg-ciLightGreen' },
+  { id: APPS.NETWORK, icon: Network, color: 'bg-ciLightGreen' },
   {
-    id: '14',
-    name: 'locationservices.sidebar',
-    link: '/settings/locationservices',
+    id: APPS.LOCATION_SERVICES,
     icon: LocationServicesIcon,
     color: 'bg-ciLightGreen',
   },
   {
-    id: '15',
-    name: 'desktopdeployment.sidebar',
-    link: '/settings/desktopdeployment',
+    id: APPS.DESKTOP_DEPLOYMENT,
     icon: DesktopDeployment,
     color: 'bg-ciLightGreen',
   },
-  { id: '16', name: 'wlan.sidebar', link: '/settings/wlan', icon: Wlan, color: 'bg-ciLightGreen' },
+  { id: APPS.WLAN, icon: Wlan, color: 'bg-ciLightGreen' },
   {
-    id: '17',
-    name: 'mobiledevices.sidebar',
-    link: '/settings/mobiledevices',
+    id: APPS.MOBILE_DEVICES,
     icon: MobileDevicesIcon,
     color: 'bg-ciLightGreen',
   },
   {
-    id: '18',
-    name: 'virtualization.sidebar',
-    link: '/settings/virtualization',
+    id: APPS.VIRTUALIZATION,
     icon: Virtualization,
     color: 'bg-ciLightGreen',
   },
-  { id: '19', name: 'firewall.sidebar', link: '/settings/firewall', icon: Firewall, color: 'bg-ciGreenToBlue' },
+  { id: APPS.FIREWALL, icon: Firewall, color: 'bg-ciGreenToBlue' },
   {
-    id: '20',
-    name: 'antimalware.sidebar',
-    link: '/settings/antimalware',
+    id: APPS.ANTIMALWARE,
     icon: AntiMalwareIcon,
     color: 'bg-ciGreenToBlue',
   },
-  { id: '21', name: 'backup.sidebar', link: '/settings/backup', icon: BackupIcon, color: 'bg-ciGreenToBlue' },
+  { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue' },
 ];

@@ -1,29 +1,29 @@
 import { FileSharing, Desktop, Share, Students } from '@/assets/icons';
+import { MenuBarEntryProps } from '@/datatypes/types';
 
-const FILESHARING_MENUBAR_CONFIG = {
-  title: 'fileSharing.title',
+const FILESHARING_MENUBAR_CONFIG: MenuBarEntryProps = {
+  title: 'filesharing.title',
   icon: FileSharing,
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
+    { id: 'home', label: 'home', icon: FileSharing, action: () => {} },
     {
-      label: 'home',
-      link: '/filesharing',
-      icon: FileSharing,
-    },
-    {
+      id: 'programs',
       label: 'programs',
-      link: '/filesharing/profile',
       icon: Desktop,
+      action: () => {},
     },
     {
+      id: 'share',
       label: 'share',
-      link: '/filesharing/settings',
       icon: Share,
+      action: () => {},
     },
     {
+      id: 'students',
       label: 'students',
-      link: '/',
       icon: Students,
+      action: () => {},
     },
   ],
 };
