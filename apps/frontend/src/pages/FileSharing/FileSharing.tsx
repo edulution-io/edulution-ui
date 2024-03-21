@@ -60,7 +60,6 @@ const FileSharing = () => {
           <TooltipProvider>
             <div className="flex flex-col ">
               <div className="flex space-x-2">
-                <p className="mr-2 text-white">Current Directory:</p>
                 <DirectoryBreadcrumb
                   path={currentPath}
                   onNavigate={(path) => {
@@ -71,14 +70,14 @@ const FileSharing = () => {
             </div>
           </TooltipProvider>
         </div>
-        <div className="w-full overflow-x-hidden pb-5 sm:max-h-[25vh] md:max-h-full">
+        <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
           <DataTable
             columns={Columns}
             data={files}
           />
         </div>
 
-        <div className=" flex flex-row space-x-4 bg-opacity-90 ">
+        <div className="fixed bottom-8 flex flex-row space-x-4 bg-opacity-90 p-4">
           <TooltipProvider>
             {selectedItems.length === 0 && (
               <>
@@ -125,58 +124,56 @@ const FileSharing = () => {
                 />
               </>
             )}
-            <div className="pt-3">
-              {selectedItems.length > 0 && (
-                <div className="flex flex-row space-x-4">
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText="Upload item"
-                    trigger={
-                      <HexagonButton onClick={() => {}}>
-                        <MoveItemDialog
-                          trigger={
-                            <div>
-                              <MdOutlineDriveFileMove className="font-bold text-white" />
-                            </div>
-                          }
-                          item={selectedItems}
-                        />
-                      </HexagonButton>
-                    }
-                  />
+            {selectedItems.length > 0 && (
+              <div className="flex flex-row space-x-4">
+                <ActionTooltip
+                  onAction={() => {}}
+                  tooltipText="Upload item"
+                  trigger={
+                    <HexagonButton onClick={() => {}}>
+                      <MoveItemDialog
+                        trigger={
+                          <div>
+                            <MdOutlineDriveFileMove className="font-bold text-white" />
+                          </div>
+                        }
+                        item={selectedItems}
+                      />
+                    </HexagonButton>
+                  }
+                />
 
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText="Upload item"
-                    trigger={
-                      <HexagonButton onClick={() => {}}>
-                        <DeleteAlert
-                          trigger={
-                            <div>
-                              <MdOutlineDeleteOutline className="font-bold text-white" />
-                            </div>
-                          }
-                          file={selectedItems}
-                        />
-                      </HexagonButton>
-                    }
-                  />
-                  <ActionTooltip
-                    onAction={() => {
-                      handleDownload(selectedItems).catch(() => {});
-                    }}
-                    tooltipText="Download Selected Items"
-                    trigger={
-                      <HexagonButton onClick={() => {}}>
-                        <div>
-                          <MdOutlineFileDownload className="text-white" />
-                        </div>
-                      </HexagonButton>
-                    }
-                  />
-                </div>
-              )}
-            </div>
+                <ActionTooltip
+                  onAction={() => {}}
+                  tooltipText="Upload item"
+                  trigger={
+                    <HexagonButton onClick={() => {}}>
+                      <DeleteAlert
+                        trigger={
+                          <div>
+                            <MdOutlineDeleteOutline className="font-bold text-white" />
+                          </div>
+                        }
+                        file={selectedItems}
+                      />
+                    </HexagonButton>
+                  }
+                />
+                <ActionTooltip
+                  onAction={() => {
+                    handleDownload(selectedItems).catch(() => {});
+                  }}
+                  tooltipText="Download Selected Items"
+                  trigger={
+                    <HexagonButton onClick={() => {}}>
+                      <div>
+                        <MdOutlineFileDownload className="text-white" />
+                      </div>
+                    </HexagonButton>
+                  }
+                />
+              </div>
+            )}
           </TooltipProvider>
         </div>
         <UploadToast />
