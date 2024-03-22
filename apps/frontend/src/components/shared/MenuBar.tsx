@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaChevronLeft } from 'react-icons/fa';
 
@@ -7,32 +7,35 @@ import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '
 
 import cn from '@/lib/utils';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
+import useFileManagerStore from '@/store/fileManagerStore';
 
 const MenuBar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [isFixed, setIsFixed] = useState(false);
+  const { isSidebarCollapsed, isSidebarFixed, setIsSidebarCollapsed, toggleIsSidebarFixed } = useFileManagerStore();
   const location = useLocation();
   const menuBarEntries = useMenuBarConfig(location.pathname);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    setIsCollapsed(!isMobile);
+    setIsSidebarCollapsed(!isMobile);
   }, [isMobile]);
 
   const toggleMenuBar = () => {
-    setIsFixed((prevState) => !prevState);
-    setIsCollapsed((prevState) => !prevState);
+    const newState = !isSidebarFixed;
+    toggleIsSidebarFixed(newState);
+
+    const newCollapseState = !isSidebarCollapsed;
+    setIsSidebarCollapsed(newCollapseState);
   };
 
   const handleMouseEnter = () => {
-    if (!isMobile && !isFixed) {
-      setIsCollapsed(false);
+    if (!isMobile && !isSidebarFixed) {
+      setIsSidebarCollapsed(false);
     }
   };
 
   const handleMouseLeave = () => {
-    if (!isMobile && !isFixed) {
-      setIsCollapsed(true);
+    if (!isMobile && !isSidebarFixed) {
+      setIsSidebarCollapsed(true);
     }
   };
 
@@ -44,22 +47,22 @@ const MenuBar: React.FC = () => {
           alt=""
           className="h-16 w-16 object-contain"
         />
-        <h3 className={cn('mb-4 mt-4 font-bold', { hidden: isCollapsed })}>{menuBarEntries.title}</h3>
+        <h3 className={cn('mb-4 mt-4 font-bold', { hidden: isSidebarCollapsed })}>{menuBarEntries.title}</h3>
       </div>
       <MenubarSeparator />
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
             <MenubarTrigger
-              className={`flex w-full cursor-pointer items-center ${!isCollapsed ? 'gap-5 px-10' : 'justify-center'} py-1 transition-colors`}
+              className={`flex w-full cursor-pointer items-center ${!isSidebarCollapsed ? 'gap-5 px-10' : 'justify-center'} py-1 transition-colors`}
               onClick={item.action}
             >
               <img
                 src={item.icon}
                 alt=""
-                className={`${!isMobile && isCollapsed ? 'w-14' : 'w-12'} object-contain`}
+                className={`${!isMobile && isSidebarCollapsed ? 'w-14' : 'w-12'} object-contain`}
               />
-              {!isCollapsed && <p>{item.label}</p>}
+              {!isSidebarCollapsed && <p>{item.label}</p>}
             </MenubarTrigger>
             <MenubarSeparator />
           </React.Fragment>
@@ -72,7 +75,7 @@ const MenuBar: React.FC = () => {
     <div>
       {isMobile ? (
         <>
-          {!isCollapsed && (
+          {!isSidebarCollapsed && (
             <div
               className="fixed inset-0 z-40 bg-black bg-opacity-50"
               role="button"
@@ -89,11 +92,11 @@ const MenuBar: React.FC = () => {
           <VerticalMenubar
             className={cn(
               'fixed top-0 z-50 h-full bg-gray-700 bg-opacity-90 duration-300 ease-in-out',
-              isCollapsed ? 'w-0' : 'w-64',
+              isSidebarCollapsed ? 'w-0' : 'w-60',
               'bg-black',
             )}
           >
-            {!isCollapsed && renderMenuBarContent()}
+            {!isSidebarCollapsed && renderMenuBarContent()}
           </VerticalMenubar>
 
           <div
@@ -101,27 +104,28 @@ const MenuBar: React.FC = () => {
             tabIndex={0}
             className={cn(
               'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
-              isCollapsed ? 'left-0' : 'left-64',
+              isSidebarCollapsed ? 'left-0' : 'left-60',
             )}
             onClick={toggleMenuBar}
             onKeyDown={(e) => e.key === 'Enter' && toggleMenuBar()}
           >
-            <p className="text-xl text-white">{isCollapsed ? '≡' : '×'}</p>
+            <p className="text-xl text-white">{isSidebarCollapsed ? '≡' : '×'}</p>
           </div>
         </>
       ) : (
         <div className="relative flex h-screen">
           <VerticalMenubar
             id="menubar"
-            className={cn('transition-width h-full overflow-hidden bg-black duration-300 ease-in-out', {
-              'w-24': isCollapsed,
-              'w-64': !isCollapsed,
+            className={cn('z-50 bg-black duration-300 ease-in-out', {
+              'fixed top-0 h-full w-24': isSidebarCollapsed,
+              'absolute top-0 h-full w-60': !isSidebarCollapsed,
             })}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={!isSidebarFixed ? handleMouseEnter : undefined}
+            onMouseLeave={!isSidebarFixed ? handleMouseLeave : undefined}
           >
             {renderMenuBarContent()}
           </VerticalMenubar>
+
           <div
             role="button"
             tabIndex={0}
@@ -129,7 +133,7 @@ const MenuBar: React.FC = () => {
             onClick={toggleMenuBar}
             onKeyDown={(e) => e.key === 'Enter' && toggleMenuBar()}
           >
-            <div className={cn('text-xl text-white', { 'rotate-180 transform': !isFixed })}>
+            <div className={cn('text-xl text-white', { 'rotate-180 transform': !isSidebarFixed })}>
               <FaChevronLeft />
             </div>
           </div>
