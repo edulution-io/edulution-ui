@@ -39,15 +39,25 @@ const MenuBar: React.FC = () => {
     }
   };
 
+  const titleStyles: React.CSSProperties = {
+    visibility: isSidebarCollapsed ? 'hidden' : 'visible',
+    height: '1em',
+  };
+
   const renderMenuBarContent = () => (
-    <div className="w-full">
+    <div className="w-full transition-opacity duration-200">
       <div className="flex flex-col items-center justify-center py-6">
         <img
           src={menuBarEntries.icon}
           alt=""
           className="h-16 w-16 object-contain"
         />
-        <h3 className={cn('mb-4 mt-4 font-bold', { hidden: isSidebarCollapsed })}>{menuBarEntries.title}</h3>
+        <h3
+          style={titleStyles}
+          className="mb-4 mt-4 font-bold transition-opacity duration-200"
+        >
+          {menuBarEntries.title}
+        </h3>
       </div>
       <MenubarSeparator />
       <MenubarMenu>
@@ -60,7 +70,7 @@ const MenuBar: React.FC = () => {
               <img
                 src={item.icon}
                 alt=""
-                className={`${!isMobile && isSidebarCollapsed ? 'w-14' : 'w-12'} object-contain`}
+                className={`${!isMobile && isSidebarCollapsed ? 'w-12' : 'w-12'} object-contain`}
               />
               {!isSidebarCollapsed && <p>{item.label}</p>}
             </MenubarTrigger>
