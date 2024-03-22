@@ -41,7 +41,7 @@ const Sidebar = () => {
   const { t } = useTranslation();
   const [isOpen, toggle] = useToggle(false);
   const { pathname } = useLocation();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
   const size = useWindowSize();
 
   // TODO: will move to separate file later

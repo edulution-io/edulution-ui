@@ -26,11 +26,11 @@ import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import { getFileCategorie, timeAgo } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 
-const lastModColumnWidth = 'w-5/12 sm:w-1/12';
-const sizeColumnWidth = 'w-1/12 sm:w-1/12';
-const typeColumnWidth = 'w-1/12 sm:w-1/12';
-const selectFileNameWidth = 'w-3/5 sm:w-1/4 lg:w-1/4 xl:w-1/4';
-const operationsColumnWidth = 'w-2/5 sm:w-3/4 lg:w-3/4 xl:w-3/4';
+const lastModColumnWidth = 'w-5/12 lg:w-1/12 md:w-1/12';
+const sizeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
+const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
+const selectFileNameWidth = 'w-3/5 lg:w-1/4 xl:w-1/4';
+const operationsColumnWidth = 'w-2/5 lg:w-3/4 xl:w-3/4';
 const parseDate = (value: unknown): Date | null => {
   if (typeof value === 'string' || typeof value === 'number') {
     const date = new Date(value);
@@ -136,7 +136,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'lastmod',
     header: ({ column }) => (
-      <div className={`${lastModColumnWidth} hidden sm:block`}>
+      <div className={`${lastModColumnWidth} hidden lg:flex `}>
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Last Modified</div>
         </Button>
@@ -148,13 +148,12 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
       if (directoryFile.lastmod) {
         const date = new Date(directoryFile.lastmod);
-        console.log(date);
         formattedDate = timeAgo(date);
       } else {
         formattedDate = 'Date not provided';
       }
       return (
-        <div className={`hidden items-center justify-center sm:block ${lastModColumnWidth}`}>
+        <div className={`hidden items-center justify-center lg:flex ${lastModColumnWidth}`}>
           <span className="text-md text-center font-medium">{formattedDate}</span>
         </div>
       );
@@ -174,7 +173,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'size',
     header: ({ column }) => (
-      <div className={`${sizeColumnWidth} hidden sm:block`}>
+      <div className={`${sizeColumnWidth} hidden lg:flex`}>
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Size</div>
         </Button>
@@ -186,7 +185,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         fileSize = row.original.size;
       }
       return (
-        <div className={`hidden flex-row sm:block ${sizeColumnWidth}`}>
+        <div className={`hidden flex-row lg:flex ${sizeColumnWidth}`}>
           <p className="text-right font-medium">{formatBytes(fileSize)}</p>
         </div>
       );
@@ -196,7 +195,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'type',
     header: ({ column }) => (
-      <div className={`${sizeColumnWidth} hidden sm:block`}>
+      <div className={`${sizeColumnWidth} hidden lg:flex`}>
         <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Type</div>
         </Button>
@@ -211,7 +210,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className={` hidden flex-row text-right text-base font-medium sm:block ${typeColumnWidth}`}>
+        <div className={` hidden flex-row text-right text-base font-medium lg:flex ${typeColumnWidth}`}>
           {renderFileCategorize(row.original)}
         </div>
       );
