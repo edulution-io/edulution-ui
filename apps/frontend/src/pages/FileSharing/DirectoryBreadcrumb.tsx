@@ -18,9 +18,14 @@ import useMediaQuery from '@/hooks/media/useMediaQuery';
 interface DirectoryBreadcrumbProps {
   path: string;
   onNavigate: (path: string) => void;
+  style: React.CSSProperties;
 }
 
-const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate }) => {
+const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
+  path,
+  onNavigate,
+  style = { marginRight: '0.5rem', color: 'white' },
+}) => {
   const segments = path.split('/').filter(Boolean);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const displaySegments = isMobile ? 1 : 4;
@@ -30,7 +35,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   };
 
   return (
-    <Breadcrumb className="mr-2 text-white">
+    <Breadcrumb style={style}>
       Current Directory:
       <BreadcrumbList>
         <BreadcrumbItem key="home">

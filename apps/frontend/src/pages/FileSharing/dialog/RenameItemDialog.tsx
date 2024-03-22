@@ -5,7 +5,7 @@ import { getFileNameFromPath, getPathWithoutFileName, validateDirectoryName, val
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import  useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 
 interface RenameContentDialogProps {
@@ -19,10 +19,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [localFileName, setLocalFileName] = useState('');
   const fileName = getFileNameFromPath(item.filename);
   const placeholderText = fileName.length > 0 ? `to ${fileName}` : 'File name is empty';
-  const {
-    setFileOperationSuccessful,
-      handleWebDavAction,
-  } = useFileManagerStore();
+  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -87,7 +84,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           />
           <div className="mx-auto flex justify-end p-4 ">
             <Button
-              className="bg-green-600"
+              variant="btn-collaboration"
               disabled={!isNameValid}
               onClick={() => {
                 renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch(() => {});
