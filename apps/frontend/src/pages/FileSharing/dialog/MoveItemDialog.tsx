@@ -1,7 +1,6 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import Label from '@/components/ui/label';
-import { getFileNameFromPath } from '@/utils/common';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/shared/Button';
@@ -9,6 +8,8 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import useMediaQuery from '@/hooks/media/useMediaQuery';
+import { getFileNameFromPath } from '@/utils/common';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -17,9 +18,10 @@ interface MoveItemDialogProps {
 
 const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
-  const [currentPath, setCurrentPath] = useState('/teachers/netzint-teacher');
+  const [currentPath, setCurrentPath] = useState('/students/niclass/netzint1');
   const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStore();
   useEffect(() => {
     if (isOpen) {
@@ -76,10 +78,10 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         <DirectoryBreadcrumb
           path={currentPath}
           onNavigate={handleBreadcrumbNavigate}
-          style={{ marginRight: '0.5rem', color: 'black' }}
+          style={{ marginRight: '0.5rem', color: isMobile ? 'white' : 'black' }}
         />
       </div>
-      <Table>
+      <Table className={`${isMobile ? 'text-white' : 'text-black'}`}>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Folder Name</TableHead>
@@ -99,7 +101,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
                   handleNextFolder(row);
                 }}
                 style={{
-                  backgroundColor: selectedRow?.filename === row.filename ? '#f0f0f0' : 'transparent',
+                  backgroundColor: selectedRow?.filename === row.filename ? 'gray' : 'transparent',
                   cursor: 'pointer',
                 }}
               >
@@ -127,7 +129,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
             <p className="text-black">{itemMessage}</p>
           ) : (
             <div>
-              <div className="justify space-x-2 pb-2">
+              <div className={`${isMobile ? 'text-white' : 'text-black'} justify space-x-2 pb-2`}>
                 <p>
                   {itemMessage}: {getFileNameFromPath(!Array.isArray(item) ? item.filename : '')}
                 </p>
@@ -152,7 +154,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         )}
         <div>{renderAvailablePaths()}</div>
         <div className="flex justify-between pt-3 text-black">
-          <p className="pt-4">Move to: {selectedRow?.filename}</p>
+          <p className={`pt-4 ${isMobile ? 'text-white' : 'text-black'}`}>Move to: {selectedRow?.filename}</p>
           {selectedRow !== undefined ? (
             <Button
               variant="btn-collaboration"
@@ -175,19 +177,28 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     );
   };
 
-  return (
+  return isMobile ? (
+    <Sheet
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+    >
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
+      <SheetContent side="bottom">
+        <SheetHeader>
+          <SheetTitle>Move Item</SheetTitle>
+        </SheetHeader>
+        <SheetDescription className="bg-transparent text-white">{renderItemInfo()}</SheetDescription>
+      </SheetContent>
+    </Sheet>
+  ) : (
     <Dialog
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Change Directory</DialogTitle>
-        <DialogDescription>
-          <Label>
-            <p>{renderItemInfo()}</p>
-          </Label>
-        </DialogDescription>
+        <DialogTitle>Move Item</DialogTitle>
+        <DialogDescription>{renderItemInfo()}</DialogDescription>
       </DialogContent>
     </Dialog>
   );

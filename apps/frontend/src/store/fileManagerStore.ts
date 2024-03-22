@@ -31,7 +31,7 @@ type FileManagerStore = {
   setPopUpVisibility: (isVisible: boolean) => void;
   setLoading: (isLoading: boolean) => void;
   fetchMountPoints: () => Promise<DirectoryFile[]>;
-  fetchDirectory: (path?: string) => Promise<DirectoryFile[]>;
+  fetchDirectory: (path: string) => Promise<DirectoryFile[]>;
   handleWebDavAction: (action: () => Promise<WebDavActionResult>) => Promise<WebDavActionResult>;
 };
 
@@ -78,7 +78,7 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
     }
   },
 
-  fetchDirectory: async (pathToFetch: string = '/teachers/netzint-teacher') => {
+  fetchDirectory: async (pathToFetch: string) => {
     try {
       const resp = await WebDavFunctions.getContentList(pathToFetch);
       return resp.filter((item) => item.type === ContentType.directory);

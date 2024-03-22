@@ -58,7 +58,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
-                  className="text-black"
+                  className="z-50 text-black"
                 >
                   {segments.slice(0, -1).map((segment, index) => (
                     <DropdownMenuItem
