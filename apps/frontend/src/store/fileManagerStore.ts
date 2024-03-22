@@ -70,6 +70,8 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
       const directoryFiles = await WebDavFunctions.getContentList(path);
       get().setCurrentPath(path);
       get().setFiles(directoryFiles);
+      get().setSelectedItems([]);
+      get().setSelectedRows({});
       if (get().fileOperationSuccessful !== undefined) {
         get().setPopUpVisibility(true);
       }
