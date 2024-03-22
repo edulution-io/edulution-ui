@@ -17,7 +17,7 @@
   "firewall": "Firewall",
   "virtualization": "Virtualisierung",
   "learningManagement": "Lernmanagement",
-  "fireSharing": "Filesharing",
+  "firesharing": "Filesharing",
   "desktopDeployment": "Desktop-Bereitstellung",
   "network": "Netzwerk",
   "roomBooking": {
@@ -31,7 +31,7 @@
   "wlan": "WLAN",
   "forums": "Foren",
   "printer": "Drucker",
-  "fileSharing": {
+  "filesharing": {
     "title": "MEINE DATEIEN",
     "sidebar": "Meine Dateien"
   },
@@ -59,7 +59,8 @@
     "filesToUpload": "Dateien zum Hochladen"
   },
   "table": {
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt"
+    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
+    "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."

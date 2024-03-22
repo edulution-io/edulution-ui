@@ -83,7 +83,7 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
 
         <AlertDialogFooter>
           <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
-          <AlertDialogAction onClick={deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>
+          <AlertDialogAction onClick={() => deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

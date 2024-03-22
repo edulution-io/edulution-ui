@@ -16,7 +16,7 @@ import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { formatBytes } from '@/utils/common';
+import { formatBytes, translateKey } from '@/utils/common';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
@@ -25,7 +25,6 @@ import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
-import { useTranslation } from 'react-i18next';
 
 const selectFileNameWidth = 'w-4/12';
 const lastModColumnWidth = 'w-5/12';
@@ -45,7 +44,6 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
     header: function Header({ table, column }) {
-      const { t } = useTranslation();
       return (
         <div className={`flex items-center ${selectFileNameWidth}`}>
           <Checkbox
@@ -55,7 +53,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
           />
           <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className="flex items-center justify-between">
-              {t('fileSharingTable.filename')}
+              {translateKey('fileSharingTable.filename')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </div>
           </Button>
@@ -141,11 +139,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'lastmod',
     header: function Header({ column }) {
-      const { t } = useTranslation();
       return (
         <div className={lastModColumnWidth}>
           <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className=""> {t('fileSharingTable.lastModified')}</div>
+            <div className=""> {translateKey('fileSharingTable.lastModified')}</div>
           </Button>
         </div>
       );
@@ -181,11 +178,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'size',
     header: function Header({ column }) {
-      const { t } = useTranslation();
       return (
         <div className={sizeColumnWidth}>
           <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className=""> {t('fileSharingTable.size')}</div>
+            <div className=""> {translateKey('fileSharingTable.size')}</div>
           </Button>
         </div>
       );
@@ -206,23 +202,20 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     accessorKey: 'type',
     header: function Header({ column }) {
-      const { t } = useTranslation();
       return (
         <div className={typeColumnWidth}>
           <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className=""> {t('fileSharingTable.type')}</div>
+            <div className=""> {translateKey('fileSharingTable.type')}</div>
           </Button>
         </div>
       );
     },
     cell: function Cell({ row }) {
-      const { t } = useTranslation();
       const renderFileCategorize = (item: DirectoryFile) => {
         if (row.original.type === ContentType.file) {
-          const fileCategoryKey = getFileCategorie(item.filename);
-          return t(`fileCategory.${fileCategoryKey}`);
+          return translateKey(`fileCategory.${getFileCategorie(item.filename)}`);
         }
-        return t('fileCategory.folder');
+        return translateKey('fileCategory.folder');
       };
 
       return <div className={`flex flex-row  ${typeColumnWidth}`}>{renderFileCategorize(row.original)}</div>;

@@ -104,7 +104,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t('table.noDataAvailable')}
                   </TableCell>
                 </TableRow>
               )}
