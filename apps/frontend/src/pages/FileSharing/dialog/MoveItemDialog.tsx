@@ -108,7 +108,13 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       <Button
         className="bg-green-600"
         disabled={!selectedRow}
-        onClick={() => moveItem(item, selectedRow?.filename).catch(() => null)}
+        onClick={() => {
+          try {
+            moveItem(item, selectedRow?.filename).catch((error) => console.error(error));
+          } catch (error) {
+            console.error(error);
+          }
+        }}
       >
         Move
       </Button>

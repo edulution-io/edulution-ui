@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import Checkbox from '@/components/ui/Checkbox';
-import { ButtonSH } from '@/components/ui/ButtonSH.tsx';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 import {
   MdDriveFileRenameOutline,
   MdOutlineDeleteOutline,

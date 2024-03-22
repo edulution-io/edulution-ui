@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/Dialog';
 
 import React, { ReactNode, useState } from 'react';
-import { ButtonSH } from '@/components/ui/ButtonSH.tsx';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
