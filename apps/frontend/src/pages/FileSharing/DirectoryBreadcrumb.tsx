@@ -60,9 +60,9 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                   align="start"
                   className="z-50 text-black"
                 >
-                  {segments.slice(0, -1).map((segment, index) => (
+                  {segments.slice(0, -1).map((segment) => (
                     <DropdownMenuItem
-                      key={index}
+                      key={segment}
                       onClick={() => handleSegmentClick(segment)}
                     >
                       {segment}

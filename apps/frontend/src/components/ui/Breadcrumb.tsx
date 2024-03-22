@@ -3,12 +3,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import cn from '@/lib/utils';
 
-const Breadcrumb = React.forwardRef<
-  HTMLElement,
-  React.ComponentPropsWithoutRef<'nav'> & {
-    separator?: React.ReactNode;
-  }
->(({ ...props }, ref) => (
+const Breadcrumb = React.forwardRef<HTMLElement, React.ComponentPropsWithoutRef<'nav'>>(({ ...props }, ref) => (
   <nav
     ref={ref}
     aria-label="breadcrumb"
@@ -47,9 +42,8 @@ const BreadcrumbLink = React.forwardRef<
   React.ComponentPropsWithoutRef<'a'> & {
     asChild?: boolean;
   }
->(({ asChild, className, ...props }, ref) => {
+>(({ asChild = false, className, ...props }, ref) => {
   const Comp = asChild ? Slot : 'a';
-
   return (
     <Comp
       ref={ref}
@@ -98,6 +92,10 @@ const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'
   </span>
 );
 BreadcrumbEllipsis.displayName = 'BreadcrumbElipssis';
+
+BreadcrumbLink.defaultProps = {
+  asChild: false,
+};
 
 export {
   Breadcrumb,
