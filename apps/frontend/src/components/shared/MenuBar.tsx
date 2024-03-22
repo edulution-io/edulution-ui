@@ -10,18 +10,30 @@ import useMediaQuery from '@/hooks/media/useMediaQuery';
 
 const MenuBar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isFixed, setIsFixed] = useState(false);
   const location = useLocation();
   const menuBarEntries = useMenuBarConfig(location.pathname);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    if (!isMobile) {
-      setIsCollapsed(false);
-    }
+    setIsCollapsed(!isMobile);
   }, [isMobile]);
 
   const toggleMenuBar = () => {
-    setIsCollapsed(!isCollapsed);
+    setIsFixed((prevState) => !prevState);
+    setIsCollapsed((prevState) => !prevState);
+  };
+
+  const handleMouseEnter = () => {
+    if (!isMobile && !isFixed) {
+      setIsCollapsed(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile && !isFixed) {
+      setIsCollapsed(true);
+    }
   };
 
   const renderMenuBarContent = () => (
@@ -39,13 +51,13 @@ const MenuBar: React.FC = () => {
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
             <MenubarTrigger
-              className={`flex w-full cursor-pointer items-center gap-5 ${!isCollapsed ? 'px-10' : 'justify-center'} py-1 transition-colors`}
+              className={`flex w-full cursor-pointer items-center ${!isCollapsed ? 'gap-5 px-10' : 'justify-center'} py-1 transition-colors`}
               onClick={item.action}
             >
               <img
                 src={item.icon}
                 alt=""
-                className={`${!isMobile && isCollapsed ? 'w-14' : 'w-12'}  object-contain`}
+                className={`${!isMobile && isCollapsed ? 'w-14' : 'w-12'} object-contain`}
               />
               {!isCollapsed && <p>{item.label}</p>}
             </MenubarTrigger>
@@ -100,10 +112,13 @@ const MenuBar: React.FC = () => {
       ) : (
         <div className="relative flex h-screen">
           <VerticalMenubar
+            id="menubar"
             className={cn('transition-width h-full overflow-hidden bg-black duration-300 ease-in-out', {
               'w-24': isCollapsed,
               'w-64': !isCollapsed,
             })}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
             {renderMenuBarContent()}
           </VerticalMenubar>
@@ -114,7 +129,7 @@ const MenuBar: React.FC = () => {
             onClick={toggleMenuBar}
             onKeyDown={(e) => e.key === 'Enter' && toggleMenuBar()}
           >
-            <div className={cn('text-xl text-white', { 'rotate-180 transform': !isCollapsed })}>
+            <div className={cn('text-xl text-white', { 'rotate-180 transform': !isFixed })}>
               <FaChevronLeft />
             </div>
           </div>
