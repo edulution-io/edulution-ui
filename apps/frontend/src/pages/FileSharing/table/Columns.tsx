@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import Checkbox from '@/components/ui/Checkbox';
-import { Button } from '@/components/ui/Button';
+import { ButtonSH } from '@/components/ui/ButtonSH.tsx';
 import {
   MdDriveFileRenameOutline,
   MdOutlineDeleteOutline,
@@ -52,12 +52,12 @@ const Columns: ColumnDef<DirectoryFile>[] = [
           onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
           aria-label="Select all"
         />
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="flex items-center justify-between">
             File Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </div>
-        </Button>
+        </ButtonSH>
       </div>
     ),
     accessorFn: (row) => row.type + row.filename,
@@ -139,9 +139,9 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'lastmod',
     header: ({ column }) => (
       <div className={lastModColumnWidth}>
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Last Modified</div>
-        </Button>
+        </ButtonSH>
       </div>
     ),
     cell: ({ row }) => {
@@ -176,9 +176,9 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'size',
     header: ({ column }) => (
       <div className={sizeColumnWidth}>
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Size</div>
-        </Button>
+        </ButtonSH>
       </div>
     ),
     cell: ({ row }) => {
@@ -198,9 +198,9 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'type',
     header: ({ column }) => (
       <div className={typeColumnWidth}>
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           <div className="">Type</div>
-        </Button>
+        </ButtonSH>
       </div>
     ),
     cell: ({ row }) => {

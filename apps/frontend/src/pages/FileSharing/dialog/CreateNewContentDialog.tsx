@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/Dialog';
 
 import React, { ReactNode, useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { ButtonSH } from '@/components/ui/ButtonSH.tsx';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -106,7 +106,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
             </>
           )}
           <div className="container mx-auto flex justify-end p-4">
-            <Button
+            <ButtonSH
               className="w-1/4 rounded bg-blue-500 px-4 py-2 text-white"
               disabled={directoryName.length <= 0 && fileName.length <= 0}
               onClick={() => {
@@ -114,7 +114,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
               }}
             >
               Create
-            </Button>
+            </ButtonSH>
           </div>
         </DialogHeader>
       </DialogContent>
