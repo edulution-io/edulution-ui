@@ -12,11 +12,12 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
       'btn-infrastructure': 'bg-ciLightGreen',
       'btn-security': 'bg-ciGreenToBlue',
       'btn-outline': 'border border-input shadow-sm hover:bg-accent hover:text-accent-foreground',
+      'btn-attention': 'bg-ciRed',
+      'btn-ok': 'bg-ciGreen',
     },
     size: {
       lg: 'h-10 rounded-md px-8',
       sm: 'h-8 rounded-md px-3 text-xs',
-
     },
   },
 });

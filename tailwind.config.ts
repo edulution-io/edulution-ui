@@ -20,6 +20,8 @@ module.exports = {
         ciDarkBlue: '#0081C6',
         ciLightBlue: '#66B2DF',
         ciLightGreen: '#88D840',
+        ciRed: '#ee0505',
+        ciGreen: '#37ee05',
         ciLightGrey: '#848493',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
