@@ -14,11 +14,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/webdav': {
-        target: 'https://server.demo.multi.schule',
+        target: 'https://server.schulung.multi.schule',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule',
+          Origin: 'https://server.schulung.multi.schule',
         },
       },
       '/api': {
