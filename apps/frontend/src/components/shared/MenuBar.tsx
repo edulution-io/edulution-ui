@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { FaChevronLeft } from 'react-icons/fa';
 
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
@@ -14,13 +15,13 @@ const MenuBar: React.FC = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    setIsCollapsed(isMobile);
+    if (!isMobile) {
+      setIsCollapsed(false);
+    }
   }, [isMobile]);
 
   const toggleMenuBar = () => {
-    if (isMobile) {
-      setIsCollapsed(!isCollapsed);
-    }
+    setIsCollapsed(!isCollapsed);
   };
 
   const renderMenuBarContent = () => (
@@ -29,24 +30,24 @@ const MenuBar: React.FC = () => {
         <img
           src={menuBarEntries.icon}
           alt=""
-          className="h-20 w-20 object-contain"
+          className="h-16 w-16 object-contain"
         />
-        <h3 className="mb-4 mt-4 font-bold">{menuBarEntries.title}</h3>
+        <h3 className={cn('mb-4 mt-4 font-bold', { hidden: isCollapsed })}>{menuBarEntries.title}</h3>
       </div>
       <MenubarSeparator />
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
             <MenubarTrigger
-              className="flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors"
+              className={`flex w-full cursor-pointer items-center gap-5 ${!isCollapsed ? 'px-10' : 'justify-center'} py-1 transition-colors`}
               onClick={item.action}
             >
               <img
                 src={item.icon}
                 alt=""
-                className="h-12 w-12 object-contain"
+                className={`${!isMobile && isCollapsed ? 'w-14' : 'w-12'}  object-contain`}
               />
-              <p>{item.label}</p>
+              {!isCollapsed && <p>{item.label}</p>}
             </MenubarTrigger>
             <MenubarSeparator />
           </React.Fragment>
@@ -98,13 +99,28 @@ const MenuBar: React.FC = () => {
         </>
       ) : (
         <div className="relative flex h-screen">
-          <VerticalMenubar className={cn('h-full overflow-hidden', 'w-64', 'bg-black', 'bg-opacity-40')}>
+          <VerticalMenubar
+            className={cn('transition-width h-full overflow-hidden bg-black duration-300 ease-in-out', {
+              'w-24': isCollapsed,
+              'w-64': !isCollapsed,
+            })}
+          >
             {renderMenuBarContent()}
           </VerticalMenubar>
+          <div
+            role="button"
+            tabIndex={0}
+            className="absolute top-0 z-50 flex h-12 w-full cursor-pointer items-center justify-end bg-transparent bg-opacity-40 px-4"
+            onClick={toggleMenuBar}
+            onKeyDown={(e) => e.key === 'Enter' && toggleMenuBar()}
+          >
+            <div className={cn('text-xl text-white', { 'rotate-180 transform': !isCollapsed })}>
+              <FaChevronLeft />
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 };
-
 export default MenuBar;
