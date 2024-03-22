@@ -9,7 +9,7 @@ import {
 } from '@/assets/icons';
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/common';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import useFileManagerStore from '@/store/fileManagerStore';
 import MenuItem from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';

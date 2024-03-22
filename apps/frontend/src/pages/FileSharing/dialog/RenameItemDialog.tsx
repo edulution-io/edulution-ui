@@ -6,7 +6,7 @@ import {
   getPathWithoutFileName,
   validateDirectoryName,
   validateFileName,
-} from '@/pages/FileSharing/utilities/common';
+} from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';

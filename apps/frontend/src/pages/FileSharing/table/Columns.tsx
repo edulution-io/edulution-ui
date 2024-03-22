@@ -16,7 +16,7 @@ import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { formatBytes } from '@/pages/FileSharing/utilities/common';
+import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
