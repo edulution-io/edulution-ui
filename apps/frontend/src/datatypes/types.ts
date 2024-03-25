@@ -5,6 +5,7 @@ interface MenuItem {
   icon: string;
   hoverColor?: string;
   action: () => void;
+  path?: string;
 }
 
 export interface FileTypePreviewProps {
