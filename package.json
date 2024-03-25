@@ -8,7 +8,10 @@
     "dev": "nx serve frontend",
     "build": "tsc && nx build frontend --emptyOutDir",
     "lint": "nx lint frontend",
-    "preview": "nx preview frontend"
+    "preview": "nx preview frontend",
+    "prepare": "husky install",
+    "check-circular-deps": "madge --circular --ts-config ./tsconfig.json apps/frontend/src/*",
+    "format": "prettier --write 'apps/frontend/src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -97,7 +100,9 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "husky": "^8.0.0",
     "jsdom": "~22.1.0",
+    "madge": "^6.1.0",
     "nx": "^18.0.8",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
@@ -111,5 +116,11 @@
   },
   "nx": {
     "includedScripts": []
+  },
+
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run check-circular-deps && npm run format"
+    }
   }
 }
