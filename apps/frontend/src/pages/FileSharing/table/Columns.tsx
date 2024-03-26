@@ -11,7 +11,7 @@ import {
   MdFolder,
 } from 'react-icons/md';
 
-import useFileManagerStore from "@/store/fileManagerStore"
+import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
