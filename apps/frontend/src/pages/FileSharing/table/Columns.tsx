@@ -16,7 +16,7 @@ import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { formatBytes, translateKey } from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
@@ -25,6 +25,7 @@ import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { translateKey } from '@/utils/common';
 
 const selectFileNameWidth = 'w-4/12';
 const lastModColumnWidth = 'w-5/12';
