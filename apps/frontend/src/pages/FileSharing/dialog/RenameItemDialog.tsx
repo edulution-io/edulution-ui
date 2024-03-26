@@ -22,7 +22,6 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const fileName = getFileNameFromPath(item.filename);
   const placeholderTextKey = fileName.length > 0 ? 'fileRenameContent.to' : '';
   const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
-
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {

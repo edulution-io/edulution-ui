@@ -57,6 +57,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
           files={selectedFiles}
           setFiles={setSelectedFiles}
         />
+
         <Button
           className="bg-green-600"
           disabled={selectedFiles.length > 5 || selectedFiles.length === 0}

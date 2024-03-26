@@ -1,8 +1,8 @@
-import {FileSharing, teacher, project, iso, programm, share, students} from '@/assets/icons';
+import { FileSharing, teacher, project, iso, programm, share, students } from '@/assets/icons';
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
 import { getFileNameFromPath } from '@/utils/common';
-import  useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import MenuItem from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
 
