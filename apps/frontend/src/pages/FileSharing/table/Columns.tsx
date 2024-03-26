@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
-import Checkbox from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
+import Checkbox from '@/components/ui/Checkbox';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 import {
   MdDriveFileRenameOutline,
   MdOutlineDeleteOutline,
@@ -13,18 +13,19 @@ import {
 
 import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { formatBytes, translateKey } from '@/utils/common';
+import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
-import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
+import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import FilePreview from '@/pages/FileSharing/dialog/FilePreview';
+import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { translateKey } from '@/utils/common';
 
 const selectFileNameWidth = 'w-4/12';
 const lastModColumnWidth = 'w-5/12';
@@ -51,12 +52,12 @@ const Columns: ColumnDef<DirectoryFile>[] = [
             onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
             aria-label="Select all"
           />
-          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className="flex items-center justify-between">
               {translateKey('fileSharingTable.filename')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </div>
-          </Button>
+          </ButtonSH>
         </div>
       );
     },
@@ -118,7 +119,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               {formattedFilename}
             </span>
             {isPreviewOpen && (
-              <FilePreview
+              <FilePreviewDialog
                 file={row.original}
                 isOpen={isPreviewOpen}
                 onClose={() => setPreviewOpen(false)}
@@ -141,9 +142,9 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: function Header({ column }) {
       return (
         <div className={lastModColumnWidth}>
-          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className=""> {translateKey('fileSharingTable.lastModified')}</div>
-          </Button>
+          </ButtonSH>
         </div>
       );
     },
@@ -180,9 +181,9 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: function Header({ column }) {
       return (
         <div className={sizeColumnWidth}>
-          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className=""> {translateKey('fileSharingTable.size')}</div>
-          </Button>
+          </ButtonSH>
         </div>
       );
     },
@@ -204,9 +205,9 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: function Header({ column }) {
       return (
         <div className={typeColumnWidth}>
-          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className=""> {translateKey('fileSharingTable.type')}</div>
-          </Button>
+          </ButtonSH>
         </div>
       );
     },
@@ -301,7 +302,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                   onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
-                    <DeleteAlert
+                    <DeleteItemAlert
                       trigger={
                         <div>
                           <MdOutlineDeleteOutline />

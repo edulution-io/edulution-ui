@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
-import Separator from '@/components/ui/separator';
+import Separator from '@/components/ui/Separator';
 
 const Quota = () => (
   <Card variant="security">

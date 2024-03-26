@@ -9,11 +9,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/AlertDialog';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +22,7 @@ interface DeleteDialogProps {
   file: DirectoryFile[];
 }
 
-const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
+const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
@@ -90,5 +90,5 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   );
 };
 
-DeleteAlert.displayName = 'DeleteAlert';
-export default DeleteAlert;
+DeleteItemAlert.displayName = 'DeleteItemAlert';
+export default DeleteItemAlert;

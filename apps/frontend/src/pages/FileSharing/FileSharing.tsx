@@ -7,7 +7,7 @@ import {
 } from 'react-icons/md';
 import useFileManagerStore from '@/store/fileManagerStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import StatusAlert from '@/pages/FileSharing/alerts/StatusAlert';
@@ -16,7 +16,7 @@ import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import CreateNewContentDialog from '@/pages/FileSharing/dialog/CreateNewContentDialog';
 import UploadItemDialog from '@/pages/FileSharing/dialog/UploadItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
-import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
+import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import DataTable from '@/pages/FileSharing/table/DataTable';
 import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
@@ -24,7 +24,7 @@ import { ContentType } from '@/datatypes/filesystem';
 import HexagonButton from '@/components/shared/HexagonButton';
 import { useTranslation } from 'react-i18next';
 
-const FileSharing = () => {
+const FileSharingPage = () => {
   const {
     handleDownload,
     isLoading,
@@ -142,7 +142,7 @@ const FileSharing = () => {
                       tooltipText="Upload item"
                       trigger={
                         <HexagonButton onClick={() => {}}>
-                          <DeleteAlert
+                          <DeleteItemAlert
                             trigger={
                               <div>
                                 <MdOutlineDeleteOutline className="font-bold text-white" />
@@ -184,4 +184,4 @@ const FileSharing = () => {
   );
 };
 
-export default FileSharing;
+export default FileSharingPage;

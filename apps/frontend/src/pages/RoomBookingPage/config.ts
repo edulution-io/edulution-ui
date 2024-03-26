@@ -1,14 +1,14 @@
-import { RoomBooking } from '@/assets/icons';
+import { RoomBookingIcon } from '@/assets/icons';
 
 const ROOMBOOKING_MENUBAR_CONFIG = {
   title: 'roomBooking.title',
-  icon: RoomBooking,
+  icon: RoomBookingIcon,
   color: 'hover:bg-ciLightBlue',
   menuItems: [
     {
       label: 'roomBooking.rooms',
       link: '/room-booking/rooms',
-      icon: RoomBooking,
+      icon: RoomBookingIcon,
     },
   ],
 };

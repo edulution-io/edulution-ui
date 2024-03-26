@@ -3,23 +3,23 @@ import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
 import {
-  MobileLogo,
-  Firewall,
-  Conferences,
-  LearningManagement,
-  FileSharing,
-  Virtualization,
-  DesktopDeployment,
-  Network,
-  Mail,
-  SchoolInformation,
-  Printer,
-  RoomBooking,
-  Forums,
-  Chat,
-  Wlan,
-  KnowledgeBase,
-  User,
+  MobileLogoIcon,
+  FirewallIcon,
+  ConferencesIcon,
+  LearningManagementIcon,
+  FileSharingIcon,
+  VirtualizationIcon,
+  DesktopDeploymentIcon,
+  NetworkIcon,
+  MailIcon,
+  SchoolInformationIcon,
+  PrinterIcon,
+  RoomBookingIcon,
+  ForumsIcon,
+  ChatIcon,
+  WlanIcon,
+  KnowledgeBaseIcon,
+  UserIcon,
 } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
@@ -49,91 +49,91 @@ const Sidebar = () => {
     {
       title: translateKey('conferences.sidebar'),
       link: '/conferences',
-      icon: Conferences,
+      icon: ConferencesIcon,
       color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('firewall'),
       link: '/firewall',
-      icon: Firewall,
+      icon: FirewallIcon,
       color: 'bg-ciGreenToBlue',
     },
     {
       title: translateKey('virtualization'),
       link: '/virtualization',
-      icon: Virtualization,
+      icon: VirtualizationIcon,
       color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('learningManagement'),
       link: '/learning-management',
-      icon: LearningManagement,
+      icon: LearningManagementIcon,
       color: 'bg-ciLightBlue',
     },
     {
       title: translateKey('fileSharing.sidebar'),
       link: '/file-sharing',
-      icon: FileSharing,
+      icon: FileSharingIcon,
       color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('desktopDeployment'),
       link: '/desktop-deployment',
-      icon: DesktopDeployment,
+      icon: DesktopDeploymentIcon,
       color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('network'),
       link: '/network',
-      icon: Network,
+      icon: NetworkIcon,
       color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('mail'),
       link: '/mail',
-      icon: Mail,
+      icon: MailIcon,
       color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('schoolInformation'),
       link: '/school-information',
-      icon: SchoolInformation,
+      icon: SchoolInformationIcon,
       color: 'bg-ciLightBlue',
     },
     {
       title: translateKey('printer'),
       link: '/printer',
-      icon: Printer,
+      icon: PrinterIcon,
       color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('roomBooking.sidebar'),
       link: '/room-booking',
-      icon: RoomBooking,
+      icon: RoomBookingIcon,
       color: 'bg-ciLightBlue',
     },
     {
       title: translateKey('forums'),
       link: '/forums',
-      icon: Forums,
+      icon: ForumsIcon,
       color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('chat'),
       link: '/chat',
-      icon: Chat,
+      icon: ChatIcon,
       color: 'bg-ciDarkBlue',
     },
     {
       title: translateKey('wlan'),
       link: '/wlan',
-      icon: Wlan,
+      icon: WlanIcon,
       color: 'bg-ciLightGreen',
     },
     {
       title: translateKey('knowledgeBase'),
       link: '/knowledge-base',
-      icon: KnowledgeBase,
+      icon: KnowledgeBaseIcon,
       color: 'bg-ciDarkBlue',
     },
   ];
@@ -244,7 +244,7 @@ const Sidebar = () => {
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
-          src={MobileLogo}
+          src={MobileLogoIcon}
           width={SIDEBAR_ICON_WIDTH}
           // height="40px"
           alt=""
@@ -254,7 +254,7 @@ const Sidebar = () => {
         >
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
           <img
-            src={MobileLogo}
+            src={MobileLogoIcon}
             width={SIDEBAR_ICON_WIDTH}
             // height="40px"
             alt=""
@@ -322,7 +322,7 @@ const Sidebar = () => {
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
-          src={User}
+          src={UserIcon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative z-0 "
           alt=""
@@ -332,7 +332,7 @@ const Sidebar = () => {
         >
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img
-            src={User}
+            src={UserIcon}
             width={SIDEBAR_ICON_WIDTH}
             alt=""
           />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import useFileManagerStore from '@/store/fileManagerStore';
-import { validateFileName } from '@/utils/common';
+import { validateFileName } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 const FileCreationForm = () => {
   const [localFileName, setLocalFileName] = useState('');

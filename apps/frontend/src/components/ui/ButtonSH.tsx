@@ -40,7 +40,7 @@ const defaultProps: Partial<ButtonProps> = {
   asChild: false,
 };
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const ButtonSH = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
@@ -53,7 +53,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   },
 );
 
-Button.defaultProps = defaultProps;
-Button.displayName = 'Button';
+ButtonSH.defaultProps = defaultProps;
+ButtonSH.displayName = 'ButtonSH';
 
-export { Button, buttonVariants };
+export { ButtonSH, buttonVariants };

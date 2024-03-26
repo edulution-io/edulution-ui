@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { DocumentIcon } from '@heroicons/react/16/solid';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 

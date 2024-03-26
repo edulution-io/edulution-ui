@@ -1,13 +1,18 @@
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { FC, ReactNode, useState } from 'react';
-import Label from '@/components/ui/label';
-import { getFileNameFromPath, getPathWithoutFileName, validateDirectoryName, validateFileName } from '@/utils/common';
-import { Input } from '@/components/ui/input';
+import Label from '@/components/ui/Label';
+import {
+  getFileNameFromPath,
+  getPathWithoutFileName,
+  validateDirectoryName,
+  validateFileName,
+} from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import { useTranslation } from 'react-i18next'; // Ensure this import is included
+import { useTranslation } from 'react-i18next';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
