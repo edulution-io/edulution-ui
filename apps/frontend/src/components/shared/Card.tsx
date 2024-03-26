@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from '@/lib/utils';
-import { Card as SHCard, CardContent as SHCardContent } from '@/components/ui/Card';
+import { CardSH as SHCard, CardContent as SHCardContent } from '@/components/ui/CardSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import styles from './card.module.scss';
