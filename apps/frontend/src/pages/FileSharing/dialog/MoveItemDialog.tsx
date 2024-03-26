@@ -8,6 +8,7 @@ import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { useTranslation } from 'react-i18next';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -15,6 +16,7 @@ interface MoveItemDialogProps {
 }
 
 const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
@@ -128,7 +130,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Change Directory</DialogTitle>
+        <DialogTitle>{t('moveItemDialog.changeDirectory')}</DialogTitle>
         <DirectoryBreadcrumb
           path={currentPath}
           onNavigate={handleBreadcrumbNavigate}

@@ -22,6 +22,7 @@ import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType } from '@/datatypes/filesystem';
 import HexagonButton from '@/components/shared/HexagonButton';
+import { useTranslation } from 'react-i18next';
 
 const FileSharingPage = () => {
   const {
@@ -36,7 +37,7 @@ const FileSharingPage = () => {
     files,
     currentPath,
   } = useFileManagerStore();
-  useEffect(() => {
+  const { t } = useTranslation();useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath]);
 
@@ -61,7 +62,7 @@ const FileSharingPage = () => {
             <TooltipProvider>
               <div className="flex flex-col ">
                 <div className="flex space-x-2">
-                  <p className="mr-2 text-white">Current Directory:</p>
+                  <p className="mr-2 text-white"> {t('currentDirectory')}</p>
                   <DirectoryBreadcrumb
                     path={currentPath}
                     onNavigate={(path) => {

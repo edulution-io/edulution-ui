@@ -15,6 +15,7 @@ import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -26,7 +27,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
-
+  const { t } = useTranslation();
   const deleteItems = async () => {
     try {
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
@@ -54,14 +55,14 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{t('deleteDialog.areYouSure')}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete those files:
+          {t('deleteDialog.actionCannotBeUndone')}
           <br />
           {selectedItems.length > 0 ? (
             <>
-              <strong>Selected Items:</strong>
+              <strong>{t('deleteDialog.selectedItems')}</strong>
               <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
                 {selectedItems.map((item) => (
                   <div key={item.etag}>{item.filename}</div>
@@ -70,7 +71,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
             </>
           ) : (
             <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-              <strong>Selected Items:</strong>
+              <strong>{t('deleteDialog.selectedItems')}</strong>
               <div className="text-black">
                 {file.map((item) => (
                   <div key={item.etag}>{item.filename}</div>
@@ -81,13 +82,8 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         </AlertDialogDescription>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
-            onClick={deleteItems}
-          >
-            Continue
-          </AlertDialogAction>
+          <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
+          <AlertDialogAction onClick={() => deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
