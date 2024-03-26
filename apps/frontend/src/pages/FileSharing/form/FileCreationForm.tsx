@@ -27,14 +27,14 @@ const FileCreationForm = () => {
   };
 
   return (
-    <div>
+    <>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
         placeholder="ExampleName.txt"
         value={localFileName}
         onChange={handleInputChange}
       />
-    </div>
+    </>
   );
 };
 export default FileCreationForm;

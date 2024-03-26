@@ -246,21 +246,23 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       return (
         selectedItems.length === 0 && (
           <TooltipProvider>
-            <div>{isLoading && <LoadingIndicator isOpen={isLoading} />}</div>
+            {isLoading && <LoadingIndicator isOpen={isLoading} />}
             <div className="flex items-center justify-end">
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
                   tooltipText="Add File"
                   trigger={
-                    <RenameItemDialog
-                      trigger={
-                        <div>
-                          <MdDriveFileRenameOutline />
-                        </div>
-                      }
-                      item={row.original}
-                    />
+                    <span>
+                      <RenameItemDialog
+                        trigger={
+                          <span>
+                            <MdDriveFileRenameOutline />
+                          </span>
+                        }
+                        item={row.original}
+                      />
+                    </span>
                   }
                 />
               </div>

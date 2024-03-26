@@ -7,8 +7,8 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { useTranslation } from 'react-i18next';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;

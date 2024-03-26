@@ -1,11 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { ReactNode, useState } from 'react';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
@@ -94,16 +87,12 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
           {contentType === ContentType.file ? (
             <>
               <DialogTitle>{t('fileCreateNewContent.fileDialogTitle')}</DialogTitle>
-              <DialogDescription>
-                <FileCreationForm />
-              </DialogDescription>
+              <FileCreationForm />
             </>
           ) : (
             <>
               <DialogTitle>{t('fileCreateNewContent.directoryDialogTitle')}</DialogTitle>
-              <DialogDescription>
-                <DirectoryCreationForm />
-              </DialogDescription>
+              <DirectoryCreationForm />
             </>
           )}
           <div className="container mx-auto flex justify-end p-4">

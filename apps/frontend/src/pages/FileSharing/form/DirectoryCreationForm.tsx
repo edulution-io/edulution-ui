@@ -27,14 +27,14 @@ const DirectoryCreationForm = () => {
   };
 
   return (
-    <div>
+    <>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
         placeholder="ExampleName.txt"
         value={localDirectoryName}
         onChange={handleInputChange}
       />
-    </div>
+    </>
   );
 };
 export default DirectoryCreationForm;

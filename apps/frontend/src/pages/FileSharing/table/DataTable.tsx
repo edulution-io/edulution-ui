@@ -51,7 +51,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
   }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
-    <div>
+    <>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <div className="flex-1 text-sm text-muted-foreground text-white">
           {t('table.rowsSelected', {
@@ -112,7 +112,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
           </Table>
         </ScrollArea>
       </div>
-    </div>
+    </>
   );
 };
 export default DataTable;

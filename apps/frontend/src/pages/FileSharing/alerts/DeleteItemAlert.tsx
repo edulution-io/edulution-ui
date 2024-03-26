@@ -4,7 +4,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -57,7 +56,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('deleteDialog.areYouSure')}</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogDescription>
+        <>
           {t('deleteDialog.actionCannotBeUndone')}
           <br />
           {selectedItems.length > 0 ? (
@@ -79,7 +78,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
               </div>
             </ScrollArea>
           )}
-        </AlertDialogDescription>
+        </>
 
         <AlertDialogFooter>
           <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>

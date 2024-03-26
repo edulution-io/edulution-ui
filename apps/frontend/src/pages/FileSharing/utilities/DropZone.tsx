@@ -58,9 +58,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <div>
-            <p className="font-bold text-red-700">{t('fileSharingUpload.limitExceeded')}</p>
-          </div>
+          <p className="font-bold text-red-700">{t('fileSharingUpload.limitExceeded')}</p>
         )}
       </div>
 

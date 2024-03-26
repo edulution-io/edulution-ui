@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { FC, ReactNode, useState } from 'react';
 import Label from '@/components/ui/Label';
 import {
@@ -76,7 +76,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
               : 'fileRenameContent.renameYourFile',
           )}
         </DialogTitle>
-        <DialogDescription>
+        <>
           <Label className="font-bold">{fileName}</Label>
           <Input
             className="mt-3"
@@ -95,7 +95,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
               {t('fileRenameContent.rename')}
             </Button>
           </div>
-        </DialogDescription>
+        </>
       </DialogContent>
     </Dialog>
   );
