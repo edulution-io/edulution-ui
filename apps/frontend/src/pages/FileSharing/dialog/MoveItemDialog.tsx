@@ -9,6 +9,7 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -16,6 +17,7 @@ interface MoveItemDialogProps {
 }
 
 const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
@@ -73,7 +75,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const renderAvailablePaths = () => (
     <div>
       <div className="flex space-x-2">
-        <p className="mr-2 text-black">Current Directory:</p>
+        <p className="mr-2 text-black">{t('moveItemDialog.currentDirectory')}</p>
         <DirectoryBreadcrumb
           path={currentPath}
           onNavigate={handleBreadcrumbNavigate}
@@ -82,7 +84,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Folder Name</TableHead>
+            <TableHead className="w-[100px]">{t('moveItemDialog.folderName')}</TableHead>
           </TableRow>
         </TableHeader>
         <ScrollArea className="h-[200px]">
@@ -152,7 +154,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         )}
         <div>{renderAvailablePaths()}</div>
         <div className="flex justify-between pt-3 text-black">
-          <p className="pt-4">Move to: {selectedRow?.filename}</p>
+          <p className="pt-4">{t('moveItemDialog.moveTo')} {selectedRow?.filename}</p>
           {selectedRow !== undefined ? (
             <Button
               className="bg-green-600"
@@ -160,14 +162,14 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
                 moveItem(item, selectedRow?.filename).catch(() => null);
               }}
             >
-              Move
+              {t('moveItemDialog.move')}
             </Button>
           ) : (
             <Button
               className="bg-green-600"
               disabled
             >
-              Move
+              {t('moveItemDialog.move')}
             </Button>
           )}
         </div>
@@ -182,10 +184,10 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Change Directory</DialogTitle>
+        <DialogTitle>{t('moveItemDialog.changeDirectory')}</DialogTitle>
         <DialogDescription>
           <Label>
-            <p>{renderItemInfo()}</p>
+            <p>{renderItemInfo()}</p> {/* Ensure renderItemInfo uses t function for translations */}
           </Label>
         </DialogDescription>
       </DialogContent>

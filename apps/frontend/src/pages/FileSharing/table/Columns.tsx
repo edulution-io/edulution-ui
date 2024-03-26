@@ -16,7 +16,7 @@ import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { formatBytes } from '@/utils/common';
+import { formatBytes, translateKey } from '@/utils/common';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import DeleteAlert from '@/pages/FileSharing/alerts/DeleteAlert';
@@ -43,23 +43,23 @@ const parseDate = (value: unknown): Date | null => {
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
-    // In your columns definition
-
-    header: ({ table, column }) => (
-      <div className={`flex items-center ${selectFileNameWidth}`}>
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-          onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
-          aria-label="Select all"
-        />
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          <div className="flex items-center justify-between">
-            File Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </div>
-        </Button>
-      </div>
-    ),
+    header: function Header({ table, column }) {
+      return (
+        <div className={`flex items-center ${selectFileNameWidth}`}>
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+            onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+            aria-label="Select all"
+          />
+          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            <div className="flex items-center justify-between">
+              {translateKey('fileSharingTable.filename')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </div>
+          </Button>
+        </div>
+      );
+    },
     accessorFn: (row) => row.type + row.filename,
 
     cell: ({ row }) => {
@@ -67,6 +67,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
       const fetchFiles = useFileManagerStore((state) => state.fetchFiles);
+
       const handleFilenameClick = (filenamePath: string) => {
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
@@ -137,13 +138,15 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   },
   {
     accessorKey: 'lastmod',
-    header: ({ column }) => (
-      <div className={lastModColumnWidth}>
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          <div className="">Last Modified</div>
-        </Button>
-      </div>
-    ),
+    header: function Header({ column }) {
+      return (
+        <div className={lastModColumnWidth}>
+          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            <div className=""> {translateKey('fileSharingTable.lastModified')}</div>
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const directoryFile = row.original;
       let formattedDate: string;
@@ -174,13 +177,15 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   },
   {
     accessorKey: 'size',
-    header: ({ column }) => (
-      <div className={sizeColumnWidth}>
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          <div className="">Size</div>
-        </Button>
-      </div>
-    ),
+    header: function Header({ column }) {
+      return (
+        <div className={sizeColumnWidth}>
+          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            <div className=""> {translateKey('fileSharingTable.size')}</div>
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       let fileSize = 0;
       if (row.original.size !== undefined) {
@@ -196,19 +201,21 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
   {
     accessorKey: 'type',
-    header: ({ column }) => (
-      <div className={typeColumnWidth}>
-        <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          <div className="">Type</div>
-        </Button>
-      </div>
-    ),
-    cell: ({ row }) => {
+    header: function Header({ column }) {
+      return (
+        <div className={typeColumnWidth}>
+          <Button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            <div className=""> {translateKey('fileSharingTable.type')}</div>
+          </Button>
+        </div>
+      );
+    },
+    cell: function Cell({ row }) {
       const renderFileCategorize = (item: DirectoryFile) => {
         if (row.original.type === ContentType.file) {
-          return getFileCategorie(item.filename);
+          return translateKey(`fileCategory.${getFileCategorie(item.filename)}`);
         }
-        return 'Folder';
+        return translateKey('fileCategory.folder');
       };
 
       return <div className={`flex flex-row  ${typeColumnWidth}`}>{renderFileCategorize(row.original)}</div>;
