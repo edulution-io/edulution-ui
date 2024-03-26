@@ -1,31 +1,38 @@
-import {FileSharing, teacher, project, iso, programm, share, students} from '@/assets/icons';
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
-import { getFileNameFromPath } from '@/utils/common';
-import  useFileManagerStore  from '@/store/fileManagerStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 import MenuItem from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
+import {
+  FileSharingIcon,
+  IsoIcon,
+  ProgrammIcon,
+  ProjectIcon,
+  ShareIcon,
+  StudentsIcon,
+  TeacherIcon,
+} from '@/assets/icons';
 
-const findCorrespondingMountPointIcon = (mounts: DirectoryFile): string => {
+const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   if (mounts.filename.includes('teachers')) {
-    return teacher;
+    return TeacherIcon;
   }
   if (mounts.filename.includes('projects')) {
-    return project;
+    return ProjectIcon;
   }
   if (mounts.filename.includes('iso')) {
-    return iso;
+    return IsoIcon;
   }
   if (mounts.filename.includes('programs')) {
-    return programm;
+    return ProgrammIcon;
   }
   if (mounts.filename.includes('share')) {
-    return share;
+    return ShareIcon;
   }
   if (mounts.filename.includes('students')) {
-    return students;
+    return StudentsIcon;
   }
-  return FileSharing;
+  return FileSharingIcon;
 };
 
 const useMenuItems = () => {
@@ -37,7 +44,10 @@ const useMenuItems = () => {
       try {
         const mounts: DirectoryFile[] = await fetchMountPoints();
         const items = mounts.map((mountPoint) => ({
-          label: getFileNameFromPath(mountPoint.filename),
+          path: mountPoint.filename.includes('teachers')
+            ? `${mountPoint.filename}/${import.meta.env.VITE_USERNAME}`
+            : mountPoint.filename,
+          label: mountPoint.filename.includes('teachers') ? 'Home' : mountPoint.basename,
           IconComponent: MdOutlineNoteAdd,
           hoverColor: 'bg-blue-500',
           icon: findCorrespondingMountPointIcon(mountPoint),

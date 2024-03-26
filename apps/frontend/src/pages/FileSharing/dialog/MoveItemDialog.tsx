@@ -1,13 +1,14 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { getFileNameFromPath } from '@/utils/common';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -15,6 +16,7 @@ interface MoveItemDialogProps {
 }
 
 const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
@@ -69,108 +71,57 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     setIsOpen(false);
   };
 
-  const renderAvailablePaths = () => (
-    <>
-      <div className="flex space-x-2">
-        <p className="mr-2 text-black">Current Directory:</p>
-        <DirectoryBreadcrumb
-          path={currentPath}
-          onNavigate={handleBreadcrumbNavigate}
-        />
-      </div>
-      <div className="max-h-[200px] overflow-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Folder Name</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {directorys.map((row) => (
-              <TableRow
-                key={row.filename}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setSelectedRow(row);
-                }}
-                onDoubleClick={(event) => {
-                  event.stopPropagation();
-                  handleNextFolder(row);
-                }}
-                style={{
-                  backgroundColor: selectedRow?.filename === row.filename ? '#f0f0f0' : 'transparent',
-                  cursor: 'pointer',
-                }}
-              >
-                <TableCell>
-                  <div className="flex flex-row justify-between space-x-4">
-                    <p>{getFileNameFromPath(row.filename)}</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </>
+  const renderTableRow = (row: DirectoryFile) => (
+    <TableRow
+      key={row.filename}
+      onClick={(e) => {
+        e.preventDefault();
+        setSelectedRow(row);
+      }}
+      onDoubleClick={(event) => {
+        event.stopPropagation();
+        handleNextFolder(row);
+      }}
+      style={{
+        backgroundColor: selectedRow?.filename === row.filename ? '#f0f0f0' : 'transparent',
+        cursor: 'pointer',
+      }}
+    >
+      <TableCell>{getFileNameFromPath(row.filename)}</TableCell>
+    </TableRow>
   );
 
-  const renderItemInfo = () => {
-    const itemCount = Array.isArray(item) ? item.length : 1;
-    const itemMessage = itemCount > 1 ? `Moving ${itemCount} items` : 'Moving 1 item';
+  const renderDirectoryTable = () => (
+    <ScrollArea className="h-[200px]">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Folder Name</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>{directorys.map(renderTableRow)}</TableBody>
+      </Table>
+    </ScrollArea>
+  );
 
-    return (
-      <>
-        <div className="pb-3.5">
-          {itemCount > 1 ? (
-            <p className="text-black">{itemMessage}</p>
-          ) : (
-            <div className="justify space-x-2 pb-2">
-              <p>
-                {itemMessage}: {getFileNameFromPath(!Array.isArray(item) ? item.filename : '')}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {Array.isArray(item) && (
-          <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-            <div className="text-black">
-              {item.map((files) => (
-                <p
-                  className="p-1"
-                  key={files.etag}
-                >
-                  {getFileNameFromPath(files.filename)}
-                </p>
-              ))}
-            </div>
-          </ScrollArea>
-        )}
-        <>{renderAvailablePaths()}</>
-        <div className="flex justify-between pt-3 text-black">
-          <p className="pt-4">Move to: {selectedRow?.filename}</p>
-          {selectedRow !== undefined ? (
-            <Button
-              className="bg-green-600"
-              onClick={() => {
-                moveItem(item, selectedRow?.filename).catch(() => null);
-              }}
-            >
-              Move
-            </Button>
-          ) : (
-            <Button
-              className="bg-green-600"
-              disabled
-            >
-              Move
-            </Button>
-          )}
-        </div>
-      </>
-    );
-  };
+  const renderMoveToSection = () => (
+    <>
+      <p className="pt-4">Move to: {selectedRow?.filename}</p>
+      <Button
+        className="bg-green-600"
+        disabled={!selectedRow}
+        onClick={() => {
+          try {
+            moveItem(item, selectedRow?.filename).catch((error) => console.error(error));
+          } catch (error) {
+            console.error(error);
+          }
+        }}
+      >
+        Move
+      </Button>
+    </>
+  );
 
   return (
     <Dialog
@@ -179,8 +130,13 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Change Directory</DialogTitle>
-        {renderItemInfo()}
+        <DialogTitle>{t('moveItemDialog.changeDirectory')}</DialogTitle>
+        <DirectoryBreadcrumb
+          path={currentPath}
+          onNavigate={handleBreadcrumbNavigate}
+        />
+        <ScrollArea className="h-[200px]">{renderDirectoryTable()}</ScrollArea>
+        {renderMoveToSection()}
       </DialogContent>
     </Dialog>
   );

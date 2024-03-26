@@ -15,7 +15,7 @@ const MenubarSub = MenubarPrimitive.Sub;
 
 const MenubarRadioGroup = MenubarPrimitive.RadioGroup;
 
-const Menubar = React.forwardRef<
+const MenubarSH = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
 >(({ className, ...props }, ref) => (
@@ -25,7 +25,7 @@ const Menubar = React.forwardRef<
     {...props}
   />
 ));
-Menubar.displayName = MenubarPrimitive.Root.displayName;
+MenubarSH.displayName = MenubarPrimitive.Root.displayName;
 
 const MenubarTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Trigger>,
@@ -221,7 +221,7 @@ const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 MenubarShortcut.displayname = 'MenubarShortcut';
 
 export {
-  Menubar,
+  MenubarSH,
   MenubarMenu,
   MenubarTrigger,
   MenubarContent,

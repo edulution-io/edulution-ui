@@ -1,21 +1,29 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
-import CircleLoader from '@/components/ui/circleLoader';
+import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/Dialog';
+import { useTranslation } from 'react-i18next';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface LoadingIndicatorProps {
   isOpen: boolean;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => (
-  <Dialog open={isOpen}>
-    <DialogContent showCloseButton={false}>
-      <DialogHeader>
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <CircleLoader />
-          <p>Please wait while we process your request...</p>
-        </div>
-      </DialogHeader>
-    </DialogContent>
-  </Dialog>
-);
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => {
+  const { t } = useTranslation();
+
+  return (
+    <Dialog open={isOpen}>
+      <DialogContent showCloseButton={false}>
+        <DialogHeader>
+          <DialogDescription>
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <CircleLoader />
+              <p className="text-black">{t('loadingIndicator.message')}</p>
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export default LoadingIndicator;

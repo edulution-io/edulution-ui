@@ -1,19 +1,19 @@
-import { FileSharing, Desktop, Conferences } from '@/assets/icons';
+import { FileSharingIcon, DesktopIcon, ConferencesIcon } from '@/assets/icons';
 
 const CONFERENCES_MENUBAR_CONFIG = {
   title: 'conferences.title',
-  icon: Conferences,
+  icon: ConferencesIcon,
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
     {
       label: 'common.add',
       link: '/conferences',
-      icon: FileSharing,
+      icon: FileSharingIcon,
     },
     {
       label: 'common.reload',
       link: '/',
-      icon: Desktop,
+      icon: DesktopIcon,
     },
   ],
 };
