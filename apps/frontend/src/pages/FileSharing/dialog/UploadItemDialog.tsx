@@ -58,11 +58,11 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
           setFiles={setSelectedFiles}
         />
 
-          <Button
-            className="bg-green-600"
-            disabled={selectedFiles.length > 5 || selectedFiles.length === 0}
-            onClick={() => {
-              uploadFiles().catch((error) => console.error(t('uploadFailed'), error));
+        <Button
+          className="bg-green-600"
+          disabled={selectedFiles.length > 5 || selectedFiles.length === 0}
+          onClick={() => {
+            uploadFiles().catch((error) => console.error(t('uploadFailed'), error));
           }}
         >
           {t('fileSharingUpload.uploadItems', { count: selectedFiles.length })}

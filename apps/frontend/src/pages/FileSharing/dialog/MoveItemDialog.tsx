@@ -154,7 +154,9 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         )}
         <div>{renderAvailablePaths()}</div>
         <div className="flex justify-between pt-3 text-black">
-          <p className="pt-4">{t('moveItemDialog.moveTo')} {selectedRow?.filename}</p>
+          <p className="pt-4">
+            {t('moveItemDialog.moveTo')} {selectedRow?.filename}
+          </p>
           {selectedRow !== undefined ? (
             <Button
               className="bg-green-600"
