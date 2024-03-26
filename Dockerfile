@@ -12,5 +12,5 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist/apps/frontend .
 COPY nginx-selfsigned.crt /etc/nginx/ssl/nginx-selfsigned.crt
 COPY nginx-selfsigned.key /etc/nginx/ssl/nginx-selfsigned.key
-COPY nginx.conf /etc/nginx/sites-available/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

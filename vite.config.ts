@@ -13,8 +13,17 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      '/auth': {
+        rewrite: (path) => path.replace(/^\/auth/, ''),
+        target: 'http://localhost:8080/auth',
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          Origin: 'https://ui.schulung.multi.schule/',
+        },
+      },
       '/webdav': {
-        target: 'https://server.schulung.multi.schule',
+        target: 'https://server.schulung.multi.schule/',
         changeOrigin: true,
         secure: false,
         headers: {

@@ -19,7 +19,7 @@ const App = () => {
 
   // TODO: Move config to backend
   const oidcConfig = {
-    authority: 'http://localhost:8080/auth/realms/edulution',
+    authority: `${window.location.href}auth/realms/edulution`,
     client_id: 'edulution-ui',
   };
 
