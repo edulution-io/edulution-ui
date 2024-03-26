@@ -12,7 +12,7 @@ import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import { useTranslation } from 'react-i18next'; // Ensure this import is included
+import { useTranslation } from 'react-i18next';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
