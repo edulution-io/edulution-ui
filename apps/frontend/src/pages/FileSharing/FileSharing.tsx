@@ -37,7 +37,8 @@ const FileSharingPage = () => {
     files,
     currentPath,
   } = useFileManagerStore();
-  const { t } = useTranslation();useEffect(() => {
+  const { t } = useTranslation();
+  useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath]);
 

@@ -1,20 +1,19 @@
-import {
-  FileSharingIcon,
-  TeacherIcon,
-  ProjectIcon,
-  IsoIcon,
-  ProgrammIcon,
-  ShareIcon,
-  StudentsIcon,
-} from '@/assets/icons';
 import { useState, useEffect } from 'react';
 import { MdOutlineNoteAdd } from 'react-icons/md';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import useFileManagerStore from '@/store/fileManagerStore';
 import MenuItem from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
+import {
+  FileSharingIcon,
+  IsoIcon,
+  ProgrammIcon,
+  ProjectIcon,
+  ShareIcon,
+  StudentsIcon,
+  TeacherIcon,
+} from '@/assets/icons';
 
-const findCorrespondingMountPointIcon = (mounts: DirectoryFile): string => {
+const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   if (mounts.filename.includes('teachers')) {
     return TeacherIcon;
   }
@@ -45,7 +44,10 @@ const useMenuItems = () => {
       try {
         const mounts: DirectoryFile[] = await fetchMountPoints();
         const items = mounts.map((mountPoint) => ({
-          label: getFileNameFromPath(mountPoint.filename),
+          path: mountPoint.filename.includes('teachers')
+            ? `${mountPoint.filename}/${import.meta.env.VITE_USERNAME}`
+            : mountPoint.filename,
+          label: mountPoint.filename.includes('teachers') ? 'Home' : mountPoint.basename,
           IconComponent: MdOutlineNoteAdd,
           hoverColor: 'bg-blue-500',
           icon: findCorrespondingMountPointIcon(mountPoint),
