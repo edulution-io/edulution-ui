@@ -6,7 +6,7 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
-import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
+import FileSharingPage from '@/pages/FileSharing/FileSharing';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
