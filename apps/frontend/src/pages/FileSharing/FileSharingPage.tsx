@@ -23,7 +23,7 @@ import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType } from '@/datatypes/filesystem';
 import HexagonButton from '@/components/shared/HexagonButton';
 
-const FileSharing = () => {
+const FileSharingPage = () => {
   const {
     handleDownload,
     isLoading,
@@ -182,4 +182,4 @@ const FileSharing = () => {
   );
 };
 
-export default FileSharing;
+export default FileSharingPage;
