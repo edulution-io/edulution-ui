@@ -57,7 +57,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
 
   const sharedContent = (
     <div>
-      <ScrollArea className={`max-h-[200px] ${isMobile ? 'opacity-65' : 'bg-white'}`}>
+      <ScrollArea className={`min-h-[200px] ${isMobile ? 'opacity-65' : 'bg-white'}`}>
         <strong className={`${isMobile ? 'text-white' : 'text-black'}`}>
           {t('deleteDialog.actionCannotBeUndone')}
         </strong>
@@ -84,12 +84,12 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
           <SheetTitle>Delete Files</SheetTitle>
         </SheetHeader>
         <div>{sharedContent}</div>
-        <div className="flex flex-row justify-end space-x-4 p-3 text-black">
+        <div className="flex flex-row justify-end space-x-4 pt-3 text-black">
           <Button
             variant="btn-attention"
             onClick={() => deleteItems}
           >
-            Delete
+            {t('deleteDialog.continue')}
           </Button>
         </div>
       </SheetContent>
