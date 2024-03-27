@@ -53,7 +53,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
             aria-label="Select all"
           />
           <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          <div className="flex items-center">
+            <div className="flex items-center">
               {translateKey('fileSharingTable.filename')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </div>
