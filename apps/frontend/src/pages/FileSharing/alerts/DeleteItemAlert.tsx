@@ -4,19 +4,19 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/AlertDialog';
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
 
@@ -25,13 +25,14 @@ interface DeleteDialogProps {
   file: DirectoryFile[];
 }
 
-const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
+const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
   const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
   const deleteItems = async () => {
     try {
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
@@ -93,17 +94,40 @@ const DeleteAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{t('deleteDialog.areYouSure')}</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogDescription>{sharedContent}</AlertDialogDescription>
+        <>
+          {t('deleteDialog.actionCannotBeUndone')}
+          <br />
+          {selectedItems.length > 0 ? (
+            <>
+              <strong>{t('deleteDialog.selectedItems')}</strong>
+              <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
+                {selectedItems.map((item) => (
+                  <div key={item.etag}>{item.filename}</div>
+                ))}
+              </ScrollArea>
+            </>
+          ) : (
+            <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
+              <strong>{t('deleteDialog.selectedItems')}</strong>
+              <div className="text-black">
+                {file.map((item) => (
+                  <div key={item.etag}>{item.filename}</div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+        </>
+
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => deleteItems}>Continue</AlertDialogAction>
+          <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
+          <AlertDialogAction onClick={() => deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 };
 
-DeleteAlert.displayName = 'DeleteAlert';
-export default DeleteAlert;
+DeleteItemAlert.displayName = 'DeleteItemAlert';
+export default DeleteItemAlert;

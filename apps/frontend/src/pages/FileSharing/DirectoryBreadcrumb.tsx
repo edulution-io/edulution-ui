@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
+import { useTranslation } from 'react-i18next';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -29,6 +30,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const segments = path.split('/').filter(Boolean);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const displaySegments = isMobile ? 1 : 4;
+  const { t } = useTranslation();
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
     onNavigate(pathTo);
@@ -36,7 +38,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
 
   return (
     <Breadcrumb style={style}>
-      Current Directory:
+      <p className="mr-2 text-white">{t('currentDirectory')}</p>
       <BreadcrumbList>
         <BreadcrumbItem key="home">
           <BreadcrumbLink

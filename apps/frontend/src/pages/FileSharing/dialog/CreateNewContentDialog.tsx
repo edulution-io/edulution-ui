@@ -1,22 +1,14 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { ReactNode, useState } from 'react';
-import { Button } from '@/components/shared/Button';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/shared/Button';
 
 interface CreateNewContentDialogProps {
   trigger: ReactNode;
@@ -25,6 +17,7 @@ interface CreateNewContentDialogProps {
 
 const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const {
     fileName,
@@ -41,14 +34,14 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
       .then(async (resp) => {
         if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, resp.message);
+          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
         } else {
-          setFileOperationSuccessful(resp.success, 'no message');
+          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
         }
         await fetchFiles(currentPath);
       })
       .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
         setFileOperationSuccessful(false, errorMessage);
       });
   };
@@ -57,14 +50,14 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     await handleWebDavAction(() => WebDavFunctions.createDirectory(`${currentPath}/${path}`))
       .then(async (resp) => {
         if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, resp.message);
+          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
         } else {
-          setFileOperationSuccessful(resp.success, '');
+          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
         }
         await fetchFiles(currentPath);
       })
       .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
         setFileOperationSuccessful(false, errorMessage);
       });
   };
@@ -132,17 +125,15 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     <DialogHeader>
       {contentType === ContentType.file ? (
         <>
-          <DialogTitle>Name your new File</DialogTitle>
-          <DialogDescription>
-            <FileCreationForm />
-          </DialogDescription>
+          <DialogTitle>{t('fileCreateNewContent.fileDialogTitle')}</DialogTitle>
+
+          <FileCreationForm />
         </>
       ) : (
         <>
-          <DialogTitle>Create New Directory</DialogTitle>
-          <DialogDescription>
-            <DirectoryCreationForm />
-          </DialogDescription>
+          <DialogTitle>{t('fileCreateNewContent.directoryDialogTitle')}</DialogTitle>
+
+          <DirectoryCreationForm />
         </>
       )}
       <div className="container mx-auto flex justify-end p-4">
@@ -153,7 +144,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
             handleCreateContent().catch(() => null);
           }}
         >
-          Create
+          {t('fileCreateNewContent.createButtonText')}
         </Button>
       </div>
     </DialogHeader>

@@ -1,5 +1,5 @@
 import { TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
-import { Tooltip } from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/ui/Tooltip';
 import React from 'react';
 
 interface ActionTooltipProps {

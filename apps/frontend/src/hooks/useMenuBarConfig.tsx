@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FileSharing } from '@/assets/icons';
+import { FileSharingIcon } from '@/assets/icons';
 import MenuItem from '@/datatypes/types';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
@@ -17,8 +17,8 @@ const useMenuBarConfig = (location: string) => {
       case '/file-sharing': {
         return {
           menuItems: fileSharingMenuItems,
-          title: 'File Sharing',
-          icon: FileSharing,
+          title: t('filesharing.title'),
+          icon: FileSharingIcon,
           color: 'hover:bg-ciDarkBlue',
           action: () => fileSharingMenuItems[0].action(),
         };

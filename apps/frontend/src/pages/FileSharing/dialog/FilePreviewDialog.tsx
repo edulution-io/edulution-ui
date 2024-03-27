@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import Label from '@/components/ui/label';
-import { getFileType } from '@/utils/common';
+import { Dialog, DialogContent } from '@/components/ui/Dialog';
+import Label from '@/components/ui/Label';
+import { getFileType } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import fileTypePreviews from '@/pages/FileSharing/previews/FileTypePreviews';
 import { FileTypePreviewProps } from '@/datatypes/types';
 
@@ -13,10 +13,10 @@ interface FilePreviewProps {
 }
 
 const DefaultPreview: React.FC<FileTypePreviewProps> = ({ file }) => (
-  <div>
+  <>
     <p>Unsupported file type: {getFileType(file.filename)}</p>
     <Label>File</Label>
-  </div>
+  </>
 );
 
 const renderTypeSpecificPreview: React.FC<FileTypePreviewProps> = ({ file }) => {
@@ -24,7 +24,7 @@ const renderTypeSpecificPreview: React.FC<FileTypePreviewProps> = ({ file }) => 
   return <FileTypeComponent file={file} />;
 };
 
-const FilePreview: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
+const FilePreviewDialog: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
   const handleOpenChange = () => {
     onClose();
   };
@@ -40,4 +40,4 @@ const FilePreview: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
   );
 };
 
-export default FilePreview;
+export default FilePreviewDialog;

@@ -1,15 +1,16 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
-import { getFileNameFromPath } from '@/utils/common';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -17,6 +18,7 @@ interface MoveItemDialogProps {
 }
 
 const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
@@ -185,7 +187,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent side="bottom">
         <SheetHeader>
-          <SheetTitle>Move Item</SheetTitle>
+          <SheetTitle>{t('moveItemDialog.changeDirectory')}</SheetTitle>
         </SheetHeader>
         <SheetDescription className="bg-transparent text-white">{renderItemInfo()}</SheetDescription>
       </SheetContent>
@@ -197,7 +199,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Move Item</DialogTitle>
+        <DialogTitle>{t('moveItemDialog.changeDirectory')}</DialogTitle>
         <DialogDescription>{renderItemInfo()}</DialogDescription>
       </DialogContent>
     </Dialog>

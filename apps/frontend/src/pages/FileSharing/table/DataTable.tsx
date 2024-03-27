@@ -9,10 +9,11 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useFileManagerStore from '@/store/fileManagerStore';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
+import { useTranslation } from 'react-i18next';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -22,7 +23,7 @@ interface DataTableProps<TData, TValue> {
 const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const setSelectedItems = useFileManagerStore((state) => state.setSelectedItems);
-
+  const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
@@ -50,11 +51,13 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
   }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
-    <div>
+    <>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <div className="flex-1 text-sm text-muted-foreground text-white">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-          selected.
+          {t('table.rowsSelected', {
+            selected: table.getFilteredSelectedRowModel().rows.length,
+            total: table.getFilteredRowModel().rows.length,
+          })}
         </div>
       ) : (
         <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
@@ -101,7 +104,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t('table.noDataAvailable')}
                   </TableCell>
                 </TableRow>
               )}
@@ -109,7 +112,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
           </Table>
         </ScrollArea>
       </div>
-    </div>
+    </>
   );
 };
 

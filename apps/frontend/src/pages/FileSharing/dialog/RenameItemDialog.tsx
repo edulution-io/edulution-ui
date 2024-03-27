@@ -1,13 +1,19 @@
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { FC, ReactNode, useState } from 'react';
-import { Input } from '@/components/ui/input';
+
+import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import useFileManagerStore from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import { getPathWithoutFileName, validateDirectoryName, validateFileName } from '@/utils/common';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
+import {
+  getPathWithoutFileName,
+  validateDirectoryName,
+  validateFileName,
+} from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { useTranslation } from 'react-i18next';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
@@ -20,7 +26,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [localFileName, setLocalFileName] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
-
+  const { t } = useTranslation();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     setLocalFileName('');
@@ -37,7 +43,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
         setIsOpen(false);
       })
       .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        const errorMessage = error instanceof Error ? error.message : t('fileRenameContent.unknownErrorOccurred');
         setFileOperationSuccessful(false, errorMessage);
         setIsOpen(false);
       });
@@ -59,7 +65,11 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent side="bottom">
         <SheetHeader>
-          <SheetTitle>Rename {item.type === ContentType.file ? 'File' : 'Directory'}</SheetTitle>
+          <SheetTitle>
+            {item.type === ContentType.file
+              ? `${t('fileRenameContent.renameYourFile')}`
+              : `${t('fileRenameContent.renameYourDirectory')}`}
+          </SheetTitle>
         </SheetHeader>
         <SheetDescription>
           <Input
@@ -76,7 +86,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
               renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch(() => {});
             }}
           >
-            Rename
+            {t('fileRenameContent.rename')}
           </Button>
         </div>
       </SheetContent>
@@ -85,7 +95,11 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
 
   const desktopContent = (
     <DialogContent>
-      <DialogTitle>Rename {item.type === ContentType.file ? 'File' : 'Directory'}</DialogTitle>
+      <DialogTitle>
+        {item.type === ContentType.file
+          ? `${t('fileRenameContent.renameYourFile')}`
+          : `${t('fileRenameContent.renameYourDirectory')}`}
+      </DialogTitle>
       <DialogDescription>
         <Input
           placeholder="New name"
@@ -101,7 +115,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           );
         }}
       >
-        Rename
+        {t('fileRenameContent.rename')}
       </Button>
     </DialogContent>
   );

@@ -3,8 +3,9 @@ import { useDropzone } from 'react-dropzone';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { DocumentIcon } from '@heroicons/react/16/solid';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
+import { useTranslation } from 'react-i18next';
 
 export interface FileWithPreview extends File {
   preview: string;
@@ -16,6 +17,8 @@ interface DropZoneProps {
 }
 
 export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
+  const { t } = useTranslation();
+
   const removeFile = (name: string) => {
     setFiles((removed) => removed.filter((file) => file.name !== name));
   };
@@ -35,7 +38,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         ]);
       }
     },
-    [files],
+    [files, setFiles],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -45,19 +48,17 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
 
   return (
     <form>
-      <div {...getRootProps({ className: `${dropzoneStyle}` })}>
+      <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
         {files.length <= 5 ? (
           <div className="flex flex-col items-center justify-center space-y-2">
             <p className="font-semibold text-gray-700">
-              {isDragActive ? 'Drop the files here...' : "Drag 'n' drop some files here, or click to select files"}
+              {isDragActive ? t('fileSharingUpload.dropHere') : t('fileSharingUpload.dragDropClick')}
             </p>
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <div>
-            <p className="font-bold text-red-700">You can´t upload more than 5 items at a time</p>
-          </div>
+          <p className="font-bold text-red-700">{t('fileSharingUpload.limitExceeded')}</p>
         )}
       </div>
 
@@ -70,7 +71,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             {file.type.startsWith('image/') ? (
               <img
                 src={file.preview}
-                alt={`Preview ${file.preview}`}
+                alt={t('fileSharingUpload.previewAlt', { filename: file.preview })}
                 className="mb-2 h-auto w-full object-cover"
                 onLoad={() => URL.revokeObjectURL(file.preview)}
               />
@@ -89,9 +90,12 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           </li>
         ))}
       </ul>
-      <p className="pt-4 underline text-black">Files to upload:</p>
+      <p className="pt-4 text-black underline">{t('fileSharingUpload.filesToUpload')}</p>
       <ScrollArea className="h-[200px]">
-        <ol type="1">
+        <ol
+          type="1"
+          className="text-black"
+        >
           {files.map((file, i) => (
             <li key={file.name}>{`${i + 1}. ${file.name}`}</li>
           ))}
