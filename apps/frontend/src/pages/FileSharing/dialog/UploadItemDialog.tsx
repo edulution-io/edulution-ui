@@ -95,7 +95,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Upload Your Item</DialogTitle>
+        <DialogTitle>{t(`fileSharingUpload.title`)}</DialogTitle>
         {uploadContent}
       </DialogContent>
     </Dialog>
