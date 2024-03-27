@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/AlertDialog';
 
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -58,9 +58,16 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const sharedContent = (
     <div>
       <ScrollArea className={`max-h-[200px] ${isMobile ? 'opacity-65' : 'bg-white'}`}>
-        <strong className={`${isMobile ? 'text-white' : 'text-black'}`}>Files to be deleted:</strong>
+        <strong className={`${isMobile ? 'text-white' : 'text-black'}`}>
+          {t('deleteDialog.actionCannotBeUndone')}
+        </strong>
         {(selectedItems.length > 0 ? selectedItems : file).map((item) => (
-          <div key={item.etag}>{item.filename}</div>
+          <div
+            className={`${isMobile ? 'text-white' : 'text-black'} pt-3`}
+            key={item.etag}
+          >
+            {item.filename}
+          </div>
         ))}
       </ScrollArea>
     </div>
@@ -76,17 +83,15 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         <SheetHeader>
           <SheetTitle>Delete Files</SheetTitle>
         </SheetHeader>
-        <SheetDescription className="bg-transparent text-white">
-          {sharedContent}
-          <div className="flex flex-row justify-end space-x-4 p-3 text-black">
-            <Button
-              variant="btn-attention"
-              onClick={() => deleteItems}
-            >
-              Delete
-            </Button>
-          </div>
-        </SheetDescription>
+        <div>{sharedContent}</div>
+        <div className="flex flex-row justify-end space-x-4 p-3 text-black">
+          <Button
+            variant="btn-attention"
+            onClick={() => deleteItems}
+          >
+            Delete
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   ) : (
@@ -96,30 +101,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('deleteDialog.areYouSure')}</AlertDialogTitle>
         </AlertDialogHeader>
-        <>
-          {t('deleteDialog.actionCannotBeUndone')}
-          <br />
-          {selectedItems.length > 0 ? (
-            <>
-              <strong>{t('deleteDialog.selectedItems')}</strong>
-              <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-                {selectedItems.map((item) => (
-                  <div key={item.etag}>{item.filename}</div>
-                ))}
-              </ScrollArea>
-            </>
-          ) : (
-            <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-              <strong>{t('deleteDialog.selectedItems')}</strong>
-              <div className="text-black">
-                {file.map((item) => (
-                  <div key={item.etag}>{item.filename}</div>
-                ))}
-              </div>
-            </ScrollArea>
-          )}
-        </>
-
+        {sharedContent}
         <AlertDialogFooter>
           <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
           <AlertDialogAction onClick={() => deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>

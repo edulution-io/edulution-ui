@@ -98,7 +98,8 @@
     },
     "moveTo": "Verschieben nach",
     "move": "Verschieben",
-    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+    "selectedItem": "Ausgewählter Ordner"
   },
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",

@@ -108,6 +108,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
         />
       </DialogDescription>
       <Button
+        variant="btn-collaboration"
         disabled={!isNameValid}
         onClick={() => {
           renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch((error) =>

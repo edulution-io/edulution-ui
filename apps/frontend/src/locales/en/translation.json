@@ -96,7 +96,8 @@
     },
     "moveTo": "Move to",
     "move": "Move",
-    "unknownErrorOccurred": "An unknown error occurred"
+    "unknownErrorOccurred": "An unknown error occurred",
+    "selectedItem": "Ausgewählter Ordner"
   },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
