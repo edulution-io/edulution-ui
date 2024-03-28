@@ -1,7 +1,7 @@
-import Sidebar from '@/components/ui/Sidebar';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
+import Sidebar from '@/components/ui/Sidebar';
 import backgroundImage from '@/assets/background.jpg';
 import { ConfigType } from '@/datatypes/types';
 

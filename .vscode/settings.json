@@ -3,5 +3,8 @@
   "editor.formatOnSave": true,
   "[svg]": {
     "editor.defaultFormatter": "jock.svg"
+  },
+  "files.associations": {
+    "*.scss": "tailwindcss"
   }
 }
