@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button as SHButton } from '@/components/ui/button';
+import { Button as SHButton } from '@/components/ui/ButtonSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { HexagonIcon } from '@/assets/layout';
 import cn from '@/lib/utils';

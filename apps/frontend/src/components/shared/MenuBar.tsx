@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/menubar';
+import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';

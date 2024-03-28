@@ -7,17 +7,17 @@ import { z } from 'zod';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from 'sonner';
 
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import { DropdownMenu } from '@/components';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
-import { DialogFooter, DialogHeader } from '@/components/ui/dialog';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { TrashIcon } from '@/assets/icons';
 import { Cross2Icon } from '@radix-ui/react-icons';
-import Toaster from '@/components/ui/sonner';
+import Toaster from '@/components/ui/Sonner';
 import { AppType, ConfigType } from '@/datatypes/types';
 
 const SettingsPage: React.FC = () => {
