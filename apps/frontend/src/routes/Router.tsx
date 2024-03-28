@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
 import { HomePage } from '@/pages/Home';
 import { ConferencePage } from '@/pages/ConferencePage';
@@ -67,6 +67,37 @@ const router = (auth: AuthContextProps) =>
 
 const AppRouter = () => {
   const auth = useAuth();
+
+  // useEffect(() => {
+  //   const handleUserInteraction = () => {
+  //     // Fügen Sie hier den Code hinzu, der bei Benutzerinteraktionen ausgeführt werden soll
+  //     console.log('Benutzerinteraktion erkannt');
+
+  //     auth.signinSilent({}).catch(console.error);
+  //   };
+
+  //   // Event-Listener für Benutzerinteraktionen hinzufügen
+  //   document.addEventListener('mousedown', handleUserInteraction);
+  //   document.addEventListener('keydown', handleUserInteraction);
+
+  //   // Event-Listener entfernen, wenn die Komponente unmontiert wird
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleUserInteraction);
+  //     document.removeEventListener('keydown', handleUserInteraction);
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      auth.events.addAccessTokenExpiring(() => {
+        if (auth.user?.expired) {
+          console.log('Session expired');
+          auth.removeUser().catch(console.error);
+          sessionStorage.clear();
+        }
+      });
+    }
+  }, [auth.events, auth.isAuthenticated]);
 
   return <RouterProvider router={router(auth)} />;
 };
