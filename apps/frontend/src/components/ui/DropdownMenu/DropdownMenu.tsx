@@ -1,6 +1,7 @@
-import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
+import { useOnClickOutside } from 'usehooks-ts';
 
 import styles from './dropdownmenu.module.scss';
 
@@ -20,22 +21,13 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggle: MouseEventHandler<HTMLInputElement> = (e) => {
-    setIsOpen(e && e.target === inputRef.current);
+  const handleClickOutside = () => {
+    setIsOpen(false);
   };
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+  useOnClickOutside(dropdownRef, handleClickOutside);
 
   const selectOption = (option: DropdownOptions) => {
     setQuery(() => '');
@@ -57,11 +49,13 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
     });
 
   return (
-    <div className={styles.dropdown}>
+    <div
+      className={styles.dropdown}
+      ref={dropdownRef}
+    >
       <div>
         <div className={styles['selected-value']}>
           <input
-            ref={inputRef}
             type="text"
             value={getDisplayValue()}
             name="searchTerm"
@@ -69,7 +63,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
               setQuery(e.target.value);
               handleChange('');
             }}
-            onClickCapture={toggle}
+            onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
           />
         </div>
         <div className={clsx(styles.arrow, { [styles.open]: isOpen })} />
