@@ -1,3 +1,5 @@
+import { DirectoryFile } from '@/datatypes/filesystem';
+
 export enum AppType {
   NATIVE = 'native',
   FORWARDED = 'forwarded',
@@ -44,4 +46,8 @@ export enum APPS {
   FIREWALL = 'firewall',
   ANTIMALWARE = 'antimalware',
   BACKUP = 'backup',
+}
+
+export interface FileTypePreviewProps {
+  file: DirectoryFile;
 }

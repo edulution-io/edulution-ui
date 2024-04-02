@@ -1,25 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-
 import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
-import FILESHARING_MENUBAR_CONFIG from '@/pages/FileSharing/config';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
+import useFileManagerStore from '@/store/fileManagerStore';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 
 const useMenuBarConfig = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const { t } = useTranslation();
-  const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
 
+  const { fetchFiles } = useFileManagerStore();
+  const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
+  const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const menuBarConfigSwitch = () => {
-    const rootPathName = `${location.pathname.split('/')[1]}`;
+    const rootPathName = `${pathname.split('/')[1]}`;
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
 
     switch (rootPathName as APPS) {
       case APPS.FILE_SHARING: {
-        return FILESHARING_MENUBAR_CONFIG;
+        return FILE_SHARING_MENUBAR_CONFIG;
       }
       case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
@@ -34,12 +36,11 @@ const useMenuBarConfig = () => {
   };
 
   const configValues = menuBarConfigSwitch();
-
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
     id: item.id,
     label: t(item.label),
+    action: () => ((pathname as APPS) === APPS.FILE_SHARING ? fetchFiles(item.label) : item.action()),
     icon: item.icon,
-    action: () => item.action(),
   }));
 
   const menuBarEntries: MenuBarEntryProps = {

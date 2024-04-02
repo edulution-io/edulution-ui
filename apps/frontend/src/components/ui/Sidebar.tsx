@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
-import { MobileLogo, Settings, User } from '@/assets/icons';
+import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
@@ -39,7 +39,7 @@ const Sidebar = () => {
     {
       title: t('settings.sidebar'),
       link: '/settings',
-      icon: Settings,
+      icon: SettingsIcon,
       color: 'bg-ciGreenToBlue',
     },
   ];
@@ -150,7 +150,7 @@ const Sidebar = () => {
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
-          src={MobileLogo}
+          src={MobileLogoIcon}
           width={SIDEBAR_ICON_WIDTH}
           alt=""
         />
@@ -159,7 +159,7 @@ const Sidebar = () => {
         >
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
           <img
-            src={MobileLogo}
+            src={MobileLogoIcon}
             width={SIDEBAR_ICON_WIDTH}
             alt=""
           />
@@ -226,7 +226,7 @@ const Sidebar = () => {
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
-          src={User}
+          src={UserIcon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative z-0 "
           alt=""
@@ -236,7 +236,7 @@ const Sidebar = () => {
         >
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img
-            src={User}
+            src={UserIcon}
             width={SIDEBAR_ICON_WIDTH}
             alt=""
           />

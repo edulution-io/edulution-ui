@@ -1,4 +1,4 @@
-import { Settings, PlusIcon } from '@/assets/icons';
+import { SettingsIcon, PlusIcon } from '@/assets/icons';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
 import { ConfigType, MenuBarEntryProps } from '@/datatypes/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -11,7 +11,7 @@ const useSettingsMenuConfig = () => {
 
   const SETTINGS_CONFIG: MenuBarEntryProps = {
     title: 'settings.title',
-    icon: Settings,
+    icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {

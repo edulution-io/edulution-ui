@@ -2,14 +2,16 @@ import * as React from 'react';
 
 import cn from '@/lib/utils';
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('rounded-xl border bg-card text-card-foreground shadow', className)}
-    {...props}
-  />
-));
-Card.displayName = 'Card';
+const CardSH = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('rounded-xl border bg-card text-card-foreground shadow', className)}
+      {...props}
+    />
+  ),
+);
+CardSH.displayName = 'CardSH';
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
@@ -68,4 +70,4 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 );
 CardFooter.displayName = 'CardFooter';
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export { CardSH, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };

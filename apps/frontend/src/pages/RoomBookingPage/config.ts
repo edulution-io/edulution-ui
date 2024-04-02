@@ -1,15 +1,15 @@
-import { RoomBooking } from '@/assets/icons';
+import { RoomBookingIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 
 const ROOMBOOKING_MENUBAR_CONFIG: MenuBarEntryProps = {
   title: 'roombooking.title',
-  icon: RoomBooking,
+  icon: RoomBookingIcon,
   color: 'hover:bg-ciLightBlue',
   menuItems: [
     {
       id: 'rooms',
       label: 'roombooking.rooms',
-      icon: RoomBooking,
+      icon: RoomBookingIcon,
       action: () => {},
     },
   ],

@@ -57,5 +57,74 @@
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
     "saved": "Konfiguration gespeichert!"
+  },
+
+  "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+  "fileSharingTable": {
+    "filename": "Dateiname",
+    "size": "Größe",
+    "lastModified": "Zuletzt geändert",
+    "type": "Typ"
+  },
+  "currentDirectory": "Aktuelles Verzeichnis",
+  "fileSharingUpload": {
+    "title": "Dateien hochladen",
+    "upload": "Hochladen",
+    "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
+    "uploadItems": "Hochladen: {{count}} Artikel",
+    "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "filesToUpload": "Dateien zum Hochladen"
+  },
+  "table": {
+    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
+    "noDataAvailable": "Keine Daten verfügbar"
+  },
+  "loadingIndicator": {
+    "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
+  },
+
+  "fileCategory": {
+    "folder": "Ordner",
+    "document": "Dokument",
+    "image": "Bild",
+    "video": "Video",
+    "audio": "Audio",
+    "acrobat": "PDF"
+  },
+  "fileCreateNewContent": {
+    "fileDialogTitle": "Erstelle eine neue Datei",
+    "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
+    "createButtonText": "Erstellen",
+    "fileOperationSuccessful": "Dateierstellung erfolgreich",
+    "noMessageAvailable": "Keine Nachricht verfügbar",
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+  },
+  "fileRenameContent": {
+    "renameYourDirectory": "Benennen Sie Ihr Verzeichnis um",
+    "renameYourFile": "Benennen Sie Ihre Datei um",
+    "to": "zu",
+    "rename": "Umbenennen",
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+  },
+  "moveItemDialog": {
+    "changeDirectory": "Verzeichnis wechseln",
+    "currentDirectory": "Aktuelles Verzeichnis",
+    "folderName": "Ordnername",
+    "movingItems": {
+      "one": "1 Element wird verschoben",
+      "other": "{{count}} Elemente werden verschoben"
+    },
+    "moveTo": "Verschieben nach",
+    "move": "Verschieben",
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+  },
+  "deleteDialog": {
+    "areYouSure": "Sind Sie sich absolut sicher?",
+    "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",
+    "selectedItems": "Ausgewählte Elemente:",
+    "cancel": "Abbrechen",
+    "continue": "Fortfahren",
+    "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten"
   }
 }
