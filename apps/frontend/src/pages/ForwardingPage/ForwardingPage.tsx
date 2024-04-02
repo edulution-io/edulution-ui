@@ -5,23 +5,24 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
 import { ConfigType } from '@/datatypes/types';
+import { getFromPathName } from '@/utils/common';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   const [isForwarding, setIsForwaring] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
+  const rootPathName = getFromPathName(pathname, 1);
 
   useEffect(() => {
     if (isForwarding) {
       setIsForwaring(false);
       setShowIsForwarding(true);
       const navigateToExternalPage = () => {
-        const path = location.pathname.split('/')[1];
-        const externalLink = config[path]?.linkPath;
+        const externalLink = config[rootPathName]?.linkPath;
         if (externalLink) {
           window.open(externalLink, '_blank');
         }
@@ -50,7 +51,7 @@ const ForwardingPage: React.FC = () => {
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
-            src={config[location.pathname.split('/')[1]].icon}
+            src={config[rootPathName].icon}
             alt="icon"
           />
         </Button>

@@ -6,6 +6,7 @@ import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useFileManagerStore from '@/store/fileManagerStore';
 import useSettingsMenuConfig from '@/pages/Settings/config';
+import { getFromPathName } from '@/utils/common';
 
 const useMenuBarConfig = () => {
   const { pathname } = useLocation();
@@ -15,7 +16,7 @@ const useMenuBarConfig = () => {
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const menuBarConfigSwitch = () => {
-    const rootPathName = `${pathname.split('/')[1]}`;
+    const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
 

@@ -5,12 +5,13 @@ import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '
 
 import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
+import { getFromPathName } from '@/utils/common';
 
 const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
-  const location = useLocation();
+  const { pathname } = useLocation();
 
-  const [isSelected, setIsSelected] = useState(location.pathname.split('/')[2]);
+  const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
 
   return (
     <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40">

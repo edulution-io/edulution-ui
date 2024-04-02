@@ -4,9 +4,10 @@ import { useLocalStorage } from 'usehooks-ts';
 import Sidebar from '@/components/ui/Sidebar';
 import backgroundImage from '@/assets/background.jpg';
 import { ConfigType } from '@/datatypes/types';
+import { getFromPathName } from '@/utils/common';
 
 const IframeLayout: React.FC = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
@@ -18,8 +19,8 @@ const IframeLayout: React.FC = () => {
       <div className="h-screen w-full">
         <iframe
           className="h-screen w-full pr-[58px]"
-          title={location.pathname}
-          src={config[location.pathname.split('/')[1]]?.linkPath}
+          title={pathname}
+          src={config[getFromPathName(pathname, 1)]?.linkPath}
         />
       </div>
       <Sidebar />

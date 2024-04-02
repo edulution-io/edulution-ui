@@ -21,14 +21,13 @@ import Toaster from '@/components/ui/Sonner';
 import { AppType, ConfigType } from '@/datatypes/types';
 
 const SettingsPage: React.FC = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
 
-  const settingLocation =
-    location.pathname !== '/settings' ? location.pathname.split('/').filter((part) => part !== '')[1] : '';
+  const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
 
   const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
 
