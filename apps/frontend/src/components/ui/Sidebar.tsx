@@ -27,22 +27,25 @@ import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
 import { translateKey } from '@/utils/common';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { useMediaQuery, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+import useSidebarManagerStore from '@/store/sidebarManagerStore';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
   const [translate, setTranslate] = useState(0);
   const [isUpButtonVisible, setIsUpButtonVisible] = useState(false);
   const [isDownButtonVisible, setIsDownButtonVisible] = useState(false);
-
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarIconsRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation();
-  const [isOpen, toggle] = useToggle(false);
   const { pathname } = useLocation();
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
+
+  const toggleSidebarCollapsed = useSidebarManagerStore((state) => state.toggleSidebarCollapsed);
+  const isSidebarCollapsed = useSidebarManagerStore((state) => state.isSidebarCollapsed);
 
   // TODO: will move to separate file later
   const MENU_ITEMS = [
@@ -138,7 +141,28 @@ const Sidebar = () => {
     },
   ];
 
+  const toggleSidebar = () => {
+    toggleSidebarCollapsed();
+  };
+
+  const sidebarClasses = `fixed top-0 right-0 z-40 h-full w-64 transform transition-transform duration-300 ease-in-out ${
+    isSidebarCollapsed ? 'translate-x-0' : 'translate-x-full'
+  }`;
+
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        if (isSidebarCollapsed) toggleSidebar();
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSidebarCollapsed, toggleSidebar]);
 
   useEffect(() => {
     setTranslate(0);
@@ -230,7 +254,7 @@ const Sidebar = () => {
       variant="btn-outline"
       size="sm"
       className="rounded-[16px] border-[3px]"
-      onClick={toggle}
+      onClick={toggleSidebar}
     >
       {t('menu')}
     </Button>
@@ -343,7 +367,7 @@ const Sidebar = () => {
 
   const renderListItem = () => (
     <div className="fixed right-0 h-screen bg-black bg-opacity-90 md:bg-none">
-      {!isDesktop && isOpen ? (
+      {!isDesktop && isSidebarCollapsed ? (
         <>
           <div className="relative right-0 top-0 z-[50] h-[100px] bg-black" />
           <div className="fixed right-0 top-0 z-[99] pr-4 pt-4">{menuButton()}</div>
@@ -355,7 +379,7 @@ const Sidebar = () => {
       <div
         ref={sidebarIconsRef}
         style={{ transform: `translateY(-${translate}px)`, overflowY: !isDesktop ? 'scroll' : 'clip' }}
-        onClickCapture={toggle}
+        onClickCapture={toggleSidebar}
         onWheel={() => handleWheel}
         onTouchStart={() => handleTouchStart}
         onTouchMove={() => handleTouchMove}
@@ -378,10 +402,15 @@ const Sidebar = () => {
 
   if (!isDesktop) {
     return (
-      <div>
-        {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
-        <div className="bg-black">{isOpen && renderListItem()}</div>
-      </div>
+      <>
+        {!isSidebarCollapsed ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
+        <div
+          ref={sidebarRef}
+          className={`${sidebarClasses} overflow-auto bg-black`}
+        >
+          <div className="bg-black">{isSidebarCollapsed && renderListItem()}</div>
+        </div>
+      </>
     );
   }
   return renderListItem();

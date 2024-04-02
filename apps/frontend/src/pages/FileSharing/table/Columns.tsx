@@ -24,7 +24,7 @@ import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
-import { getFileCategorie, timeAgo } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getFileCategorie, getElapsedTime } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
@@ -154,7 +154,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
       if (directoryFile.lastmod) {
         const date = new Date(directoryFile.lastmod);
-        formattedDate = timeAgo(date);
+        formattedDate = getElapsedTime(date);
       } else {
         formattedDate = 'Date not provided';
       }

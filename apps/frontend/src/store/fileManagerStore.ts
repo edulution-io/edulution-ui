@@ -16,10 +16,6 @@ type FileManagerStore = {
   currentPath: string;
   uploadProgresses: { [key: string]: number };
   fileOperationMessage: string;
-  isSidebarCollapsed: boolean;
-  isSidebarFixed: boolean;
-  setIsSidebarCollapsed: (isCollapsed: boolean) => void;
-  toggleIsSidebarFixed: (isFixed: boolean) => void;
   selectedRows: RowSelectionState;
   setUploadProgress: (fileName: string, percentage: number) => void;
   resetProgress: () => void;
@@ -51,11 +47,6 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
   uploadProgresses: {},
   fileOperationMessage: '',
   selectedRows: {},
-  isSidebarCollapsed: true,
-  isSidebarFixed: false,
-
-  setIsSidebarCollapsed: (isCollapsed: boolean) => set({ isSidebarCollapsed: isCollapsed }),
-  toggleIsSidebarFixed: (isFixed: boolean) => set({ isSidebarFixed: isFixed }),
 
   setCurrentPath: (path: string) => {
     set({ currentPath: path });

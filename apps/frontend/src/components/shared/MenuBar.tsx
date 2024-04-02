@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
@@ -6,22 +6,22 @@ import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '
 
 import cn from '@/lib/utils';
 import useMediaQuery from '@/hooks/media/useMediaQuery';
+import useSidebarManagerStore from '@/store/sidebarManagerStore';
 
 const MenuBar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useSidebarManagerStore((state) => [
+    state.isMenuBarOpen,
+    state.setIsMenuBarOpen,
+  ]);
+
+  const toggleMenuBar = useSidebarManagerStore((state) => state.toggleMenuBarOpen);
   const location = useLocation();
   const menuBarEntries = useMenuBarConfig(location.pathname);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    setIsCollapsed(isMobile);
+    setIsCollapsed(!isMobile);
   }, [isMobile]);
-
-  const toggleMenuBar = () => {
-    if (isMobile) {
-      setIsCollapsed(!isCollapsed);
-    }
-  };
 
   const renderMenuBarContent = () => (
     <div className="w-full">
@@ -46,7 +46,7 @@ const MenuBar: React.FC = () => {
                 alt=""
                 className="h-12 w-12 object-contain"
               />
-              <p>{item.label}</p>
+              <p className="text-nowrap">{item.label}</p>
             </MenubarTrigger>
             <MenubarSeparator />
           </React.Fragment>
@@ -64,7 +64,7 @@ const MenuBar: React.FC = () => {
               className="fixed inset-0 z-40 bg-black bg-opacity-50"
               role="button"
               tabIndex={0}
-              onClick={toggleMenuBar}
+              onClickCapture={toggleMenuBar}
               onKeyDown={(event) => {
                 if (event.code === 'Enter' || event.code === 'Space') {
                   toggleMenuBar();
@@ -90,7 +90,7 @@ const MenuBar: React.FC = () => {
               'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
               isCollapsed ? 'left-0' : 'left-64',
             )}
-            onClick={toggleMenuBar}
+            onClickCapture={toggleMenuBar}
             onKeyDown={(e) => e.key === 'Enter' && toggleMenuBar()}
           >
             <p className="text-xl text-white">{isCollapsed ? '≡' : '×'}</p>

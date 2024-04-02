@@ -38,7 +38,7 @@ export function getFileCategorie(filename: string): IconType {
   return contentFiletypes[`.${extension}`] ?? 'document';
 }
 
-export function timeAgo(dateParam: Date): string {
+export function getElapsedTime(dateParam: Date): string {
   if (!dateParam) {
     return 'Invalid date';
   }
@@ -69,5 +69,5 @@ export function timeAgo(dateParam: Date): string {
 
 export default {
   getFileCategorie,
-  timeAgo,
+  timeAgo: getElapsedTime,
 };
