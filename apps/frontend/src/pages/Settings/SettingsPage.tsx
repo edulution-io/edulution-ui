@@ -49,14 +49,14 @@ const SettingsPage: React.FC = () => {
 
   const { control, handleSubmit, setValue, getValues } = form;
 
-  const settingsVisible = settingLocation !== '';
+  const areSettingsVisible = settingLocation !== '';
 
   useEffect(() => {
-    if (settingsVisible) {
+    if (areSettingsVisible) {
       setValue(`${settingLocation}.path`, config[`${settingLocation}`]?.linkPath);
       setValue(`${settingLocation}.appType`, config[`${settingLocation}`]?.appType);
     }
-  }, [settingsVisible, settingLocation]);
+  }, [areSettingsVisible, settingLocation]);
 
   useEffect(() => {
     if (Object.keys(config).length === 0) {
@@ -69,7 +69,7 @@ const SettingsPage: React.FC = () => {
       const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
 
       if (selectedOption) {
-        // TODO: Save config on server (eg mongoDB)
+        // TODO: NIEDUUI-26 Save config on server (eg mongoDB)
         setConfig(
           (prevConfig): ConfigType => ({
             ...prevConfig,
@@ -85,7 +85,7 @@ const SettingsPage: React.FC = () => {
         });
       }
     };
-    if (settingsVisible) {
+    if (areSettingsVisible) {
       return (
         <Form {...form}>
           <form
@@ -183,11 +183,11 @@ const SettingsPage: React.FC = () => {
     <>
       <div className="flex justify-between">
         <div>
-          <h2>{t(settingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}</h2>
+          <h2>{t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}</h2>
           <p className="pb-4">{t('settings.description')}</p>
         </div>
 
-        {settingsVisible ? (
+        {areSettingsVisible ? (
           <Button
             type="button"
             variant="btn-hexagon"
