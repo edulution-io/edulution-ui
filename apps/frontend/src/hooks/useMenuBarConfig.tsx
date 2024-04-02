@@ -4,7 +4,6 @@ import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
-import useFileManagerStore from '@/store/fileManagerStore';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
 
@@ -12,9 +11,9 @@ const useMenuBarConfig = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
-  const { fetchFiles } = useFileManagerStore();
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
+
   const menuBarConfigSwitch = () => {
     const rootPathName = getFromPathName(pathname, 1);
 
@@ -40,7 +39,7 @@ const useMenuBarConfig = () => {
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
     id: item.id,
     label: t(item.label),
-    action: () => ((pathname as APPS) === APPS.FILE_SHARING ? fetchFiles(item.label) : item.action()),
+    action: () => item.action(),
     icon: item.icon,
   }));
 
