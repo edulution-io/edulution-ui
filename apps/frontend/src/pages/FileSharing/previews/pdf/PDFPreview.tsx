@@ -13,7 +13,7 @@ interface PDFPreviewProps {
 }
 
 const PDFPreview: FC<PDFPreviewProps> = ({ file }) => {
-  const mediaUrl = import.meta.env.VITE_SERVER_URL + file.filename;
+  const mediaUrl = `${window.location.origin}/webdav/${file.filename}`;
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const containerRef = useRef<HTMLDivElement | null>(null);
