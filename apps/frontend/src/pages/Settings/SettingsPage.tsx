@@ -107,7 +107,10 @@ const SettingsPage: React.FC = () => {
                         <FormItem>
                           <h4>{t('form.path')}</h4>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              {...field}
+                              className="text-white"
+                            />
                           </FormControl>
                           <p>{t('form.pathDescription')}</p>
                           <FormMessage className="text-p" />
