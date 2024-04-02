@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage, useOnClickOutside } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/Input';
@@ -26,6 +26,9 @@ const SettingsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(dialogRef, () => setSearchParams(''));
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
 
@@ -216,7 +219,10 @@ const SettingsPage: React.FC = () => {
         modal
         open={mode === 'add'}
       >
-        <DialogContent className="data-[state=open]:animate-contentShow fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] text-black shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+        <DialogContent
+          ref={dialogRef}
+          className="data-[state=open]:animate-contentShow fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] text-black shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
+        >
           <DialogHeader>
             <DialogTitle>{t('settings.addApp.title')}</DialogTitle>
             <DialogDescription>{t('settings.addApp.description')}</DialogDescription>
