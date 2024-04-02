@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/Input';
 import { DropdownMenu } from '@/components';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';

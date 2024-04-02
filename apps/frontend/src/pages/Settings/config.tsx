@@ -1,5 +1,5 @@
 import { SettingsIcon, PlusIcon } from '@/assets/icons';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { ConfigType, MenuBarEntryProps } from '@/datatypes/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLocalStorage } from 'usehooks-ts';
