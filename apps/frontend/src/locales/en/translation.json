@@ -128,11 +128,7 @@
     "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion",
     "deleteFiles": "Delete files"
   },
-  "common": {
-    "add": "Add",
-    "reload": "Reload",
-    "logout": "Logout"
-  },
+
   "timeAgo": {
     "justNow": "just now",
     "minuteAgo": "{{count}} minutes ago",

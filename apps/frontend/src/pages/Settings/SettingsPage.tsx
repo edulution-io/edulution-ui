@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useLocalStorage, useOnClickOutside } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/Input';
@@ -19,6 +19,10 @@ import { TrashIcon } from '@/assets/icons';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Toaster from '@/components/ui/Sonner';
 import { AppType, ConfigType } from '@/datatypes/types';
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
+// import { ContentType } from '@/datatypes/filesystem';
+// import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
+// import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -27,7 +31,8 @@ const SettingsPage: React.FC = () => {
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
   const dialogRef = useRef<HTMLDivElement>(null);
-
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   useOnClickOutside(dialogRef, () => setSearchParams(''));
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
@@ -66,6 +71,19 @@ const SettingsPage: React.FC = () => {
       navigate('/settings');
     }
   }, [config]);
+
+  useEffect(() => {
+    setIsSheetOpen(mode === 'add' && isMobile);
+  }, [mode, isMobile]);
+
+  const handleSheetChange = (isOpen: boolean) => {
+    setIsSheetOpen(isOpen);
+    if (!isOpen) {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.delete('mode');
+      setSearchParams(newSearchParams);
+    }
+  };
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
@@ -193,10 +211,11 @@ const SettingsPage: React.FC = () => {
           <p className="pb-4">{t('settings.description')}</p>
         </div>
 
-        {areSettingsVisible ? (
+        {areSettingsVisible && (
           <Button
             type="button"
             variant="btn-hexagon"
+            className="fixed bottom-20 right-20 flex w-full justify-end p-4"
             onClickCapture={() => {
               setConfig((prevConfig) => {
                 const { [settingLocation]: omittedValue, ...rest } = prevConfig;
@@ -206,65 +225,81 @@ const SettingsPage: React.FC = () => {
             }}
           >
             <img
-              className="m-7"
+              className="m-2"
               src={TrashIcon}
               alt="trash"
               width="25px"
             />
           </Button>
-        ) : null}
+        )}
       </div>
       {settingsForm()}
-      <Dialog
-        modal
-        open={mode === 'add'}
-      >
-        <DialogContent
-          ref={dialogRef}
-          className="data-[state=open]:animate-contentShow fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] text-black shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
-        >
-          <DialogHeader>
-            <DialogTitle>{t('settings.addApp.title')}</DialogTitle>
-            <DialogDescription>{t('settings.addApp.description')}</DialogDescription>
-            <DialogClose asChild>
-              <button
-                type="button"
-                className="absolute right-5 top-5 text-black"
-                onClick={() => {
-                  setSearchParams('');
-                }}
-              >
-                <Cross2Icon />
-              </button>
-            </DialogClose>
-          </DialogHeader>
-          <DropdownMenu
-            options={filteredAppOptions()}
-            selectedVal={t(option)}
-            handleChange={(opt) => {
-              setOption(opt);
-            }}
-          />
-          <DialogFooter className="justify-center pt-4 text-white">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="btn-collaboration"
-                size="lg"
-                onClick={() => {
-                  setSearchParams('');
-                  setConfig((prevConfig) => ({
-                    [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
-                    ...prevConfig,
-                  }));
-                }}
-              >
-                {t('common.add')}
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
+      {mode === 'add' &&
+        (isMobile ? (
+          <Sheet
+            modal
+            open={isSheetOpen}
+            onOpenChange={handleSheetChange}
+          >
+            <SheetTrigger asChild />
+            <SheetContent
+              side="bottom"
+              className="flex flex-col"
+            >
+              <SheetHeader>
+                <p>Mobile specific content here...</p>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <Dialog
+            modal
+            open
+          >
+            <DialogContent
+              ref={dialogRef}
+              className="data-[state=open]:animate-contentShow fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] text-black shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
+            >
+              <DialogHeader>
+                <DialogTitle>{t('settings.addApp.title')}</DialogTitle>
+                <DialogDescription>{t('settings.addApp.description')}</DialogDescription>
+                <DialogClose asChild>
+                  <button
+                    type="button"
+                    className="absolute right-5 top-5 text-black"
+                    onClick={() => setSearchParams('')}
+                  >
+                    <Cross2Icon />
+                  </button>
+                </DialogClose>
+              </DialogHeader>
+              <DropdownMenu
+                options={filteredAppOptions()}
+                selectedVal={t(option)}
+                handleChange={setOption}
+              />
+              <DialogFooter className="justify-center pt-4 text-white">
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="btn-collaboration"
+                    size="lg"
+                    onClick={() => {
+                      setSearchParams('');
+                      setConfig((prevConfig) => ({
+                        [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
+                        ...prevConfig,
+                      }));
+                    }}
+                  >
+                    {t('common.add')}
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ))}
       <Toaster />
     </>
   );

@@ -133,12 +133,8 @@
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
-    "logout": "Logout"
-  },
-  "common": {
-    "add": "Hinzufügen",
-    "reload": "Neu laden",
-    "logout": "Logout"
+    "logout": "Logout",
+    "save": "Speichern"
   },
    "timeAgo": {
     "justNow": "gerade Eben",
