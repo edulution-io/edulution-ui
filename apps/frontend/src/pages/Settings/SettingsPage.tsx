@@ -8,21 +8,16 @@ import { useLocalStorage, useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/Input';
-import { DropdownMenu } from '@/components';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
-import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { TrashIcon } from '@/assets/icons';
-import { Cross2Icon } from '@radix-ui/react-icons';
 import Toaster from '@/components/ui/Sonner';
 import { AppType, ConfigType } from '@/datatypes/types';
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
-// import { ContentType } from '@/datatypes/filesystem';
-// import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
-// import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
+import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
+import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
+import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -58,6 +53,12 @@ const SettingsPage: React.FC = () => {
   const { control, handleSubmit, setValue, getValues } = form;
 
   const areSettingsVisible = settingLocation !== '';
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setIsDialogOpen(!!mode);
+  }, [mode]);
 
   useEffect(() => {
     if (areSettingsVisible) {
@@ -177,13 +178,16 @@ const SettingsPage: React.FC = () => {
                       />
                     </div>
                     <div className="absolute right-20">
-                      <Button
-                        type="submit"
-                        variant="btn-collaboration"
-                        size="lg"
-                      >
-                        {t('common.save')}
-                      </Button>
+                      <div className="sm:pr-10 md:right-20">
+                        <Button
+                          type="submit"
+                          variant="btn-collaboration"
+                          className="justify-end pr-5"
+                          size="lg"
+                        >
+                          {t('common.save')}
+                        </Button>
+                      </div>
                     </div>
                   </>
                 ) : null}
@@ -203,10 +207,22 @@ const SettingsPage: React.FC = () => {
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
   };
 
+  const dialogProps: SettingsDialogProps = {
+    isDialogOpen,
+    isSheetOpen,
+    handleSheetChange,
+    option,
+    setOption,
+    filteredAppOptions,
+    setSearchParams,
+    setConfig,
+    t,
+  };
+
   return (
     <>
       <div className="flex justify-between">
-        <div>
+        <div className="pt-5 sm:pt-0">
           <h2>{t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}</h2>
           <p className="pb-4">{t('settings.description')}</p>
         </div>
@@ -215,7 +231,7 @@ const SettingsPage: React.FC = () => {
           <Button
             type="button"
             variant="btn-hexagon"
-            className="fixed bottom-20 right-20 flex w-full justify-end p-4"
+            className="fixed bottom-20 right-5 flex w-full justify-end pr-5 sm:right-10 sm:pr-10 md:right-20"
             onClickCapture={() => {
               setConfig((prevConfig) => {
                 const { [settingLocation]: omittedValue, ...rest } = prevConfig;
@@ -234,72 +250,7 @@ const SettingsPage: React.FC = () => {
         )}
       </div>
       {settingsForm()}
-
-      {mode === 'add' &&
-        (isMobile ? (
-          <Sheet
-            modal
-            open={isSheetOpen}
-            onOpenChange={handleSheetChange}
-          >
-            <SheetTrigger asChild />
-            <SheetContent
-              side="bottom"
-              className="flex flex-col"
-            >
-              <SheetHeader>
-                <p>Mobile specific content here...</p>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
-        ) : (
-          <Dialog
-            modal
-            open
-          >
-            <DialogContent
-              ref={dialogRef}
-              className="data-[state=open]:animate-contentShow fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] text-black shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
-            >
-              <DialogHeader>
-                <DialogTitle>{t('settings.addApp.title')}</DialogTitle>
-                <DialogDescription>{t('settings.addApp.description')}</DialogDescription>
-                <DialogClose asChild>
-                  <button
-                    type="button"
-                    className="absolute right-5 top-5 text-black"
-                    onClick={() => setSearchParams('')}
-                  >
-                    <Cross2Icon />
-                  </button>
-                </DialogClose>
-              </DialogHeader>
-              <DropdownMenu
-                options={filteredAppOptions()}
-                selectedVal={t(option)}
-                handleChange={setOption}
-              />
-              <DialogFooter className="justify-center pt-4 text-white">
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="btn-collaboration"
-                    size="lg"
-                    onClick={() => {
-                      setSearchParams('');
-                      setConfig((prevConfig) => ({
-                        [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
-                        ...prevConfig,
-                      }));
-                    }}
-                  >
-                    {t('common.add')}
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ))}
+      {isMobile ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}
       <Toaster />
     </>
   );
