@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { MdOutlineNoteAdd } from 'react-icons/md';
 import useFileManagerStore from '@/store/fileManagerStore';
-import MenuItem from '@/datatypes/types';
+import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import {
   FileSharingIcon,
@@ -12,6 +11,7 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
+import { useTranslation } from 'react-i18next';
 
 const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   if (mounts.filename.includes('teachers')) {
@@ -35,7 +35,8 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   return FileSharingIcon;
 };
 
-const useMenuItems = () => {
+const useFileSharingMenuConfig = () => {
+  const { t } = useTranslation();
   const { fetchMountPoints, fetchFiles } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
@@ -44,12 +45,8 @@ const useMenuItems = () => {
       try {
         const mounts: DirectoryFile[] = await fetchMountPoints();
         const items = mounts.map((mountPoint) => ({
-          path: mountPoint.filename.includes('teachers')
-            ? `${mountPoint.filename}/${import.meta.env.VITE_USERNAME}`
-            : mountPoint.filename,
+          id: mountPoint.basename,
           label: mountPoint.filename.includes('teachers') ? 'Home' : mountPoint.basename,
-          IconComponent: MdOutlineNoteAdd,
-          hoverColor: 'bg-blue-500',
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
@@ -68,7 +65,14 @@ const useMenuItems = () => {
     fetchAndPrepareMenuItems().catch(() => {});
   }, []);
 
-  return menuItems;
+  const fileSharingMenuConfig = (): MenuBarEntryProps => ({
+    menuItems,
+    title: t('filesharing.title'),
+    icon: FileSharingIcon,
+    color: 'hover:bg-ciDarkBlue',
+  });
+
+  return fileSharingMenuConfig();
 };
 
-export default useMenuItems;
+export default useFileSharingMenuConfig;

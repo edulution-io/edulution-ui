@@ -28,7 +28,7 @@ const handleApiError = (error: Response) => {
   );
 };
 
-const client = createClient(import.meta.env.VITE_SERVER_URL as string, {
+const client = createClient(`${window.location.origin}/webdav`, {
   username: import.meta.env.VITE_USERNAME as string,
   password: import.meta.env.VITE_PASSWORD as string,
 });

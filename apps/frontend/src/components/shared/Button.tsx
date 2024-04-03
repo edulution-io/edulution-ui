@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ButtonSH as SHButton } from '@/components/ui/ButtonSH';
 import { cva, type VariantProps } from 'class-variance-authority';
-
+import { HexagonIcon } from '@/assets/layout';
 import cn from '@/lib/utils';
 
 const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
@@ -12,6 +12,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
       'btn-infrastructure': 'bg-ciLightGreen',
       'btn-security': 'bg-ciGreenToBlue',
       'btn-outline': 'border border-input shadow-sm hover:bg-accent hover:text-accent-foreground',
+      'btn-hexagon': 'bg-cover bg-center flex items-center justify-center',
     },
     size: {
       lg: 'h-10 rounded-md px-8',
@@ -29,7 +30,7 @@ const defaultProps: Partial<ButtonProps> = {
   asChild: false,
 };
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, ...props }, ref) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, children, ...props }, ref) => {
   Button.displayName = 'Button';
 
   return (
@@ -37,7 +38,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
       className={cn(originButtonVariants({ variant, className }))}
       ref={ref}
       {...props}
-    />
+    >
+      {variant === 'btn-hexagon' ? (
+        <div className="relative flex items-center justify-center ">
+          <img
+            className="absolute"
+            src={HexagonIcon}
+            alt=""
+          />
+          <div className="">{children}</div>
+        </div>
+      ) : (
+        children
+      )}
+    </SHButton>
   );
 });
 

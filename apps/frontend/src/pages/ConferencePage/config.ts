@@ -1,20 +1,18 @@
-import { FileSharingIcon, DesktopIcon, ConferencesIcon } from '@/assets/icons';
+import { DesktopIcon, ConferencesIcon, FileSharingIcon } from '@/assets/icons';
+import { MenuBarEntryProps } from '@/datatypes/types';
 
-const CONFERENCES_MENUBAR_CONFIG = {
+const CONFERENCES_MENUBAR_CONFIG: MenuBarEntryProps = {
   title: 'conferences.title',
   icon: ConferencesIcon,
   color: 'hover:bg-ciDarkBlue',
   menuItems: [
     {
+      id: 'join',
       label: 'common.add',
-      link: '/conferences',
       icon: FileSharingIcon,
+      action: () => {},
     },
-    {
-      label: 'common.reload',
-      link: '/',
-      icon: DesktopIcon,
-    },
+    { id: 'reload', label: 'common.reload', icon: DesktopIcon, action: () => {} },
   ],
 };
 

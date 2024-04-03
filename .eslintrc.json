@@ -31,7 +31,16 @@
     // Spreading is very useful
     "react/jsx-props-no-spreading": "off",
     // TypeScript cares abput prop-types
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    // Issue with react-hook-form -> https://github.com/orgs/react-hook-form/discussions/8622
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": {
+          "attributes": false
+        }
+      }
+    ]
   },
   "overrides": [
     {

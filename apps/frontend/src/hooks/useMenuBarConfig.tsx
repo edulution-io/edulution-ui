@@ -1,32 +1,32 @@
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { FileSharingIcon } from '@/assets/icons';
-import MenuItem from '@/datatypes/types';
+import { useLocation } from 'react-router-dom';
+import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-import useMenuItems from '@/pages/FileSharing/useMenuConfig';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
+import useSettingsMenuConfig from '@/pages/Settings/config';
+import { getFromPathName } from '@/utils/common';
 
-const useMenuBarConfig = (location: string) => {
-  const { fetchFiles } = useFileManagerStore();
+const useMenuBarConfig = () => {
+  const { pathname } = useLocation();
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const fileSharingMenuItems = useMenuItems();
+
+  const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
+  const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
+
   const menuBarConfigSwitch = () => {
-    switch (location) {
-      case '/file-sharing': {
-        return {
-          menuItems: fileSharingMenuItems,
-          title: t('filesharing.title'),
-          icon: FileSharingIcon,
-          color: 'hover:bg-ciDarkBlue',
-          action: () => fileSharingMenuItems[0].action(),
-        };
+    const rootPathName = getFromPathName(pathname, 1);
+
+    if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
+
+    switch (rootPathName as APPS) {
+      case APPS.FILE_SHARING: {
+        return FILE_SHARING_MENUBAR_CONFIG;
       }
-      case '/conferences': {
+      case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
       }
-      case '/room-booking': {
+      case APPS.ROOM_BOOKING: {
         return ROOMBOOKING_MENUBAR_CONFIG;
       }
       default: {
@@ -36,19 +36,12 @@ const useMenuBarConfig = (location: string) => {
   };
 
   const configValues = menuBarConfigSwitch();
-  const { pathname } = useLocation();
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
+    id: item.id,
     label: t(item.label),
-    action: () => (pathname === '/file-sharing' ? fetchFiles(item.label) : navigate(item.label)),
+    action: () => item.action(),
     icon: item.icon,
   }));
-
-  interface MenuBarEntryProps {
-    menuItems: MenuItem[];
-    title: string;
-    icon: string;
-    color: string;
-  }
 
   const menuBarEntries: MenuBarEntryProps = {
     menuItems,

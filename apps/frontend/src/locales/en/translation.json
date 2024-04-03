@@ -1,8 +1,8 @@
 {
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
-  "heading": "Welcome Ms. Mustermann",
-  "content": "Here is your personal edulution.io dashboard. The place where all your applications for digital education are collected.",
+  "heading": "Welcome Mrs. Mustermann",
+  "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "dashboard": {
     "mobileAccess": {
       "title": "MOBILE DATA ACCESS",
@@ -10,36 +10,55 @@
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
   },
-  "conferences": {
-    "title": "CONFERENCES",
-    "sidebar": "Conferences"
+  "ticketsystem": { "title": "TICKET SYSTEM", "sidebar": "Ticket System" },
+  "mail": { "title": "MAIL", "sidebar": "Mail" },
+  "chat": { "title": "CHAT", "sidebar": "Chat" },
+  "conferences": { "title": "CONFERENCES", "sidebar": "Conferences" },
+  "knowledgebase": { "title": "KNOWLEDGEBASE", "sidebar": "Knowledgebase" },
+  "filesharing": { "title": "FILE SHARING", "sidebar": "File Sharing" },
+  "forums": { "title": "FORUMS", "sidebar": "Forums" },
+  "roombooking": { "title": "ROOM BOOKING", "sidebar": "Room Booking", "rooms": "Rooms" },
+  "learningmanagement": { "title": "LEARNING MANAGEMENT", "sidebar": "Learning Management" },
+  "schoolinformation": { "title": "SCHOOL INFORMATION", "sidebar": "School Information" },
+  "schoolmanagement": { "title": "SCHOOL MANAGEMENT", "sidebar": "School Management" },
+  "printer": { "title": "PRINTER", "sidebar": "Printe" },
+  "network": { "title": "NETWORK", "sidebar": "Network" },
+  "locationservices": { "title": "LOCATION SERVICES", "sidebar": "Location Services" },
+  "desktopdeployment": { "title": "DESKTOP DEPLOYMENT", "sidebar": "Desktop Deployment" },
+  "wlan": { "title": "WLAN", "sidebar": "Wlan" },
+  "mobiledevices": { "title": "MOBILE DEVICES", "sidebar": "Mobile Devices" },
+  "virtualization": { "title": "VIRTUALIZATION", "sidebar": "Virtualization" },
+  "firewall": { "title": "FIREWALL", "sidebar": "Firewall" },
+  "antimalware": { "title": "ANTI-MALWARE", "sidebar": "Anti-Malware" },
+  "backup": { "title": "BACKUP", "sidebar": "Backup" },
+  "settings": {
+    "title": "SETTINGS",
+    "sidebar": "Settings",
+    "addApp": { "title": "Add app", "description": "Please select an app:" },
+    "description": "Here you can make all settings."
   },
-  "firewall": "Firewall",
-  "virtualization": "Virtualization",
-  "learningManagement": "Learning Management",
-  "desktopDeployment": "Desktop Deployment",
-  "network": "Network",
-  "roomBooking": {
-    "title": "ROOM BOOKING",
-    "sidebar": "Room Booking",
-    "rooms": "Rooms"
+
+  "forwardingpage": {
+    "action": "This link will take you to the external site of the provider.",
+    "description": "The application opens in a new window. No further authorization is required."
   },
-  "mail": "Mail",
-  "schoolInformation": "School Information",
-  "knowledgeBase": "Knowledge Base",
-  "wlan": "WLAN",
-  "forums": "Forums",
-  "printer": "Printer",
-  "filesharing": {
-    "title": "MY FILES",
-    "sidebar": "My Files"
-  },
-  "chat": "Chat",
+
   "menu": "MENU",
   "home": "Home",
   "programs": "Programs",
   "share": "Share",
   "students": "Students",
+
+  "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save" },
+  "form": {
+    "path": "Path",
+    "pathDescription": "Please enter a valid URL.",
+    "apptype": "Link Type",
+    "native": "Native Support",
+    "forwarded": "Forwarded",
+    "embedded": "Embedded",
+    "saved": "Configuration saved!"
+  },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -105,10 +124,5 @@
     "cancel": "Cancel",
     "continue": "Continue",
     "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion"
-  },
-  "common": {
-    "add": "Add",
-    "reload": "Reload",
-    "logout": "Logout"
   }
 }
