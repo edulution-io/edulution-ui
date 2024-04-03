@@ -16,7 +16,7 @@ const BlankLayout: React.FC<PropsWithChildren> = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header />
+        <Header isMenuBarVisible={false} />
         <main className="flex-1">
           <Outlet />
         </main>
