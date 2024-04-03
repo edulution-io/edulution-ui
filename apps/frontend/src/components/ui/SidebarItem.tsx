@@ -1,9 +1,10 @@
-import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
+import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
+import { getFromPathName } from '@/utils/common';
 
-type MenuItem = {
+type SidebarMenuItem = {
   title: string;
   link: string;
   icon: string;
@@ -11,7 +12,7 @@ type MenuItem = {
 };
 
 interface SidebarItemProps {
-  menuItem: MenuItem;
+  menuItem: SidebarMenuItem;
   isDesktop: boolean;
   pathname: string;
   translate: number;
@@ -21,6 +22,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
+
+  const rootPathName = `/${getFromPathName(pathname, 1)}`;
 
   useEffect(() => {
     if (buttonRef.current == null) return;
@@ -37,7 +40,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
     >
       <NavLink
         to={menuItem.link}
-        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${pathname === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
         <p className="md:hidden">{menuItem.title}</p>
         <img

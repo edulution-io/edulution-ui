@@ -10,36 +10,55 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
-  "conferences": {
-    "title": "KONFERENZEN",
-    "sidebar": "Konferenzen"
+  "ticketsystem": { "title": "TICKETSYSTEM", "sidebar": "Ticketsystem" },
+  "mail": { "title": "MAIL", "sidebar": "Mail" },
+  "chat": { "title": "CHAT", "sidebar": "Chat" },
+  "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
+  "knowledgebase": { "title": "WISSENSDATENBANK", "sidebar": "Wissensdatenbank" },
+  "filesharing": { "title": "FILESHARING", "sidebar": "Filesharing" },
+  "forums": { "title": "FOREN", "sidebar": "Foren" },
+  "roombooking": { "title": "RAUMBUCHUNG", "sidebar": "Raumbuchung", "rooms": "Räume" },
+  "learningmanagement": { "title": "LERNMANAGEMENT", "sidebar": "Lernmanagement" },
+  "schoolinformation": { "title": "SCHULINFORMATION", "sidebar": "Schulinformation" },
+  "schoolmanagement": { "title": "SCHULVERWALTUNG", "sidebar": "Schulverwaltung" },
+  "printer": { "title": "DRUCKER", "sidebar": "Drucker" },
+  "network": { "title": "NETZWERK", "sidebar": "Netzwerk" },
+  "locationservices": { "title": "STANDORTVERBINDUNG", "sidebar": "Standortverbindung" },
+  "desktopdeployment": { "title": "DESKTOP-BEREITSTELLUNG", "sidebar": "Desktop-Bereitstellung" },
+  "wlan": { "title": "WLAN", "sidebar": "Wlan" },
+  "mobiledevices": { "title": "MOBILE ENDGERÄTE", "sidebar": "Mobile Endgeräte" },
+  "virtualization": { "title": "VIRTUALISATION", "sidebar": "Virtualisation" },
+  "firewall": { "title": "FIREWALL", "sidebar": "Firewall" },
+  "antimalware": { "title": "ANTI-MALWARE", "sidebar": "Anti-Malware" },
+  "backup": { "title": "BACKUP", "sidebar": "Backup" },
+  "settings": {
+    "title": "EINSTELLUNGEN",
+    "sidebar": "Einstellungen",
+    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
+    "description": "Hier können Sie alle Einstellungen vornehmen."
   },
-  "firewall": "Firewall",
-  "virtualization": "Virtualisierung",
-  "learningManagement": "Lernmanagement",
-  "desktopDeployment": "Desktop-Bereitstellung",
-  "network": "Netzwerk",
-  "roomBooking": {
-    "title": "RAUMBUCHUNG",
-    "sidebar": "Raumbuchung",
-    "rooms": "Räume"
+  "forwardingpage": {
+    "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig."
   },
-  "mail": "Mail",
-  "schoolInformation": "Schulinformation",
-  "knowledgeBase": "Wissensdatenbank",
-  "wlan": "WLAN",
-  "forums": "Foren",
-  "printer": "Drucker",
-  "filesharing": {
-    "title": "MEINE DATEIEN",
-    "sidebar": "Meine Dateien"
-  },
-  "chat": "Chat",
+
   "menu": "MENÜ",
   "home": "Home",
   "programs": "Programme",
   "share": "Share",
   "students": "Schüler",
+
+  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout", "save": "Speichern" },
+  "form": {
+    "path": "Link",
+    "pathDescription": "Bitte eine URL eintragen.",
+    "apptype": "Verknüpfungsart",
+    "native": "Native Unterstützung",
+    "forwarded": "Weiterleitung",
+    "embedded": "Eingebettet",
+    "saved": "Konfiguration gespeichert!"
+  },
+
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
@@ -110,6 +129,11 @@
     "continue": "Fortfahren",
     "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten",
     "deleteFiles": "Dateien löschen"
+  },
+  "common": {
+    "add": "Hinzufügen",
+    "reload": "Neu laden",
+    "logout": "Logout"
   },
   "common": {
     "add": "Hinzufügen",

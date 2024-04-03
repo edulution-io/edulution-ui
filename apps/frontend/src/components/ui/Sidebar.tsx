@@ -2,32 +2,15 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
-import {
-  MobileLogoIcon,
-  FirewallIcon,
-  ConferencesIcon,
-  LearningManagementIcon,
-  FileSharingIcon,
-  VirtualizationIcon,
-  DesktopDeploymentIcon,
-  NetworkIcon,
-  MailIcon,
-  SchoolInformationIcon,
-  PrinterIcon,
-  RoomBookingIcon,
-  ForumsIcon,
-  ChatIcon,
-  WlanIcon,
-  KnowledgeBaseIcon,
-  UserIcon,
-} from '@/assets/icons';
+import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
-import { translateKey } from '@/utils/common';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useWindowSize } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useWindowSize } from 'usehooks-ts';
+import { ConfigType } from '@/datatypes/types';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import useSidebarManagerStore from '@/store/sidebarManagerStore';
 import SidebarItem from './SidebarItem';
@@ -46,98 +29,20 @@ const Sidebar = () => {
 
   const toggleSidebarCollapsed = useSidebarManagerStore((state) => state.toggleSidebarCollapsed);
   const isSidebarCollapsed = useSidebarManagerStore((state) => state.isSidebarCollapsed);
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  // TODO: will move to separate file later
-  const MENU_ITEMS = [
+  const sidebarItems = [
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
+      title: t(`${item.id}.sidebar`),
+      link: `/${item.id}`,
+      icon: item.icon,
+      color: item.color,
+    })),
     {
-      title: translateKey('conferences.sidebar'),
-      link: '/conferences',
-      icon: ConferencesIcon,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('firewall'),
-      link: '/firewall',
-      icon: FirewallIcon,
+      title: t('settings.sidebar'),
+      link: '/settings',
+      icon: SettingsIcon,
       color: 'bg-ciGreenToBlue',
-    },
-    {
-      title: translateKey('virtualization'),
-      link: '/virtualization',
-      icon: VirtualizationIcon,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('learningManagement'),
-      link: '/learning-management',
-      icon: LearningManagementIcon,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('filesharing.sidebar'),
-      link: '/file-sharing',
-      icon: FileSharingIcon,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('desktopDeployment'),
-      link: '/desktop-deployment',
-      icon: DesktopDeploymentIcon,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('network'),
-      link: '/network',
-      icon: NetworkIcon,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('mail'),
-      link: '/mail',
-      icon: MailIcon,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('schoolInformation'),
-      link: '/school-information',
-      icon: SchoolInformationIcon,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('printer'),
-      link: '/printer',
-      icon: PrinterIcon,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('roomBooking.sidebar'),
-      link: '/room-booking',
-      icon: RoomBookingIcon,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('forums'),
-      link: '/forums',
-      icon: ForumsIcon,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('chat'),
-      link: '/chat',
-      icon: ChatIcon,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('wlan'),
-      link: '/wlan',
-      icon: WlanIcon,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('knowledgeBase'),
-      link: '/knowledge-base',
-      icon: KnowledgeBaseIcon,
-      color: 'bg-ciDarkBlue',
     },
   ];
 
@@ -175,7 +80,7 @@ const Sidebar = () => {
 
     const rect = sidebarIconsRef.current.getBoundingClientRect();
     setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
-  }, [size, translate, MENU_ITEMS]);
+  }, [size, translate, sidebarItems]);
 
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault();
@@ -270,7 +175,6 @@ const Sidebar = () => {
         <img
           src={MobileLogoIcon}
           width={SIDEBAR_ICON_WIDTH}
-          // height="40px"
           alt=""
         />
         <div
@@ -280,7 +184,6 @@ const Sidebar = () => {
           <img
             src={MobileLogoIcon}
             width={SIDEBAR_ICON_WIDTH}
-            // height="40px"
             alt=""
           />
         </div>
@@ -385,9 +288,9 @@ const Sidebar = () => {
         onTouchMove={() => handleTouchMove}
         onTouchEnd={() => handleTouchEnd}
       >
-        {MENU_ITEMS.map((item) => (
+        {sidebarItems.map((item) => (
           <SidebarItem
-            key={item.title}
+            key={item.link}
             menuItem={item}
             isDesktop={isDesktop}
             pathname={pathname}
@@ -406,7 +309,7 @@ const Sidebar = () => {
         {!isSidebarCollapsed ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
         <div
           ref={sidebarRef}
-          className={`${sidebarClasses} overflow-auto bg-black`}
+          className={`${sidebarClasses}`}
         >
           <div className="bg-black">{isSidebarCollapsed && renderListItem()}</div>
         </div>

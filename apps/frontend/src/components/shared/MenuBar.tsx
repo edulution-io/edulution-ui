@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@/lib/utils';
+import { useLocation } from 'react-router-dom';
+import { getFromPathName } from '@/utils/common';
 
 import useSidebarManagerStore from '@/store/sidebarManagerStore';
 import { useMediaQuery } from 'usehooks-ts';
@@ -16,8 +16,10 @@ const MenuBar: React.FC = () => {
   ]);
 
   const toggleMenuBar = useSidebarManagerStore((state) => state.toggleMenuBarOpen);
-  const location = useLocation();
-  const menuBarEntries = useMenuBarConfig(location.pathname);
+  const menuBarEntries = useMenuBarConfig();
+  const { pathname } = useLocation();
+
+  const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const MenuBar: React.FC = () => {
 
   const renderMenuBarContent = () => (
     <div className="max-w-[300px]">
-      <div className="flex flex-col items-center justify-center py-6">
+      <div className="bg flex flex-col items-center justify-center py-6">
         <img
           src={menuBarEntries.icon}
           alt=""
@@ -42,8 +44,13 @@ const MenuBar: React.FC = () => {
               className={cn(
                 'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
                 menuBarEntries.color,
+                isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
               )}
-              onClick={item.action}
+              onClick={() => {
+                item.action();
+                setIsCollapsed(true);
+                setIsSelected(item.id);
+              }}
             >
               <img
                 src={item.icon}

@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-
 import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
@@ -8,8 +7,8 @@ import Sidebar from '../ui/Sidebar';
 import MenuBar from '../shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
-  const location = useLocation();
-  const isMainPage = location.pathname === '/';
+  const { pathname } = useLocation();
+  const isMainPage = pathname === '/';
   const isMenuBarVisible = !isMainPage;
   return (
     <div
@@ -18,7 +17,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
     >
       {isMenuBarVisible ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header />
+        <Header isMenuBarVisible={isMenuBarVisible} />
         <main className="flex-1">
           <Outlet />
         </main>

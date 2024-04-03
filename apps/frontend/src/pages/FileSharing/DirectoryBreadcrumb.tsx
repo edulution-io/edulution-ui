@@ -22,19 +22,13 @@ interface DirectoryBreadcrumbProps {
   style: React.CSSProperties;
 }
 
-const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
-  path,
-  onNavigate,
-  style = { marginRight: '0.5rem', color: 'white' },
-}) => {
-  const getStartingPathForUser = () => `/teachers/${import.meta.env.VITE_USERNAME}/`;
-  const startingPath = getStartingPathForUser();
-  const allSegments = path.split('/').filter(Boolean);
-  const startingSegments = startingPath.split('/').filter(Boolean);
-  const segments = allSegments.slice(startingSegments.length - 1);
+const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate, style }) => {
+  const segments = path.split('/').filter(Boolean);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const displaySegments = isMobile ? 1 : 4;
   const { t } = useTranslation();
+
+  const filteredSegment = segments.filter((item) => item !== 'teachers');
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
     onNavigate(pathTo);
@@ -53,7 +47,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
           </BreadcrumbLink>
         </BreadcrumbItem>
 
-        {segments.length > displaySegments ? (
+        {filteredSegment.length > displaySegments ? (
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -83,7 +77,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
             </BreadcrumbItem>
           </>
         ) : (
-          segments.map((segment, index) => (
+          filteredSegment.map((segment, index) => (
             <React.Fragment key={segment}>
               <BreadcrumbSeparator />
               <BreadcrumbItem>

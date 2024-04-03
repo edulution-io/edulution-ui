@@ -92,14 +92,14 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
         <SheetHeader>
           {contentType === ContentType.file ? (
             <>
-              <SheetTitle>${t('fileCreateNewContent.fileDialogTitle')}</SheetTitle>
+              <SheetTitle>{t('fileCreateNewContent.fileDialogTitle')}</SheetTitle>
               <SheetDescription>
                 <FileCreationForm />
               </SheetDescription>
             </>
           ) : (
             <>
-              <SheetTitle>${t('fileCreateNewContent.directoryDialogTitle')}</SheetTitle>
+              <SheetTitle>{t('fileCreateNewContent.directoryDialogTitle')}</SheetTitle>
               <SheetDescription>
                 <DirectoryCreationForm />
               </SheetDescription>
