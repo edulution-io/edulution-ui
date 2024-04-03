@@ -10,22 +10,38 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
+  "ticketsystem": { "title": "TICKETSYSTEM", "sidebar": "Ticketsystem" },
+  "mail": { "title": "MAIL", "sidebar": "Mail" },
+  "chat": { "title": "CHAT", "sidebar": "Chat" },
   "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
-  "firewall": "Firewall",
-  "virtualization": "Virtualisierung",
-  "learningManagement": "Lernmanagement",
-  "fireSharing": "Filesharing",
-  "desktopDeployment": "Desktop-Bereitstellung",
-  "network": "Netzwerk",
-  "roomBooking": { "title": "RAUMBUCHUNG", "sidebar": "Raumbuchung", "rooms": "Räume" },
-  "mail": "Mail",
-  "schoolInformation": "Schulinformation",
-  "knowledgeBase": "Wissensdatenbank",
-  "wlan": "WLAN",
-  "forums": "Foren",
-  "printer": "Drucker",
-  "fileSharing": { "title": "MEINE DATEIEN", "sidebar": "Meine Dateien" },
-  "chat": "Chat",
+  "knowledgebase": { "title": "WISSENSDATENBANK", "sidebar": "Wissensdatenbank" },
+  "filesharing": { "title": "FILESHARING", "sidebar": "Filesharing" },
+  "forums": { "title": "FOREN", "sidebar": "Foren" },
+  "roombooking": { "title": "RAUMBUCHUNG", "sidebar": "Raumbuchung", "rooms": "Räume" },
+  "learningmanagement": { "title": "LERNMANAGEMENT", "sidebar": "Lernmanagement" },
+  "schoolinformation": { "title": "SCHULINFORMATION", "sidebar": "Schulinformation" },
+  "schoolmanagement": { "title": "SCHULVERWALTUNG", "sidebar": "Schulverwaltung" },
+  "printer": { "title": "DRUCKER", "sidebar": "Drucker" },
+  "network": { "title": "NETZWERK", "sidebar": "Netzwerk" },
+  "locationservices": { "title": "STANDORTVERBINDUNG", "sidebar": "Standortverbindung" },
+  "desktopdeployment": { "title": "DESKTOP-BEREITSTELLUNG", "sidebar": "Desktop-Bereitstellung" },
+  "wlan": { "title": "WLAN", "sidebar": "Wlan" },
+  "mobiledevices": { "title": "MOBILE ENDGERÄTE", "sidebar": "Mobile Endgeräte" },
+  "virtualization": { "title": "VIRTUALISATION", "sidebar": "Virtualisation" },
+  "firewall": { "title": "FIREWALL", "sidebar": "Firewall" },
+  "antimalware": { "title": "ANTI-MALWARE", "sidebar": "Anti-Malware" },
+  "backup": { "title": "BACKUP", "sidebar": "Backup" },
+  "settings": {
+    "title": "EINSTELLUNGEN",
+    "sidebar": "Einstellungen",
+    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
+    "description": "Hier können Sie alle Einstellungen vornehmen."
+  },
+  "forwardingpage": {
+    "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig."
+  },
+
   "menu": "MENÜ",
   "home": "Home",
   "programs": "Programme",
@@ -33,13 +49,87 @@
   "students": "Schüler",
   "login": { "forgot_password": "Passwort vergessen?", "remember_me": "Merken" },
 
-  "common": {
-    "add": "Hinzufügen",
-    "reload": "Neu laden",
-    "logout": "Abmelden",
-    "login": "Anmelden",
-    "username": "Benutzername",
-    "password": "Passwort",
-    "loading": "Laden..."
+
+  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout", "save": "Speichern", "login": "Anmelden",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "loading": "Laden..." },
+  "form": {
+    "path": "Link",
+    "pathDescription": "Bitte eine URL eintragen.",
+    "apptype": "Verknüpfungsart",
+    "native": "Native Unterstützung",
+    "forwarded": "Weiterleitung",
+    "embedded": "Eingebettet",
+    "saved": "Konfiguration gespeichert!"
+  },
+
+  "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+  "fileSharingTable": {
+    "filename": "Dateiname",
+    "size": "Größe",
+    "lastModified": "Zuletzt geändert",
+    "type": "Typ"
+  },
+  "currentDirectory": "Aktuelles Verzeichnis",
+  "fileSharingUpload": {
+    "title": "Dateien hochladen",
+    "upload": "Hochladen",
+    "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
+    "uploadItems": "Hochladen: {{count}} Artikel",
+    "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "filesToUpload": "Dateien zum Hochladen"
+  },
+  "table": {
+    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
+    "noDataAvailable": "Keine Daten verfügbar"
+  },
+  "loadingIndicator": {
+    "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
+  },
+
+  "fileCategory": {
+    "folder": "Ordner",
+    "document": "Dokument",
+    "image": "Bild",
+    "video": "Video",
+    "audio": "Audio",
+    "acrobat": "PDF"
+  },
+  "fileCreateNewContent": {
+    "fileDialogTitle": "Erstelle eine neue Datei",
+    "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
+    "createButtonText": "Erstellen",
+    "fileOperationSuccessful": "Dateierstellung erfolgreich",
+    "noMessageAvailable": "Keine Nachricht verfügbar",
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+  },
+  "fileRenameContent": {
+    "renameYourDirectory": "Benennen Sie Ihr Verzeichnis um",
+    "renameYourFile": "Benennen Sie Ihre Datei um",
+    "to": "zu",
+    "rename": "Umbenennen",
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+  },
+  "moveItemDialog": {
+    "changeDirectory": "Verzeichnis wechseln",
+    "currentDirectory": "Aktuelles Verzeichnis",
+    "folderName": "Ordnername",
+    "movingItems": {
+      "one": "1 Element wird verschoben",
+      "other": "{{count}} Elemente werden verschoben"
+    },
+    "moveTo": "Verschieben nach",
+    "move": "Verschieben",
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+  },
+  "deleteDialog": {
+    "areYouSure": "Sind Sie sich absolut sicher?",
+    "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",
+    "selectedItems": "Ausgewählte Elemente:",
+    "cancel": "Abbrechen",
+    "continue": "Fortfahren",
+    "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten"
   }
 }

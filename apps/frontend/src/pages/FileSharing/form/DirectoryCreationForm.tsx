@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Input from '@/components/shared/Input';
+import { Input } from '@/components/ui/Input';
 import useFileManagerStore from '@/store/fileManagerStore';
-import { validateDirectoryName } from '@/utils/common';
+import { validateDirectoryName } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 const DirectoryCreationForm = () => {
   const [localDirectoryName, setLocalDirectoryName] = useState('');

@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { fetchRepoData } from '@/services';
-import { QUERY_KEY } from '@/constants';
+import { QUERY_KEY } from '@/constants/settings';
 
 const useRepoData = (options?: Omit<UseQueryOptions, 'queryKey'>) =>
   useQuery({

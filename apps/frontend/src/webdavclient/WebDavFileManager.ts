@@ -1,13 +1,14 @@
 import { createClient } from 'webdav';
 import JSZip from 'jszip';
-import { getFileNameFromPath, decryptPassword } from '@/utils/common';
+import { decryptPassword } from '@/utils/common';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
 // TODO: Remove/Rework if webdav is stored in backend
 export const createWebdavClient = () =>
-  createClient(import.meta.env.VITE_SERVER_URL as string, {
+  createClient(`${window.location.origin}/webdav`, {
     username: sessionStorage.getItem('user') as string,
     password: decryptPassword({
       data: sessionStorage.getItem('webdav') as string,
@@ -185,7 +186,7 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${import.meta.env.VITE_USERNAME}:${import.meta.env.VITE_PASSWORD}`)}`,
+      `Basic ${btoa(`${sessionStorage.getItem('user')}:${decryptPassword({ data: sessionStorage.getItem('webdav') as string, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 

@@ -2,32 +2,15 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
-import {
-  MobileLogo,
-  Firewall,
-  Conferences,
-  LearningManagement,
-  FileSharing,
-  Virtualization,
-  DesktopDeployment,
-  Network,
-  Mail,
-  SchoolInformation,
-  Printer,
-  RoomBooking,
-  Forums,
-  Chat,
-  Wlan,
-  KnowledgeBase,
-  User,
-} from '@/assets/icons';
+import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
-import { translateKey } from '@/utils/common';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { ConfigType } from '@/datatypes/types';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import SidebarItem from './SidebarItem';
@@ -46,97 +29,20 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
 
-  // TODO: will move to separate file later
-  const MENU_ITEMS = [
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+
+  const sidebarItems = [
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
+      title: t(`${item.id}.sidebar`),
+      link: `/${item.id}`,
+      icon: item.icon,
+      color: item.color,
+    })),
     {
-      title: translateKey('conferences.sidebar'),
-      link: '/conferences',
-      icon: Conferences,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('firewall'),
-      link: '/firewall',
-      icon: Firewall,
+      title: t('settings.sidebar'),
+      link: '/settings',
+      icon: SettingsIcon,
       color: 'bg-ciGreenToBlue',
-    },
-    {
-      title: translateKey('virtualization'),
-      link: '/virtualization',
-      icon: Virtualization,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('learningManagement'),
-      link: '/learning-management',
-      icon: LearningManagement,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('fileSharing.sidebar'),
-      link: '/file-sharing',
-      icon: FileSharing,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('desktopDeployment'),
-      link: '/desktop-deployment',
-      icon: DesktopDeployment,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('network'),
-      link: '/network',
-      icon: Network,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('mail'),
-      link: '/mail',
-      icon: Mail,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('schoolInformation'),
-      link: '/school-information',
-      icon: SchoolInformation,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('printer'),
-      link: '/printer',
-      icon: Printer,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('roomBooking.sidebar'),
-      link: '/room-booking',
-      icon: RoomBooking,
-      color: 'bg-ciLightBlue',
-    },
-    {
-      title: translateKey('forums'),
-      link: '/forums',
-      icon: Forums,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('chat'),
-      link: '/chat',
-      icon: Chat,
-      color: 'bg-ciDarkBlue',
-    },
-    {
-      title: translateKey('wlan'),
-      link: '/wlan',
-      icon: Wlan,
-      color: 'bg-ciLightGreen',
-    },
-    {
-      title: translateKey('knowledgeBase'),
-      link: '/knowledge-base',
-      icon: KnowledgeBase,
-      color: 'bg-ciDarkBlue',
     },
   ];
 
@@ -153,7 +59,7 @@ const Sidebar = () => {
 
     const rect = sidebarIconsRef.current.getBoundingClientRect();
     setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
-  }, [size, translate, MENU_ITEMS]);
+  }, [size, translate, sidebarItems]);
 
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault();
@@ -246,9 +152,8 @@ const Sidebar = () => {
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
-          src={MobileLogo}
+          src={MobileLogoIcon}
           width={SIDEBAR_ICON_WIDTH}
-          // height="40px"
           alt=""
         />
         <div
@@ -256,9 +161,8 @@ const Sidebar = () => {
         >
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
           <img
-            src={MobileLogo}
+            src={MobileLogoIcon}
             width={SIDEBAR_ICON_WIDTH}
-            // height="40px"
             alt=""
           />
         </div>
@@ -326,7 +230,7 @@ const Sidebar = () => {
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
-          src={User}
+          src={UserIcon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative z-0 "
           alt=""
@@ -336,7 +240,7 @@ const Sidebar = () => {
         >
           <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
           <img
-            src={User}
+            src={UserIcon}
             width={SIDEBAR_ICON_WIDTH}
             alt=""
           />
@@ -365,9 +269,9 @@ const Sidebar = () => {
         onTouchMove={() => handleTouchMove}
         onTouchEnd={() => handleTouchEnd}
       >
-        {MENU_ITEMS.map((item) => (
+        {sidebarItems.map((item) => (
           <SidebarItem
-            key={item.title}
+            key={item.link}
             menuItem={item}
             isDesktop={isDesktop}
             pathname={pathname}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FileIcon } from 'react-file-icon';
 import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
-import { getFileNameFromPath } from '@/utils/common';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 interface FileIconComponentProps {
   filename: string;

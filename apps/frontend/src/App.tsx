@@ -19,11 +19,11 @@ const App = () => {
 
   // TODO: Move config to backend
   const oidcConfig: AuthProviderProps = {
-    authority: `${window.location.href}auth/realms/edulution`,
+    authority: `${window.location.origin}/auth/realms/edulution`,
     client_id: 'edulution-ui',
     redirect_uri: '',
     scope: 'openid',
-    silent_redirect_uri: window.location.href,
+    silent_redirect_uri: window.location.origin,
   };
 
   return (

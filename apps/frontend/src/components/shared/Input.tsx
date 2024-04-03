@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input as SHInput } from '@/components/ui/input';
+import { Input as SHInput } from '@/components/ui/Input';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { EyeDarkIcon, EyeDarkSlashIcon } from '@/assets/icons';
 

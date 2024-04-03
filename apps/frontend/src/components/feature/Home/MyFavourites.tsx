@@ -4,7 +4,7 @@ import { Button } from '@/components/shared/Button';
 import Printer from '@/assets/icons/edulution/Drucker.svg';
 import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
 import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
-import { Firewall } from '@/assets/icons';
+import { FirewallIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 
@@ -25,7 +25,7 @@ const MyFavourites = () => {
         </h4>
         <div className="mt-4 flex flex-col justify-between gap-6">
           <Button variant="btn-collaboration">
-            <p>{t('fileSharing.sidebar')}</p>
+            <p>{t('filesharing.sidebar')}</p>
             <img
               src={FileSharing}
               alt="Filesharing"
@@ -33,7 +33,7 @@ const MyFavourites = () => {
             />
           </Button>
           <Button variant="btn-organisation">
-            <p>{t('roomBooking.sidebar')}</p>
+            <p>{t('roombooking.sidebar')}</p>
             <img
               src={RoomBooking}
               alt="Raumbuchung"
@@ -41,7 +41,7 @@ const MyFavourites = () => {
             />
           </Button>
           <Button variant="btn-infrastructure">
-            <p>{t('printer')}</p>
+            <p>{t('printer.sidebar')}</p>
             <img
               src={Printer}
               alt="Drucker"
@@ -49,9 +49,9 @@ const MyFavourites = () => {
             />
           </Button>
           <Button variant="btn-security">
-            <p>{t('firewall')}</p>
+            <p>{t('firewall.sidebar')}</p>
             <img
-              src={Firewall}
+              src={FirewallIcon}
               alt="Firewall"
               width={BUTTONS_ICON_WIDTH}
             />

@@ -9,9 +9,9 @@ import Sidebar from '../ui/Sidebar';
 import MenuBar from '../shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const isMainPage = location.pathname === '/';
+  const isMainPage = pathname === '/';
   const isMenuBarVisible = !isMainPage && isDesktop;
   return (
     <div
@@ -20,7 +20,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
     >
       {isMenuBarVisible ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header />
+        <Header isMenuBarVisible={isMenuBarVisible} />
         <main className="flex-1">
           <Outlet />
         </main>

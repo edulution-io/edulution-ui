@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
+import { useTranslation } from 'react-i18next';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;
@@ -16,6 +17,8 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
   const setProgress = useFileManagerStore((state) => state.setUploadProgress);
   const resetProgress = useFileManagerStore((state) => state.resetProgress);
+  const { t } = useTranslation();
+
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -31,10 +34,10 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     setIsOpen(false);
     try {
       await WebDavFunctions.uploadMultipleFiles(selectedFiles, currentPath, handleProgressUpdate);
-      setFileOperationSuccessful(true, 'Files uploaded successfully');
+      setFileOperationSuccessful(true, t('fileOperationSuccessful'));
       resetProgress();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      const errorMessage = error instanceof Error ? error.message : t('unknownErrorOccurred');
       setFileOperationSuccessful(false, errorMessage);
       resetProgress();
     } finally {
@@ -49,24 +52,21 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Upload Your Item</DialogTitle>
+        <DialogTitle>{t('fileSharingUpload.title')}</DialogTitle>
         <DropZone
           files={selectedFiles}
           setFiles={setSelectedFiles}
         />
-        {selectedFiles.length === 0 ? (
-          <Button disabled={selectedFiles.length > 5 || selectedFiles.length === 0}>Select upto 5 items a time</Button>
-        ) : (
-          <Button
-              className="bg-green-600"
-            disabled={selectedFiles.length > 5 || selectedFiles.length === 0}
-            onClick={() => {
-              uploadFiles().catch((error) => console.error('Failed to upload files', error));
-            }}
-          >
-            Upload: {selectedFiles.length} items
-          </Button>
-        )}
+
+        <Button
+          className="bg-green-600"
+          disabled={selectedFiles.length > 5 || selectedFiles.length === 0}
+          onClick={() => {
+            uploadFiles().catch((error) => console.error(t('uploadFailed'), error));
+          }}
+        >
+          {t('fileSharingUpload.uploadItems', { count: selectedFiles.length })}
+        </Button>
       </DialogContent>
     </Dialog>
   );

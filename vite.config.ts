@@ -23,7 +23,7 @@ export default defineConfig({
         },
       },
       '/webdav': {
-        target: 'https://server.schulung.multi.schule/',
+        target: 'https://server.schulung.multi.schule',
         changeOrigin: true,
         secure: false,
         headers: {

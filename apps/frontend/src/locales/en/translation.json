@@ -2,37 +2,130 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal edulution.io dashboard. The place where all your applications for digital education are collected.",
-  "dashboard": { "mobileAccess": { "title": "MOBILER DATENZUGRIFF", "manual": "Manual" } },
+  "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "dashboard": {
+    "mobileAccess": {
+      "title": "MOBILE DATA ACCESS",
+      "manual": "Manual",
+      "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
+    }
+  },
+  "ticketsystem": { "title": "TICKET SYSTEM", "sidebar": "Ticket System" },
+  "mail": { "title": "MAIL", "sidebar": "Mail" },
+  "chat": { "title": "CHAT", "sidebar": "Chat" },
+  "conferences": { "title": "CONFERENCES", "sidebar": "Conferences" },
+  "knowledgebase": { "title": "KNOWLEDGEBASE", "sidebar": "Knowledgebase" },
+  "filesharing": { "title": "FILE SHARING", "sidebar": "File Sharing" },
+  "forums": { "title": "FORUMS", "sidebar": "Forums" },
+  "roombooking": { "title": "ROOM BOOKING", "sidebar": "Room Booking", "rooms": "Rooms" },
+  "learningmanagement": { "title": "LEARNING MANAGEMENT", "sidebar": "Learning Management" },
+  "schoolinformation": { "title": "SCHOOL INFORMATION", "sidebar": "School Information" },
+  "schoolmanagement": { "title": "SCHOOL MANAGEMENT", "sidebar": "School Management" },
+  "printer": { "title": "PRINTER", "sidebar": "Printe" },
+  "network": { "title": "NETWORK", "sidebar": "Network" },
+  "locationservices": { "title": "LOCATION SERVICES", "sidebar": "Location Services" },
+  "desktopdeployment": { "title": "DESKTOP DEPLOYMENT", "sidebar": "Desktop Deployment" },
+  "wlan": { "title": "WLAN", "sidebar": "Wlan" },
+  "mobiledevices": { "title": "MOBILE DEVICES", "sidebar": "Mobile Devices" },
+  "virtualization": { "title": "VIRTUALIZATION", "sidebar": "Virtualization" },
+  "firewall": { "title": "FIREWALL", "sidebar": "Firewall" },
+  "antimalware": { "title": "ANTI-MALWARE", "sidebar": "Anti-Malware" },
+  "backup": { "title": "BACKUP", "sidebar": "Backup" },
+  "settings": {
+    "title": "SETTINGS",
+    "sidebar": "Settings",
+    "addApp": { "title": "Add app", "description": "Please select an app:" },
+    "description": "Here you can make all settings."
+  },
 
-  "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
-  "firewall": "Firewall",
-  "learningManagement": "Learning Management",
-  "virtualization": "Virtualization",
-  "fileSharing": { "title": "MEINE DATEIEN", "sidebar": "Meine Dateien" },
-  "desktopDeployment": "Desktop Deployment",
-  "network": "Network",
-  "roomBooking": { "title": "ROOMBOOKING", "sidebar": "Room Booking", "rooms": "Rooms" },
-  "mail": "Mail",
-  "wlan": "WLAN",
-  "forums": "Forums",
-  "schoolInformation": "School Information",
-  "knowledgeBase": "Knowledge Base",
-  "printer": "Printer",
-  "chat": "Chat",
+  "forwardingpage": {
+    "action": "This link will take you to the external site of the provider.",
+    "description": "The application opens in a new window. No further authorization is required."
+  },
+
   "menu": "MENU",
   "home": "Home",
   "programs": "Programs",
   "share": "Share",
   "students": "Students",
 
-  "common": {
-    "add": "Add",
-    "reload": "Reload",
-    "logout": "Logout",
-    "login": "Login",
-    "username": "Username",
-    "password": "Password",
-    "loading": "Loading..."
+  "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save",  "login": "Login",
+  "username": "Username",
+  "password": "Password",
+  "loading": "Loading..." },
+  "form": {
+    "path": "Path",
+    "pathDescription": "Please enter a valid URL.",
+    "apptype": "Link Type",
+    "native": "Native Support",
+    "forwarded": "Forwarded",
+    "embedded": "Embedded",
+    "saved": "Configuration saved!"
+  },
+  "fileOperationSuccessful": "File operation successful",
+  "unknownErrorOccurred": "An unknown error occurred",
+  "fileSharingTable": {
+    "filename": "File Name",
+    "size": "Size",
+    "lastModified": "Last Modified",
+    "type": "Type"
+  },
+  "fileSharingUpload": {
+    "title": "Upload Files",
+    "upload": "Upload",
+    "selectFile": "Select up to 5 files at a time",
+    "uploadItems": "Upload: {{count}} items",
+    "dragDropClick": "Drag files here or click to select files",
+    "filesToUpload": "Files to upload"
+  },
+  "table": {
+    "rowsSelected": "{{selected}} of {{total}} row(s) selected",
+    "noDataAvailable": "No data available"
+  },
+  "loadingIndicator": {
+    "message": "Please wait while we process your request..."
+  },
+  "fileCategory": {
+    "folder": "Folder",
+    "document": "Document",
+    "image": "Image",
+    "video": "Video",
+    "audio": "Audio",
+    "acrobat": "PDF"
+  },
+  "fileCreateNewContent": {
+    "fileDialogTitle": "Create a new file",
+    "directoryDialogTitle": "Create a new directory",
+    "createButtonText": "Create",
+    "fileOperationSuccessful": "File creation successful",
+    "noMessageAvailable": "No message available",
+    "unknownErrorOccurred": "An unknown error occurred"
+  },
+  "fileRenameContent": {
+    "renameYourDirectory": "Rename your directory",
+    "renameYourFile": "Rename your file",
+    "to": "to",
+    "rename": "Rename",
+    "unknownErrorOccurred": "An unknown error occurred"
+  },
+  "moveItemDialog": {
+    "changeDirectory": "Change directory",
+    "currentDirectory": "Current directory",
+    "folderName": "Folder name",
+    "movingItems": {
+      "one": "Moving 1 item",
+      "other": "Moving {{count}} items"
+    },
+    "moveTo": "Move to",
+    "move": "Move",
+    "unknownErrorOccurred": "An unknown error occurred"
+  },
+  "deleteDialog": {
+    "areYouSure": "Are you absolutely sure?",
+    "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",
+    "selectedItems": "Selected Items:",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion"
   }
 }

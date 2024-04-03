@@ -4,7 +4,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import type { DirectoryFile } from '@/datatypes/filesystem';
-import { getFileNameFromPath } from '@/utils/common';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -13,7 +13,7 @@ interface PDFPreviewProps {
 }
 
 const PDFPreview: FC<PDFPreviewProps> = ({ file }) => {
-  const mediaUrl = import.meta.env.VITE_SERVER_URL + file.filename;
+  const mediaUrl = `${window.location.origin}/webdav/${file.filename}`;
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const containerRef = useRef<HTMLDivElement | null>(null);
