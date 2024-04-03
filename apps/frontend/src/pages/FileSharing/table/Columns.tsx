@@ -24,7 +24,7 @@ import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
-import { getFileCategorie, getElapsedTime } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getFileCategorie, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
@@ -32,13 +32,6 @@ const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 const selectFileNameWidth = 'w-3/5 lg:w-1/4 xl:w-1/4';
 const operationsColumnWidth = 'w-2/5 lg:w-3/4 xl:w-3/4';
-const parseDate = (value: unknown): Date | null => {
-  if (typeof value === 'string' || typeof value === 'number') {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-  return null;
-};
 
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
@@ -251,7 +244,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.rename')}
                   trigger={
                     <span>
                       <RenameItemDialog
@@ -269,7 +262,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.move')}
                   trigger={
                     <MoveItemDialog
                       trigger={
@@ -291,7 +284,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                       handleDownload(row.original).catch(() => {});
                     }
                   }}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.download')}
                   trigger={
                     <div>
                       <MdOutlineFileDownload />
@@ -302,7 +295,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.delete')}
                   trigger={
                     <DeleteItemAlert
                       trigger={

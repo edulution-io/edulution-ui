@@ -1,4 +1,5 @@
 import { IconType } from 'react-file-icon';
+import { useTranslation } from 'react-i18next';
 
 interface ContentFileTypes {
   [extension: string]: IconType | undefined;
@@ -38,9 +39,18 @@ export function getFileCategorie(filename: string): IconType {
   return contentFiletypes[`.${extension}`] ?? 'document';
 }
 
+export const parseDate = (value: unknown): Date | null => {
+  if (typeof value === 'string' || typeof value === 'number') {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  return null;
+};
+
 export function getElapsedTime(dateParam: Date): string {
+  const { t } = useTranslation();
   if (!dateParam) {
-    return 'Invalid date';
+    return t('timeAgo.invalidDate');
   }
 
   const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
@@ -53,21 +63,22 @@ export function getElapsedTime(dateParam: Date): string {
   const difference = TODAY - date.getTime();
 
   if (difference < MINUTE) {
-    return 'just now';
+    return t('timeAgo.justNow');
   }
   if (difference < HOUR) {
-    return `${Math.round(difference / MINUTE)}m ago`;
+    return t('timeAgo.minuteAgo', { count: Math.round(difference / MINUTE) });
   }
   if (difference < DAY) {
-    return `${Math.round(difference / HOUR)}h ago`;
+    return t('timeAgo.hourAgo', { count: Math.round(difference / HOUR) });
   }
   if (difference < DAY * 7) {
-    return `${Math.round(difference / DAY)}d ago`;
+    return t('timeAgo.dayAgo', { count: Math.round(difference / DAY) });
   }
   return date.toLocaleDateString();
 }
 
 export default {
+  parseDate,
   getFileCategorie,
   timeAgo: getElapsedTime,
 };

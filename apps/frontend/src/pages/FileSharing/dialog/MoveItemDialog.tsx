@@ -9,8 +9,8 @@ import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -86,7 +86,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         handleNextFolder(row);
       }}
       style={{
-        backgroundColor: selectedRow?.filename === row.filename ? '#7a7777' : 'transparent',
+        backgroundColor: selectedRow?.filename === row.filename ? 'bg-ciDarkBlue bg-opacity-30' : 'bg-transparent',
         cursor: 'pointer',
         color: isMobile ? 'white' : 'black',
       }}

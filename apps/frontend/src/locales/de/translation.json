@@ -49,11 +49,11 @@
     "type": "Typ"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
-  "fileSharingUpload": {
+  "filesharingUpload": {
     "title": "Dateien hochladen",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
-    "uploadItems": "Hochladen: {{count}} Artikel",
+    "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "filesToUpload": "Dateien zum Hochladen"
   },
@@ -82,6 +82,7 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
   "fileRenameContent": {
+    "placeholder": "Geben Sie den neuen Namen ein",
     "renameYourDirectory": "Benennen Sie Ihr Verzeichnis um",
     "renameYourFile": "Benennen Sie Ihre Datei um",
     "to": "zu",
@@ -107,11 +108,34 @@
     "selectedItems": "Ausgewählte Elemente:",
     "cancel": "Abbrechen",
     "continue": "Fortfahren",
-    "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten"
+    "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten",
+    "deleteFiles": "Dateien löschen"
   },
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Logout"
+  },
+   "timeAgo": {
+    "justNow": "gerade Eben",
+    "minuteAgo": "vor {{count}} Minuten",
+    "hourAgo": "vor {{count}} Stunden",
+    "dayAgo": "vor {{count}} Tagen",
+    "invalidDate": "Ungültiges Datum"
+  },
+  "dialog": {
+    "close": "Schließen"
+  },
+
+  "tooltip": {
+    "upload": "Hochladen",
+    "create": {
+        "file": "Datei erstellen",
+        "folder": "Ordner erstellen"
+    },
+    "rename": "Umbenennen",
+    "move": "Verschieben",
+    "delete": "Löschen",
+    "download": "Herunterladen"
   }
 }

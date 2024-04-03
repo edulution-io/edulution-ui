@@ -7,13 +7,13 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import useFileManagerStore from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
 import {
   getPathWithoutFileName,
   validateDirectoryName,
   validateFileName,
 } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
@@ -73,7 +73,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
         </SheetHeader>
         <SheetDescription>
           <Input
-            placeholder="New name"
+            placeholder={t('fileRenameContent.placeholder')}
             value={localFileName}
             onChange={handleInputChange}
           />
@@ -102,7 +102,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
       </DialogTitle>
       <DialogDescription>
         <Input
-          placeholder="New name"
+          placeholder={t('fileRenameContent.placeholder')}
           value={localFileName}
           onChange={handleInputChange}
         />

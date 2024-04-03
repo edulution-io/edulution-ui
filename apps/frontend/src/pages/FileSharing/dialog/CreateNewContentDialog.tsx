@@ -6,9 +6,9 @@ import useFileManagerStore from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/shared/Button';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface CreateNewContentDialogProps {
   trigger: ReactNode;
@@ -92,14 +92,14 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
         <SheetHeader>
           {contentType === ContentType.file ? (
             <>
-              <SheetTitle>Name your new File</SheetTitle>
+              <SheetTitle>${t('fileCreateNewContent.fileDialogTitle')}</SheetTitle>
               <SheetDescription>
                 <FileCreationForm />
               </SheetDescription>
             </>
           ) : (
             <>
-              <SheetTitle>Create New Directory</SheetTitle>
+              <SheetTitle>${t('fileCreateNewContent.directoryDialogTitle')}</SheetTitle>
               <SheetDescription>
                 <DirectoryCreationForm />
               </SheetDescription>
@@ -115,7 +115,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
               handleCreateContent().catch(() => null);
             }}
           >
-            Create
+            {t('fileCreateNewContent.createButtonText')}
           </Button>
         </div>
       </SheetContent>

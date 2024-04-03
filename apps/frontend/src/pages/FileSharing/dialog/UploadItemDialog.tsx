@@ -5,8 +5,8 @@ import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;
@@ -68,7 +68,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
               });
             }}
           >
-            Upload: {selectedFiles.length} items
+            {t('filesharingUpload.uploadItems', { count: selectedFiles.length })}
           </Button>
         </div>
       )}
@@ -95,7 +95,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>{t(`fileSharingUpload.title`)}</DialogTitle>
+        <DialogTitle>{t(`filesharingUpload.title`)}</DialogTitle>
         {uploadContent}
       </DialogContent>
     </Dialog>

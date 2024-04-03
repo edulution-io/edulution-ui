@@ -18,7 +18,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -81,7 +81,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent side="bottom">
         <SheetHeader>
-          <SheetTitle>Delete Files</SheetTitle>
+          <SheetTitle>${t('deleteDialog.deleteFiles')}</SheetTitle>
         </SheetHeader>
         <div>{sharedContent}</div>
         <div className="flex flex-row justify-end space-x-4 pt-3 text-black">

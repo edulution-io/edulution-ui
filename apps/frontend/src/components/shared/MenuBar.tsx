@@ -5,8 +5,9 @@ import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@/lib/utils';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
+
 import useSidebarManagerStore from '@/store/sidebarManagerStore';
+import { useMediaQuery } from 'usehooks-ts';
 
 const MenuBar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useSidebarManagerStore((state) => [
@@ -24,7 +25,7 @@ const MenuBar: React.FC = () => {
   }, [isMobile]);
 
   const renderMenuBarContent = () => (
-    <div className="w-full">
+    <div className="max-w-[300px]">
       <div className="flex flex-col items-center justify-center py-6">
         <img
           src={menuBarEntries.icon}
@@ -38,7 +39,10 @@ const MenuBar: React.FC = () => {
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
             <MenubarTrigger
-              className="flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors"
+              className={cn(
+                'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
+                menuBarEntries.color,
+              )}
               onClick={item.action}
             >
               <img

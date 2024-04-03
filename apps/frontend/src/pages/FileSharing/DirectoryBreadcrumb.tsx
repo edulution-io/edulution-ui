@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
-import useMediaQuery from '@/hooks/media/useMediaQuery';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -27,7 +27,11 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   onNavigate,
   style = { marginRight: '0.5rem', color: 'white' },
 }) => {
-  const segments = path.split('/').filter(Boolean);
+  const getStartingPathForUser = () => `/teachers/${import.meta.env.VITE_USERNAME}/`;
+  const startingPath = getStartingPathForUser();
+  const allSegments = path.split('/').filter(Boolean);
+  const startingSegments = startingPath.split('/').filter(Boolean);
+  const segments = allSegments.slice(startingSegments.length - 1);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const displaySegments = isMobile ? 1 : 4;
   const { t } = useTranslation();
@@ -43,9 +47,9 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
         <BreadcrumbItem key="home">
           <BreadcrumbLink
             href="#"
-            onClick={() => onNavigate('/')}
+            onClick={() => onNavigate(`/teachers/${import.meta.env.VITE_USERNAME}/`)}
           >
-            Home
+            {t('home')}
           </BreadcrumbLink>
         </BreadcrumbItem>
 
@@ -60,7 +64,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
-                  className="z-50 text-black"
+                  className="z-50 bg-white text-black"
                 >
                   {segments.slice(0, -1).map((segment) => (
                     <DropdownMenuItem
