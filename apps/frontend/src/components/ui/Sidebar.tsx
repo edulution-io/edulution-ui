@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
@@ -31,20 +31,24 @@ const Sidebar = () => {
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
+  const sidebarItems = useMemo(() => {
+    const filteredItems = SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined);
+    const mappedItems = filteredItems.map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
       color: item.color,
-    })),
-    {
+    }));
+
+    const settingsItem = {
       title: t('settings.sidebar'),
       link: '/settings',
       icon: SettingsIcon,
       color: 'bg-ciGreenToBlue',
-    },
-  ];
+    };
+
+    return [...mappedItems, settingsItem];
+  }, [config]);
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
 
@@ -61,21 +65,24 @@ const Sidebar = () => {
     setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
   }, [size, translate, sidebarItems]);
 
-  const handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
-    setTranslate((prevTranslate) => {
-      if (sidebarIconsRef.current == null) {
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault();
+      setTranslate((prevTranslate) => {
+        if (sidebarIconsRef.current == null) {
+          return prevTranslate;
+        }
+        if (isDownButtonVisible && e.deltaY > 0) {
+          return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
+        }
+        if (isUpButtonVisible && e.deltaY < 0 && translate > 0) {
+          return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
+        }
         return prevTranslate;
-      }
-      if (isDownButtonVisible && e.deltaY > 0) {
-        return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
-      }
-      if (isUpButtonVisible && e.deltaY < 0 && translate > 0) {
-        return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
-      }
-      return prevTranslate;
-    });
-  };
+      });
+    },
+    [isDownButtonVisible, isUpButtonVisible, translate],
+  );
 
   useEffect(() => {
     const container = sidebarIconsRef.current;
@@ -92,29 +99,32 @@ const Sidebar = () => {
 
   const [startY, setStartY] = useState<number | null>(null);
 
-  const handleTouchStart = (event: TouchEvent) => {
+  const handleTouchStart = useCallback((event: TouchEvent) => {
     setStartY(event.touches[0].clientY);
-  };
+  }, []);
 
-  const handleTouchMove = (event: TouchEvent) => {
-    event.preventDefault();
-    if (!startY) return;
+  const handleTouchMove = useCallback(
+    (event: TouchEvent) => {
+      event.preventDefault();
+      if (!startY) return;
 
-    const deltaY = event.touches[0].clientY - startY;
+      const deltaY = event.touches[0].clientY - startY;
 
-    setTranslate((prevTranslate) => {
-      if (sidebarIconsRef.current == null) {
+      setTranslate((prevTranslate) => {
+        if (sidebarIconsRef.current == null) {
+          return prevTranslate;
+        }
+        if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
+        if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
         return prevTranslate;
-      }
-      if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
-      if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
-      return prevTranslate;
-    });
-  };
+      });
+    },
+    [isDownButtonVisible, isUpButtonVisible, startY, translate],
+  );
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     setStartY(null);
-  };
+  }, []);
 
   useEffect(() => {
     const container = sidebarIconsRef.current;

@@ -15,7 +15,7 @@ const App = () => {
     i18n.changeLanguage(lang).catch((e) => {
       console.error(e);
     });
-  }, [lang, i18n]);
+  }, [lang]);
 
   // TODO: Move config to backend NIEDUUI-26
   const oidcConfig: AuthProviderProps = {

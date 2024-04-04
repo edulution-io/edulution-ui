@@ -129,25 +129,6 @@ const AppRouter = () => {
   const auth = useAuth();
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  // useEffect(() => {
-  //   const handleUserInteraction = () => {
-  //     // Fügen Sie hier den Code hinzu, der bei Benutzerinteraktionen ausgeführt werden soll
-  //     console.log('Benutzerinteraktion erkannt');
-
-  //     auth.signinSilent({}).catch(console.error);
-  //   };
-
-  //   // Event-Listener für Benutzerinteraktionen hinzufügen
-  //   document.addEventListener('mousedown', handleUserInteraction);
-  //   document.addEventListener('keydown', handleUserInteraction);
-
-  //   // Event-Listener entfernen, wenn die Komponente unmontiert wird
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleUserInteraction);
-  //     document.removeEventListener('keydown', handleUserInteraction);
-  //   };
-  // }, []);
-
   useEffect(() => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
