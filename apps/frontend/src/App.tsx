@@ -17,9 +17,9 @@ const App = () => {
     });
   }, [lang, i18n]);
 
-  // TODO: Move config to backend
+  // TODO: Move config to backend NIEDUUI-26
   const oidcConfig: AuthProviderProps = {
-    authority: `${window.location.origin}/auth/realms/edulution`,
+    authority: `https://auth.schulung.multi.schule/auth/realms/edulution`,
     client_id: 'edulution-ui',
     redirect_uri: '',
     scope: 'openid',
