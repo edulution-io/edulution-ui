@@ -222,7 +222,7 @@ const Sidebar = () => {
       <NavLink
         onClick={() => {
           auth.removeUser().catch(console.error);
-          // TODO: Remove if webdav is stored in backend
+          // TODO: Remove if webdav is stored in backend NIEDUUI-26
           sessionStorage.clear();
         }}
         to="/"

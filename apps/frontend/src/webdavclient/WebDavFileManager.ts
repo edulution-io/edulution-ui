@@ -6,7 +6,7 @@ import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
-// TODO: Remove/Rework if webdav is stored in backend
+// TODO: Remove/Rework if webdav is stored in backend NIEDUUI-26
 export const createWebdavClient = () =>
   createClient(`${window.location.origin}/webdav`, {
     username: sessionStorage.getItem('user') as string,
