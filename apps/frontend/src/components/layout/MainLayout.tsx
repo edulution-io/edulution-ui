@@ -12,15 +12,15 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const isMainPage = pathname === '/';
-  const isMenuBarVisible = !isMainPage && isDesktop;
+  const isLogoShown = isMainPage && isDesktop;
   return (
     <div
       className="flex bg-cover bg-center opacity-90"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {isMenuBarVisible ? <MenuBar /> : null}
+      {!isMainPage ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header isMenuBarVisible={isMenuBarVisible} />
+        <Header isLogoShown={isLogoShown} />
         <main className="flex-1">
           <Outlet />
         </main>
