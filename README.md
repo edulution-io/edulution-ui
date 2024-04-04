@@ -62,3 +62,21 @@ export default {
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+
+# Docker
+
+## Prepare
+
+Generate self signed key and cert
+
+```bash
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt
+```
+
+## Build
+
+Build container and push to ghcr
+
+```bash
+docker build -t ghcr.io/edulution-io/edulution-ui:0.0.1 . && docker push ghcr.io/edulution-io/edulution-ui:0.0.1
+```
