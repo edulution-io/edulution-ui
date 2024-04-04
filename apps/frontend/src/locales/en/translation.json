@@ -91,7 +91,7 @@
     "acrobat": "PDF"
   },
   "fileCreateNewContent": {
-    "fileDialogTitle": "Create a new file",
+
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
     "fileOperationSuccessful": "File creation successful",
