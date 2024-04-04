@@ -6,20 +6,37 @@ const loadFile = (path: string): Record<string, unknown> =>
 const deTranslations = loadFile('./apps/frontend/src/locales/de/translation.json');
 const enTranslations = loadFile('./apps/frontend/src/locales/en/translation.json');
 
-const enKeys = Object.keys(enTranslations).sort();
-const deKeys = Object.keys(deTranslations).sort();
+const flattenKeys = (obj: Record<string, unknown>): string[] => {
+  const keys: string[] = [];
+  const flatten = (object: Record<string, unknown>, path: string[] = []) => {
+    Object.keys(object).forEach((key) => {
+      if (typeof object[key] === 'object') {
+        flatten(object[key] as Record<string, unknown>, [...path, key]);
+      } else {
+        keys.push([...path, key].join('.'));
+      }
+    });
+  };
+  flatten(obj);
+  return keys;
+};
 
-const missingInEN = deKeys.filter((key) => !enKeys.includes(key));
-const missingInDE = enKeys.filter((key) => !deKeys.includes(key));
+const enNestedKeys = flattenKeys(enTranslations);
+const deNestedKeys = flattenKeys(deTranslations);
 
-if (missingInEN.length > 0 || missingInDE.length > 0) {
+const missingNestedInEN = deNestedKeys.filter((key) => !enNestedKeys.includes(key));
+const missingNestedInDE = enNestedKeys.filter((key) => !deNestedKeys.includes(key));
+
+if (missingNestedInEN.length > 0 || missingNestedInDE.length > 0) {
   console.error('Translation files do not contain the same keys!');
 
-  if (missingInEN.length > 0) {
-    console.error(`Missing in EN translation: ${missingInEN.join(', ')}`);
+  if (missingNestedInEN.length > 0) {
+    console.error(`Missing nested keys in EN translation: ${missingNestedInEN.join(', ')}`);
   }
-  if (missingInDE.length > 0) {
-    console.error(`Missing in DE translation: ${missingInDE.join(', ')}`);
+  if (missingNestedInDE.length > 0) {
+    console.error(`Missing nested keys in DE translation: ${missingNestedInDE.join(', ')}`);
   }
   process.exit(1);
+} else {
+  console.log('All keys and nested keys match.');
 }
