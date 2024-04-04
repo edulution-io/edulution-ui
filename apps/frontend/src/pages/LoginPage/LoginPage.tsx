@@ -11,7 +11,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import { Link } from 'react-router-dom';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 
 const LoginPage: React.FC = () => {
@@ -113,7 +112,8 @@ const LoginPage: React.FC = () => {
             )}
           />
           <div className="flex justify-between">
-            <div className="my-4 block font-bold text-gray-500">
+            {/* TODO: Add valid Password reset page -> NIEDUUI-53 */}
+            {/* <div className="my-4 block font-bold text-gray-500">
               <input
                 type="checkbox"
                 className="mr-2 leading-loose"
@@ -122,12 +122,12 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="my-4 block font-bold text-gray-500">
               <Link
-                to="/" // TODO: Add valid Password reset page
+                to="/" 
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
               >
                 <p>{t('login.forgot_password')}</p>
               </Link>
-            </div>
+            </div> */}
           </div>
           <Button
             className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
