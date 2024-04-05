@@ -14,7 +14,7 @@ const MenuBar: React.FC = () => {
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
 
   return (
-    <VerticalMenubar className="scrollbar-none flex h-screen w-full overflow-y-scroll bg-black bg-opacity-40">
+    <VerticalMenubar className="flex h-screen w-full overflow-y-scroll bg-black bg-opacity-40 scrollbar-none">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center py-6">
           <img
