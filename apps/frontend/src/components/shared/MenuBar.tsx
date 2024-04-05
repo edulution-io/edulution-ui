@@ -14,7 +14,7 @@ const MenuBar: React.FC = () => {
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
 
   return (
-    <VerticalMenubar className="flex h-screen w-full overflow-hidden bg-black bg-opacity-40">
+    <VerticalMenubar className="scrollbar-none flex h-screen w-full overflow-y-scroll bg-black bg-opacity-40">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center py-6">
           <img
@@ -42,7 +42,7 @@ const MenuBar: React.FC = () => {
                 <img
                   src={item.icon}
                   alt=""
-                  className="h-12 w-12 object-contain "
+                  className="h-12 w-12 object-contain"
                 />
                 <p>{item.label}</p>
               </MenubarTrigger>

@@ -31,24 +31,20 @@ const Sidebar = () => {
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  const sidebarItems = useMemo(() => {
-    const filteredItems = SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined);
-    const mappedItems = filteredItems.map((item) => ({
+  const sidebarItems = [
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
       color: item.color,
-    }));
-
-    const settingsItem = {
+    })),
+    {
       title: t('settings.sidebar'),
       link: '/settings',
       icon: SettingsIcon,
       color: 'bg-ciGreenToBlue',
-    };
-
-    return [...mappedItems, settingsItem];
-  }, [config]);
+    },
+  ];
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
 
@@ -99,9 +95,12 @@ const Sidebar = () => {
 
   const [startY, setStartY] = useState<number | null>(null);
 
-  const handleTouchStart = useCallback((event: TouchEvent) => {
-    setStartY(event.touches[0].clientY);
-  }, []);
+  const handleTouchStart = useCallback(
+    (event: TouchEvent) => {
+      setStartY(event.touches[0].clientY);
+    },
+    [isDownButtonVisible, isUpButtonVisible, translate, startY],
+  );
 
   const handleTouchMove = useCallback(
     (event: TouchEvent) => {
@@ -124,7 +123,7 @@ const Sidebar = () => {
 
   const handleTouchEnd = useCallback(() => {
     setStartY(null);
-  }, []);
+  }, [isDownButtonVisible, isUpButtonVisible, translate, startY]);
 
   useEffect(() => {
     const container = sidebarIconsRef.current;
@@ -206,7 +205,7 @@ const Sidebar = () => {
     <div key="down">
       <button
         type="button"
-        className={`absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-10' : 'bottom-0 h-[58px] border-t-0'}`}
+        className={`absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-[58px]' : 'bottom-0 h-[58px] border-t-0'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
             if (sidebarIconsRef.current == null) {
@@ -228,7 +227,10 @@ const Sidebar = () => {
   );
 
   const logoutButton = () => (
-    <div key="logout">
+    <div
+      key="logout"
+      className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black ' : 'border-b-2 border-ciLightGrey'}`}
+    >
       <NavLink
         onClick={() => {
           auth.removeUser().catch(console.error);
@@ -236,7 +238,7 @@ const Sidebar = () => {
           sessionStorage.clear();
         }}
         to="/"
-        className={`group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 border-ciLightGrey bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
+        className={`group flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 md:block md:px-2  ${pathname === '/logout' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
@@ -245,16 +247,16 @@ const Sidebar = () => {
           className="relative z-0 "
           alt=""
         />
-        <div
-          className={`absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] border-ciLightGrey bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
-        >
-          <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
-          <img
-            src={UserIcon}
-            width={SIDEBAR_ICON_WIDTH}
-            alt=""
-          />
-        </div>
+        {isDesktop ? (
+          <div className="absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
+            <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
+            <img
+              src={UserIcon}
+              width={SIDEBAR_ICON_WIDTH}
+              alt=""
+            />
+          </div>
+        ) : null}
       </NavLink>
     </div>
   );
@@ -263,17 +265,16 @@ const Sidebar = () => {
     <div className="fixed right-0 h-screen bg-black bg-opacity-90 md:bg-none">
       {!isDesktop && isOpen ? (
         <>
-          <div className="relative right-0 top-0 z-[50] h-[100px] bg-black" />
+          <div className="relative right-0 top-0 z-[98] h-[100px] bg-black" />
           <div className="fixed right-0 top-0 z-[99] pr-4 pt-4">{menuButton()}</div>
         </>
       ) : null}
-      {isDesktop ? homeButton() : null}
+      {homeButton()}
       {isUpButtonVisible ? upButton() : null}
 
       <div
         ref={sidebarIconsRef}
         style={{ transform: `translateY(-${translate}px)`, overflowY: !isDesktop ? 'scroll' : 'clip' }}
-        onClickCapture={toggle}
         onWheel={() => handleWheel}
         onTouchStart={() => handleTouchStart}
         onTouchMove={() => handleTouchMove}
@@ -288,6 +289,7 @@ const Sidebar = () => {
             translate={translate}
           />
         ))}
+        {!isDesktop ? logoutButton() : null}
       </div>
       {isDownButtonVisible ? downButton() : null}
       {isDesktop ? logoutButton() : null}
@@ -296,10 +298,10 @@ const Sidebar = () => {
 
   if (!isDesktop) {
     return (
-      <div>
+      <>
         {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
         <div className="bg-black">{isOpen && renderListItem()}</div>
-      </div>
+      </>
     );
   }
   return renderListItem();

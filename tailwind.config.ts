@@ -84,6 +84,7 @@ module.exports = {
   },
   plugins: [
     require('tailwindcss-animate'),
+    require('tailwind-scrollbar'),
     plugin(function ({ addBase, theme }) {
       addBase({
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
