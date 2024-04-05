@@ -12,7 +12,7 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import { useAuth, AuthContextProps } from 'react-oidc-context';
+import { useAuth } from 'react-oidc-context';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
@@ -38,10 +38,10 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (auth: AuthContextProps, config: ConfigType) =>
+const router = (isAuthenticated: boolean, config: ConfigType) =>
   createBrowserRouter(
     createRoutesFromElements(
-      !auth.isAuthenticated ? (
+      !isAuthenticated ? (
         <Route element={<BlankLayout />}>
           <Route
             path="/"
@@ -129,6 +129,8 @@ const AppRouter = () => {
   const auth = useAuth();
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
+  const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+
   useEffect(() => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
@@ -141,6 +143,6 @@ const AppRouter = () => {
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(auth, config)} />;
+  return <RouterProvider router={router(isAuthenticated, config)} />;
 };
 export default AppRouter;

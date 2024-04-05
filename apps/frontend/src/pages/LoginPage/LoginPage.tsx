@@ -46,6 +46,7 @@ const LoginPage: React.FC = () => {
 
     sessionStorage.setItem('webdav', encryptedPassword);
     sessionStorage.setItem('user', form.getValues('username') as string);
+    sessionStorage.setItem('isAuthenticated', `${auth.isAuthenticated}`);
 
     createWebdavClient();
 
