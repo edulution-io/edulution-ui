@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
@@ -6,28 +6,25 @@ import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@/utils/common';
 
-import useSidebarManagerStore from '@/store/sidebarManagerStore';
-import { useMediaQuery } from 'usehooks-ts';
+import { useMediaQuery, useToggle, useOnClickOutside } from 'usehooks-ts';
 
 const MenuBar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useSidebarManagerStore((state) => [
-    state.isMenuBarOpen,
-    state.setIsMenuBarOpen,
-  ]);
+  const [isOpen, toggle] = useToggle(false);
+  const menubarRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenuBar = useSidebarManagerStore((state) => state.toggleMenuBarOpen);
   const menuBarEntries = useMenuBarConfig();
   const { pathname } = useLocation();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobile = useMediaQuery('(max-width: 768px)');
 
-  useEffect(() => {
-    setIsCollapsed(isMobile);
-  }, [isMobile]);
+  useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
 
   const renderMenuBarContent = () => (
-    <div className="max-w-[300px]">
+    <div
+      className="max-w-[300px]"
+      ref={menubarRef}
+    >
       <div className="bg flex flex-col items-center justify-center py-6">
         <img
           src={menuBarEntries.icon}
@@ -48,8 +45,8 @@ const MenuBar: React.FC = () => {
               )}
               onClick={() => {
                 item.action();
-                setIsCollapsed(true);
                 setIsSelected(item.id);
+                toggle();
               }}
             >
               <img
@@ -70,23 +67,23 @@ const MenuBar: React.FC = () => {
     <div>
       {isMobile ? (
         <>
-          {!isCollapsed && (
+          {isOpen && (
             <div
               className="fixed inset-0 z-40 bg-black bg-opacity-50"
               role="button"
               tabIndex={0}
-              onClickCapture={toggleMenuBar}
+              onClickCapture={toggle}
             />
           )}
 
           <VerticalMenubar
             className={cn(
               'fixed top-0 z-50 h-full bg-gray-700 bg-opacity-90 duration-300 ease-in-out',
-              isCollapsed ? 'w-0' : 'w-64',
+              !isOpen ? 'w-0' : 'w-64',
               'bg-black',
             )}
           >
-            {!isCollapsed && renderMenuBarContent()}
+            {isOpen && renderMenuBarContent()}
           </VerticalMenubar>
 
           <div
@@ -94,11 +91,11 @@ const MenuBar: React.FC = () => {
             tabIndex={0}
             className={cn(
               'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
-              isCollapsed ? 'left-0' : 'left-64',
+              !isOpen ? 'left-0' : 'left-64',
             )}
-            onClickCapture={toggleMenuBar}
+            onClickCapture={toggle}
           >
-            <p className="text-xl text-white">{isCollapsed ? '≡' : '×'}</p>
+            <p className="text-xl text-white">{!isOpen ? '≡' : '×'}</p>
           </div>
         </>
       ) : (
