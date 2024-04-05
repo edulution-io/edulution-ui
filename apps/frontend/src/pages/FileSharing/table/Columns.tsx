@@ -71,6 +71,12 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         }
       };
 
+      const truncate = (str: string | undefined, num: number) => {
+        if (!str) return str;
+        if (str.length <= num) return str;
+        return `${str.slice(0, num)}...`;
+      };
+
       const handleCheckboxChange = () => {
         row.toggleSelected(!row.getIsSelected());
       };
@@ -109,7 +115,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               tabIndex={0}
               style={{ userSelect: 'none' }}
             >
-              <span className="text-md text-ellipsis font-medium">{formattedFilename}</span>
+              <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
             </span>
             {isPreviewOpen && (
               <FilePreviewDialog
