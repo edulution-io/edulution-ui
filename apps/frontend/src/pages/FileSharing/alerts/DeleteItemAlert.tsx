@@ -25,7 +25,6 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const { t } = useTranslation();
   const deleteItems = async () => {
     try {
-      console.log('Delete items', selectedItems);
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
       const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));
       const deleteResults = await Promise.all(deletePromises);

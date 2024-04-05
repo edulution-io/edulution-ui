@@ -35,7 +35,6 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   }, [currentPath, isOpen]);
 
   const handleBreadcrumbNavigate = (path: string) => {
-    console.log(path);
     setCurrentPath(path);
   };
 

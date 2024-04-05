@@ -59,7 +59,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
-        className={cn(sheetVariants({ side }), className)}
+        className={cn(sheetVariants({ side }), 'animate-fadeInBottom', className)} // Apply the fade-in animation
         {...props}
       >
         {children}
