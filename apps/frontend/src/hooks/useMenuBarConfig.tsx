@@ -15,7 +15,7 @@ const useMenuBarConfig = () => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
 
   const menuBarConfigSwitch = () => {
-    const rootPathName: string = getFromPathName(pathname, 1);
+    const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
 

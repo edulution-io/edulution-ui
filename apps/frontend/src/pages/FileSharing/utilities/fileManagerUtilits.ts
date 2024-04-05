@@ -47,7 +47,7 @@ export const parseDate = (value: unknown): Date | null => {
   return null;
 };
 
-export function getElapsedTime(dateParam: Date): string {
+export function timeAgo(dateParam: Date): string {
   const { t } = useTranslation();
   if (!dateParam) {
     return t('timeAgo.invalidDate');
@@ -80,5 +80,5 @@ export function getElapsedTime(dateParam: Date): string {
 export default {
   parseDate,
   getFileCategorie,
-  timeAgo: getElapsedTime,
+  timeAgo,
 };

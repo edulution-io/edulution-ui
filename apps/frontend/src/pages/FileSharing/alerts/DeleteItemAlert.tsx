@@ -1,16 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/AlertDialog';
-
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -19,6 +8,7 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { useMediaQuery } from 'usehooks-ts';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -35,6 +25,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const { t } = useTranslation();
   const deleteItems = async () => {
     try {
+      console.log('Delete items', selectedItems);
       const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
       const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));
       const deleteResults = await Promise.all(deletePromises);
@@ -55,7 +46,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
     }
   };
 
-  const sharedContent = (
+  const contentToDelete = (
     <div>
       <ScrollArea className={`min-h-[200px] ${isMobile ? 'opacity-65' : 'bg-white'}`}>
         <strong className={`${isMobile ? 'text-white' : 'text-black'}`}>
@@ -83,11 +74,11 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         <SheetHeader>
           <SheetTitle>${t('deleteDialog.deleteFiles')}</SheetTitle>
         </SheetHeader>
-        <div>{sharedContent}</div>
+        <div>{contentToDelete}</div>
         <div className="flex flex-row justify-end space-x-4 pt-3 text-black">
           <Button
             variant="btn-attention"
-            onClick={() => deleteItems}
+            onClick={deleteItems}
           >
             {t('deleteDialog.continue')}
           </Button>
@@ -95,19 +86,23 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       </SheetContent>
     </Sheet>
   ) : (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t('deleteDialog.areYouSure')}</AlertDialogTitle>
-        </AlertDialogHeader>
-        {sharedContent}
-        <AlertDialogFooter>
-          <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
-          <AlertDialogAction onClick={() => deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <Dialog>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('deleteDialog.areYouSure')}</DialogTitle>
+        </DialogHeader>
+        {contentToDelete}
+        <DialogFooter>
+          <Button
+            variant="btn-attention"
+            onClick={deleteItems}
+          >
+            {t('deleteDialog.continue')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

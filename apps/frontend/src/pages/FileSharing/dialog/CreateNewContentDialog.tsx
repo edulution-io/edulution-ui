@@ -6,7 +6,7 @@ import useFileManagerStore from '@/store/fileManagerStore';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
 import { useMediaQuery } from 'usehooks-ts';
 

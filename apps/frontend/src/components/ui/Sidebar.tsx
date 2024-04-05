@@ -8,7 +8,7 @@ import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useLocalStorage, useMediaQuery, useWindowSize } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useOnClickOutside, useWindowSize } from 'usehooks-ts';
 import { ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
@@ -30,7 +30,6 @@ const Sidebar = () => {
   const toggleSidebarCollapsed = useSidebarManagerStore((state) => state.toggleSidebarCollapsed);
   const isSidebarCollapsed = useSidebarManagerStore((state) => state.isSidebarCollapsed);
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
-
   const sidebarItems = [
     ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
       title: t(`${item.id}.sidebar`),
@@ -46,6 +45,12 @@ const Sidebar = () => {
     },
   ];
 
+  useOnClickOutside(sidebarRef, () => {
+    if (isSidebarCollapsed) {
+      toggleSidebarCollapsed();
+    }
+  });
+
   const toggleSidebar = () => {
     toggleSidebarCollapsed();
   };
@@ -55,19 +60,6 @@ const Sidebar = () => {
   }`;
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        if (isSidebarCollapsed) toggleSidebar();
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSidebarCollapsed, toggleSidebar]);
 
   useEffect(() => {
     setTranslate(0);

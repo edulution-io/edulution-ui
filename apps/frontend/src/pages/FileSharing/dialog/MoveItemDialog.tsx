@@ -9,8 +9,9 @@ import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { useMediaQuery } from 'usehooks-ts';
+import { ArrowRightIcon } from 'lucide-react';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -23,7 +24,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
-  const [currentPath, setCurrentPath] = useState('/students/niclass/netzint1');
+  const [currentPath, setCurrentPath] = useState(`/${import.meta.env.VITE_ROLE}/${import.meta.env.VITE_USERNAME}/`);
   const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStore();
   useEffect(() => {
     if (isOpen) {
@@ -34,6 +35,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   }, [currentPath, isOpen]);
 
   const handleBreadcrumbNavigate = (path: string) => {
+    console.log(path);
     setCurrentPath(path);
   };
 
@@ -91,7 +93,14 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         color: isMobile ? 'white' : 'black',
       }}
     >
-      <TableCell>{getFileNameFromPath(row.filename)}</TableCell>
+      <TableCell>
+        <div className="flex w-full items-center justify-between">
+          <div>{getFileNameFromPath(row.filename)}</div>
+          <Button onClick={() => handleNextFolder(row)}>
+            <ArrowRightIcon />
+          </Button>
+        </div>
+      </TableCell>
     </TableRow>
   );
 
@@ -100,7 +109,9 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className={`${isMobile ? 'text-white' : 'text-black'}`}>Folder Name</TableHead>
+            <TableHead className={`${isMobile ? 'text-white' : 'text-black'}`}>
+              {t('moveItemDialog.folderName')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>{directorys.map(renderTableRow)}</TableBody>
@@ -127,7 +138,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
             }
           }}
         >
-          Move
+          {t('moveItemDialog.move')}
         </Button>
       </div>
     </>

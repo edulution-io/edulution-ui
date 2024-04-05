@@ -22,7 +22,7 @@ import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType } from '@/datatypes/filesystem';
 import HexagonButton from '@/components/shared/HexagonButton';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
-import { translateKey } from '@/utils/common';
+import { useTranslation } from 'react-i18next';
 
 const FileSharingPage = () => {
   const {
@@ -45,7 +45,7 @@ const FileSharingPage = () => {
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, [fileOperationSuccessful]);
-
+  const { t } = useTranslation();
   return (
     <div className="w-full overflow-x-auto">
       <div>
@@ -86,7 +86,7 @@ const FileSharingPage = () => {
               <>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText={translateKey('tooltip.create.file')}
+                  tooltipText={t('tooltip.create.file')}
                   trigger={
                     <CreateNewContentDialog
                       trigger={
@@ -100,7 +100,7 @@ const FileSharingPage = () => {
                 />
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText={translateKey('tooltip.create.folder')}
+                  tooltipText={t('tooltip.create.folder')}
                   trigger={
                     <CreateNewContentDialog
                       trigger={
@@ -114,7 +114,7 @@ const FileSharingPage = () => {
                 />
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText={translateKey('tooltip.upload')}
+                  tooltipText={t('tooltip.upload')}
                   trigger={
                     <UploadItemDialog
                       trigger={
@@ -131,7 +131,7 @@ const FileSharingPage = () => {
               <div className="flex flex-row space-x-4">
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText={translateKey('tooltip.move')}
+                  tooltipText={t('tooltip.move')}
                   trigger={
                     <HexagonButton onClick={() => {}}>
                       <MoveItemDialog
@@ -148,7 +148,7 @@ const FileSharingPage = () => {
 
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText={translateKey('tooltip.delete')}
+                  tooltipText={t('tooltip.delete')}
                   trigger={
                     <HexagonButton onClick={() => {}}>
                       <DeleteItemAlert
@@ -166,7 +166,7 @@ const FileSharingPage = () => {
                   onAction={() => {
                     handleDownload(selectedItems).catch(() => {});
                   }}
-                  tooltipText={translateKey('tooltip.download')}
+                  tooltipText={t('tooltip.download')}
                   trigger={
                     <HexagonButton onClick={() => {}}>
                       <div>

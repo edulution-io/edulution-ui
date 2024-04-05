@@ -6,7 +6,7 @@ import { CheckIcon, ChevronRightIcon, DotFilledIcon } from '@radix-ui/react-icon
 
 import cn from '@/lib/utils';
 
-const DropdownMenu = DropdownMenuPrimitive.Root;
+const DropdownMenuSH = DropdownMenuPrimitive.Root;
 
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
@@ -186,7 +186,7 @@ DropdownMenuLabel.defaultProps = {
 };
 
 export {
-  DropdownMenu,
+  DropdownMenuSH,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,

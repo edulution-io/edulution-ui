@@ -6,6 +6,8 @@ import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
 import { AppType } from '@/datatypes/types';
+import { useTranslation } from 'react-i18next';
+import { useOnClickOutside } from 'usehooks-ts';
 
 const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   isDialogOpen,
@@ -14,9 +16,10 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   filteredAppOptions,
   setSearchParams,
   setConfig,
-  t,
 }) => {
+  const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
     <Dialog
       modal

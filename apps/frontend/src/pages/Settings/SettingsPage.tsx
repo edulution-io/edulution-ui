@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useLocalStorage, useMediaQuery, useOnClickOutside } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/Input';
@@ -25,10 +25,8 @@ const SettingsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
-  const dialogRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  useOnClickOutside(dialogRef, () => setSearchParams(''));
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
 
@@ -54,12 +52,6 @@ const SettingsPage: React.FC = () => {
 
   const areSettingsVisible = settingLocation !== '';
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  useEffect(() => {
-    setIsDialogOpen(!!mode);
-  }, [mode]);
-
   useEffect(() => {
     if (areSettingsVisible) {
       setValue(`${settingLocation}.path`, config[`${settingLocation}`]?.linkPath);
@@ -76,15 +68,6 @@ const SettingsPage: React.FC = () => {
   useEffect(() => {
     setIsSheetOpen(mode === 'add' && isMobile);
   }, [mode, isMobile]);
-
-  const handleSheetChange = (isOpen: boolean) => {
-    setIsSheetOpen(isOpen);
-    if (!isOpen) {
-      const newSearchParams = new URLSearchParams(searchParams.toString());
-      newSearchParams.delete('mode');
-      setSearchParams(newSearchParams);
-    }
-  };
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
@@ -177,17 +160,15 @@ const SettingsPage: React.FC = () => {
                         )}
                       />
                     </div>
-                    <div className="absolute right-20">
-                      <div className="sm:pr-10 md:right-20">
-                        <Button
-                          type="submit"
-                          variant="btn-collaboration"
-                          className="justify-end pr-5"
-                          size="lg"
-                        >
-                          {t('common.save')}
-                        </Button>
-                      </div>
+                    <div className="absolute right-20 sm:pr-10 md:right-20">
+                      <Button
+                        type="submit"
+                        variant="btn-collaboration"
+                        className="justify-end pr-5"
+                        size="lg"
+                      >
+                        {t('common.save')}
+                      </Button>
                     </div>
                   </>
                 ) : null}
@@ -208,15 +189,13 @@ const SettingsPage: React.FC = () => {
   };
 
   const dialogProps: SettingsDialogProps = {
-    isDialogOpen,
+    isDialogOpen: !!mode,
     isSheetOpen,
-    handleSheetChange,
     option,
     setOption,
     filteredAppOptions,
     setSearchParams,
     setConfig,
-    t,
   };
 
   return (
@@ -227,7 +206,7 @@ const SettingsPage: React.FC = () => {
           <p className="pb-4">{t('settings.description')}</p>
         </div>
 
-        {areSettingsVisible && (
+        {areSettingsVisible ? (
           <Button
             type="button"
             variant="btn-hexagon"
@@ -241,13 +220,13 @@ const SettingsPage: React.FC = () => {
             }}
           >
             <img
-              className="m-2"
+              className="m-6"
               src={TrashIcon}
               alt="trash"
               width="25px"
             />
           </Button>
-        )}
+        ) : null}
       </div>
       {settingsForm()}
       {isMobile ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}

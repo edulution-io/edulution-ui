@@ -23,7 +23,7 @@ const MenuBar: React.FC = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    setIsCollapsed(!isMobile);
+    setIsCollapsed(isMobile);
   }, [isMobile]);
 
   const renderMenuBarContent = () => (
@@ -76,11 +76,6 @@ const MenuBar: React.FC = () => {
               role="button"
               tabIndex={0}
               onClickCapture={toggleMenuBar}
-              onKeyDown={(event) => {
-                if (event.code === 'Enter' || event.code === 'Space') {
-                  toggleMenuBar();
-                }
-              }}
             />
           )}
 
@@ -102,7 +97,6 @@ const MenuBar: React.FC = () => {
               isCollapsed ? 'left-0' : 'left-64',
             )}
             onClickCapture={toggleMenuBar}
-            onKeyDown={(e) => e.key === 'Enter' && toggleMenuBar()}
           >
             <p className="text-xl text-white">{isCollapsed ? '≡' : '×'}</p>
           </div>

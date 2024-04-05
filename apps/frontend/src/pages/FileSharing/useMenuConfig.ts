@@ -41,7 +41,6 @@ const useFileSharingMenuConfig = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   function constructFilePath(mountPoint: DirectoryFile, username: string) {
-    console.log('constructFilePath', mountPoint, username);
     return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
   }
 
@@ -55,8 +54,6 @@ const useFileSharingMenuConfig = () => {
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
-              console.log(constructFilePath(mountPoint, import.meta.env.VITE_USERNAME as string));
-              console.log(mountPoint.filename);
               await fetchFiles(constructFilePath(mountPoint, import.meta.env.VITE_USERNAME as string));
             } catch (error) {
               console.error('Error fetching files:', error);

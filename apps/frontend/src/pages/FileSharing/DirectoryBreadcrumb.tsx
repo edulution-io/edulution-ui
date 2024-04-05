@@ -6,15 +6,15 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/Breadcrumb';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'usehooks-ts';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSH,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenuSH';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -51,7 +51,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <DropdownMenu>
+              <DropdownMenuSH>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   ...
                   <ChevronDownIcon />
@@ -69,7 +69,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenuSH>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
