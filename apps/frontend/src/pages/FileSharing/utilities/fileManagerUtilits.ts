@@ -1,5 +1,5 @@
 import { IconType } from 'react-file-icon';
-import { useTranslation } from 'react-i18next';
+import { translateKey } from '@/utils/common';
 
 interface ContentFileTypes {
   [extension: string]: IconType | undefined;
@@ -47,10 +47,9 @@ export const parseDate = (value: unknown): Date | null => {
   return null;
 };
 
-export function timeAgo(dateParam: Date): string {
-  const { t } = useTranslation();
+export function getElapsedTime(dateParam: Date): string {
   if (!dateParam) {
-    return t('timeAgo.invalidDate');
+    return translateKey('timeAgo.invalidDate');
   }
 
   const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
@@ -63,16 +62,16 @@ export function timeAgo(dateParam: Date): string {
   const difference = TODAY - date.getTime();
 
   if (difference < MINUTE) {
-    return t('timeAgo.justNow');
+    return translateKey('timeAgo.justNow');
   }
   if (difference < HOUR) {
-    return t('timeAgo.minuteAgo', { count: Math.round(difference / MINUTE) });
+    return translateKey('timeAgo.minuteAgo', { count: Math.round(difference / MINUTE) });
   }
   if (difference < DAY) {
-    return t('timeAgo.hourAgo', { count: Math.round(difference / HOUR) });
+    return translateKey('timeAgo.hourAgo', { count: Math.round(difference / HOUR) });
   }
   if (difference < DAY * 7) {
-    return t('timeAgo.dayAgo', { count: Math.round(difference / DAY) });
+    return translateKey('timeAgo.dayAgo', { count: Math.round(difference / DAY) });
   }
   return date.toLocaleDateString();
 }
@@ -80,5 +79,5 @@ export function timeAgo(dateParam: Date): string {
 export default {
   parseDate,
   getFileCategorie,
-  timeAgo,
+  getElapsedTime,
 };

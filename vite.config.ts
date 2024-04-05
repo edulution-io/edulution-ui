@@ -30,16 +30,6 @@ export default defineConfig({
           Origin: 'https://server.demo.multi.schule:8001',
         },
       },
-      '/api/webdav/list': {
-        rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.demo.multi.schule:8001',
-        changeOrigin: true,
-        secure: false,
-        headers: {
-          Origin: 'https://server.demo.multi.schule:8001',
-        },
-      },
-
       //TODO docs
     },
   },
