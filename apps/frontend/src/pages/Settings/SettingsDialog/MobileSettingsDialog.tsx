@@ -7,7 +7,7 @@ import { AppType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
-  isSheetOpen,
+  isOpen,
   option,
   setOption,
   filteredAppOptions,
@@ -18,7 +18,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   return (
     <Sheet
       modal
-      open={isSheetOpen}
+      open={isOpen}
       onOpenChange={() => setSearchParams(new URLSearchParams(''))}
     >
       <SheetTrigger asChild />

@@ -10,20 +10,21 @@ import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 
 const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
-  isDialogOpen,
+  isOpen,
   option,
   setOption,
   filteredAppOptions,
   setSearchParams,
   setConfig,
 }) => {
+  console.log(isOpen);
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
     <Dialog
       modal
-      open={isDialogOpen}
+      open={isOpen}
     >
       <DialogContent
         ref={dialogRef}
