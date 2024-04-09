@@ -48,7 +48,14 @@
   "share": "Share",
   "students": "Schüler",
 
-  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout", "save": "Speichern" },
+  "common": {
+    "add": "Hinzufügen",
+    "reload": "Neu laden",
+    "logout": "Logout",
+    "save": "Speichern",
+    "successful": "Erfolgreich",
+    "failed": "Fehlgeschlagen"
+  },
   "form": {
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
@@ -130,13 +137,7 @@
     "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten",
     "deleteFiles": "Dateien löschen"
   },
-  "common": {
-    "add": "Hinzufügen",
-    "reload": "Neu laden",
-    "logout": "Logout",
-    "save": "Speichern"
-  },
-   "timeAgo": {
+  "timeAgo": {
     "justNow": "gerade Eben",
     "minuteAgo": "vor {{count}} Minuten",
     "hourAgo": "vor {{count}} Stunden",
@@ -150,8 +151,8 @@
   "tooltip": {
     "upload": "Hochladen",
     "create": {
-        "file": "Datei erstellen",
-        "folder": "Ordner erstellen"
+      "file": "Datei erstellen",
+      "folder": "Ordner erstellen"
     },
     "rename": "Umbenennen",
     "move": "Verschieben",

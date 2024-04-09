@@ -204,7 +204,7 @@ const SettingsPage: React.FC = () => {
           <Button
             type="button"
             variant="btn-hexagon"
-            className="fixed bottom-20 right-5 flex w-full justify-end pr-5 sm:right-10 sm:pr-10 md:right-20"
+            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
             onClickCapture={() => {
               setConfig((prevConfig) => {
                 const { [settingLocation]: omittedValue, ...rest } = prevConfig;

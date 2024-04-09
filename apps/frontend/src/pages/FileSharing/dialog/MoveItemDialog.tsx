@@ -24,7 +24,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
-  const [currentPath, setCurrentPath] = useState(`/${import.meta.env.VITE_ROLE}/${import.meta.env.VITE_USERNAME}/`);
+  const [currentPath, setCurrentPath] = useState('');
   const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStore();
   useEffect(() => {
     if (isOpen) {

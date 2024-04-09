@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   MdOutlineDeleteOutline,
   MdOutlineDriveFileMove,
@@ -8,6 +8,7 @@ import {
 import useFileManagerStore from '@/store/fileManagerStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { TooltipProvider } from '@/components/ui/Tooltip';
+import { IconContext } from 'react-icons';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import StatusAlert from '@/pages/FileSharing/alerts/StatusAlert';
@@ -20,9 +21,9 @@ import DataTable from '@/pages/FileSharing/table/DataTable';
 import Columns from '@/pages/FileSharing/table/Columns';
 import UploadToast from '@/pages/FileSharing/toast/UploadToast';
 import { ContentType } from '@/datatypes/filesystem';
-import HexagonButton from '@/components/shared/HexagonButton';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
 
 const FileSharingPage = () => {
   const {
@@ -46,6 +47,9 @@ const FileSharingPage = () => {
     fetchFiles().catch(console.error);
   }, [fileOperationSuccessful]);
   const { t } = useTranslation();
+
+  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+
   return (
     <div className="w-full overflow-x-auto">
       <div>
@@ -80,7 +84,7 @@ const FileSharingPage = () => {
           />
         </div>
 
-        <div className="fixed bottom-8 flex flex-row space-x-4 bg-opacity-90 p-4">
+        <div className="fixed bottom-8 flex flex-row space-x-24 bg-opacity-90">
           <TooltipProvider>
             {selectedItems.length === 0 && (
               <>
@@ -90,9 +94,15 @@ const FileSharingPage = () => {
                   trigger={
                     <CreateNewContentDialog
                       trigger={
-                        <HexagonButton onClick={() => {}}>
-                          <MdOutlineNoteAdd className="font-bold text-white" />
-                        </HexagonButton>
+                        <Button
+                          type="button"
+                          variant="btn-hexagon"
+                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                        >
+                          <IconContext.Provider value={iconContextValue}>
+                            <MdOutlineNoteAdd />
+                          </IconContext.Provider>
+                        </Button>
                       }
                       contentType={ContentType.file}
                     />
@@ -104,9 +114,15 @@ const FileSharingPage = () => {
                   trigger={
                     <CreateNewContentDialog
                       trigger={
-                        <HexagonButton onClick={() => {}}>
-                          <HiOutlineFolderAdd className="font-bold text-white" />
-                        </HexagonButton>
+                        <Button
+                          type="button"
+                          variant="btn-hexagon"
+                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                        >
+                          <IconContext.Provider value={iconContextValue}>
+                            <HiOutlineFolderAdd />
+                          </IconContext.Provider>
+                        </Button>
                       }
                       contentType={ContentType.directory}
                     />
@@ -118,9 +134,15 @@ const FileSharingPage = () => {
                   trigger={
                     <UploadItemDialog
                       trigger={
-                        <HexagonButton onClick={() => {}}>
-                          <FiUpload className="font-bold text-white" />
-                        </HexagonButton>
+                        <Button
+                          type="button"
+                          variant="btn-hexagon"
+                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                        >
+                          <IconContext.Provider value={iconContextValue}>
+                            <FiUpload />
+                          </IconContext.Provider>
+                        </Button>
                       }
                     />
                   }
@@ -128,21 +150,25 @@ const FileSharingPage = () => {
               </>
             )}
             {selectedItems.length > 0 && (
-              <div className="flex flex-row space-x-4">
+              <div className="flex flex-row space-x-24">
                 <ActionTooltip
                   onAction={() => {}}
                   tooltipText={t('tooltip.move')}
                   trigger={
-                    <HexagonButton onClick={() => {}}>
-                      <MoveItemDialog
-                        trigger={
-                          <div>
-                            <MdOutlineDriveFileMove className="font-bold text-white" />
-                          </div>
-                        }
-                        item={selectedItems}
-                      />
-                    </HexagonButton>
+                    <MoveItemDialog
+                      trigger={
+                        <Button
+                          type="button"
+                          variant="btn-hexagon"
+                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                        >
+                          <IconContext.Provider value={iconContextValue}>
+                            <MdOutlineDriveFileMove />
+                          </IconContext.Provider>
+                        </Button>
+                      }
+                      item={selectedItems}
+                    />
                   }
                 />
 
@@ -150,16 +176,20 @@ const FileSharingPage = () => {
                   onAction={() => {}}
                   tooltipText={t('tooltip.delete')}
                   trigger={
-                    <HexagonButton onClick={() => {}}>
-                      <DeleteItemAlert
-                        trigger={
-                          <div>
-                            <MdOutlineDeleteOutline className="font-bold text-white" />
-                          </div>
-                        }
-                        file={selectedItems}
-                      />
-                    </HexagonButton>
+                    <DeleteItemAlert
+                      trigger={
+                        <Button
+                          type="button"
+                          variant="btn-hexagon"
+                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                        >
+                          <IconContext.Provider value={iconContextValue}>
+                            <MdOutlineDeleteOutline />
+                          </IconContext.Provider>
+                        </Button>
+                      }
+                      file={selectedItems}
+                    />
                   }
                 />
                 <ActionTooltip
@@ -168,11 +198,15 @@ const FileSharingPage = () => {
                   }}
                   tooltipText={t('tooltip.download')}
                   trigger={
-                    <HexagonButton onClick={() => {}}>
-                      <div>
-                        <MdOutlineFileDownload className="text-white" />
-                      </div>
-                    </HexagonButton>
+                    <Button
+                      type="button"
+                      variant="btn-hexagon"
+                      className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                    >
+                      <IconContext.Provider value={iconContextValue}>
+                        <MdOutlineFileDownload />
+                      </IconContext.Provider>
+                    </Button>
                   }
                 />
               </div>

@@ -49,7 +49,14 @@
   "share": "Share",
   "students": "Students",
 
-  "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save" },
+  "common": {
+    "add": "Add",
+    "reload": "Reload",
+    "logout": "Logout",
+    "save": "Save",
+    "successful": "Successful",
+    "failed": "Failed"
+  },
   "form": {
     "path": "Path",
     "pathDescription": "Please enter a valid URL.",
@@ -143,14 +150,12 @@
   "tooltip": {
     "upload": "Upload",
     "create": {
-        "file": "Create file",
-        "folder": "Create folder"
+      "file": "Create file",
+      "folder": "Create folder"
     },
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
     "download": "Download"
   }
-
-
 }

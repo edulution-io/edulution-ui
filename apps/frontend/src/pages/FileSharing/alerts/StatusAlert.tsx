@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert';
 import { Ban, PartyPopper } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface StatusAlertProps {
   success: boolean | undefined;
@@ -9,6 +10,7 @@ interface StatusAlertProps {
 
 const StatusAlert: React.FC<StatusAlertProps> = ({ success, message }) => {
   const [showAlert, setShowAlert] = useState(true);
+  const { t } = useTranslation();
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAlert(false);
@@ -26,14 +28,14 @@ const StatusAlert: React.FC<StatusAlertProps> = ({ success, message }) => {
       {success && (
         <Alert className="bg-green-600">
           <PartyPopper className="h-4 w-4" />
-          <AlertTitle>Heads up</AlertTitle>
+          <AlertTitle>{t('common.successful')}</AlertTitle>
           <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
       {!success && (
         <Alert className="bg-red-600">
           <Ban className="h-4 w-4" />
-          <AlertTitle>Failed</AlertTitle>
+          <AlertTitle>{t('common.failed')}</AlertTitle>
           <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
