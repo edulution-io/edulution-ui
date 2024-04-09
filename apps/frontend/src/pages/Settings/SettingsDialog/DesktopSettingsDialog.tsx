@@ -17,7 +17,6 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   setSearchParams,
   setConfig,
 }) => {
-  console.log(isOpen);
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
