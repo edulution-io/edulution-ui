@@ -26,7 +26,6 @@ const SettingsPage: React.FC = () => {
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [isOpen, setIsOpen] = useState(false);
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
 
@@ -64,10 +63,6 @@ const SettingsPage: React.FC = () => {
       navigate('/settings');
     }
   }, [config]);
-
-  useEffect(() => {
-    setIsOpen(mode === 'add');
-  }, [mode]);
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
@@ -189,7 +184,7 @@ const SettingsPage: React.FC = () => {
   };
 
   const dialogProps: SettingsDialogProps = {
-    isOpen,
+    isOpen: mode === 'add',
     option,
     setOption,
     filteredAppOptions,
