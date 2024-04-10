@@ -163,16 +163,16 @@
   "response": {
     "successfully": "Action was successful",
     "error": "Error",
-    "move_successful": "Move successful from {sourcePath} to {destinationPath}",
+    "move_successful": "Move successful from {{sourcePath}} to {{destinationPath}}",
     "move_failed": "Move failed",
     "unexpected_error_occurred": "Unexpected error occurred",
-    "upload_failed_with_status": "Upload failed with status {status}",
+    "upload_failed_with_status": "Upload failed with status {{status}}",
     "network_error_occurred_during_the_upload": "Network error occurred during the upload",
-    "file_uploaded_successfully": "File {fileName} uploaded successfully",
-    "file_uploaded_failed": "File {fileName} could not be uploaded {status}",
-    "directory_created_successfully": "Directory {directoryName} created successfully",
-    "file_created_successfully": "File {fileName} created successfully",
-    "file_was_deleted_successfully": "File {fileName} was deleted successfully",
+    "file_uploaded_successfully": "File {{fileName}} uploaded successfully",
+    "file_uploaded_failed": "File {{fileName}} could not be uploaded {{status}}",
+    "directory_created_successfully": "Directory {{directoryName}} created successfully",
+    "file_created_successfully": "File {{fileName}} created successfully",
+    "file_was_deleted_successfully": "File {{fileName}} was deleted successfully",
     "all_items_moved_successfully": "All items moved successfully",
     "destination_path_is_undefined": "Destination path is undefined"
   }

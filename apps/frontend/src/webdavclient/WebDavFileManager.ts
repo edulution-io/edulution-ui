@@ -86,7 +86,7 @@ const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
     await client.deleteFile(path);
     const response = new Response('OK', {
       status: 200,
-      statusText: translateKey('file_was_deleted_successfully', { fileName: getFileNameFromPath(path) }),
+      statusText: translateKey('response.file_was_deleted_successfully', { fileName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -109,7 +109,7 @@ const moveFile = async (
         success: true,
         message: translateKey('response.move_successful', {
           sourcePath: getFileNameFromPath(sourcePath),
-          destinationPath: { destinationPath },
+          destinationPath,
         }),
         status: response.status,
       };
