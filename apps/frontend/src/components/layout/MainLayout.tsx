@@ -1,7 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useMediaQuery } from 'usehooks-ts';
-
 import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
@@ -10,9 +8,8 @@ import MenuBar from '../shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
   const isMainPage = pathname === '/';
-  const isMenuBarVisible = !isMainPage && isDesktop;
+  const isMenuBarVisible = !isMainPage;
   return (
     <div
       className="flex bg-cover bg-center opacity-90"

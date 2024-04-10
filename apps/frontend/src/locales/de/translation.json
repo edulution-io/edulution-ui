@@ -44,11 +44,20 @@
 
   "menu": "MENÜ",
   "home": "Home",
-  "programs": "Programme",
+  "projects": "Projekte",
+  "iso": "ISO",
+  "program": "Programme",
   "share": "Share",
   "students": "Schüler",
 
-  "common": { "add": "Hinzufügen", "reload": "Neu laden", "logout": "Logout", "save": "Speichern" },
+  "common": {
+    "add": "Hinzufügen",
+    "reload": "Neu laden",
+    "logout": "Logout",
+    "save": "Speichern",
+    "successful": "Erfolgreich",
+    "failed": "Fehlgeschlagen"
+  },
   "form": {
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
@@ -68,11 +77,11 @@
     "type": "Typ"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
-  "fileSharingUpload": {
+  "filesharingUpload": {
     "title": "Dateien hochladen",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
-    "uploadItems": "Hochladen: {{count}} Artikel",
+    "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "filesToUpload": "Dateien zum Hochladen"
   },
@@ -101,6 +110,7 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
   "fileRenameContent": {
+    "placeholder": "Geben Sie den neuen Namen ein",
     "renameYourDirectory": "Benennen Sie Ihr Verzeichnis um",
     "renameYourFile": "Benennen Sie Ihre Datei um",
     "to": "zu",
@@ -117,7 +127,8 @@
     },
     "moveTo": "Verschieben nach",
     "move": "Verschieben",
-    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+    "selectedItem": "Ausgewählter Ordner"
   },
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",
@@ -125,6 +136,46 @@
     "selectedItems": "Ausgewählte Elemente:",
     "cancel": "Abbrechen",
     "continue": "Fortfahren",
-    "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten"
+    "unknownErrorOccurredDuringDeletion": "Während der Löschung ist ein unbekannter Fehler aufgetreten",
+    "deleteFiles": "Dateien löschen"
+  },
+  "timeAgo": {
+    "justNow": "gerade Eben",
+    "minuteAgo": "vor {{count}} Minuten",
+    "hourAgo": "vor {{count}} Stunden",
+    "dayAgo": "vor {{count}} Tagen",
+    "invalidDate": "Ungültiges Datum"
+  },
+  "dialog": {
+    "close": "Schließen"
+  },
+
+  "tooltip": {
+    "upload": "Hochladen",
+    "create": {
+      "file": "Datei erstellen",
+      "folder": "Ordner erstellen"
+    },
+    "rename": "Umbenennen",
+    "move": "Verschieben",
+    "delete": "Löschen",
+    "download": "Herunterladen"
+  },
+
+  "response": {
+    "successfully": "Aktion war erfolgreich",
+    "error": "Fehler",
+    "move_successful": "Verschiebung erfolgreich von {{sourcePath}} nach {{destinationPath}}",
+    "move_failed": "Verschiebung fehlgeschlagen",
+    "unexpected_error_occurred": "Unerwarteter Fehler aufgetreten",
+    "upload_failed_with_status": "Upload fehlgeschlagen mit Status {{status}}",
+    "network_error_occurred_during_the_upload": "Netzwerkfehler während des Uploads aufgetreten",
+    "file_uploaded_successfully": "Datei {{fileName}} erfolgreich hochgeladen",
+    "file_uploaded_failed": "Datei {{fileName} konnte nicht hochgeladen werden {{status}}",
+    "directory_created_successfully": "Verzeichnis {{directoryName}} erfolgreich erstellt",
+    "file_created_successfully": "Datei {{fileName}} erfolgreich erstellt",
+    "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
+    "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
+    "destination_path_is_undefined": "Zielpfad ist undefiniert"
   }
 }

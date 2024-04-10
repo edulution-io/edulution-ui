@@ -8,27 +8,27 @@ import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useLocalStorage, useMediaQuery, useToggle, useWindowSize } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
 import { ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
   const [translate, setTranslate] = useState(0);
   const [isUpButtonVisible, setIsUpButtonVisible] = useState(false);
   const [isDownButtonVisible, setIsDownButtonVisible] = useState(false);
-
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarIconsRef = useRef<HTMLDivElement>(null);
+  const [isOpen, toggle] = useToggle();
 
   const { t } = useTranslation();
-  const [isOpen, toggle] = useToggle(false);
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
-
   const sidebarItems = [
     ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
       title: t(`${item.id}.sidebar`),
@@ -43,6 +43,12 @@ const Sidebar = () => {
       color: 'bg-ciGreenToBlue',
     },
   ];
+
+  useOnClickOutside(sidebarRef, isOpen ? toggle : () => {});
+
+  const sidebarClasses = `fixed top-0 right-0 z-40 h-full w-64 transform transition-transform duration-300 ease-in-out ${
+    isOpen ? 'translate-x-0' : 'translate-x-full'
+  }`;
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
 
@@ -259,7 +265,6 @@ const Sidebar = () => {
       <div
         ref={sidebarIconsRef}
         style={{ transform: `translateY(-${translate}px)`, overflowY: !isDesktop ? 'scroll' : 'clip' }}
-        onClickCapture={toggle}
         onWheel={() => handleWheel}
         onTouchStart={() => handleTouchStart}
         onTouchMove={() => handleTouchMove}
@@ -282,10 +287,15 @@ const Sidebar = () => {
 
   if (!isDesktop) {
     return (
-      <div>
+      <>
         {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
-        <div className="bg-black">{isOpen && renderListItem()}</div>
-      </div>
+        <div
+          ref={sidebarRef}
+          className={`${sidebarClasses}`}
+        >
+          <div className="bg-black">{isOpen && renderListItem()}</div>
+        </div>
+      </>
     );
   }
   return renderListItem();

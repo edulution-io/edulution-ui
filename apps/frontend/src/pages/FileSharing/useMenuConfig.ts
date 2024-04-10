@@ -11,7 +11,6 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
-import { useTranslation } from 'react-i18next';
 
 const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   if (mounts.filename.includes('teachers')) {
@@ -36,9 +35,12 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { t } = useTranslation();
   const { fetchMountPoints, fetchFiles } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  function constructFilePath(mountPoint: DirectoryFile, username: string) {
+    return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
+  }
 
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {
@@ -46,11 +48,11 @@ const useFileSharingMenuConfig = () => {
         const mounts: DirectoryFile[] = await fetchMountPoints();
         const items = mounts.map((mountPoint) => ({
           id: mountPoint.basename,
-          label: mountPoint.filename.includes('teachers') ? 'Home' : mountPoint.basename,
+          label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
-              await fetchFiles(mountPoint.filename);
+              await fetchFiles(constructFilePath(mountPoint, import.meta.env.VITE_USERNAME as string));
             } catch (error) {
               console.error('Error fetching files:', error);
             }
@@ -67,7 +69,7 @@ const useFileSharingMenuConfig = () => {
 
   const fileSharingMenuConfig = (): MenuBarEntryProps => ({
     menuItems,
-    title: t('filesharing.title'),
+    title: 'filesharing.title',
     icon: FileSharingIcon,
     color: 'hover:bg-ciDarkBlue',
   });

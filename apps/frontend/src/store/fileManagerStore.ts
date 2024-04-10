@@ -31,14 +31,14 @@ type FileManagerStore = {
   setPopUpVisibility: (isVisible: boolean) => void;
   setLoading: (isLoading: boolean) => void;
   fetchMountPoints: () => Promise<DirectoryFile[]>;
-  fetchDirectory: (path?: string) => Promise<DirectoryFile[]>;
+  fetchDirectory: (path: string) => Promise<DirectoryFile[]>;
   handleWebDavAction: (action: () => Promise<WebDavActionResult>) => Promise<WebDavActionResult>;
 };
 
 const useFileManagerStore = create<FileManagerStore>((set, get) => ({
   files: [],
   isLoading: false,
-  currentPath: '/',
+  currentPath: `/teachers/${import.meta.env.VITE_USERNAME}`,
   isVisible: false,
   fileName: '',
   directoryName: '',
@@ -61,6 +61,8 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
       const directoryFiles = await WebDavFunctions.getContentList(path);
       get().setCurrentPath(path);
       get().setFiles(directoryFiles);
+      get().setSelectedItems([]);
+      get().setSelectedRows({});
       if (get().fileOperationSuccessful !== undefined) {
         get().setPopUpVisibility(true);
       }
@@ -78,7 +80,7 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
     }
   },
 
-  fetchDirectory: async (pathToFetch: string = '/teachers/netzint-teacher') => {
+  fetchDirectory: async (pathToFetch: string) => {
     try {
       const resp = await WebDavFunctions.getContentList(pathToFetch);
       return resp.filter((item) => item.type === ContentType.directory);

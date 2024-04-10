@@ -43,13 +43,23 @@
     "description": "The application opens in a new window. No further authorization is required."
   },
 
+
+  "projects": "Projects",
+  "iso": "ISO",
   "menu": "MENU",
   "home": "Home",
-  "programs": "Programs",
+  "program": "Programs",
   "share": "Share",
   "students": "Students",
 
-  "common": { "add": "Add", "reload": "Reload", "logout": "Logout", "save": "Save" },
+  "common": {
+    "add": "Add",
+    "reload": "Reload",
+    "logout": "Logout",
+    "save": "Save",
+    "successful": "Successful",
+    "failed": "Failed"
+  },
   "form": {
     "path": "Path",
     "pathDescription": "Please enter a valid URL.",
@@ -67,7 +77,7 @@
     "lastModified": "Last Modified",
     "type": "Type"
   },
-  "fileSharingUpload": {
+  "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
     "selectFile": "Select up to 5 files at a time",
@@ -99,6 +109,7 @@
     "unknownErrorOccurred": "An unknown error occurred"
   },
   "fileRenameContent": {
+    "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",
     "renameYourFile": "Rename your file",
     "to": "to",
@@ -116,7 +127,8 @@
     },
     "moveTo": "Move to",
     "move": "Move",
-    "unknownErrorOccurred": "An unknown error occurred"
+    "unknownErrorOccurred": "An unknown error occurred",
+    "selectedItem": "Ausgewählter Ordner"
   },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
@@ -124,6 +136,47 @@
     "selectedItems": "Selected Items:",
     "cancel": "Cancel",
     "continue": "Continue",
-    "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion"
+    "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion",
+    "deleteFiles": "Delete files"
+  },
+
+  "timeAgo": {
+    "justNow": "just now",
+    "minuteAgo": "{{count}} minutes ago",
+    "hourAgo": "{{count}} hour ago",
+    "dayAgo": "{{count}} days ago",
+    "invalidDate": "Invalid date"
+  },
+  "dialog": {
+    "close": "Close"
+  },
+
+  "tooltip": {
+    "upload": "Upload",
+    "create": {
+      "file": "Create file",
+      "folder": "Create folder"
+    },
+    "rename": "Rename",
+    "move": "Move",
+    "delete": "Delete",
+    "download": "Download"
+  },
+
+  "response": {
+    "successfully": "Action was successful",
+    "error": "Error",
+    "move_successful": "Move successful from {{sourcePath}} to {{destinationPath}}",
+    "move_failed": "Move failed",
+    "unexpected_error_occurred": "Unexpected error occurred",
+    "upload_failed_with_status": "Upload failed with status {{status}}",
+    "network_error_occurred_during_the_upload": "Network error occurred during the upload",
+    "file_uploaded_successfully": "File {{fileName}} uploaded successfully",
+    "file_uploaded_failed": "File {{fileName}} could not be uploaded {{status}}",
+    "directory_created_successfully": "Directory {{directoryName}} created successfully",
+    "file_created_successfully": "File {{fileName}} created successfully",
+    "file_was_deleted_successfully": "File {{fileName}} was deleted successfully",
+    "all_items_moved_successfully": "All items moved successfully",
+    "destination_path_is_undefined": "Destination path is undefined"
   }
 }

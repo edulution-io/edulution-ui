@@ -2,23 +2,24 @@ import { createClient } from 'webdav';
 import JSZip from 'jszip';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
+import { translateKey } from '@/utils/common';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
 function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
   return {
     success: true,
-    message: response.statusText || 'Action created successfully',
+    message: response.statusText || translateKey('response.successfully'),
     status: response.status,
   };
 }
 
 const handleApiError = (error: Response) => {
   let status = 500;
-  let statusText = 'Internal Server Error';
+  let statusText = translateKey('response.error');
   if (error instanceof Error && 'status' in error) {
     status = typeof error.status === 'number' ? error.status : 500;
-    statusText = error.message || 'Error';
+    statusText = error.message ? error.message : translateKey('response.error');
   }
   return ApiResponseHandler.handleApiResponse(
     new Response(null, {
@@ -59,7 +60,7 @@ const createDirectory: IWebDavFileManager['createDirectory'] = async (path: stri
     await client.createDirectory(path);
     const response = new Response('OK', {
       status: 200,
-      statusText: `Directory ${getFileNameFromPath(path)} created successfully`,
+      statusText: translateKey('response.directory_created_successfully', { directoryName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -72,7 +73,7 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
     await client.putFileContents(path, ' ');
     const response = new Response('OK', {
       status: 200,
-      statusText: `File ${getFileNameFromPath(path)} created successfully`,
+      statusText: translateKey('response.file_created_successfully', { fileName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -85,7 +86,7 @@ const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
     await client.deleteFile(path);
     const response = new Response('OK', {
       status: 200,
-      statusText: `File ${getFileNameFromPath(path)} was deleted successfully`,
+      statusText: translateKey('response.file_was_deleted_successfully', { fileName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -104,15 +105,19 @@ const moveFile = async (
     });
 
     if (response.status >= 200 && response.status < 300) {
+      const newFileName = getFileNameFromPath(destinationPath);
       return {
         success: true,
-        message: `Move successful ${getFileNameFromPath(sourcePath)} to ${destinationPath}`,
+        message: translateKey('response.move_successful', {
+          sourcePath: getFileNameFromPath(sourcePath),
+          destinationPath: newFileName,
+        }),
         status: response.status,
       };
     }
-    return { success: false, message: 'Move failed', status: response.status };
+    return { success: false, message: translateKey('move_failed'), status: response.status };
   } catch (error) {
-    let errorMessage = 'Unexpected error occurred';
+    let errorMessage = translateKey('response.unexpected_error_occurred');
     let errorCode = 500;
     if (error instanceof Error) {
       errorMessage = error.message;
@@ -143,7 +148,7 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   toPath: string | undefined,
 ) => {
   if (!toPath) {
-    return { success: false, message: 'Destination path is undefined', status: 400 };
+    return { success: false, message: translateKey('response.destination_path_is_undefined'), status: 400 };
   }
 
   let results: Array<{ success: boolean; message: string; status: number }>;
@@ -159,7 +164,9 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   }
 
   const failed = results.find((result) => !result.success);
-  return failed ? { ...failed } : { success: true, message: 'All items moved successfully', status: 200 };
+  return failed
+    ? { ...failed }
+    : { success: true, message: translateKey('response.all_items_moved_successfully'), status: 200 };
 };
 
 const uploadFile: IWebDavFileManager['uploadFile'] = (
@@ -189,17 +196,17 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
           handleApiResponse(
             new Response('OK', {
               status: 200,
-              statusText: `File ${file.name} uploaded successfully`,
+              statusText: translateKey('response.file_uploaded_successfully', { fileName: file.name }),
             }),
           ),
         );
       } else {
-        reject(new Error(`Upload failed with status ${xhr.status}`));
+        reject(new Error(translateKey('response.upload_failed_with_status', { status: xhr.status })));
       }
     };
 
     xhr.onerror = () => {
-      reject(new Error('Network error occurred during the upload'));
+      reject(new Error(translateKey('response.network_error_occurred_during_the_upload')));
     };
 
     xhr.send(file);
@@ -215,7 +222,7 @@ const uploadMultipleFiles: IWebDavFileManager['uploadMultipleFiles'] = (
     return uploadFile(file, filePath, (progress) => updateUI(file, progress)).catch((error) => ({
       success: false,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      message: `Upload failed for ${file.name}: ${error.message}`,
+      message: translateKey('response.file_uploaded_failed', { fileName: file.name, status: error.message as string }),
     }));
   });
 
