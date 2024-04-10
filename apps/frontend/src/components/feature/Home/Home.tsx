@@ -19,7 +19,10 @@ const Home: React.FC = () => {
       {/* Main Content */}
       <div>
         <h2>
-          {t('heading', { givenName: auth?.user?.profile?.given_name, familyName: auth?.user?.profile?.family_name })}
+          {t('heading', {
+            givenName: auth?.user?.profile?.given_name ?? '',
+            familyName: auth?.user?.profile?.family_name ?? '',
+          })}
         </h2>
         <p className="mt-4">{t('content')}</p>
       </div>

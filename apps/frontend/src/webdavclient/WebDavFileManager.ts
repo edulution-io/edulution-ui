@@ -12,7 +12,7 @@ export const createWebdavClient = () =>
     username: sessionStorage.getItem('user') as string,
     password: decryptPassword({
       data: sessionStorage.getItem('webdav') as string,
-      key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb',
+      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
     }),
   });
 // ------------------------------

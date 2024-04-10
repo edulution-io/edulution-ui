@@ -36,29 +36,26 @@ const LoginPage: React.FC = () => {
   }, [auth.error]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
-    // TODO: Remove if webdav is stored in backend NIEDUUI-26
-
-    const encryptedPassword = useEncryption({
-      mode: 'encrypt',
-      data: form.getValues('password') as string,
-      key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb',
-    });
-
-    sessionStorage.setItem('webdav', encryptedPassword);
-    sessionStorage.setItem('user', form.getValues('username') as string);
-    sessionStorage.setItem('isAuthenticated', `${auth.isAuthenticated}`);
-
-    createWebdavClient();
-
-    // --------------------------------------------------
-
     try {
       await auth.signinResourceOwnerCredentials({
         username: form.getValues('username') as string,
         password: form.getValues('password') as string,
       });
+
+      // TODO: Remove if webdav is stored in backend NIEDUUI-26
+      const encryptedPassword = useEncryption({
+        mode: 'encrypt',
+        data: form.getValues('password') as string,
+        key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+      });
+
+      sessionStorage.setItem('webdav', encryptedPassword);
+      sessionStorage.setItem('user', form.getValues('username') as string);
+
+      createWebdavClient();
+      // --------------------------------------------------
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   };
 

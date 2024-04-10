@@ -129,8 +129,6 @@ const AppRouter = () => {
   const auth = useAuth();
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
-
   useEffect(() => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
@@ -143,6 +141,6 @@ const AppRouter = () => {
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(isAuthenticated, config)} />;
+  return <RouterProvider router={router(auth.isAuthenticated, config)} />;
 };
 export default AppRouter;
