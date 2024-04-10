@@ -1,26 +1,23 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useMediaQuery } from 'usehooks-ts';
-
 import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '../ui/Sidebar';
-import MenuBar from '../shared/MenuBar';
+import Sidebar from '@/components/ui/Sidebar';
+import MenuBar from '@/components/shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
   const isMainPage = pathname === '/';
-  const isMenuBarVisible = !isMainPage && isDesktop;
+
   return (
     <div
       className="flex bg-cover bg-center opacity-90"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {isMenuBarVisible ? <MenuBar /> : null}
+      {!isMainPage ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header isMenuBarVisible={isMenuBarVisible} />
+        <Header isLogoShown={isMainPage} />
         <main className="flex-1">
           <Outlet />
         </main>

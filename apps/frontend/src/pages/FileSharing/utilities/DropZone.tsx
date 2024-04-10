@@ -53,12 +53,12 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         {files.length <= 5 ? (
           <div className="flex flex-col items-center justify-center space-y-2">
             <p className="font-semibold text-gray-700">
-              {isDragActive ? t('fileSharingUpload.dropHere') : t('fileSharingUpload.dragDropClick')}
+              {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <p className="font-bold text-red-700">{t('fileSharingUpload.limitExceeded')}</p>
+          <p className="font-bold text-red-700">{t('filesharingUpload.limitExceeded')}</p>
         )}
       </div>
 
@@ -71,7 +71,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             {file.type.startsWith('image/') ? (
               <img
                 src={file.preview}
-                alt={t('fileSharingUpload.previewAlt', { filename: file.preview })}
+                alt={t('filesharingUpload.previewAlt', { filename: file.preview })}
                 className="mb-2 h-auto w-full object-cover"
                 onLoad={() => URL.revokeObjectURL(file.preview)}
               />
@@ -90,7 +90,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           </li>
         ))}
       </ul>
-      <p className="pt-4 text-black underline">{t('fileSharingUpload.filesToUpload')}</p>
+      <p className="pt-4 text-black underline">{t('filesharingUpload.filesToUpload')}</p>
       <ScrollArea className="h-[200px]">
         <ol
           type="1"

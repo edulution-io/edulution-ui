@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/Input';
+import Input from '@/components/shared/Input';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { validateFileName } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
@@ -30,6 +30,7 @@ const FileCreationForm = () => {
     <>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
+        variant="default"
         placeholder="ExampleName.txt"
         value={localFileName}
         onChange={handleInputChange}

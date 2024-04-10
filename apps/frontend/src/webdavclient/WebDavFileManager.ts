@@ -1,24 +1,36 @@
 import { createClient } from 'webdav';
 import JSZip from 'jszip';
+import { decryptPassword, translateKey } from '@/utils/common';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
+// TODO: Remove/Rework if webdav is stored in backend NIEDUUI-26
+export const createWebdavClient = () =>
+  createClient(`${window.location.origin}/webdav`, {
+    username: sessionStorage.getItem('user') as string,
+    password: decryptPassword({
+      data: sessionStorage.getItem('webdav') as string,
+      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+    }),
+  });
+// ------------------------------
+
 function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
   return {
     success: true,
-    message: response.statusText || 'Action created successfully',
+    message: response.statusText || translateKey('response.successfully'),
     status: response.status,
   };
 }
 
 const handleApiError = (error: Response) => {
   let status = 500;
-  let statusText = 'Internal Server Error';
+  let statusText = translateKey('response.error');
   if (error instanceof Error && 'status' in error) {
     status = typeof error.status === 'number' ? error.status : 500;
-    statusText = error.message || 'Error';
+    statusText = error.message ? error.message : translateKey('response.error');
   }
   return ApiResponseHandler.handleApiResponse(
     new Response(null, {
@@ -28,12 +40,8 @@ const handleApiError = (error: Response) => {
   );
 };
 
-const client = createClient(`${window.location.origin}/webdav`, {
-  username: import.meta.env.VITE_USERNAME as string,
-  password: import.meta.env.VITE_PASSWORD as string,
-});
-
 const getContentList: IWebDavFileManager['getContentList'] = async (path: string): Promise<DirectoryFile[]> => {
+  const client = createWebdavClient();
   const result = await client.getDirectoryContents(path, {
     data:
       '<?xml version="1.0"?>\n' +
@@ -55,11 +63,12 @@ const getContentList: IWebDavFileManager['getContentList'] = async (path: string
 };
 
 const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string) => {
+  const client = createWebdavClient();
   try {
     await client.createDirectory(path);
     const response = new Response('OK', {
       status: 200,
-      statusText: `Directory ${getFileNameFromPath(path)} created successfully`,
+      statusText: translateKey('response.directory_created_successfully', { directoryName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -68,11 +77,12 @@ const createDirectory: IWebDavFileManager['createDirectory'] = async (path: stri
 };
 
 const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
+  const client = createWebdavClient();
   try {
     await client.putFileContents(path, ' ');
     const response = new Response('OK', {
       status: 200,
-      statusText: `File ${getFileNameFromPath(path)} created successfully`,
+      statusText: translateKey('response.file_created_successfully', { fileName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -81,11 +91,12 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
 };
 
 const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
+  const client = createWebdavClient();
   try {
     await client.deleteFile(path);
     const response = new Response('OK', {
       status: 200,
-      statusText: `File ${getFileNameFromPath(path)} was deleted successfully`,
+      statusText: translateKey('response.file_was_deleted_successfully', { fileName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -97,6 +108,7 @@ const moveFile = async (
   sourcePath: string,
   destinationPath: string,
 ): Promise<{ success: boolean; message: string; status: number }> => {
+  const client = createWebdavClient();
   try {
     const response = await client.customRequest(sourcePath, {
       method: 'MOVE',
@@ -104,15 +116,19 @@ const moveFile = async (
     });
 
     if (response.status >= 200 && response.status < 300) {
+      const newFileName = getFileNameFromPath(destinationPath);
       return {
         success: true,
-        message: `Move successful ${getFileNameFromPath(sourcePath)} to ${destinationPath}`,
+        message: translateKey('response.move_successful', {
+          sourcePath: getFileNameFromPath(sourcePath),
+          destinationPath: newFileName,
+        }),
         status: response.status,
       };
     }
-    return { success: false, message: 'Move failed', status: response.status };
+    return { success: false, message: translateKey('move_failed'), status: response.status };
   } catch (error) {
-    let errorMessage = 'Unexpected error occurred';
+    let errorMessage = translateKey('response.unexpected_error_occurred');
     let errorCode = 500;
     if (error instanceof Error) {
       errorMessage = error.message;
@@ -143,7 +159,7 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   toPath: string | undefined,
 ) => {
   if (!toPath) {
-    return { success: false, message: 'Destination path is undefined', status: 400 };
+    return { success: false, message: translateKey('response.destination_path_is_undefined'), status: 400 };
   }
 
   let results: Array<{ success: boolean; message: string; status: number }>;
@@ -159,7 +175,9 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   }
 
   const failed = results.find((result) => !result.success);
-  return failed ? { ...failed } : { success: true, message: 'All items moved successfully', status: 200 };
+  return failed
+    ? { ...failed }
+    : { success: true, message: translateKey('response.all_items_moved_successfully'), status: 200 };
 };
 
 const uploadFile: IWebDavFileManager['uploadFile'] = (
@@ -168,12 +186,13 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
   onProgress: (percentage: number) => void,
 ) =>
   new Promise((resolve, reject) => {
+    const client = createWebdavClient();
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', client.getFileUploadLink(remotePath), true);
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${import.meta.env.VITE_USERNAME}:${import.meta.env.VITE_PASSWORD}`)}`,
+      `Basic ${btoa(`${sessionStorage.getItem('user')}:${decryptPassword({ data: sessionStorage.getItem('webdav') as string, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 
@@ -189,17 +208,17 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
           handleApiResponse(
             new Response('OK', {
               status: 200,
-              statusText: `File ${file.name} uploaded successfully`,
+              statusText: translateKey('response.file_uploaded_successfully', { fileName: file.name }),
             }),
           ),
         );
       } else {
-        reject(new Error(`Upload failed with status ${xhr.status}`));
+        reject(new Error(translateKey('response.upload_failed_with_status', { status: xhr.status })));
       }
     };
 
     xhr.onerror = () => {
-      reject(new Error('Network error occurred during the upload'));
+      reject(new Error(translateKey('response.network_error_occurred_during_the_upload')));
     };
 
     xhr.send(file);
@@ -215,7 +234,7 @@ const uploadMultipleFiles: IWebDavFileManager['uploadMultipleFiles'] = (
     return uploadFile(file, filePath, (progress) => updateUI(file, progress)).catch((error) => ({
       success: false,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      message: `Upload failed for ${file.name}: ${error.message}`,
+      message: translateKey('response.file_uploaded_failed', { fileName: file.name, status: error.message as string }),
     }));
   });
 
@@ -227,6 +246,7 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
 
   const folderZip = zip.folder(folderName);
   const contentList = await getContentList(path);
+  const client = createWebdavClient();
   try {
     const operations = contentList.map(async (item) => {
       if (item.type === 'file') {
@@ -272,6 +292,7 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
 };
 
 const triggerFileDownload: IWebDavFileManager['triggerFileDownload'] = (path: string) => {
+  const client = createWebdavClient();
   const downloadLink = client.getFileDownloadLink(path);
   const anchor = document.createElement('a');
   anchor.href = downloadLink;

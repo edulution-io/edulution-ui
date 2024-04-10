@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/Dialog';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/CircleLoader';
 
@@ -14,12 +14,10 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => {
     <Dialog open={isOpen}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogDescription>
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <CircleLoader />
-              <p className="text-black">{t('loadingIndicator.message')}</p>
-            </div>
-          </DialogDescription>
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <CircleLoader />
+            <p className="text-black">{t('loadingIndicator.message')}</p>
+          </div>
         </DialogHeader>
       </DialogContent>
     </Dialog>

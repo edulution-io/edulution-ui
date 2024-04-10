@@ -18,7 +18,17 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["react", "@typescript-eslint", "import", "prettier", "jsx-a11y"],
+  "plugins": [
+    "react",
+    "react-refresh",
+    "@typescript-eslint",
+    "import",
+    "prettier",
+    "jsx-a11y",
+    "react-hooks",
+    "n",
+    "promise"
+  ],
   "settings": {
     "import/resolver": {
       "typescript": {}

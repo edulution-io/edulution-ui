@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
 import { HomePage } from '@/pages/Home';
 
@@ -11,6 +11,8 @@ import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
+import LoginPage from '@/pages/LoginPage/LoginPage';
+import { useAuth } from 'react-oidc-context';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
@@ -36,40 +38,15 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (config: ConfigType) =>
+const router = (isAuthenticated: boolean, config: ConfigType) =>
   createBrowserRouter(
     createRoutesFromElements(
-      <>
-        <Route element={<MainLayout />}>
+      !isAuthenticated ? (
+        <Route element={<BlankLayout />}>
           <Route
             path="/"
-            element={<HomePage />}
+            element={<LoginPage />}
           />
-
-          <Route
-            path="settings"
-            element={<SettingsPage />}
-          >
-            {Object.keys(config).map((key) => (
-              <Route
-                key={key}
-                path={key}
-                element={<SettingsPage />}
-              />
-            ))}
-          </Route>
-          {Object.keys(config).map((key) =>
-            config[key].appType === AppType.NATIVE ? (
-              <Route
-                key={key}
-                path={key}
-                element={pageSwitch(key)}
-              />
-            ) : null,
-          )}
-        </Route>
-
-        <Route element={<BlankLayout />}>
           <Route
             path="*"
             element={
@@ -79,35 +56,91 @@ const router = (config: ConfigType) =>
               />
             }
           />
-          {Object.keys(config).map((key) =>
-            config[key].appType === AppType.FORWARDED ? (
-              <Route
-                key={key}
-                path={key}
-                element={<ForwardingPage />}
-              />
-            ) : null,
-          )}
         </Route>
+      ) : (
+        <>
+          <Route element={<MainLayout />}>
+            <Route
+              path="/"
+              element={<HomePage />}
+            />
 
-        <Route element={<IframeLayout />}>
-          {Object.keys(config).map((key) =>
-            config[key].appType === AppType.EMBEDDED ? (
-              <Route
-                key={key}
-                path={key}
-                element={null}
-              />
-            ) : null,
-          )}
-        </Route>
-      </>,
+            <Route
+              path="settings"
+              element={<SettingsPage />}
+            >
+              {Object.keys(config).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<SettingsPage />}
+                />
+              ))}
+            </Route>
+            {Object.keys(config).map((key) =>
+              config[key].appType === AppType.NATIVE ? (
+                <Route
+                  key={key}
+                  path={key}
+                  element={pageSwitch(key)}
+                />
+              ) : null,
+            )}
+          </Route>
+
+          <Route element={<BlankLayout />}>
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  replace
+                  to="/"
+                />
+              }
+            />
+            {Object.keys(config).map((key) =>
+              config[key].appType === AppType.FORWARDED ? (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<ForwardingPage />}
+                />
+              ) : null,
+            )}
+          </Route>
+
+          <Route element={<IframeLayout />}>
+            {Object.keys(config).map((key) =>
+              config[key].appType === AppType.EMBEDDED ? (
+                <Route
+                  key={key}
+                  path={key}
+                  element={null}
+                />
+              ) : null,
+            )}
+          </Route>
+        </>
+      ),
     ),
   );
+
 const AppRouter = () => {
+  const auth = useAuth();
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  return <RouterProvider router={router(config)} />;
-};
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      auth.events.addAccessTokenExpiring(() => {
+        if (auth.user?.expired) {
+          console.log('Session expired');
+          auth.removeUser().catch(console.error);
+          sessionStorage.clear();
+        }
+      });
+    }
+  }, [auth.events, auth.isAuthenticated]);
 
+  return <RouterProvider router={router(auth.isAuthenticated, config)} />;
+};
 export default AppRouter;

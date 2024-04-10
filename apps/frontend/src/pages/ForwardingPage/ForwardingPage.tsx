@@ -30,7 +30,7 @@ const ForwardingPage: React.FC = () => {
       navigateToExternalPage();
     }
     setIsForwaring(false);
-  }, [isForwarding]);
+  }, [isForwarding, rootPathName, config]);
 
   return (
     <div className="grid h-[80%] items-center justify-center">

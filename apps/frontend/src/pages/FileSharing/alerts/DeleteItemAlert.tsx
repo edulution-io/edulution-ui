@@ -1,20 +1,14 @@
-import React, { ReactNode } from 'react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/AlertDialog';
+import React, { ReactNode, useState } from 'react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
+import { useMediaQuery } from 'usehooks-ts';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -26,6 +20,8 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
   const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const deleteItems = async () => {
     try {
@@ -43,49 +39,73 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         setRowSelection({});
         setSelectedItems([]);
       }
+      setIsOpen(false);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
       setFileOperationSuccessful(false, errorMessage);
     }
   };
 
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t('deleteDialog.areYouSure')}</AlertDialogTitle>
-        </AlertDialogHeader>
-        <>
+  const contentToDelete = (
+    <div>
+      <ScrollArea className={`min-h-[200px] ${isMobile ? 'opacity-65' : 'bg-white'}`}>
+        <strong className={`${isMobile ? 'text-white' : 'text-black'}`}>
           {t('deleteDialog.actionCannotBeUndone')}
-          <br />
-          {selectedItems.length > 0 ? (
-            <>
-              <strong>{t('deleteDialog.selectedItems')}</strong>
-              <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-                {selectedItems.map((item) => (
-                  <div key={item.etag}>{item.filename}</div>
-                ))}
-              </ScrollArea>
-            </>
-          ) : (
-            <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
-              <strong>{t('deleteDialog.selectedItems')}</strong>
-              <div className="text-black">
-                {file.map((item) => (
-                  <div key={item.etag}>{item.filename}</div>
-                ))}
-              </div>
-            </ScrollArea>
-          )}
-        </>
+        </strong>
+        {(selectedItems.length > 0 ? selectedItems : file).map((item) => (
+          <div
+            className={`${isMobile ? 'text-white' : 'text-black'} pt-3`}
+            key={item.etag}
+          >
+            {item.filename}
+          </div>
+        ))}
+      </ScrollArea>
+    </div>
+  );
 
-        <AlertDialogFooter>
-          <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
-          <AlertDialogAction onClick={() => deleteItems}>{t('deleteDialog.continue')}</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+  return isMobile ? (
+    <Sheet
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
+      <SheetContent side="bottom">
+        <SheetHeader>
+          <SheetTitle>${t('deleteDialog.deleteFiles')}</SheetTitle>
+        </SheetHeader>
+        <div>{contentToDelete}</div>
+        <div className="flex flex-row justify-end space-x-4 pt-3 text-black">
+          <Button
+            variant="btn-attention"
+            onClick={deleteItems}
+          >
+            {t('deleteDialog.continue')}
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  ) : (
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('deleteDialog.areYouSure')}</DialogTitle>
+        </DialogHeader>
+        {contentToDelete}
+        <DialogFooter>
+          <Button
+            variant="btn-attention"
+            onClick={deleteItems}
+          >
+            {t('deleteDialog.continue')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
