@@ -165,7 +165,7 @@ const moveItems: IWebDavFileManager['moveItems'] = async (
   const failed = results.find((result) => !result.success);
   return failed
     ? { ...failed }
-    : { success: true, message: translateKey('response.response.all_items_moved_successfully'), status: 200 };
+    : { success: true, message: translateKey('response.all_items_moved_successfully'), status: 200 };
 };
 
 const uploadFile: IWebDavFileManager['uploadFile'] = (
