@@ -56,6 +56,9 @@ jobs:
 
       - name: Build Frontend
         run: npm run build
+        
+      - name: Create selfsigned key and cert
+        run: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt
 
       # - name: Set Commit SHA in package.json
       #   run: npx json -I -f package.json -e "this.config.gitCommitSHA='${{ github.sha }}'"
