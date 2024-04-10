@@ -39,6 +39,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
         setRowSelection({});
         setSelectedItems([]);
       }
+      setIsOpen(false);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
       setFileOperationSuccessful(false, errorMessage);
@@ -85,7 +86,10 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       </SheetContent>
     </Sheet>
   ) : (
-    <Dialog>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

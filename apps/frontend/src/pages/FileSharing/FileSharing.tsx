@@ -42,7 +42,7 @@ const FileSharingPage = () => {
 
   useEffect(() => {
     fetchFiles().catch(console.error);
-  }, [fileOperationSuccessful]);
+  }, [currentPath, fileOperationSuccessful]);
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 

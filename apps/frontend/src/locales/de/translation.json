@@ -171,16 +171,16 @@
   "response": {
     "successfully": "Aktion war erfolgreich",
     "error": "Fehler",
-    "move_successful": "Verschiebung erfolgreich von {sourcePath} nach {destinationPath}",
+    "move_successful": "Verschiebung erfolgreich von {{sourcePath}} nach {{destinationPath}}",
     "move_failed": "Verschiebung fehlgeschlagen",
     "unexpected_error_occurred": "Unerwarteter Fehler aufgetreten",
-    "upload_failed_with_status": "Upload fehlgeschlagen mit Status {status}",
+    "upload_failed_with_status": "Upload fehlgeschlagen mit Status {{status}}",
     "network_error_occurred_during_the_upload": "Netzwerkfehler während des Uploads aufgetreten",
-    "file_uploaded_successfully": "Datei {fileName} erfolgreich hochgeladen",
-    "file_uploaded_failed": "Datei {fileName} konnte nicht hochgeladen werden {status}",
-    "directory_created_successfully": "Verzeichnis {directoryName} erfolgreich erstellt",
-    "file_created_successfully": "Datei {fileName} erfolgreich erstellt",
-    "file_was_deleted_successfully": "Datei {fileName} erfolgreich gelöscht",
+    "file_uploaded_successfully": "Datei {{fileName}} erfolgreich hochgeladen",
+    "file_uploaded_failed": "Datei {{fileName} konnte nicht hochgeladen werden {{status}}",
+    "directory_created_successfully": "Verzeichnis {{directoryName}} erfolgreich erstellt",
+    "file_created_successfully": "Datei {{fileName}} erfolgreich erstellt",
+    "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
   }

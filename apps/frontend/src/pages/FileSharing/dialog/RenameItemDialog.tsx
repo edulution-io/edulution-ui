@@ -107,17 +107,19 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           onChange={handleInputChange}
         />
       </DialogDescription>
-      <Button
-        variant="btn-collaboration"
-        disabled={!isNameValid}
-        onClick={() => {
-          renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch((error) =>
-            console.error(error),
-          );
-        }}
-      >
-        {t('fileRenameContent.rename')}
-      </Button>
+      <div className="flex flex-row justify-end space-x-4 pt-3 text-black">
+        <Button
+          variant="btn-collaboration"
+          disabled={!isNameValid}
+          onClick={() => {
+            renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch((error) =>
+              console.error(error),
+            );
+          }}
+        >
+          {t('fileRenameContent.rename')}
+        </Button>
+      </div>
     </DialogContent>
   );
 

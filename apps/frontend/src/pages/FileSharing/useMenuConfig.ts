@@ -11,7 +11,6 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
-import { useTranslation } from 'react-i18next';
 
 const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   if (mounts.filename.includes('teachers')) {
@@ -36,7 +35,6 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { t } = useTranslation();
   const { fetchMountPoints, fetchFiles } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
@@ -50,7 +48,7 @@ const useFileSharingMenuConfig = () => {
         const mounts: DirectoryFile[] = await fetchMountPoints();
         const items = mounts.map((mountPoint) => ({
           id: mountPoint.basename,
-          label: mountPoint.filename.includes('teachers') ? 'Home' : mountPoint.basename,
+          label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
@@ -71,7 +69,7 @@ const useFileSharingMenuConfig = () => {
 
   const fileSharingMenuConfig = (): MenuBarEntryProps => ({
     menuItems,
-    title: t('filesharing.title'),
+    title: 'filesharing.title',
     icon: FileSharingIcon,
     color: 'hover:bg-ciDarkBlue',
   });
