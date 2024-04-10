@@ -105,11 +105,12 @@ const moveFile = async (
     });
 
     if (response.status >= 200 && response.status < 300) {
+      const newFileName = getFileNameFromPath(destinationPath);
       return {
         success: true,
         message: translateKey('response.move_successful', {
           sourcePath: getFileNameFromPath(sourcePath),
-          destinationPath,
+          destinationPath: newFileName,
         }),
         status: response.status,
       };
