@@ -113,6 +113,7 @@
     "rename": "Rename",
     "unknownErrorOccurred": "An unknown error occurred"
   },
+  "currentDirectory": "Current directory",
   "moveItemDialog": {
     "changeDirectory": "Change directory",
     "currentDirectory": "Current directory",
