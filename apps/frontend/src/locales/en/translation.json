@@ -43,9 +43,12 @@
     "description": "The application opens in a new window. No further authorization is required."
   },
 
+
+  "projects": "Projects",
+  "iso": "ISO",
   "menu": "MENU",
   "home": "Home",
-  "programs": "Programs",
+  "program": "Programs",
   "share": "Share",
   "students": "Students",
 
