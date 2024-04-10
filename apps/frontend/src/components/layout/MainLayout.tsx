@@ -1,18 +1,15 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useMediaQuery } from 'usehooks-ts';
-
 import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '../ui/Sidebar';
-import MenuBar from '../shared/MenuBar';
+import Sidebar from '@/components/ui/Sidebar';
+import MenuBar from '@/components/shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
   const isMainPage = pathname === '/';
-  const isLogoShown = isMainPage && isDesktop;
+  const isLogoShown = !isMainPage;
   return (
     <div
       className="flex bg-cover bg-center opacity-90"

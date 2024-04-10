@@ -1,18 +1,19 @@
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { FC, ReactNode, useState } from 'react';
-import Label from '@/components/ui/Label';
+
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/shared/Button';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
+import useFileManagerStore from '@/store/fileManagerStore';
+import WebDavFunctions from '@/webdavclient/WebDavFileManager';
+import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import {
-  getFileNameFromPath,
   getPathWithoutFileName,
   validateDirectoryName,
   validateFileName,
 } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/shared/Button';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore from '@/store/fileManagerStore';
-import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
@@ -23,26 +24,12 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isNameValid, setIsNameValid] = useState(false);
   const [localFileName, setLocalFileName] = useState('');
-  const { t } = useTranslation(); // Use the translation hook
-  const fileName = getFileNameFromPath(item.filename);
-  const placeholderTextKey = fileName.length > 0 ? 'fileRenameContent.to' : '';
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
+  const { t } = useTranslation();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (!open) {
-      setLocalFileName('');
-    }
-  };
-
-  const handleValidateName = (name: string) => {
-    const validationResult = item.type === ContentType.file ? validateFileName(name) : validateDirectoryName(name);
-    setIsNameValid(validationResult.isValid);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.value;
-    handleValidateName(name);
-    setLocalFileName(name);
+    setLocalFileName('');
   };
 
   const renameFile = async (oldName: string, newName: string) => {
@@ -62,41 +49,87 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
       });
   };
 
-  return (
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.value;
+    setLocalFileName(name);
+    setIsNameValid(
+      item.type === ContentType.file ? validateFileName(name).isValid : validateDirectoryName(name).isValid,
+    );
+  };
+
+  const mobileContent = (
+    <Sheet
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+    >
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
+      <SheetContent side="bottom">
+        <SheetHeader>
+          <SheetTitle>
+            {item.type === ContentType.file
+              ? `${t('fileRenameContent.renameYourFile')}`
+              : `${t('fileRenameContent.renameYourDirectory')}`}
+          </SheetTitle>
+        </SheetHeader>
+        <SheetDescription>
+          <Input
+            placeholder={t('fileRenameContent.placeholder')}
+            value={localFileName}
+            onChange={handleInputChange}
+          />
+        </SheetDescription>
+        <div className="mt-4 flex justify-end px-6">
+          <Button
+            variant="btn-collaboration"
+            disabled={!isNameValid}
+            onClick={() => {
+              renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch(() => {});
+            }}
+          >
+            {t('fileRenameContent.rename')}
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+
+  const desktopContent = (
+    <DialogContent>
+      <DialogTitle>
+        {item.type === ContentType.file
+          ? `${t('fileRenameContent.renameYourFile')}`
+          : `${t('fileRenameContent.renameYourDirectory')}`}
+      </DialogTitle>
+      <DialogDescription>
+        <Input
+          placeholder={t('fileRenameContent.placeholder')}
+          value={localFileName}
+          onChange={handleInputChange}
+        />
+      </DialogDescription>
+      <Button
+        variant="btn-collaboration"
+        disabled={!isNameValid}
+        onClick={() => {
+          renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch((error) =>
+            console.error(error),
+          );
+        }}
+      >
+        {t('fileRenameContent.rename')}
+      </Button>
+    </DialogContent>
+  );
+
+  return isMobile ? (
+    mobileContent
+  ) : (
     <Dialog
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogTitle>
-          {t(
-            item.type === ContentType.directory
-              ? 'fileRenameContent.renameYourDirectory'
-              : 'fileRenameContent.renameYourFile',
-          )}
-        </DialogTitle>
-        <>
-          <Label className="font-bold">{fileName}</Label>
-          <Input
-            className="mt-3"
-            placeholder={placeholderTextKey ? `${t(placeholderTextKey)} ${fileName}` : ''}
-            value={localFileName}
-            onChange={handleInputChange}
-          />
-          <div className="mx-auto flex justify-end p-4">
-            <Button
-              className="bg-green-600"
-              disabled={!isNameValid}
-              onClick={() => {
-                renameFile(item.filename, `${getPathWithoutFileName(item.filename)}/${localFileName}`).catch(() => {});
-              }}
-            >
-              {t('fileRenameContent.rename')}
-            </Button>
-          </div>
-        </>
-      </DialogContent>
+      {desktopContent}
     </Dialog>
   );
 };

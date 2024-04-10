@@ -20,6 +20,8 @@ module.exports = {
         ciDarkBlue: '#0081C6',
         ciLightBlue: '#66B2DF',
         ciLightGreen: '#88D840',
+        ciRed: '#ee0505',
+        ciGreen: '#37ee05',
         ciLightGrey: '#848493',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -72,10 +74,21 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        fadeInBottom: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(4rem)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        fadeInBottom: 'fadeInBottom 0.5s ease-out forwards',
       },
       flex: {
         '2': '2 1 0%',

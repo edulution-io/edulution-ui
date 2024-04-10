@@ -32,14 +32,13 @@ export default defineConfig({
       },
       '/api': {
         rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.demo.multi.schule:8001',
+        target: 'https://server.schulung.multi.schule:8001',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule:8001',
+          Origin: 'https://server.schulung.multi.schule:8001',
         },
       },
-
       //TODO docs
     },
   },

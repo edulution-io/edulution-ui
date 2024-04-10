@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import React, { useState, useRef } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
@@ -7,51 +6,106 @@ import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@/utils/common';
 
+import { useMediaQuery, useToggle, useOnClickOutside } from 'usehooks-ts';
+
 const MenuBar: React.FC = () => {
+  const [isOpen, toggle] = useToggle(false);
+  const menubarRef = useRef<HTMLDivElement>(null);
+
   const menuBarEntries = useMenuBarConfig();
   const { pathname } = useLocation();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
+
+  const renderMenuBarContent = () => (
+    <div
+      className="max-w-[300px]"
+      ref={menubarRef}
+    >
+      <div className="bg flex flex-col items-center justify-center py-6">
+        <img
+          src={menuBarEntries.icon}
+          alt=""
+          className="h-20 w-20 object-contain"
+        />
+        <h3 className="mb-4 mt-4 font-bold">{menuBarEntries.title}</h3>
+      </div>
+      <MenubarSeparator />
+      <MenubarMenu>
+        {menuBarEntries.menuItems.map((item) => (
+          <React.Fragment key={item.label}>
+            <MenubarTrigger
+              className={cn(
+                'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
+                menuBarEntries.color,
+                isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
+              )}
+              onClick={() => {
+                item.action();
+                setIsSelected(item.id);
+                toggle();
+              }}
+            >
+              <img
+                src={item.icon}
+                alt=""
+                className="h-12 w-12 object-contain"
+              />
+              <p className="text-nowrap">{item.label}</p>
+            </MenubarTrigger>
+            <MenubarSeparator />
+          </React.Fragment>
+        ))}
+      </MenubarMenu>
+    </div>
+  );
 
   return (
-    <VerticalMenubar className="flex h-screen w-full overflow-y-scroll bg-black bg-opacity-40 scrollbar-none">
-      <div className="w-full">
-        <div className="flex flex-col items-center justify-center py-6">
-          <img
-            src={menuBarEntries.icon}
-            alt=""
-            className="h-20 w-20 object-contain"
-          />
-          <h3 className="mb-4 mt-4 font-bold">{menuBarEntries.title}</h3>
+    <div>
+      {isMobile ? (
+        <>
+          {isOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-black bg-opacity-50"
+              role="button"
+              tabIndex={0}
+              onClickCapture={toggle}
+            />
+          )}
+
+          <VerticalMenubar
+            className={cn(
+              'fixed top-0 z-50 h-full overflow-y-scroll bg-gray-700 bg-opacity-90 duration-300 ease-in-out',
+              !isOpen ? 'w-0' : 'w-64',
+              'bg-black',
+            )}
+          >
+            {isOpen && renderMenuBarContent()}
+          </VerticalMenubar>
+
+          <div
+            role="button"
+            tabIndex={0}
+            className={cn(
+              'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
+              !isOpen ? 'left-0' : 'left-64',
+            )}
+            onClickCapture={toggle}
+          >
+            <p className="text-xl text-white">{!isOpen ? '≡' : '×'}</p>
+          </div>
+        </>
+      ) : (
+        <div className="relative flex h-screen">
+          <VerticalMenubar className={cn('h-full overflow-hidden', 'w-64', 'bg-black', 'bg-opacity-40')}>
+            {renderMenuBarContent()}
+          </VerticalMenubar>
         </div>
-        <MenubarSeparator />
-        <MenubarMenu>
-          {menuBarEntries.menuItems.map((item) => (
-            <React.Fragment key={item.label}>
-              <MenubarTrigger
-                className={cn(
-                  'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
-                  menuBarEntries.color,
-                  isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
-                )}
-                onClick={() => {
-                  item.action();
-                  setIsSelected(item.id);
-                }}
-              >
-                <img
-                  src={item.icon}
-                  alt=""
-                  className="h-12 w-12 object-contain"
-                />
-                <p>{item.label}</p>
-              </MenubarTrigger>
-              <MenubarSeparator />
-            </React.Fragment>
-          ))}
-        </MenubarMenu>
-      </div>
-    </VerticalMenubar>
+      )}
+    </div>
   );
 };
 

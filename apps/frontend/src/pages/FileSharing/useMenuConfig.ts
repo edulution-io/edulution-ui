@@ -40,6 +40,10 @@ const useFileSharingMenuConfig = () => {
   const { fetchMountPoints, fetchFiles } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
+  function constructFilePath(mountPoint: DirectoryFile, username: string) {
+    return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
+  }
+
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {
       try {
@@ -50,7 +54,7 @@ const useFileSharingMenuConfig = () => {
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
-              await fetchFiles(mountPoint.filename);
+              await fetchFiles(constructFilePath(mountPoint, sessionStorage.getItem('user') as string));
             } catch (error) {
               console.error('Error fetching files:', error);
             }

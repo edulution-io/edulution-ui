@@ -24,26 +24,19 @@ import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
-import getFileCategorie from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getFileCategorie, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
 
-const selectFileNameWidth = 'w-4/12';
-const lastModColumnWidth = 'w-5/12';
-const sizeColumnWidth = 'w-1/12';
-const typeColumnWidth = 'w-1/12';
-const operationsColumnWidth = 'w-1/12';
-
-const parseDate = (value: unknown): Date | null => {
-  if (typeof value === 'string' || typeof value === 'number') {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-  return null;
-};
+const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
+const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
+const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
+const selectFileNameWidth = 'w-3/5 lg:w-1/4 xl:w-1/4';
+const operationsColumnWidth = 'w-2/5 lg:w-3/4 xl:w-3/4';
 
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
+
     header: function Header({ table, column }) {
       return (
         <div className={`flex items-center ${selectFileNameWidth}`}>
@@ -53,7 +46,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
             aria-label="Select all"
           />
           <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center">
               {translateKey('fileSharingTable.filename')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </div>
@@ -78,6 +71,12 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         }
       };
 
+      const truncate = (str: string | undefined, num: number) => {
+        if (!str) return str;
+        if (str.length <= num) return str;
+        return `${str.slice(0, num)}...`;
+      };
+
       const handleCheckboxChange = () => {
         row.toggleSelected(!row.getIsSelected());
       };
@@ -90,7 +89,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className={`${selectFileNameWidth} flex items-center `}>
+        <div className={`${selectFileNameWidth} flex items-center justify-between space-x-2 sm:justify-start `}>
           <div className="flex items-center">
             <Checkbox
               checked={row.getIsSelected()}
@@ -98,14 +97,14 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               aria-label="Select row"
             />
             <Icon
-              className="ml-2 mr-2"
-              style={{ fontSize: '16px', width: '16px', height: '16px' }}
+              className="mb-3 ml-2 mr-2 mt-3"
+              style={{ fontSize: '32px', width: '32px', height: '32px' }}
             >
               {renderFileIcon(row.original)}
             </Icon>
 
             <span
-              className="cursor-pointer text-left font-medium"
+              className="cursor-pointer truncate text-left font-medium"
               onClick={() => handleFilenameClick(row.original.filename)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === 'Space') {
@@ -116,7 +115,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               tabIndex={0}
               style={{ userSelect: 'none' }}
             >
-              {formattedFilename}
+              <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
             </span>
             {isPreviewOpen && (
               <FilePreviewDialog
@@ -141,7 +140,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'lastmod',
     header: function Header({ column }) {
       return (
-        <div className={lastModColumnWidth}>
+        <div className={`${lastModColumnWidth} hidden lg:flex `}>
           <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className=""> {translateKey('fileSharingTable.lastModified')}</div>
           </ButtonSH>
@@ -154,13 +153,13 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
       if (directoryFile.lastmod) {
         const date = new Date(directoryFile.lastmod);
-        formattedDate = !Number.isNaN(date.getTime()) ? date.toLocaleDateString() : 'Invalid Date';
+        formattedDate = getElapsedTime(date);
       } else {
         formattedDate = 'Date not provided';
       }
       return (
-        <div className={`flex items-center justify-center ${lastModColumnWidth}`}>
-          <span className="text-center font-medium">{formattedDate}</span>
+        <div className={`hidden items-center justify-center lg:flex ${lastModColumnWidth}`}>
+          <span className="text-md text-center font-medium">{formattedDate}</span>
         </div>
       );
     },
@@ -180,7 +179,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'size',
     header: function Header({ column }) {
       return (
-        <div className={sizeColumnWidth}>
+        <div className={`${sizeColumnWidth} hidden lg:flex`}>
           <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className=""> {translateKey('fileSharingTable.size')}</div>
           </ButtonSH>
@@ -193,7 +192,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         fileSize = row.original.size;
       }
       return (
-        <div className={`flex flex-row  ${sizeColumnWidth}`}>
+        <div className={`hidden flex-row lg:flex ${sizeColumnWidth}`}>
           <p className="text-right font-medium">{formatBytes(fileSize)}</p>
         </div>
       );
@@ -204,7 +203,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'type',
     header: function Header({ column }) {
       return (
-        <div className={typeColumnWidth}>
+        <div className={`${sizeColumnWidth} hidden lg:flex`}>
           <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className=""> {translateKey('fileSharingTable.type')}</div>
           </ButtonSH>
@@ -219,17 +218,17 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         return translateKey('fileCategory.folder');
       };
 
-      return <div className={`flex flex-row  ${typeColumnWidth}`}>{renderFileCategorize(row.original)}</div>;
+      return (
+        <div className={` hidden flex-row text-right text-base font-medium lg:flex ${typeColumnWidth}`}>
+          {renderFileCategorize(row.original)}
+        </div>
+      );
     },
   },
 
   {
     accessorKey: 'delete',
-    header: () => (
-      <div className={operationsColumnWidth}>
-        <div className={`flex items-center justify-between ${operationsColumnWidth}`} />
-      </div>
-    ),
+    header: () => <div className="hidden w-full justify-end md:flex" />,
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
       const { setLoading, isLoading } = useFileManagerStore();
@@ -251,7 +250,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.rename')}
                   trigger={
                     <span>
                       <RenameItemDialog
@@ -269,7 +268,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.move')}
                   trigger={
                     <MoveItemDialog
                       trigger={
@@ -291,7 +290,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                       handleDownload(row.original).catch(() => {});
                     }
                   }}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.download')}
                   trigger={
                     <div>
                       <MdOutlineFileDownload />
@@ -302,7 +301,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
                   onAction={() => {}}
-                  tooltipText="Add File"
+                  tooltipText={translateKey('tooltip.delete')}
                   trigger={
                     <DeleteItemAlert
                       trigger={

@@ -15,6 +15,7 @@ export interface MenuItem {
   label: string;
   icon: string;
   action: () => void;
+  path?: string;
 }
 
 export interface MenuBarEntryProps {

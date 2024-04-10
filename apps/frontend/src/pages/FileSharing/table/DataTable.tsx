@@ -63,8 +63,8 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
         <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
       )}
 
-      <div className="container mx-auto w-full">
-        <ScrollArea className="max-h-[600px]  overflow-auto">
+      <div className=" w-full flex-1  pl-3 pr-3.5">
+        <ScrollArea className="max-h-[80vh] overflow-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -115,4 +115,5 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
     </>
   );
 };
+
 export default DataTable;
