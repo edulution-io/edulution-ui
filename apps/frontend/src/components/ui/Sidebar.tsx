@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ import { useLocalStorage, useMediaQuery, useOnClickOutside, useWindowSize, useTo
 import { ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
-
+import { useAuth } from 'react-oidc-context';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -27,6 +27,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
+  const auth = useAuth();
 
   const [config] = useLocalStorage<ConfigType>('edu-config', {});
   const sidebarItems = [
@@ -65,21 +66,24 @@ const Sidebar = () => {
     setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
   }, [size, translate, sidebarItems]);
 
-  const handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
-    setTranslate((prevTranslate) => {
-      if (sidebarIconsRef.current == null) {
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault();
+      setTranslate((prevTranslate) => {
+        if (sidebarIconsRef.current == null) {
+          return prevTranslate;
+        }
+        if (isDownButtonVisible && e.deltaY > 0) {
+          return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
+        }
+        if (isUpButtonVisible && e.deltaY < 0 && translate > 0) {
+          return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
+        }
         return prevTranslate;
-      }
-      if (isDownButtonVisible && e.deltaY > 0) {
-        return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
-      }
-      if (isUpButtonVisible && e.deltaY < 0 && translate > 0) {
-        return prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
-      }
-      return prevTranslate;
-    });
-  };
+      });
+    },
+    [isDownButtonVisible, isUpButtonVisible, translate],
+  );
 
   useEffect(() => {
     const container = sidebarIconsRef.current;
@@ -96,29 +100,35 @@ const Sidebar = () => {
 
   const [startY, setStartY] = useState<number | null>(null);
 
-  const handleTouchStart = (event: TouchEvent) => {
-    setStartY(event.touches[0].clientY);
-  };
+  const handleTouchStart = useCallback(
+    (event: TouchEvent) => {
+      setStartY(event.touches[0].clientY);
+    },
+    [isDownButtonVisible, isUpButtonVisible, translate, startY],
+  );
 
-  const handleTouchMove = (event: TouchEvent) => {
-    event.preventDefault();
-    if (!startY) return;
+  const handleTouchMove = useCallback(
+    (event: TouchEvent) => {
+      event.preventDefault();
+      if (!startY) return;
 
-    const deltaY = event.touches[0].clientY - startY;
+      const deltaY = event.touches[0].clientY - startY;
 
-    setTranslate((prevTranslate) => {
-      if (sidebarIconsRef.current == null) {
+      setTranslate((prevTranslate) => {
+        if (sidebarIconsRef.current == null) {
+          return prevTranslate;
+        }
+        if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
+        if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
         return prevTranslate;
-      }
-      if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
-      if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
-      return prevTranslate;
-    });
-  };
+      });
+    },
+    [isDownButtonVisible, isUpButtonVisible, startY, translate],
+  );
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     setStartY(null);
-  };
+  }, [isDownButtonVisible, isUpButtonVisible, translate, startY]);
 
   useEffect(() => {
     const container = sidebarIconsRef.current;
@@ -141,7 +151,7 @@ const Sidebar = () => {
     <Button
       variant="btn-outline"
       size="sm"
-      className="rounded-[16px] border-[3px]"
+      className="rounded-xl border-[3px]"
       onClick={toggle}
     >
       {t('menu')}
@@ -161,7 +171,7 @@ const Sidebar = () => {
           alt=""
         />
         <div
-          className={`absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-xl bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+          className={`absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
         >
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
           <img
@@ -200,7 +210,7 @@ const Sidebar = () => {
     <div key="down">
       <button
         type="button"
-        className={`absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-10' : 'bottom-0 h-[58px] border-t-0'}`}
+        className={`absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-[58px]' : 'bottom-0 h-[58px] border-t-0'}`}
         onClick={() => {
           setTranslate((prevTranslate) => {
             if (sidebarIconsRef.current == null) {
@@ -222,13 +232,18 @@ const Sidebar = () => {
   );
 
   const logoutButton = () => (
-    <div key="logout">
+    <div
+      key="logout"
+      className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black ' : 'border-b-2 border-ciLightGrey'}`}
+    >
       <NavLink
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
+          auth.removeUser().catch(console.error);
+          // TODO: Remove if webdav is stored in backend NIEDUUI-26
+          sessionStorage.clear();
         }}
-        to="/logout"
-        className={`group fixed bottom-0 right-0 flex cursor-pointer items-center justify-end gap-4 border-t-2 border-ciLightGrey bg-black px-4 md:block md:px-2 ${pathname === '/logout' ? 'bg-black' : ''}`}
+        to="/"
+        className={`group flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 md:block md:px-2  ${pathname === '/logout' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
         <img
@@ -237,16 +252,16 @@ const Sidebar = () => {
           className="relative z-0 "
           alt=""
         />
-        <div
-          className={`absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-xl border-ciLightGrey bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? ' ease-out group-hover:-translate-x-full' : ''}`}
-        >
-          <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
-          <img
-            src={UserIcon}
-            width={SIDEBAR_ICON_WIDTH}
-            alt=""
-          />
-        </div>
+        {isDesktop ? (
+          <div className="absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
+            <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
+            <img
+              src={UserIcon}
+              width={SIDEBAR_ICON_WIDTH}
+              alt=""
+            />
+          </div>
+        ) : null}
       </NavLink>
     </div>
   );
@@ -255,11 +270,11 @@ const Sidebar = () => {
     <div className="fixed right-0 h-screen bg-black bg-opacity-90 md:bg-none">
       {!isDesktop && isOpen ? (
         <>
-          <div className="relative right-0 top-0 z-[50] h-[100px] bg-black" />
+          <div className="relative right-0 top-0 z-[98] h-[100px] bg-black" />
           <div className="fixed right-0 top-0 z-[99] pr-4 pt-4">{menuButton()}</div>
         </>
       ) : null}
-      {isDesktop ? homeButton() : null}
+      {homeButton()}
       {isUpButtonVisible ? upButton() : null}
 
       <div
@@ -279,6 +294,7 @@ const Sidebar = () => {
             translate={translate}
           />
         ))}
+        {!isDesktop ? logoutButton() : null}
       </div>
       {isDownButtonVisible ? downButton() : null}
       {isDesktop ? logoutButton() : null}

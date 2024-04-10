@@ -52,7 +52,7 @@ const useFileSharingMenuConfig = () => {
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
-              await fetchFiles(constructFilePath(mountPoint, import.meta.env.VITE_USERNAME as string));
+              await fetchFiles(constructFilePath(mountPoint, sessionStorage.getItem('user') as string));
             } catch (error) {
               console.error('Error fetching files:', error);
             }

@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { HexagonIcon } from '@/assets/layout';
 import cn from '@/lib/utils';
 
-const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-[8px]'], {
+const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl'], {
   variants: {
     variant: {
       'btn-collaboration': 'bg-ciDarkBlue',

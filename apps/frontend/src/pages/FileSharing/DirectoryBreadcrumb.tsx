@@ -41,7 +41,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
         <BreadcrumbItem key="home">
           <BreadcrumbLink
             href="#"
-            onClick={() => onNavigate(`/teachers/${import.meta.env.VITE_USERNAME}/`)}
+            onClick={() => onNavigate(`/teachers/${sessionStorage.getItem('user')}/`)}
           >
             {t('home')}
           </BreadcrumbLink>

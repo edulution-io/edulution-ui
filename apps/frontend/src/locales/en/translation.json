@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
-  "heading": "Welcome Mrs. Mustermann",
+  "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "dashboard": {
     "mobileAccess": {
@@ -43,14 +43,15 @@
     "description": "The application opens in a new window. No further authorization is required."
   },
 
-
+  "menu": "Menu",
+  "home": "Home",
   "projects": "Projects",
   "iso": "ISO",
-  "menu": "MENU",
-  "home": "Home",
   "program": "Programs",
   "share": "Share",
   "students": "Students",
+
+  "login": { "forgot_password": "Forgot password?", "remember_me": "Remember me" },
 
   "common": {
     "add": "Add",
@@ -58,7 +59,11 @@
     "logout": "Logout",
     "save": "Save",
     "successful": "Successful",
-    "failed": "Failed"
+    "failed": "Failed",
+    "login": "Login",
+    "username": "Username",
+    "password": "Password",
+    "loading": "Loading..."
   },
   "form": {
     "path": "Path",

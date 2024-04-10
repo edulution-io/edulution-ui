@@ -12,6 +12,8 @@ const cardVariants = cva('border-4 border-solid', {
       organisation: 'border-ciLightBlue',
       infrastructure: 'border-ciLightGreen',
       security: styles['gradient-box'],
+      modal:
+        'border-white fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-[25px] text-black',
     },
   },
   defaultVariants: {

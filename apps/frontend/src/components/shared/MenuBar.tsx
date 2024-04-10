@@ -78,7 +78,7 @@ const MenuBar: React.FC = () => {
 
           <VerticalMenubar
             className={cn(
-              'fixed top-0 z-50 h-full bg-gray-700 bg-opacity-90 duration-300 ease-in-out',
+              'fixed top-0 z-50 h-full overflow-y-scroll bg-gray-700 bg-opacity-90 duration-300 ease-in-out',
               !isOpen ? 'w-0' : 'w-64',
               'bg-black',
             )}

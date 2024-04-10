@@ -13,6 +13,15 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      '/auth': {
+        rewrite: (path) => path.replace(/^\/auth/, ''),
+        target: 'https://auth.schulung.multi.schule/auth',
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          Origin: 'https://ui.schulung.multi.schule',
+        },
+      },
       '/webdav': {
         target: 'https://server.schulung.multi.schule',
         changeOrigin: true,
@@ -23,11 +32,11 @@ export default defineConfig({
       },
       '/api': {
         rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.demo.multi.schule:8001',
+        target: 'https://server.schulung.multi.schule:8001',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule:8001',
+          Origin: 'https://server.schulung.multi.schule:8001',
         },
       },
       //TODO docs

@@ -3,21 +3,21 @@ import { Outlet, useLocation } from 'react-router-dom';
 import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '../ui/Sidebar';
-import MenuBar from '../shared/MenuBar';
+import Sidebar from '@/components/ui/Sidebar';
+import MenuBar from '@/components/shared/MenuBar';
 
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();
   const isMainPage = pathname === '/';
-  const isMenuBarVisible = !isMainPage;
+
   return (
     <div
       className="flex bg-cover bg-center opacity-90"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {isMenuBarVisible ? <MenuBar /> : null}
+      {!isMainPage ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header isMenuBarVisible={isMenuBarVisible} />
+        <Header isLogoShown={isMainPage} />
         <main className="flex-1">
           <Outlet />
         </main>

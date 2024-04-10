@@ -18,14 +18,15 @@ const resources = {
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
+    debug: false,
     resources,
-    debug: true,
     lng: 'de', // default language
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
   })
-  .then(() => {})
-  .catch(() => {});
+  .catch((e) => {
+    console.error(e);
+  });
 
 export default i18n;

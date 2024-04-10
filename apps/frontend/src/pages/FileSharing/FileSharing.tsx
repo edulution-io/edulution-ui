@@ -38,15 +38,11 @@ const FileSharingPage = () => {
     files,
     currentPath,
   } = useFileManagerStore();
-
-  useEffect(() => {
-    fetchFiles().catch(console.error);
-  }, [currentPath]);
-
-  useEffect(() => {
-    fetchFiles().catch(console.error);
-  }, [fileOperationSuccessful]);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    fetchFiles().catch(console.error);
+  }, [currentPath, fileOperationSuccessful]);
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 

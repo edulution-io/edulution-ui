@@ -38,7 +38,7 @@ type FileManagerStore = {
 const useFileManagerStore = create<FileManagerStore>((set, get) => ({
   files: [],
   isLoading: false,
-  currentPath: `/teachers/${import.meta.env.VITE_USERNAME}`,
+  currentPath: `/`,
   isVisible: false,
   fileName: '',
   directoryName: '',

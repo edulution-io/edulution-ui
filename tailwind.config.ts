@@ -94,17 +94,18 @@ module.exports = {
         '2': '2 1 0%',
       },
     },
-    plugins: [
-      require('tailwindcss-animate'),
-      plugin(function ({ addBase, theme }) {
-        addBase({
-          h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
-          h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em', fontWeight: '700' },
-          h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
-          h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
-          p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
-        });
-      }),
-    ],
   },
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwind-scrollbar'),
+    plugin(function ({ addBase, theme }) {
+      addBase({
+        h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
+        h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em', fontWeight: '700' },
+        h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
+        h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
+        p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
+      });
+    }),
+  ],
 };

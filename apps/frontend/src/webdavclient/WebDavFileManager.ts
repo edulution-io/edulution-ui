@@ -1,10 +1,21 @@
 import { createClient } from 'webdav';
 import JSZip from 'jszip';
+import { decryptPassword, translateKey } from '@/utils/common';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
-import { translateKey } from '@/utils/common';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
+
+// TODO: Remove/Rework if webdav is stored in backend NIEDUUI-26
+export const createWebdavClient = () =>
+  createClient(`${window.location.origin}/webdav`, {
+    username: sessionStorage.getItem('user') as string,
+    password: decryptPassword({
+      data: sessionStorage.getItem('webdav') as string,
+      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+    }),
+  });
+// ------------------------------
 
 function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
   return {
@@ -29,12 +40,8 @@ const handleApiError = (error: Response) => {
   );
 };
 
-const client = createClient(`${window.location.origin}/webdav`, {
-  username: import.meta.env.VITE_USERNAME as string,
-  password: import.meta.env.VITE_PASSWORD as string,
-});
-
 const getContentList: IWebDavFileManager['getContentList'] = async (path: string): Promise<DirectoryFile[]> => {
+  const client = createWebdavClient();
   const result = await client.getDirectoryContents(path, {
     data:
       '<?xml version="1.0"?>\n' +
@@ -56,6 +63,7 @@ const getContentList: IWebDavFileManager['getContentList'] = async (path: string
 };
 
 const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string) => {
+  const client = createWebdavClient();
   try {
     await client.createDirectory(path);
     const response = new Response('OK', {
@@ -69,6 +77,7 @@ const createDirectory: IWebDavFileManager['createDirectory'] = async (path: stri
 };
 
 const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
+  const client = createWebdavClient();
   try {
     await client.putFileContents(path, ' ');
     const response = new Response('OK', {
@@ -82,6 +91,7 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
 };
 
 const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
+  const client = createWebdavClient();
   try {
     await client.deleteFile(path);
     const response = new Response('OK', {
@@ -98,6 +108,7 @@ const moveFile = async (
   sourcePath: string,
   destinationPath: string,
 ): Promise<{ success: boolean; message: string; status: number }> => {
+  const client = createWebdavClient();
   try {
     const response = await client.customRequest(sourcePath, {
       method: 'MOVE',
@@ -175,12 +186,13 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
   onProgress: (percentage: number) => void,
 ) =>
   new Promise((resolve, reject) => {
+    const client = createWebdavClient();
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', client.getFileUploadLink(remotePath), true);
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${import.meta.env.VITE_USERNAME}:${import.meta.env.VITE_PASSWORD}`)}`,
+      `Basic ${btoa(`${sessionStorage.getItem('user')}:${decryptPassword({ data: sessionStorage.getItem('webdav') as string, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 
@@ -234,6 +246,7 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
 
   const folderZip = zip.folder(folderName);
   const contentList = await getContentList(path);
+  const client = createWebdavClient();
   try {
     const operations = contentList.map(async (item) => {
       if (item.type === 'file') {
@@ -279,6 +292,7 @@ const addItemsToZip = async (zip: JSZip, path: string) => {
 };
 
 const triggerFileDownload: IWebDavFileManager['triggerFileDownload'] = (path: string) => {
+  const client = createWebdavClient();
   const downloadLink = client.getFileDownloadLink(path);
   const anchor = document.createElement('a');
   anchor.href = downloadLink;

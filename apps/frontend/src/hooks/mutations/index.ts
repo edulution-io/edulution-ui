@@ -1,1 +1,1 @@
-export { default as useAuth } from './useAuthMutation';
+export { default as useEncryption } from './useEncryption';
