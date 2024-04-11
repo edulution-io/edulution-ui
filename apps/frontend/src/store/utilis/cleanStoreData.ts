@@ -1,9 +1,9 @@
 import StoreTyps from '@/store/utilis/storeTyps';
-import useApiStore from '@/store/lmnStore';
+import useLmnUserStore from '@/store/lmnUserStore';
 
 const cleanStoreData = (store: StoreTyps) => {
-  if (store === StoreTyps.LMN_STORE) {
-    useApiStore.getState().reset();
+  if (store === StoreTyps.LMN_USER_STORE) {
+    useLmnUserStore.getState().reset();
   }
   if (store === StoreTyps.FILEMANAGER_STORE) {
     // NOT IMPLEMENTED YET

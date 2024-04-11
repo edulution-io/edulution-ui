@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import useApiStore from '@/store/lmnStore';
+import useLmnUserStore from '@/store/lmnUserStore';
 import { waitForToken } from '@/utils/common';
 
 const AccountInformation = () => {
-  const { data, fetchData } = useApiStore((state) => ({
+  const { data, fetchData } = useLmnUserStore((state) => ({
     fetchData: state.fetchData,
     data: state.data,
   }));

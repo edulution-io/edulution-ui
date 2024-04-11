@@ -242,7 +242,7 @@ const Sidebar = () => {
         onClick={() => {
           auth.removeUser().catch(console.error);
           // TODO: Remove if webdav is stored in backend NIEDUUI-26
-          cleanStoreData(StoreTyps.LMN_STORE);
+          cleanStoreData(StoreTyps.LMN_USER_STORE);
           sessionStorage.clear();
         }}
         to="/"

@@ -35,7 +35,7 @@ const initialState: Omit<UserLmnInfoStore<keyof DataTypeMap>, 'fetchData' | 'set
   token: sessionStorage.getItem('token'),
 };
 
-const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
+const useLmnUserStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
   ...initialState,
   setToken: (token: string | null) => {
     set({ token });
@@ -99,4 +99,4 @@ const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
   reset: () => set({ ...initialState, token: sessionStorage.getItem('token') }),
 }));
 
-export default useApiStore;
+export default useLmnUserStore;

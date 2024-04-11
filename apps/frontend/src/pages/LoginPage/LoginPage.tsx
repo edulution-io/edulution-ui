@@ -12,13 +12,13 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useApiStore from '@/store/lmnStore';
+import useLmnUserStore from '@/store/lmnUserStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const { isLoading } = auth;
-  const { fetchData } = useApiStore((state) => ({
+  const { fetchData } = useLmnUserStore((state) => ({
     fetchData: state.fetchData,
   }));
 
