@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { AxiosRequestConfig } from 'axios';
 import UserLmnInfo from '@/datatypes/userInfo';
 import axiosInstance from '@/api/axiosInstance';
@@ -14,7 +14,9 @@ interface UserLmnInfoStore<Url extends keyof DataTypeMap> {
   loading: boolean;
   error: Error | null;
   token: string | null;
+  setToken: (token: string | null) => void;
   fetchData: (params: FetchDataParams) => Promise<void>;
+  reset: () => void;
 }
 
 interface FetchDataParams {
@@ -26,11 +28,23 @@ interface FetchDataParams {
   password?: string;
 }
 
-const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
+const initialState: Omit<UserLmnInfoStore<keyof DataTypeMap>, 'fetchData' | 'setToken' | 'reset'> = {
   data: null,
   loading: false,
   error: null,
-  token: null,
+  token: sessionStorage.getItem('token'),
+};
+
+const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
+  ...initialState,
+  setToken: (token: string | null) => {
+    set({ token });
+    if (token) {
+      sessionStorage.setItem('token', token);
+    } else {
+      sessionStorage.removeItem('token');
+    }
+  },
   fetchData: async (params: FetchDataParams) => {
     set({ loading: true });
     const { url, method = 'GET', body = undefined, headers = {} } = params;
@@ -63,7 +77,6 @@ const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
       }
       if (url.includes('/auth')) {
         const token = response.data as string;
-        set({ token });
         sessionStorage.setItem('lmnApiToken', token);
       }
 
@@ -83,6 +96,7 @@ const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
       set({ error: error as Error, loading: false });
     }
   },
+  reset: () => set({ ...initialState, token: sessionStorage.getItem('token') }),
 }));
 
 export default useApiStore;

@@ -2,20 +2,23 @@ import React, { useEffect } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import useApiStore from '@/store/lmnStore';
+import { waitForToken } from '@/utils/common';
 
 const AccountInformation = () => {
-  const { token, data, fetchData } = useApiStore((state) => ({
+  const { data, fetchData } = useApiStore((state) => ({
     fetchData: state.fetchData,
     data: state.data,
-    token: state.token,
   }));
   const username = import.meta.env.VITE_USERNAME as string;
 
   useEffect(() => {
-    if (token) {
-      fetchData({ url: `/users/${username}`, method: 'GET' }).catch(console.error);
-    }
-  }, [username, fetchData, token]);
+    const initialize = async () => {
+      await waitForToken();
+      fetchData({ url: `/users/${sessionStorage.getItem('user')}`, method: 'GET' }).catch(console.error);
+    };
+
+    initialize().catch(console.error);
+  }, [username, fetchData]);
 
   const userInfoFields = [
     { label: 'Name', value: data ? data.displayName : '...' },
