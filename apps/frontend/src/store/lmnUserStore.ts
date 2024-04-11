@@ -13,8 +13,6 @@ interface UserLmnInfoStore<Url extends keyof DataTypeMap> {
   data: InferDataType<Url> | null;
   loading: boolean;
   error: Error | null;
-  token: string | null;
-  setToken: (token: string | null) => void;
   fetchData: (params: FetchDataParams) => Promise<void>;
   reset: () => void;
 }
@@ -32,19 +30,10 @@ const initialState: Omit<UserLmnInfoStore<keyof DataTypeMap>, 'fetchData' | 'set
   data: null,
   loading: false,
   error: null,
-  token: sessionStorage.getItem('token'),
 };
 
 const useLmnUserStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
   ...initialState,
-  setToken: (token: string | null) => {
-    set({ token });
-    if (token) {
-      sessionStorage.setItem('token', token);
-    } else {
-      sessionStorage.removeItem('token');
-    }
-  },
   fetchData: async (params: FetchDataParams) => {
     set({ loading: true });
     const { url, method = 'GET', body = undefined, headers = {} } = params;
@@ -96,7 +85,7 @@ const useLmnUserStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
       set({ error: error as Error, loading: false });
     }
   },
-  reset: () => set({ ...initialState, token: sessionStorage.getItem('token') }),
+  reset: () => set({ ...initialState }),
 }));
 
 export default useLmnUserStore;

@@ -9,7 +9,6 @@ const AccountInformation = () => {
     fetchData: state.fetchData,
     data: state.data,
   }));
-  const username = import.meta.env.VITE_USERNAME as string;
 
   useEffect(() => {
     const initialize = async () => {
@@ -18,7 +17,7 @@ const AccountInformation = () => {
     };
 
     initialize().catch(console.error);
-  }, [username, fetchData]);
+  }, [fetchData]);
 
   const userInfoFields = [
     { label: 'Name', value: data ? data.displayName : '...' },
