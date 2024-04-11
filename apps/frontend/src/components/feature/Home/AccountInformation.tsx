@@ -25,8 +25,6 @@ const AccountInformation = () => {
     { label: 'Schule', value: data ? data.school : '...' },
     { label: 'Rolle', value: data ? data.sophomorixRole : '...' },
     { label: 'schoolclasses', value: data ? data.schoolclasses : '...' },
-    { label: 'printers', value: data ? data.printers : '...' },
-    { label: 'projects', value: data ? data.projects : '...' },
   ];
 
   return (
