@@ -4,21 +4,27 @@ import { Button } from '@/components/shared/Button';
 import useApiStore from '@/store/lmnStore';
 
 const AccountInformation = () => {
-  const { data, fetchData } = useApiStore((state) => ({
+  const { token, data, fetchData } = useApiStore((state) => ({
     fetchData: state.fetchData,
     data: state.data,
+    token: state.token,
   }));
   const username = import.meta.env.VITE_USERNAME as string;
 
   useEffect(() => {
-    fetchData({ url: `/api/v1/users/${username}`, method: 'GET' }).catch(console.error);
-  }, [username, fetchData]);
+    if (token) {
+      fetchData({ url: `/users/${username}`, method: 'GET' }).catch(console.error);
+    }
+  }, [username, fetchData, token]);
 
   const userInfoFields = [
     { label: 'Name', value: data ? data.displayName : '...' },
     { label: 'E-Mail', value: data ? data.mail : '...' },
     { label: 'Schule', value: data ? data.school : '...' },
     { label: 'Rolle', value: data ? data.sophomorixRole : '...' },
+    { label: 'schoolclasses', value: data ? data.schoolclasses : '...' },
+    { label: 'printers', value: data ? data.printers : '...' },
+    { label: 'projects', value: data ? data.projects : '...' },
   ];
 
   return (

@@ -1,10 +1,10 @@
 import create from 'zustand';
-import axiosInstance, { AxiosRequestConfig } from 'axios';
-import UserLmnInfo from '@/datatypes/UserInfo';
+import { AxiosRequestConfig } from 'axios';
+import UserLmnInfo from '@/datatypes/userInfo';
+import axiosInstance from '@/api/axiosInstance';
 
 type DataTypeMap = {
   '/users': UserLmnInfo;
-  '/products': UserLmnInfo;
 };
 
 type InferDataType<Url extends keyof DataTypeMap> = DataTypeMap[Url];
@@ -13,51 +13,71 @@ interface UserLmnInfoStore<Url extends keyof DataTypeMap> {
   data: InferDataType<Url> | null;
   loading: boolean;
   error: Error | null;
+  token: string | null;
   fetchData: (params: FetchDataParams) => Promise<void>;
 }
 
 interface FetchDataParams {
   url: string;
+  headers?: Record<string, string>;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: never;
+  username?: string;
+  password?: string;
 }
+
 const useApiStore = create<UserLmnInfoStore<keyof DataTypeMap>>((set) => ({
   data: null,
   loading: false,
   error: null,
+  token: null,
   fetchData: async (params: FetchDataParams) => {
     set({ loading: true });
+    const { url, method = 'GET', body = undefined, headers = {} } = params;
+    const authHeaders: Record<string, string> = {};
+    if (params.username && params.password) {
+      const encodedCredentials = btoa(`${params.username}:${params.password}`);
+      authHeaders.Authorization = `Basic ${encodedCredentials}`;
+    } else {
+      const token = sessionStorage.getItem('lmnApiToken');
+      if (token) {
+        authHeaders['X-Api-Key'] = token;
+      }
+    }
+
+    const config: AxiosRequestConfig = {
+      url,
+      method,
+      data: body,
+      headers: {
+        ...headers,
+        ...authHeaders,
+      },
+    };
+
     try {
-      const { url, method = 'GET', body = undefined } = params;
-
-      const config: AxiosRequestConfig = {
-        url,
-        method,
-        data: body,
-        headers: {
-          'X-Api-Key':
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyIjoibmV0emludC10ZWFjaGVyIiwicm9sZSI6InRlYWNoZXIifQ.F-P2ZUkkSGgXRL_tPaRLup-37pVgOO1Wnb-4O1T42SPat7fCdh4Cgl6pI-bZCnqXbPAmwkTGlrMjuxje64yI8g', // Dynamically setting or overriding the token for this request
-        },
-      };
-
       const response = await axiosInstance(config);
-
       let dataTypeKey: keyof DataTypeMap | null = null;
       if (url.includes('/users')) {
         dataTypeKey = '/users';
-      } else if (url.includes('/products')) {
-        dataTypeKey = '/products';
+      }
+      if (url.includes('/auth')) {
+        const token = response.data as string;
+        set({ token });
+        sessionStorage.setItem('lmnApiToken', token);
       }
 
-      if (dataTypeKey) {
-        set({
-          data: response.data as InferDataType<typeof dataTypeKey>,
-          loading: false,
-          error: null,
-        });
-      } else {
-        console.error('No matching data type found for URL:', url);
-        set({ error: new Error('No matching data type found'), loading: false });
+      if (!url.includes('/auth')) {
+        if (dataTypeKey) {
+          set({
+            data: response.data as InferDataType<typeof dataTypeKey>,
+            loading: false,
+            error: null,
+          });
+        } else {
+          console.error('No matching data type found for URL:', url);
+          set({ error: new Error('No matching data type found'), loading: false });
+        }
       }
     } catch (error) {
       set({ error: error as Error, loading: false });
