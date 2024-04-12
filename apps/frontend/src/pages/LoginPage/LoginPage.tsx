@@ -12,12 +12,15 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
+import useLmnUserStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-
   const { isLoading } = auth;
+  const { getToken } = useLmnUserStore((state) => ({
+    getToken: state.getToken,
+  }));
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -37,12 +40,14 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
+      const username = form.getValues('username') as string;
+      const password = form.getValues('password') as string;
       await auth.signinResourceOwnerCredentials({
-        username: form.getValues('username') as string,
-        password: form.getValues('password') as string,
+        username,
+        password,
       });
 
-      // TODO: Remove if webdav is stored in backend NIEDUUI-26
+      await getToken(username, password);
       const encryptedPassword = useEncryption({
         mode: 'encrypt',
         data: form.getValues('password') as string,
