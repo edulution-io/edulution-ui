@@ -1,5 +1,5 @@
 import StoreTypes from '@/store/utilis/storeTypes';
-import useLmnUserStore from '@/store/lmnUserStore';
+import useLmnUserStore from '@/store/lmnApiStore';
 import useFileManagerStore from '@/store/fileManagerStore';
 
 const cleanStoreData = (store: StoreTypes) => {

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
-import useLmnUserStore from '@/store/lmnUserStore';
+import useLmnUserStore from '@/store/lmnApiStore';
 import { waitForToken } from '@/api/common';
 
 const Groups = () => {

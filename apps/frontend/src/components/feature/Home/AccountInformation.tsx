@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import useLmnUserStore from '@/store/lmnUserStore';
+import useLmnUserStore from '@/store/lmnApiStore';
 import { waitForToken } from '@/api/common';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
