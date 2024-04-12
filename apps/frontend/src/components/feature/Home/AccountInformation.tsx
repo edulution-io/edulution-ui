@@ -25,7 +25,10 @@ const AccountInformation = () => {
   const { t } = useTranslation();
   const userInfoFields = [
     { label: t('accountData.name'), value: userData ? userData.displayName : '...' },
-    { label: t('accountData.email'), value: userData ? userData?.mail && userData?.mail.length > 0 && userData.mail.at(0) : '...' },
+    {
+      label: t('accountData.email'),
+      value: userData ? userData?.mail && userData?.mail.length > 0 && userData.mail.at(0) : '...',
+    },
     { label: t('accountData.school'), value: userData ? userData.school : '...' },
     { label: t('accountData.role'), value: userData ? userData.sophomorixRole : '...' },
   ];
