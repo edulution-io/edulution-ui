@@ -5,8 +5,8 @@ import useLmnUserStore from '@/store/lmnApiStore';
 import { waitForToken } from '@/api/common';
 
 const Groups = () => {
-  const { userData, getUser } = useLmnUserStore((state) => ({
-    getUser: state.getUser,
+  const { userData, getUserData } = useLmnUserStore((state) => ({
+    getUserData: state.getUserData,
     userData: state.userData,
   }));
 
@@ -14,7 +14,7 @@ const Groups = () => {
     if (!userData) {
       const getUserGroupDataQuery = async () => {
         await waitForToken();
-        getUser().catch(console.error);
+        getUserData().catch(console.error);
       };
 
       getUserGroupDataQuery().catch(console.error);

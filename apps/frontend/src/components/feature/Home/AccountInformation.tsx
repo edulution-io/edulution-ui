@@ -6,8 +6,8 @@ import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 
 const AccountInformation = () => {
-  const { userData, getUser } = useLmnUserStore((state) => ({
-    getUser: state.getUser,
+  const { userData, getUserData } = useLmnUserStore((state) => ({
+    getUserData: state.getUserData,
     userData: state.userData,
   }));
 
@@ -15,8 +15,7 @@ const AccountInformation = () => {
     if (!userData) {
       const getUserDataQuery = async () => {
         await waitForToken();
-
-        getUser().catch(console.error);
+        getUserData().catch(console.error);
       };
       getUserDataQuery().catch(console.error);
     }

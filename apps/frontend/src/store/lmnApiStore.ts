@@ -8,11 +8,11 @@ interface UserLmnInfoStore {
   loading: boolean;
   error: Error | null;
   getToken: (username: string, password: string) => Promise<void>;
-  getUser: () => Promise<void>;
+  getUserData: () => Promise<void>;
   reset: () => void;
 }
 
-const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUser' | 'reset'> = {
+const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUserData' | 'reset'> = {
   userData: null,
   loading: false,
   error: null,
@@ -40,7 +40,7 @@ const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
       set({ error: error as Error, loading: false });
     }
   },
-  getUser: async () => {
+  getUserData: async () => {
     set({ loading: true });
     const token = sessionStorage.getItem('lmnApiToken');
     if (!token) {
