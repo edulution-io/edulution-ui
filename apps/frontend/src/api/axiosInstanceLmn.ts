@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const axiosInstance = axios.create({
-  baseURL: '/api/v1/',
+const axiosInstanceLmn = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-export default axiosInstance;
+export default axiosInstanceLmn;

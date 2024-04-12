@@ -18,8 +18,8 @@ const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const { isLoading } = auth;
-  const { fetchData } = useLmnUserStore((state) => ({
-    fetchData: state.fetchData,
+  const { getToken } = useLmnUserStore((state) => ({
+    getToken: state.getToken,
   }));
 
   const formSchema: z.Schema = z.object({
@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
         password,
       });
 
-      fetchData({ url: `/auth/`, method: 'GET', username, password }).catch(console.error);
+      await getToken(username, password);
       const encryptedPassword = useEncryption({
         mode: 'encrypt',
         data: form.getValues('password') as string,

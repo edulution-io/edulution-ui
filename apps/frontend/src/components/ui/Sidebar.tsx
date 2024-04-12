@@ -14,7 +14,7 @@ import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import cleanStoreData from '@/store/utilis/cleanStoreData';
-import StoreTyps from '@/store/utilis/storeTyps';
+import StoreTypes from '@/store/utilis/storeTypes';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -242,7 +242,7 @@ const Sidebar = () => {
         onClick={() => {
           auth.removeUser().catch(console.error);
           // TODO: Remove if webdav is stored in backend NIEDUUI-26
-          cleanStoreData(StoreTyps.LMN_USER_STORE);
+          cleanStoreData(StoreTypes.LMN_USER_STORE);
           sessionStorage.clear();
         }}
         to="/"

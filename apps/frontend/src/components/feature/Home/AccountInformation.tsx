@@ -1,30 +1,33 @@
 import React, { useEffect } from 'react';
-import { CardContent, Card } from '@/components/shared/Card';
-import { Button } from '@/components/shared/Button';
 import useLmnUserStore from '@/store/lmnUserStore';
-import { waitForToken } from '@/utils/common';
+import { waitForToken } from '@/api/common';
+import { useTranslation } from 'react-i18next';
+import { Card, CardContent } from '@/components/shared/Card';
+import { Button } from '@/components/shared/Button';
 
 const AccountInformation = () => {
-  const { data, fetchData } = useLmnUserStore((state) => ({
-    fetchData: state.fetchData,
-    data: state.data,
+  const { user, getUser } = useLmnUserStore((state) => ({
+    getUser: state.getUser,
+    user: state.user,
   }));
 
   useEffect(() => {
-    const initialize = async () => {
-      await waitForToken();
-      fetchData({ url: `/users/${sessionStorage.getItem('user')}`, method: 'GET' }).catch(console.error);
-    };
+    if (!user) {
+      const getUserInfo = async () => {
+        await waitForToken();
+        getUser().catch(console.error);
+      };
 
-    initialize().catch(console.error);
-  }, [fetchData]);
-
+      getUserInfo().catch(console.error);
+    }
+  }, [user]);
+  const { t } = useTranslation();
   const userInfoFields = [
-    { label: 'Name', value: data ? data.displayName : '...' },
-    { label: 'E-Mail', value: data ? data.mail : '...' },
-    { label: 'Schule', value: data ? data.school : '...' },
-    { label: 'Rolle', value: data ? data.sophomorixRole : '...' },
-    { label: 'schoolclasses', value: data ? data.schoolclasses : '...' },
+    { label: t('accountPage.name'), value: user ? user.displayName : '...' },
+    { label: t('accountPage.email'), value: user ? user.mail : '...' },
+    { label: t('accountPage.school'), value: user ? user.school : '...' },
+    { label: t('accountPage.role'), value: user ? user.sophomorixRole : '...' },
+    { label: t('accountPage.school_classes'), value: user ? user.schoolclasses : '...' },
   ];
 
   return (
@@ -34,14 +37,15 @@ const AccountInformation = () => {
     >
       <CardContent>
         <div className="flex flex-col gap-3">
-          <h4 className="font-bold">KONTO-INFORMATIONEN</h4>
+          <h4 className="font-bold">{t('accountPage.account_info')}</h4>
           {userInfoFields.map(({ label, value }) => (
             <div
               key={label}
               className="flex flex-col"
             >
-              <p className="underline">{label}:</p>
-              <p className="max-w-xs truncate">{value || '...'}</p>
+              <p className="text-nowrap">
+                {label}: {value}
+              </p>
             </div>
           ))}
 
@@ -50,19 +54,19 @@ const AccountInformation = () => {
             className="mt-4"
             size="sm"
           >
-            Passwort ändern
+            {t('accountPage.change_password')}
           </Button>
         </div>
 
         <div className="mt-6">
-          <h4 className="font-bold">MEINE INFORMATIONEN</h4>
-          <p>Mail Alias: teachertest@sgmaulbronn.de</p>
+          <h4 className="font-bold">{t('accountPage.my_information')}</h4>
+          <p>{t('accountPage.mail_alias')} teachertest@sgmaulbronn.de</p>
           <Button
             variant="btn-collaboration"
             className="mt-4"
             size="sm"
           >
-            Meine Daten ändern
+            {t('accountPage.change_my_data')}
           </Button>
         </div>
       </CardContent>

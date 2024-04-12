@@ -10,39 +10,104 @@
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
   },
-  "ticketsystem": { "title": "TICKET SYSTEM", "sidebar": "Ticket System" },
-  "mail": { "title": "MAIL", "sidebar": "Mail" },
-  "chat": { "title": "CHAT", "sidebar": "Chat" },
-  "conferences": { "title": "CONFERENCES", "sidebar": "Conferences" },
-  "knowledgebase": { "title": "KNOWLEDGEBASE", "sidebar": "Knowledgebase" },
-  "filesharing": { "title": "FILE SHARING", "sidebar": "File Sharing" },
-  "forums": { "title": "FORUMS", "sidebar": "Forums" },
-  "roombooking": { "title": "ROOM BOOKING", "sidebar": "Room Booking", "rooms": "Rooms" },
-  "learningmanagement": { "title": "LEARNING MANAGEMENT", "sidebar": "Learning Management" },
-  "schoolinformation": { "title": "SCHOOL INFORMATION", "sidebar": "School Information" },
-  "schoolmanagement": { "title": "SCHOOL MANAGEMENT", "sidebar": "School Management" },
-  "printer": { "title": "PRINTER", "sidebar": "Printe" },
-  "network": { "title": "NETWORK", "sidebar": "Network" },
-  "locationservices": { "title": "LOCATION SERVICES", "sidebar": "Location Services" },
-  "desktopdeployment": { "title": "DESKTOP DEPLOYMENT", "sidebar": "Desktop Deployment" },
-  "wlan": { "title": "WLAN", "sidebar": "Wlan" },
-  "mobiledevices": { "title": "MOBILE DEVICES", "sidebar": "Mobile Devices" },
-  "virtualization": { "title": "VIRTUALIZATION", "sidebar": "Virtualization" },
-  "firewall": { "title": "FIREWALL", "sidebar": "Firewall" },
-  "antimalware": { "title": "ANTI-MALWARE", "sidebar": "Anti-Malware" },
-  "backup": { "title": "BACKUP", "sidebar": "Backup" },
+  "ticketsystem": {
+    "title": "TICKET SYSTEM",
+    "sidebar": "Ticket System"
+  },
+  "mail": {
+    "title": "MAIL",
+    "sidebar": "Mail"
+  },
+  "chat": {
+    "title": "CHAT",
+    "sidebar": "Chat"
+  },
+  "conferences": {
+    "title": "CONFERENCES",
+    "sidebar": "Conferences"
+  },
+  "knowledgebase": {
+    "title": "KNOWLEDGEBASE",
+    "sidebar": "Knowledgebase"
+  },
+  "filesharing": {
+    "title": "FILE SHARING",
+    "sidebar": "File Sharing"
+  },
+  "forums": {
+    "title": "FORUMS",
+    "sidebar": "Forums"
+  },
+  "roombooking": {
+    "title": "ROOM BOOKING",
+    "sidebar": "Room Booking",
+    "rooms": "Rooms"
+  },
+  "learningmanagement": {
+    "title": "LEARNING MANAGEMENT",
+    "sidebar": "Learning Management"
+  },
+  "schoolinformation": {
+    "title": "SCHOOL INFORMATION",
+    "sidebar": "School Information"
+  },
+  "schoolmanagement": {
+    "title": "SCHOOL MANAGEMENT",
+    "sidebar": "School Management"
+  },
+  "printer": {
+    "title": "PRINTER",
+    "sidebar": "Printe"
+  },
+  "network": {
+    "title": "NETWORK",
+    "sidebar": "Network"
+  },
+  "locationservices": {
+    "title": "LOCATION SERVICES",
+    "sidebar": "Location Services"
+  },
+  "desktopdeployment": {
+    "title": "DESKTOP DEPLOYMENT",
+    "sidebar": "Desktop Deployment"
+  },
+  "wlan": {
+    "title": "WLAN",
+    "sidebar": "Wlan"
+  },
+  "mobiledevices": {
+    "title": "MOBILE DEVICES",
+    "sidebar": "Mobile Devices"
+  },
+  "virtualization": {
+    "title": "VIRTUALIZATION",
+    "sidebar": "Virtualization"
+  },
+  "firewall": {
+    "title": "FIREWALL",
+    "sidebar": "Firewall"
+  },
+  "antimalware": {
+    "title": "ANTI-MALWARE",
+    "sidebar": "Anti-Malware"
+  },
+  "backup": {
+    "title": "BACKUP",
+    "sidebar": "Backup"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
-    "addApp": { "title": "Add app", "description": "Please select an app:" },
+    "addApp": {
+      "title": "Add app",
+      "description": "Please select an app:"
+    },
     "description": "Here you can make all settings."
   },
-
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
     "description": "The application opens in a new window. No further authorization is required."
   },
-
   "menu": "Menu",
   "home": "Home",
   "projects": "Projects",
@@ -50,9 +115,10 @@
   "program": "Programs",
   "share": "Share",
   "students": "Students",
-
-  "login": { "forgot_password": "Forgot password?", "remember_me": "Remember me" },
-
+  "login": {
+    "forgot_password": "Forgot password?",
+    "remember_me": "Remember me"
+  },
   "common": {
     "add": "Add",
     "reload": "Reload",
@@ -144,7 +210,6 @@
     "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion",
     "deleteFiles": "Delete files"
   },
-
   "timeAgo": {
     "justNow": "just now",
     "minuteAgo": "{{count}} minutes ago",
@@ -155,7 +220,6 @@
   "dialog": {
     "close": "Close"
   },
-
   "tooltip": {
     "upload": "Upload",
     "create": {
@@ -167,7 +231,6 @@
     "delete": "Delete",
     "download": "Download"
   },
-
   "response": {
     "successfully": "Action was successful",
     "error": "Error",
@@ -183,5 +246,22 @@
     "file_was_deleted_successfully": "File {{fileName}} was deleted successfully",
     "all_items_moved_successfully": "All items moved successfully",
     "destination_path_is_undefined": "Destination path is undefined"
+  },
+  "accountPage": {
+    "account_info": "Account Information",
+    "name": "Name",
+    "email": "E-Mail",
+    "school": "Schule",
+    "role": "Role",
+    "classes": "Classes",
+    "change_password": "Change Password",
+    "my_information": "My Information",
+    "mail_alias": "Mail-Alias",
+    "change_my_data": "Change my data",
+    "school_classes": "School Classes"
+  },
+
+  "groupsPage": {
+    "classes": "Classes"
   }
 }

@@ -1,12 +1,13 @@
-import StoreTyps from '@/store/utilis/storeTyps';
+import StoreTypes from '@/store/utilis/storeTypes';
 import useLmnUserStore from '@/store/lmnUserStore';
+import useFileManagerStore from '@/store/fileManagerStore';
 
-const cleanStoreData = (store: StoreTyps) => {
-  if (store === StoreTyps.LMN_USER_STORE) {
+const cleanStoreData = (store: StoreTypes) => {
+  if (store === StoreTypes.LMN_USER_STORE) {
     useLmnUserStore.getState().reset();
   }
-  if (store === StoreTyps.FILEMANAGER_STORE) {
-    // NOT IMPLEMENTED YET
+  if (store === StoreTypes.FILEMANAGER_STORE) {
+    useFileManagerStore.getState().reset();
   }
 };
 
