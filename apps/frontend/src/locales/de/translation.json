@@ -247,7 +247,7 @@
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
   },
-  "accountPage": {
+  "accountData": {
     "account_info": "Konto Informationen",
     "name": "Name",
     "email": "E-Mail",

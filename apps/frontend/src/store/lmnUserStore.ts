@@ -4,7 +4,7 @@ import UserLmnInfo from '@/datatypes/userInfo';
 import axiosInstanceLmn from '@/api/axiosInstanceLmn';
 
 interface UserLmnInfoStore {
-  user: UserLmnInfo | null;
+  userData: UserLmnInfo | null;
   loading: boolean;
   error: Error | null;
   getToken: (username: string, password: string) => Promise<void>;
@@ -13,7 +13,7 @@ interface UserLmnInfoStore {
 }
 
 const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUser' | 'reset'> = {
-  user: null,
+  userData: null,
   loading: false,
   error: null,
 };
@@ -56,7 +56,7 @@ const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
     try {
       const response = await axiosInstanceLmn(config);
       set({
-        user: response.data as UserLmnInfo,
+        userData: response.data as UserLmnInfo,
         loading: false,
         error: null,
       });

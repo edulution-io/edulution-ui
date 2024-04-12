@@ -5,21 +5,21 @@ import useLmnUserStore from '@/store/lmnUserStore';
 import { waitForToken } from '@/api/common';
 
 const Groups = () => {
-  const { user, getUser } = useLmnUserStore((state) => ({
+  const { userData, getUser } = useLmnUserStore((state) => ({
     getUser: state.getUser,
-    user: state.user,
+    userData: state.userData,
   }));
 
   useEffect(() => {
-    if (!user) {
-      const getUserGroupInfo = async () => {
+    if (!userData) {
+      const getUserGroupDataQuery = async () => {
         await waitForToken();
         getUser().catch(console.error);
       };
 
-      getUserGroupInfo().catch(console.error);
+      getUserGroupDataQuery().catch(console.error);
     }
-  }, [user]);
+  }, [userData]);
   const { t } = useTranslation();
   return (
     <Card
@@ -29,7 +29,7 @@ const Groups = () => {
       <CardContent>
         <div className="flex flex-col gap-1">
           <h4 className="text-md font-bold">{t('groupsPage.classes')}</h4>
-          {user?.schoolclasses.map((group) => (
+          {userData?.schoolclasses.map((group) => (
             <div
               key={group}
               className="flex flex-col"

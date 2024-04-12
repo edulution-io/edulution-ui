@@ -247,7 +247,7 @@
     "all_items_moved_successfully": "All items moved successfully",
     "destination_path_is_undefined": "Destination path is undefined"
   },
-  "accountPage": {
+  "accountData": {
     "account_info": "Account Information",
     "name": "Name",
     "email": "E-Mail",

@@ -6,28 +6,28 @@ import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 
 const AccountInformation = () => {
-  const { user, getUser } = useLmnUserStore((state) => ({
+  const { userData, getUser } = useLmnUserStore((state) => ({
     getUser: state.getUser,
-    user: state.user,
+    userData: state.userData,
   }));
 
   useEffect(() => {
-    if (!user) {
-      const getUserInfo = async () => {
+    if (!userData) {
+      const getUserDataQuery = async () => {
         await waitForToken();
+
         getUser().catch(console.error);
       };
-
-      getUserInfo().catch(console.error);
+      getUserDataQuery().catch(console.error);
     }
-  }, [user]);
+  }, [userData]);
+
   const { t } = useTranslation();
   const userInfoFields = [
-    { label: t('accountPage.name'), value: user ? user.displayName : '...' },
-    { label: t('accountPage.email'), value: user ? user?.mail && user?.mail.length > 0 && user.mail.at(0) : '...' },
-    { label: t('accountPage.school'), value: user ? user.school : '...' },
-    { label: t('accountPage.role'), value: user ? user.sophomorixRole : '...' },
-    { label: t('accountPage.school_classes'), value: user ? user.schoolclasses : '...' },
+    { label: t('accountData.name'), value: userData ? userData.displayName : '...' },
+    { label: t('accountData.email'), value: userData ? userData?.mail && userData?.mail.length > 0 && userData.mail.at(0) : '...' },
+    { label: t('accountData.school'), value: userData ? userData.school : '...' },
+    { label: t('accountData.role'), value: userData ? userData.sophomorixRole : '...' },
   ];
 
   return (
@@ -37,7 +37,7 @@ const AccountInformation = () => {
     >
       <CardContent>
         <div className="flex flex-col gap-3">
-          <h4 className="font-bold">{t('accountPage.account_info')}</h4>
+          <h4 className="font-bold">{t('accountData.account_info')}</h4>
           {userInfoFields.map(({ label, value }) => (
             <div
               key={label}
@@ -54,16 +54,16 @@ const AccountInformation = () => {
             className="mt-4"
             size="sm"
           >
-            {t('accountPage.change_password')}
+            {t('accountData.change_password')}
           </Button>
         </div>
 
         <div className="mt-6">
-          <h4 className="font-bold">{t('accountPage.my_information')}</h4>
-          {user?.mail && user?.mail.length > 1 && (
+          <h4 className="font-bold">{t('accountData.my_information')}</h4>
+          {userData?.mail && userData?.mail.length > 1 && (
             <>
-              <p>{t('accountPage.mail_alias')}</p>
-              {user?.mail.slice(1).map((mail) => (
+              <p>{t('accountData.mail_alias')}</p>
+              {userData?.mail.slice(1).map((mail) => (
                 <div key={mail}>
                   <p>{mail}</p>
                 </div>
@@ -75,7 +75,7 @@ const AccountInformation = () => {
             className="mt-4"
             size="sm"
           >
-            {t('accountPage.change_my_data')}
+            {t('accountData.change_my_data')}
           </Button>
         </div>
       </CardContent>
