@@ -3,7 +3,6 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "ES2022",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strictPropertyInitialization": false,
@@ -11,8 +10,9 @@
     "paths": {
       "@/*": ["./apps/frontend/src/*"]
     },
-    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -32,10 +32,5 @@
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false
   },
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
   "exclude": ["node_modules"]
 }

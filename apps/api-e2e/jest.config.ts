@@ -1,6 +1,5 @@
 /* eslint-disable */
 export default {
-  displayName: 'api-e2e',
   preset: '../../jest.preset.cjs',
   globalSetup: '<rootDir>/src/support/global-setup.ts',
   globalTeardown: '<rootDir>/src/support/global-teardown.ts',

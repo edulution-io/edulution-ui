@@ -14,7 +14,7 @@ module.exports = {
       assets: ['./src/assets'],
       optimization: false,
       outputHashing: 'none',
-      outputFileName: 'main.js',
+      outputFileName: 'main.cjs',
     }),
   ],
 };
