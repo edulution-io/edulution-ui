@@ -10,5 +10,5 @@
     "esModuleInterop": true,
     "isolatedModules": false
   },
-  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.d.ts"]
+  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.d.ts", "src/**/*.ts"]
 }
