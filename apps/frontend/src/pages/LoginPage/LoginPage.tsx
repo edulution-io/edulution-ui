@@ -12,7 +12,7 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useLmnUserStore from '@/store/lmnUserStore';
+import useLmnUserStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -56,6 +56,7 @@ const LoginPage: React.FC = () => {
 
       sessionStorage.setItem('webdav', encryptedPassword);
       sessionStorage.setItem('user', form.getValues('username') as string);
+      sessionStorage.setItem('isAuthenticated', 'true');
 
       createWebdavClient();
       // --------------------------------------------------
