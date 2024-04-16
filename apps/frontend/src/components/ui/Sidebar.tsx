@@ -8,7 +8,7 @@ import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useLocalStorage, useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
+import { useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
 import { ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
@@ -28,8 +28,29 @@ const Sidebar = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
   const auth = useAuth();
+  const [config, setConfig] = useState<ConfigType>({});
 
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+  // const [config] = useLocalStorage<ConfigType>('edu-config', {});
+
+  useEffect(() => {
+    if (Object.keys(config).length === 0) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/edu-api/config');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const responseData = (await response.json()) as ConfigType;
+          setConfig(responseData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+      fetchData().catch(console.error);
+    }
+  }, []);
+
   const sidebarItems = [
     ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
       title: t(`${item.id}.sidebar`),

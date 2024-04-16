@@ -32,5 +32,12 @@
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "vite.config.ts",
+    "tailwind.config.ts",
+    "prettier.config.cjs",
+    "jest.config.ts",
+    "jest.preset.cjs"
+  ]
 }
