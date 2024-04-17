@@ -76,6 +76,7 @@ const LoginPage: React.FC = () => {
         <form
           onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
           className="space-y-4"
+          data-testid="test-id-login-page-form"
         >
           <FormField
             control={form.control}
@@ -90,6 +91,7 @@ const LoginPage: React.FC = () => {
                     disabled={isLoading}
                     placeholder={t('common.username')}
                     variant="login"
+                    data-testid="test-id-login-page-user-name-input"
                   />
                 </FormControl>
                 <FormMessage className="text-p" />
@@ -109,6 +111,7 @@ const LoginPage: React.FC = () => {
                     type="password"
                     disabled={isLoading}
                     variant="login"
+                    data-testid="test-id-login-page-password-input"
                   />
                 </FormControl>
                 <FormMessage className="text-p" />
@@ -126,7 +129,7 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="my-4 block font-bold text-gray-500">
               <Link
-                to="/" 
+                to="/"
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
               >
                 <p>{t('login.forgot_password')}</p>
@@ -138,6 +141,7 @@ const LoginPage: React.FC = () => {
             type="submit"
             variant="btn-security"
             size="lg"
+            data-testid="test-id-login-page-submit-button"
           >
             {isLoading ? t('common.loading') : t('common.login')}
           </Button>
