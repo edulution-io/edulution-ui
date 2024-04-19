@@ -1,4 +1,4 @@
-import {FetchMessageObject, ImapFlow} from 'imapflow';
+import { FetchMessageObject, ImapFlow } from 'imapflow';
 
 enum ImapFlowState {
   CONNECTING = 'connecting',
@@ -55,9 +55,7 @@ export default class ImapFlowGetMailsClient {
       // client.mailbox includes information about currently selected mailbox
       // "exists" value is also the largest sequence number available in the mailbox
       const message = await this.client.fetchOne(
-        typeof this.client.mailbox === 'boolean'
-          ? `${ this.client.mailbox }`
-          : `${ this.client.mailbox.exists }`,
+        typeof this.client.mailbox === 'boolean' ? `${this.client.mailbox}` : `${this.client.mailbox.exists}`,
         { source: true },
       );
       console.log(message.source.toString());
@@ -81,9 +79,7 @@ export default class ImapFlowGetMailsClient {
       lock.release();
 
       return messages;
-
     } catch (err) {
-
       console.error(err);
 
       // log out and close connection
@@ -95,7 +91,6 @@ export default class ImapFlowGetMailsClient {
       lock.release();
 
       return Promise.reject(new Error('Not ready to fetch emails'));
-
     }
   };
 }
