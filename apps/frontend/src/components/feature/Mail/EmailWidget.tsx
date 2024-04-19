@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Mail from '@/assets/icons/edulution/Mail.svg';
 import { DropdownMenu } from '@/components';
@@ -65,9 +65,7 @@ const EmailWidget = () => {
             handleChange={setSelected}
           />
         </div>
-        <div className="mt-4 flex flex-col justify-between gap-6">
-          { `${ JSON.stringify(mails, null, 2) }` }
-        </div>
+        <div className="mt-4 flex flex-col justify-between gap-6">{`${JSON.stringify(mails, null, 2)}`}</div>
       </CardContent>
     </Card>
   );

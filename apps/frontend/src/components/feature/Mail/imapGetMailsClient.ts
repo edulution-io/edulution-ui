@@ -1,6 +1,5 @@
-import Imap, {Config, ImapMessage} from 'imap';
-import {ParsedMail, simpleParser, Source} from 'mailparser';
-import defaultImapConfig from './imap-config';
+import Imap, { Config, ImapMessage } from 'imap';
+import { ParsedMail, simpleParser, Source } from 'mailparser';
 
 enum ImapState {
   CONNECTING = 'connecting',
@@ -18,12 +17,12 @@ export default class ImapGetMailsClient {
 
   constructor(config?: Config) {
     const imapConfig = {
-      user: config?.user || defaultImapConfig.user,
-      password: config?.password || defaultImapConfig.password,
-      host: config?.host || defaultImapConfig.host,
-      port: config?.port || defaultImapConfig.port,
-      tls: config?.tls || defaultImapConfig.tls,
-      tlsOptions: config?.tlsOptions || defaultImapConfig.tlsOptions,
+      user: config?.user || '',
+      password: config?.password || '',
+      host: config?.host || '',
+      port: config?.port || 993,
+      tls: config?.tls || true,
+      tlsOptions: config?.tlsOptions,
     };
 
     this.imap = new Imap({ ...imapConfig });
@@ -62,7 +61,7 @@ export default class ImapGetMailsClient {
             console.log(mail);
             const { from } = mail;
             if (from) {
-              this.mails = this.mails.concat( JSON.stringify(from, null, 2) );
+              this.mails = this.mails.concat(JSON.stringify(from, null, 2));
             }
           });
         }
@@ -80,13 +79,13 @@ export default class ImapGetMailsClient {
   public reconnect = (): void => {
     this.close();
     this.connect();
-  }
+  };
 
   public retry = async (): Promise<string> => {
     // eslint-disable-next-line
     await 1000;
     return this.getMails();
-  }
+  };
 
   public getMails = async (): Promise<string> => {
     if (this.state === ImapState.FETCHING) {
@@ -104,7 +103,6 @@ export default class ImapGetMailsClient {
     try {
       console.log('opening inbox...');
       this.imap.openBox('INBOX', false, () => {
-
         console.log('check if any email fits the criteria...');
         this.imap.search([['ALL'], ['SINCE', new Date()]], (error: Error, uids: number[]) => {
           if (error) {
@@ -117,10 +115,10 @@ export default class ImapGetMailsClient {
 
       this.state = ImapState.READY;
 
-      return `[ ${ this.mails } ]`;
+      return `[ ${this.mails} ]`;
     } catch (error) {
       console.error('Error fetching email', error);
-      this.mails = ''
+      this.mails = '';
       this.close();
       return '';
     }

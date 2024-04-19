@@ -1,7 +1,4 @@
-import {
-  ImapSearchParameter,
-  ImapSearchOption,
-} from './imap-search-options';
+import { ImapSearchParameter, ImapSearchOption } from './imap-search-options';
 
 export interface ImapSearchCriteriaParameter {
   options: ImapSearchOption[];
@@ -22,17 +19,17 @@ export const getImapSearchCriteria = (props: ImapSearchCriteriaParameter) => {
       return;
     }
     if ('date' in object) {
-      imapSearchCriteria.concat(`[ ${ object.option }, ${ object.date.toString() } ],`);
+      imapSearchCriteria.concat(`[ ${object.option}, ${object.date.toString()} ],`);
       return;
     }
     if ('text' in object) {
-      imapSearchCriteria.concat(`[ ${ object.option }, ${ object.text } ],`);
+      imapSearchCriteria.concat(`[ ${object.option}, ${object.text} ],`);
       return;
     }
     if ('option' in object) {
-      imapSearchCriteria.concat(`[ ${ object.option } ],`);
+      imapSearchCriteria.concat(`[ ${object.option} ],`);
     }
   });
 
-  return `[ ${ imapSearchCriteria } ]`;
+  return `[ ${imapSearchCriteria} ]`;
 };
