@@ -362,3 +362,6 @@ $RECYCLE.BIN/
 # Certificates
 *.crt
 *.key
+
+# files with personal data
+/apps/frontend/src/components/feature/Mail/Imap-config.ts

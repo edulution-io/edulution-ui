@@ -4,9 +4,8 @@ import Mail from '@/assets/icons/edulution/Mail.svg';
 import { DropdownMenu } from '@/components';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import { CardContent, Card } from '@/components/shared/Card';
-import ImapGetMailsClient from '@/components/feature/Mail/imapGetMailsClient';
+import ImapFlowGetMailsClient from '@/components/feature/Mail/imapFlowGetMailsClient';
 import { ImapSearchParameter } from './imap-search-options';
-// import { getEmails } from '../../../../../../scripts/imap';
 
 const EmailWidget = () => {
   const { t } = useTranslation();
@@ -16,7 +15,7 @@ const EmailWidget = () => {
   // eslint-disable-next-line
   const [mails, setMails] = React.useState<JSON>();
 
-  const ImapClient = new ImapGetMailsClient();
+  const ImapClient = new ImapFlowGetMailsClient();
 
   const getMails = useCallback(async () => {
     const emails = await ImapClient.getMails();
