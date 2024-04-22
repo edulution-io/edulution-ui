@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { vi, describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import FileSharingPage from './FileSharing';
 
 vi.mock('usehooks-ts', () => ({
@@ -12,11 +12,11 @@ vi.mock('usehooks-ts', () => ({
 
 describe('FileSharing', () => {
   it('should render the fields that are needed on the page', () => {
-    const { getAllByTestId } = render(<FileSharingPage />);
+    render(<FileSharingPage />);
 
-    const dataTable = getAllByTestId('test-id-file-sharing-page-data-table')[0];
+    const dataTable = screen.getByTestId('test-id-file-sharing-page-data-table');
 
-    expect(dataTable).toBeDefined();
-    expect(dataTable).to.not.equal(null);
+    expect(dataTable, 'When FileSharing page is opened the dataTable should be defined').toBeDefined();
+    expect(dataTable, 'When FileSharing page is opened the dataTable should not be null').to.not.equal(null);
   });
 });

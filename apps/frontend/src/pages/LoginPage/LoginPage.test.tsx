@@ -3,9 +3,10 @@
  */
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { vi, describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { vi, describe, beforeAll, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks';
+import { userEvent } from '@testing-library/user-event';
 import LoginPage from './LoginPage';
 
 vi.mock('react-oidc-context', () => ({
@@ -21,37 +22,35 @@ vi.mock('react-oidc-context', () => ({
 }));
 
 describe('LoginPage', () => {
+  beforeAll(() => {
+    render(<LoginPage />);
+  });
+
   it('1 should render the fields that are needed on the page', () => {
-    const { getAllByTestId } = render(<LoginPage />);
+    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const passwordInput = screen.getByTestId('test-id-login-page-password-input');
+    const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
-    const userNameInput = getAllByTestId('test-id-login-page-user-name-input')[0];
-    const passwordInput = getAllByTestId('test-id-login-page-password-input')[0];
-    const submitButton = getAllByTestId('test-id-login-page-submit-button')[0];
-
-    expect(userNameInput).toBeDefined();
-    expect(userNameInput).not.equal(null);
-    expect(passwordInput).toBeDefined();
-    expect(passwordInput).not.equal(null);
-    expect(submitButton).toBeDefined();
-    expect(submitButton).not.equal(null);
+    expect(userNameInput, 'When LoginPage is open the userNameInput should be defined').toBeDefined();
+    expect(userNameInput, 'When LoginPage is open the userNameInput should not be null').not.equal(null);
+    expect(passwordInput, 'When LoginPage is open the passwordInput should be defined').toBeDefined();
+    expect(passwordInput, 'When LoginPage is open the passwordInput should not be null').not.equal(null);
+    expect(submitButton, 'When LoginPage is open the submitButton should be defined').toBeDefined();
+    expect(submitButton, 'When LoginPage is open the submitButton should not be null').not.equal(null);
   });
 
   it('2 should be able to change the values for the input of the input components', () => {
-    const { getAllByTestId } = render(<LoginPage />);
-
-    const userNameInput = getAllByTestId('test-id-login-page-user-name-input')[0];
-    const passwordInput = getAllByTestId('test-id-login-page-password-input')[0];
+    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const passwordInput = screen.getByTestId('test-id-login-page-password-input');
 
     userNameInput.setAttribute('value', 'success');
     passwordInput.setAttribute('value', 'success');
 
-    expect(userNameInput.getAttribute('value')).equal('success');
-    expect(passwordInput.getAttribute('value')).equal('success');
+    expect(userNameInput.getAttribute('value'), 'When changing the value it should update the value').equal('success');
+    expect(passwordInput.getAttribute('value'), 'When changing the value it should update the value').equal('success');
   });
 
   it('3 should be able to execute the functions for the form to change the values of the input components', () => {
-    render(<LoginPage />);
-
     const { result } = renderHook(() => useForm());
     const spyOnSubmit = vi.spyOn(result.current, 'handleSubmit');
 
@@ -64,25 +63,29 @@ describe('LoginPage', () => {
       );
     });
 
-    expect(result.current.getValues('username')).toBe('success');
-    expect(result.current.getValues('password')).toBe('success');
-    expect(spyOnSubmit).toHaveBeenCalledTimes(1);
+    expect(result.current.getValues('username'), 'When changing the value it should update the value').toBe('success');
+    expect(result.current.getValues('password'), 'When changing the value it should update the value').toBe('success');
+    expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(1);
   });
 
-  it('4 ensure, that changing the values using the form functions, updates the component', () => {
-    const { getAllByTestId } = render(<LoginPage />);
-
+  it('4 ensure, that changing the values using the form functions, updates the component', async () => {
     const { result } = renderHook(() => useForm());
 
-    const userNameInput = getAllByTestId('test-id-login-page-user-name-input')[0];
-    const passwordInput = getAllByTestId('test-id-login-page-password-input')[0];
+    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const passwordInput = screen.getByTestId('test-id-login-page-password-input');
+    const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
-    act(() => {
-      result.current.setValue('username', 'success');
-      result.current.setValue('password', 'success');
-    });
+    await userEvent.type(userNameInput, 'success');
+    await userEvent.type(passwordInput, 'success');
 
-    expect(userNameInput.getAttribute('value')).to.equal('success');
-    expect(passwordInput.getAttribute('value')).to.equal('success');
+    expect(userNameInput.getAttribute('value'), 'When changing the value it should update the value').to.equal(
+      'success',
+    );
+    expect(passwordInput.getAttribute('value'), 'When changing the value it should update the value').to.equal(
+      'success',
+    );
+
+    await userEvent.click(submitButton);
+    expect(result.error).toBeUndefined();
   });
 });
