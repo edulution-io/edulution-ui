@@ -1,54 +1,32 @@
-import { Controller, Post, Body, Logger, HttpStatus, HttpException, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Logger, Put, Delete, Param } from '@nestjs/common';
 
-enum AppType {
-  NATIVE = 'native',
-  FORWARDED = 'forwarded',
-  EMBEDDED = 'embedded',
-}
-
-type ConfigType = {
-  [key: string]: { linkPath: string; icon: string; appType: AppType };
-};
+import { ConfigType } from '../types/schema';
+import ConfigService from './config.service';
+import LoggerEnum from '../types/logger';
 
 @Controller('config')
 class ConfigController {
-  private configs: ConfigType[] = [];
+  constructor(private readonly configService: ConfigService) {}
 
   @Post()
-  createConfig(@Body() config: ConfigType): string {
-    if (!config) {
-      throw new HttpException('Username and email are required fields!', HttpStatus.BAD_REQUEST);
-    }
-    this.configs.push(config);
-    Logger.log(this.configs);
-    return 'User created successfully!';
+  createConfig(@Body() feConfig: ConfigType[]) {
+    this.configService.insertConfig(feConfig).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
+  }
+
+  @Put()
+  updateConfig(@Body() feConfig: ConfigType[]) {
+    this.configService.updateConfig(feConfig).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
   }
 
   @Get()
   getConfig() {
-    Logger.log('get data');
-    return {
-      conferences: {
-        linkPath: 'https://tailwindcss.com',
-        icon: '/src/assets/icons/edulution/Konferenzen.svg',
-        appType: 'forwarded',
-      },
-      ticketsystem: {
-        linkPath: '',
-        icon: '/src/assets/icons/edulution/Ticketsystem.svg',
-        appType: 'forwarded',
-      },
-      mail: {
-        linkPath: 'https://tailwindcss.com',
-        icon: '/src/assets/icons/edulution/Mail.svg',
-        appType: 'embedded',
-      },
-      filesharing: {
-        linkPath: '',
-        icon: '',
-        appType: 'native',
-      },
-    };
+    const settingsConfig = this.configService.getConfig();
+    return settingsConfig;
+  }
+
+  @Delete(':name')
+  deleteConfig(@Param('name') name: string) {
+    this.configService.deleteConfig(name).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
   }
 }
 

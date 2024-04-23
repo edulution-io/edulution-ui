@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useLocalStorage, useMediaQuery } from 'usehooks-ts';
+import { useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/Input';
@@ -14,10 +14,13 @@ import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
-import { AppType, ConfigType } from '@/datatypes/types';
+import { AppType } from '@/datatypes/types';
 import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
+import useAppDataStore from '@/store/appDataStore';
+import { findEntryByName } from '@/utils/common';
+import useEduApi from '@/api/useEduApiQuery';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -26,10 +29,11 @@ const SettingsPage: React.FC = () => {
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const { updateSettingsConfig, deleteSettingsConfigEntry } = useEduApi();
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
 
-  const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
+  const { config, setConfig } = useAppDataStore();
 
   const [option, setOption] = useState(t(`${SETTINGS_APPSELECT_OPTIONS[0].id}.sidebar`));
 
@@ -53,8 +57,8 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (areSettingsVisible) {
-      setValue(`${settingLocation}.path`, config[`${settingLocation}`]?.linkPath);
-      setValue(`${settingLocation}.appType`, config[`${settingLocation}`]?.appType);
+      setValue(`${settingLocation}.path`, findEntryByName(config, settingLocation)?.linkPath);
+      setValue(`${settingLocation}.appType`, findEntryByName(config, settingLocation)?.linkPath);
     }
   }, [areSettingsVisible, settingLocation, config]);
 
@@ -69,17 +73,24 @@ const SettingsPage: React.FC = () => {
       const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
 
       if (selectedOption) {
-        // TODO: NIEDUUI-26 Save config on server (eg mongoDB)
-        setConfig(
-          (prevConfig): ConfigType => ({
-            ...prevConfig,
-            [settingLocation]: {
-              linkPath: getValues(`${settingLocation}.path`) as string,
-              icon: selectedOption.icon,
-              appType: getValues(`${settingLocation}.appType`) as AppType,
-            },
-          }),
-        );
+        const newConfig = {
+          name: settingLocation,
+          linkPath: getValues(`${settingLocation}.path`) as string,
+          icon: selectedOption.icon,
+          appType: getValues(`${settingLocation}.appType`) as AppType,
+        };
+
+        const updatedConfig = config.map((entry) => {
+          if (entry.name === settingLocation) {
+            return newConfig;
+          }
+          return entry;
+        });
+
+        setConfig(updatedConfig);
+
+        updateSettingsConfig(updatedConfig).catch(console.error);
+
         toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('form.saved')}`, {
           description: new Date().toLocaleString(),
         });
@@ -127,7 +138,7 @@ const SettingsPage: React.FC = () => {
                             <FormControl>
                               <RadioGroup
                                 onValueChange={field.onChange}
-                                defaultValue={config[`${settingLocation}`].appType}
+                                defaultValue={findEntryByName(config, settingLocation)?.appType}
                                 className="flex flex-col space-y-1"
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
@@ -189,7 +200,6 @@ const SettingsPage: React.FC = () => {
     setOption,
     filteredAppOptions,
     setSearchParams,
-    setConfig,
   };
 
   return (
@@ -206,10 +216,10 @@ const SettingsPage: React.FC = () => {
             variant="btn-hexagon"
             className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
             onClickCapture={() => {
-              setConfig((prevConfig) => {
-                const { [settingLocation]: omittedValue, ...rest } = prevConfig;
-                return rest;
-              });
+              const filteredArray = config.filter((item) => item.name !== settingLocation);
+              setConfig(filteredArray);
+              const deleteOption = config.filter((item) => item.name === settingLocation)[0];
+              deleteSettingsConfigEntry(deleteOption.name).catch(console.error);
               navigate('/settings');
             }}
           >

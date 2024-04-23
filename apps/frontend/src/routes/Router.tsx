@@ -15,7 +15,8 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
-import { useLocalStorage } from 'usehooks-ts';
+import useAppDataStore from '@/store/appDataStore';
+import useEduApi from '@/api/useEduApiQuery';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -38,7 +39,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, config: ConfigType) =>
+const router = (isAuthenticated: boolean, config: ConfigType[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -69,20 +70,20 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
               path="settings"
               element={<SettingsPage />}
             >
-              {Object.keys(config).map((key) => (
+              {config.map((item) => (
                 <Route
-                  key={key}
-                  path={key}
+                  key={item.name}
+                  path={item.name}
                   element={<SettingsPage />}
                 />
               ))}
             </Route>
-            {Object.keys(config).map((key) =>
-              config[key].appType === AppType.NATIVE ? (
+            {config.map((item) =>
+              item.appType === AppType.NATIVE ? (
                 <Route
-                  key={key}
-                  path={key}
-                  element={pageSwitch(key)}
+                  key={item.name}
+                  path={item.name}
+                  element={pageSwitch(item.name)}
                 />
               ) : null,
             )}
@@ -98,11 +99,11 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
                 />
               }
             />
-            {Object.keys(config).map((key) =>
-              config[key].appType === AppType.FORWARDED ? (
+            {config.map((item) =>
+              item.appType === AppType.FORWARDED ? (
                 <Route
-                  key={key}
-                  path={key}
+                  key={item.name}
+                  path={item.name}
                   element={<ForwardingPage />}
                 />
               ) : null,
@@ -110,11 +111,11 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
           </Route>
 
           <Route element={<IframeLayout />}>
-            {Object.keys(config).map((key) =>
-              config[key].appType === AppType.EMBEDDED ? (
+            {config.map((item) =>
+              item.appType === AppType.EMBEDDED ? (
                 <Route
-                  key={key}
-                  path={key}
+                  key={item.name}
+                  path={item.name}
                   element={null}
                 />
               ) : null,
@@ -127,7 +128,25 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+  const { config, setConfig } = useAppDataStore();
+  const { getSettingsConfig } = useEduApi();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getSettingsConfig();
+        if (!response) {
+          throw new Error('Network response was not ok');
+        }
+        const configData = response;
+        setConfig(configData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData().catch(console.error);
+  }, []);
 
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 

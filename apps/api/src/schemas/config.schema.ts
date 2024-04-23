@@ -1,12 +1,16 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
+import { AppType } from '../types/schema';
 
-export type ConfigDocument = HydratedDocument<Config>;
+const ConfigSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    linkPath: { type: String, required: false },
+    icon: { type: String, required: true },
+    appType: { type: String, enum: Object.values(AppType), required: true },
+  },
+  { strict: true },
+);
 
-@Schema()
-export class Config {
-  @Prop({ type: Object, required: true })
-  configs: { [key: string]: { linkPath: string; icon: string; appType: string } };
-}
+ConfigSchema.set('timestamps', true);
 
-export const CatSchema = SchemaFactory.createForClass(Config);
+export default ConfigSchema;

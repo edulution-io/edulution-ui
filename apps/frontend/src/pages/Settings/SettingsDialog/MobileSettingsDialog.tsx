@@ -5,6 +5,9 @@ import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingType
 import { DropdownMenu } from '@/components';
 import { AppType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
+import useAppDataStore from '@/store/appDataStore';
+import useEduApi from '@/api/useEduApiQuery';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   isOpen,
@@ -12,9 +15,11 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   setOption,
   filteredAppOptions,
   setSearchParams,
-  setConfig,
 }) => {
   const { t } = useTranslation();
+  const { config, setConfig } = useAppDataStore();
+  const { updateSettingsConfig } = useEduApi();
+
   return (
     <Sheet
       modal
@@ -42,10 +47,21 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
             size="lg"
             onClick={() => {
               setSearchParams(new URLSearchParams(''));
-              setConfig((prevConfig) => ({
-                [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
-                ...prevConfig,
-              }));
+              const selectedOption = option.toLowerCase().split('.')[0];
+              const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
+
+              if (optionsConfig) {
+                const newConfig = {
+                  name: selectedOption,
+                  linkPath: '',
+                  icon: optionsConfig.icon,
+                  appType: AppType.FORWARDED,
+                };
+                const updatedConfig = [...config, newConfig];
+
+                setConfig(updatedConfig);
+                updateSettingsConfig(updatedConfig).catch(console.error);
+              }
             }}
           >
             {t('common.add')}
