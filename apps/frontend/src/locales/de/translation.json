@@ -55,6 +55,40 @@
     "title": "SCHULVERWALTUNG",
     "sidebar": "Schulverwaltung"
   },
+  "survey": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "editor": {
+      "title": "Umfrage-Editor",
+      "create": "Neue Umfrage erstellen."
+    },
+    "page": {
+      "page": "Seite",
+      "title": "Fügen Sie der Seite einen Titel hinzu",
+      "description": "Fügen Sie der Seite eine Beschreibung hinzu (optional)",
+      "remove": "Entferne die Seite",
+      "add": "Füge eine neue Seite hinzu"
+    },
+    "panel": {
+      "panel": "Panel",
+      "remove": "Entferne das Panel",
+      "add": "Füge ein neues Panel hinzu"
+    },
+    "question": {
+      "question": "Frage",
+      "type": "Wählen Sie den Typ der Frage/Antwort-Möglichkeit",
+      "title": "Fügen Sie der Frage einen Titel hinzu",
+      "text": "Definieren Sie hier die Frage die Sie stellen möchten",
+      "choices": "Fügen Sie Antwortmöglichkeiten hinzu",
+      "addChoice": "Option hinzufügen",
+      "removeChoice": "Option entfernen",
+      "mostUnlikely": "nicht zutreffend/wahrscheinlich",
+      "mostLikely": "zutreffend/sehr wahrscheinlich",
+      "description": "Fügen Sie der Frage eine Beschreibung hinzu (optional)",
+      "remove": "Entferne Frage",
+      "add": "Füge Frage hinzu"
+    }
+  },
   "printer": {
     "title": "DRUCKER",
     "sidebar": "Drucker"

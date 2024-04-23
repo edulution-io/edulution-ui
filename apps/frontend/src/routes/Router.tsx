@@ -16,6 +16,9 @@ import { useAuth } from 'react-oidc-context';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
+import { SurveyCreatorWidget } from '@/pages/Survey/SurveyCreatorWidget.tsx';
+import SurveyEditor from '@/pages/Survey/Editor/SurveyEditor.tsx';
+import WhoBringsWhat from "@/pages/Survey/Surveys/WhoBringsWhat.tsx";
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -64,6 +67,45 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
               path="/"
               element={<HomePage />}
             />
+
+            <Route
+              path="surveyCreator"
+              element={<SurveyCreatorWidget />}
+            >
+              {Object.keys(config).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<SurveyCreatorWidget />}
+                />
+              ))}
+            </Route>
+            <Route
+              path="survey"
+              element={<SurveyEditor />}
+            >
+              {Object.keys(config).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<SurveyEditor />}
+                />
+              ))}
+            </Route>
+            <Route
+              path="whowhat"
+              element={<WhoBringsWhat />}
+            >
+              {Object.keys(config).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<WhoBringsWhat />}
+                />
+              ))}
+            </Route>
+
+
 
             <Route
               path="settings"

@@ -55,6 +55,40 @@
     "title": "SCHOOL MANAGEMENT",
     "sidebar": "School Management"
   },
+  "survey": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
+    "editor": {
+      "title": "Survey Editor",
+      "create": "Create a new survey"
+    },
+    "page": {
+      "page": "Page",
+      "title": "Add a title to the page",
+      "description": "Add a text for the description of the page",
+      "remove": "Remove page",
+      "add": "Add page"
+    },
+    "panel": {
+      "panel": "Panel",
+      "remove": "Remove panel",
+      "add": "Add new panel"
+    },
+    "question": {
+      "question": "Question",
+      "type": "Select a type for the question/answer",
+      "title": "Add a title to the question/answer",
+      "text": "Add here the question (text body) for the question/answer",
+      "choices": "add a new select option for the question/answer",
+      "addChoice": "new option",
+      "removeChoice": "remove option",
+      "mostUnlikely": "Most unlikely",
+      "mostLikely": "Most likely",
+      "description": "Add a text for the description of the question/answer",
+      "remove": "Remove question",
+      "add": "Add question"
+    }
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"
