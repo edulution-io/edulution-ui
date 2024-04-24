@@ -16,6 +16,7 @@ import { useAuth } from 'react-oidc-context';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import { useLocalStorage } from 'usehooks-ts';
+import FileEditingPage from '@/pages/FileEditor/FileEditingPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -26,6 +27,9 @@ const pageSwitch = (page: string) => {
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.FILE_PREVIEW: {
+      return <FileEditingPage />;
     }
     default: {
       return (

@@ -168,7 +168,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
+      <DialogContent variant="default">
         <DialogTitle>{t('moveItemDialog.changeDirectory')}</DialogTitle>
         <DirectoryBreadcrumb
           path={currentPath}

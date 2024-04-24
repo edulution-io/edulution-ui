@@ -94,7 +94,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   );
 
   const desktopContent = (
-    <DialogContent>
+    <DialogContent variant="default">
       <DialogTitle>
         {item.type === ContentType.file
           ? `${t('fileRenameContent.renameYourFile')}`

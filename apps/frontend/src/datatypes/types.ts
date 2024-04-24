@@ -47,6 +47,7 @@ export enum APPS {
   FIREWALL = 'firewall',
   ANTIMALWARE = 'antimalware',
   BACKUP = 'backup',
+  FILE_PREVIEW = 'preview',
 }
 
 export interface FileTypePreviewProps {

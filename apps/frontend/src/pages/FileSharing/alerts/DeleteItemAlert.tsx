@@ -8,7 +8,14 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { useMediaQuery } from 'usehooks-ts';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/Dialog';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -91,7 +98,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       onOpenChange={setIsOpen}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
+      <DialogContent variant="default">
         <DialogHeader>
           <DialogTitle>{t('deleteDialog.areYouSure')}</DialogTitle>
         </DialogHeader>

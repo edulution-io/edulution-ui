@@ -158,7 +158,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>{desktopContent}</DialogContent>
+      <DialogContent variant="default">{desktopContent}</DialogContent>
     </Dialog>
   );
 };

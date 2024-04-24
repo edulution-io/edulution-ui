@@ -1,9 +1,9 @@
 import {
   AntiMalwareIcon,
-  BackupIcon,
   ChatIcon,
   ConferencesIcon,
   DesktopDeploymentIcon,
+  EducationIcon,
   FileSharingIcon,
   FirewallIcon,
   ForumsIcon,
@@ -41,6 +41,7 @@ export const SETTINGS_APPSELECT_OPTIONS: SettingsOptions[] = [
   },
   { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue' },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue' },
+  { id: APPS.FILE_PREVIEW, icon: ChatIcon, color: 'bg-ciDarkBlue' },
   {
     id: APPS.CONFERENCES,
     icon: ConferencesIcon,
@@ -106,5 +107,5 @@ export const SETTINGS_APPSELECT_OPTIONS: SettingsOptions[] = [
     icon: AntiMalwareIcon,
     color: 'bg-ciGreenToBlue',
   },
-  { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue' },
+  { id: APPS.BACKUP, icon: EducationIcon, color: 'bg-ciGreenToBlue' },
 ];

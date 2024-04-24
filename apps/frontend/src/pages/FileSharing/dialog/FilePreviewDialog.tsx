@@ -28,13 +28,19 @@ const FilePreviewDialog: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
   const handleOpenChange = () => {
     onClose();
   };
+
   return (
-    <div className="container w-full">
+    <div className="fixed">
       <Dialog
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <DialogContent>{renderTypeSpecificPreview({ file })}</DialogContent>
+        <DialogContent
+          className="flex h-full w-full"
+          variant="fullScreen"
+        >
+          {renderTypeSpecificPreview({ file })}
+        </DialogContent>
       </Dialog>
     </div>
   );

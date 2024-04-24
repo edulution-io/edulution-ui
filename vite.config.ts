@@ -39,6 +39,7 @@ export default defineConfig({
           Origin: 'https://server.schulung.multi.schule:8001',
         },
       },
+
       //TODO docs
     },
   },

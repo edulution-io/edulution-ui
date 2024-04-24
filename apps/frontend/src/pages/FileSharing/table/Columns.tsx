@@ -5,10 +5,10 @@ import Checkbox from '@/components/ui/Checkbox';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import {
   MdDriveFileRenameOutline,
+  MdFolder,
   MdOutlineDeleteOutline,
   MdOutlineDriveFileMove,
   MdOutlineFileDownload,
-  MdFolder,
 } from 'react-icons/md';
 
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -24,8 +24,10 @@ import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
-import { getFileCategorie, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getElapsedTime, getFileCategorie, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
+import { Link } from 'react-router-dom';
+import useFileEditorStore from '@/store/fileEditorStore';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
@@ -61,7 +63,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
       const fetchFiles = useFileManagerStore((state) => state.fetchFiles);
-
+      const appendEditorFile = useFileEditorStore((state) => state.appendEditorFile);
       const handleFilenameClick = (filenamePath: string) => {
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
@@ -115,15 +117,26 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               tabIndex={0}
               style={{ userSelect: 'none' }}
             >
-              <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
+              {formattedFilename?.includes('.docx') || formattedFilename?.includes('.pdf') ? (
+                <Link
+                  to="/preview"
+                  className="text-md truncate font-medium"
+                  onClick={() => appendEditorFile(row.original)}
+                >
+                  {truncate(formattedFilename, 10)}
+                </Link>
+              ) : (
+                <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
+              )}
             </span>
-            {isPreviewOpen && (
-              <FilePreviewDialog
-                file={row.original}
-                isOpen={isPreviewOpen}
-                onClose={() => setPreviewOpen(false)}
-              />
-            )}
+            {(isPreviewOpen && !row.original.filename.includes('.docx')) ||
+              (!row.original.filename.includes('pdf') && (
+                <FilePreviewDialog
+                  file={row.original}
+                  isOpen={isPreviewOpen}
+                  onClose={() => setPreviewOpen(false)}
+                />
+              ))}
           </div>
         </div>
       );
