@@ -72,7 +72,10 @@ const LoginPage: React.FC = () => {
         alt="edulution"
         className="mx-auto w-[250px]"
       />
-      <Form {...form}>
+      <Form
+        {...form}
+        data-testid="test-id-login-page-form"
+      >
         <form
           onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
           className="space-y-4"

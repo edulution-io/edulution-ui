@@ -16,7 +16,6 @@ describe('FileSharing', () => {
 
     const dataTable = screen.getByTestId('test-id-file-sharing-page-data-table');
 
-    expect(dataTable, 'When FileSharing page is opened the dataTable should be defined').toBeDefined();
-    expect(dataTable, 'When FileSharing page is opened the dataTable should not be null').to.not.equal(null);
+    expect(dataTable, 'When FileSharing page is opened the dataTable should be defined').toBeTruthy();
   });
 });
