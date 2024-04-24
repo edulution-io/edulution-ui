@@ -36,7 +36,7 @@ const DialogOverlay = React.forwardRef<
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent: React.FC<DialogContentProps> = React.forwardRef<HTMLDivElement, DialogContentProps>(
-  ({ children, showCloseButton = true, variant  = 'default', className, ...props }, ref) => {
+  ({ children, showCloseButton = true, variant = 'default', className, ...props }, ref) => {
     const contentStyles = cn(
       'fixed z-50',
       variant === 'fullScreen'
