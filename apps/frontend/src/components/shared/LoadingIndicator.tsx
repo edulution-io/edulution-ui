@@ -12,7 +12,10 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => {
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent showCloseButton={false} variant="default">
+      <DialogContent
+        showCloseButton={false}
+        variant="default"
+      >
         <DialogHeader>
           <div className="flex flex-col items-center justify-center space-y-4">
             <CircleLoader />
