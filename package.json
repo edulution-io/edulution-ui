@@ -8,11 +8,11 @@
     "serveFrontendAndApi": "nx run-many --target=serve --projects=frontend,api",
     "build": "nx build frontend --emptyOutDir",
     "build:all": "nx run-many --target=build --projects=frontend,api",
-    "lint": "nx lint frontend",
+    "lint": "nx run-many --target=lint --projects=frontend,api",
     "preview": "nx preview frontend",
     "prepare": "husky install",
-    "check-circular-deps": "madge --circular --ts-config ./tsconfig.json apps/frontend/src/*",
-    "format": "prettier --write 'apps/frontend/src/**/*.{js,jsx,ts,tsx}'",
+    "check-circular-deps": "madge --circular --ts-config ./tsconfig.json apps/*",
+    "format": "prettier --write 'apps/**/*.{js,jsx,ts,tsx}'",
     "check-translations": "tsx ./scripts/checkTranslations.ts"
   },
   "dependencies": {
