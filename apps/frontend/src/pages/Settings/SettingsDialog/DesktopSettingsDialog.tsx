@@ -73,7 +73,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                   const updatedConfig = [...config, newConfig];
 
                   setConfig(updatedConfig);
-                  updateSettingsConfig(updatedConfig).catch(console.error);
+                  updateSettingsConfig(updatedConfig).catch((e) => console.error('Update Config Error:', e));
                 }
               }}
             >

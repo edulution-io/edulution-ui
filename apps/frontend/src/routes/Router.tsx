@@ -132,21 +132,21 @@ const AppRouter = () => {
   const { getSettingsConfig } = useEduApi();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getSettingsConfig();
-        if (!response) {
-          throw new Error('Network response was not ok');
+    if (auth.isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          const configData = await getSettingsConfig();
+          if (configData) {
+            setConfig(configData);
+          }
+        } catch (e) {
+          console.error('Error fetching data:', e);
         }
-        const configData = response;
-        setConfig(configData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+      };
 
-    fetchData().catch(console.error);
-  }, []);
+      fetchData().catch(() => null);
+    }
+  }, [auth.isAuthenticated]);
 
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 
@@ -155,7 +155,7 @@ const AppRouter = () => {
       auth.events.addAccessTokenExpiring(() => {
         if (auth.user?.expired) {
           console.log('Session expired');
-          auth.removeUser().catch(console.error);
+          auth.removeUser().catch((e) => console.error('Error fetching data:', e));
           sessionStorage.clear();
         }
       });

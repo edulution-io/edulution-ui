@@ -3,9 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import ConfigController from './config.controller';
 import ConfigService from './config.service';
 import ConfigSchema from '../schemas/config.schema';
+import AuthenticationModule from '../auth/auth.module';
 
 @Module({
   imports: [
+    AuthenticationModule,
     MongooseModule.forFeature([
       { name: 'Config', schema: ConfigSchema, collection: 'apps' },
       { name: 'Groups', schema: ConfigSchema, collection: 'groups' },

@@ -11,7 +11,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
 
   app.enableCors({
-    origin: ['https://ui.schulung.multi.schule', 'http://localhost:5173'],
+    origin: process.env.EDUI_CORS_URL,
   });
 
   const config = new DocumentBuilder()
