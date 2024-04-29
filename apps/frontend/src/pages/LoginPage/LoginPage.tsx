@@ -12,10 +12,12 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
+import useUserDataStore from '@/store/userDataStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
+  const { setUser, setWebdavKey, setIsAuthenticated } = useUserDataStore();
 
   const { isLoading } = auth;
 
@@ -43,17 +45,15 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        // TODO: Remove if webdav is stored in backend NIEDUUI-26
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
           data: form.getValues('password') as string,
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
-        // --------------------------------------------------
 
-        sessionStorage.setItem('webdav', encryptedPassword);
-        sessionStorage.setItem('user', form.getValues('username') as string);
-        sessionStorage.setItem('isAuthenticated', 'true');
+        setUser(form.getValues('username') as string);
+        setWebdavKey(encryptedPassword);
+        setIsAuthenticated(true);
 
         createWebdavClient();
       }

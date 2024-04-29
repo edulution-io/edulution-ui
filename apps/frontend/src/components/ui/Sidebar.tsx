@@ -14,6 +14,7 @@ import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style'
 import { useAuth } from 'react-oidc-context';
 import { findEntryByName } from '@/utils/common';
 import useAppDataStore from '@/store/appDataStore';
+import useUserDataStore from '@/store/userDataStore';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -30,6 +31,7 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { config } = useAppDataStore();
+  const { setIsAuthenticated } = useUserDataStore();
 
   const sidebarItems = [
     ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findEntryByName(config, option.id)).map((item) => ({
@@ -240,7 +242,7 @@ const Sidebar = () => {
       <NavLink
         onClick={() => {
           auth.removeUser().catch(console.error);
-          // TODO: Remove if webdav is stored in backend NIEDUUI-26
+          setIsAuthenticated(false);
           sessionStorage.clear();
         }}
         to="/"

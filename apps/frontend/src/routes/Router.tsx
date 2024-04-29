@@ -17,6 +17,7 @@ import { useAuth } from 'react-oidc-context';
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import useAppDataStore from '@/store/appDataStore';
 import useEduApi from '@/api/useEduApiQuery';
+import useUserDataStore from '@/store/userDataStore';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -130,6 +131,7 @@ const AppRouter = () => {
   const auth = useAuth();
   const { config, setConfig } = useAppDataStore();
   const { getSettingsConfig } = useEduApi();
+  const { isAuthenticated } = useUserDataStore();
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -147,8 +149,6 @@ const AppRouter = () => {
       fetchData().catch(() => null);
     }
   }, [auth.isAuthenticated]);
-
-  const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 
   useEffect(() => {
     if (auth.isAuthenticated) {

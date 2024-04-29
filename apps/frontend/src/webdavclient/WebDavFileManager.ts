@@ -6,16 +6,23 @@ import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
-// TODO: Remove/Rework if webdav is stored in backend NIEDUUI-26
-export const createWebdavClient = () =>
-  createClient(`${window.location.origin}/webdav`, {
-    username: sessionStorage.getItem('user') as string,
+type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
+
+export const createWebdavClient = () => {
+  const userStorageString: string | null = sessionStorage.getItem('user-storage');
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
+  const { user, webdavKey } = userStorage.state;
+
+  return createClient(`${window.location.origin}/webdav`, {
+    username: user,
     password: decryptPassword({
-      data: sessionStorage.getItem('webdav') as string,
+      data: webdavKey,
       key: `${import.meta.env.VITE_WEBDAV_KEY}`,
     }),
   });
-// ------------------------------
+};
 
 function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
   return {
@@ -190,9 +197,15 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', client.getFileUploadLink(remotePath), true);
 
+    const userStorageString: string | null = sessionStorage.getItem('user-storage');
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
+    const { user, webdavKey } = userStorage.state;
+
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${sessionStorage.getItem('user')}:${decryptPassword({ data: sessionStorage.getItem('webdav') as string, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
+      `Basic ${btoa(`${user}:${decryptPassword({ data: webdavKey, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 

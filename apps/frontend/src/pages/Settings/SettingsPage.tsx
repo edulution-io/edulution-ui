@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
-import { Input } from '@/components/ui/Input';
+import Input from '@/components/shared/Input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
@@ -30,12 +30,10 @@ const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { updateSettingsConfig, deleteSettingsConfigEntry } = useEduApi();
+  const { config, setConfig } = useAppDataStore();
+  const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
-
-  const { config, setConfig } = useAppDataStore();
-
-  const [option, setOption] = useState(t(`${SETTINGS_APPSELECT_OPTIONS[0].id}.sidebar`));
 
   const formSchemaObject: { [key: string]: z.Schema } = {};
 
@@ -62,12 +60,6 @@ const SettingsPage: React.FC = () => {
     }
   }, [areSettingsVisible, settingLocation, config]);
 
-  useEffect(() => {
-    if (Object.keys(config).length === 0) {
-      navigate('/settings');
-    }
-  }, [config]);
-
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
       const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
@@ -89,11 +81,9 @@ const SettingsPage: React.FC = () => {
 
         setConfig(updatedConfig);
 
-        updateSettingsConfig(updatedConfig).catch(console.error);
-
-        toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('form.saved')}`, {
-          description: new Date().toLocaleString(),
-        });
+        updateSettingsConfig(updatedConfig)
+          .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.item.update.failed')}`))
+          .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.item.update.failed')}`));
       }
     };
     if (areSettingsVisible) {
@@ -188,10 +178,28 @@ const SettingsPage: React.FC = () => {
   };
 
   const filteredAppOptions = () => {
-    const existingOptions = Object.keys(config).map((key) => key);
+    const existingOptions = config.map((item) => item.name);
     const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
+  };
+
+  const handleDeleteSettingsItem = () => {
+    const deleteOptionName = config.filter((item) => item.name === settingLocation)[0].name;
+    deleteSettingsConfigEntry(deleteOptionName)
+      .then(() => {
+        const filteredArray = config.filter((item) => item.name !== settingLocation);
+        setConfig(filteredArray);
+        toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.item.remove.success')}`, {
+          description: new Date().toLocaleString(),
+        });
+        navigate('/settings');
+      })
+      .catch(() =>
+        toast.error(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.item.remove.failed')}`, {
+          description: new Date().toLocaleString(),
+        }),
+      );
   };
 
   const dialogProps: SettingsDialogProps = {
@@ -215,13 +223,7 @@ const SettingsPage: React.FC = () => {
             type="button"
             variant="btn-hexagon"
             className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-            onClickCapture={() => {
-              const filteredArray = config.filter((item) => item.name !== settingLocation);
-              setConfig(filteredArray);
-              const deleteOption = config.filter((item) => item.name === settingLocation)[0];
-              deleteSettingsConfigEntry(deleteOption.name).catch(console.error);
-              navigate('/settings');
-            }}
+            onClickCapture={handleDeleteSettingsItem}
           >
             <img
               className="m-6"

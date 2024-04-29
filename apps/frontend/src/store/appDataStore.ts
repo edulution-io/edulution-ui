@@ -1,23 +1,30 @@
 import { ConfigType, AppType } from '@/datatypes/types';
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
+import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
 
 type AppDataStore = {
-  appName: string;
   config: ConfigType[];
-  setAppName: (appName: string) => void;
   setConfig: (config: ConfigType[]) => void;
 };
 
-const useAppDataStore = create<AppDataStore>((set) => ({
-  appName: 'Edulution UI',
-  setAppName: (appName: string) => {
-    set({ appName });
-  },
+type PersistedAppDataStore = (
+  config: StateCreator<AppDataStore>,
+  options: PersistOptions<AppDataStore>,
+) => StateCreator<AppDataStore>;
 
-  config: [{ name: '', linkPath: '', icon: '', appType: AppType.NATIVE }],
-  setConfig: (config: ConfigType[]) => {
-    set({ config });
-  },
-}));
+const useAppDataStore = create<AppDataStore>(
+  (persist as PersistedAppDataStore)(
+    (set) => ({
+      config: [{ name: '', linkPath: '', icon: '', appType: AppType.NATIVE }],
+      setConfig: (config: ConfigType[]) => {
+        set({ config });
+      },
+    }),
+    {
+      name: 'config-storage',
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+);
 
 export default useAppDataStore;
