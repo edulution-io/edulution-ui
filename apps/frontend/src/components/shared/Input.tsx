@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { InputSH } from '@/components/ui/InputSH';
+import InputSH from '@/components/ui/InputSH';
 import { EyeDarkIcon, EyeDarkSlashIcon } from '@/assets/icons';
 
 import cn from '@/lib/utils';

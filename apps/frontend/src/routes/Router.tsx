@@ -11,7 +11,7 @@ import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
 import PollEditor from '@/pages/Survey/Poll/PollEditor';
-import { SurveyCreatorWidget } from '@/pages/Survey/Forms/SurveyCreatorWidget';
+import SurveyCreatorWidget from '@/pages/Survey/Forms/SurveyCreatorWidget';
 
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
