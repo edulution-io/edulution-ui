@@ -16,7 +16,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
       className="flex bg-cover bg-center opacity-90"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {!isMainOrEditingPage  ? <MenuBar /> : null}
+      {!isMainOrEditingPage ? <MenuBar /> : null}
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
         <Header isLogoShown={isMainPage} />
         <main className="flex-1">

@@ -70,7 +70,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         }
         if (row.original.type === ContentType.directory) {
           fetchFiles(filenamePath).catch(() => {});
-          setPreviewFile(null)
+          setPreviewFile(null);
         }
       };
 
@@ -118,7 +118,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               tabIndex={0}
               style={{ userSelect: 'none' }}
             >
-            <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
+              <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
             </span>
             {(isPreviewOpen && !row.original.filename.includes('.docx')) ||
               (!row.original.filename.includes('pdf') && (
