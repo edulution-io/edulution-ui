@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import React, { FC, ReactNode, useState } from 'react';
 
-import { Input } from '@/components/ui/Input';
+import InputSH from '@/components/ui/InputSH';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -72,7 +72,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           </SheetTitle>
         </SheetHeader>
         <SheetDescription>
-          <Input
+          <InputSH
             placeholder={t('fileRenameContent.placeholder')}
             value={localFileName}
             onChange={handleInputChange}
@@ -101,7 +101,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           : `${t('fileRenameContent.renameYourDirectory')}`}
       </DialogTitle>
       <DialogDescription>
-        <Input
+        <InputSH
           placeholder={t('fileRenameContent.placeholder')}
           value={localFileName}
           onChange={handleInputChange}

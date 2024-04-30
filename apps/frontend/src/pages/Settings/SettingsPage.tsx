@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useLocalStorage, useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
-import { Input } from '@/components/ui/Input';
+import InputSH from '@/components/ui/InputSH';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
@@ -107,7 +107,7 @@ const SettingsPage: React.FC = () => {
                         <FormItem>
                           <h4>{t('form.path')}</h4>
                           <FormControl>
-                            <Input
+                            <InputSH
                               {...field}
                               className="text-white"
                             />

@@ -55,38 +55,68 @@
     "title": "SCHOOL MANAGEMENT",
     "sidebar": "School Management"
   },
+  "add": "Add",
+  "DATE": "Date",
+  "days": "Days",
+  "TEXT": "Text",
+  "RATING": "Rating",
+  "save": "Save",
   "survey": {
-    "title": "SURVEYS",
-    "sidebar": "Surveys",
-    "editor": {
-      "title": "Survey Editor",
-      "create": "Create a new survey"
+    "title": "SURVEY",
+    "sidebar": "Survey",
+    "poll": {
+      "title": "OPINION POLL",
+      "sidebar": "Opinion Poll",
+      "poll": "Ask a question and poll the agreeable opinion from a set of given options",
+      "participants": "Participants",
+      "choose-type": "Choose a type for the options that the participant can select from",
+      "add-title": "Add a title to the question/poll",
+      "add-text": "Add here the question (text body) for the question/poll",
+      "add-description": "Add a text for the description of the question/poll",
+      "add-choices": "add a new selectable option for the question/poll",
+      "add-choice": "new option",
+      "remove-choice": "remove option",
+      "load": "Load questions/polls",
+      "add": "Add question/poll",
+
+      "canParticipantsAddOptions": "Can participants add options on their own?",
+      "canParticipantSelectMultipleOptions": "Can participants select multiple options?"
     },
-    "page": {
-      "page": "Page",
-      "title": "Add a title to the page",
-      "description": "Add a text for the description of the page",
-      "remove": "Remove page",
-      "add": "Add page"
-    },
-    "panel": {
-      "panel": "Panel",
-      "remove": "Remove panel",
-      "add": "Add new panel"
-    },
-    "question": {
-      "question": "Question",
-      "type": "Select a type for the question/answer",
-      "title": "Add a title to the question/answer",
-      "text": "Add here the question (text body) for the question/answer",
-      "choices": "add a new select option for the question/answer",
-      "addChoice": "new option",
-      "removeChoice": "remove option",
-      "mostUnlikely": "Most unlikely",
-      "mostLikely": "Most likely",
-      "description": "Add a text for the description of the question/answer",
-      "remove": "Remove question",
-      "add": "Add question"
+    "forms": {
+      "title": "FORM",
+      "sidebar": "Form",
+      "forms": "Create forms for exercise sheets or other more sophisticated surveys",
+      "load": "Load forms",
+      "editor": {
+        "title": "Survey Editor",
+        "create": "Create a new survey"
+      },
+      "page": {
+        "page": "Page",
+        "title": "Add a title to the page",
+        "description": "Add a text for the description of the page",
+        "remove": "Remove page",
+        "add": "Add page"
+      },
+      "panel": {
+        "panel": "Panel",
+        "remove": "Remove panel",
+        "add": "Add new panel"
+      },
+      "question": {
+        "question": "Question",
+        "type": "Select a type for the question/answer",
+        "title": "Add a title to the question/answer",
+        "text": "Add here the question (text body) for the question/answer",
+        "choices": "add a new select option for the question/answer",
+        "addChoice": "new option",
+        "removeChoice": "remove option",
+        "mostUnlikely": "Most unlikely",
+        "mostLikely": "Most likely",
+        "description": "Add a text for the description of the question/answer",
+        "remove": "Remove question",
+        "add": "Add question"
+      }
     }
   },
   "printer": {

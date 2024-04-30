@@ -45,7 +45,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
         <DropdownMenu
           options={filteredAppOptions()}
           selectedVal={t(option)}
-          handleChange={setOption}
+          handleChange={(value) => setOption(value.name)}
         />
         <DialogFooter className="justify-center pt-4 text-white">
           <DialogClose asChild>

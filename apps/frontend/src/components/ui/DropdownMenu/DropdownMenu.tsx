@@ -13,7 +13,7 @@ export type DropdownOptions = {
 interface DropdownProps {
   options: DropdownOptions[];
   selectedVal: string;
-  handleChange: (value: string) => void;
+  handleChange: (value: DropdownOptions) => void;
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange }) => {
@@ -31,7 +31,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
 
   const selectOption = (option: DropdownOptions) => {
     setQuery(() => '');
-    handleChange(option.name);
+    handleChange(option);
     setIsOpen((prevVal) => !prevVal);
   };
 

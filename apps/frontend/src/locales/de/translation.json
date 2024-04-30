@@ -55,38 +55,68 @@
     "title": "SCHULVERWALTUNG",
     "sidebar": "Schulverwaltung"
   },
+  "add": "Hinzufügen",
+  "DATE": "Datum",
+  "days": "Tage",
+  "TEXT": "Text",
+  "RATING": "Bewertung",
+  "save": "Speichern",
   "survey": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "editor": {
-      "title": "Umfrage-Editor",
-      "create": "Neue Umfrage erstellen."
+    "poll": {
+      "title": "ABSTIMMUNG",
+      "sidebar": "Abstimmung",
+      "poll": "Stellen sie hier die Frage um die Meinung der Teilnehmer zu/aus einer Auswahl von Optionen zu erfragen",
+      "participants": "Teilnehmer",
+      "choose-type": "Wählen Sie den Typ der auswählbaren Optionen/Möglichkeiten ( Text; Datum; Rating )",
+      "add-title": "Fügen Sie der Abstimmung einen Titel hinzu",
+      "add-text": "Bitte, fügen Sie der Abstimmung einen Text hinzu, der Teilnehmern hilft den Grund für die Abstimmung zu verstehen",
+      "add-description": "Fügen Sie der Abstimmung eine Beschreibung hinzu (optional)",
+      "add-choices": "Fügen Sie Antwortmöglichkeiten hinzu",
+      "add-choice": "Option hinzufügen",
+      "remove-choice": "Option entfernen",
+      "load": "Lade Abstimmungen",
+      "add": "Abstimmung hinzufügen",
+
+      "canParticipantsAddOptions": "Können Teilnehmer eigene Optionen hinzufügen?",
+      "canParticipantSelectMultipleOptions": "Können Teilnehmer mehrere Optionen auswählen?"
     },
-    "page": {
-      "page": "Seite",
-      "title": "Fügen Sie der Seite einen Titel hinzu",
-      "description": "Fügen Sie der Seite eine Beschreibung hinzu (optional)",
-      "remove": "Entferne die Seite",
-      "add": "Füge eine neue Seite hinzu"
-    },
-    "panel": {
-      "panel": "Panel",
-      "remove": "Entferne das Panel",
-      "add": "Füge ein neues Panel hinzu"
-    },
-    "question": {
-      "question": "Frage",
-      "type": "Wählen Sie den Typ der Frage/Antwort-Möglichkeit",
-      "title": "Fügen Sie der Frage einen Titel hinzu",
-      "text": "Definieren Sie hier die Frage die Sie stellen möchten",
-      "choices": "Fügen Sie Antwortmöglichkeiten hinzu",
-      "addChoice": "Option hinzufügen",
-      "removeChoice": "Option entfernen",
-      "mostUnlikely": "nicht zutreffend/wahrscheinlich",
-      "mostLikely": "zutreffend/sehr wahrscheinlich",
-      "description": "Fügen Sie der Frage eine Beschreibung hinzu (optional)",
-      "remove": "Entferne Frage",
-      "add": "Füge Frage hinzu"
+    "forms": {
+      "title": "FORMULARE",
+      "sidebar": "Formulare",
+      "forms": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
+      "load": "Lade Formulare",
+      "editor": {
+        "title": "Umfrage-Editor",
+        "create": "Neue Umfrage erstellen."
+      },
+      "page": {
+        "page": "Seite",
+        "title": "Fügen Sie der Seite einen Titel hinzu",
+        "description": "Fügen Sie der Seite eine Beschreibung hinzu (optional)",
+        "remove": "Entferne die Seite",
+        "add": "Füge eine neue Seite hinzu"
+      },
+      "panel": {
+        "panel": "Panel",
+        "remove": "Entferne das Panel",
+        "add": "Füge ein neues Panel hinzu"
+      },
+      "question": {
+        "question": "Frage",
+        "type": "Wählen Sie den Typ der Frage/Antwort-Möglichkeit",
+        "title": "Fügen Sie der Frage einen Titel hinzu",
+        "text": "Definieren Sie hier die Frage die Sie stellen möchten",
+        "choices": "Fügen Sie Antwortmöglichkeiten hinzu",
+        "addChoice": "Option hinzufügen",
+        "removeChoice": "Option entfernen",
+        "mostUnlikely": "nicht zutreffend/wahrscheinlich",
+        "mostLikely": "zutreffend/sehr wahrscheinlich",
+        "description": "Fügen Sie der Frage eine Beschreibung hinzu (optional)",
+        "remove": "Entferne Frage",
+        "add": "Füge Frage hinzu"
+      }
     }
   },
   "printer": {

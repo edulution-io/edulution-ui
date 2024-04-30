@@ -1,24 +1,27 @@
 import React, { useEffect } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
-import { HomePage } from '@/pages/Home';
+import { useAuth } from 'react-oidc-context';
+import { useLocalStorage } from 'usehooks-ts';
 
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import IframeLayout from '@/components/layout/IframeLayout';
+
+import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
+
+import PollEditor from '@/pages/Survey/Poll/PollEditor';
+import { SurveyCreatorWidget } from '@/pages/Survey/Forms/SurveyCreatorWidget';
 
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import { useAuth } from 'react-oidc-context';
+import SurveyPage from '@/pages/Survey/SurveyPage';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
-import { useLocalStorage } from 'usehooks-ts';
-import { SurveyCreatorWidget } from '@/pages/Survey/SurveyCreatorWidget.tsx';
-import SurveyEditor from '@/pages/Survey/Editor/SurveyEditor.tsx';
-import WhoBringsWhat from "@/pages/Survey/Surveys/WhoBringsWhat.tsx";
+import PollMockup from '@/pages/Survey/Poll/PollMockup';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -67,9 +70,34 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
               path="/"
               element={<HomePage />}
             />
+            <Route
+              path="settings"
+              element={<SettingsPage />}
+            >
+              {Object.keys(config).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<SettingsPage />}
+                />
+              ))}
+            </Route>
 
             <Route
-              path="surveyCreator"
+              path="survey"
+              element={<SurveyPage />}
+            >
+              {Object.keys(config).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<SurveyPage />}
+                />
+              ))}
+            </Route>
+
+            <Route
+              path="survey/forms/create"
               element={<SurveyCreatorWidget />}
             >
               {Object.keys(config).map((key) => (
@@ -81,41 +109,26 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
               ))}
             </Route>
             <Route
-              path="survey"
-              element={<SurveyEditor />}
+              path="survey/poll"
+              element={<PollMockup />}
             >
               {Object.keys(config).map((key) => (
                 <Route
                   key={key}
                   path={key}
-                  element={<SurveyEditor />}
+                  element={<PollMockup />}
                 />
               ))}
             </Route>
             <Route
-              path="whowhat"
-              element={<WhoBringsWhat />}
+              path="survey/poll/create"
+              element={<PollEditor />}
             >
               {Object.keys(config).map((key) => (
                 <Route
                   key={key}
                   path={key}
-                  element={<WhoBringsWhat />}
-                />
-              ))}
-            </Route>
-
-
-
-            <Route
-              path="settings"
-              element={<SettingsPage />}
-            >
-              {Object.keys(config).map((key) => (
-                <Route
-                  key={key}
-                  path={key}
-                  element={<SettingsPage />}
+                  element={<PollEditor />}
                 />
               ))}
             </Route>

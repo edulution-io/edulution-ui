@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/shared/Button';
 import { useLocation, NavLink } from 'react-router-dom';
 
-import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
+import { MobileLogoIcon, SettingsIcon, UserIcon, DocumentIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
@@ -39,6 +39,12 @@ const Sidebar = () => {
       icon: item.icon,
       color: item.color,
     })),
+    {
+      title: t(`survey.sidebar`),
+      link: '/survey',
+      icon: DocumentIcon,
+      color: 'bg-ciGreenToBlue',
+    },
     {
       title: t('settings.sidebar'),
       link: '/settings',
