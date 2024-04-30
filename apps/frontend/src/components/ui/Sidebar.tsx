@@ -241,7 +241,7 @@ const Sidebar = () => {
       <NavLink
         onClick={() => {
           auth.removeUser().catch(console.error);
-          // TODO: Remove if webdav is stored in backend NIEDUUI-26
+          // TODO: Remove if FileManager is stored in backend NIEDUUI-26
           cleanStoreData(StoreTypes.LMN_USER_STORE);
           sessionStorage.clear();
         }}

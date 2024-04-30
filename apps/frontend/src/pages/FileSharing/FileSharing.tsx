@@ -24,6 +24,8 @@ import { ContentType } from '@/datatypes/filesystem';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
+import useFileEditorStore from '@/store/fileEditorStore';
+import FileEditingPage from '@/pages/FileEditor/FileEditingPage';
 
 const FileSharingPage = () => {
   const {
@@ -39,7 +41,7 @@ const FileSharingPage = () => {
     currentPath,
   } = useFileManagerStore();
   const { t } = useTranslation();
-
+  const previewFile = useFileEditorStore((state) => state.previewFile);
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, [currentPath, fileOperationSuccessful]);
@@ -73,11 +75,18 @@ const FileSharingPage = () => {
             </div>
           </TooltipProvider>
         </div>
-        <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-          <DataTable
-            columns={Columns}
-            data={files}
-          />
+        <div className="flex">
+          <div className={`w-full ${previewFile ? 'w-1/2' : ''}`}>
+            <DataTable
+              columns={Columns}
+              data={files}
+            />
+          </div>
+          {previewFile && (
+            <div className=" w-1/2">
+              <FileEditingPage previewFile={previewFile} />
+            </div>
+          )}
         </div>
 
         <div className="fixed bottom-8 flex flex-row space-x-24 bg-opacity-90">

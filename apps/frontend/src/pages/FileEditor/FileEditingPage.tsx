@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import useFileEditorStore from '@/store/fileEditorStore';
+import React, { FC, useEffect, useState } from 'react';
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import { getFileNameFromPath, getFileType } from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { DirectoryFile } from '@/datatypes/filesystem';
 
-const FileEditingPage = () => {
-  const editableFiles = useFileEditorStore((state) => state.editableFiles);
+interface FileEditingPageProps {
+  previewFile: DirectoryFile;
+}
+
+const FileEditingPage: FC<FileEditingPageProps> = ({ previewFile }) => {
   const [token, setToken] = useState('null');
-  const file = editableFiles[0];
+  const file = previewFile;
 
   if (file) {
     const key = `docx-${Math.random()}`;
@@ -65,7 +68,7 @@ const FileEditingPage = () => {
     };
 
     return token ? (
-      <div className="h-full w-full">
+      <div className="h-screen">
         <DocumentEditor
           id="docxEditor"
           documentServerUrl="http://localhost:80/"

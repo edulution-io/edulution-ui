@@ -54,7 +54,7 @@ const LoginPage: React.FC = () => {
         key: `${import.meta.env.VITE_WEBDAV_KEY}`,
       });
 
-      sessionStorage.setItem('webdav', encryptedPassword);
+      sessionStorage.setItem('FileManager', encryptedPassword);
       sessionStorage.setItem('user', form.getValues('username') as string);
       sessionStorage.setItem('isAuthenticated', 'true');
 

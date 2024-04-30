@@ -6,12 +6,12 @@ import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
-// TODO: Remove/Rework if webdav is stored in backend NIEDUUI-26
+// TODO: Remove/Rework if FileManager is stored in backend NIEDUUI-26
 export const createWebdavClient = () =>
   createClient(`${window.location.origin}/webdav`, {
     username: sessionStorage.getItem('user') as string,
     password: decryptPassword({
-      data: sessionStorage.getItem('webdav') as string,
+      data: sessionStorage.getItem('FileManager') as string,
       key: `${import.meta.env.VITE_WEBDAV_KEY}`,
     }),
   });
@@ -192,7 +192,7 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${sessionStorage.getItem('user')}:${decryptPassword({ data: sessionStorage.getItem('webdav') as string, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
+      `Basic ${btoa(`${sessionStorage.getItem('user')}:${decryptPassword({ data: sessionStorage.getItem('FileManager') as string, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 

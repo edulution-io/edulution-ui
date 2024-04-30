@@ -26,7 +26,6 @@ import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import { getElapsedTime, getFileCategorie, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
-import { Link } from 'react-router-dom';
 import useFileEditorStore from '@/store/fileEditorStore';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
@@ -63,13 +62,15 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
       const fetchFiles = useFileManagerStore((state) => state.fetchFiles);
-      const appendEditorFile = useFileEditorStore((state) => state.appendEditorFile);
+      const setPreviewFile = useFileEditorStore((state) => state.setPreviewFile);
       const handleFilenameClick = (filenamePath: string) => {
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
+          setPreviewFile(row.original);
         }
         if (row.original.type === ContentType.directory) {
           fetchFiles(filenamePath).catch(() => {});
+          setPreviewFile(null)
         }
       };
 
@@ -117,17 +118,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
               tabIndex={0}
               style={{ userSelect: 'none' }}
             >
-              {formattedFilename?.includes('.docx') || formattedFilename?.includes('.pdf') ? (
-                <Link
-                  to="/preview"
-                  className="text-md truncate font-medium"
-                  onClick={() => appendEditorFile(row.original)}
-                >
-                  {truncate(formattedFilename, 10)}
-                </Link>
-              ) : (
-                <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
-              )}
+            <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
             </span>
             {(isPreviewOpen && !row.original.filename.includes('.docx')) ||
               (!row.original.filename.includes('pdf') && (
