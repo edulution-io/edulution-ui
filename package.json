@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "testing": "vitest --ui",
+    "test-with-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "dev": "nx serve frontend",
     "build": "tsc && nx build frontend --emptyOutDir",
