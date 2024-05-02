@@ -3,7 +3,7 @@ import axios from 'axios';
 import useEduApi from './useEduApiQuery';
 
 const useAppConfigQuery = () => {
-  const EDU_API_CONFIG_ENDPOINT = 'config';
+  const EDU_API_CONFIG_ENDPOINT = 'appconfig';
   const { eduApiUrl, eduApiHeaders } = useEduApi();
   const appConfigUrl = eduApiUrl + EDU_API_CONFIG_ENDPOINT;
 

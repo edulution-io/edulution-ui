@@ -2,23 +2,23 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { ConfigType } from './types/appconfig.types';
+import { AppConfigType } from './types/appconfig.types';
 import LoggerEnum from '../types/logger';
 
 @Injectable()
-class ConfigService {
-  constructor(@InjectModel('Config') private readonly ConfigModel: Model<ConfigType>) {}
+class AppConfigService {
+  constructor(@InjectModel('AppConfig') private readonly appConfigModel: Model<AppConfigType>) {}
 
-  async insertConfig(feConfig: ConfigType[]) {
+  async insertConfig(feConfig: AppConfigType[]) {
     try {
-      await this.ConfigModel.insertMany(feConfig);
+      await this.appConfigModel.insertMany(feConfig);
       Logger.log(`Wrote config to mongoDB`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
       Logger.log(e, LoggerEnum.MONGODB);
     }
   }
 
-  async updateConfig(feConfig: ConfigType[]) {
+  async updateConfig(feConfig: AppConfigType[]) {
     try {
       const bulkOperations = feConfig.map((config) => ({
         updateOne: {
@@ -27,7 +27,7 @@ class ConfigService {
           upsert: true,
         },
       }));
-      await this.ConfigModel.bulkWrite(bulkOperations);
+      await this.appConfigModel.bulkWrite(bulkOperations);
 
       Logger.log(`Updated settings config at mongoDB`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
@@ -37,7 +37,7 @@ class ConfigService {
 
   async getConfig() {
     try {
-      const settingsConfig = await this.ConfigModel.find();
+      const settingsConfig = await this.appConfigModel.find();
       Logger.log('Get settings config from mongoDB', LoggerEnum.EDULUTIONAPI);
       return settingsConfig;
     } catch (e) {
@@ -48,7 +48,7 @@ class ConfigService {
 
   async deleteConfig(configName: string) {
     try {
-      await this.ConfigModel.deleteOne({ name: configName });
+      await this.appConfigModel.deleteOne({ name: configName });
       Logger.log(`Delete ${configName} entry in apps collection`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
       Logger.log(e, LoggerEnum.MONGODB);
@@ -56,4 +56,4 @@ class ConfigService {
   }
 }
 
-export default ConfigService;
+export default AppConfigService;

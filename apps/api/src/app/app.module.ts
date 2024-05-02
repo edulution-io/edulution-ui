@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 
-import ConfigModule from '../config/config.module';
+import AppConfigModule from '../appconfig/appconfig.module';
 import AuthenticationModule from '../auth/auth.module';
 
 @Module({
   imports: [
     AuthenticationModule,
-    ConfigModule,
+    AppConfigModule,
     JwtModule.register({
       global: true,
     }),
