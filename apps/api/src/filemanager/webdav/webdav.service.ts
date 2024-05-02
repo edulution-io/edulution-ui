@@ -56,6 +56,19 @@ class WebdavService {
       throw error;
     }
   }
+
+  async createFolder(path: string, folderName: string) {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'MKCOL',
+        url: `${this.baseurl}${path}/${folderName}`,
+      });
+      return response.status === 201 ? { success: true } : { success: false, status: response.status };
+    } catch (error) {
+      console.error('Failed to create folder:', error);
+      throw error;
+    }
+  }
 }
 
 export default WebdavService;

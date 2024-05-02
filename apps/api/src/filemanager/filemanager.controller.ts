@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import FilemanagerService from './filemanager.service';
 
 @Controller('filemanager')
@@ -14,6 +14,11 @@ class FilemanagerController {
   async getFilesAtPath(@Param('0') path: string) {
     console.log('path:', path);
     return this.filemanagerService.getFilesAtPath(`${path}`);
+  }
+
+  @Post('create')
+  async createFolder(@Body() body: { path: string; folderName: string }) {
+    return this.filemanagerService.createFolder(body.path, body.folderName);
   }
 }
 export default FilemanagerController;
