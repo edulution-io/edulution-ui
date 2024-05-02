@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { AppConfigType } from './types/appconfig.types';
+import { AppConfigType } from './appconfig.types';
 import LoggerEnum from '../types/logger';
 
 @Injectable()

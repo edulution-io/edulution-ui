@@ -1,7 +1,7 @@
 import { UseGuards, Controller, Post, Body, Get, Logger, Put, Delete, Param } from '@nestjs/common';
 
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AppConfigType } from './types/appconfig.types';
+import { AppConfigType } from './appconfig.types';
 import AppConfigService from './appconfig.service';
 import LoggerEnum from '../types/logger';
 

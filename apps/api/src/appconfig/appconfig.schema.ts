@@ -1,16 +1,22 @@
-import mongoose from 'mongoose';
-import { AppIntegrationType } from './types/appconfig.types';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { AppIntegrationType } from './appconfig.types';
 
-const AppConfigSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    linkPath: { type: String, required: false },
-    icon: { type: String, required: true },
-    appType: { type: String, enum: Object.values(AppIntegrationType), required: true },
-  },
-  { strict: true },
-);
+@Schema({ timestamps: true, strict: true })
+class AppConfig extends Document {
+  @Prop({ required: true })
+  name: string;
 
-AppConfigSchema.set('timestamps', true);
+  @Prop()
+  linkPath: string;
+
+  @Prop({ required: true })
+  icon: string;
+
+  @Prop({ required: true, enum: Object.values(AppIntegrationType) })
+  appType: string;
+}
+
+const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
 
 export default AppConfigSchema;
