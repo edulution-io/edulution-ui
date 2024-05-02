@@ -24,6 +24,7 @@ import { ContentType } from '@/datatypes/filesystem';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
+import { useSearchParams } from 'react-router-dom';
 
 const FileSharingPage = () => {
   const {
@@ -32,17 +33,18 @@ const FileSharingPage = () => {
     isVisible,
     fileOperationMessage,
     fileOperationSuccessful,
-    setCurrentPath,
     selectedItems,
     fetchFiles,
     files,
     currentPath,
   } = useFileManagerStore();
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const path = searchParams.get('path');
 
   useEffect(() => {
-    fetchFiles().catch(console.error);
-  }, [currentPath, fileOperationSuccessful]);
+    fetchFiles(path || '/').catch(console.error);
+  }, [path]);
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
@@ -64,8 +66,9 @@ const FileSharingPage = () => {
               <div className="flex space-x-2">
                 <DirectoryBreadcrumb
                   path={currentPath}
-                  onNavigate={(path) => {
-                    setCurrentPath(path);
+                  onNavigate={(filenamePath) => {
+                    searchParams.set('path', filenamePath);
+                    setSearchParams(searchParams);
                   }}
                   style={{ color: 'white' }}
                 />

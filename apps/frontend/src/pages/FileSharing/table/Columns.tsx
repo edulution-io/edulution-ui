@@ -26,6 +26,7 @@ import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
 import { Icon } from '@radix-ui/react-select';
 import { getFileCategorie, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
+import { useSearchParams } from 'react-router-dom';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
@@ -60,14 +61,16 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const [isPreviewOpen, setPreviewOpen] = useState(false);
       const { filename } = row.original;
       const formattedFilename = filename.split('/').pop();
-      const fetchFiles = useFileManagerStore((state) => state.fetchFiles);
-
+      const [searchParams, setSearchParams] = useSearchParams();
       const handleFilenameClick = (filenamePath: string) => {
+        console.log('handleFilenameClick', filenamePath, row.original.basename);
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
         }
         if (row.original.type === ContentType.directory) {
-          fetchFiles(filenamePath).catch(() => {});
+          console.log('fetchFiles', filenamePath);
+          searchParams.set('path', filenamePath);
+          setSearchParams(searchParams);
         }
       };
 

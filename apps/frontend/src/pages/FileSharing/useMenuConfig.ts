@@ -11,6 +11,7 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
+import { useSearchParams } from 'react-router-dom';
 
 const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
   if (mounts.filename.includes('teachers')) {
@@ -37,10 +38,12 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
 const useFileSharingMenuConfig = () => {
   const { fetchMountPoints, fetchFiles } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const path = searchParams.get('path');
 
-  function constructFilePath(mountPoint: DirectoryFile, username: string) {
-    return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
-  }
+  useEffect(() => {
+    fetchFiles(path || '/').catch(console.error);
+  }, [path]);
 
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {
@@ -50,9 +53,10 @@ const useFileSharingMenuConfig = () => {
           id: mountPoint.basename,
           label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
           icon: findCorrespondingMountPointIcon(mountPoint),
-          action: async () => {
+          action: () => {
             try {
-              await fetchFiles(constructFilePath(mountPoint, sessionStorage.getItem('user') as string));
+              searchParams.set('path', mountPoint.filename);
+              setSearchParams(searchParams);
             } catch (error) {
               console.error('Error fetching files:', error);
             }

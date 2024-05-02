@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
-import { ConfigType } from '@/datatypes/types';
-import { getFromPathName } from '@/utils/common';
+import { getFromPathName, findEntryByName } from '@/utils/common';
+import useAppDataStore from '@/store/appDataStore';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +13,8 @@ const ForwardingPage: React.FC = () => {
   const [isForwarding, setIsForwaring] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
 
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+  const { config } = useAppDataStore();
+
   const rootPathName = getFromPathName(pathname, 1);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const ForwardingPage: React.FC = () => {
       setIsForwaring(false);
       setShowIsForwarding(true);
       const navigateToExternalPage = () => {
-        const externalLink = config[rootPathName]?.linkPath;
+        const externalLink = findEntryByName(config, rootPathName)?.linkPath as string;
         if (externalLink) {
           window.open(externalLink, '_blank');
         }
@@ -51,7 +51,7 @@ const ForwardingPage: React.FC = () => {
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
-            src={config[rootPathName].icon}
+            src={findEntryByName(config, rootPathName)?.icon}
             alt="icon"
           />
         </Button>

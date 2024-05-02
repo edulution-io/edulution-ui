@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { RowSelectionState } from '@tanstack/react-table';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
+import { fetchMountPoints, fetchFilesFromPath } from '@/webdavclient/WebDavAPI';
 
 type WebDavActionResult = { success: boolean; message: string; status: number } | { success: boolean };
 
@@ -26,7 +27,7 @@ type FileManagerStore = {
   setDirectoryName: (directoryName: string) => void;
   setSelectedItems: (items: DirectoryFile[]) => void;
   setFileOperationSuccessful: (fileOperationSuccessful: boolean | undefined, message: string) => void;
-  fetchFiles: (path?: string) => Promise<void>;
+  fetchFiles: (path: string) => Promise<void>;
   handleDownload: (items: DirectoryFile[]) => Promise<void>;
   setPopUpVisibility: (isVisible: boolean) => void;
   setLoading: (isLoading: boolean) => void;
@@ -72,16 +73,19 @@ const initialState: Omit<
 const useFileManagerStore = create<FileManagerStore>((set, get) => ({
   ...initialState,
   setCurrentPath: (path: string) => {
-    set({ currentPath: path });
+    console.log(path);
+    set({ currentPath: path.replace('/webdav', '') });
   },
 
   setFiles: (files: DirectoryFile[]) => {
     set({ files });
   },
 
-  fetchFiles: async (path: string = get().currentPath) => {
+  fetchFiles: async (path: string) => {
     try {
-      const directoryFiles = await WebDavFunctions.getContentList(path);
+      console.log('fetchFilesFromPath(path)');
+      console.log(fetchFilesFromPath(path).then((res) => console.log(res)));
+      const directoryFiles = await fetchFilesFromPath(path);
       get().setCurrentPath(path);
       get().setFiles(directoryFiles);
       get().setSelectedItems([]);
@@ -96,7 +100,8 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
 
   fetchMountPoints: async () => {
     try {
-      return await WebDavFunctions.getContentList('/');
+      console.log(fetchMountPoints().then((res) => console.log(res)));
+      return await fetchMountPoints();
     } catch (error) {
       console.error('Error fetching mount points:', error);
       return [];
@@ -105,7 +110,7 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
 
   fetchDirectory: async (pathToFetch: string) => {
     try {
-      const resp = await WebDavFunctions.getContentList(pathToFetch);
+      const resp = await fetchFilesFromPath(pathToFetch);
       return resp.filter((item) => item.type === ContentType.directory);
     } catch (error) {
       console.error('Error fetching directory contents:', error);

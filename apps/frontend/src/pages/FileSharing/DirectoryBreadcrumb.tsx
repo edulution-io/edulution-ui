@@ -39,12 +39,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
       <p className="mr-2 text-white">{t('currentDirectory')}</p>
       <BreadcrumbList>
         <BreadcrumbItem key="home">
-          <BreadcrumbLink
-            href="#"
-            onClick={() => onNavigate(`/teachers/${sessionStorage.getItem('user')}/`)}
-          >
-            {t('home')}
-          </BreadcrumbLink>
+          <BreadcrumbLink onClick={() => onNavigate(`/teachers/netzint-teacher/`)}>{t('home')}</BreadcrumbLink>
         </BreadcrumbItem>
 
         {filteredSegment.length > displaySegments ? (

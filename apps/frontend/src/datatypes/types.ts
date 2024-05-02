@@ -7,7 +7,10 @@ export enum AppType {
 }
 
 export type ConfigType = {
-  [key: string]: { linkPath: string; icon: string; appType: AppType };
+  name: string;
+  linkPath: string;
+  icon: string;
+  appType: AppType;
 };
 
 export interface MenuItem {
