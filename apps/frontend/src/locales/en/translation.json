@@ -35,7 +35,12 @@
     "title": "SETTINGS",
     "sidebar": "Settings",
     "addApp": { "title": "Add app", "description": "Please select an app:" },
-    "description": "Here you can make all settings."
+    "description": "Here you can make all settings.",
+    "appconfig": {
+      "update": { "success": "Appliste saved successfully", "failed": "Update failed" },
+      "delete": { "success": "App removed", "failed": "App deletion failed" },
+      "create": { "success": "App created", "failed": "App creation failed" }
+    }
   },
 
   "forwardingpage": {

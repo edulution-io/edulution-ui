@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,7 +27,6 @@ const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
-  const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { updateSettingsConfig, deleteSettingsConfigEntry } = useAppConfigQuery();
   const { config, setConfig } = useAppDataStore();
@@ -56,7 +55,7 @@ const SettingsPage: React.FC = () => {
   useEffect(() => {
     if (areSettingsVisible) {
       setValue(`${settingLocation}.path`, findEntryByName(config, settingLocation)?.linkPath);
-      setValue(`${settingLocation}.appType`, findEntryByName(config, settingLocation)?.linkPath);
+      setValue(`${settingLocation}.appType`, findEntryByName(config, settingLocation)?.appType);
     }
   }, [areSettingsVisible, settingLocation, config]);
 
@@ -82,8 +81,8 @@ const SettingsPage: React.FC = () => {
         setConfig(updatedConfig);
 
         updateSettingsConfig(updatedConfig)
-          .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.item.update.failed')}`))
-          .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.item.update.failed')}`));
+          .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`))
+          .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
       }
     };
     if (areSettingsVisible) {
@@ -190,13 +189,12 @@ const SettingsPage: React.FC = () => {
       .then(() => {
         const filteredArray = config.filter((item) => item.name !== settingLocation);
         setConfig(filteredArray);
-        toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.item.remove.success')}`, {
+        toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {
           description: new Date().toLocaleString(),
         });
-        navigate('/settings');
       })
       .catch(() =>
-        toast.error(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.item.remove.failed')}`, {
+        toast.error(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.failed')}`, {
           description: new Date().toLocaleString(),
         }),
       );

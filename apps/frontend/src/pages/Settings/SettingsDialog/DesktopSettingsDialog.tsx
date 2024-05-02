@@ -5,6 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } fr
 import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
+import { toast } from 'sonner';
 import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
@@ -73,7 +74,13 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                   const updatedConfig = [...config, newConfig];
 
                   setConfig(updatedConfig);
-                  updateSettingsConfig(updatedConfig).catch((e) => console.error('Update Config Error:', e));
+                  updateSettingsConfig(updatedConfig)
+                    .then(() =>
+                      toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),
+                    )
+                    .catch(() =>
+                      toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`),
+                    );
                 }
               }}
             >

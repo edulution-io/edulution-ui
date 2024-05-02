@@ -3,6 +3,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger } from
 import { Button } from '@/components/shared/Button';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import { DropdownMenu } from '@/components';
+import { toast } from 'sonner';
 import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import useAppDataStore from '@/store/appDataStore';
@@ -60,7 +61,13 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
                 const updatedConfig = [...config, newConfig];
 
                 setConfig(updatedConfig);
-                updateSettingsConfig(updatedConfig).catch((e) => console.error('Update Config Error:', e));
+                updateSettingsConfig(updatedConfig)
+                  .then(() =>
+                    toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),
+                  )
+                  .catch(() =>
+                    toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`),
+                  );
               }
             }}
           >
