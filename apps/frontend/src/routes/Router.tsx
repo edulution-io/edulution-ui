@@ -16,7 +16,7 @@ import { useAuth } from 'react-oidc-context';
 
 import { APPS, AppType, ConfigType } from '@/datatypes/types';
 import useAppDataStore from '@/store/appDataStore';
-import useEduApi from '@/api/useEduApiQuery';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserDataStore from '@/store/userDataStore';
 
 const pageSwitch = (page: string) => {
@@ -130,7 +130,7 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
 const AppRouter = () => {
   const auth = useAuth();
   const { config, setConfig } = useAppDataStore();
-  const { getSettingsConfig } = useEduApi();
+  const { getSettingsConfig } = useAppConfigQuery();
   const { isAuthenticated } = useUserDataStore();
 
   useEffect(() => {

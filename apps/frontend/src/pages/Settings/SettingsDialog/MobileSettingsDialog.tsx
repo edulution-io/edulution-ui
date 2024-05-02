@@ -6,7 +6,7 @@ import { DropdownMenu } from '@/components';
 import { AppType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import useAppDataStore from '@/store/appDataStore';
-import useEduApi from '@/api/useEduApiQuery';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -18,7 +18,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const { config, setConfig } = useAppDataStore();
-  const { updateSettingsConfig } = useEduApi();
+  const { updateSettingsConfig } = useAppConfigQuery();
 
   return (
     <Sheet

@@ -20,7 +20,7 @@ import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingType
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
 import useAppDataStore from '@/store/appDataStore';
 import { findEntryByName } from '@/utils/common';
-import useEduApi from '@/api/useEduApiQuery';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -29,7 +29,7 @@ const SettingsPage: React.FC = () => {
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { updateSettingsConfig, deleteSettingsConfigEntry } = useEduApi();
+  const { updateSettingsConfig, deleteSettingsConfigEntry } = useAppConfigQuery();
   const { config, setConfig } = useAppDataStore();
   const [option, setOption] = useState('');
 

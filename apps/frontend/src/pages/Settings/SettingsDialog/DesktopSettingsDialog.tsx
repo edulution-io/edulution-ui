@@ -9,7 +9,7 @@ import { AppType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import useAppDataStore from '@/store/appDataStore';
-import useEduApi from '@/api/useEduApiQuery';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -22,7 +22,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
   const { config, setConfig } = useAppDataStore();
-  const { updateSettingsConfig } = useEduApi();
+  const { updateSettingsConfig } = useAppConfigQuery();
 
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
