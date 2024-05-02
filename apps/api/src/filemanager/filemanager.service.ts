@@ -10,6 +10,8 @@ class FilemanagerService {
   getFilesAtPath = async (path: string) => this.webdavClientService.getFilesAtPath(path);
 
   createFolder = async (path: string, folderName: string) => this.webdavClientService.createFolder(path, folderName);
+
+  deleteFolder = async (path: string) => this.webdavClientService.deleteFile(path);
 }
 
 export default FilemanagerService;

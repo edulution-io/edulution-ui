@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { Injectable } from '@nestjs/common';
+import { Delete, Injectable } from '@nestjs/common';
 import WebdavClientFactory from './webdav.client.factory';
 import mapToDirectoryFiles from './utilits';
 
@@ -66,6 +66,20 @@ class WebdavService {
       return response.status === 201 ? { success: true } : { success: false, status: response.status };
     } catch (error) {
       console.error('Failed to create folder:', error);
+      throw error;
+    }
+  }
+
+  @Delete('delete/*')
+  async deleteFile(path: string) {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'DELETE',
+        url: `${this.baseurl}${path}`,
+      });
+      return response.status === 204 ? { success: true } : { success: false, status: response.status };
+    } catch (error) {
+      console.error('Failed to delete file:', error);
       throw error;
     }
   }
