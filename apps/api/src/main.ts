@@ -18,7 +18,7 @@ async function bootstrap() {
     .setTitle('edulution-api')
     .setDescription('Test API for edulution-io')
     .setVersion('1.0')
-    .addTag('config')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

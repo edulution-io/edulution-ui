@@ -1,11 +1,10 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "allowJs": true
   },
-  "extends": "../../tsconfig.json",
   "include": ["./**/*"]
 }

@@ -6,9 +6,7 @@
     "moduleResolution": "NodeNext",
     "types": ["node", "jest"],
     "composite": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "isolatedModules": false
+    "declaration": true
   },
   "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.d.ts", "src/**/*.ts"]
 }

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -11,10 +12,9 @@
       "@/*": ["./apps/frontend/src/*"]
     },
     "allowImportingTsExtensions": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
     "sourceMap": true,
@@ -30,14 +30,16 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "rootDirs": ["./apps/frontend", "./apps/api"]
   },
-  "exclude": [
-    "node_modules",
-    "vite.config.ts",
-    "tailwind.config.ts",
-    "prettier.config.cjs",
-    "jest.config.ts",
-    "jest.preset.cjs"
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "./apps/frontend/tsconfig.json"
+    },
+    {
+      "path": "./packages/api/tsconfig.json"
+    }
   ]
 }

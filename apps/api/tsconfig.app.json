@@ -1,17 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "esModuleInterop": true,
     "outDir": "../../dist/apps/api",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
-    "types": ["node"],
     "emitDecoratorMetadata": true,
     "target": "ES2022",
     "composite": true,
-    "declaration": true,
-    "isolatedModules": false
+    "declaration": true
   },
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "./webpack.config.cjs"],
   "include": ["./**/*"]
