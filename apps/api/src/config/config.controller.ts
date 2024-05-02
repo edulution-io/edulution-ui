@@ -1,6 +1,6 @@
 import { UseGuards, Controller, Post, Body, Get, Logger, Put, Delete, Param } from '@nestjs/common';
 
-import { ConfigType } from '../types/schema';
+import { ConfigType } from './types/appconfig.types';
 import ConfigService from './config.service';
 import LoggerEnum from '../types/logger';
 

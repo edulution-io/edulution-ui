@@ -14,7 +14,7 @@ import AuthenticationModule from '../auth/auth.module';
     }),
     MongooseModule.forRoot('mongodb://localhost:27017', {
       dbName: 'settingsConfig',
-      auth: { username: 'root', password: 'example' },
+      auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
   ],
 })

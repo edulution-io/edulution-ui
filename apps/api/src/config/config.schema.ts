@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { AppType } from '../types/schema';
+import { AppType } from './types/appconfig.types';
 
 const ConfigSchema = new mongoose.Schema(
   {
