@@ -1,41 +1,49 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-
+import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { AuthenticationService } from './auth.service';
 import LoggerEnum from '../types/logger';
 
 interface AuthenticatedRequest extends Request {
-  user: any; // Hier sollte der tatsächliche Typ des Benutzers stehen
+  user: any;
+}
+
+interface TokenPayloadType {
+  exp: number;
+  iat: number;
+  jti: string;
+  iss: string;
+  sub: string;
+  typ: string;
+  azp: string;
+  session_state: string;
+  scope: string;
+  sid: string;
+  ldapGroups: string[];
 }
 
 @Injectable()
 class AuthenticationGuard implements CanActivate {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(private jwtService: JwtService) {}
+
+  private static extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: AuthenticatedRequest = context.switchToHttp().getRequest();
-
-    const header = request.header('Authorization');
-    if (!header) {
-      Logger.log('Authorization: Bearer <token> header missing', LoggerEnum.AUTH);
-      throw new HttpException('Authorization: Bearer <token> header missing', HttpStatus.UNAUTHORIZED);
-    }
-
-    const parts = header.split(' ');
-    if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      Logger.log('Authorization: Bearer <token> header invalid', LoggerEnum.AUTH);
-      throw new HttpException('Authorization: Bearer <token> header invalid', HttpStatus.UNAUTHORIZED);
-    }
-
-    const token = parts[1];
+    const token = AuthenticationGuard.extractTokenFromHeader(request) as string;
 
     try {
-      // Store the user on the request object if we want to retrieve it from the controllers
-      request.user = await this.authenticationService.authenticate(token);
+      const payload: TokenPayloadType = await this.jwtService.verifyAsync(token, {
+        secret: Buffer.from(`${process.env.KEYCLOAK_AUTH_CLIENT_SECRET}`, 'base64'),
+      });
+      request.user = payload;
+
       return true;
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-      throw new HttpException(e.message, HttpStatus.UNAUTHORIZED);
+      Logger.log(e, LoggerEnum.AUTH);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.UNAUTHORIZED);
     }
   }
 }
