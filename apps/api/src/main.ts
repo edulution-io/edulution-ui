@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 
 import AppModule from './app/app.module';
 
@@ -13,6 +14,7 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.EDUI_CORS_URL,
   });
+  app.use(helmet());
 
   const config = new DocumentBuilder()
     .setTitle('edulution-api')
