@@ -14,7 +14,7 @@ import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
-import { AppType } from '@/datatypes/types';
+import { AppIntegrationType } from '@/datatypes/types';
 import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
@@ -39,7 +39,7 @@ const SettingsPage: React.FC = () => {
 
   SETTINGS_APPSELECT_OPTIONS.forEach((item) => {
     formSchemaObject[`${item.id}.path`] = z.string().optional();
-    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppType).optional();
+    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppIntegrationType).optional();
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -69,7 +69,7 @@ const SettingsPage: React.FC = () => {
           name: settingLocation,
           linkPath: getValues(`${settingLocation}.path`) as string,
           icon: selectedOption.icon,
-          appType: getValues(`${settingLocation}.appType`) as AppType,
+          appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
         };
 
         const updatedConfig = config.map((entry) => {
@@ -133,19 +133,19 @@ const SettingsPage: React.FC = () => {
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppType.NATIVE} />
+                                    <RadioGroupItem value={AppIntegrationType.NATIVE} />
                                   </FormControl>
                                   <p>{t('form.native')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppType.FORWARDED} />
+                                    <RadioGroupItem value={AppIntegrationType.FORWARDED} />
                                   </FormControl>
                                   <p>{t('form.forwarded')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppType.EMBEDDED} />
+                                    <RadioGroupItem value={AppIntegrationType.EMBEDDED} />
                                   </FormControl>
                                   <p>{t('form.embedded')}</p>
                                 </FormItem>

@@ -1,10 +1,10 @@
-import { ConfigType, AppType } from '@/datatypes/types';
+import { AppConfigType, AppIntegrationType } from '@/datatypes/types';
 import { create, StateCreator } from 'zustand';
 import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
 
 type AppDataStore = {
-  config: ConfigType[];
-  setConfig: (config: ConfigType[]) => void;
+  config: AppConfigType[];
+  setConfig: (config: AppConfigType[]) => void;
 };
 
 type PersistedAppDataStore = (
@@ -15,8 +15,8 @@ type PersistedAppDataStore = (
 const useAppDataStore = create<AppDataStore>(
   (persist as PersistedAppDataStore)(
     (set) => ({
-      config: [{ name: '', linkPath: '', icon: '', appType: AppType.NATIVE }],
-      setConfig: (config: ConfigType[]) => {
+      config: [{ name: '', linkPath: '', icon: '', appType: AppIntegrationType.NATIVE }],
+      setConfig: (config: AppConfigType[]) => {
         set({ config });
       },
     }),

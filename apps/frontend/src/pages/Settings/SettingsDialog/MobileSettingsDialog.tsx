@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger } from
 import { Button } from '@/components/shared/Button';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
+import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import useAppDataStore from '@/store/appDataStore';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
@@ -55,7 +55,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
                   name: selectedOption,
                   linkPath: '',
                   icon: optionsConfig.icon,
-                  appType: AppType.FORWARDED,
+                  appType: AppIntegrationType.FORWARDED,
                 };
                 const updatedConfig = [...config, newConfig];
 

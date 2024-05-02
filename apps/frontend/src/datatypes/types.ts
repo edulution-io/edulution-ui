@@ -1,16 +1,16 @@
 import { DirectoryFile } from '@/datatypes/filesystem';
 
-export enum AppType {
+export enum AppIntegrationType {
   NATIVE = 'native',
   FORWARDED = 'forwarded',
   EMBEDDED = 'embedded',
 }
 
-export type ConfigType = {
+export type AppConfigType = {
   name: string;
   linkPath: string;
   icon: string;
-  appType: AppType;
+  appType: AppIntegrationType;
 };
 
 export interface MenuItem {

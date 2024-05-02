@@ -1,4 +1,4 @@
-import { ConfigType } from '@/datatypes/types';
+import { AppConfigType } from '@/datatypes/types';
 import axios from 'axios';
 import useEduApi from './useEduApiQuery';
 
@@ -7,17 +7,17 @@ const useAppConfigQuery = () => {
   const { eduApiUrl, eduApiHeaders } = useEduApi();
   const appConfigUrl = eduApiUrl + EDU_API_CONFIG_ENDPOINT;
 
-  const postSettingsConfig = async (config: ConfigType[]) => {
+  const postSettingsConfig = async (config: AppConfigType[]) => {
     await axios.post(appConfigUrl, config, eduApiHeaders);
   };
 
-  const getSettingsConfig = async (): Promise<ConfigType[] | null> => {
+  const getSettingsConfig = async (): Promise<AppConfigType[] | null> => {
     const response = await axios.get(appConfigUrl, eduApiHeaders);
 
-    return response.data as ConfigType[];
+    return response.data as AppConfigType[];
   };
 
-  const updateSettingsConfig = async (config: ConfigType[]) => {
+  const updateSettingsConfig = async (config: AppConfigType[]) => {
     await axios.put(appConfigUrl, config, eduApiHeaders);
   };
 

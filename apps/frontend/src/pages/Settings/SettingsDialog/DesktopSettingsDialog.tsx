@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } fr
 import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
+import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import useAppDataStore from '@/store/appDataStore';
@@ -68,7 +68,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                     name: selectedOption,
                     linkPath: '',
                     icon: optionsConfig.icon,
-                    appType: AppType.FORWARDED,
+                    appType: AppIntegrationType.FORWARDED,
                   };
                   const updatedConfig = [...config, newConfig];
 

@@ -14,7 +14,7 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppType, ConfigType } from '@/datatypes/types';
+import { APPS, AppIntegrationType, AppConfigType } from '@/datatypes/types';
 import useAppDataStore from '@/store/appDataStore';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserDataStore from '@/store/userDataStore';
@@ -40,7 +40,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, config: ConfigType[]) =>
+const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -80,7 +80,7 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
               ))}
             </Route>
             {config.map((item) =>
-              item.appType === AppType.NATIVE ? (
+              item.appType === AppIntegrationType.NATIVE ? (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -101,7 +101,7 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
               }
             />
             {config.map((item) =>
-              item.appType === AppType.FORWARDED ? (
+              item.appType === AppIntegrationType.FORWARDED ? (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -113,7 +113,7 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
 
           <Route element={<IframeLayout />}>
             {config.map((item) =>
-              item.appType === AppType.EMBEDDED ? (
+              item.appType === AppIntegrationType.EMBEDDED ? (
                 <Route
                   key={item.name}
                   path={item.name}
