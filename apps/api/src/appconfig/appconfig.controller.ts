@@ -22,8 +22,8 @@ class AppConfigController {
 
   @Get()
   getConfig() {
-    const settingsConfig = this.appConfigService.getConfig();
-    return settingsConfig;
+    const appConfig = this.appConfigService.getConfig();
+    return appConfig;
   }
 
   @Delete(':name')

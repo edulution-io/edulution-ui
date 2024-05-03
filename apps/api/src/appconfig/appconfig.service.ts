@@ -37,11 +37,11 @@ class AppConfigService {
     }
   }
 
-  async getConfig() {
+  async getConfig(): Promise<AppConfigType[]> {
     try {
-      const settingsConfig = await this.appConfigModel.find();
+      const appConfig = await this.appConfigModel.find();
       Logger.log('Get settings config from mongoDB', LoggerEnum.EDULUTIONAPI);
-      return settingsConfig;
+      return appConfig;
     } catch (e) {
       Logger.error(e, LoggerEnum.MONGODB);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
