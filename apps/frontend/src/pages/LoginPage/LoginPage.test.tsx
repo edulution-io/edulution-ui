@@ -22,23 +22,6 @@ vi.mock('react-oidc-context', () => ({
   })),
 }));
 
-// TODO: Fix this so that the form and the useForm are hooked/entangled with each other
-// vi.mock('react-hook-form', async (importOriginal) => {
-//   const actual = await importOriginal()
-//   return {
-//     // @ts-ignore - this spread is necessary to insert some of the actual functions
-//     ...actual,
-//     useForm: vi.fn().mockImplementation(() => ({
-//       // @ts-ignore - this spread is necessary to insert some of the actual functions
-//       ...actual.useForm,
-//       handleSubmit: vi.fn(),
-//       formState: { errors: {}, isDirty: true, isSubmitting: false, isValid: true },
-//       register: vi.fn(),
-//       watch: vi.fn(),
-//     })),
-//   }
-// })
-
 describe('LoginPage', () => {
   beforeEach(() => {
     render(<LoginPage />);
@@ -104,7 +87,7 @@ describe('LoginPage', () => {
     await userEvent.type(userNameInput, 'success');
     await userEvent.type(passwordInput, 'success');
 
-    // TODO: Check why the trigger of the submit button is not working
+    // TODO: NIEDUUI-107: Check why the trigger of the submit button is not working
     await userEvent.click(submitButton);
     expect(
       spyOnSubmit,
@@ -176,7 +159,7 @@ describe('LoginPage', () => {
       'success',
     );
 
-    // TODO: Check why the trigger of the submit button is not working
+    // TODO: NIEDUUI-107: Check why the trigger of the submit button is not working
     await userEvent.click(submitButton);
     expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(0);
 
