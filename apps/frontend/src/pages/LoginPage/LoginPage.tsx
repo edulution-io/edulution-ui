@@ -1,30 +1,30 @@
-import React, { useEffect } from 'react';
-import { useAuth } from 'react-oidc-context';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslation } from 'react-i18next';
-import { useEncryption } from '@/hooks/mutations';
+import React, {useEffect} from 'react';
+import {useAuth} from 'react-oidc-context';
+import {SubmitHandler, useForm} from 'react-hook-form';
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useTranslation} from 'react-i18next';
+import {useEncryption} from '@/hooks/mutations';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import {Form, FormControl, FormFieldSH, FormItem, FormMessage} from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
-import { Button } from '@/components/shared/Button';
-import { Card } from '@/components/shared/Card';
-import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
+import {Button} from '@/components/shared/Button';
+import {Card} from '@/components/shared/Card';
+import {createWebdavClient} from '@/webdavclient/WebDavFileManager';
 import useLmnUserStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
-  const { t } = useTranslation();
-  const { isLoading } = auth;
-  const { getToken } = useLmnUserStore((state) => ({
+  const {t} = useTranslation();
+  const {isLoading} = auth;
+  const {getToken} = useLmnUserStore((state) => ({
     getToken: state.getToken,
   }));
 
   const formSchema: z.Schema = z.object({
-    username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
-    password: z.string({ required_error: t('password.required') }).max(32, { message: t('password.too_long') }),
+    username: z.string({required_error: t('username.required')}).max(32, {message: t('username.too_long')}),
+    password: z.string({required_error: t('password.required')}).max(32, {message: t('password.too_long')}),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (auth.error) {
-      form.setError('password', { type: 'custom', message: auth.error.message });
+      form.setError('password', {type: 'custom', message: auth.error.message});
     }
   }, [auth.error]);
 
@@ -77,11 +77,11 @@ const LoginPage: React.FC = () => {
           onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
           className="space-y-4"
         >
-          <FormField
+          <FormFieldSH
             control={form.control}
             name="username"
             defaultValue=""
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <p className="font-bold">{t('common.username')}</p>
                 <FormControl>
@@ -92,15 +92,15 @@ const LoginPage: React.FC = () => {
                     variant="login"
                   />
                 </FormControl>
-                <FormMessage className="text-p" />
+                <FormMessage className="text-p"/>
               </FormItem>
             )}
           />
-          <FormField
+          <FormFieldSH
             control={form.control}
             name="password"
             defaultValue=""
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <p className="font-bold">{t('common.password')}</p>
                 <FormControl>
@@ -111,7 +111,7 @@ const LoginPage: React.FC = () => {
                     variant="login"
                   />
                 </FormControl>
-                <FormMessage className="text-p" />
+                <FormMessage className="text-p"/>
               </FormItem>
             )}
           />
@@ -126,7 +126,7 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="my-4 block font-bold text-gray-500">
               <Link
-                to="/" 
+                to="/"
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
               >
                 <p>{t('login.forgot_password')}</p>

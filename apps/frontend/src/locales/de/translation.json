@@ -24,7 +24,21 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
-    "sidebar": "Konferenzen"
+    "sidebar": "Konferenzen",
+    "create": "Neue Konferenz erstellen",
+    "creator": "Ersteller",
+    "delete": "Löschen",
+    "deleteConferences": "{{count}} Konferenzen löschen",
+    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "name": "Name der Konferenz",
+    "password": "Passwort",
+    "attendees": "Teilnehmer",
+    "privacyStatus": "Zutritt",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "cancel": "Abbrechen",
+    "error": "Fehler"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
@@ -129,7 +143,8 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "overview": "Übersicht"
   },
   "form": {
     "path": "Link",
@@ -260,7 +275,6 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-
   "groupsPage": {
     "classes": "Klassen"
   }

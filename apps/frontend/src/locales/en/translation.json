@@ -24,7 +24,21 @@
   },
   "conferences": {
     "title": "CONFERENCES",
-    "sidebar": "Conferences"
+    "sidebar": "Conferences",
+    "create": "Create new conference",
+    "creator": "Creator",
+    "delete": "Delete",
+    "deleteConferences": "Delete {count}} conferences",
+    "confirmDelete": "Should these conferences really be deleted?",
+    "name": "Name of conference",
+    "password": "Password",
+    "attendees": "Attendees",
+    "privacyStatus": "Access",
+    "public": "Public",
+    "private": "Private",
+    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "cancel": "Cancel",
+    "error": "Error"
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
@@ -129,7 +143,8 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "overview": "Overview"
   },
   "form": {
     "path": "Path",
@@ -260,7 +275,6 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-
   "groupsPage": {
     "classes": "Classes"
   }

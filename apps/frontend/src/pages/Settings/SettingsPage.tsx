@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useLocalStorage, useMediaQuery } from 'usehooks-ts';
-import { toast } from 'sonner';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {SubmitHandler, useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
+import {useLocalStorage, useMediaQuery} from 'usehooks-ts';
+import {toast} from 'sonner';
 
-import { Input } from '@/components/ui/Input';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
-import { Button } from '@/components/shared/Button';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
-import { TrashIcon } from '@/assets/icons';
+import {Input} from '@/components/ui/Input';
+import {Form, FormControl, FormFieldSH, FormItem, FormMessage} from '@/components/ui/Form';
+import {Button} from '@/components/shared/Button';
+import {SETTINGS_APPSELECT_OPTIONS} from '@/constants/settings';
+import {RadioGroupItemSH, RadioGroupSH} from '@/components/ui/RadioGroupSH';
+import {TrashIcon} from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
-import { AppType, ConfigType } from '@/datatypes/types';
+import {AppType, ConfigType} from '@/datatypes/types';
 import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
-import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
+import {SettingsDialogProps} from '@/pages/Settings/SettingsDialog/settingTypes';
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
 
 const SettingsPage: React.FC = () => {
-  const { pathname } = useLocation();
-  const { t } = useTranslation();
+  const {pathname} = useLocation();
+  const {t} = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const SettingsPage: React.FC = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { control, handleSubmit, setValue, getValues } = form;
+  const {control, handleSubmit, setValue, getValues} = form;
 
   const areSettingsVisible = settingLocation !== '';
 
@@ -99,11 +99,11 @@ const SettingsPage: React.FC = () => {
               >
                 {settingLocation === item.id ? (
                   <>
-                    <FormField
+                    <FormFieldSH
                       control={control}
                       name={`${item.id}.path`}
                       defaultValue=""
-                      render={({ field }) => (
+                      render={({field}) => (
                         <FormItem>
                           <h4>{t('form.path')}</h4>
                           <FormControl>
@@ -113,44 +113,44 @@ const SettingsPage: React.FC = () => {
                             />
                           </FormControl>
                           <p>{t('form.pathDescription')}</p>
-                          <FormMessage className="text-p" />
+                          <FormMessage className="text-p"/>
                         </FormItem>
                       )}
                     />
                     <div className="pt-10">
-                      <FormField
+                      <FormFieldSH
                         control={control}
                         name={`${item.id}.appType`}
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem className="space-y-3">
                             <h4>{t('form.apptype')}</h4>
                             <FormControl>
-                              <RadioGroup
+                              <RadioGroupSH
                                 onValueChange={field.onChange}
                                 defaultValue={config[`${settingLocation}`].appType}
                                 className="flex flex-col space-y-1"
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppType.NATIVE} />
+                                    <RadioGroupItemSH value={AppType.NATIVE}/>
                                   </FormControl>
                                   <p>{t('form.native')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppType.FORWARDED} />
+                                    <RadioGroupItemSH value={AppType.FORWARDED}/>
                                   </FormControl>
                                   <p>{t('form.forwarded')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppType.EMBEDDED} />
+                                    <RadioGroupItemSH value={AppType.EMBEDDED}/>
                                   </FormControl>
                                   <p>{t('form.embedded')}</p>
                                 </FormItem>
-                              </RadioGroup>
+                              </RadioGroupSH>
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage/>
                           </FormItem>
                         )}
                       />
@@ -180,7 +180,7 @@ const SettingsPage: React.FC = () => {
     const existingOptions = Object.keys(config).map((key) => key);
     const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
-    return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
+    return filteredOptions.map((item) => ({id: item.id, name: `${item.id}.sidebar`}));
   };
 
   const dialogProps: SettingsDialogProps = {
@@ -207,7 +207,7 @@ const SettingsPage: React.FC = () => {
             className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
             onClickCapture={() => {
               setConfig((prevConfig) => {
-                const { [settingLocation]: omittedValue, ...rest } = prevConfig;
+                const {[settingLocation]: omittedValue, ...rest} = prevConfig;
                 return rest;
               });
               navigate('/settings');
@@ -224,7 +224,7 @@ const SettingsPage: React.FC = () => {
       </div>
       {settingsForm()}
       {isMobile ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}
-      <Toaster />
+      <Toaster/>
     </>
   );
 };
