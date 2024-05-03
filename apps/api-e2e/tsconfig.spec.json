@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/apps/api-e2e",
     "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "types": ["jest", "node"],
     "composite": true,
     "declaration": true

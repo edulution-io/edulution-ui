@@ -11,13 +11,13 @@ class AppConfigController {
   constructor(private readonly appConfigService: AppConfigService) {}
 
   @Post()
-  createConfig(@Body() feConfig: AppConfigType[]) {
-    this.appConfigService.insertConfig(feConfig).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
+  createConfig(@Body() appConfigDto: AppConfigType[]) {
+    this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
   }
 
   @Put()
-  updateConfig(@Body() feConfig: AppConfigType[]) {
-    this.appConfigService.updateConfig(feConfig).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
+  updateConfig(@Body() appConfigDto: AppConfigType[]) {
+    this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
   }
 
   @Get()

@@ -23,7 +23,7 @@ class AuthenticationGuard implements CanActivate {
 
       return true;
     } catch (e) {
-      Logger.log(e, LoggerEnum.AUTH);
+      Logger.warn(e, LoggerEnum.AUTH);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.UNAUTHORIZED);
     }
   }
