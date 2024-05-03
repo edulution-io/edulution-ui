@@ -5,9 +5,13 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } fr
 import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
+import { toast } from 'sonner';
+import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
+import useAppDataStore from '@/store/appDataStore';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   isOpen,
@@ -15,10 +19,12 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   setOption,
   filteredAppOptions,
   setSearchParams,
-  setConfig,
 }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
+  const { config, setConfig } = useAppDataStore();
+  const { updateSettingsConfig } = useAppConfigQuery();
+
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
     <Dialog
@@ -55,14 +61,27 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
               size="lg"
               onClick={() => {
                 setSearchParams(new URLSearchParams(''));
-                setConfig((prevConfig) => ({
-                  [option.toLowerCase().split('.')[0]]: {
+                const selectedOption = option.toLowerCase().split('.')[0];
+                const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
+
+                if (optionsConfig) {
+                  const newConfig = {
+                    name: selectedOption,
                     linkPath: '',
-                    icon: '',
-                    appType: AppType.NATIVE,
-                  },
-                  ...prevConfig,
-                }));
+                    icon: optionsConfig.icon,
+                    appType: AppIntegrationType.FORWARDED,
+                  };
+                  const updatedConfig = [...config, newConfig];
+
+                  setConfig(updatedConfig);
+                  updateSettingsConfig(updatedConfig)
+                    .then(() =>
+                      toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),
+                    )
+                    .catch(() =>
+                      toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`),
+                    );
+                }
               }}
             >
               {t('common.add')}

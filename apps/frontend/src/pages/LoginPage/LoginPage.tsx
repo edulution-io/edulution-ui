@@ -12,15 +12,14 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useLmnUserStore from '@/store/lmnApiStore';
+import useUserDataStore from '@/store/userDataStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
+  const { setUser, setWebdavKey, setIsAuthenticated } = useUserDataStore();
+
   const { isLoading } = auth;
-  const { getToken } = useLmnUserStore((state) => ({
-    getToken: state.getToken,
-  }));
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -40,30 +39,53 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
-      const username = form.getValues('username') as string;
-      const password = form.getValues('password') as string;
-      await auth.signinResourceOwnerCredentials({
-        username,
-        password,
+      const requestUser = await auth.signinResourceOwnerCredentials({
+        username: form.getValues('username') as string,
+        password: form.getValues('password') as string,
       });
 
-      await getToken(username, password);
-      const encryptedPassword = useEncryption({
-        mode: 'encrypt',
-        data: form.getValues('password') as string,
-        key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-      });
+      if (requestUser) {
+        const encryptedPassword = useEncryption({
+          mode: 'encrypt',
+          data: form.getValues('password') as string,
+          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+        });
 
-      sessionStorage.setItem('webdav', encryptedPassword);
-      sessionStorage.setItem('user', form.getValues('username') as string);
-      sessionStorage.setItem('isAuthenticated', 'true');
+        setUser(form.getValues('username') as string);
+        setWebdavKey(encryptedPassword);
+        setIsAuthenticated(true);
 
-      createWebdavClient();
-      // --------------------------------------------------
+        createWebdavClient();
+      }
+
+      return null;
     } catch (e) {
-      console.log(e);
+      return null;
     }
   };
+
+  const renderFormField = (fieldName: string, label: string, type?: string) => (
+    <FormFieldSH
+      control={form.control}
+      name={fieldName}
+      defaultValue=""
+      render={({ field }) => (
+        <FormItem>
+          <p className="font-bold">{label}</p>
+          <FormControl>
+            <Input
+              {...field}
+              type={type}
+              disabled={isLoading}
+              placeholder={label}
+              variant="login"
+            />
+          </FormControl>
+          <FormMessage className="text-p" />
+        </FormItem>
+      )}
+    />
+  );
 
   return (
     <Card variant="modal">
@@ -77,44 +99,8 @@ const LoginPage: React.FC = () => {
           onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
           className="space-y-4"
         >
-          <FormFieldSH
-            control={form.control}
-            name="username"
-            defaultValue=""
-            render={({ field }) => (
-              <FormItem>
-                <p className="font-bold">{t('common.username')}</p>
-                <FormControl>
-                  <Input
-                    {...field}
-                    disabled={isLoading}
-                    placeholder={t('common.username')}
-                    variant="login"
-                  />
-                </FormControl>
-                <FormMessage className="text-p" />
-              </FormItem>
-            )}
-          />
-          <FormFieldSH
-            control={form.control}
-            name="password"
-            defaultValue=""
-            render={({ field }) => (
-              <FormItem>
-                <p className="font-bold">{t('common.password')}</p>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    disabled={isLoading}
-                    variant="login"
-                  />
-                </FormControl>
-                <FormMessage className="text-p" />
-              </FormItem>
-            )}
-          />
+          {renderFormField('username', t('common.username'))}
+          {renderFormField('password', t('common.password'), 'password')}
           <div className="flex justify-between">
             {/* TODO: Add valid Password reset page -> NIEDUUI-53 */}
             {/* <div className="my-4 block font-bold text-gray-500">

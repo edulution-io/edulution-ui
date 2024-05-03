@@ -14,8 +14,10 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppType, ConfigType } from '@/datatypes/types';
-import { useLocalStorage } from 'usehooks-ts';
+import { APPS, AppIntegrationType, AppConfigType } from '@/datatypes/types';
+import useAppDataStore from '@/store/appDataStore';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
+import useUserDataStore from '@/store/userDataStore';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -38,7 +40,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, config: ConfigType) =>
+const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -69,20 +71,20 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
               path="settings"
               element={<SettingsPage />}
             >
-              {Object.keys(config).map((key) => (
+              {config.map((item) => (
                 <Route
-                  key={key}
-                  path={key}
+                  key={item.name}
+                  path={item.name}
                   element={<SettingsPage />}
                 />
               ))}
             </Route>
-            {Object.keys(config).map((key) =>
-              config[key].appType === AppType.NATIVE ? (
+            {config.map((item) =>
+              item.appType === AppIntegrationType.NATIVE ? (
                 <Route
-                  key={key}
-                  path={key}
-                  element={pageSwitch(key)}
+                  key={item.name}
+                  path={item.name}
+                  element={pageSwitch(item.name)}
                 />
               ) : null,
             )}
@@ -98,11 +100,11 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
                 />
               }
             />
-            {Object.keys(config).map((key) =>
-              config[key].appType === AppType.FORWARDED ? (
+            {config.map((item) =>
+              item.appType === AppIntegrationType.FORWARDED ? (
                 <Route
-                  key={key}
-                  path={key}
+                  key={item.name}
+                  path={item.name}
                   element={<ForwardingPage />}
                 />
               ) : null,
@@ -110,11 +112,11 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
           </Route>
 
           <Route element={<IframeLayout />}>
-            {Object.keys(config).map((key) =>
-              config[key].appType === AppType.EMBEDDED ? (
+            {config.map((item) =>
+              item.appType === AppIntegrationType.EMBEDDED ? (
                 <Route
-                  key={key}
-                  path={key}
+                  key={item.name}
+                  path={item.name}
                   element={null}
                 />
               ) : null,
@@ -127,7 +129,26 @@ const router = (isAuthenticated: boolean, config: ConfigType) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+  const { config, setConfig } = useAppDataStore();
+  const { getSettingsConfig } = useAppConfigQuery();
+  const { isAuthenticated } = useUserDataStore();
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          const configData = await getSettingsConfig();
+          if (configData) {
+            setConfig(configData);
+          }
+        } catch (e) {
+          console.error('Error fetching data:', e);
+        }
+      };
+
+      fetchData().catch(() => null);
+    }
+  }, [auth.isAuthenticated]);
 
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 
@@ -136,7 +157,7 @@ const AppRouter = () => {
       auth.events.addAccessTokenExpiring(() => {
         if (auth.user?.expired) {
           console.log('Session expired');
-          auth.removeUser().catch(console.error);
+          auth.removeUser().catch((e) => console.error('Error fetching data:', e));
           sessionStorage.clear();
         }
       });
