@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
-import Input from '@/components/shared/Input';
+import  Input  from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
