@@ -13,7 +13,21 @@
   "ticketsystem": { "title": "TICKETSYSTEM", "sidebar": "Ticketsystem" },
   "mail": { "title": "MAIL", "sidebar": "Mail" },
   "chat": { "title": "CHAT", "sidebar": "Chat" },
-  "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen" },
+  "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen",
+    "create": "Neue Konferenz erstellen",
+    "creator": "Ersteller",
+    "delete": "Löschen",
+    "deleteConferences": "{{count}} Konferenzen löschen",
+    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "name": "Name der Konferenz",
+    "password": "Passwort",
+    "attendees": "Teilnehmer",
+    "privacyStatus": "Zutritt",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "cancel": "Abbrechen",
+    "error": "Fehler" },
   "knowledgebase": { "title": "WISSENSDATENBANK", "sidebar": "Wissensdatenbank" },
   "filesharing": { "title": "FILESHARING", "sidebar": "Filesharing" },
   "forums": { "title": "FOREN", "sidebar": "Foren" },
@@ -67,7 +81,8 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "overview": "Übersicht"
   },
   "form": {
     "path": "Link",
@@ -188,5 +203,21 @@
     "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
+  },
+  "accountData": {
+    "account_info": "Konto Informationen",
+    "name": "Name",
+    "email": "E-Mail",
+    "school": "Schule",
+    "role": "Rolle",
+    "classes": "Klassen",
+    "change_password": "Passwort ändern",
+    "my_information": "Meine Informationen",
+    "mail_alias": "Mail Alias",
+    "change_my_data": "Daten ändern",
+    "school_classes": "Schulklassen"
+  },
+  "groupsPage": {
+    "classes": "Klassen"
   }
 }

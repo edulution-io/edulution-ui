@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import Input from '@/components/shared/Input';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
+import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
 import { AppIntegrationType } from '@/datatypes/types';
@@ -99,7 +99,7 @@ const SettingsPage: React.FC = () => {
               >
                 {settingLocation === item.id ? (
                   <>
-                    <FormField
+                    <FormFieldSH
                       control={control}
                       name={`${item.id}.path`}
                       defaultValue=""
@@ -118,37 +118,37 @@ const SettingsPage: React.FC = () => {
                       )}
                     />
                     <div className="pt-10">
-                      <FormField
+                      <FormFieldSH
                         control={control}
                         name={`${item.id}.appType`}
                         render={({ field }) => (
                           <FormItem className="space-y-3">
                             <h4>{t('form.apptype')}</h4>
                             <FormControl>
-                              <RadioGroup
+                              <RadioGroupSH
                                 onValueChange={field.onChange}
                                 defaultValue={findEntryByName(config, settingLocation)?.appType}
                                 className="flex flex-col space-y-1"
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.NATIVE} />
+                                    <RadioGroupItemSH value={AppIntegrationType.NATIVE} />
                                   </FormControl>
                                   <p>{t('form.native')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.FORWARDED} />
+                                    <RadioGroupItemSH value={AppIntegrationType.FORWARDED} />
                                   </FormControl>
                                   <p>{t('form.forwarded')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.EMBEDDED} />
+                                    <RadioGroupItemSH value={AppIntegrationType.EMBEDDED} />
                                   </FormControl>
                                   <p>{t('form.embedded')}</p>
                                 </FormItem>
-                              </RadioGroup>
+                              </RadioGroupSH>
                             </FormControl>
                             <FormMessage />
                           </FormItem>

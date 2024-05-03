@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useEncryption } from '@/hooks/mutations';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
-    <FormField
+    <FormFieldSH
       control={form.control}
       name={fieldName}
       defaultValue=""
@@ -112,7 +112,7 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="my-4 block font-bold text-gray-500">
               <Link
-                to="/" 
+                to="/"
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
               >
                 <p>{t('login.forgot_password')}</p>
