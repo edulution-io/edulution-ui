@@ -14,7 +14,7 @@ export interface Conference {
   dialNumber: string;
   attendeePW: string;
   moderatorPW: string;
-  metadata: any;
+  metadata: Record<string, string>;
   // The parameters below are all number strings: "0" or "123141"
   duration: string;
   startTime: string;

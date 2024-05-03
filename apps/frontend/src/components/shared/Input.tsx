@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Input as SHInput} from '@/components/ui/Input';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {EyeDarkIcon, EyeDarkSlashIcon} from '@/assets/icons';
+import React, { useState } from 'react';
+import { Input as SHInput } from '@/components/ui/Input';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { EyeDarkIcon, EyeDarkSlashIcon } from '@/assets/icons';
 
 import cn from '@/lib/utils';
 
@@ -18,14 +18,14 @@ const originInputVariants = cva(['rounded'], {
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & VariantProps<typeof originInputVariants>;
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({className, type, variant, ...props}, ref) => {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, variant, ...props }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="relative">
       <SHInput
         type={showPassword ? 'text' : type}
-        className={cn(originInputVariants({variant, className}))}
+        className={cn(originInputVariants({ variant, className }))}
         ref={ref}
         {...props}
       />

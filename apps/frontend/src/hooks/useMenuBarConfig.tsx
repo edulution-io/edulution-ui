@@ -1,15 +1,15 @@
-import {useTranslation} from 'react-i18next';
-import {useLocation} from 'react-router-dom';
-import {APPS, MenuBarEntryProps, MenuItem} from '@/datatypes/types';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
-import {getFromPathName} from '@/utils/common';
+import { getFromPathName } from '@/utils/common';
 
 const useMenuBarConfig = () => {
-  const {pathname} = useLocation();
-  const {t} = useTranslation();
+  const { pathname } = useLocation();
+  const { t } = useTranslation();
 
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
@@ -31,7 +31,7 @@ const useMenuBarConfig = () => {
         return ROOMBOOKING_MENUBAR_CONFIG;
       }
       default: {
-        return {menuItems: [], title: '', icon: '', color: ''};
+        return { menuItems: [], title: '', icon: '', color: '' };
       }
     }
   };

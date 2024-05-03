@@ -1,8 +1,8 @@
 /* eslint-disable react/require-default-props */
-import React, {FC} from 'react';
-import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from '@/components/ui/Sheet';
-import {Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger} from '@/components/ui/Dialog';
-import {useMediaQuery} from 'usehooks-ts';
+import React, { FC } from 'react';
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
+import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
-import {useTranslation} from 'react-i18next';
-import {useOnClickOutside} from 'usehooks-ts';
+import { useTranslation } from 'react-i18next';
+import { useOnClickOutside } from 'usehooks-ts';
 
 import styles from './dropdownmenu.module.scss';
 
@@ -16,8 +16,8 @@ interface DropdownProps {
   handleChange: (value: string) => void;
 }
 
-const DropdownMenu: React.FC<DropdownProps> = ({options, selectedVal, handleChange}) => {
-  const {t} = useTranslation();
+const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange }) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -66,14 +66,14 @@ const DropdownMenu: React.FC<DropdownProps> = ({options, selectedVal, handleChan
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
           />
         </div>
-        <div className={clsx(styles.arrow, {[styles.open]: isOpen})}/>
+        <div className={clsx(styles.arrow, { [styles.open]: isOpen })} />
       </div>
-      <div className={clsx(styles.options, {[styles.open]: isOpen})}>
+      <div className={clsx(styles.options, { [styles.open]: isOpen })}>
         {filter(options).map((option) => (
           <div
             key={option.id}
             onClickCapture={() => selectOption(option)}
-            className={clsx(styles.option, {[styles.selected]: t(option.name) === selectedVal})}
+            className={clsx(styles.option, { [styles.selected]: t(option.name) === selectedVal })}
           >
             {t(option.name)}
           </div>
