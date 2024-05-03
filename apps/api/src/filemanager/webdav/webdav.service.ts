@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { Delete, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import WebdavClientFactory from './webdav.client.factory';
 import mapToDirectoryFiles from './utilits';
 
@@ -70,7 +70,41 @@ class WebdavService {
     }
   }
 
-  @Delete('delete/*')
+  async createFile(path: string, fileName: string, content: string = '') {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'PUT',
+        url: `${this.baseurl}${path}/${fileName}`,
+        headers: { 'Content-Type': 'text/plain' },
+        data: content,
+      });
+      return response.status === 201 || response.status === 200
+        ? { success: true }
+        : { success: false, status: response.status };
+    } catch (error) {
+      console.error('Failed to create file:', error);
+      throw error;
+    }
+  }
+
+  async uploadFile(path: string, file: File, name: string) {
+    try {
+      console.log('file:', file);
+      const response: AxiosResponse = await this.client({
+        method: 'PUT',
+        url: `${this.baseurl}${path}/${name}`,
+        headers: { 'Content-Type': file.type },
+        data: file,
+      });
+      return response.status === 201 || response.status === 200
+        ? { success: true }
+        : { success: false, status: response.status };
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+      throw error;
+    }
+  }
+
   async deleteFile(path: string) {
     try {
       const response: AxiosResponse = await this.client({
@@ -80,6 +114,38 @@ class WebdavService {
       return response.status === 204 ? { success: true } : { success: false, status: response.status };
     } catch (error) {
       console.error('Failed to delete file:', error);
+      throw error;
+    }
+  }
+
+  async renameFile(path: string, newName: string) {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'MOVE',
+        url: `${this.baseurl}${path}`,
+        headers: { Destination: `${this.baseurl}${newName}` },
+      });
+      return response.status === 201 || response.status === 204
+        ? { success: true }
+        : { success: false, status: response.status };
+    } catch (error) {
+      console.error('Failed to rename file:', error);
+      throw error;
+    }
+  }
+
+  async moveItems(originPath: string, newPath: string | undefined) {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'MOVE',
+        url: `${this.baseurl}${originPath}`,
+        headers: { Destination: `${this.baseurl}${newPath}` },
+      });
+      return response.status === 201 || response.status === 204
+        ? { success: true }
+        : { success: false, status: response.status };
+    } catch (error) {
+      console.error('Failed to move items:', error);
       throw error;
     }
   }
