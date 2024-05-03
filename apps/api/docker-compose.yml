@@ -1,0 +1,24 @@
+services:
+  app:
+    container_name: edulution-api
+    image: ghcr.io/edulution/edulution-api
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    environment:
+      HOST: localhost
+      PORT: 3000
+
+      KEYCLOAK_AUTH_CLIENT_SECRET: <FROM KEYCLOAK DB>
+      EDUI_CORS_URL: <URL>
+      MONGODB_USERNAME: <USERNAME>
+      MONGODB_PASSWORD: <PASSWORD>
+
+    restart: always
+    networks:
+      - db_default
+
+networks:
+  db_default:
+    external: true
