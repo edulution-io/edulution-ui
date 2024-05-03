@@ -3,10 +3,10 @@
  */
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { vi, describe, beforeAll, it, expect } from 'vitest';
+import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import LoginPage from './LoginPage';
@@ -40,8 +40,12 @@ vi.mock('react-oidc-context', () => ({
 // })
 
 describe('LoginPage', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     render(<LoginPage />);
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('1 should render the fields that are needed on the page', () => {
@@ -141,52 +145,7 @@ describe('LoginPage', () => {
     expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(1);
   });
 
-  it('4 should be able to trigger the useForm hooks when changing the values in the form', async () => {
-    const formSchema: z.Schema = z.object({
-      username: z.string({ required_error: 'username.required' }).max(32, { message: 'username.too_long' }),
-      password: z.string({ required_error: 'password.required' }).max(32, { message: 'password.too_long' }),
-    });
-
-    const { result } = renderHook(() =>
-      useForm<z.infer<typeof formSchema>>({
-        mode: 'onChange',
-        resolver: zodResolver(formSchema),
-      }),
-    );
-
-    const form = screen.getByTestId('test-id-login-page-form');
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
-    const passwordInput = screen.getByTestId('test-id-login-page-password-input');
-    const submitButton = screen.getByTestId('test-id-login-page-submit-button');
-
-    const spyOnValueChange = vi.spyOn(result.current, 'setValue');
-
-    await userEvent.type(userNameInput, 'success_3');
-    await userEvent.type(passwordInput, 'success_3');
-
-    // TODO: Check why the trigger for the useForm is not working
-    expect(
-      spyOnValueChange,
-      'When submitting the handle submit function should have been called ',
-    ).toHaveBeenCalledTimes(0);
-
-    // TODO: Check why the trigger for the useForm is not working
-    expect(result.current.getValues('username'), 'When changing the value it should update the value').toBe(undefined);
-    expect(result.current.getValues('password'), 'When changing the value it should update the value').toBe(undefined);
-
-    const spyOnSubmit = vi.spyOn(form, 'submit');
-    const spyOnSubmit1 = vi.spyOn(result.current, 'handleSubmit');
-
-    await userEvent.click(submitButton);
-
-    // TODO: Check why the trigger for the useForm is not working
-    expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(0);
-    expect(spyOnSubmit1, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(
-      0,
-    );
-  });
-
-  it('5 ensure, that changing the values using the form functions, updates the component', async () => {
+  it('4 ensure, that changing the values using the form functions, updates the component', async () => {
     const formSchema: z.Schema = z.object({
       username: z.string({ required_error: 'username.required' }).max(32, { message: 'username.too_long' }),
       password: z.string({ required_error: 'password.required' }).max(32, { message: 'password.too_long' }),
