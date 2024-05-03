@@ -11,6 +11,8 @@ class WebdavService {
 
   private baseurl = 'https://server.schulung.multi.schule/webdav/';
 
+  private baseWebDavAPI = 'https://server.schulung.multi.schule/api/webdav/';
+
   constructor(private webdavClientFactory: WebdavClientFactory) {
     this.client = this.webdavClientFactory.createWebdavClient(this.baseurl, 'netzint-teacher', 'Muster!');
     this.webdavXML =
@@ -146,6 +148,32 @@ class WebdavService {
         : { success: false, status: response.status };
     } catch (error) {
       console.error('Failed to move items:', error);
+      throw error;
+    }
+  }
+
+  async getFileDownloadLink(path: string) {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'GET',
+        url: `${this.baseurl}${path}`,
+      });
+      return response.data as File;
+    } catch (error) {
+      console.error('Failed to download file:', error);
+      throw error;
+    }
+  }
+
+  async getQrCode() {
+    try {
+      const response: AxiosResponse = await this.client({
+        method: 'GET',
+        url: `${this.baseWebDavAPI}qrcode`,
+      });
+      return response.data as File;
+    } catch (error) {
+      console.error('Failed to download file:', error);
       throw error;
     }
   }

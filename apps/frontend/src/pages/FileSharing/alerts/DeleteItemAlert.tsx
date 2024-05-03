@@ -23,24 +23,24 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
+
   const deleteItems = async () => {
     try {
-      const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
-      const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));
-      const deleteResults = await Promise.all(deletePromises);
+      const itemsToDelete = selectedItems.length > 0 ? selectedItems : [file].flat();
+      const deleteResults = await Promise.all(
+        itemsToDelete.map(async (item) => WebDavFunctions.deleteItem(item.filename)),
+      );
       const allSuccessful = deleteResults.every((result) => result.success);
       const combinedMessage = deleteResults
-        .map((result, index) => `Item ${index + 1}: ${'message' in result ? result.message : 'No message provided'}`)
+        .map((result, index) => `Item ${index + 1}: ${result.success || 'No message provided'}`)
         .join('; ');
-
       setFileOperationSuccessful(allSuccessful, combinedMessage);
-
       if (allSuccessful) {
         setRowSelection({});
         setSelectedItems([]);
       }
       setIsOpen(false);
-    } catch (error: unknown) {
+    } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
       setFileOperationSuccessful(false, errorMessage);
     }

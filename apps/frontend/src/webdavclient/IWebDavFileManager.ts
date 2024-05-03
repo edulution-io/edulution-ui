@@ -2,13 +2,19 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 
 export interface IWebDavFileManager {
   getContentList(path: string): Promise<DirectoryFile[]>;
-  createDirectory(path: string): Promise<
+  createDirectory(
+    path: string,
+    folderName: string,
+  ): Promise<
     | { success: boolean; message: string; status: number }
     | {
         success: boolean;
       }
   >;
-  createFile(path: string): Promise<
+  createFile(
+    path: string,
+    fileName: string,
+  ): Promise<
     | { success: boolean; message: string; status: number }
     | {
         success: boolean;

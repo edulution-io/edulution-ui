@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
 import { useMediaQuery } from 'usehooks-ts';
+import { useSearchParams } from 'react-router-dom';
 
 interface CreateNewContentDialogProps {
   trigger: ReactNode;
@@ -19,6 +20,8 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [searchParams] = useSearchParams();
+  const path = searchParams.get('path');
   const {
     fileName,
     setFileName,
@@ -30,8 +33,13 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     handleWebDavAction,
   } = useFileManagerStore();
 
-  const createFile = async (path: string): Promise<void> => {
-    await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
+  useEffect(() => {
+    fetchFiles(path || '/').catch(console.error);
+  }, [path]);
+
+  const createFile = async (filename: string): Promise<void> => {
+    if (!path) return;
+    await handleWebDavAction(() => WebDavFunctions.createFile(path, filename))
       .then(async (resp) => {
         if ('message' in resp) {
           setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
@@ -46,15 +54,16 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
       });
   };
 
-  const createDirectory = async (path: string): Promise<void> => {
-    await handleWebDavAction(() => WebDavFunctions.createDirectory(`${currentPath}/${path}`))
+  const createDirectory = async (folderName: string): Promise<void> => {
+    if (!path) return;
+    await handleWebDavAction(() => WebDavFunctions.createDirectory(path, folderName))
       .then(async (resp) => {
         if ('message' in resp) {
           setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
         } else {
           setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
         }
-        await fetchFiles(currentPath);
+        await fetchFiles(path);
       })
       .catch((error: unknown) => {
         const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');

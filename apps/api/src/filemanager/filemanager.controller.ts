@@ -73,10 +73,10 @@ class FilemanagerController {
     }
   }
 
-  @Delete('delete')
-  async deleteResource(@Body() body: { path: string }) {
+  @Delete('delete/*')
+  async deleteResource(@Param('0') path: string) {
     try {
-      const result = await this.filemanagerService.deleteFolder(body.path);
+      const result = await this.filemanagerService.deleteFolder(path);
       if (!result.success) {
         throw new HttpException(
           `Failed to delete the resource. Server responded with status: ${result.status}`,
@@ -116,6 +116,24 @@ class FilemanagerController {
         );
       }
       return result;
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('download')
+  async downloadResource(@Body() body: { path: string }) {
+    try {
+      return await this.filemanagerService.downloadFile(body.path);
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('qrcode')
+  async getQrCode() {
+    try {
+      return await this.filemanagerService.getQrCode();
     } catch (error) {
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }

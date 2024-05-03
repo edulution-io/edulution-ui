@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { decryptPassword, translateKey } from '@/utils/common';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
+import { addDirectory, addFile, deleteFile } from '@/webdavclient/WebDavAPI';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
@@ -69,10 +70,9 @@ const getContentList: IWebDavFileManager['getContentList'] = async (path: string
   return result as DirectoryFile[];
 };
 
-const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string) => {
-  const client = createWebdavClient();
+const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string, folderName: string) => {
   try {
-    await client.createDirectory(path);
+    await addDirectory(path.replace('/webdav', ''), folderName);
     const response = new Response('OK', {
       status: 200,
       statusText: translateKey('response.directory_created_successfully', { directoryName: getFileNameFromPath(path) }),
@@ -83,13 +83,12 @@ const createDirectory: IWebDavFileManager['createDirectory'] = async (path: stri
   }
 };
 
-const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
-  const client = createWebdavClient();
+const createFile: IWebDavFileManager['createFile'] = async (path: string, fileName: string) => {
   try {
-    await client.putFileContents(path, ' ');
+    await addFile(path.replace('/webdav', ''), fileName);
     const response = new Response('OK', {
       status: 200,
-      statusText: translateKey('response.file_created_successfully', { fileName: getFileNameFromPath(path) }),
+      statusText: translateKey('response.directory_created_successfully', { directoryName: getFileNameFromPath(path) }),
     });
     return handleApiResponse(response);
   } catch (error) {
@@ -98,9 +97,8 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string) => {
 };
 
 const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
-  const client = createWebdavClient();
   try {
-    await client.deleteFile(path);
+    await deleteFile(path.replace('/webdav', ''));
     const response = new Response('OK', {
       status: 200,
       statusText: translateKey('response.file_was_deleted_successfully', { fileName: getFileNameFromPath(path) }),

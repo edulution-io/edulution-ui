@@ -21,6 +21,10 @@ class FilemanagerService {
   renameFile = async (path: string, newName: string) => this.webdavClientService.renameFile(path, newName);
 
   moveFile = async (originPath: string, newPath: string) => this.webdavClientService.moveItems(originPath, newPath);
+
+  downloadFile = async (path: string) => this.webdavClientService.getFileDownloadLink(path);
+
+  getQrCode = async () => this.webdavClientService.getQrCode();
 }
 
 export default FilemanagerService;
