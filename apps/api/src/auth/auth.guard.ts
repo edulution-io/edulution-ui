@@ -7,14 +7,14 @@ import LoggerEnum from '../types/logger';
 class AuthenticationGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
-  private static extractTokenFromHeader(request: Request): string | undefined {
+  private static extractTokenFromHeader(request: Request): string {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    return type === 'Bearer' ? token : '';
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const token = AuthenticationGuard.extractTokenFromHeader(request) as string;
+    const token = AuthenticationGuard.extractTokenFromHeader(request);
 
     try {
       await this.jwtService.verifyAsync(token, {

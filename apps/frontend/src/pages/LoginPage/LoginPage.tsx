@@ -12,12 +12,12 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useUserDataStore from '@/store/userDataStore';
+import useUserStore from '@/store/userStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated } = useUserDataStore();
+  const { setUser, setWebdavKey, setIsAuthenticated } = useUserStore();
 
   const { isLoading } = auth;
 

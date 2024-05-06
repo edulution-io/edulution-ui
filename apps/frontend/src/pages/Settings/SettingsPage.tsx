@@ -18,8 +18,8 @@ import { AppIntegrationType } from '@/datatypes/types';
 import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
-import useAppDataStore from '@/store/appDataStore';
-import { findEntryByName } from '@/utils/common';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import { findAppConfigByName } from '@/utils/common';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
 
 const SettingsPage: React.FC = () => {
@@ -28,8 +28,8 @@ const SettingsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { updateSettingsConfig, deleteSettingsConfigEntry } = useAppConfigQuery();
-  const { config, setConfig } = useAppDataStore();
+  const { updateAppConfig, deleteAppConfigEntry } = useAppConfigQuery();
+  const { appConfig, setAppConfig } = useAppConfigsStore();
   const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
@@ -54,10 +54,10 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (areSettingsVisible) {
-      setValue(`${settingLocation}.path`, findEntryByName(config, settingLocation)?.linkPath);
-      setValue(`${settingLocation}.appType`, findEntryByName(config, settingLocation)?.appType);
+      setValue(`${settingLocation}.path`, findAppConfigByName(appConfig, settingLocation)?.linkPath);
+      setValue(`${settingLocation}.appType`, findAppConfigByName(appConfig, settingLocation)?.appType);
     }
-  }, [areSettingsVisible, settingLocation, config]);
+  }, [areSettingsVisible, settingLocation, appConfig]);
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
@@ -71,16 +71,16 @@ const SettingsPage: React.FC = () => {
           appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
         };
 
-        const updatedConfig = config.map((entry) => {
+        const updatedConfig = appConfig.map((entry) => {
           if (entry.name === settingLocation) {
             return newConfig;
           }
           return entry;
         });
 
-        setConfig(updatedConfig);
+        setAppConfig(updatedConfig);
 
-        updateSettingsConfig(updatedConfig)
+        updateAppConfig(updatedConfig)
           .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`))
           .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
       }
@@ -127,7 +127,7 @@ const SettingsPage: React.FC = () => {
                             <FormControl>
                               <RadioGroupSH
                                 onValueChange={field.onChange}
-                                defaultValue={findEntryByName(config, settingLocation)?.appType}
+                                defaultValue={findAppConfigByName(appConfig, settingLocation)?.appType}
                                 className="flex flex-col space-y-1"
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
@@ -177,18 +177,18 @@ const SettingsPage: React.FC = () => {
   };
 
   const filteredAppOptions = () => {
-    const existingOptions = config.map((item) => item.name);
+    const existingOptions = appConfig.map((item) => item.name);
     const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
   };
 
   const handleDeleteSettingsItem = () => {
-    const deleteOptionName = config.filter((item) => item.name === settingLocation)[0].name;
-    deleteSettingsConfigEntry(deleteOptionName)
+    const deleteOptionName = appConfig.filter((item) => item.name === settingLocation)[0].name;
+    deleteAppConfigEntry(deleteOptionName)
       .then(() => {
-        const filteredArray = config.filter((item) => item.name !== settingLocation);
-        setConfig(filteredArray);
+        const filteredArray = appConfig.filter((item) => item.name !== settingLocation);
+        setAppConfig(filteredArray);
         toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {
           description: new Date().toLocaleString(),
         });

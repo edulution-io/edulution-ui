@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
-import useAppDataStore from '@/store/appDataStore';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
@@ -22,8 +22,8 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
-  const { config, setConfig } = useAppDataStore();
-  const { updateSettingsConfig } = useAppConfigQuery();
+  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { updateAppConfig } = useAppConfigQuery();
 
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
@@ -71,10 +71,10 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                     icon: optionsConfig.icon,
                     appType: AppIntegrationType.FORWARDED,
                   };
-                  const updatedConfig = [...config, newConfig];
+                  const updatedConfig = [...appConfig, newConfig];
 
-                  setConfig(updatedConfig);
-                  updateSettingsConfig(updatedConfig)
+                  setAppConfig(updatedConfig);
+                  updateAppConfig(updatedConfig)
                     .then(() =>
                       toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),
                     )
