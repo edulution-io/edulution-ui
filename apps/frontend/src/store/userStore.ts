@@ -1,7 +1,7 @@
 import { create, StateCreator } from 'zustand';
 import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
 
-type UserDataStore = {
+type UserStore = {
   user: string;
   webdavKey: string;
   isAuthenticated: boolean;
@@ -10,13 +10,13 @@ type UserDataStore = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
 };
 
-type PersistedUserDataStore = (
-  userData: StateCreator<UserDataStore>,
-  options: PersistOptions<UserDataStore>,
-) => StateCreator<UserDataStore>;
+type PersistedUserStore = (
+  userData: StateCreator<UserStore>,
+  options: PersistOptions<UserStore>,
+) => StateCreator<UserStore>;
 
-const useUserDataStore = create<UserDataStore>(
-  (persist as PersistedUserDataStore)(
+const useUserStore = create<UserStore>(
+  (persist as PersistedUserStore)(
     (set) => ({
       user: '',
       setUser: (user: string) => {
@@ -38,4 +38,4 @@ const useUserDataStore = create<UserDataStore>(
   ),
 );
 
-export default useUserDataStore;
+export default useUserStore;

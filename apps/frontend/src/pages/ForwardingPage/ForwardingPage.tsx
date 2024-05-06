@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
-import { getFromPathName, findEntryByName } from '@/utils/common';
-import useAppDataStore from '@/store/appDataStore';
+import { getFromPathName, findAppConfigByName } from '@/utils/common';
+import useAppConfigsStore from '@/store/appConfigsStore';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ const ForwardingPage: React.FC = () => {
   const [isForwarding, setIsForwaring] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
 
-  const { config } = useAppDataStore();
+  const { appConfig } = useAppConfigsStore();
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -22,7 +22,7 @@ const ForwardingPage: React.FC = () => {
       setIsForwaring(false);
       setShowIsForwarding(true);
       const navigateToExternalPage = () => {
-        const externalLink = findEntryByName(config, rootPathName)?.linkPath as string;
+        const externalLink = findAppConfigByName(appConfig, rootPathName)?.linkPath as string;
         if (externalLink) {
           window.open(externalLink, '_blank');
         }
@@ -30,7 +30,7 @@ const ForwardingPage: React.FC = () => {
       navigateToExternalPage();
     }
     setIsForwaring(false);
-  }, [isForwarding, rootPathName, config]);
+  }, [isForwarding, rootPathName, appConfig]);
 
   return (
     <div className="grid h-[80%] items-center justify-center">
@@ -51,7 +51,7 @@ const ForwardingPage: React.FC = () => {
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
-            src={findEntryByName(config, rootPathName)?.icon}
+            src={findAppConfigByName(appConfig, rootPathName)?.icon}
             alt="icon"
           />
         </Button>

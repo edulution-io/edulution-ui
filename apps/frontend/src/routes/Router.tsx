@@ -14,10 +14,10 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppIntegrationType, AppConfigType } from '@/datatypes/types';
-import useAppDataStore from '@/store/appDataStore';
+import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
-import useUserDataStore from '@/store/userDataStore';
+import useUserStore from '@/store/userStore';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -40,7 +40,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
+const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -71,7 +71,7 @@ const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
               path="settings"
               element={<SettingsPage />}
             >
-              {config.map((item) => (
+              {appConfig.map((item) => (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -79,7 +79,7 @@ const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
                 />
               ))}
             </Route>
-            {config.map((item) =>
+            {appConfig.map((item) =>
               item.appType === AppIntegrationType.NATIVE ? (
                 <Route
                   key={item.name}
@@ -100,7 +100,7 @@ const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
                 />
               }
             />
-            {config.map((item) =>
+            {appConfig.map((item) =>
               item.appType === AppIntegrationType.FORWARDED ? (
                 <Route
                   key={item.name}
@@ -112,7 +112,7 @@ const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
           </Route>
 
           <Route element={<IframeLayout />}>
-            {config.map((item) =>
+            {appConfig.map((item) =>
               item.appType === AppIntegrationType.EMBEDDED ? (
                 <Route
                   key={item.name}
@@ -129,17 +129,17 @@ const router = (isAuthenticated: boolean, config: AppConfigType[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { config, setConfig } = useAppDataStore();
-  const { getSettingsConfig } = useAppConfigQuery();
-  const { isAuthenticated } = useUserDataStore();
+  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { getAppConfigs } = useAppConfigQuery();
+  const { isAuthenticated } = useUserStore();
 
   useEffect(() => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          const configData = await getSettingsConfig();
+          const configData = await getAppConfigs();
           if (configData) {
-            setConfig(configData);
+            setAppConfig(configData);
           }
         } catch (e) {
           console.error('Error fetching data:', e);
@@ -162,6 +162,6 @@ const AppRouter = () => {
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(isAuthenticated, config)} />;
+  return <RouterProvider router={router(isAuthenticated, appConfig)} />;
 };
 export default AppRouter;

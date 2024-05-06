@@ -12,9 +12,9 @@ import { useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'useh
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
-import { findEntryByName } from '@/utils/common';
-import useAppDataStore from '@/store/appDataStore';
-import useUserDataStore from '@/store/userDataStore';
+import { findAppConfigByName } from '@/utils/common';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import useUserStore from '@/store/userStore';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -30,11 +30,11 @@ const Sidebar = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
   const auth = useAuth();
-  const { config } = useAppDataStore();
-  const { setIsAuthenticated } = useUserDataStore();
+  const { appConfig } = useAppConfigsStore();
+  const { setIsAuthenticated } = useUserStore();
 
   const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findEntryByName(config, option.id)).map((item) => ({
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
