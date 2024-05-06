@@ -11,7 +11,7 @@ import AppConfigModule from '../appconfig/appconfig.module';
       global: true,
     }),
     MongooseModule.forRoot('mongodb://localhost:27017', {
-      dbName: 'settingsConfig',
+      dbName: 'edulution',
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
   ],
