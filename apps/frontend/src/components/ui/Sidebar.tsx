@@ -15,6 +15,8 @@ import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
+import cleanStoreData from '@/store/utilis/cleanStoreData';
+import StoreTypes from '@/store/utilis/storeTypes';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -243,6 +245,7 @@ const Sidebar = () => {
         onClick={() => {
           auth.removeUser().catch(console.error);
           setIsAuthenticated(false);
+          cleanStoreData(StoreTypes.LMN_USER_STORE);
           sessionStorage.clear();
         }}
         to="/"

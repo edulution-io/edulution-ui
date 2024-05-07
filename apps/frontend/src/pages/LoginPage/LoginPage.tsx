@@ -13,6 +13,7 @@ import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
+import useLmnUserStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -20,6 +21,9 @@ const LoginPage: React.FC = () => {
   const { setUser, setWebdavKey, setIsAuthenticated } = useUserStore();
 
   const { isLoading } = auth;
+  const { getToken } = useLmnUserStore((state) => ({
+    getToken: state.getToken,
+  }));
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -39,12 +43,15 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
+      const username = form.getValues('username') as string;
+      const password = form.getValues('password') as string;
       const requestUser = await auth.signinResourceOwnerCredentials({
-        username: form.getValues('username') as string,
-        password: form.getValues('password') as string,
+        username,
+        password,
       });
 
       if (requestUser) {
+        await getToken(username, password);
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
           data: form.getValues('password') as string,
@@ -79,6 +86,7 @@ const LoginPage: React.FC = () => {
               disabled={isLoading}
               placeholder={label}
               variant="login"
+              data-testid={`test-id-login-page-${fieldName}-input`}
             />
           </FormControl>
           <FormMessage className="text-p" />
@@ -94,10 +102,14 @@ const LoginPage: React.FC = () => {
         alt="edulution"
         className="mx-auto w-[250px]"
       />
-      <Form {...form}>
+      <Form
+        {...form}
+        data-testid="test-id-login-page-form"
+      >
         <form
           onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
           className="space-y-4"
+          data-testid="test-id-login-page-form"
         >
           {renderFormField('username', t('common.username'))}
           {renderFormField('password', t('common.password'), 'password')}
@@ -112,7 +124,7 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="my-4 block font-bold text-gray-500">
               <Link
-                to="/" 
+                to="/"
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
               >
                 <p>{t('login.forgot_password')}</p>
@@ -124,6 +136,7 @@ const LoginPage: React.FC = () => {
             type="submit"
             variant="btn-security"
             size="lg"
+            data-testid="test-id-login-page-submit-button"
           >
             {isLoading ? t('common.loading') : t('common.login')}
           </Button>
