@@ -1,13 +1,13 @@
 /**
  * @jest-environment jsdom
  */
-import React from 'react';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { render, screen, cleanup } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { cleanup, render, screen } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import LoginPage from './LoginPage';
 
@@ -32,7 +32,7 @@ describe('LoginPage', () => {
   });
 
   it('1 should render the fields that are needed on the page', () => {
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
@@ -42,7 +42,7 @@ describe('LoginPage', () => {
   });
 
   it('2 should be able to change the values for the input of the input components', async () => {
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
@@ -143,7 +143,7 @@ describe('LoginPage', () => {
 
     const spyOnSubmit = vi.spyOn(result.current, 'handleSubmit');
 
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 

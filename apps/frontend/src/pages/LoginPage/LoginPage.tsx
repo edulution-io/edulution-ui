@@ -51,12 +51,12 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-      await getToken(username, password);
-      const encryptedPassword = useEncryption({
-        mode: 'encrypt',
-        data: form.getValues('password') as string,
-        key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-      });
+        await getToken(username, password);
+        const encryptedPassword = useEncryption({
+          mode: 'encrypt',
+          data: form.getValues('password') as string,
+          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+        });
 
         setUser(form.getValues('username') as string);
         setWebdavKey(encryptedPassword);
@@ -86,6 +86,7 @@ const LoginPage: React.FC = () => {
               disabled={isLoading}
               placeholder={label}
               variant="login"
+              data-testid={`test-id-login-page-${fieldName}-input`}
             />
           </FormControl>
           <FormMessage className="text-p" />
