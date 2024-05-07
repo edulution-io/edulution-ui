@@ -20,6 +20,8 @@ const App = () => {
     client_id: import.meta.env.VITE_AUTH_CLIENT_ID as string,
     client_secret: import.meta.env.VITE_AUTH_CLIENT_SECRET as string,
     redirect_uri: '',
+    loadUserInfo: true,
+    automaticSilentRenew: true,
   };
 
   return (

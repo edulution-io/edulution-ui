@@ -38,6 +38,7 @@
   },
   "ignorePatterns": [
     "vite.config.ts",
+    "vitest.workspace.ts",
     "tailwind.config.ts",
     "jest.preset.cjs",
     "jest.config.ts",
