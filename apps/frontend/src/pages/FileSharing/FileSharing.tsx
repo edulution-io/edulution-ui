@@ -73,7 +73,10 @@ const FileSharingPage = () => {
             </div>
           </TooltipProvider>
         </div>
-        <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+        <div
+          className="w-full md:w-auto md:max-w-7xl xl:max-w-full"
+          data-testid="test-id-file-sharing-page-data-table"
+        >
           <DataTable
             columns={Columns}
             data={files}
@@ -198,6 +201,7 @@ const FileSharingPage = () => {
                       type="button"
                       variant="btn-hexagon"
                       className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                      data-testid="test-id-file-sharing-page-download-button"
                     >
                       <IconContext.Provider value={iconContextValue}>
                         <MdOutlineFileDownload />

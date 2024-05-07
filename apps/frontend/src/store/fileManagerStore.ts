@@ -33,21 +33,44 @@ type FileManagerStore = {
   fetchMountPoints: () => Promise<DirectoryFile[]>;
   fetchDirectory: (path: string) => Promise<DirectoryFile[]>;
   handleWebDavAction: (action: () => Promise<WebDavActionResult>) => Promise<WebDavActionResult>;
+  reset: () => void;
 };
 
-const useFileManagerStore = create<FileManagerStore>((set, get) => ({
+const initialState: Omit<
+  FileManagerStore,
+  | 'setUploadProgress'
+  | 'resetProgress'
+  | 'setSelectedRows'
+  | 'setCurrentPath'
+  | 'setFiles'
+  | 'setFileName'
+  | 'setDirectoryName'
+  | 'setSelectedItems'
+  | 'setFileOperationSuccessful'
+  | 'fetchFiles'
+  | 'handleDownload'
+  | 'setPopUpVisibility'
+  | 'setLoading'
+  | 'fetchMountPoints'
+  | 'fetchDirectory'
+  | 'reset'
+  | 'handleWebDavAction'
+> = {
   files: [],
   isLoading: false,
-  currentPath: `/`,
   isVisible: false,
   fileName: '',
   directoryName: '',
   selectedItems: [],
   fileOperationSuccessful: undefined,
+  currentPath: `/`,
   uploadProgresses: {},
   fileOperationMessage: '',
   selectedRows: {},
+};
 
+const useFileManagerStore = create<FileManagerStore>((set, get) => ({
+  ...initialState,
   setCurrentPath: (path: string) => {
     set({ currentPath: path });
   },
@@ -149,6 +172,7 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
       return { success: false, message: 'Unknown error', status: 500 };
     }
   },
+  reset: () => set({ ...initialState }),
 }));
 
 export default useFileManagerStore;

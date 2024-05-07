@@ -56,9 +56,12 @@ jobs:
 
       - name: Build Frontend
         run: npm run build
+        
+      - name: Create selfsigned key and cert
+        run: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt -subj "/C=DE/O=Netzint GmbH/CN=localhost"
 
-      - name: Set Commit SHA in package.json
-        run: npx json -I -f package.json -e "this.config.gitCommitSHA='${{ github.sha }}'"
+      # - name: Set Commit SHA in package.json
+      #   run: npx json -I -f package.json -e "this.config.gitCommitSHA='${{ github.sha }}'"
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3.1.0

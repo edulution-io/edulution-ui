@@ -28,27 +28,82 @@
     "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
     "cancel": "Abbrechen",
     "error": "Fehler" },
-  "knowledgebase": { "title": "WISSENSDATENBANK", "sidebar": "Wissensdatenbank" },
-  "filesharing": { "title": "FILESHARING", "sidebar": "Filesharing" },
-  "forums": { "title": "FOREN", "sidebar": "Foren" },
-  "roombooking": { "title": "RAUMBUCHUNG", "sidebar": "Raumbuchung", "rooms": "Räume" },
-  "learningmanagement": { "title": "LERNMANAGEMENT", "sidebar": "Lernmanagement" },
-  "schoolinformation": { "title": "SCHULINFORMATION", "sidebar": "Schulinformation" },
-  "schoolmanagement": { "title": "SCHULVERWALTUNG", "sidebar": "Schulverwaltung" },
-  "printer": { "title": "DRUCKER", "sidebar": "Drucker" },
-  "network": { "title": "NETZWERK", "sidebar": "Netzwerk" },
-  "locationservices": { "title": "STANDORTVERBINDUNG", "sidebar": "Standortverbindung" },
-  "desktopdeployment": { "title": "DESKTOP-BEREITSTELLUNG", "sidebar": "Desktop-Bereitstellung" },
-  "wlan": { "title": "WLAN", "sidebar": "Wlan" },
-  "mobiledevices": { "title": "MOBILE ENDGERÄTE", "sidebar": "Mobile Endgeräte" },
-  "virtualization": { "title": "VIRTUALISATION", "sidebar": "Virtualisation" },
-  "firewall": { "title": "FIREWALL", "sidebar": "Firewall" },
-  "antimalware": { "title": "ANTI-MALWARE", "sidebar": "Anti-Malware" },
-  "backup": { "title": "BACKUP", "sidebar": "Backup" },
+  "knowledgebase": {
+    "title": "WISSENSDATENBANK",
+    "sidebar": "Wissensdatenbank"
+  },
+  "filesharing": {
+    "title": "FILESHARING",
+    "sidebar": "Filesharing"
+  },
+  "forums": {
+    "title": "FOREN",
+    "sidebar": "Foren"
+  },
+  "roombooking": {
+    "title": "RAUMBUCHUNG",
+    "sidebar": "Raumbuchung",
+    "rooms": "Räume"
+  },
+  "learningmanagement": {
+    "title": "LERNMANAGEMENT",
+    "sidebar": "Lernmanagement"
+  },
+  "schoolinformation": {
+    "title": "SCHULINFORMATION",
+    "sidebar": "Schulinformation"
+  },
+  "schoolmanagement": {
+    "title": "SCHULVERWALTUNG",
+    "sidebar": "Schulverwaltung"
+  },
+  "printer": {
+    "title": "DRUCKER",
+    "sidebar": "Drucker"
+  },
+  "network": {
+    "title": "NETZWERK",
+    "sidebar": "Netzwerk"
+  },
+  "locationservices": {
+    "title": "STANDORTVERBINDUNG",
+    "sidebar": "Standortverbindung"
+  },
+  "desktopdeployment": {
+    "title": "DESKTOP-BEREITSTELLUNG",
+    "sidebar": "Desktop-Bereitstellung"
+  },
+  "wlan": {
+    "title": "WLAN",
+    "sidebar": "Wlan"
+  },
+  "mobiledevices": {
+    "title": "MOBILE ENDGERÄTE",
+    "sidebar": "Mobile Endgeräte"
+  },
+  "virtualization": {
+    "title": "VIRTUALISATION",
+    "sidebar": "Virtualisation"
+  },
+  "firewall": {
+    "title": "FIREWALL",
+    "sidebar": "Firewall"
+  },
+  "antimalware": {
+    "title": "ANTI-MALWARE",
+    "sidebar": "Anti-Malware"
+  },
+  "backup": {
+    "title": "BACKUP",
+    "sidebar": "Backup"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
-    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
+    "addApp": {
+      "title": "App hinzufügen",
+      "description": "Bitte wählen Sie eine App aus:"
+    },
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
@@ -60,7 +115,6 @@
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig."
   },
-
   "menu": "MENÜ",
   "home": "Home",
   "projects": "Projekte",
@@ -68,9 +122,10 @@
   "program": "Programme",
   "share": "Share",
   "students": "Schüler",
-
-  "login": { "forgot_password": "Passwort vergessen?", "remember_me": "Merken" },
-
+  "login": {
+    "forgot_password": "Passwort vergessen?",
+    "remember_me": "Merken"
+  },
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
@@ -93,7 +148,6 @@
     "embedded": "Eingebettet",
     "saved": "Konfiguration gespeichert!"
   },
-
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
@@ -118,7 +172,6 @@
   "loadingIndicator": {
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
   },
-
   "fileCategory": {
     "folder": "Ordner",
     "document": "Dokument",
@@ -175,7 +228,6 @@
   "dialog": {
     "close": "Schließen"
   },
-
   "tooltip": {
     "upload": "Hochladen",
     "create": {
@@ -187,7 +239,6 @@
     "delete": "Löschen",
     "download": "Herunterladen"
   },
-
   "response": {
     "successfully": "Aktion war erfolgreich",
     "error": "Fehler",

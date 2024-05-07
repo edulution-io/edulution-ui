@@ -150,6 +150,8 @@ const AppRouter = () => {
     }
   }, [auth.isAuthenticated]);
 
+  const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+
   useEffect(() => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
