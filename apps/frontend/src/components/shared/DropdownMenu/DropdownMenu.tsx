@@ -5,7 +5,7 @@ import { useOnClickOutside } from 'usehooks-ts';
 
 import styles from './dropdownmenu.module.scss';
 
-type DropdownOptions = {
+export type DropdownOptions = {
   id: string;
   name: string;
 };

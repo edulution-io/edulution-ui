@@ -1,0 +1,1 @@
+/home/tom/Dokumente/netzint/edulution-ui/apps/api/src/conferences/dto/update-conference.dto.ts

@@ -6,7 +6,7 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 
 import cn from '@/lib/utils';
 
-const RadioGroup = React.forwardRef<
+const RadioGroupSH = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
 >(({ className, ...props }, ref) => (
@@ -16,9 +16,9 @@ const RadioGroup = React.forwardRef<
     ref={ref}
   />
 ));
-RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
+RadioGroupSH.displayName = RadioGroupPrimitive.Root.displayName;
 
-const RadioGroupItem = React.forwardRef<
+const RadioGroupItemSH = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
 >(({ className, ...props }, ref) => (
@@ -35,6 +35,6 @@ const RadioGroupItem = React.forwardRef<
     </RadioGroupPrimitive.Indicator>
   </RadioGroupPrimitive.Item>
 ));
-RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
+RadioGroupItemSH.displayName = RadioGroupPrimitive.Item.displayName;
 
-export { RadioGroup, RadioGroupItem };
+export { RadioGroupSH, RadioGroupItemSH };
