@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
-import {Test, TestingModule} from '@nestjs/testing';
-import {getModelToken} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getModelToken } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import ConferencesService from './conferences.service';
-import {Conference, ConferenceDocument} from './conference.schema';
+import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
 import UpdateConferenceDto from './dto/update-conference.dto';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testmeeting',
+  attendees: [],
 };
 
 const conferencesModelMock = {

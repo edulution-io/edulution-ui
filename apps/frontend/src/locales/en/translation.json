@@ -22,8 +22,8 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
-  "conferences": { 
-    "title": "CONFERENCES", 
+  "conferences": {
+    "title": "CONFERENCES",
     "sidebar": "Conferences",
     "create": "Create new conference",
     "creator": "Creator",
@@ -38,7 +38,10 @@
     "private": "Private",
     "selected-x-rows": "{{selected}} of {{total}} selected",
     "cancel": "Cancel",
-    "error": "Error" 
+    "min_3_chars": "Minimum 3 characters",
+    "max_30_chars": "Maximum 30 characters",
+    "password_required": "No Password entered",
+    "error": "Error"
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
@@ -182,9 +185,18 @@
     },
     "description": "Here you can make all settings.",
     "appconfig": {
-      "update": { "success": "Appliste saved successfully", "failed": "Update failed" },
-      "delete": { "success": "App removed", "failed": "App deletion failed" },
-      "create": { "success": "App created", "failed": "App creation failed" }
+      "update": {
+        "success": "Appliste saved successfully",
+        "failed": "Update failed"
+      },
+      "delete": {
+        "success": "App removed",
+        "failed": "App deletion failed"
+      },
+      "create": {
+        "success": "App created",
+        "failed": "App creation failed"
+      }
     }
   },
   "forwardingpage": {

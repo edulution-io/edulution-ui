@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import { Button } from '@/components/shared/Button';
@@ -8,6 +9,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import useConferenceQuery from '@/api/useConferenceQuery';
+import FormData from '@/pages/ConferencePage/CreateConference/form';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
@@ -18,30 +21,40 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     isCreateConferenceDialogOpen,
     openCreateConferenceDialog,
     closeCreateConferenceDialog,
-    createConference,
     isLoading,
+    setIsLoading,
     error,
-    reset,
+    setError,
   } = useCreateConferenceDialogStore();
+  const { createConference } = useConferenceQuery();
   const { t } = useTranslation();
 
-  const formSchema: z.Schema = z.object({
-    name: z
-      .string()
-      .min(0, { message: t('conferences.too_short') })
-      .max(32, { message: t('name.too_long') }),
-    password: z
-      .string()
-      .min(0, { message: t('conferences.too_short') })
-      .max(32, { message: t('conferences.too_long') }),
-    isPublic: z.boolean(),
-  });
-
-  const initialFormValues = {
+  const initialFormValues: FormData = {
     name: '',
     password: '',
-    isPublic: true,
+    isPublic: 'true',
   };
+
+  const formSchema = z.object({
+    name: z
+      .string()
+      .min(3, { message: t('conferences.min_3_chars') })
+      .max(30, { message: t('conferences.max_30_chars') }),
+    isPublic: z.string(),
+    password: z
+      .string()
+      .optional()
+      .refine(
+        (val) => {
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define, @typescript-eslint/no-unnecessary-type-assertion
+          const isPublic = form.watch('isPublic') as string;
+          return !(isPublic === 'false' && !val);
+        },
+        {
+          message: t('conferences.password_required'),
+        },
+      ),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
@@ -50,48 +63,54 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   });
 
   const onSubmit = async () => {
-    await createConference('meetingID', form.getValues<string>('name') as string, '1234');
+    try {
+      setIsLoading(true);
+      await createConference({
+        name: form.getValues('name'),
+        password: form.getValues('password'),
+        attendees: [],
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        setError(e);
+      } else {
+        throw e;
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-    if (error)
-      return (
-        <div className="text-black">
-          {t('conferences.error')}: {error.message}
-        </div>
-      );
-    return <CreateConferenceDialogBody form={form} />;
+    return (
+      <>
+        <CreateConferenceDialogBody form={form} />
+        {error ? (
+          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+            {t('conferences.error')}: {error.message}
+          </div>
+        ) : null}
+      </>
+    );
   };
 
-  const getFooter = () =>
-    !error ? (
-      <div className="mt-4 flex justify-end">
+  const getFooter = () => (
+    <div className="mt-4 flex justify-end">
+      <form onSubmit={handleFormSubmit}>
         <Button
           variant="btn-collaboration"
           disabled={isLoading}
           size="lg"
-          onClick={handleFormSubmit}
+          type="submit"
         >
           {t('common.add')}
         </Button>
-      </div>
-    ) : (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          onClick={() => {
-            reset();
-            form.reset();
-          }}
-        >
-          {t('conferences.cancel')}
-        </Button>
-      </div>
-    );
+      </form>
+    </div>
+  );
 
   return (
     <AdaptiveDialog

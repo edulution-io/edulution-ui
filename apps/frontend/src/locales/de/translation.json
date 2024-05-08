@@ -22,7 +22,7 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
-  "conferences": { 
+  "conferences": {
     "title": "KONFERENZEN",
     "sidebar": "Konferenzen",
     "create": "Neue Konferenz erstellen",
@@ -38,6 +38,9 @@
     "private": "Privat",
     "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
     "cancel": "Abbrechen",
+    "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
+    "password_required": "Kein Passwort eingegeben",
     "error": "Fehler"
   },
   "knowledgebase": {
@@ -182,9 +185,18 @@
     },
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
-      "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
-      "delete": { "success": "App wurde gelöscht", "failed": "Löschen fehlgeschlagen" },
-      "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
+      "update": {
+        "success": "Appliste erfolgreich gespeichert",
+        "failed": "Aktualisierung fehlgeschlagen"
+      },
+      "delete": {
+        "success": "App wurde gelöscht",
+        "failed": "Löschen fehlgeschlagen"
+      },
+      "create": {
+        "success": "App wurde angelegt",
+        "failed": "App anlegen fehlgeschlagen"
+      }
     }
   },
   "forwardingpage": {

@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { Conference, ConferencesAPIsResponse } from '@/pages/ConferencePage/model';
 import { RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
+import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
@@ -26,8 +26,8 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   getConferences: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get<ConferencesAPIsResponse>('http://localhost:3000/api/getConferences');
-      set({ conferences: response.data.meetings, isLoading: false });
+      const response = await axios.get<Conference[]>('http://localhost:3000/api/getConferences');
+      set({ conferences: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
     }
