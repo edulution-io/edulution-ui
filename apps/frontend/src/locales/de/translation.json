@@ -162,11 +162,13 @@
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
-    "addApp": {
-      "title": "App hinzufügen",
-      "description": "Bitte wählen Sie eine App aus:"
-    },
-    "description": "Hier können Sie alle Einstellungen vornehmen."
+    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
+    "description": "Hier können Sie alle Einstellungen vornehmen.",
+    "appconfig": {
+      "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
+      "delete": { "success": "App wurde gelöscht", "failed": "Löschen fehlgeschlagen" },
+      "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
+    }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",

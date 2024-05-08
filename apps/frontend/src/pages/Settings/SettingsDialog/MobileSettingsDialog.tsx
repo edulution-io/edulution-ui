@@ -3,8 +3,12 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger } from
 import { Button } from '@/components/shared/Button';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
+import { toast } from 'sonner';
+import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
+import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   isOpen,
@@ -12,9 +16,11 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   setOption,
   filteredAppOptions,
   setSearchParams,
-  setConfig,
 }) => {
   const { t } = useTranslation();
+  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { updateAppConfig } = useAppConfigQuery();
+
   return (
     <Sheet
       modal
@@ -42,10 +48,27 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
             size="lg"
             onClick={() => {
               setSearchParams(new URLSearchParams(''));
-              setConfig((prevConfig) => ({
-                [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
-                ...prevConfig,
-              }));
+              const selectedOption = option.toLowerCase().split('.')[0];
+              const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
+
+              if (optionsConfig) {
+                const newConfig = {
+                  name: selectedOption,
+                  linkPath: '',
+                  icon: optionsConfig.icon,
+                  appType: AppIntegrationType.FORWARDED,
+                };
+                const updatedConfig = [...appConfig, newConfig];
+
+                setAppConfig(updatedConfig);
+                updateAppConfig(updatedConfig)
+                  .then(() =>
+                    toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),
+                  )
+                  .catch(() =>
+                    toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`),
+                  );
+              }
             }}
           >
             {t('common.add')}

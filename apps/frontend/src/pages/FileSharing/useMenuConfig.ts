@@ -42,9 +42,16 @@ const useFileSharingMenuConfig = () => {
     return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
   }
 
+  type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
+
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {
       try {
+        const userStorageString: string | null = sessionStorage.getItem('user-storage');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
+        const { user } = userStorage.state;
+
         const mounts: DirectoryFile[] = await fetchMountPoints();
         const items = mounts.map((mountPoint) => ({
           id: mountPoint.basename,
@@ -52,7 +59,7 @@ const useFileSharingMenuConfig = () => {
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: async () => {
             try {
-              await fetchFiles(constructFilePath(mountPoint, sessionStorage.getItem('user') as string));
+              await fetchFiles(constructFilePath(mountPoint, user));
             } catch (error) {
               console.error('Error fetching files:', error);
             }

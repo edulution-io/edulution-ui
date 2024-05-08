@@ -1,3 +1,4 @@
+import { AppConfig } from '@/datatypes/types';
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';
 
@@ -9,3 +10,6 @@ export const decryptPassword = ({ data, key }: { data: string; key: string }) =>
   const bytes: CryptoJS.lib.WordArray = CryptoJS.AES.decrypt(data, key);
   return bytes.toString(CryptoJS.enc.Utf8);
 };
+
+export const findAppConfigByName = (appConfig: AppConfig[], entryName: string) =>
+  appConfig.find(({ name }) => name === entryName);
