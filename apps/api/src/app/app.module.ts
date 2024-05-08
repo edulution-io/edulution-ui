@@ -13,7 +13,7 @@ import MailModule from '../mail/mail.module';
     }),
     MailModule,
     MongooseModule.forRoot('mongodb://localhost:27017', {
-      dbName: 'settingsConfig',
+      dbName: 'edulution',
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
   ],

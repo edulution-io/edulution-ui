@@ -2,45 +2,45 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { AppConfigType } from './appconfig.types';
+import { AppConfig } from './appconfig.types';
 import LoggerEnum from '../types/logger';
 
 @Injectable()
 class AppConfigService {
-  constructor(@InjectModel('AppConfig') private readonly appConfigModel: Model<AppConfigType>) {}
+  constructor(@InjectModel('AppConfig') private readonly appConfigModel: Model<AppConfig>) {}
 
-  async insertConfig(appConfigDto: AppConfigType[]) {
+  async insertConfig(appConfigDto: AppConfig[]) {
     try {
       await this.appConfigModel.insertMany(appConfigDto);
-      Logger.log(`Wrote config to mongoDB`, LoggerEnum.EDULUTIONAPI);
+      Logger.log(`Wrote appConfig to mongoDB`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
       Logger.error(e, LoggerEnum.MONGODB);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
     }
   }
 
-  async updateConfig(appConfigDto: AppConfigType[]) {
+  async updateConfig(appConfigDto: AppConfig[]) {
     try {
-      const bulkOperations = appConfigDto.map((config) => ({
+      const bulkOperations = appConfigDto.map((appConfig) => ({
         updateOne: {
-          filter: { name: config.name },
-          update: { $set: { linkPath: config.linkPath, icon: config.icon, appType: config.appType } },
+          filter: { name: appConfig.name },
+          update: { $set: { linkPath: appConfig.linkPath, icon: appConfig.icon, appType: appConfig.appType } },
           upsert: true,
         },
       }));
       await this.appConfigModel.bulkWrite(bulkOperations);
 
-      Logger.log(`Updated settings config at mongoDB`, LoggerEnum.EDULUTIONAPI);
+      Logger.log(`Updated settings appConfig at mongoDB`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
       Logger.error(e, LoggerEnum.MONGODB);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
     }
   }
 
-  async getConfig(): Promise<AppConfigType[]> {
+  async getAppConfigs(): Promise<AppConfig[]> {
     try {
       const appConfig = await this.appConfigModel.find();
-      Logger.log('Get settings config from mongoDB', LoggerEnum.EDULUTIONAPI);
+      Logger.log('Get settings appConfig from mongoDB', LoggerEnum.EDULUTIONAPI);
       return appConfig;
     } catch (e) {
       Logger.error(e, LoggerEnum.MONGODB);

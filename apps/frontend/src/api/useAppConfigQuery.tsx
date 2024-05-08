@@ -1,4 +1,4 @@
-import { AppConfigType } from '@/datatypes/types';
+import { AppConfig } from '@/datatypes/types';
 import axios from 'axios';
 import useEduApi from './useEduApiQuery';
 
@@ -7,25 +7,25 @@ const useAppConfigQuery = () => {
   const { eduApiUrl, eduApiHeaders } = useEduApi();
   const appConfigUrl = eduApiUrl + EDU_API_CONFIG_ENDPOINT;
 
-  const postSettingsConfig = async (config: AppConfigType[]) => {
-    await axios.post(appConfigUrl, config, eduApiHeaders);
+  const postAppConfigs = async (appConfig: AppConfig[]) => {
+    await axios.post(appConfigUrl, appConfig, eduApiHeaders);
   };
 
-  const getSettingsConfig = async (): Promise<AppConfigType[] | null> => {
+  const getAppConfigs = async (): Promise<AppConfig[] | null> => {
     const response = await axios.get(appConfigUrl, eduApiHeaders);
 
-    return response.data as AppConfigType[];
+    return response.data as AppConfig[];
   };
 
-  const updateSettingsConfig = async (config: AppConfigType[]) => {
-    await axios.put(appConfigUrl, config, eduApiHeaders);
+  const updateAppConfig = async (appConfig: AppConfig[]) => {
+    await axios.put(appConfigUrl, appConfig, eduApiHeaders);
   };
 
-  const deleteSettingsConfigEntry = async (name: string) => {
+  const deleteAppConfigEntry = async (name: string) => {
     await axios.delete(`${appConfigUrl}/${name}`, eduApiHeaders);
   };
 
-  return { postSettingsConfig, getSettingsConfig, updateSettingsConfig, deleteSettingsConfigEntry };
+  return { postAppConfigs, getAppConfigs, updateAppConfig, deleteAppConfigEntry };
 };
 
 export default useAppConfigQuery;
