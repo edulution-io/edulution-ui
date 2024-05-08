@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useEncryption } from '@/hooks/mutations';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
-    <FormField
+    <FormFieldSH
       control={form.control}
       name={fieldName}
       defaultValue=""

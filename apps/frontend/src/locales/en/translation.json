@@ -22,9 +22,23 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
-  "conferences": {
-    "title": "CONFERENCES",
-    "sidebar": "Conferences"
+  "conferences": { 
+    "title": "CONFERENCES", 
+    "sidebar": "Conferences",
+    "create": "Create new conference",
+    "creator": "Creator",
+    "delete": "Delete",
+    "deleteConferences": "Delete {count}} conferences",
+    "confirmDelete": "Should these conferences really be deleted?",
+    "name": "Name of conference",
+    "password": "Password",
+    "attendees": "Attendees",
+    "privacyStatus": "Access",
+    "public": "Public",
+    "private": "Private",
+    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "cancel": "Cancel",
+    "error": "Error" 
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
@@ -162,7 +176,10 @@
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
-    "addApp": { "title": "Add app", "description": "Please select an app:" },
+    "addApp": {
+      "title": "Add app",
+      "description": "Please select an app:"
+    },
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": { "success": "Appliste saved successfully", "failed": "Update failed" },
@@ -195,7 +212,8 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "overview": "Overview"
   },
   "form": {
     "path": "Path",
@@ -326,7 +344,6 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-
   "groupsPage": {
     "classes": "Classes"
   }
