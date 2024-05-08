@@ -154,7 +154,7 @@ const AppRouter = () => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
         if (auth.user?.expired) {
-          console.log('Session expired');
+          console.info('Session expired');
           auth.removeUser().catch((e) => console.error('Error fetching data:', e));
           sessionStorage.clear();
         }

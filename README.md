@@ -65,18 +65,13 @@ export default {
 
 # Docker
 
-## Prepare
-
-Generate self signed key and cert
-
-```bash
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt
-```
-
 ## Build
 
-Build container and push to ghcr
+### Build apps, build containers and start
 
 ```bash
-docker build -t ghcr.io/edulution-io/edulution-ui:0.0.1 . && docker push ghcr.io/edulution-io/edulution-ui:0.0.1
+npm run build:all && \
+docker build -t ghcr.io/edulution-io/edulution-ui -f apps/frontend/Dockerfile . && \
+docker build -t ghcr.io/edulution-io/edulution-api -f apps/api/Dockerfile . && \
+docker compose up -d
 ```
