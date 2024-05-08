@@ -1,13 +1,15 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "allowSyntheticDefaultImports": true
+    "declaration": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["postcss.config.mjs", "vite.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "postcss.config.mjs",
+    "vite.config.ts"
+  ]
 }

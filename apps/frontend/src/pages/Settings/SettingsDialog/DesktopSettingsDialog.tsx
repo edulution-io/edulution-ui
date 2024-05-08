@@ -5,11 +5,12 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } fr
 import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
+import { toast } from 'sonner';
+import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
-import useAppDataStore from '@/store/appDataStore';
-import useEduApi from '@/api/useEduApiQuery';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -21,8 +22,8 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
-  const { config, setConfig } = useAppDataStore();
-  const { updateSettingsConfig } = useEduApi();
+  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { updateAppConfig } = useAppConfigQuery();
 
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
@@ -68,12 +69,18 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                     name: selectedOption,
                     linkPath: '',
                     icon: optionsConfig.icon,
-                    appType: AppType.FORWARDED,
+                    appType: AppIntegrationType.FORWARDED,
                   };
-                  const updatedConfig = [...config, newConfig];
+                  const updatedConfig = [...appConfig, newConfig];
 
-                  setConfig(updatedConfig);
-                  updateSettingsConfig(updatedConfig).catch((e) => console.error('Update Config Error:', e));
+                  setAppConfig(updatedConfig);
+                  updateAppConfig(updatedConfig)
+                    .then(() =>
+                      toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),
+                    )
+                    .catch(() =>
+                      toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`),
+                    );
                 }
               }}
             >

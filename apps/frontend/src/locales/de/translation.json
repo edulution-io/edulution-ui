@@ -24,7 +24,24 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
-    "sidebar": "Konferenzen"
+    "sidebar": "Konferenzen",
+    "create": "Neue Konferenz erstellen",
+    "creator": "Ersteller",
+    "delete": "Löschen",
+    "deleteConferences": "{{count}} Konferenzen löschen",
+    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "name": "Name der Konferenz",
+    "password": "Passwort",
+    "attendees": "Teilnehmer",
+    "privacyStatus": "Zutritt",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "cancel": "Abbrechen",
+    "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
+    "password_required": "Kein Passwort eingegeben",
+    "error": "Fehler"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
@@ -102,7 +119,21 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
-    "description": "Hier können Sie alle Einstellungen vornehmen."
+    "description": "Hier können Sie alle Einstellungen vornehmen.",
+    "appconfig": {
+      "update": {
+        "success": "Appliste erfolgreich gespeichert",
+        "failed": "Aktualisierung fehlgeschlagen"
+      },
+      "delete": {
+        "success": "App wurde gelöscht",
+        "failed": "Löschen fehlgeschlagen"
+      },
+      "create": {
+        "success": "App wurde angelegt",
+        "failed": "App anlegen fehlgeschlagen"
+      }
+    }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
@@ -129,7 +160,8 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "overview": "Übersicht"
   },
   "form": {
     "path": "Link",
@@ -260,7 +292,6 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-
   "groupsPage": {
     "classes": "Klassen"
   }

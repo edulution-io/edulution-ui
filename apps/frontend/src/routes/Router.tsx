@@ -14,10 +14,11 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppType, ConfigType } from '@/datatypes/types';
-import useAppDataStore from '@/store/appDataStore';
-import useEduApi from '@/api/useEduApiQuery';
-import useUserDataStore from '@/store/userDataStore';
+import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigQuery from '@/api/useAppConfigQuery';
+import useUserStore from '@/store/userStore';
+import useUserQuery from '@/api/useUserQuery';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -40,7 +41,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, config: ConfigType[]) =>
+const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -71,7 +72,7 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
               path="settings"
               element={<SettingsPage />}
             >
-              {config.map((item) => (
+              {appConfig.map((item) => (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -79,8 +80,8 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
                 />
               ))}
             </Route>
-            {config.map((item) =>
-              item.appType === AppType.NATIVE ? (
+            {appConfig.map((item) =>
+              item.appType === AppIntegrationType.NATIVE ? (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -100,8 +101,8 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
                 />
               }
             />
-            {config.map((item) =>
-              item.appType === AppType.FORWARDED ? (
+            {appConfig.map((item) =>
+              item.appType === AppIntegrationType.FORWARDED ? (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -112,8 +113,8 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
           </Route>
 
           <Route element={<IframeLayout />}>
-            {config.map((item) =>
-              item.appType === AppType.EMBEDDED ? (
+            {appConfig.map((item) =>
+              item.appType === AppIntegrationType.EMBEDDED ? (
                 <Route
                   key={item.name}
                   path={item.name}
@@ -129,17 +130,30 @@ const router = (isAuthenticated: boolean, config: ConfigType[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { config, setConfig } = useAppDataStore();
-  const { getSettingsConfig } = useEduApi();
-  const { isAuthenticated } = useUserDataStore();
+  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { getAppConfigs } = useAppConfigQuery();
+  const { isAuthenticated } = useUserStore();
+  const { loginUser } = useUserQuery();
+  const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
+
+  useEffect(() => {
+    if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
+      const { profile } = auth.user;
+
+      // Send here the user password for Webdav to the API
+      loginUser(profile)
+        .then(() => setIsLoggedInInEduApi(true))
+        .catch((e) => console.error(e));
+    }
+  }, [auth.isAuthenticated, auth.user?.profile]);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          const configData = await getSettingsConfig();
+          const configData = await getAppConfigs();
           if (configData) {
-            setConfig(configData);
+            setAppConfig(configData);
           }
         } catch (e) {
           console.error('Error fetching data:', e);
@@ -156,12 +170,13 @@ const AppRouter = () => {
         if (auth.user?.expired) {
           console.log('Session expired');
           auth.removeUser().catch((e) => console.error('Error fetching data:', e));
+          setIsLoggedInInEduApi(false);
           sessionStorage.clear();
         }
       });
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(isAuthenticated, config)} />;
+  return <RouterProvider router={router(isAuthenticated, appConfig)} />;
 };
 export default AppRouter;

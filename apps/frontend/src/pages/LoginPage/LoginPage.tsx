@@ -7,17 +7,18 @@ import { useTranslation } from 'react-i18next';
 import { useEncryption } from '@/hooks/mutations';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import useUserDataStore from '@/store/userDataStore';
+import createWebdavClient from '@/webdavclient/WebDavFileManager';
+import useUserStore from '@/store/userStore';
 import lmnApiStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated } = useUserDataStore();
+  const { setUser, setWebdavKey, setIsAuthenticated } = useUserStore();
   const { getToken } = lmnApiStore();
 
   const { isLoading } = auth;
@@ -40,21 +41,26 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
+      const username = form.getValues('username') as string;
+      const password = form.getValues('password') as string;
       const requestUser = await auth.signinResourceOwnerCredentials({
-        username: form.getValues('username') as string,
-        password: form.getValues('password') as string,
+        username,
+        password,
       });
 
       if (requestUser) {
+        await getToken(username, password);
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
           data: form.getValues('password') as string,
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
-        await getToken(form.getValues('username') as string, form.getValues('password') as string);
+
         setUser(form.getValues('username') as string);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
+
+        createWebdavClient();
       }
 
       return null;
@@ -64,7 +70,7 @@ const LoginPage: React.FC = () => {
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
-    <FormField
+    <FormFieldSH
       control={form.control}
       name={fieldName}
       defaultValue=""
@@ -78,6 +84,7 @@ const LoginPage: React.FC = () => {
               disabled={isLoading}
               placeholder={label}
               variant="login"
+              data-testid={`test-id-login-page-${fieldName}-input`}
             />
           </FormControl>
           <FormMessage className="text-p" />
@@ -111,7 +118,7 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="my-4 block font-bold text-gray-500">
               <Link
-                to="/" 
+                to="/"
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
               >
                 <p>{t('login.forgot_password')}</p>
@@ -123,6 +130,7 @@ const LoginPage: React.FC = () => {
             type="submit"
             variant="btn-security"
             size="lg"
+            data-testid="test-id-login-page-submit-button"
           >
             {isLoading ? t('common.loading') : t('common.login')}
           </Button>

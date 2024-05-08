@@ -7,11 +7,9 @@
     "target": "ES2022",
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
-    "isolatedModules": false,
-    "esModuleInterop": true,
-    "allowJs": true,
-    "declaration": true,
-    "composite": true
+    "target": "ES2022",
+    "composite": true,
+    "declaration": true
   },
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "./webpack.config.cjs"],
   "include": ["./**/*", "src/**/*"],
