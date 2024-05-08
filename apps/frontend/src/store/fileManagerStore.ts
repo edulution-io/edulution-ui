@@ -95,7 +95,6 @@ const useFileManagerStore = create<FileManagerStore>(
 
       fetchFiles: async (path: string) => {
         try {
-          console.log(`fetchFiles${path}`);
           const directoryFiles = await fetchFilesFromPath(path);
           get().setCurrentPath(path);
           get().setFiles(directoryFiles);

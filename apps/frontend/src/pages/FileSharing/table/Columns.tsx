@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  MdDriveFileRenameOutline,
-  MdOutlineDeleteOutline,
-  MdOutlineDriveFileMove,
-  MdOutlineFileDownload,
-  MdFolder,
-} from 'react-icons/md';
+import { MdFolder } from 'react-icons/md';
 
 import useFileManagerStore from '@/store/fileManagerStore';
-import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
-import { TooltipProvider } from '@/components/ui/Tooltip';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
-import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
-import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
@@ -24,11 +12,11 @@ import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import FileOperations from '@/pages/FileSharing/table/FileOperations';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
-const operationsColumnWidth = 'w-2/5 lg:w-3/4 xl:w-3/4';
 
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
@@ -51,12 +39,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const formattedFilename = filename.split('/').pop();
       const [searchParams, setSearchParams] = useSearchParams();
       const handleFilenameClick = (filenamePath: string) => {
-        console.log('handleFilenameClick', filenamePath, row.original.basename);
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
         }
         if (row.original.type === ContentType.directory) {
-          console.log('fetchFiles', filenamePath);
           searchParams.set('path', filenamePath);
           setSearchParams(searchParams);
         }
@@ -92,7 +78,6 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         </div>
       );
     },
-
     enableHiding: false,
     sortingFn: (rowA, rowB) => {
       const valueA = rowA.original.type + rowA.original.filename;
@@ -193,79 +178,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
 
-      return (
-        selectedItems.length === 0 && (
-          <TooltipProvider>
-            <div className="flex items-center justify-end">
-              <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
-                <ActionTooltip
-                  onAction={() => {}}
-                  tooltipText={translateKey('tooltip.rename')}
-                  trigger={
-                    <span>
-                      <RenameItemDialog
-                        trigger={
-                          <span>
-                            <MdDriveFileRenameOutline />
-                          </span>
-                        }
-                        item={row.original}
-                      />
-                    </span>
-                  }
-                />
-              </div>
-              <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
-                <ActionTooltip
-                  onAction={() => {}}
-                  tooltipText={translateKey('tooltip.move')}
-                  trigger={
-                    <MoveItemDialog
-                      trigger={
-                        <div>
-                          <MdOutlineDriveFileMove />
-                        </div>
-                      }
-                      item={row.original}
-                    />
-                  }
-                />
-              </div>
-              <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
-                <ActionTooltip
-                  onAction={() => {
-                    if (row.original.type === ContentType.file) {
-                      WebDavFunctions.triggerFileDownload(row.original.filename);
-                    }
-                  }}
-                  tooltipText={translateKey('tooltip.download')}
-                  trigger={
-                    <div>
-                      <MdOutlineFileDownload />
-                    </div>
-                  }
-                />
-              </div>
-              <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
-                <ActionTooltip
-                  onAction={() => {}}
-                  tooltipText={translateKey('tooltip.delete')}
-                  trigger={
-                    <DeleteItemAlert
-                      trigger={
-                        <div>
-                          <MdOutlineDeleteOutline />
-                        </div>
-                      }
-                      file={[row.original]}
-                    />
-                  }
-                />
-              </div>
-            </div>
-          </TooltipProvider>
-        )
-      );
+      return selectedItems.length === 0 && <FileOperations file={row.original} />;
     },
   },
 ];
