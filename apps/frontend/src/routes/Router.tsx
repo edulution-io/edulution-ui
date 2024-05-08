@@ -18,13 +18,16 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import SurveyPage from '@/pages/Survey/SurveyPage';
-import PollMockup from '@/pages/Survey/Poll/PollMockup';
-import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
+
+import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserStore from '@/store/userStore';
+import useUserQuery from '@/api/useUserQuery';
 
+import SurveyPage from '@/pages/Survey/SurveyPage';
+import PollMockup from '@/pages/Survey/Poll/PollMockup';
+        
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
     case APPS.CONFERENCES:
@@ -186,6 +189,19 @@ const AppRouter = () => {
   const { appConfig, setAppConfig } = useAppConfigsStore();
   const { getAppConfigs } = useAppConfigQuery();
   const { isAuthenticated } = useUserStore();
+  const { loginUser } = useUserQuery();
+  const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
+
+  useEffect(() => {
+    if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
+      const { profile } = auth.user;
+
+      // Send here the user password for Webdav to the API
+      loginUser(profile)
+        .then(() => setIsLoggedInInEduApi(true))
+        .catch((e) => console.error(e));
+    }
+  }, [auth.isAuthenticated, auth.user?.profile]);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -210,6 +226,7 @@ const AppRouter = () => {
         if (auth.user?.expired) {
           console.log('Session expired');
           auth.removeUser().catch((e) => console.error('Error fetching data:', e));
+          setIsLoggedInInEduApi(false);
           sessionStorage.clear();
         }
       });

@@ -1,10 +1,12 @@
 import { create, StateCreator } from 'zustand';
-import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type UserStore = {
   user: string;
   webdavKey: string;
   isAuthenticated: boolean;
+  isLoggedInInEduApi: boolean;
+  setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   setUser: (user: string) => void;
   setWebdavKey: (webdavKey: string) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
@@ -29,6 +31,10 @@ const useUserStore = create<UserStore>(
       isAuthenticated: false,
       setIsAuthenticated: (isAuthenticated: boolean) => {
         set({ isAuthenticated });
+      },
+      isLoggedInInEduApi: false,
+      setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => {
+        set({ isLoggedInInEduApi });
       },
     }),
     {
