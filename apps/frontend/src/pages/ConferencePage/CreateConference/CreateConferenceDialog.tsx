@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import { Button } from '@/components/shared/Button';
@@ -9,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import useConferenceQuery from '@/api/useConferenceQuery';
 import FormData from '@/pages/ConferencePage/CreateConference/form';
+import useUserStore from '@/store/userStore';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
@@ -22,11 +21,11 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     openCreateConferenceDialog,
     closeCreateConferenceDialog,
     isLoading,
-    setIsLoading,
     error,
-    setError,
+    createConference,
   } = useCreateConferenceDialogStore();
-  const { createConference } = useConferenceQuery();
+  const { user } = useUserStore();
+
   const { t } = useTranslation();
 
   const initialFormValues: FormData = {
@@ -63,22 +62,14 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   });
 
   const onSubmit = async () => {
-    try {
-      setIsLoading(true);
-      await createConference({
-        name: form.getValues('name'),
-        password: form.getValues('password'),
-        attendees: [],
-      });
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        setError(e);
-      } else {
-        throw e;
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    const newConference = {
+      name: form.getValues('name'),
+      password: form.getValues('password'),
+      creator: user,
+      attendees: [],
+    };
+
+    await createConference(newConference);
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);

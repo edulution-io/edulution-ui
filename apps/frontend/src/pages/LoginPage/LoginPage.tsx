@@ -14,6 +14,7 @@ import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
+import eduApiInstance from '@/api/eduApiInstance';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -59,6 +60,7 @@ const LoginPage: React.FC = () => {
         });
 
         setUser(form.getValues('username') as string);
+        eduApiInstance.defaults.headers['Authorization'] = 'Bearer ' + requestUser.access_token;
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
 

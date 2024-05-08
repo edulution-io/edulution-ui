@@ -21,6 +21,7 @@ class ConferencesService {
   async create(createConferenceDto: CreateConferenceDto): Promise<Conference> {
     const newConference = {
       name: createConferenceDto.name,
+      creator: createConferenceDto.creator,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
       meetingID: uuidv4(),
       password: createConferenceDto.password,
@@ -110,6 +111,7 @@ class ConferencesService {
       return {
         name: meeting.meetingName,
         meetingID: meeting.meetingID,
+        creator: '', // TODO
         attendees,
       };
     });
