@@ -1,31 +1,38 @@
-import { AppConfig } from '@/datatypes/types';
 import axios from 'axios';
+import CreateConferenceDto from '@/pages/ConferencePage/dto/create-conference.dto';
+import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import UpdateConferenceDto from '@/pages/ConferencePage/dto/update-conference.dto';
 import useEduApi from './useEduApiQuery';
 
 const useConferenceQuery = () => {
-  const EDU_API_ENDPOINT = 'meeting';
+  const EDU_API_ENDPOINT = 'conferences';
   const { eduApiUrl, eduApiHeaders } = useEduApi();
-  const appConfigUrl = eduApiUrl + EDU_API_ENDPOINT;
+  const url = eduApiUrl + EDU_API_ENDPOINT;
 
-  const postAppConfigs = async (appConfig: AppConfig[]) => {
-    await axios.post(appConfigUrl, appConfig, eduApiHeaders);
+  const createConference = async (conference: CreateConferenceDto): Promise<Conference> => {
+    const response = await axios.post<Conference>(url, conference, eduApiHeaders);
+    return response.data;
   };
 
-  const getAppConfigs = async (): Promise<AppConfig[] | null> => {
-    const response = await axios.get(appConfigUrl, eduApiHeaders);
+  const getConferences = async (): Promise<Conference[] | null> => {
+    const response = await axios.get<Conference[]>(url, eduApiHeaders);
 
-    return response.data as AppConfig[];
+    return response.data;
   };
 
-  const updateAppConfig = async (appConfig: AppConfig[]) => {
-    await axios.put(appConfigUrl, appConfig, eduApiHeaders);
+  const getConference = async (meetingID: string) => {
+    await axios.put(`${url}/${meetingID}`, eduApiHeaders);
   };
 
-  const deleteAppConfigEntry = async (name: string) => {
-    await axios.delete(`${appConfigUrl}/${name}`, eduApiHeaders);
+  const updateConference = async (meetingID: string, conference: UpdateConferenceDto) => {
+    await axios.put(`${url}/${meetingID}`, conference, eduApiHeaders);
   };
 
-  return { postAppConfigs, getAppConfigs, updateAppConfig, deleteAppConfigEntry };
+  const removeConference = async (meetingID: string) => {
+    await axios.delete(`${url}/${meetingID}`, eduApiHeaders);
+  };
+
+  return { createConference, getConferences, getConference, updateConference, removeConference };
 };
 
 export default useConferenceQuery;

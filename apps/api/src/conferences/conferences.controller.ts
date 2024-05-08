@@ -3,7 +3,7 @@ import UpdateConferenceDto from './dto/update-conference.dto';
 import ConferencesService from './conferences.service';
 import CreateConferenceDto from './dto/create-conference.dto';
 
-@Controller('meetings')
+@Controller('conferences')
 class ConferencesController {
   constructor(private readonly conferencesService: ConferencesService) {}
 

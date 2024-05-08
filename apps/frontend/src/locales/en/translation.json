@@ -10,10 +10,21 @@
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
   },
-  "ticketsystem": { "title": "TICKET SYSTEM", "sidebar": "Ticket System" },
-  "mail": { "title": "MAIL", "sidebar": "Mail" },
-  "chat": { "title": "CHAT", "sidebar": "Chat" },
-  "conferences": { "title": "CONFERENCES", "sidebar": "Conferences",
+  "ticketsystem": {
+    "title": "TICKET SYSTEM",
+    "sidebar": "Ticket System"
+  },
+  "mail": {
+    "title": "MAIL",
+    "sidebar": "Mail"
+  },
+  "chat": {
+    "title": "CHAT",
+    "sidebar": "Chat"
+  },
+  "conferences": {
+    "title": "CONFERENCES",
+    "sidebar": "Conferences",
     "create": "Create new conference",
     "creator": "Creator",
     "delete": "Delete",
@@ -27,7 +38,11 @@
     "private": "Private",
     "selected-x-rows": "{{selected}} of {{total}} selected",
     "cancel": "Cancel",
-    "error": "Error" },
+    "min_3_chars": "Minimum 3 characters",
+    "max_30_chars": "Maximum 30 characters",
+    "password_required": "No Password entered",
+    "error": "Error"
+  },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"
@@ -106,9 +121,18 @@
     },
     "description": "Here you can make all settings.",
     "appconfig": {
-      "update": { "success": "Appliste saved successfully", "failed": "Update failed" },
-      "delete": { "success": "App removed", "failed": "App deletion failed" },
-      "create": { "success": "App created", "failed": "App creation failed" }
+      "update": {
+        "success": "Appliste saved successfully",
+        "failed": "Update failed"
+      },
+      "delete": {
+        "success": "App removed",
+        "failed": "App deletion failed"
+      },
+      "create": {
+        "success": "App created",
+        "failed": "App creation failed"
+      }
     }
   },
   "forwardingpage": {

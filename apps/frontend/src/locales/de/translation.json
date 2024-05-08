@@ -10,10 +10,21 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
-  "ticketsystem": { "title": "TICKETSYSTEM", "sidebar": "Ticketsystem" },
-  "mail": { "title": "MAIL", "sidebar": "Mail" },
-  "chat": { "title": "CHAT", "sidebar": "Chat" },
-  "conferences": { "title": "KONFERENZEN", "sidebar": "Konferenzen",
+  "ticketsystem": {
+    "title": "TICKETSYSTEM",
+    "sidebar": "Ticketsystem"
+  },
+  "mail": {
+    "title": "MAIL",
+    "sidebar": "Mail"
+  },
+  "chat": {
+    "title": "CHAT",
+    "sidebar": "Chat"
+  },
+  "conferences": {
+    "title": "KONFERENZEN",
+    "sidebar": "Konferenzen",
     "create": "Neue Konferenz erstellen",
     "creator": "Ersteller",
     "delete": "Löschen",
@@ -27,7 +38,11 @@
     "private": "Privat",
     "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
     "cancel": "Abbrechen",
-    "error": "Fehler" },
+    "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
+    "password_required": "Kein Passwort eingegeben",
+    "error": "Fehler"
+  },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
     "sidebar": "Wissensdatenbank"
@@ -106,9 +121,18 @@
     },
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
-      "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
-      "delete": { "success": "App wurde gelöscht", "failed": "Löschen fehlgeschlagen" },
-      "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
+      "update": {
+        "success": "Appliste erfolgreich gespeichert",
+        "failed": "Aktualisierung fehlgeschlagen"
+      },
+      "delete": {
+        "success": "App wurde gelöscht",
+        "failed": "Löschen fehlgeschlagen"
+      },
+      "create": {
+        "success": "App wurde angelegt",
+        "failed": "App anlegen fehlgeschlagen"
+      }
     }
   },
   "forwardingpage": {
