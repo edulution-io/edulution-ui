@@ -32,9 +32,9 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       );
       const allSuccessful = deleteResults.every((result) => result.success);
       const combinedMessage = deleteResults
-        .map((result, index) => `Item ${index + 1}: ${result.success || 'No message provided'}`)
+        .map((result, index) => `Item ${itemsToDelete[index].basename}: ${result.success || 'No message provided'}`)
         .join('; ');
-      setFileOperationSuccessful(allSuccessful, combinedMessage);
+      setFileOperationSuccessful(allSuccessful, combinedMessage).catch(console.error);
       if (allSuccessful) {
         setRowSelection({});
         setSelectedItems([]);
@@ -42,7 +42,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       setIsOpen(false);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
-      setFileOperationSuccessful(false, errorMessage);
+      setFileOperationSuccessful(false, errorMessage).catch(console.error);
     }
   };
 

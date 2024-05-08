@@ -1,4 +1,3 @@
-// webdav.client.factory.ts
 import axios from 'axios';
 
 class WebdavClientFactory {

@@ -36,26 +36,30 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { fetchMountPoints, fetchFiles } = useFileManagerStore();
+  const { fetchMountPoints, fetchFiles, mountPoints, setMountPoints } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path');
 
   useEffect(() => {
     fetchFiles(path || '/').catch(console.error);
-  }, [path]);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {
       try {
-        const mounts: DirectoryFile[] = await fetchMountPoints();
-        const items = mounts.map((mountPoint) => ({
+        if (mountPoints.length === 0) {
+          console.log('fetching mount points');
+          const mounts: DirectoryFile[] = await fetchMountPoints();
+          setMountPoints(mounts);
+        }
+        const items = mountPoints.map((mountPoint) => ({
           id: mountPoint.basename,
           label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
           icon: findCorrespondingMountPointIcon(mountPoint),
           action: () => {
             try {
-              searchParams.set('path', mountPoint.filename);
+              searchParams.set('path', mountPoint.filename.replace('/webdav', ''));
               setSearchParams(searchParams);
             } catch (error) {
               console.error('Error fetching files:', error);

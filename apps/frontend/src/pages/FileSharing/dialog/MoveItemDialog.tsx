@@ -94,7 +94,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     >
       <TableCell>
         <div className="flex w-full items-center justify-between">
-          <div>{getFileNameFromPath(row.filename)}</div>
+          <div>{row.basename}</div>
           <Button onClick={() => handleNextFolder(row)}>
             <ArrowRightIcon />
           </Button>

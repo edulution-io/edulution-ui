@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
-import Checkbox from '@/components/ui/Checkbox';
-import { ButtonSH } from '@/components/ui/ButtonSH';
 import {
   MdDriveFileRenameOutline,
   MdOutlineDeleteOutline,
@@ -15,7 +12,6 @@ import useFileManagerStore from '@/store/fileManagerStore';
 import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
@@ -23,15 +19,15 @@ import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FilePreviewDialog from '@/pages/FileSharing/dialog/FilePreviewDialog';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
-import { Icon } from '@radix-ui/react-select';
 import { getFileCategorie, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
+import SortableHeader from '@/components/ui/Table/SortableHeader';
+import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
-const selectFileNameWidth = 'w-3/5 lg:w-1/4 xl:w-1/4';
 const operationsColumnWidth = 'w-2/5 lg:w-3/4 xl:w-3/4';
 
 const Columns: ColumnDef<DirectoryFile>[] = [
@@ -40,19 +36,11 @@ const Columns: ColumnDef<DirectoryFile>[] = [
 
     header: function Header({ table, column }) {
       return (
-        <div className={`flex items-center ${selectFileNameWidth}`}>
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-            onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
-            aria-label="Select all"
-          />
-          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className="flex items-center">
-              {translateKey('fileSharingTable.filename')}
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </div>
-          </ButtonSH>
-        </div>
+        <SortableHeader<DirectoryFile, unknown>
+          titleTranslationId="fileSharingTable.filename"
+          table={table}
+          column={column}
+        />
       );
     },
     accessorFn: (row) => row.type + row.filename,
@@ -74,60 +62,33 @@ const Columns: ColumnDef<DirectoryFile>[] = [
         }
       };
 
-      const truncate = (str: string | undefined, num: number) => {
-        if (!str) return str;
-        if (str.length <= num) return str;
-        return `${str.slice(0, num)}...`;
-      };
-
-      const handleCheckboxChange = () => {
-        row.toggleSelected(!row.getIsSelected());
-      };
-
       const renderFileIcon = (item: DirectoryFile) => {
         if (row.original.type === ContentType.file) {
-          return <FileIconComponent filename={item.filename} />;
+          return (
+            <FileIconComponent
+              filename={item.filename}
+              size={22}
+            />
+          );
         }
-        return <MdFolder />;
+        return <MdFolder size={22} />;
       };
 
       return (
-        <div className={`${selectFileNameWidth} flex items-center justify-between space-x-2 sm:justify-start `}>
-          <div className="flex items-center">
-            <Checkbox
-              checked={row.getIsSelected()}
-              onCheckedChange={handleCheckboxChange}
-              aria-label="Select row"
+        <div className="w-full">
+          <SelectableTextCell<DirectoryFile>
+            icon={renderFileIcon(row.original)}
+            row={row}
+            text={formattedFilename ?? ''}
+            onClick={() => handleFilenameClick(row.original.filename)}
+          />
+          {isPreviewOpen && (
+            <FilePreviewDialog
+              file={row.original}
+              isOpen={isPreviewOpen}
+              onClose={() => setPreviewOpen(false)}
             />
-            <Icon
-              className="mb-3 ml-2 mr-2 mt-3"
-              style={{ fontSize: '32px', width: '32px', height: '32px' }}
-            >
-              {renderFileIcon(row.original)}
-            </Icon>
-
-            <span
-              className="cursor-pointer truncate text-left font-medium"
-              onClick={() => handleFilenameClick(row.original.filename)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === 'Space') {
-                  handleFilenameClick(row.original.filename);
-                }
-              }}
-              role="button"
-              tabIndex={0}
-              style={{ userSelect: 'none' }}
-            >
-              <span className="text-md truncate font-medium">{truncate(formattedFilename, 10)}</span>
-            </span>
-            {isPreviewOpen && (
-              <FilePreviewDialog
-                file={row.original}
-                isOpen={isPreviewOpen}
-                onClose={() => setPreviewOpen(false)}
-              />
-            )}
-          </div>
+          )}
         </div>
       );
     },
@@ -143,11 +104,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'lastmod',
     header: function Header({ column }) {
       return (
-        <div className={`${lastModColumnWidth} hidden lg:flex `}>
-          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className=""> {translateKey('fileSharingTable.lastModified')}</div>
-          </ButtonSH>
-        </div>
+        <SortableHeader<DirectoryFile, unknown>
+          titleTranslationId="fileSharingTable.lastModified"
+          column={column}
+        />
       );
     },
     cell: ({ row }) => {
@@ -182,11 +142,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'size',
     header: function Header({ column }) {
       return (
-        <div className={`${sizeColumnWidth} hidden lg:flex`}>
-          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className=""> {translateKey('fileSharingTable.size')}</div>
-          </ButtonSH>
-        </div>
+        <SortableHeader<DirectoryFile, unknown>
+          titleTranslationId="fileSharingTable.size"
+          column={column}
+        />
       );
     },
     cell: ({ row }) => {
@@ -206,11 +165,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'type',
     header: function Header({ column }) {
       return (
-        <div className={`${sizeColumnWidth} hidden lg:flex`}>
-          <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            <div className=""> {translateKey('fileSharingTable.type')}</div>
-          </ButtonSH>
-        </div>
+        <SortableHeader<DirectoryFile, unknown>
+          titleTranslationId="fileSharingTable.type"
+          column={column}
+        />
       );
     },
     cell: function Cell({ row }) {
@@ -234,21 +192,10 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: () => <div className="hidden w-full justify-end md:flex" />,
     cell: ({ row }) => {
       const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-      const { setLoading, isLoading } = useFileManagerStore();
-      const handleDownload = async (item: DirectoryFile) => {
-        setLoading(true);
-        try {
-          await WebDavFunctions.triggerFolderDownload(item.filename);
-        } catch (error) {
-          console.error('Download failed:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
+
       return (
         selectedItems.length === 0 && (
           <TooltipProvider>
-            {isLoading && <LoadingIndicator isOpen={isLoading} />}
             <div className="flex items-center justify-end">
               <div className={`flex items-center justify-end ${operationsColumnWidth}`}>
                 <ActionTooltip
@@ -289,8 +236,6 @@ const Columns: ColumnDef<DirectoryFile>[] = [
                   onAction={() => {
                     if (row.original.type === ContentType.file) {
                       WebDavFunctions.triggerFileDownload(row.original.filename);
-                    } else {
-                      handleDownload(row.original).catch(() => {});
                     }
                   }}
                   tooltipText={translateKey('tooltip.download')}

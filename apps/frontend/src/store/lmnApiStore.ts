@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { AxiosRequestConfig } from 'axios';
 import UserLmnInfo from '@/datatypes/userInfo';
 import axiosInstanceLmn from '@/api/axiosInstanceLmn';
+import userDataStore from '@/store/userDataStore';
 
 interface UserLmnInfoStore {
   userData: UserLmnInfo | null;
@@ -43,12 +44,13 @@ const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
   getUserData: async () => {
     set({ loading: true });
     const token = sessionStorage.getItem('lmnApiToken');
+    console.log(token);
     if (!token) {
       set({ error: new Error('No API token found'), loading: false });
       return;
     }
     const config: AxiosRequestConfig = {
-      url: `/api/v1/users/${sessionStorage.getItem('user')}`,
+      url: `/api/v1/users/${userDataStore.getState().user}`,
       method: 'GET',
       headers: { 'X-Api-Key': token },
     };

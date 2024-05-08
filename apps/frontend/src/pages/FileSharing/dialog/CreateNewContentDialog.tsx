@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -22,35 +22,34 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [searchParams] = useSearchParams();
   const path = searchParams.get('path');
-  const {
-    fileName,
-    setFileName,
-    directoryName,
-    setDirectoryName,
-    currentPath,
-    setFileOperationSuccessful,
-    fetchFiles,
-    handleWebDavAction,
-  } = useFileManagerStore();
+  const { fileName, setFileName, directoryName, setDirectoryName, setFileOperationSuccessful, handleWebDavAction } =
+    useFileManagerStore();
 
-  useEffect(() => {
-    fetchFiles(path || '/').catch(console.error);
-  }, [path]);
+  const handelCreateResponse = async (
+    resp: { success: boolean; message: string; status: number } | { success: boolean },
+  ) => {
+    if ('message' in resp) {
+      console.log(resp.status);
+      if (resp.status >= 200 && resp.status < 300) {
+        await setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
+      } else if (resp.status >= 300) {
+        await setFileOperationSuccessful(resp.success, t('fileCreateNewContent.unknownErrorOccurred'));
+      }
+    } else {
+      await setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
+    }
+  };
 
   const createFile = async (filename: string): Promise<void> => {
     if (!path) return;
     await handleWebDavAction(() => WebDavFunctions.createFile(path, filename))
       .then(async (resp) => {
-        if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
-        } else {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
-        }
-        await fetchFiles(currentPath);
+        console.log(resp);
+        await handelCreateResponse(resp);
       })
-      .catch((error: unknown) => {
+      .catch(async (error: unknown) => {
         const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
-        setFileOperationSuccessful(false, errorMessage);
+        await setFileOperationSuccessful(false, errorMessage);
       });
   };
 
@@ -58,16 +57,11 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     if (!path) return;
     await handleWebDavAction(() => WebDavFunctions.createDirectory(path, folderName))
       .then(async (resp) => {
-        if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
-        } else {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
-        }
-        await fetchFiles(path);
+        await handelCreateResponse(resp);
       })
-      .catch((error: unknown) => {
+      .catch(async (error: unknown) => {
         const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
-        setFileOperationSuccessful(false, errorMessage);
+        await setFileOperationSuccessful(false, errorMessage);
       });
   };
 

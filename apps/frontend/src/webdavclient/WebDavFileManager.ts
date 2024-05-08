@@ -1,35 +1,43 @@
-import { createClient } from 'webdav';
-import JSZip from 'jszip';
-import { decryptPassword, translateKey } from '@/utils/common';
+import { translateKey } from '@/utils/common';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
-import { addDirectory, addFile, deleteFile } from '@/webdavclient/WebDavAPI';
+import {
+  addDirectory,
+  addFile,
+  changeFileName,
+  changeLocation,
+  deleteFile,
+  downloadFile,
+  uploadFiles,
+} from '@/webdavclient/WebDavAPI';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
-type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
+function handleApiResponse(response: { success: boolean; message?: string; status?: number } | { success: boolean }): {
+  success: boolean;
+  message: string;
+  status: number;
+} {
+  if ('message' in response && response.success) {
+    return {
+      success: response.success,
+      message: response.message || translateKey('response.successfully'),
+      status: response.status || 200,
+    };
+  }
 
-export const createWebdavClient = () => {
-  const userStorageString: string | null = sessionStorage.getItem('user-storage');
+  if (response.success) {
+    return {
+      success: response.success,
+      message: translateKey('response.successfully'),
+      status: 200,
+    };
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-  const { user, webdavKey } = userStorage.state;
-
-  return createClient(`${window.location.origin}/webdav`, {
-    username: user,
-    password: decryptPassword({
-      data: webdavKey,
-      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-    }),
-  });
-};
-
-function handleApiResponse(response: Response): { success: boolean; message: string; status: number } {
   return {
-    success: true,
-    message: response.statusText || translateKey('response.successfully'),
-    status: response.status,
+    success: false,
+    message: translateKey('response.failed'),
+    status: 500,
   };
 }
 
@@ -48,35 +56,9 @@ const handleApiError = (error: Response) => {
   );
 };
 
-const getContentList: IWebDavFileManager['getContentList'] = async (path: string): Promise<DirectoryFile[]> => {
-  const client = createWebdavClient();
-  const result = await client.getDirectoryContents(path, {
-    data:
-      '<?xml version="1.0"?>\n' +
-      '<d:propfind  xmlns:d="DAV:">\n' +
-      '  <d:prop>\n' +
-      '        <d:getlastmodified />\n' +
-      '        <d:getetag />\n' +
-      '        <d:getcontenttype />\n' +
-      '        <d:getcontentlength />\n' +
-      '        <d:displayname />\n' +
-      '        <d:creationdate />\n' +
-      '  </d:prop>\n' +
-      '</d:propfind>',
-  });
-  if ('data' in result && Array.isArray(result.data)) {
-    return result.data as DirectoryFile[];
-  }
-  return result as DirectoryFile[];
-};
-
 const createDirectory: IWebDavFileManager['createDirectory'] = async (path: string, folderName: string) => {
   try {
-    await addDirectory(path.replace('/webdav', ''), folderName);
-    const response = new Response('OK', {
-      status: 200,
-      statusText: translateKey('response.directory_created_successfully', { directoryName: getFileNameFromPath(path) }),
-    });
+    const response = await addDirectory(path.replace('/webdav', ''), folderName);
     return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
@@ -85,11 +67,8 @@ const createDirectory: IWebDavFileManager['createDirectory'] = async (path: stri
 
 const createFile: IWebDavFileManager['createFile'] = async (path: string, fileName: string) => {
   try {
-    await addFile(path.replace('/webdav', ''), fileName);
-    const response = new Response('OK', {
-      status: 200,
-      statusText: translateKey('response.directory_created_successfully', { directoryName: getFileNameFromPath(path) }),
-    });
+    const response = await addFile(path.replace('/webdav', ''), fileName);
+    console.log('Response:', response);
     return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
@@ -98,269 +77,141 @@ const createFile: IWebDavFileManager['createFile'] = async (path: string, fileNa
 
 const deleteItem: IWebDavFileManager['deleteItem'] = async (path: string) => {
   try {
-    await deleteFile(path.replace('/webdav', ''));
-    const response = new Response('OK', {
-      status: 200,
-      statusText: translateKey('response.file_was_deleted_successfully', { fileName: getFileNameFromPath(path) }),
-    });
+    const response = await deleteFile(path.replace('/webdav', ''));
+    return handleApiResponse(response);
+  } catch (error) {
+    console.error('Delete operation failed:', error);
+    return handleApiError(error as Response);
+  }
+};
+
+const renameItem: IWebDavFileManager['renameItem'] = async (path: string, toPath: string) => {
+  try {
+    const resp = await changeFileName(path, toPath);
+    return handleApiResponse(resp);
+  } catch (error) {
+    return handleApiError(error as Response);
+  }
+};
+
+const moveFile = async (sourcePath: string, destinationPath: string) => {
+  console.log('Moving file:', sourcePath, 'to:', destinationPath);
+  try {
+    const response = await changeLocation(sourcePath.replace('/webdav/', ''), destinationPath.replace('/webdav/', ''));
     return handleApiResponse(response);
   } catch (error) {
     return handleApiError(error as Response);
   }
 };
 
-const moveFile = async (
-  sourcePath: string,
-  destinationPath: string,
-): Promise<{ success: boolean; message: string; status: number }> => {
-  const client = createWebdavClient();
-  try {
-    const response = await client.customRequest(sourcePath, {
-      method: 'MOVE',
-      headers: { Destination: `${destinationPath}` },
-    });
-
-    if (response.status >= 200 && response.status < 300) {
-      const newFileName = getFileNameFromPath(destinationPath);
-      return {
-        success: true,
-        message: translateKey('response.move_successful', {
-          sourcePath: getFileNameFromPath(sourcePath),
-          destinationPath: newFileName,
-        }),
-        status: response.status,
-      };
-    }
-    return { success: false, message: translateKey('move_failed'), status: response.status };
-  } catch (error) {
-    let errorMessage = translateKey('response.unexpected_error_occurred');
-    let errorCode = 500;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-      if ('status' in error && typeof error.status === 'number') {
-        errorCode = error.status;
-      }
-    }
-    return {
-      success: false,
-      message: errorMessage,
-      status: errorCode,
-    };
-  }
-};
-
-const renameItem: IWebDavFileManager['renameItem'] = async (path: string, toPath: string) => {
-  try {
-    return await moveFile(path, toPath);
-  } catch (error) {
-    return handleApiError(error as Response);
-  }
-};
-
-// TODO nice to have: moveFile should be supported with fullPath
-
 const moveItems: IWebDavFileManager['moveItems'] = async (
   items: DirectoryFile[] | DirectoryFile,
   toPath: string | undefined,
 ) => {
   if (!toPath) {
-    return { success: false, message: translateKey('response.destination_path_is_undefined'), status: 400 };
+    console.error('Destination path is undefined.');
+    return {
+      success: false,
+      message: translateKey('response.destination_path_is_undefined'),
+      status: 400,
+    };
   }
 
-  let results: Array<{ success: boolean; message: string; status: number }>;
-  if (Array.isArray(items)) {
-    const movePromises = items.map((item) => {
-      const destination = `${toPath}/${getFileNameFromPath(item.filename)}`;
-      return moveFile(item.filename, destination);
-    });
-    results = await Promise.all(movePromises);
-  } else {
-    const destination = `${toPath}/${getFileNameFromPath(items.filename)}`;
-    results = [await moveFile(items.filename, destination)];
+  const itemsSet = new Set(Array.isArray(items) ? items : [items]);
+  const results = [];
+
+  for (const item of itemsSet) {
+    const destination = `${toPath}/${getFileNameFromPath(item.filename)}`;
+    if (destination === item.filename) {
+      console.log(`No move needed for ${item.filename}`);
+    }
+
+    console.log(`Attempting to move file from ${item.filename} to ${destination}`);
+    const moveResult = await moveFile(item.filename, destination);
+    console.log(moveResult);
+    results.push(moveResult);
+
+    if (!moveResult.success) {
+      console.error(`Failed to move file: ${item.filename}`);
+      break;
+    }
   }
 
   const failed = results.find((result) => !result.success);
   return failed
     ? { ...failed }
-    : { success: true, message: translateKey('response.all_items_moved_successfully'), status: 200 };
+    : {
+        success: true,
+        message: translateKey('response.all_items_moved_successfully'),
+        status: 200,
+      };
 };
 
-const uploadFile: IWebDavFileManager['uploadFile'] = (
-  file: File,
-  remotePath: string,
-  onProgress: (percentage: number) => void,
-) =>
-  new Promise((resolve, reject) => {
-    const client = createWebdavClient();
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', client.getFileUploadLink(remotePath), true);
+const uploadFile = async (file: File, filePath: string) => {
+  console.log('Uploading file:', file.name);
+  try {
+    const response = await uploadFiles(filePath, file);
+    console.log('Upload successful:', file.name);
+    return response;
+  } catch (error) {
+    console.error('Error uploading file:', file.name, error);
+    throw error;
+  }
+};
 
-    const userStorageString: string | null = sessionStorage.getItem('user-storage');
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-    const { user, webdavKey } = userStorage.state;
-
-    xhr.setRequestHeader(
-      'Authorization',
-      `Basic ${btoa(`${user}:${decryptPassword({ data: webdavKey, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
-    );
-    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
-
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const progress = (event.loaded / event.total) * 100;
-        onProgress(progress);
-      }
-    };
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(
-          handleApiResponse(
-            new Response('OK', {
-              status: 200,
-              statusText: translateKey('response.file_uploaded_successfully', { fileName: file.name }),
-            }),
-          ),
-        );
-      } else {
-        reject(new Error(translateKey('response.upload_failed_with_status', { status: xhr.status })));
-      }
-    };
-
-    xhr.onerror = () => {
-      reject(new Error(translateKey('response.network_error_occurred_during_the_upload')));
-    };
-
-    xhr.send(file);
-  });
-
-const uploadMultipleFiles: IWebDavFileManager['uploadMultipleFiles'] = (
-  files: File[],
-  remotePath: string,
-  updateUI: (file: File, progress: number) => void,
-) => {
-  const uploadPromises = files.map((file) => {
+const uploadMultipleFiles: IWebDavFileManager['uploadMultipleFiles'] = (files: File[], remotePath: string) => {
+  const uploadPromises = files.map(async (file) => {
     const filePath = `${remotePath}/${file.name}`;
-    return uploadFile(file, filePath, (progress) => updateUI(file, progress)).catch((error) => ({
-      success: false,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      message: translateKey('response.file_uploaded_failed', { fileName: file.name, status: error.message as string }),
-    }));
+    try {
+      const response = await uploadFile(file, filePath);
+      return {
+        success: true,
+        message: translateKey('response.file_uploaded_successfully', {
+          fileName: file.name,
+        }),
+        data: response,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: translateKey('response.file_uploaded_failed', {
+          fileName: file.name,
+          status: error ?? 'Unknown error',
+        }),
+      };
+    }
   });
 
   return Promise.all(uploadPromises);
 };
-
-const addItemsToZip = async (zip: JSZip, path: string) => {
-  const folderName = path.split('/').filter(Boolean).pop() || 'Folder';
-
-  const folderZip = zip.folder(folderName);
-  const contentList = await getContentList(path);
-  const client = createWebdavClient();
-  try {
-    const operations = contentList.map(async (item) => {
-      if (item.type === 'file') {
-        try {
-          const result = await client.getFileContents(`${item.filename}`, { format: 'binary' });
-
-          if (typeof result === 'string' || result instanceof ArrayBuffer || ArrayBuffer.isView(result)) {
-            if (folderZip != null) {
-              folderZip.file(item.basename, result);
-            }
-          } else if (result instanceof Blob && folderZip != null) {
-            folderZip.file(item.basename, result);
-          } else if (typeof result === 'object' && result !== null && 'data' in result && folderZip != null) {
-            const { data } = result;
-            if (typeof data === 'string' || ArrayBuffer.isView(data)) {
-              zip.file(item.basename, data);
-            } else {
-              console.error(`Unsupported data type within ResponseDataDetailed for file: ${item.filename}`);
-            }
-          } else {
-            console.error(`Unsupported data type for file: ${item.filename}`);
-          }
-        } catch (error) {
-          console.error(`Error fetching file content for ${item.filename}:`, error);
-        }
-        return null;
-      }
-      if (item.type === 'directory') {
-        const folderPath = `${path}/${item.basename}`;
-        const folder = zip.folder(item.basename);
-        if (folder !== null) {
-          return addItemsToZip(folder, folderPath);
-        }
-        return null;
-      }
-      return null;
-    });
-
-    await Promise.all(operations);
-  } catch (error) {
-    console.error('Error processing content list:', error);
-  }
-};
-
 const triggerFileDownload: IWebDavFileManager['triggerFileDownload'] = (path: string) => {
-  const client = createWebdavClient();
-  const downloadLink = client.getFileDownloadLink(path);
-  const anchor = document.createElement('a');
-  anchor.href = downloadLink;
-  anchor.setAttribute(getFileNameFromPath(path), '');
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
-};
-
-// TODO move it later to backend or to lmn server
-const triggerFolderDownload: IWebDavFileManager['triggerFolderDownload'] = async (path: string) => {
-  const zip = new JSZip();
-  await addItemsToZip(zip, path);
-
-  await zip.generateAsync({ type: 'blob' }).then((content: Blob | MediaSource) => {
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = getFileNameFromPath(path);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  });
-};
-
-// TODO move it later to backend or to lmn server
-const triggerMultipleFolderDownload: IWebDavFileManager['triggerMultipleFolderDownload'] = async (
-  folders: DirectoryFile[],
-) => {
-  const zip = new JSZip();
-  try {
-    const addItemsPromises = folders.map((folder) => addItemsToZip(zip, folder.filename));
-    await Promise.all(addItemsPromises);
-  } catch (error) {
-    console.error('Error adding items to zip:', error);
-  }
-  await zip.generateAsync({ type: 'blob' }).then((content: Blob | MediaSource) => {
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'download.zip';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  });
+  downloadFile(path)
+    .then((downloadLink) => {
+      if (typeof downloadLink === 'string') {
+        console.log('Download link:', downloadLink);
+        const anchor = document.createElement('a');
+        anchor.href = downloadLink;
+        const fileName = getFileNameFromPath(path);
+        anchor.setAttribute('download', fileName);
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+      } else {
+        console.error('Failed to get the download link:', path);
+      }
+    })
+    .catch((err) => {
+      console.error('Error downloading file', err);
+    });
 };
 
 const webDavFunctions: IWebDavFileManager = {
-  getContentList,
   createDirectory,
   createFile,
   deleteItem,
   moveItems,
   renameItem,
   triggerFileDownload,
-  triggerFolderDownload,
-  triggerMultipleFolderDownload,
   uploadMultipleFiles,
   uploadFile,
 };

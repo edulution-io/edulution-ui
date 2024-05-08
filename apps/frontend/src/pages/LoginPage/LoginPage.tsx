@@ -11,13 +11,14 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserDataStore from '@/store/userDataStore';
+import lmnApiStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const { setUser, setWebdavKey, setIsAuthenticated } = useUserDataStore();
+  const { getToken } = lmnApiStore();
 
   const { isLoading } = auth;
 
@@ -50,12 +51,10 @@ const LoginPage: React.FC = () => {
           data: form.getValues('password') as string,
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
-
+        await getToken(form.getValues('username') as string, form.getValues('password') as string);
         setUser(form.getValues('username') as string);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
-
-        createWebdavClient();
       }
 
       return null;

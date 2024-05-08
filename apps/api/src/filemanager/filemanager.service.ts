@@ -14,7 +14,7 @@ class FilemanagerService {
   createFile = async (path: string, fileName: string, content: string) =>
     this.webdavClientService.createFile(path, fileName, content);
 
-  uploadFile = async (path: string, file: File, name: string) => this.webdavClientService.uploadFile(path, file, name);
+  uploadFile = async (path: string, file: File) => this.webdavClientService.uploadFile(path, file);
 
   deleteFolder = async (path: string) => this.webdavClientService.deleteFile(path);
 
@@ -22,7 +22,9 @@ class FilemanagerService {
 
   moveFile = async (originPath: string, newPath: string) => this.webdavClientService.moveItems(originPath, newPath);
 
-  downloadFile = async (path: string) => this.webdavClientService.getFileDownloadLink(path);
+  downloadFile = (path: string) => this.webdavClientService.getFileDownloadLink(path);
+
+  fileExists = async (path: string) => this.webdavClientService.fileExists(path);
 
   getQrCode = async () => this.webdavClientService.getQrCode();
 }

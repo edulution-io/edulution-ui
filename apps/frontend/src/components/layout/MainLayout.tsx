@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import backgroundImage from '@/assets/background.jpg';
+import backgroundImage from '@/assets/new_background.png';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import Sidebar from '@/components/ui/Sidebar';

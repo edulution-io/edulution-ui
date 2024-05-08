@@ -29,6 +29,11 @@ class FilemanagerController {
     return this.filemanagerService.getFilesAtPath(`${path}`);
   }
 
+  @Get('fileExists/*')
+  async fileExists(@Param('0') path: string) {
+    return this.filemanagerService.fileExists(path);
+  }
+
   @Post('createFolder')
   async createFolder(@Body() body: { path: string; folderName: string }) {
     try {
@@ -63,11 +68,10 @@ class FilemanagerController {
 
   @Put('uploadFile')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: File, @Body('path') path: string, @Body('name') name: string) {
+  async uploadFile(@UploadedFile() file: File, @Body('path') path: string) {
     if (!file) throw new Error('File is required');
     try {
-      const result = await this.filemanagerService.uploadFile(path, file, name);
-      return result;
+      return await this.filemanagerService.uploadFile(path, file);
     } catch (error) {
       throw new Error(`Failed to upload file: ${error}`);
     }
@@ -121,10 +125,10 @@ class FilemanagerController {
     }
   }
 
-  @Get('download')
-  async downloadResource(@Body() body: { path: string }) {
+  @Get('download/*')
+  downloadResource(@Param('0') path: string) {
     try {
-      return await this.filemanagerService.downloadFile(body.path);
+      return this.filemanagerService.downloadFile(path);
     } catch (error) {
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }

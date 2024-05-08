@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import useAppDataStore from '@/store/appDataStore';
 import Sidebar from '@/components/ui/Sidebar';
-import backgroundImage from '@/assets/background.jpg';
+import backgroundImage from '@/assets/new_background.png';
 import { getFromPathName } from '@/utils/common';
 
 const IframeLayout: React.FC = () => {
