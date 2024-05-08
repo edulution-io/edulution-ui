@@ -1,10 +1,56 @@
 services:
-  app:
+  edu-ui:
     container_name: edulution-ui
-    image: edulution-ui
-    build:
-      context: .
+    image: ghcr.io/edulution-io/edulution-ui:latest
     ports:
       - '80:80'
       - '443:443'
     restart: always
+    environment:
+      VITE_WEBDAV_KEY: b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb
+      VITE_AUTH_CLIENT_SECRET: 0ylT4gV4TNaW3ckCx63NA3gHzPDHElCA
+      VITE_AUTH_CLIENT_ID: edulution-test
+      VITE_AUTH_REALM: edulution
+
+      EDU_API_URL: http://edulution-api:3000
+
+  edu-api:
+    container_name: edulution-api
+    image: ghcr.io/edulution-io/edulution-api:0.0.1
+    ports:
+      - 3000:3000
+    restart: always
+    environment:
+      EDUI_PORT: 3000
+
+      PUBLIC_KEY_FILE_PATH: public.pem
+
+      EDUI_CORS_URL: '*'
+
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: example
+      MONGODB_URL: mongodb://root:example@mongoEdu:27017/
+    volumes:
+      - ./public.pem:/opt/edulution/api/public.pem
+
+  mongoEdu:
+    container_name: mongoEdu
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  # A simole web frontend for mongoDB
+  # mongoEdu-express:
+  #   image: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:example@mongoEdu:27017/
+  #     ME_CONFIG_BASICAUTH: false

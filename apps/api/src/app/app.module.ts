@@ -10,7 +10,7 @@ import AppConfigModule from '../appconfig/appconfig.module';
     JwtModule.register({
       global: true,
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017', {
+    MongooseModule.forRoot(process.env.MONGODB_URL as string, {
       dbName: 'edulution',
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
