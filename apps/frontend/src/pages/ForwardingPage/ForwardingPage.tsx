@@ -5,6 +5,7 @@ import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
 import { getFromPathName, findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
+import { Toaster, toast } from 'sonner';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -20,12 +21,15 @@ const ForwardingPage: React.FC = () => {
   useEffect(() => {
     if (isForwarding) {
       setIsForwaring(false);
-      setShowIsForwarding(true);
       const navigateToExternalPage = () => {
         const externalLink = findAppConfigByName(appConfig, rootPathName)?.linkPath as string;
         if (externalLink) {
-          window.open(externalLink, '_blank');
+          setShowIsForwarding(true);
+          return window.open(externalLink, '_blank');
         }
+        setShowIsForwarding(false);
+        console.error(t('forwardingpage.missing_link'));
+        return toast.error(t('forwardingpage.missing_link'));
       };
       navigateToExternalPage();
     }
@@ -57,6 +61,7 @@ const ForwardingPage: React.FC = () => {
         </Button>
       </div>
       <h3>{showIsForwarding ? t('forwardingpage.description') : '\u00A0'}</h3>
+      <Toaster />
     </div>
   );
 };

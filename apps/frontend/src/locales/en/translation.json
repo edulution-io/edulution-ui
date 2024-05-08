@@ -108,7 +108,8 @@
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window. No further authorization is required."
+    "description": "The application opens in a new window. No further authorization is required.",
+    "missing_link": "Missing link"
   },
   "menu": "Menu",
   "home": "Home",

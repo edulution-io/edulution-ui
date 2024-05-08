@@ -11,5 +11,7 @@ export const decryptPassword = ({ data, key }: { data: string; key: string }) =>
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 
-export const findAppConfigByName = (appConfig: AppConfig[], entryName: string) =>
-  appConfig.find(({ name }) => name === entryName);
+export const findAppConfigByName: (appConfig: AppConfig[], entryName: string) => AppConfig | undefined = (
+  appConfig,
+  entryName,
+) => appConfig.find(({ name }) => name === entryName);
