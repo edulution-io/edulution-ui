@@ -1,1 +1,1 @@
-export { default as DropdownMenu } from '@/components/ui/DropdownMenu/DropdownMenu';
+export { default as DropdownMenu } from '@/components/shared/DropdownMenu/DropdownMenu';

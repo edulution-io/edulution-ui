@@ -1,7 +1,7 @@
+import helmet from 'helmet';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 
 import AppModule from './app/app.module';

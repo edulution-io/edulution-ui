@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 
 import AppConfigModule from '../appconfig/appconfig.module';
+import MailModule from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import AppConfigModule from '../appconfig/appconfig.module';
     JwtModule.register({
       global: true,
     }),
+    MailModule,
     MongooseModule.forRoot('mongodb://localhost:27017', {
       dbName: 'settingsConfig',
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },

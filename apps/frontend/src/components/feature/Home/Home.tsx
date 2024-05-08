@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
-import MyFavourites from './MyFavourites';
+import EmailWidget from '@/pages/Home/EmailWidget/EmailWidget';
+
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
@@ -48,7 +49,7 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            <MyFavourites />
+            <EmailWidget />
           </div>
         </div>
       </div>
