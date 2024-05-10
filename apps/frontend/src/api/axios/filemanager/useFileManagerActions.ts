@@ -1,12 +1,18 @@
 import useFileManagerStore from '@/store/fileManagerStore';
-import useCustomAxiosFileManager from '@/api/axios/useCustomAxiosFileManager.ts';
+import useCustomAxiosFileManager from '@/api/axios/filemanager/useCustomAxiosFileManager.ts';
 
 const useFileManagerActions = () => {
-  const customFetch = useCustomAxiosFileManager();
-  const fetchFiles = (path: string) => useFileManagerStore.getState().fetchFiles(path, customFetch);
-  const fetchMountPoints = () => useFileManagerStore.getState().fetchMountPoints(customFetch);
+  const fileManagerAxios = useCustomAxiosFileManager();
+  const fetchFiles = (path: string) => useFileManagerStore.getState().fetchFiles(path, fileManagerAxios);
+  const fetchMountPoints = () => useFileManagerStore.getState().fetchMountPoints(fileManagerAxios);
 
-  return { fetchFiles, fetchMountPoints };
+  const fetchQrCode = () => useFileManagerStore.getState().fetchQRCode(fileManagerAxios);
+
+  return {
+    fetchFiles,
+    fetchMountPoints,
+    fetchQrCode,
+  };
 };
 
 export default useFileManagerActions;

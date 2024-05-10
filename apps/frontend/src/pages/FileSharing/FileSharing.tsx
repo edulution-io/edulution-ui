@@ -25,24 +25,20 @@ import { Button } from '@/components/shared/Button';
 import { useSearchParams } from 'react-router-dom';
 import Toaster from '@/components/ui/Sonner';
 import { toast } from 'sonner';
+import useFileManagerActions from '@/api/axios/filemanager/useFileManagerActions';
 
 const FileSharingPage = () => {
-  const {
-    isVisible,
-    fileOperationMessage,
-    fileOperationSuccessful,
-    selectedItems,
-    fetchFiles,
-    files,
-    currentPath,
-    mountPoints,
-  } = useFileManagerStore();
+  const { isVisible, fileOperationMessage, fileOperationSuccessful, selectedItems, files, currentPath } =
+    useFileManagerStore();
+
+  const { fetchFiles } = useFileManagerActions();
+
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path');
 
   useEffect(() => {
-    if (mountPoints.length === 0) fetchFiles(path || '/').catch(console.error);
+    fetchFiles(path || '/').catch(console.error);
   }, [path]);
 
   useEffect(() => {

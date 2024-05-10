@@ -11,7 +11,6 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import createWebdavClient from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
 import lmnApiStore from '@/store/lmnApiStore';
 
@@ -59,8 +58,6 @@ const LoginPage: React.FC = () => {
         setUser(form.getValues('username') as string);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
-
-        createWebdavClient();
       }
 
       return null;

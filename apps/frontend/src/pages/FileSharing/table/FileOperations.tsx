@@ -6,7 +6,6 @@ import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import { translateKey } from '@/utils/common';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 
 interface FileOperationsProps {
   file: DirectoryFile;

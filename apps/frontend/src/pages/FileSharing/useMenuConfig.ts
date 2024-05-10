@@ -12,6 +12,7 @@ import {
   TeacherIcon,
 } from '@/assets/icons';
 import { useSearchParams } from 'react-router-dom';
+import useFileManagerActions from '@/api/axios/filemanager/useFileManagerActions.ts';
 
 const findCorrespondingMountPointIcon = (mount: DirectoryFile) => {
   if (mount.filename.includes('teachers')) {
@@ -36,25 +37,30 @@ const findCorrespondingMountPointIcon = (mount: DirectoryFile) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { fetchMountPoints, fetchFiles, mountPoints, setMountPoints } = useFileManagerStore();
+  const { fetchFiles, mountPoints, setMountPoints } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path');
+  const { fetchMountPoints } = useFileManagerActions();
+  useEffect(() => {
+    const fetchAndSetMountPoints = async () => {};
+
+    fetchAndSetMountPoints().catch(console.error);
+  }, []);
 
   useEffect(() => {
     const fetchAndSetMountPoints = async () => {
       try {
-        if (mountPoints.length === 0) {
-          const mounts: DirectoryFile[] = await fetchMountPoints();
+        const mounts = await fetchMountPoints();
+        if (Array.isArray(mounts)) {
           setMountPoints(mounts);
         }
       } catch (error) {
         console.error('Error fetching mount points:', error);
       }
     };
-
-    fetchAndSetMountPoints();
-  }, [fetchMountPoints, mountPoints.length, setMountPoints]);
+    mountPoints.length === 0 && fetchAndSetMountPoints();
+  }, [mountPoints.length]);
 
   useEffect(() => {
     console.log('mountPoints:', mountPoints);
@@ -78,7 +84,6 @@ const useFileSharingMenuConfig = () => {
   useEffect(() => {
     if (path) {
       console.log('fetching files', path);
-      fetchFiles(path).catch(console.error);
     }
   }, [path, fetchFiles]);
 

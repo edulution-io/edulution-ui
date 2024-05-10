@@ -4,7 +4,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +24,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
   const [currentPath, setCurrentPath] = useState('');
-  const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStore();
+  const { setFileOperationSuccessful } = useFileManagerStore();
   useEffect(() => {
     if (isOpen) {
       fetchDirectory(currentPath)

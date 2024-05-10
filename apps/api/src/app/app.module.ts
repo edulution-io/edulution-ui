@@ -17,7 +17,7 @@ import ConferencesModule from '../conferences/conferences.module';
     FilemanagerModule,
     MongooseModule.forRoot('mongodb://localhost:27017', {
       dbName: 'edulution',
-      // auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
+      auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
   ],
 })

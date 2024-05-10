@@ -14,6 +14,11 @@ const options = {
 function mapToDirectoryFiles(xmlData: string): DirectoryFile[] {
   const parser = new XMLParser(options);
   const jsonObj: WebDAVMultiStatus = parser.parse(xmlData) as WebDAVMultiStatus;
+  if (!jsonObj['d:multistatus'] || !Array.isArray(jsonObj['d:multistatus']['d:response'])) {
+    console.warn('Invalid or empty WebDAV response structure: missing "d:response".');
+    return [];
+  }
+
   const responses = Array.isArray(jsonObj['d:multistatus']['d:response'])
     ? jsonObj['d:multistatus']['d:response']
     : [jsonObj['d:multistatus']['d:response']];

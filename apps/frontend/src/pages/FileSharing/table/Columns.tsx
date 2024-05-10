@@ -39,6 +39,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
       const formattedFilename = filename.split('/').pop();
       const [searchParams, setSearchParams] = useSearchParams();
       const handleFilenameClick = (filenamePath: string) => {
+        console.log('filenamePath', filenamePath);
         if (row.original.type === ContentType.file) {
           setPreviewOpen(true);
         }
@@ -65,7 +66,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
           <SelectableTextCell<DirectoryFile>
             icon={renderFileIcon(row.original)}
             row={row}
-            text={formattedFilename ?? ''}
+            text={row.original.basename}
             onClick={() => handleFilenameClick(row.original.filename)}
           />
           {isPreviewOpen && (

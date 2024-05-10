@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { AxiosRequestConfig } from 'axios';
 import UserLmnInfo from '@/datatypes/userInfo';
-import axiosInstanceLmn from '@/api/axiosInstanceLmn';
+import axiosInstanceLmn from '@/api/axios/axiosInstanceLmn';
 import userStore from './userStore';
 
 interface UserLmnInfoStore {
+  token: string;
   userData: UserLmnInfo | null;
   loading: boolean;
   error: Error | null;
@@ -14,48 +15,41 @@ interface UserLmnInfoStore {
 }
 
 const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUserData' | 'reset'> = {
+  token: '',
   userData: null,
   loading: false,
   error: null,
 };
 
-const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
+const useLmnUserStore = create<UserLmnInfoStore>((set, get) => ({
   ...initialState,
-  getToken: async (username: string, password: string) => {
+  getToken: async () => {
     set({ loading: true });
-    const encodedCredentials = btoa(`${username}:${password}`);
-    const config: AxiosRequestConfig = {
-      url: '/api/v1/auth/',
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-      },
-    };
 
     try {
-      const response = await axiosInstanceLmn(config);
+      const response = await axiosInstanceLmn.get('/api/v1/auth/');
       const token = response.data as string;
       sessionStorage.setItem('lmnApiToken', token);
       set({ loading: false, error: null });
+      set({ token });
     } catch (error) {
       set({ error: error as Error, loading: false });
     }
   },
   getUserData: async () => {
     set({ loading: true });
-    const token = sessionStorage.getItem('lmnApiToken');
-    if (!token) {
+
+    if (!get().token) {
       set({ error: new Error('No API token found'), loading: false });
       return;
     }
+
     const config: AxiosRequestConfig = {
-      url: `/api/v1/users/${userStore.getState().user}`,
-      method: 'GET',
-      headers: { 'X-Api-Key': token },
+      headers: { 'X-Api-Key': get().token },
     };
 
     try {
-      const response = await axiosInstanceLmn(config);
+      const response = await axiosInstanceLmn.get(`/api/v1/users/${userStore.getState().user}`, config);
       set({
         userData: response.data as UserLmnInfo,
         loading: false,

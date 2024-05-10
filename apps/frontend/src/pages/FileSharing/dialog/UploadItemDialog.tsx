@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'usehooks-ts';

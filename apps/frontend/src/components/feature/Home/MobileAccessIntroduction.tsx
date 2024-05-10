@@ -2,20 +2,13 @@ import { Sheet, SheetContent, SheetHeader } from '@/components/ui/Sheet';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
 import React, { FC, useEffect, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
-import axios from 'axios';
 import QRCodeDisplay from '@/components/feature/Home/QRCodeDisplay';
+import useFileManagerActions from '@/api/axios/filemanager/useFileManagerActions.ts';
+import useFileManagerStore from '@/store/fileManagerStore.ts';
 
 interface MobileAccessIntroductionProps {
   isMobileAccessIntroductionOpen: boolean;
   setIsMobileAccessIntroductionOpen: (open: boolean) => void;
-}
-
-interface QrCodeValues {
-  displayName: string;
-  url: string;
-  username: string;
-  password: string;
-  token: string;
 }
 
 const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
@@ -23,11 +16,24 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
   setIsMobileAccessIntroductionOpen,
 }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [qrCodeValue, setQrCodeValue] = useState<string>('');
+  const { fetchQrCode } = useFileManagerActions();
+  const { QRCode } = useFileManagerStore();
+  const [qrCodeContent, setQrCodeContent] = useState<string>('');
 
-  const getQrCodeValue = async (): Promise<string> => {
-    const response = await axios.get<QrCodeValues>('http://localhost:3000/edu-api/filemanager/qrcode');
-    const { displayName, url, username } = response.data;
+  useEffect(() => {
+    const getQrCode = async () => {
+      await fetchQrCode().catch(console.error);
+    };
+
+    getQrCode().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    generateQRCodeContent();
+  }, [QRCode]);
+
+  const generateQRCodeContent = () => {
+    const { displayName, url, username } = QRCode;
     const structuredData = {
       displayName,
       url,
@@ -35,26 +41,13 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
       password: '',
       token: '',
     };
-    const parsedObject = JSON.parse(JSON.stringify(structuredData)) as string;
-    console.log(parsedObject);
-    return parsedObject;
+    const qrContent = JSON.stringify(structuredData);
+    setQrCodeContent(qrContent);
   };
 
   const handleOpenChange = (open: boolean) => {
     setIsMobileAccessIntroductionOpen(open);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await getQrCodeValue();
-        setQrCodeValue(resp);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData().catch(console.error);
-  }, []);
 
   const mobileContent = (
     <Sheet
@@ -71,11 +64,12 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
       </SheetContent>
     </Sheet>
   );
+
   const desktopContent = (
     <div>
       <p className="text-black">Mobiler Datenzugriff</p>
       <div className="flex justify-center">
-        <QRCodeDisplay value={JSON.stringify(qrCodeValue)} />
+        <QRCodeDisplay value={qrCodeContent} />
       </div>
     </div>
   );

@@ -2,8 +2,8 @@ import create, { StateCreator } from 'zustand';
 import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { RowSelectionState } from '@tanstack/react-table';
-import { fetchFilesFromPath, fetchMountPoints } from '@/webdavclient/WebDavAPI';
-
+import { AxiosInstance } from 'axios';
+import { QrCodeValues } from '@/datatypes/types.ts';
 type WebDavActionResult = { success: boolean; message: string; status: number } | { success: boolean };
 
 interface FileManagerState {
@@ -18,6 +18,7 @@ interface FileManagerState {
   uploadProgresses: { [key: string]: number };
   fileOperationMessage: string;
   selectedRows: RowSelectionState;
+  QRCode: QrCodeValues;
 }
 
 interface FileManagerActions {
@@ -31,9 +32,9 @@ interface FileManagerActions {
   setSelectedItems: (items: DirectoryFile[]) => void;
   setFileOperationSuccessful: (success: boolean | undefined, message: string) => Promise<void>;
   setPopUpVisibility: (isVisible: boolean) => void;
-  fetchFiles: (path: string) => Promise<void>;
-  fetchMountPoints: () => Promise<DirectoryFile[]>;
-  fetchDirectory: (path: string) => Promise<DirectoryFile[]>;
+  fetchFiles: (path: string, customFetch: AxiosInstance) => Promise<void>;
+  fetchMountPoints: (customFetch: AxiosInstance) => Promise<void>;
+  fetchQRCode: (customFetch: AxiosInstance) => Promise<void>;
   handleWebDavAction: (action: () => Promise<WebDavActionResult>) => Promise<WebDavActionResult>;
   reset: () => void;
 }
@@ -58,6 +59,7 @@ const initialState: Omit<
   | 'fetchDirectory'
   | 'reset'
   | 'handleWebDavAction'
+  | 'fetchQRCode'
 > = {
   files: [],
   mountPoints: [],
@@ -70,6 +72,7 @@ const initialState: Omit<
   uploadProgresses: {},
   fileOperationMessage: '',
   selectedRows: {},
+  QRCode: {} as QrCodeValues,
 };
 
 type PersistedFileManagerStore = (
@@ -87,17 +90,27 @@ const useFileManagerStore = create<FileManagerStore>(
 
       setFiles: (files: DirectoryFile[]) => {
         set({ files });
+        console.log(files);
       },
 
       setMountPoints: (mountPoints: DirectoryFile[]) => {
         set({ mountPoints });
       },
 
-      fetchFiles: async (path: string) => {
+      fetchQRCode: async (fileManagerAxios) => {
         try {
-          const directoryFiles = await fetchFilesFromPath(path);
+          const response = await fileManagerAxios.get<QrCodeValues>('/qrcode');
+          set({ QRCode: response.data as QrCodeValues });
+        } catch (error) {
+          console.error('Error fetching QR code:', error);
+        }
+      },
+
+      fetchFiles: async (path: string, fileManagerAxios) => {
+        try {
+          const directoryFiles = await fileManagerAxios.get(`/files/${path.replace('/webdav/', '')}`);
           get().setCurrentPath(path);
-          get().setFiles(directoryFiles);
+          get().setFiles(directoryFiles.data as DirectoryFile[]);
           get().setSelectedItems([]);
           get().setSelectedRows({});
           if (get().fileOperationSuccessful !== undefined) {
@@ -108,10 +121,11 @@ const useFileManagerStore = create<FileManagerStore>(
         }
       },
 
-      fetchMountPoints: async () => {
+      fetchMountPoints: async (fileManagerAxios: AxiosInstance) => {
         try {
-          console.log(fetchMountPoints().then((res) => console.log(res)));
-          return await fetchMountPoints();
+          const resp = await fileManagerAxios.get('/mountpoints');
+          console.log(resp.data);
+          return resp.data;
         } catch (error) {
           console.error('Error fetching mount points:', error);
           return [];
@@ -120,8 +134,8 @@ const useFileManagerStore = create<FileManagerStore>(
 
       fetchDirectory: async (pathToFetch: string) => {
         try {
-          const resp = await fetchFilesFromPath(pathToFetch);
-          return resp.filter((item) => item.type === ContentType.directory);
+          //  const resp = await fetchFilesFromPath(pathToFetch);
+          //  return resp.filter((item) => item.type === ContentType.directory);
         } catch (error) {
           console.error('Error fetching directory contents:', error);
           return [];

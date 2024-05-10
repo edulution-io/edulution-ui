@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import WebdavService from './webdav.service';
-import ConfigModule from '../../config/config.module';
+import ConfigModule from '../../appconfig/appconfig.module';
 import WebdavClientFactory from './webdav.client.factory';
 
 @Module({
