@@ -259,6 +259,11 @@
   "loadingIndicator": {
     "message": "Please wait while we process your request..."
   },
+  "search": {
+    "type-to-search": "Type to search",
+    "loading": "Loading",
+    "no-results": "No results"
+  },
   "fileCategory": {
     "folder": "Folder",
     "document": "Document",

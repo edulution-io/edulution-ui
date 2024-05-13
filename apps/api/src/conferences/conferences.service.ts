@@ -5,7 +5,6 @@ import axios from 'axios';
 import * as xml2js from 'xml2js';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
-import UpdateConferenceDto from './dto/update-conference.dto';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
 import CreateBbbMeetingDto from './bbb-api/create-bbb-meeting.dto';
@@ -18,12 +17,13 @@ const BBB_SECRET = '44aae5eec7adc10e6eabbe30e0b0c0e242ca3c6495c24a924c9e09317b7e
 class ConferencesService {
   constructor(@InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>) {}
 
-  async create(createConferenceDto: CreateConferenceDto): Promise<Conference> {
+  async create(createConferenceDto: CreateConferenceDto, creator: string): Promise<Conference> {
     const newConference = {
       name: createConferenceDto.name,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+      creator,
       meetingID: uuidv4(),
       password: createConferenceDto.password,
+      attendees: createConferenceDto.attendees,
       isMeetingStarted: false,
     };
 
@@ -46,7 +46,7 @@ class ConferencesService {
       const result = await this.parseXml(response.data);
       this.handleBBBApiError(result);
 
-      conference.isMeetingStarted = true;
+      conference.isRunning = true;
       return conference;
     } catch (e) {
       Logger.error(e, ConferencesService.name);
@@ -54,20 +54,23 @@ class ConferencesService {
     }
   }
 
-  async findAll(): Promise<Conference[]> {
-    return this.conferenceModel.find().exec();
+  async findAll(currentUser: string): Promise<Conference[]> {
+    return this.conferenceModel.find({ attendees: currentUser }).exec();
   }
 
   async findOne(meetingID: string): Promise<Conference | null> {
     return this.conferenceModel.findOne<Conference>({ meetingID }).exec();
   }
 
-  async update(meetingID: string, updateConferenceDto: UpdateConferenceDto): Promise<Conference | null> {
-    return this.conferenceModel.findOneAndUpdate<Conference>({ meetingID }, updateConferenceDto, { new: true }).exec();
+  async update(conference: Conference): Promise<Conference | null> {
+    return this.conferenceModel
+      .findOneAndUpdate<Conference>({ meetingID: conference.meetingID }, conference, { new: true })
+      .exec();
   }
 
-  async remove(meetingID: string): Promise<any> {
-    return this.conferenceModel.deleteOne({ meetingID }).exec();
+  async remove(meetingIDs: string[]): Promise<boolean> {
+    await this.conferenceModel.deleteMany({ meetingID: { $in: meetingIDs } }).exec();
+    return true;
   }
 
   handleBBBApiError = (result: BbbResponseDto) => {

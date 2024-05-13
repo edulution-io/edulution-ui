@@ -1,35 +1,33 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import UpdateConferenceDto from './dto/update-conference.dto';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import ConferencesService from './conferences.service';
 import CreateConferenceDto from './dto/create-conference.dto';
+import { Conference } from './conference.schema';
+import { GetUsername } from '../auth/getUser';
 
 @Controller('conferences')
 class ConferencesController {
   constructor(private readonly conferencesService: ConferencesService) {}
 
   @Post()
-  create(@Body() createConferenceDto: CreateConferenceDto) {
-    return this.conferencesService.create(createConferenceDto);
+  create(@Body() createConferenceDto: CreateConferenceDto, @GetUsername() username: string) {
+    return this.conferencesService.create(createConferenceDto, username);
   }
 
   @Get()
-  findAll() {
-    return this.conferencesService.findAll();
+  findAll(@GetUsername() username: string) {
+    return this.conferencesService.findAll(username);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.conferencesService.findOne(id);
+  @Patch()
+  async update(@Body() conference: Conference, @GetUsername() username: string) {
+    await this.conferencesService.update(conference);
+    return this.conferencesService.findAll(username);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConferenceDto: UpdateConferenceDto) {
-    return this.conferencesService.update(id, updateConferenceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.conferencesService.remove(id);
+  @Delete()
+  async remove(@Body() meetingIDs: string[], @GetUsername() username: string) {
+    await this.conferencesService.remove(meetingIDs);
+    return this.conferencesService.findAll(username);
   }
 }
 

@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import { RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
 import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import eduApi from '@/api/eduApi';
+import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
@@ -10,10 +11,9 @@ interface ConferencesStore {
   conferences: Conference[];
   isLoading: boolean;
   error: Error | null;
-  getConferences: () => Promise<void>;
-  getConferenceInfo: (meetingID: string) => Promise<void>;
+  getConferences: (setIsLoading?: boolean) => Promise<void>;
   deleteConferences: (conferences: Conference[]) => Promise<void>;
-  joinConference: (meetingID: string, fullName: string, role: string) => Promise<void>;
+  updateConference: (conference: Conference) => Promise<void>;
   reset: () => void;
 }
 
@@ -23,43 +23,33 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   conferences: [],
   isLoading: false,
   error: null,
-  getConferences: async () => {
-    set({ isLoading: true, error: null });
+
+  getConferences: async (setIsLoading = true) => {
+    set({ isLoading: setIsLoading, error: null });
     try {
-      const response = await axios.get<Conference[]>('http://localhost:3000/api/getConferences');
+      const response = await eduApi.get<Conference[]>(apiEndpoint);
       set({ conferences: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
     }
   },
-  getConferenceInfo: async (meetingID: string) => {
-    set({ isLoading: true });
-    try {
-      const response = await axios.get(`http://localhost:3000/api/getConferenceInfo?meetingID=${meetingID}`);
-      set({ conferences: [response.data], isLoading: false });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
+
   deleteConferences: async (conferences: Conference[]) => {
     set({ isLoading: true });
     try {
-      const response = await axios.delete(`http://localhost:3000/api/deleteConferences`, {
-        data: { meetingIDs: conferences.map((c) => c.meetingID) },
+      const response = await eduApi.delete<Conference[]>(apiEndpoint, {
+        data: conferences.map((c) => c.meetingID),
       });
-      set({ conferences: [response.data], isLoading: false });
+      set({ conferences: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
     }
   },
-  joinConference: async (meetingID: string, fullName: string, role) => {
+  updateConference: async (conference) => {
     set({ isLoading: true });
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/join?meetingID=${meetingID}&fullName=${fullName}&role=${role}`,
-      );
-      console.log('Join meeting response:', response.data);
-      set({ isLoading: false });
+      const response = await eduApi.patch<Conference[]>(apiEndpoint, conference);
+      set({ conferences: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
     }

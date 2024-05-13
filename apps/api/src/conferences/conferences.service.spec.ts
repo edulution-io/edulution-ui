@@ -6,7 +6,6 @@ import { Model } from 'mongoose';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
-import UpdateConferenceDto from './dto/update-conference.dto';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testmeeting',
@@ -56,7 +55,7 @@ describe(ConferencesService.name, () => {
   describe('create', () => {
     it('should create and save a meeting', async () => {
       const createDto: CreateConferenceDto = { ...mockConference };
-      const result = await service.create(createDto);
+      const result = await service.create(createDto, 'creator');
       expect(model.create).toHaveBeenCalledWith(createDto);
       expect(result).toEqual(createDto);
     });
@@ -64,7 +63,7 @@ describe(ConferencesService.name, () => {
 
   describe('findAll', () => {
     it('should return an array of meetings', async () => {
-      const result = await service.findAll();
+      const result = await service.findAll('creator');
       expect(result).toEqual([mockConference]);
       expect(model.find).toHaveBeenCalled();
     });
@@ -80,22 +79,18 @@ describe(ConferencesService.name, () => {
 
   describe('update', () => {
     it('should update a meeting', async () => {
-      const result = await service.update(mockConference.name, new UpdateConferenceDto());
+      const mock = new Conference(mockConference, 'creator');
+      const result = await service.update(mock);
       expect(result).toEqual(mockConference);
-      expect(model.findOneAndUpdate).toHaveBeenCalledWith(
-        { meetingID: mockConference.name },
-        new UpdateConferenceDto(),
-        {
-          new: true,
-        },
-      );
+      expect(model.findOneAndUpdate).toHaveBeenCalledWith({ meetingID: mockConference.name }, mock, {
+        new: true,
+      });
     });
   });
 
   describe('remove', () => {
-    it('should remove a meeting by ID', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result = await service.remove(mockConference.name);
+    it('should remove a meeting', async () => {
+      const result = await service.remove(['1']);
       expect(result).toBeTruthy();
       expect(model.deleteOne).toHaveBeenCalled();
     });

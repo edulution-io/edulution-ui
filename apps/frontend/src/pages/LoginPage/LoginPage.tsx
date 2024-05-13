@@ -18,7 +18,7 @@ import useLmnUserStore from '@/store/lmnApiStore';
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated } = useUserStore();
+  const { setUser, setWebdavKey, setIsAuthenticated, setToken } = useUserStore();
 
   const { isLoading } = auth;
   const { getToken } = useLmnUserStore((state) => ({
@@ -59,6 +59,7 @@ const LoginPage: React.FC = () => {
         });
 
         setUser(form.getValues('username') as string);
+        setToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
 

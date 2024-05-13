@@ -21,27 +21,7 @@ const FloatingButtonsBar = () => {
   return (
     <div className="fixed bottom-8 flex flex-row space-x-24 bg-opacity-90">
       <TooltipProvider>
-        {selectedConferenceIds.length === 0 ? (
-          <ActionTooltip
-            onAction={() => {}}
-            tooltipText={t('conferences.create')}
-            trigger={
-              <CreateConferenceDialog
-                trigger={
-                  <Button
-                    type="button"
-                    variant="btn-hexagon"
-                    className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                  >
-                    <IconContext.Provider value={iconContextValue}>
-                      <MdAdd />
-                    </IconContext.Provider>
-                  </Button>
-                }
-              />
-            }
-          />
-        ) : (
+        {selectedConferenceIds.length > 0 ? (
           <div className="flex flex-row space-x-24">
             <ActionTooltip
               onAction={() => {}}
@@ -64,7 +44,27 @@ const FloatingButtonsBar = () => {
               }
             />
           </div>
-        )}
+        ) : null}
+
+        <ActionTooltip
+          onAction={() => {}}
+          tooltipText={t('conferences.create')}
+          trigger={
+            <CreateConferenceDialog
+              trigger={
+                <Button
+                  type="button"
+                  variant="btn-hexagon"
+                  className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                >
+                  <IconContext.Provider value={iconContextValue}>
+                    <MdAdd />
+                  </IconContext.Provider>
+                </Button>
+              }
+            />
+          }
+        />
 
         <ActionTooltip
           onAction={() => {

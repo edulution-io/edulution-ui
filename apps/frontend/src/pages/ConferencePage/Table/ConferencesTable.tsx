@@ -14,7 +14,7 @@ import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTab
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -41,9 +41,14 @@ const ConferencesTable = () => {
   });
 
   useEffect(() => {
-    getConferences().catch((e) => console.error(e));
+    const fetchConferences = async () => getConferences(false);
+
+    fetchConferences().catch((e) => console.error(e));
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    const intervalId = setInterval(fetchConferences, 100000); // TODO: 10000
 
     return () => {
+      clearInterval(intervalId);
       setSelectedRows({});
     };
   }, [getConferences, setSelectedRows]);
@@ -105,7 +110,7 @@ const ConferencesTable = () => {
                 <TableRow>
                   <TableCell
                     colSpan={conferences.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-white"
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>
