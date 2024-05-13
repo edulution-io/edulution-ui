@@ -5,29 +5,29 @@ import { Form } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import RadioGroupFormField, { RadioGroupItem } from '@/components/shared/RadioGroupFormField';
+import FormData from '@/pages/ConferencePage/CreateConference/form';
 
 interface CreateConferenceDialogBodyProps {
-  form: UseFormReturn;
+  form: UseFormReturn<FormData>;
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
-  const { isLoading, error } = useCreateConferenceDialogStore();
+  const { isLoading } = useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
 
   const conferencePrivacyStatus: RadioGroupItem[] = [
-    { value: true, translationId: 'conferences.public' },
-    { value: false, translationId: 'conferences.private' },
+    { value: 'true', translationId: 'conferences.public' },
+    { value: 'false', translationId: 'conferences.private' },
   ];
 
   return (
     <Form {...form}>
       <form className="space-y-4">
         <FormField
-          form={form}
           name="name"
+          form={form}
           labelTranslationId={t('conferences.name')}
           isLoading={isLoading}
           variant="default"
@@ -41,10 +41,10 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           formClassname="text-black"
           labelClassname="font-bold text-m"
         />
-        {form.getValues('isPublic') ? null : (
+        {form.getValues('isPublic') === 'true' ? null : (
           <FormField
-            form={form}
             name="password"
+            form={form}
             labelTranslationId={t('conferences.password')}
             type="password"
             isLoading={isLoading}

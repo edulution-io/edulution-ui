@@ -1,20 +1,20 @@
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import React from 'react';
-import { Control } from 'react-hook-form';
+import { Control, FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
 
 export interface RadioGroupItem {
-  value: string | boolean;
+  value: string;
   translationId: string;
 }
 
 interface RadioGroupProps {
-  control: Control;
+  control: Control<FieldValues>;
   name: string;
   titleTranslationId: string;
-  defaultValue?: string | boolean;
+  defaultValue?: string;
   items: RadioGroupItem[];
   formClassname?: string;
   labelClassname?: string;

@@ -1,4 +1,4 @@
-export enum ConferenceRole {
+enum ConferenceRole {
   Moderator = 'MODERATOR',
   Viewer = 'VIEWER',
 }

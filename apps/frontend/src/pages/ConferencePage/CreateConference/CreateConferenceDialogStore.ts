@@ -1,23 +1,21 @@
 import { create } from 'zustand';
-import axios from 'axios';
-import { ConferencesAPIsResponse } from '@/pages/ConferencePage/model';
-import handleApiError from '@/utils/handleApiError';
+import { AxiosError } from 'axios';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
   openCreateConferenceDialog: () => void;
   closeCreateConferenceDialog: () => void;
   isLoading: boolean;
-  error: Error | null;
-  createConference: (meetingID: string, name: string, dialNumber: string) => Promise<void>;
+  setIsLoading: (isLoading: boolean) => void;
+  error: AxiosError | null;
+  setError: (error: AxiosError) => void;
   reset: () => void;
 }
 
-const initialState = {
-  newConference: {},
-  error: null,
+const initialState: Partial<CreateConferenceDialogStore> = {
+  isCreateConferenceDialogOpen: false,
   isLoading: false,
-  isCreateNewConferenceDialogOpen: false,
+  error: null,
 };
 
 const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set) => ({
@@ -25,21 +23,9 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
   openCreateConferenceDialog: () => set({ isCreateConferenceDialogOpen: true }),
   closeCreateConferenceDialog: () => set({ isCreateConferenceDialogOpen: false }),
   isLoading: false,
+  setIsLoading: (isLoading) => set({ isLoading }),
   error: null,
-  createConference: async (meetingID: string, name: string, dialNumber: string) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axios.post<ConferencesAPIsResponse>('http://localhost:3000/api/create', {
-        meetingID,
-        name,
-        dialNumber,
-      });
-      console.log(response);
-      set({ isLoading: false });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
+  setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 }));
 

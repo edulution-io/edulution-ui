@@ -11,14 +11,17 @@ export class Conference {
   @Prop({ required: true })
   meetingID: string;
 
-  @Prop()
-  url: string;
+  @Prop({ required: true })
+  creator: string;
 
-  @Prop()
-  password: string;
+  @Prop({ type: String, default: undefined })
+  password?: string;
 
-  @Prop()
-  isMeetingStarted: string;
+  @Prop({ default: false })
+  isMeetingStarted: boolean;
+
+  @Prop({ required: true })
+  attendees: string[];
 }
 
 export const ConferenceSchema = SchemaFactory.createForClass(Conference);

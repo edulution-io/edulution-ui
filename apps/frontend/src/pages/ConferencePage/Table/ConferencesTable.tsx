@@ -13,8 +13,8 @@ import {
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumn';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import { Conference } from '@/pages/ConferencePage/model';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
