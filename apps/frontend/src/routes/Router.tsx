@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { useLocalStorage } from 'usehooks-ts';
 
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
@@ -27,7 +26,7 @@ import useUserQuery from '@/api/useUserQuery';
 
 import SurveyPage from '@/pages/Survey/SurveyPage';
 import PollMockup from '@/pages/Survey/Poll/PollMockup';
-        
+
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
     case APPS.CONFERENCES:
@@ -91,7 +90,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="survey"
               element={<SurveyPage />}
             >
-              {Object.keys(config).map((key) => (
+              {Object.keys(appConfig).map((key) => (
                 <Route
                   key={key}
                   path={key}
@@ -104,7 +103,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="survey/forms/create"
               element={<SurveyCreatorWidget />}
             >
-              {Object.keys(config).map((key) => (
+              {Object.keys(appConfig).map((key) => (
                 <Route
                   key={key}
                   path={key}
@@ -116,7 +115,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="survey/poll"
               element={<PollMockup />}
             >
-              {Object.keys(config).map((key) => (
+              {Object.keys(appConfig).map((key) => (
                 <Route
                   key={key}
                   path={key}
@@ -128,7 +127,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="survey/poll/create"
               element={<PollEditor />}
             >
-              {Object.keys(config).map((key) => (
+              {Object.keys(appConfig).map((key) => (
                 <Route
                   key={key}
                   path={key}
