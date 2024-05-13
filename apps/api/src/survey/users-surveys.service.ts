@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
+import { Survey } from './survey.schema';
 
 @Injectable()
 class UsersSurveysService {
@@ -10,6 +11,24 @@ class UsersSurveysService {
 
   async updateUser(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
     return this.userModel.findOneAndUpdate<User>({ username }, updateUserDto, { new: true }).exec();
+  }
+
+  async getOpenSurveys(username: string): Promise<string[]> {
+    const existingUser = await this.userModel.findOne<User>({ username }).exec();
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+
+    return existingUser.UsersSurveys.openSurveys;
+  }
+
+  async getCreatedSurveys(username: string): Promise<Survey[]> {
+    const existingUser = await this.userModel.findOne<User>({ username }).exec();
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+
+    return existingUser.UsersSurveys.createdSurveys;
   }
 
   async removeFromOpenSurveys(username: string, surveyName: string): Promise<void> {

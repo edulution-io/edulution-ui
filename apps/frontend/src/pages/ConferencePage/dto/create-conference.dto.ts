@@ -1,1 +1,9 @@
-/home/tom/Dokumente/netzint/edulution-ui/apps/api/src/conferences/dto/create-conference.dto.ts
+class CreateConferenceDto {
+  name: string;
+
+  password?: string;
+
+  attendees: string[];
+}
+
+export default CreateConferenceDto;

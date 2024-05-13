@@ -1,1 +1,6 @@
-/home/tom/Dokumente/netzint/edulution-ui/apps/api/src/conferences/dto/conference-role.enum.ts
+enum ConferenceRole {
+  Moderator = 'MODERATOR',
+  Viewer = 'VIEWER',
+}
+
+export default ConferenceRole;

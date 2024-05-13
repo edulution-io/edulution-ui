@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import SurveyService from './surveyService';
+import SurveyService from './survey.service';
 import UsersSurveysService from './users-surveys.service';
 import CreateSurveyDto from './dto/create-survey.dto';
 import UpdateSurveyDto from './dto/update-survey.dto';
 import { Survey } from './survey.schema';
+import MockedSurveys from './mocked-surveys';
 
 @Controller('survey')
 class SurveysController {
@@ -25,6 +26,12 @@ class SurveysController {
   }
 
   @Get()
+  findSurveyMockup() {
+    const survey = new MockedSurveys();
+    return survey;
+  }
+
+  @Get()
   findAll() {
     return this.surveyService.findAllSurveys();
   }
@@ -32,6 +39,12 @@ class SurveysController {
   @Get(':surveyName')
   findOne(@Param('surveyName') surveyName: string) {
     return this.surveyService.findSurvey(surveyName);
+  }
+
+  @Get()
+  findOpen() {
+    // const surveynames = this.usersSurveysService.
+    return this.surveyService.findAllSurveys();
   }
 
   @Patch(':surveyName')
