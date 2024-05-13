@@ -33,34 +33,28 @@ const Email = (props: MailProps) => {
 
   const { t } = useTranslation();
 
-  const classNameSection = "text-gray-900 mt-2"
-  const classNameInput = "text-sm text-gray-500 p-2"
+  const classNameSection = 'text-gray-900 mt-2';
+  const classNameInput = 'text-sm text-gray-500 p-2';
 
   // const keys = ['from', 'cc', 'bcc', 'subject', 'date'] as Array<keyof MailProps>;
 
-const keys = ['text'] as Array<keyof MailProps>;
+  const keys = ['text'] as Array<keyof MailProps>;
 
   return (
     <div
-      key={ `EmailWidget_-_Email_${ emailIndex }` }
-      className="bg-gray-100 shadow border p-2 rounded mb-4"
+      key={`EmailWidget_-_Email_${emailIndex}`}
+      className="mb-4 rounded border bg-gray-100 p-2 shadow"
     >
-      <h4
-        className="text-gray-900"
-      >
-        { `${ t('email') }: ${ emailIndex }` }
-      </h4>
+      <h4 className="text-gray-900">{`${t('email')}: ${emailIndex}`}</h4>
       {
         // eslint-disable-next-line react/destructuring-assignment
         keys.map((key) => renderParameter(key, props[key]))
       }
-      <div
-        className={ classNameSection }
-      >
+      <div className={classNameSection}>
         <input
-          className={ classNameInput }
+          className={classNameInput}
           type="text"
-          value={ `${JSON.stringify(text, null, 2)}` }
+          value={`${JSON.stringify(text, null, 2)}`}
           readOnly
         />
       </div>

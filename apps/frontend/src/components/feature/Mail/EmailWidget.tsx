@@ -27,8 +27,8 @@ const EmailWidget = () => {
 
   const getMails = () => {
     // fetch mails
-    setMails(mockMails)
-  }
+    setMails(mockMails);
+  };
 
   return (
     <Card
@@ -48,14 +48,14 @@ const EmailWidget = () => {
             width={BUTTONS_ICON_WIDTH}
           />
         </h4>
-        <div className="mt-2 mb-4">
+        <div className="mb-4 mt-2">
           <DropdownMenu
             options={getOptions()}
             selectedVal={selected}
             handleChange={setSelected}
           />
         </div>
-        <div className="flex justify-end items-end mb-4">
+        <div className="mb-4 flex items-end justify-end">
           <Button
             variant="btn-collaboration"
             onClick={() => getMails()}
@@ -63,13 +63,17 @@ const EmailWidget = () => {
             {t('update')}
           </Button>
         </div>
-        { mails.length > 0 && (
-          <div
-            className="bg-gray-300 h-100 overflow-y-scroll rounded p-2 border shadow-lg"
-          >
-            {mails.map((mail, index) => <Email key={`mail_${mail.messageId}`} emailIndex={`${index}`} {...mail} />)}
+        {mails.length > 0 && (
+          <div className="h-100 overflow-y-scroll rounded border bg-gray-300 p-2 shadow-lg">
+            {mails.map((mail, index) => (
+              <Email
+                key={`mail_${mail.messageId}`}
+                emailIndex={`${index}`}
+                {...mail}
+              />
+            ))}
           </div>
-        ) }
+        )}
       </CardContent>
     </Card>
   );
