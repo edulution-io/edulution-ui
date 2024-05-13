@@ -7,10 +7,10 @@ services:
       - '443:443'
     restart: always
     environment:
-      VITE_WEBDAV_KEY: b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb
-      VITE_AUTH_CLIENT_SECRET: 0ylT4gV4TNaW3ckCx63NA3gHzPDHElCA
-      VITE_AUTH_CLIENT_ID: edulution-test
-      VITE_AUTH_REALM: edulution
+      VITE_WEBDAV_KEY: <WEBDAV_KEY>
+      VITE_AUTH_CLIENT_SECRET: <CLIENT_SECRET>
+      VITE_AUTH_CLIENT_ID: <CLIENT_ID>
+      VITE_AUTH_REALM: <REALM>
 
       EDU_API_URL: http://edulution-api:3000
 
@@ -23,14 +23,14 @@ services:
     environment:
       EDUI_PORT: 3000
 
-      PUBLIC_KEY_FILE_PATH: public.pem
+      PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
 
       EDUI_CORS_URL: '*'
 
       MONGODB_DATABASE_NAME: edulution
-      MONGODB_USERNAME: root
-      MONGODB_PASSWORD: example
-      MONGODB_SERVER_URL: mongodb://root:example@mongoEdu:27017/
+      MONGODB_USERNAME: <DBUSER>
+      MONGODB_PASSWORD: <DBPASSWORD>
+      MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
 
@@ -41,8 +41,8 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: <DBUSER>
+      MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>
 
   # A simole web frontend for mongoDB
   # mongoEdu-express:
@@ -51,7 +51,7 @@ services:
   #   ports:
   #     - 8081:8081
   #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
-  #     ME_CONFIG_MONGODB_SERVER_URL: mongodb://root:example@mongoEdu:27017/
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: <DBUSER>
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: <DBPASSWORD>
+  #     ME_CONFIG_MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
   #     ME_CONFIG_BASICAUTH: false
