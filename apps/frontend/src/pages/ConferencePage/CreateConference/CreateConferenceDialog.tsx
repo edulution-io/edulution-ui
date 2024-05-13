@@ -10,6 +10,7 @@ import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import FormData from '@/pages/ConferencePage/CreateConference/form';
 import useUserStore from '@/store/userStore';
+import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
@@ -24,6 +25,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     error,
     createConference,
   } = useCreateConferenceDialogStore();
+  const { getConferences } = useConferenceStore();
   const { user } = useUserStore();
 
   const { t } = useTranslation();
@@ -32,6 +34,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     name: '',
     password: '',
     isPublic: 'true',
+    attendees: [],
   };
 
   const formSchema = z.object({
@@ -65,11 +68,12 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      creator: user,
-      attendees: [],
+      attendees: [user],
     };
 
     await createConference(newConference);
+    await getConferences();
+    form.reset();
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);

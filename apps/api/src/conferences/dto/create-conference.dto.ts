@@ -3,8 +3,6 @@ class CreateConferenceDto {
 
   password?: string;
 
-  creator: string;
-
   attendees: string[];
 }
 

@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, L
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import LoggerEnum from '../types/logger';
+import JWTUser from '../types/JWTUser';
 
 @Injectable()
 class AuthenticationGuard implements CanActivate {
@@ -17,9 +18,12 @@ class AuthenticationGuard implements CanActivate {
     const token = AuthenticationGuard.extractTokenFromHeader(request);
 
     try {
-      await this.jwtService.verifyAsync(token, {
+      const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(token, {
         secret: Buffer.from(`${process.env.KEYCLOAK_AUTH_CLIENT_SECRET}`, 'base64'),
       });
+
+      request.user = decoded;
+      request.token = token;
 
       return true;
     } catch (e) {

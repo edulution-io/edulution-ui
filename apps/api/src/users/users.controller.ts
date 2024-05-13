@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import LoginUserDto from './dto/login-user.dto';
+import GetToken from '../auth/getToken';
 
 @Controller('users')
 export class UsersController {
@@ -36,6 +37,11 @@ export class UsersController {
   @Delete(':username')
   remove(@Param('username') username: string) {
     return this.usersService.remove(username);
+  }
+
+  @Get('search')
+  async search(@GetToken() token: string, @Query('name') name: string) {
+    return this.usersService.searchUsersByName(token, name);
   }
 }
 

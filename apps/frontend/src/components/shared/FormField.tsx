@@ -25,7 +25,7 @@ type FormFieldProps = {
 
 const FormField = ({ form, name, isLoading, labelTranslationId, type, variant }: FormFieldProps) => {
   const { t } = useTranslation();
-  console.log(name, variant, cn(variants({ variant })));
+
   return (
     <FormFieldSH
       control={form.control}

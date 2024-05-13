@@ -6,25 +6,44 @@ import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import RadioGroupFormField, { RadioGroupItem } from '@/components/shared/RadioGroupFormField';
 import FormData from '@/pages/ConferencePage/CreateConference/form';
+import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 
 interface CreateConferenceDialogBodyProps {
   form: UseFormReturn<FormData>;
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
-  const { isLoading } = useCreateConferenceDialogStore();
+  const { setValue } = form;
+  const { isLoading, searchAttendees } = useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
   if (isLoading) return <div>Loading...</div>;
+
+  const handleAttendeesChange = (selectedOptions: MultipleSelectorOptionSH[]) => {
+    const attendees = selectedOptions.map((option) => option.value);
+    setValue('attendees', attendees, { shouldValidate: true });
+  };
 
   const conferencePrivacyStatus: RadioGroupItem[] = [
     { value: 'true', translationId: 'conferences.public' },
     { value: 'false', translationId: 'conferences.private' },
   ];
 
+  const onAttendeesSearch = async (value: string): Promise<MultipleSelectorOptionSH[]> => {
+    const attendees = await searchAttendees(value);
+
+    return attendees.map((a) => ({ value: a.username, label: `${a.firstname} ${a.lastname} (${a.username})` }));
+  };
+
   return (
     <Form {...form}>
-      <form className="space-y-4">
+      <form
+        className="space-y-4"
+        onSubmit={(event) => {
+          event.preventDefault();
+        }}
+      >
         <FormField
           name="name"
           form={form}
@@ -51,6 +70,10 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
             variant="default"
           />
         )}
+        <SearchUsersOrGroups
+          onSearch={onAttendeesSearch}
+          onChange={handleAttendeesChange}
+        />
       </form>
     </Form>
   );

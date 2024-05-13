@@ -18,6 +18,7 @@ const DeleteConferencesDialog = ({ trigger, conferences }: DeleteConferencesDial
 
   const onSubmit = async () => {
     await deleteConferences(conferences);
+    setIsOpen(false);
   };
 
   const getDialogBody = () => {

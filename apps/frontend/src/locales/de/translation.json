@@ -196,6 +196,11 @@
   "loadingIndicator": {
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
   },
+  "search": {
+    "type-to-search": "Tippen um zu suchen",
+    "loading": "Lade",
+    "no-results": "Keine Ergebnisse"
+  },
   "fileCategory": {
     "folder": "Ordner",
     "document": "Dokument",

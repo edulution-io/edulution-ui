@@ -2,8 +2,11 @@ import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import CreateConferenceDto from '@/pages/ConferencePage/dto/create-conference.dto';
 import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
-import eduApiInstance from '@/api/eduApiInstance';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
+import User from '@/pages/ConferencePage/CreateConference/user';
+import { USERS_EDU_API_ENDPOINT } from '@/api/useUserQuery';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -16,6 +19,7 @@ interface CreateConferenceDialogStore {
   reset: () => void;
   createConference: (conference: CreateConferenceDto) => Promise<void>;
   createdConference: Conference | null;
+  searchAttendees: (searchQuery: string) => Promise<User[]>;
 }
 
 const initialState: Partial<CreateConferenceDialogStore> = {
@@ -24,8 +28,6 @@ const initialState: Partial<CreateConferenceDialogStore> = {
   error: null,
   createdConference: null,
 };
-
-const apiEndpoint = 'conferences/';
 
 const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set) => ({
   isCreateConferenceDialogOpen: false,
@@ -38,16 +40,26 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
   reset: () => set(initialState),
 
   createConference: async (conference) => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
-      const response = await eduApiInstance.post<Conference>(apiEndpoint, conference);
-      set({ createdConference: response.data, isLoading: false });
+      const response = await eduApi.post<Conference>(apiEndpoint, conference);
+      set({ createdConference: response.data, isLoading: false, isCreateConferenceDialogOpen: false });
     } catch (error) {
       handleApiError(error, set);
     }
   },
-
   createdConference: null,
+
+  searchAttendees: async (searchQuery) => {
+    set({ error: null });
+    try {
+      const response = await eduApi.get<User[]>(`${USERS_EDU_API_ENDPOINT}?q=${searchQuery}`);
+      return response.data;
+    } catch (error) {
+      handleApiError(error, set);
+      return [];
+    }
+  },
 }));
 
 export default useCreateConferenceDialogStore;
