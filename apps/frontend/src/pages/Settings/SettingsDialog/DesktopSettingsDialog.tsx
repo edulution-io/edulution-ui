@@ -5,7 +5,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } fr
 import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 
@@ -15,10 +14,11 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
   setOption,
   filteredAppOptions,
   setSearchParams,
-  setConfig,
+  handleAddApp,
 }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
+
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
     <Dialog
@@ -53,17 +53,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
               type="button"
               variant="btn-collaboration"
               size="lg"
-              onClick={() => {
-                setSearchParams(new URLSearchParams(''));
-                setConfig((prevConfig) => ({
-                  [option.toLowerCase().split('.')[0]]: {
-                    linkPath: '',
-                    icon: '',
-                    appType: AppType.NATIVE,
-                  },
-                  ...prevConfig,
-                }));
-              }}
+              onClick={handleAddApp}
             >
               {t('common.add')}
             </Button>
