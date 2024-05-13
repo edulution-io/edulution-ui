@@ -6,5 +6,7 @@
   },
   "files.associations": {
     "*.scss": "tailwindcss"
-  }
+  },
+
+  "eslint.workingDirectories": ["apps/api", "apps/frontend", "apps/api-e2e", "./"]
 }

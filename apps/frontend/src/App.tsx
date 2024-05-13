@@ -5,25 +5,28 @@ import Router from '@/routes/Router';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
+import useUserStore from '@/store/userStore';
+import eduApi from '@/api/eduApi';
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const { lang } = useLanguage();
+  const { token } = useUserStore();
+
+  eduApi.defaults.headers.Authorization = `Bearer ${token}`;
 
   useEffect(() => {
-    i18n.changeLanguage(lang).catch((e) => {
-      console.error(e);
-    });
+    i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
   }, [lang]);
 
-  // TODO: Move config to backend NIEDUUI-26
   const oidcConfig: AuthProviderProps = {
-    authority: `https://auth.schulung.multi.schule/auth/realms/edulution`,
-    client_id: 'edulution-ui',
+    authority: `${window.location.origin}/auth/realms/${import.meta.env.VITE_AUTH_REALM}`,
+    client_id: import.meta.env.VITE_AUTH_CLIENT_ID as string,
+    client_secret: import.meta.env.VITE_AUTH_CLIENT_SECRET as string,
     redirect_uri: '',
-    scope: 'openid',
-    silent_redirect_uri: window.location.origin,
+    loadUserInfo: true,
+    automaticSilentRenew: true,
   };
 
   return (

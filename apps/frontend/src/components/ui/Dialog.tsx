@@ -46,8 +46,8 @@ const DialogContent = React.forwardRef<
     >
       {children}
       {showCloseButton && (
-        <DialogPrimitive.Close className="absolute right-4 top-4">
-          <Cross2Icon className="h-4 w-4" />
+        <DialogPrimitive.Close className="absolute right-5 top-5">
+          <Cross2Icon className="h-4 w-4 text-black" />
           <span className="sr-only">${translateKey('dialog.close')}</span>
         </DialogPrimitive.Close>
       )}

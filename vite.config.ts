@@ -34,6 +34,9 @@ export default defineConfig({
         secure: false,
         headers: {
           Origin: 'https://ui.schulung.multi.schule',
+          'X-Forwarded-For': 'client-ip-address',
+          'X-Forwarded-Proto': 'https',
+          'X-Forwarded-Host': 'auth.schulung.multi.schule',
         },
       },
       '/webdav': {
@@ -51,6 +54,15 @@ export default defineConfig({
         secure: false,
         headers: {
           Origin: 'https://server.schulung.multi.schule:8001',
+        },
+      },
+      '/edu-api': {
+        rewrite: (path) => path.replace(/^\/edu-api/, ''),
+        target: 'http://localhost:3000/edu-api',
+        changeOrigin: false,
+        secure: false,
+        headers: {
+          Origin: 'https://ui.schulung.multi.schule',
         },
       },
       //TODO docs
