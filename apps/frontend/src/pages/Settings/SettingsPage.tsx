@@ -200,12 +200,34 @@ const SettingsPage: React.FC = () => {
       );
   };
 
+  const handleAddApp = () => {
+    setSearchParams('');
+    const selectedOption = option.toLowerCase().split('.')[0];
+    const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
+
+    if (optionsConfig) {
+      const newConfig = {
+        name: selectedOption,
+        linkPath: '',
+        icon: optionsConfig.icon,
+        appType: AppIntegrationType.FORWARDED,
+      };
+      const updatedConfig = [...appConfig, newConfig];
+
+      setAppConfig(updatedConfig);
+      updateAppConfig(updatedConfig)
+        .then(() => toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`))
+        .catch(() => toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`));
+    }
+  };
+
   const dialogProps: SettingsDialogProps = {
     isOpen: mode === 'add',
     option,
     setOption,
     filteredAppOptions,
     setSearchParams,
+    handleAddApp,
   };
 
   return (
