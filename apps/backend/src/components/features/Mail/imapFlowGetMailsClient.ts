@@ -15,6 +15,11 @@ export default class ImapFlowGetMailsClient {
     host: 'imap.gmail.com',
     port: 993,
     secure: true,
+    greetingTimeout: 10000,
+    connectionTimeout: 100000,
+    tls: {
+      rejectUnauthorized: false,
+    },
     auth: {
       user: '',
       pass: '',

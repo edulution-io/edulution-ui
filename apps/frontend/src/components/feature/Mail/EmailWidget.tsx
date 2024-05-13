@@ -1,26 +1,20 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { ParsedMail } from 'mailparser';
 import Mail from '@/assets/icons/edulution/Mail.svg';
 import { DropdownMenu } from '@/components';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import { CardContent, Card } from '@/components/shared/Card';
-import ImapFlowGetMailsClient from '@/components/feature/Mail/imapFlowGetMailsClient';
+import { Button } from '@/components/shared/Button';
+import mockMails from '@/components/feature/Mail/mock-mails';
+import Email from '@/components/feature/Mail/Email';
 import { ImapSearchParameter } from './imap-search-options';
 
 const EmailWidget = () => {
   const { t } = useTranslation();
 
   const [selected, setSelected] = React.useState<string>(ImapSearchParameter.ALL);
-  // TODO: add the type for the mails
-  // eslint-disable-next-line
-  const [mails, setMails] = React.useState<JSON>();
-
-  const ImapClient = new ImapFlowGetMailsClient();
-
-  const getMails = useCallback(async () => {
-    const emails = await ImapClient.getMails();
-    setMails(emails);
-  }, []);
+  const [mails, setMails] = React.useState<ParsedMail[]>([]);
 
   const getOptions = () => {
     const options: { id: string; name: string }[] = [];
@@ -31,13 +25,10 @@ const EmailWidget = () => {
     return options;
   };
 
-  useEffect(async () => {
-    try {
-      await getMails();
-    } catch (error) {
-      console.error('Error fetching emails', error);
-    }
-  }, []);
+  const getMails = () => {
+    // fetch mails
+    setMails(mockMails)
+  }
 
   return (
     <Card
@@ -57,14 +48,28 @@ const EmailWidget = () => {
             width={BUTTONS_ICON_WIDTH}
           />
         </h4>
-        <div className="mt-4 flex flex-col justify-between gap-6">
+        <div className="mt-2 mb-4">
           <DropdownMenu
             options={getOptions()}
             selectedVal={selected}
             handleChange={setSelected}
           />
         </div>
-        <div className="mt-4 flex flex-col justify-between gap-6">{`${JSON.stringify(mails, null, 2)}`}</div>
+        <div className="flex justify-end items-end mb-4">
+          <Button
+            variant="btn-collaboration"
+            onClick={() => getMails()}
+          >
+            {t('update')}
+          </Button>
+        </div>
+        { mails.length > 0 && (
+          <div
+            className="bg-gray-300 h-100 overflow-y-scroll rounded p-2 border shadow-lg"
+          >
+            {mails.map((mail, index) => <Email key={`mail_${mail.messageId}`} emailIndex={`${index}`} {...mail} />)}
+          </div>
+        ) }
       </CardContent>
     </Card>
   );

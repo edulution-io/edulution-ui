@@ -1,4 +1,4 @@
-import { ImapSearchParameter, ImapSearchOption } from './imap-search-options';
+import { ImapSearchParameter, ImapSearchOption } from '@/components/feature/Mail/imap-search-options';
 
 export interface ImapSearchCriteriaParameter {
   options: ImapSearchOption[];
