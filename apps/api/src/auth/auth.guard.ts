@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -18,8 +19,12 @@ class AuthenticationGuard implements CanActivate {
     const token = AuthenticationGuard.extractTokenFromHeader(request);
 
     try {
+      const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
+      const pubKey = fs.readFileSync(pubKeyPath, 'utf8');
+
       const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(token, {
-        secret: Buffer.from(`${process.env.KEYCLOAK_AUTH_CLIENT_SECRET}`, 'base64'),
+        publicKey: pubKey,
+        algorithms: ['RS256'],
       });
 
       request.user = decoded;
