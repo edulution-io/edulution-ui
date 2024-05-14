@@ -20,7 +20,6 @@ import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingType
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -28,8 +27,7 @@ const SettingsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { updateAppConfig, deleteAppConfigEntry } = useAppConfigQuery();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { appConfig, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
@@ -78,8 +76,6 @@ const SettingsPage: React.FC = () => {
           return entry;
         });
 
-        setAppConfig(updatedConfig);
-
         updateAppConfig(updatedConfig)
           .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`))
           .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
@@ -126,6 +122,7 @@ const SettingsPage: React.FC = () => {
                             <h4>{t('form.apptype')}</h4>
                             <FormControl>
                               <RadioGroupSH
+                                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                                 onValueChange={field.onChange}
                                 defaultValue={findAppConfigByName(appConfig, settingLocation)?.appType}
                                 className="flex flex-col space-y-1"
@@ -187,8 +184,6 @@ const SettingsPage: React.FC = () => {
     const deleteOptionName = appConfig.filter((item) => item.name === settingLocation)[0].name;
     deleteAppConfigEntry(deleteOptionName)
       .then(() => {
-        const filteredArray = appConfig.filter((item) => item.name !== settingLocation);
-        setAppConfig(filteredArray);
         toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {
           description: new Date().toLocaleString(),
         });

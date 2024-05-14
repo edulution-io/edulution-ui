@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -18,8 +17,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   setSearchParams,
 }) => {
   const { t } = useTranslation();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const { updateAppConfig } = useAppConfigQuery();
+  const { appConfig, updateAppConfig } = useAppConfigsStore();
 
   return (
     <Sheet
@@ -60,7 +58,6 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
                 };
                 const updatedConfig = [...appConfig, newConfig];
 
-                setAppConfig(updatedConfig);
                 updateAppConfig(updatedConfig)
                   .then(() =>
                     toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),

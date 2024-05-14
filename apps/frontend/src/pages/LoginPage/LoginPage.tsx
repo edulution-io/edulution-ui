@@ -51,7 +51,6 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        await getToken(username, password);
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
           data: form.getValues('password') as string,
@@ -64,6 +63,7 @@ const LoginPage: React.FC = () => {
         setIsAuthenticated(true);
 
         createWebdavClient();
+        await getToken(username, password);
       }
 
       return null;
