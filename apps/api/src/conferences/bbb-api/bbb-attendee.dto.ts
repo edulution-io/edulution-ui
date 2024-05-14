@@ -1,6 +1,6 @@
 import ConferenceRole from '../dto/conference-role.enum';
 
-export default class Attendee {
+export default class BbbAttendeeDto {
   userID: string;
 
   fullName: string;

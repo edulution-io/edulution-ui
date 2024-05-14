@@ -1,38 +1,35 @@
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
+import FormData from '@/pages/ConferencePage/CreateConference/form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import FormData from '@/pages/ConferencePage/CreateConference/form';
+import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 
-interface CreateConferenceDialogProps {
+interface ConferenceDetailsDialogProps {
+  conference: Conference;
   trigger?: React.ReactNode;
 }
 
-const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
-  const {
-    isCreateConferenceDialogOpen,
-    openCreateConferenceDialog,
-    closeCreateConferenceDialog,
-    isLoading,
-    error,
-    createConference,
-  } = useCreateConferenceDialogStore();
-  const { getConferences } = useConferenceStore();
-
+const ConferenceDetailsDialog = ({ conference, trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
+  const { createConference } = useCreateConferenceDialogStore();
+  const { getConferences } = useConferenceStore();
+  const { isLoading, error, isConferenceDetailsDialogOpen, toggleIsConferenceDetailsDialogOpen } =
+    useConferenceDetailsDialogStore();
 
   const initialFormValues: FormData = {
-    name: '',
-    password: '',
-    isPublic: 'true',
-    invitedAttendees: [],
+    name: conference.name,
+    password: conference.password,
+    isPublic: conference.password ? 'false' : 'true',
+    invitedAttendees: conference.invitedAttendees,
   };
 
   const formSchema = z.object({
@@ -69,7 +66,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     ),
   });
 
-  const form = useForm<FormData>({
+  const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
@@ -88,7 +85,6 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
-
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
@@ -120,9 +116,9 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
 
   return (
     <AdaptiveDialog
-      isOpen={isCreateConferenceDialogOpen}
+      isOpen={isConferenceDetailsDialogOpen}
       trigger={trigger}
-      handleOpenChange={isCreateConferenceDialogOpen ? closeCreateConferenceDialog : openCreateConferenceDialog}
+      handleOpenChange={toggleIsConferenceDetailsDialogOpen}
       title={t('conferences.create')}
       body={getDialogBody()}
       footer={getFooter()}
@@ -130,4 +126,4 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   );
 };
 
-export default CreateConferenceDialog;
+export default ConferenceDetailsDialog;

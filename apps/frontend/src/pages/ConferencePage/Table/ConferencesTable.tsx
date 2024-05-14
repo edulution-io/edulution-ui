@@ -10,11 +10,11 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumn';
+import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { Conference } from '@/pages/ConferencePage/conference.dto';
+import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -45,7 +45,7 @@ const ConferencesTable = () => {
 
     fetchConferences().catch((e) => console.error(e));
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const intervalId = setInterval(fetchConferences, 100000); // TODO: 10000
+    const intervalId = setInterval(fetchConferences, 5000); // TODO: 10000
 
     return () => {
       clearInterval(intervalId);

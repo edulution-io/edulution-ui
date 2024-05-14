@@ -1,9 +1,11 @@
+import { Attendee } from './attendee';
+
 class CreateConferenceDto {
   name: string;
 
   password?: string;
 
-  attendees: string[];
+  invitedAttendees: Attendee[];
 }
 
 export default CreateConferenceDto;

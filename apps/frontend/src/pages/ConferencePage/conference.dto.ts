@@ -1,1 +1,0 @@
-/home/tom/Dokumente/netzint/edulution-ui/apps/api/src/conferences/conference.schema.ts

@@ -1,12 +1,13 @@
 import React from 'react';
 import MultipleSelectorSH, { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import { useTranslation } from 'react-i18next';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 export interface AsyncMultiSelectProps {
-  options: MultipleSelectorOptionSH[];
+  options: Attendee[];
   placeholder: string;
   delay?: number;
-  onSearch: (value: string) => Promise<MultipleSelectorOptionSH[]>;
+  onSearch: (value: string) => Promise<Attendee[]>;
   onChange: (options: MultipleSelectorOptionSH[]) => void;
 }
 
@@ -26,7 +27,7 @@ const AsyncMultiSelect = ({ options, placeholder, delay = 700, onSearch, onChang
       emptyIndicator={emptyIndicator}
       delay={delay}
       badgeClassName="text-base font-normal"
-      className="h-9 rounded-lg py-1"
+      className="rounded-lg py-1"
       onChange={onChange}
       onSearch={onSearch}
       inputProps={{ className: 'text-base m-0' }}

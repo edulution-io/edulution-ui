@@ -66,27 +66,30 @@ class UsersService {
 
     const fetchedUsers = await this.fetchUsersFromExternalApi(token);
     console.log(`Fetched ${fetchedUsers.length} new users`);
-    await this.cacheManager.set('allUsers', fetchedUsers, 300);
+    await this.cacheManager.set('allUsers', fetchedUsers, 300000);
     return fetchedUsers;
   }
 
-  async searchUsersByName(token: string, name: string): Promise<LDAPUser[]> {
+  async searchUsersByName(token: string, name: string): Promise<User[]> {
     const searchString = name.toLowerCase();
+    console.log(`searchString ${JSON.stringify(searchString, null, 2)}`);
     const users = await this.findAllCachedUsers(token);
+    console.log(`users ${JSON.stringify(users.length, null, 2)}`);
 
-    return users.filter(
-      (user) =>
-        user.firstName.toLowerCase().includes(searchString) ||
-        user.lastName.toLowerCase().includes(searchString) ||
-        user.username.toLowerCase().includes(searchString),
-    );
+    return users
+      .filter(
+        (user) =>
+          user.firstName?.toLowerCase().includes(searchString) ||
+          user.lastName?.toLowerCase().includes(searchString) ||
+          user.username?.toLowerCase().includes(searchString),
+      )
+      .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
   }
 
   private async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {
     const config = {
       method: 'get',
-      maxBodyLength: Infinity,
-      url: 'https://auth.schulung.multi.schule/auth/admin/realms/edulution/users',
+      url: 'https://auth.schulung.multi.schule/auth/admin/realms/edulution/users', // TODO: Where is the Keycloag domain defined?
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,

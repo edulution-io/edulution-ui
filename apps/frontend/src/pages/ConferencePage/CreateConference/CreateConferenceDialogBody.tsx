@@ -5,12 +5,13 @@ import { Form } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import RadioGroupFormField, { RadioGroupItem } from '@/components/shared/RadioGroupFormField';
-import FormData from '@/pages/ConferencePage/CreateConference/form';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 interface CreateConferenceDialogBodyProps {
-  form: UseFormReturn<FormData>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: UseFormReturn<any>;
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
@@ -20,9 +21,8 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
 
   if (isLoading) return <div>Loading...</div>;
 
-  const handleAttendeesChange = (selectedOptions: MultipleSelectorOptionSH[]) => {
-    const attendees = selectedOptions.map((option) => option.value);
-    setValue('attendees', attendees, { shouldValidate: true });
+  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+    setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
   const conferencePrivacyStatus: RadioGroupItem[] = [
@@ -30,10 +30,9 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
     { value: 'false', translationId: 'conferences.private' },
   ];
 
-  const onAttendeesSearch = async (value: string): Promise<MultipleSelectorOptionSH[]> => {
-    const attendees = await searchAttendees(value);
-
-    return attendees.map((a) => ({ value: a.username, label: `${a.firstname} ${a.lastname} (${a.username})` }));
+  const onAttendeesSearch = async (value: string): Promise<Attendee[]> => {
+    const result = await searchAttendees(value);
+    return result;
   };
 
   return (

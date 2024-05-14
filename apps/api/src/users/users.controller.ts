@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
@@ -9,7 +9,7 @@ import GetToken from '../auth/getToken';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('/login')
+  @Post('login')
   login(@Body() loginUserDto: LoginUserDto) {
     return this.usersService.login(loginUserDto);
   }
@@ -39,9 +39,9 @@ export class UsersController {
     return this.usersService.remove(username);
   }
 
-  @Get('search')
-  async search(@GetToken() token: string, @Query('name') name: string) {
-    return this.usersService.searchUsersByName(token, name);
+  @Get('search/:searchString')
+  async search(@GetToken() token: string, @Param('searchString') searchString: string) {
+    return this.usersService.searchUsersByName(token, searchString);
   }
 }
 

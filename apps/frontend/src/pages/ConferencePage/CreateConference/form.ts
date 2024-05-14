@@ -1,8 +1,10 @@
+import Attendee from '@/pages/ConferencePage/dto/attendee';
+
 interface FormData {
   name: string;
   isPublic: string;
   password?: string;
-  attendees: string[];
+  invitedAttendees: Attendee[];
 }
 
 export default FormData;

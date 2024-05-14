@@ -33,6 +33,8 @@
     "name": "Name der Konferenz",
     "password": "Passwort",
     "attendees": "Teilnehmer",
+    "invitedAttendees": "Eingeladen",
+    "joinedAttendees": "Beigetreten",
     "privacyStatus": "Zutritt",
     "public": "Öffentlich",
     "private": "Privat",
@@ -41,7 +43,13 @@
     "min_3_chars": "Mindestens 3 Zeichen",
     "max_30_chars": "Maximal 30 Zeichen",
     "password_required": "Kein Passwort eingegeben",
-    "error": "Fehler"
+    "error": "Fehler",
+    "action": "Aktion",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "close": "Konferenz schließen"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",

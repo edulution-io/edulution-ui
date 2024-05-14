@@ -9,7 +9,7 @@ import CreateConferenceDto from './dto/create-conference.dto';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testmeeting',
-  attendees: [],
+  invitedAttendees: [],
 };
 
 const conferencesModelMock = {

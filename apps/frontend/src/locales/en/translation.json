@@ -32,7 +32,9 @@
     "confirmDelete": "Should these conferences really be deleted?",
     "name": "Name of conference",
     "password": "Password",
-    "attendees": "Attendees",
+    "attendees": "Teilnehmer",
+    "invitedAttendees": "Invited",
+    "joinedAttendees": "Joined",
     "privacyStatus": "Access",
     "public": "Public",
     "private": "Private",
@@ -41,7 +43,13 @@
     "min_3_chars": "Minimum 3 characters",
     "max_30_chars": "Maximum 30 characters",
     "password_required": "No Password entered",
-    "error": "Error"
+    "error": "Error",
+    "action": "Action",
+    "start": "Start",
+    "stop": "Stop",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close conference"
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
