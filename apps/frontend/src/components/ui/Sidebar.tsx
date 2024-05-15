@@ -8,13 +8,11 @@ import { IconContext } from 'react-icons';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
+import { ConfigType } from '@/datatypes/types';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
-import { findAppConfigByName } from '@/utils/common';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
 import cleanStoreData from '@/store/utilis/cleanStoreData';
 import StoreTypes from '@/store/utilis/storeTypes';
 import SidebarItem from './SidebarItem';
@@ -32,11 +30,10 @@ const Sidebar = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
   const auth = useAuth();
-  const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
 
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
   const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
+    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
@@ -244,7 +241,7 @@ const Sidebar = () => {
       <NavLink
         onClick={() => {
           auth.removeUser().catch(console.error);
-          setIsAuthenticated(false);
+          // TODO: Remove if webdav is stored in backend NIEDUUI-26
           cleanStoreData(StoreTypes.LMN_USER_STORE);
           sessionStorage.clear();
         }}

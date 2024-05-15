@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { AxiosRequestConfig } from 'axios';
 import UserLmnInfo from '@/datatypes/userInfo';
 import axiosInstanceLmn from '@/api/axiosInstanceLmn';
-import userStore from './userStore';
 
 interface UserLmnInfoStore {
   userData: UserLmnInfo | null;
@@ -49,7 +48,7 @@ const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
       return;
     }
     const config: AxiosRequestConfig = {
-      url: `/api/v1/users/${userStore.getState().user}`,
+      url: `/api/v1/users/${sessionStorage.getItem('user')}`,
       method: 'GET',
       headers: { 'X-Api-Key': token },
     };

@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
-    "target": "ES2022",
+    "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strictPropertyInitialization": false,
@@ -11,10 +11,10 @@
     "paths": {
       "@/*": ["./apps/frontend/src/*"]
     },
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
     "sourceMap": true,
@@ -30,16 +30,12 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "useUnknownInCatchVariables": false,
-    "rootDirs": ["./apps/frontend", "./apps/api"]
+    "useUnknownInCatchVariables": false
   },
-  "exclude": ["node_modules"],
   "references": [
     {
-      "path": "./apps/frontend/tsconfig.json"
-    },
-    {
-      "path": "./packages/api/tsconfig.json"
+      "path": "./tsconfig.node.json"
     }
-  ]
+  ],
+  "exclude": ["node_modules"]
 }

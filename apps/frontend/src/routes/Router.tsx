@@ -14,10 +14,8 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
-import useUserStore from '@/store/userStore';
+import { APPS, AppType, ConfigType } from '@/datatypes/types';
+import { useLocalStorage } from 'usehooks-ts';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -40,7 +38,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
+const router = (isAuthenticated: boolean, config: ConfigType) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -71,20 +69,20 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="settings"
               element={<SettingsPage />}
             >
-              {appConfig.map((item) => (
+              {Object.keys(config).map((key) => (
                 <Route
-                  key={item.name}
-                  path={item.name}
+                  key={key}
+                  path={key}
                   element={<SettingsPage />}
                 />
               ))}
             </Route>
-            {appConfig.map((item) =>
-              item.appType === AppIntegrationType.NATIVE ? (
+            {Object.keys(config).map((key) =>
+              config[key].appType === AppType.NATIVE ? (
                 <Route
-                  key={item.name}
-                  path={item.name}
-                  element={pageSwitch(item.name)}
+                  key={key}
+                  path={key}
+                  element={pageSwitch(key)}
                 />
               ) : null,
             )}
@@ -100,11 +98,11 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                 />
               }
             />
-            {appConfig.map((item) =>
-              item.appType === AppIntegrationType.FORWARDED ? (
+            {Object.keys(config).map((key) =>
+              config[key].appType === AppType.FORWARDED ? (
                 <Route
-                  key={item.name}
-                  path={item.name}
+                  key={key}
+                  path={key}
                   element={<ForwardingPage />}
                 />
               ) : null,
@@ -112,11 +110,11 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
           </Route>
 
           <Route element={<IframeLayout />}>
-            {appConfig.map((item) =>
-              item.appType === AppIntegrationType.EMBEDDED ? (
+            {Object.keys(config).map((key) =>
+              config[key].appType === AppType.EMBEDDED ? (
                 <Route
-                  key={item.name}
-                  path={item.name}
+                  key={key}
+                  path={key}
                   element={null}
                 />
               ) : null,
@@ -129,39 +127,22 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const { getAppConfigs } = useAppConfigQuery();
-  const { isAuthenticated } = useUserStore();
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
-  useEffect(() => {
-    if (auth.isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          const configData = await getAppConfigs();
-          if (configData) {
-            setAppConfig(configData);
-          }
-        } catch (e) {
-          console.error('Error fetching data:', e);
-        }
-      };
-
-      fetchData().catch(() => null);
-    }
-  }, [auth.isAuthenticated]);
+  const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 
   useEffect(() => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
         if (auth.user?.expired) {
-          console.info('Session expired');
-          auth.removeUser().catch((e) => console.error('Error fetching data:', e));
+          console.log('Session expired');
+          auth.removeUser().catch(console.error);
           sessionStorage.clear();
         }
       });
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(isAuthenticated, appConfig)} />;
+  return <RouterProvider router={router(isAuthenticated, config)} />;
 };
 export default AppRouter;

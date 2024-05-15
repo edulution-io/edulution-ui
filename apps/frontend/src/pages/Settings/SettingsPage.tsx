@@ -1,44 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMediaQuery } from 'usehooks-ts';
+import { useLocalStorage, useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
-import Input from '@/components/shared/Input';
+import { Input } from '@/components/ui/Input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
-import { AppIntegrationType } from '@/datatypes/types';
+import { AppType, ConfigType } from '@/datatypes/types';
 import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import { findAppConfigByName } from '@/utils/common';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
+  const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { updateAppConfig, deleteAppConfigEntry } = useAppConfigQuery();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
+
+  const [config, setConfig] = useLocalStorage<ConfigType>('edu-config', {});
+
+  const [option, setOption] = useState(t(`${SETTINGS_APPSELECT_OPTIONS[0].id}.sidebar`));
 
   const formSchemaObject: { [key: string]: z.Schema } = {};
 
   SETTINGS_APPSELECT_OPTIONS.forEach((item) => {
     formSchemaObject[`${item.id}.path`] = z.string().optional();
-    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppIntegrationType).optional();
+    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppType).optional();
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -54,35 +53,36 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (areSettingsVisible) {
-      setValue(`${settingLocation}.path`, findAppConfigByName(appConfig, settingLocation)?.linkPath);
-      setValue(`${settingLocation}.appType`, findAppConfigByName(appConfig, settingLocation)?.appType);
+      setValue(`${settingLocation}.path`, config[`${settingLocation}`]?.linkPath);
+      setValue(`${settingLocation}.appType`, config[`${settingLocation}`]?.appType);
     }
-  }, [areSettingsVisible, settingLocation, appConfig]);
+  }, [areSettingsVisible, settingLocation, config]);
+
+  useEffect(() => {
+    if (Object.keys(config).length === 0) {
+      navigate('/settings');
+    }
+  }, [config]);
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
       const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
 
       if (selectedOption) {
-        const newConfig = {
-          name: settingLocation,
-          linkPath: getValues(`${settingLocation}.path`) as string,
-          icon: selectedOption.icon,
-          appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
-        };
-
-        const updatedConfig = appConfig.map((entry) => {
-          if (entry.name === settingLocation) {
-            return newConfig;
-          }
-          return entry;
+        // TODO: NIEDUUI-26 Save config on server (eg mongoDB)
+        setConfig(
+          (prevConfig): ConfigType => ({
+            ...prevConfig,
+            [settingLocation]: {
+              linkPath: getValues(`${settingLocation}.path`) as string,
+              icon: selectedOption.icon,
+              appType: getValues(`${settingLocation}.appType`) as AppType,
+            },
+          }),
+        );
+        toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('form.saved')}`, {
+          description: new Date().toLocaleString(),
         });
-
-        setAppConfig(updatedConfig);
-
-        updateAppConfig(updatedConfig)
-          .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`))
-          .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
       }
     };
     if (areSettingsVisible) {
@@ -127,24 +127,24 @@ const SettingsPage: React.FC = () => {
                             <FormControl>
                               <RadioGroup
                                 onValueChange={field.onChange}
-                                defaultValue={findAppConfigByName(appConfig, settingLocation)?.appType}
+                                defaultValue={config[`${settingLocation}`].appType}
                                 className="flex flex-col space-y-1"
                               >
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.NATIVE} />
+                                    <RadioGroupItem value={AppType.NATIVE} />
                                   </FormControl>
                                   <p>{t('form.native')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.FORWARDED} />
+                                    <RadioGroupItem value={AppType.FORWARDED} />
                                   </FormControl>
                                   <p>{t('form.forwarded')}</p>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.EMBEDDED} />
+                                    <RadioGroupItem value={AppType.EMBEDDED} />
                                   </FormControl>
                                   <p>{t('form.embedded')}</p>
                                 </FormItem>
@@ -177,48 +177,10 @@ const SettingsPage: React.FC = () => {
   };
 
   const filteredAppOptions = () => {
-    const existingOptions = appConfig.map((item) => item.name);
+    const existingOptions = Object.keys(config).map((key) => key);
     const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
-  };
-
-  const handleDeleteSettingsItem = () => {
-    const deleteOptionName = appConfig.filter((item) => item.name === settingLocation)[0].name;
-    deleteAppConfigEntry(deleteOptionName)
-      .then(() => {
-        const filteredArray = appConfig.filter((item) => item.name !== settingLocation);
-        setAppConfig(filteredArray);
-        toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {
-          description: new Date().toLocaleString(),
-        });
-      })
-      .catch(() =>
-        toast.error(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.failed')}`, {
-          description: new Date().toLocaleString(),
-        }),
-      );
-  };
-
-  const handleAddApp = () => {
-    setSearchParams('');
-    const selectedOption = option.toLowerCase().split('.')[0];
-    const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
-
-    if (optionsConfig) {
-      const newConfig = {
-        name: selectedOption,
-        linkPath: '',
-        icon: optionsConfig.icon,
-        appType: AppIntegrationType.FORWARDED,
-      };
-      const updatedConfig = [...appConfig, newConfig];
-
-      setAppConfig(updatedConfig);
-      updateAppConfig(updatedConfig)
-        .then(() => toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`))
-        .catch(() => toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`));
-    }
   };
 
   const dialogProps: SettingsDialogProps = {
@@ -227,7 +189,7 @@ const SettingsPage: React.FC = () => {
     setOption,
     filteredAppOptions,
     setSearchParams,
-    handleAddApp,
+    setConfig,
   };
 
   return (
@@ -243,7 +205,13 @@ const SettingsPage: React.FC = () => {
             type="button"
             variant="btn-hexagon"
             className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-            onClickCapture={handleDeleteSettingsItem}
+            onClickCapture={() => {
+              setConfig((prevConfig) => {
+                const { [settingLocation]: omittedValue, ...rest } = prevConfig;
+                return rest;
+              });
+              navigate('/settings');
+            }}
           >
             <img
               className="m-6"

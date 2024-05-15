@@ -12,16 +12,18 @@ const App = () => {
   const { lang } = useLanguage();
 
   useEffect(() => {
-    i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
+    i18n.changeLanguage(lang).catch((e) => {
+      console.error(e);
+    });
   }, [lang]);
 
+  // TODO: Move config to backend NIEDUUI-26
   const oidcConfig: AuthProviderProps = {
-    authority: `${window.location.origin}/auth/realms/${import.meta.env.VITE_AUTH_REALM}`,
-    client_id: import.meta.env.VITE_AUTH_CLIENT_ID as string,
-    client_secret: import.meta.env.VITE_AUTH_CLIENT_SECRET as string,
+    authority: `https://auth.schulung.multi.schule/auth/realms/edulution`,
+    client_id: 'edulution-ui',
     redirect_uri: '',
-    loadUserInfo: true,
-    automaticSilentRenew: true,
+    scope: 'openid',
+    silent_redirect_uri: window.location.origin,
   };
 
   return (
