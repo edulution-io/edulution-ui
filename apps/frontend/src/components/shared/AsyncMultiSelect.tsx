@@ -1,17 +1,22 @@
 import React from 'react';
 import MultipleSelectorSH, { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import { useTranslation } from 'react-i18next';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
 
-export interface AsyncMultiSelectProps {
-  options: Attendee[];
+export interface AsyncMultiSelectProps<T> {
+  value?: T[];
   placeholder: string;
   delay?: number;
-  onSearch: (value: string) => Promise<Attendee[]>;
+  onSearch: (value: string) => Promise<T[]>;
   onChange: (options: MultipleSelectorOptionSH[]) => void;
 }
 
-const AsyncMultiSelect = ({ options, placeholder, delay = 700, onSearch, onChange }: AsyncMultiSelectProps) => {
+const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
+  value,
+  placeholder,
+  delay = 700,
+  onSearch,
+  onChange,
+}: AsyncMultiSelectProps<T>) => {
   const { t } = useTranslation();
 
   const loadingIndicator = <p className="leading-1 py-2 text-center text-muted-foreground">{t('search.loading')}...</p>;
@@ -21,7 +26,7 @@ const AsyncMultiSelect = ({ options, placeholder, delay = 700, onSearch, onChang
 
   return (
     <MultipleSelectorSH
-      options={options}
+      value={value}
       placeholder={placeholder}
       loadingIndicator={loadingIndicator}
       emptyIndicator={emptyIndicator}

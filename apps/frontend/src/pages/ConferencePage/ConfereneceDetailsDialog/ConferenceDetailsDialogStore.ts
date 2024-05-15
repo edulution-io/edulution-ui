@@ -2,11 +2,12 @@ import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
+import apiEndpoint, { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
+import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 
 interface ConferenceDetailsDialogStore {
-  isConferenceDetailsDialogOpen: boolean;
-  toggleIsConferenceDetailsDialogOpen: (isOpen?: boolean) => void;
+  selectedConference: Conference | null;
+  setSelectedConference: (conference: Conference | null) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -17,10 +18,11 @@ interface ConferenceDetailsDialogStore {
   setJoinConferenceUrl: (url: string) => void;
   isJoinedConferenceMinimized: boolean;
   toggleIsJoinedConferenceMinimized: () => void;
+  updateConference: (conference: Partial<Conference>) => Promise<void>;
 }
 
 const initialState = {
-  isConferenceDetailsDialogOpen: false,
+  selectedConference: null,
   isLoading: false,
   error: null,
   joinConferenceUrl: '',
@@ -29,10 +31,7 @@ const initialState = {
 
 const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set) => ({
   ...initialState,
-  toggleIsConferenceDetailsDialogOpen: (isOpen) =>
-    set((state) => ({
-      isConferenceDetailsDialogOpen: isOpen || !state.isConferenceDetailsDialogOpen,
-    })),
+  setSelectedConference: (conference) => set({ selectedConference: conference }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
@@ -41,14 +40,23 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}${meetingID}`);
-      set({ joinConferenceUrl: response.data, isLoading: false, isConferenceDetailsDialogOpen: false });
+      set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
     }
   },
-  setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url }),
+  setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url, isJoinedConferenceMinimized: false }),
   toggleIsJoinedConferenceMinimized: () =>
     set((state) => ({ isJoinedConferenceMinimized: !state.isJoinedConferenceMinimized })),
+  updateConference: async (conference) => {
+    set({ isLoading: true });
+    try {
+      await eduApi.patch<Conference[]>(apiEndpoint, conference);
+      set({ isLoading: false, selectedConference: null });
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
 }));
 
 export default useConferenceDetailsDialogStore;

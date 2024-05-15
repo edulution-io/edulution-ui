@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/
 import ConferencesService from './conferences.service';
 import CreateConferenceDto from './dto/create-conference.dto';
 import { Conference } from './conference.schema';
-import GetUser, { GetUsername } from '../auth/getUser';
+import GetUser, { GetUsername } from '../common/decorators/getUser';
 import JWTUser from '../types/JWTUser';
 
 @Controller('conferences')

@@ -4,30 +4,44 @@ import { LockClosedIcon, LockOpen1Icon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
-import { MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
+import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import useUserStore from '@/store/userStore';
 import { TFunction } from 'i18next';
 
-function getRowAction(isRunning: boolean, isLoading: boolean, t: TFunction<'translation', undefined>) {
+function getRowAction(
+  isRunning: boolean,
+  isLoading: boolean,
+  isUserTheCreator: boolean,
+  t: TFunction<'translation', undefined>,
+) {
   if (isLoading) {
     return {
       icon: <MdPending />,
       text: t('common.loading'),
     };
   }
-  if (isRunning) {
+  if (isUserTheCreator) {
+    if (isRunning) {
+      return {
+        icon: <MdStop />,
+        text: t('conferences.stop'),
+      };
+    }
     return {
-      icon: <MdStop />,
-      text: t('conferences.stop'),
+      icon: <MdPlayArrow />,
+      text: t('conferences.start'),
     };
   }
-  return {
-    icon: <MdPlayArrow />,
-    text: t('conferences.start'),
-  };
+  if (isRunning) {
+    return {
+      icon: <MdLogin />,
+      text: t('conferences.join'),
+    };
+  }
+  return { icon: undefined, text: '' };
 }
 
 const ConferencesTableColumns: ColumnDef<Conference>[] = [
@@ -35,7 +49,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     id: 'conference-name',
     header: ({ table, column }) => (
       <SortableHeader<Conference, unknown>
-        titleTranslationId="conferences.name"
+        titleTranslationId="conferences.conference"
         table={table}
         column={column}
       />
@@ -53,6 +67,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
       return (
         <SelectableTextCell
           onClick={onClick}
+          icon={row.original.isRunning ? <MdLogin /> : undefined}
           text={row.original.name}
           row={row}
         />
@@ -68,9 +83,22 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
       />
     ),
     accessorFn: (row) => row.creator,
-    cell: ({ row }) => (
-      <SelectableTextCell text={`${row.original.creator.firstName} ${row.original.creator.lastName}`} />
-    ),
+    cell: ({ row }) => {
+      const { user } = useUserStore();
+      const { setSelectedConference } = useConferenceDetailsDialogStore();
+      return (
+        <SelectableTextCell
+          onClick={
+            user === row.original.creator?.username
+              ? () => {
+                  setSelectedConference(row.original);
+                }
+              : undefined
+          }
+          text={`${row.original.creator.firstName} ${row.original.creator.lastName}`}
+        />
+      );
+    },
   },
   {
     id: 'conference-password',
@@ -83,9 +111,18 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
       const iconSize = 16;
+      const { user } = useUserStore();
+      const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
-          text={row.original.password || ''}
+          onClick={
+            user === row.original.creator?.username
+              ? () => {
+                  setSelectedConference(row.original);
+                }
+              : undefined
+          }
+          text={'*'.repeat(row.original.password?.length || 0)}
           icon={
             row.original.password ? (
               <LockClosedIcon
@@ -112,7 +149,22 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
       />
     ),
     accessorFn: (row) => row.invitedAttendees.length,
-    cell: ({ row }) => <SelectableTextCell text={`${row.original.invitedAttendees.length || '-'}`} />,
+    cell: ({ row }) => {
+      const { user } = useUserStore();
+      const { setSelectedConference } = useConferenceDetailsDialogStore();
+      return (
+        <SelectableTextCell
+          onClick={
+            user === row.original.creator?.username
+              ? () => {
+                  setSelectedConference(row.original);
+                }
+              : undefined
+          }
+          text={`${row.original.invitedAttendees.length || '-'}`}
+        />
+      );
+    },
   },
   {
     id: 'conference-joined-attendees',
@@ -135,20 +187,23 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
+      const { creator, isRunning, meetingID } = row.original;
       const { t } = useTranslation();
       const { user } = useUserStore();
-      if (user !== row.original.creator.username) {
-        return null;
-      }
-      const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
-      const { icon, text } = getRowAction(row.original.isRunning, isLoading, t);
+      const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
+      const isUserTheCreator = user === creator?.username;
+      const { icon, text } = getRowAction(isRunning, isLoading, isUserTheCreator, t);
       const onClick = async () => {
-        await toggleConferenceRunningState(row.original.meetingID);
-        if (!row.original.isRunning) {
-          await joinConference(row.original.meetingID);
-        } else {
-          setJoinConferenceUrl('');
+        if (isUserTheCreator) {
+          await toggleConferenceRunningState(meetingID);
+          if (!isRunning) {
+            await joinConference(meetingID);
+          } else {
+            setJoinConferenceUrl('');
+          }
+        } else if (isRunning) {
+          await joinConference(meetingID);
         }
       };
       return (

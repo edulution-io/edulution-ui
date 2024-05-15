@@ -29,8 +29,10 @@
     "creator": "Ersteller",
     "delete": "Löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
+    "editConference": "Konferenz bearbeiten",
     "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
+    "conference": "Konferenz",
     "password": "Passwort",
     "attendees": "Teilnehmer",
     "invitedAttendees": "Eingeladen",
@@ -47,6 +49,7 @@
     "action": "Aktion",
     "start": "Starten",
     "stop": "Stoppen",
+    "join": "Beitreten",
     "minimize": "Minimieren",
     "maximize": "Maximieren",
     "close": "Konferenz schließen"
@@ -169,7 +172,8 @@
     "username": "Benutzername",
     "password": "Passwort",
     "loading": "Laden...",
-    "overview": "Übersicht"
+    "overview": "Übersicht",
+    "create": "Erstellen"
   },
   "form": {
     "path": "Link",

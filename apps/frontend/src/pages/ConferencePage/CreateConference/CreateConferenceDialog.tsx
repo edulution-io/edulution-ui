@@ -31,7 +31,6 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   const initialFormValues: FormData = {
     name: '',
     password: '',
-    isPublic: 'true',
     invitedAttendees: [],
   };
 
@@ -40,20 +39,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
       .string()
       .min(3, { message: t('conferences.min_3_chars') })
       .max(30, { message: t('conferences.max_30_chars') }),
-    isPublic: z.string(),
-    password: z
-      .string()
-      .optional()
-      .refine(
-        (val) => {
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define, @typescript-eslint/no-unnecessary-type-assertion
-          const isPublic = form.watch('isPublic') as string;
-          return !(isPublic === 'false' && !val);
-        },
-        {
-          message: t('conferences.password_required'),
-        },
-      ),
+    password: z.string().optional(),
     invitedAttendees: z.array(
       z.intersection(
         z.object({
@@ -112,7 +98,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
           size="lg"
           type="submit"
         >
-          {t('common.add')}
+          {t('common.create')}
         </Button>
       </form>
     </div>

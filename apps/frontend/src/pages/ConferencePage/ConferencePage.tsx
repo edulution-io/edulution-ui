@@ -3,9 +3,12 @@ import { useTranslation } from 'react-i18next';
 import CreateConferenceDialog from '@/pages/ConferencePage/CreateConference/CreateConferenceDialog';
 import ConferencesTable from '@/pages/ConferencePage/Table/ConferencesTable';
 import FloatingButtonsBar from '@/pages/ConferencePage/Table/FloatingButtonsBar';
+import ConferenceDetailsDialog from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialog';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
+  const { selectedConference } = useConferenceDetailsDialogStore();
 
   return (
     <>
@@ -17,6 +20,7 @@ const ConferencePage: React.FC = () => {
 
       <FloatingButtonsBar />
       <CreateConferenceDialog />
+      {selectedConference ? <ConferenceDetailsDialog /> : null}
     </>
   );
 };

@@ -40,7 +40,7 @@ const BBBIFrame = () => {
         height="100%"
         src={joinConferenceUrl}
         title="BigBlueButton Meeting"
-        allow="camera *.netzint.de; microphone *.netzint.de; display-capture *.netzint.de;"
+        allow="camera *; microphone *; display-capture *;"
         allowFullScreen
       />
     </>,

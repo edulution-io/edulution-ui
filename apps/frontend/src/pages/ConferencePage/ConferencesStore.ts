@@ -13,7 +13,6 @@ interface ConferencesStore {
   error: Error | null;
   getConferences: (setIsLoading?: boolean) => Promise<void>;
   deleteConferences: (conferences: Conference[]) => Promise<void>;
-  updateConference: (conference: Conference) => Promise<void>;
   toggleConferenceRunningState: (conferenceID: string) => Promise<void>;
   toggleConferenceRunningStateIsLoading: boolean;
   toggleConferenceRunningStateError: Error | null;
@@ -50,15 +49,6 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       const response = await eduApi.delete<Conference[]>(apiEndpoint, {
         data: conferences.map((c) => c.meetingID),
       });
-      set({ conferences: response.data, isLoading: false });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
-  updateConference: async (conference) => {
-    set({ isLoading: true });
-    try {
-      const response = await eduApi.patch<Conference[]>(apiEndpoint, conference);
       set({ conferences: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);

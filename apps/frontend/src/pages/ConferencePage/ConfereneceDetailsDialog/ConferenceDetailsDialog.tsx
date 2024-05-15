@@ -1,5 +1,4 @@
 import React from 'react';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
@@ -9,27 +8,26 @@ import FormData from '@/pages/ConferencePage/CreateConference/form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useUserStore from '@/store/userStore';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 interface ConferenceDetailsDialogProps {
-  conference: Conference;
   trigger?: React.ReactNode;
 }
 
-const ConferenceDetailsDialog = ({ conference, trigger }: ConferenceDetailsDialogProps) => {
+const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
-  const { createConference } = useCreateConferenceDialogStore();
+  const { user } = useUserStore();
   const { getConferences } = useConferenceStore();
-  const { isLoading, error, isConferenceDetailsDialogOpen, toggleIsConferenceDetailsDialogOpen } =
+  const { isLoading, error, selectedConference, setSelectedConference, updateConference } =
     useConferenceDetailsDialogStore();
 
   const initialFormValues: FormData = {
-    name: conference.name,
-    password: conference.password,
-    isPublic: conference.password ? 'false' : 'true',
-    invitedAttendees: conference.invitedAttendees,
+    name: selectedConference?.name || 'asd',
+    password: selectedConference?.password || '',
+    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user) || [],
   };
 
   const formSchema = z.object({
@@ -37,20 +35,7 @@ const ConferenceDetailsDialog = ({ conference, trigger }: ConferenceDetailsDialo
       .string()
       .min(3, { message: t('conferences.min_3_chars') })
       .max(30, { message: t('conferences.max_30_chars') }),
-    isPublic: z.string(),
-    password: z
-      .string()
-      .optional()
-      .refine(
-        (val) => {
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define, @typescript-eslint/no-unnecessary-type-assertion
-          const isPublic = form.watch('isPublic') as string;
-          return !(isPublic === 'false' && !val);
-        },
-        {
-          message: t('conferences.password_required'),
-        },
-      ),
+    password: z.string().optional(),
     invitedAttendees: z.array(
       z.intersection(
         z.object({
@@ -76,10 +61,11 @@ const ConferenceDetailsDialog = ({ conference, trigger }: ConferenceDetailsDialo
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: form.getValues('invitedAttendees'),
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username: user } as Attendee],
+      meetingID: selectedConference?.meetingID,
     };
 
-    await createConference(newConference);
+    await updateConference(newConference);
     await getConferences();
     form.reset();
   };
@@ -108,7 +94,7 @@ const ConferenceDetailsDialog = ({ conference, trigger }: ConferenceDetailsDialo
           size="lg"
           type="submit"
         >
-          {t('common.add')}
+          {t('common.save')}
         </Button>
       </form>
     </div>
@@ -116,10 +102,10 @@ const ConferenceDetailsDialog = ({ conference, trigger }: ConferenceDetailsDialo
 
   return (
     <AdaptiveDialog
-      isOpen={isConferenceDetailsDialogOpen}
+      isOpen
       trigger={trigger}
-      handleOpenChange={toggleIsConferenceDetailsDialogOpen}
-      title={t('conferences.create')}
+      handleOpenChange={() => setSelectedConference(null)}
+      title={t('conferences.editConference')}
       body={getDialogBody()}
       footer={getFooter()}
     />

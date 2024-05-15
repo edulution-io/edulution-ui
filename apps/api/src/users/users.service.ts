@@ -10,6 +10,8 @@ import { User, UserDocument } from './user.schema';
 import LoginUserDto from './dto/login-user.dto';
 import { LDAPUser } from '../types/ldapUser';
 
+const { KEYCLOAK_API } = process.env;
+
 @Injectable()
 class UsersService {
   constructor(
@@ -60,21 +62,18 @@ class UsersService {
   async findAllCachedUsers(token: string): Promise<LDAPUser[]> {
     const cachedUsers = await this.cacheManager.get<LDAPUser[]>('allUsers');
     if (cachedUsers) {
-      console.log(`Found ${cachedUsers.length} cached users`);
       return cachedUsers;
     }
 
-    const fetchedUsers = await this.fetchUsersFromExternalApi(token);
-    console.log(`Fetched ${fetchedUsers.length} new users`);
+    const fetchedUsers = await UsersService.fetchUsersFromExternalApi(token);
+
     await this.cacheManager.set('allUsers', fetchedUsers, 300000);
     return fetchedUsers;
   }
 
   async searchUsersByName(token: string, name: string): Promise<User[]> {
     const searchString = name.toLowerCase();
-    console.log(`searchString ${JSON.stringify(searchString, null, 2)}`);
     const users = await this.findAllCachedUsers(token);
-    console.log(`users ${JSON.stringify(users.length, null, 2)}`);
 
     return users
       .filter(
@@ -86,10 +85,10 @@ class UsersService {
       .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
   }
 
-  private async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {
+  private static async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {
     const config = {
       method: 'get',
-      url: 'https://auth.schulung.multi.schule/auth/admin/realms/edulution/users', // TODO: Where is the Keycloag domain defined?
+      url: `${KEYCLOAK_API}users`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,

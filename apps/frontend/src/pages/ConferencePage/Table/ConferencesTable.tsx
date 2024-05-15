@@ -45,7 +45,7 @@ const ConferencesTable = () => {
 
     fetchConferences().catch((e) => console.error(e));
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const intervalId = setInterval(fetchConferences, 5000); // TODO: 10000
+    const intervalId = setInterval(fetchConferences, 500000); // TODO: 10000
 
     return () => {
       clearInterval(intervalId);
@@ -94,7 +94,6 @@ const ConferencesTable = () => {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() ? 'selected' : undefined}
-                    className="cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell

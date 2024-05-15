@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import JWTUser from '../types/JWTUser';
+import JWTUser from '../../types/JWTUser';
 
 const GetUser = createParamDecorator((_data: unknown, ctx: ExecutionContext): JWTUser | undefined => {
   const request: Request = ctx.switchToHttp().getRequest();

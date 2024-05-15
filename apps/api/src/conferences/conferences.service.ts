@@ -39,7 +39,7 @@ class ConferencesService {
     return createdConference;
   }
 
-  async toggleConferenceIsRunning(meetingID: string, username: string): Promise<void> {
+  async toggleConferenceIsRunning(meetingID: string, username: string) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
       throw new HttpException('You are not the creator!', HttpStatus.UNAUTHORIZED);
@@ -55,12 +55,12 @@ class ConferencesService {
   private async startConference(conference: Conference) {
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('create', query);
+      const checksum = ConferencesService.createChecksum('create', query);
       const url = `${BBB_API_URL}create?${query}&checksum=${checksum}`;
 
       const response = await axios.get<string>(url);
-      const result = await this.parseXml<BbbResponseDto>(response.data);
-      this.handleBBBApiError(result);
+      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+      ConferencesService.handleBBBApiError(result);
 
       await this.update({ ...conference, isRunning: true });
     } catch (e) {
@@ -72,12 +72,12 @@ class ConferencesService {
   private async stopConference(conference: Conference) {
     try {
       const query = `meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('end', query);
+      const checksum = ConferencesService.createChecksum('end', query);
       const url = `${BBB_API_URL}end?${query}&checksum=${checksum}`;
 
       const response = await axios.get<string>(url);
-      const result = await this.parseXml<BbbResponseDto>(response.data);
-      this.handleBBBApiError(result);
+      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+      ConferencesService.handleBBBApiError(result);
 
       await this.update({ ...conference, isRunning: false });
     } catch (e) {
@@ -109,7 +109,7 @@ class ConferencesService {
 
       const fullName = `${givenName} ${familyName}`;
       const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
-      const checksum = this.createChecksum('join', query);
+      const checksum = ConferencesService.createChecksum('join', query);
       const url = `${BBB_API_URL}join?${query}&checksum=${checksum}`;
 
       return url;
@@ -123,19 +123,22 @@ class ConferencesService {
     const usersConferences = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
 
     const promises = usersConferences.map(async (conference) => {
+      const conferenceObject = conference.toObject();
       const query = `meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('getMeetingInfo', query);
+      const checksum = ConferencesService.createChecksum('getMeetingInfo', query);
       const url = `${BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
 
       try {
         const response = await axios.get<string>(url);
-        const result = await this.parseXml<BbbResponseDto>(response.data);
-        this.handleBBBApiError(result);
+        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+        ConferencesService.handleBBBApiError(result);
 
-        return { ...conference, isRunning: true, joinedAttendees: this.getJoinedAttendees(result) };
+        await this.update({ ...conferenceObject, isRunning: true });
+        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
       } catch (_) {
-        await this.update({ ...conference, isRunning: false });
-        return conference;
+        const updatedConference = { ...conferenceObject, isRunning: false };
+        await this.update(updatedConference);
+        return updatedConference;
       }
     });
 
@@ -158,20 +161,19 @@ class ConferencesService {
     return true;
   }
 
-  handleBBBApiError(result: { response: { returncode: string } }) {
-    console.log(result);
+  static handleBBBApiError(result: { response: { returncode: string } }) {
     if (result.response.returncode !== 'SUCCESS') {
       throw new Error('BBB API did not return SUCCESS returncode');
     }
   }
 
-  createChecksum(method = '', query = '') {
+  static createChecksum(method = '', query = '') {
     const string = method + query + BBB_SECRET;
 
     return crypto.createHash('sha1').update(string).digest('hex');
   }
 
-  parseXml<T>(xml: string): Promise<T> {
+  static parseXml<T>(xml: string): Promise<T> {
     return new Promise((resolve, reject) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
@@ -185,7 +187,7 @@ class ConferencesService {
     });
   }
 
-  getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
+  static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
     const { attendees } = bbbMeetingDto.response;
     let joinedAttendees: Attendee[] = [];
     if (attendees?.attendee) {
