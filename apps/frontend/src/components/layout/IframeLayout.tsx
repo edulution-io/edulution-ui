@@ -1,15 +1,15 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-
-import useAppConfigsStore from '@/store/appConfigsStore';
+import { useLocalStorage } from 'usehooks-ts';
 import Sidebar from '@/components/ui/Sidebar';
 import backgroundImage from '@/assets/background.jpg';
+import { ConfigType } from '@/datatypes/types';
 import { getFromPathName } from '@/utils/common';
 
 const IframeLayout: React.FC = () => {
   const { pathname } = useLocation();
-  const rootPathName = getFromPathName(pathname, 1);
-  const { appConfig } = useAppConfigsStore();
+
+  const [config] = useLocalStorage<ConfigType>('edu-config', {});
 
   return (
     <div
@@ -20,7 +20,7 @@ const IframeLayout: React.FC = () => {
         <iframe
           className="h-screen w-full pr-[58px]"
           title={pathname}
-          src={appConfig.find((app) => app.name === rootPathName)?.linkPath}
+          src={config[getFromPathName(pathname, 1)]?.linkPath}
         />
       </div>
       <Sidebar />

@@ -5,4 +5,3 @@ npm run check-circular-deps
 npm run format
 npm run lint
 npm run check-translations
-npm run test

@@ -1,9 +1,1 @@
-{
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "declaration": true
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["postcss.config.mjs", "vite.config.ts"]
-}
+{ "extends": "../../tsconfig.json" }

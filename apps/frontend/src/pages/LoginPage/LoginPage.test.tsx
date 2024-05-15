@@ -32,7 +32,7 @@ describe('LoginPage', () => {
   });
 
   it('1 should render the fields that are needed on the page', () => {
-    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
@@ -42,7 +42,7 @@ describe('LoginPage', () => {
   });
 
   it('2 should be able to change the values for the input of the input components', async () => {
-    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
@@ -143,7 +143,7 @@ describe('LoginPage', () => {
 
     const spyOnSubmit = vi.spyOn(result.current, 'handleSubmit');
 
-    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
