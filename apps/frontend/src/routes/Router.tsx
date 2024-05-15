@@ -16,7 +16,6 @@ import { useAuth } from 'react-oidc-context';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
 
@@ -130,8 +129,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const { getAppConfigs } = useAppConfigQuery();
+  const { appConfig, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
   const { loginUser } = useUserQuery();
   const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
@@ -151,10 +149,7 @@ const AppRouter = () => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          const configData = await getAppConfigs();
-          if (configData) {
-            setAppConfig(configData);
-          }
+          await getAppConfigs(true);
         } catch (e) {
           console.error('Error fetching data:', e);
         }
