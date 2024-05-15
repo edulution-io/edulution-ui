@@ -1,0 +1,20 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*", "jest.config.ts", "webpack.config.cjs", "vite.config.ts"],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "node": true,
+    "browser": false,
+    "es2022": false,
+    "jest": true
+  },
+  "parserOptions": { "project": ["./tsconfig.eslint.json"], "sourceType": "module" },
+  "rules": {
+    "class-methods-use-this": 0,
+    "@typescript-eslint/class-methods-use-this": 1,
+    "@typescript-eslint/interface-name-prefix": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-explicit-any": 0
+  }
+}

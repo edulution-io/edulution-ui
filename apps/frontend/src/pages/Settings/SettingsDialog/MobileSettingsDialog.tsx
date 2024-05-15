@@ -3,7 +3,6 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger } from
 import { Button } from '@/components/shared/Button';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import { DropdownMenu } from '@/components';
-import { AppType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -12,9 +11,10 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   setOption,
   filteredAppOptions,
   setSearchParams,
-  setConfig,
+  handleAddApp,
 }) => {
   const { t } = useTranslation();
+
   return (
     <Sheet
       modal
@@ -40,13 +40,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
             type="button"
             variant="btn-collaboration"
             size="lg"
-            onClick={() => {
-              setSearchParams(new URLSearchParams(''));
-              setConfig((prevConfig) => ({
-                [option.toLowerCase().split('.')[0]]: { linkPath: '', icon: '', appType: AppType.NATIVE },
-                ...prevConfig,
-              }));
-            }}
+            onClick={handleAddApp}
           >
             {t('common.add')}
           </Button>

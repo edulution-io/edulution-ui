@@ -1,13 +1,14 @@
 import { SettingsIcon, PlusIcon } from '@/assets/icons';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
-import { ConfigType, MenuBarEntryProps } from '@/datatypes/types';
+import { MenuBarEntryProps } from '@/datatypes/types';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import { findAppConfigByName } from '@/utils/common';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLocalStorage } from 'usehooks-ts';
 
 const useSettingsMenuConfig = () => {
   const navigate = useNavigate();
   const [, setSearchParams] = useSearchParams();
-  const [config] = useLocalStorage<ConfigType>('edu-config', {});
+  const { appConfig } = useAppConfigsStore();
 
   const SETTINGS_CONFIG: MenuBarEntryProps = {
     title: 'settings.title',
@@ -23,23 +24,25 @@ const useSettingsMenuConfig = () => {
     ],
   };
 
-  const settignsMenuConfig = (): MenuBarEntryProps => ({
+  const settingsMenuConfig = (): MenuBarEntryProps => ({
     ...SETTINGS_CONFIG,
     menuItems: [
-      ...SETTINGS_APPSELECT_OPTIONS.filter((option) => config[option.id] !== undefined).map((item) => ({
-        id: item.id,
-        label: `${item.id}.sidebar`,
-        icon: item.icon,
-        action: () => navigate(`/settings/${item.id}`),
-      })),
-      ...SETTINGS_CONFIG.menuItems.map((items) => ({
-        ...items,
+      ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id) !== undefined).map(
+        (item) => ({
+          id: item.id,
+          label: `${item.id}.sidebar`,
+          icon: item.icon,
+          action: () => navigate(`/settings/${item.id}`),
+        }),
+      ),
+      ...SETTINGS_CONFIG.menuItems.map((item) => ({
+        ...item,
         action: () => setSearchParams({ mode: 'add' }),
       })),
     ],
   });
 
-  return settignsMenuConfig();
+  return settingsMenuConfig();
 };
 
 export default useSettingsMenuConfig;

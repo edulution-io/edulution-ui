@@ -1,9 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "edulution-ui",
-  "affected": {
-    "defaultBase": "master"
-  },
+  "defaultBase": "master",
   "plugins": [
     {
       "plugin": "@nx/eslint/plugin",
@@ -19,6 +17,20 @@
         "testTargetName": "test",
         "serveTargetName": "serve",
         "serveStaticTargetName": "serve-static"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview"
+      }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
       }
     }
   ],
