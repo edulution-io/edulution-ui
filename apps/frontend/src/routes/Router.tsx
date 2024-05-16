@@ -8,11 +8,9 @@ import IframeLayout from '@/components/layout/IframeLayout';
 
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
-
-import PollEditor from '@/pages/Survey/Poll/PollEditor';
+import SurveyPage from '@/pages/Survey/SurveyPage';
 import SurveyCreatorWidget from '@/pages/Survey/Forms/SurveyCreatorWidget';
 import SurveyParticipation from '@/pages/Survey/Forms/SurveyParticipation';
-
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
@@ -21,12 +19,8 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
-
-import SurveyPage from '@/pages/Survey/SurveyPage';
-import PollMockup from '@/pages/Survey/Poll/PollMockup';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -122,31 +116,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                   element={<SurveyCreatorWidget />}
                 />
               ))}
-            </Route>
-            <Route
-              path="survey/poll"
-              element={<PollMockup />}
-            >
-              {Object.keys(appConfig).map((key) => (
-                <Route
-                  key={key}
-                  path={key}
-                  element={<PollMockup />}
-                />
-              ))}
-            </Route>
-            <Route
-              path="survey/poll/create"
-              element={<PollEditor />}
-            >
-              {Object.keys(appConfig).map((key) => (
-                <Route
-                  key={key}
-                  path={key}
-                  element={<PollEditor />}
-                />
-              ))}
-            </Route>
+          </Route>
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.NATIVE ? (
                 <Route
@@ -197,8 +167,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const { getAppConfigs } = useAppConfigQuery();
+  const { appConfig, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
   const { loginUser } = useUserQuery();
   const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
@@ -218,10 +187,7 @@ const AppRouter = () => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          const configData = await getAppConfigs();
-          if (configData) {
-            setAppConfig(configData);
-          }
+          await getAppConfigs(true);
         } catch (e) {
           console.error('Error fetching data:', e);
         }
@@ -235,7 +201,7 @@ const AppRouter = () => {
     if (auth.isAuthenticated) {
       auth.events.addAccessTokenExpiring(() => {
         if (auth.user?.expired) {
-          console.log('Session expired');
+          console.info('Session expired');
           auth.removeUser().catch((e) => console.error('Error fetching data:', e));
           setIsLoggedInInEduApi(false);
           sessionStorage.clear();

@@ -1,7 +1,7 @@
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import React from 'react';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -16,7 +16,7 @@ const variants = cva([], {
 });
 
 type FormFieldProps = {
-  form: UseFormReturn<FieldValues>;
+  form: UseFormReturn;
   name: string;
   isLoading: boolean;
   labelTranslationId: string;

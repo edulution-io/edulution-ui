@@ -5,8 +5,8 @@ import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
-import User from '@/pages/ConferencePage/CreateConference/user';
-import { USERS_EDU_API_ENDPOINT } from '@/api/useUserQuery';
+import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -19,7 +19,8 @@ interface CreateConferenceDialogStore {
   reset: () => void;
   createConference: (conference: CreateConferenceDto) => Promise<void>;
   createdConference: Conference | null;
-  searchAttendees: (searchQuery: string) => Promise<User[]>;
+  searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
+  searchAttendeesResult: Attendee[];
 }
 
 const initialState: Partial<CreateConferenceDialogStore> = {
@@ -27,15 +28,14 @@ const initialState: Partial<CreateConferenceDialogStore> = {
   isLoading: false,
   error: null,
   createdConference: null,
+  searchAttendeesResult: [],
 };
 
 const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set) => ({
-  isCreateConferenceDialogOpen: false,
+  ...(initialState as CreateConferenceDialogStore),
   openCreateConferenceDialog: () => set({ isCreateConferenceDialogOpen: true }),
   closeCreateConferenceDialog: () => set({ isCreateConferenceDialogOpen: false }),
-  isLoading: false,
   setIsLoading: (isLoading) => set({ isLoading }),
-  error: null,
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
@@ -48,13 +48,24 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
       handleApiError(error, set);
     }
   },
-  createdConference: null,
 
-  searchAttendees: async (searchQuery) => {
+  searchAttendees: async (searchParam) => {
     set({ error: null });
     try {
-      const response = await eduApi.get<User[]>(`${USERS_EDU_API_ENDPOINT}?q=${searchQuery}`);
-      return response.data;
+      const response = await eduApi.get<Attendee[]>(`${USERS_SEARCH_EDU_API_ENDPOINT}${searchParam}`);
+
+      if (!Array.isArray(response.data)) {
+        return [];
+      }
+
+      const searchAttendeesResult = response.data?.map((d) => ({
+        ...d,
+        value: d.username,
+        label: `${d.firstName} ${d.lastName} (${d.username})`,
+      }));
+
+      set({ searchAttendeesResult });
+      return searchAttendeesResult;
     } catch (error) {
       handleApiError(error, set);
       return [];

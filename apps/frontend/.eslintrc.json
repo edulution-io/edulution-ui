@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "jest.config.ts", "vite.config.ts"],
+  "ignorePatterns": ["!**/*", "jest.config.ts", "vite.config.ts", "postcss.config.mjs"],
   "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
@@ -8,4 +8,3 @@
   },
   "parserOptions": { "project": ["./tsconfig.json"], "sourceType": "module" }
 }
-

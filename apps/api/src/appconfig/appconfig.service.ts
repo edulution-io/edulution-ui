@@ -24,7 +24,14 @@ class AppConfigService {
       const bulkOperations = appConfigDto.map((appConfig) => ({
         updateOne: {
           filter: { name: appConfig.name },
-          update: { $set: { linkPath: appConfig.linkPath, icon: appConfig.icon, appType: appConfig.appType } },
+          update: {
+            $set: {
+              linkPath: appConfig.linkPath,
+              icon: appConfig.icon,
+              appType: appConfig.appType,
+              options: appConfig.options,
+            },
+          },
           upsert: true,
         },
       }));

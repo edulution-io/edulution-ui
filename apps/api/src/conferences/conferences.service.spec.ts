@@ -6,26 +6,50 @@ import { Model } from 'mongoose';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
+import { Attendee } from './dto/attendee';
+import JWTUser from '../types/JWTUser';
 
 const mockConference: CreateConferenceDto = {
-  name: 'Testmeeting',
-  attendees: [],
+  name: 'Testconference',
+  invitedAttendees: [],
 };
 
+const mockCreator: Attendee = {
+  username: 'username',
+  lastName: 'lastName',
+  firstName: 'firstName',
+};
+
+const mockJWTUser: JWTUser = {
+  preferred_username: 'username',
+  given_name: 'firstName',
+  family_name: 'lastName',
+} as JWTUser;
+
+const mockConferenceDocument: ConferenceDocument = {
+  name: mockConference.name,
+  invitedAttendees: [],
+  creator: mockCreator,
+  meetingID: 'mockMeetingId',
+  isRunning: false,
+  joinedAttendees: [mockCreator],
+  toObject: jest.fn().mockImplementation(() => mockConferenceDocument),
+} as unknown as ConferenceDocument;
+
 const conferencesModelMock = {
-  create: jest.fn().mockResolvedValue(mockConference),
+  create: jest.fn().mockResolvedValue(mockConferenceDocument),
 
   find: jest.fn().mockReturnValue({
-    exec: jest.fn().mockResolvedValue([mockConference]),
+    exec: jest.fn().mockResolvedValue([mockConferenceDocument]),
   }),
   findOne: jest.fn().mockReturnValue({
-    exec: jest.fn().mockResolvedValue(mockConference),
+    exec: jest.fn().mockResolvedValue(mockConferenceDocument),
   }),
   findOneAndUpdate: jest.fn().mockReturnValue({
-    exec: jest.fn().mockResolvedValue(mockConference),
+    exec: jest.fn().mockResolvedValue(mockConferenceDocument),
   }),
-  deleteOne: jest.fn().mockReturnValue({
-    exec: jest.fn().mockResolvedValue(true),
+  deleteMany: jest.fn().mockReturnValue({
+    exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
   }),
 };
 
@@ -53,46 +77,44 @@ describe(ConferencesService.name, () => {
   });
 
   describe('create', () => {
-    it('should create and save a meeting', async () => {
+    it('should create and save a conference', async () => {
       const createDto: CreateConferenceDto = { ...mockConference };
-      const result = await service.create(createDto, 'creator');
-      expect(model.create).toHaveBeenCalledWith(createDto);
-      expect(result).toEqual(createDto);
+      const result = await service.create(createDto, mockJWTUser);
+      expect(model.create).toHaveBeenCalled();
+      expect(result.creator).toEqual(mockCreator);
     });
   });
 
   describe('findAll', () => {
-    it('should return an array of meetings', async () => {
-      const result = await service.findAll('creator');
-      expect(result).toEqual([mockConference]);
+    it('should return an array of conferences', async () => {
+      const result = await service.findAll(mockCreator.username);
+      expect(result[0].creator).toEqual(mockCreator);
       expect(model.find).toHaveBeenCalled();
     });
   });
 
   describe('findOne', () => {
-    it('should retrieve a single meeting by ID', async () => {
+    it('should retrieve a single conference by ID', async () => {
       const result = await service.findOne(mockConference.name);
-      expect(result).toEqual(mockConference);
+      expect(result?.creator).toEqual(mockCreator);
       expect(model.findOne).toHaveBeenCalledWith({ meetingID: mockConference.name });
     });
   });
 
   describe('update', () => {
-    it('should update a meeting', async () => {
-      const mock = new Conference(mockConference, 'creator');
-      const result = await service.update(mock);
-      expect(result).toEqual(mockConference);
-      expect(model.findOneAndUpdate).toHaveBeenCalledWith({ meetingID: mockConference.name }, mock, {
-        new: true,
-      });
+    it('should update a conference', async () => {
+      const mock = new Conference(mockConference, mockCreator);
+      const result = await service.update(mock, mockCreator.username);
+      expect(result?.creator).toEqual(mockCreator);
+      expect(model.findOneAndUpdate).toHaveBeenCalled();
     });
   });
 
   describe('remove', () => {
-    it('should remove a meeting', async () => {
-      const result = await service.remove(['1']);
+    it('should remove a conference', async () => {
+      const result = await service.remove(['1'], mockCreator.username);
       expect(result).toBeTruthy();
-      expect(model.deleteOne).toHaveBeenCalled();
+      expect(model.deleteMany).toHaveBeenCalled();
     });
   });
 });

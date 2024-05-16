@@ -29,10 +29,14 @@
     "creator": "Ersteller",
     "delete": "Löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
+    "editConference": "Konferenz bearbeiten",
     "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
+    "conference": "Konferenz",
     "password": "Passwort",
     "attendees": "Teilnehmer",
+    "invitedAttendees": "Eingeladen",
+    "joinedAttendees": "Beigetreten",
     "privacyStatus": "Zutritt",
     "public": "Öffentlich",
     "private": "Privat",
@@ -41,7 +45,14 @@
     "min_3_chars": "Mindestens 3 Zeichen",
     "max_30_chars": "Maximal 30 Zeichen",
     "password_required": "Kein Passwort eingegeben",
-    "error": "Fehler"
+    "error": "Fehler",
+    "action": "Aktion",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "join": "Beitreten",
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "close": "Konferenz schließen"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
@@ -179,29 +190,18 @@
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
-    "addApp": {
-      "title": "App hinzufügen",
-      "description": "Bitte wählen Sie eine App aus:"
-    },
+    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
-      "update": {
-        "success": "Appliste erfolgreich gespeichert",
-        "failed": "Aktualisierung fehlgeschlagen"
-      },
-      "delete": {
-        "success": "App wurde gelöscht",
-        "failed": "Löschen fehlgeschlagen"
-      },
-      "create": {
-        "success": "App wurde angelegt",
-        "failed": "App anlegen fehlgeschlagen"
-      }
+      "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
+      "delete": { "success": "App wurde gelöscht", "failed": "Löschen fehlgeschlagen" },
+      "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
     }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
-    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig."
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
+    "missing_link": "Link fehlt"
   },
   "menu": "MENÜ",
   "home": "Home",
@@ -225,7 +225,8 @@
     "username": "Benutzername",
     "password": "Passwort",
     "loading": "Laden...",
-    "overview": "Übersicht"
+    "overview": "Übersicht",
+    "create": "Erstellen"
   },
   "form": {
     "path": "Link",

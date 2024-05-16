@@ -4,36 +4,31 @@ import { useTranslation } from 'react-i18next';
 import { Form } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
-import RadioGroupFormField, { RadioGroupItem } from '@/components/shared/RadioGroupFormField';
-import FormData from '@/pages/ConferencePage/CreateConference/form';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
+import useUserStore from '@/store/userStore';
 
 interface CreateConferenceDialogBodyProps {
-  form: UseFormReturn<FormData>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: UseFormReturn<any>;
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
-  const { setValue } = form;
+  const { setValue, getValues } = form;
+  const { user } = useUserStore();
   const { isLoading, searchAttendees } = useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
   if (isLoading) return <div>Loading...</div>;
 
-  const handleAttendeesChange = (selectedOptions: MultipleSelectorOptionSH[]) => {
-    const attendees = selectedOptions.map((option) => option.value);
-    setValue('attendees', attendees, { shouldValidate: true });
+  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+    setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
-  const conferencePrivacyStatus: RadioGroupItem[] = [
-    { value: 'true', translationId: 'conferences.public' },
-    { value: 'false', translationId: 'conferences.private' },
-  ];
-
-  const onAttendeesSearch = async (value: string): Promise<MultipleSelectorOptionSH[]> => {
-    const attendees = await searchAttendees(value);
-
-    return attendees.map((a) => ({ value: a.username, label: `${a.firstname} ${a.lastname} (${a.username})` }));
+  const onAttendeesSearch = async (value: string): Promise<Attendee[]> => {
+    const result = await searchAttendees(value);
+    return result.filter((r) => r.username !== user);
   };
 
   return (
@@ -51,26 +46,16 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           isLoading={isLoading}
           variant="default"
         />
-        <RadioGroupFormField
-          name="isPublic"
-          titleTranslationId="conferences.privacyStatus"
-          defaultValue={conferencePrivacyStatus[0].value}
-          control={form.control}
-          items={conferencePrivacyStatus}
-          formClassname="text-black"
-          labelClassname="font-bold text-m"
+        <FormField
+          name="password"
+          form={form}
+          labelTranslationId={t('conferences.password')}
+          type="password"
+          isLoading={isLoading}
+          variant="default"
         />
-        {form.getValues('isPublic') === 'true' ? null : (
-          <FormField
-            name="password"
-            form={form}
-            labelTranslationId={t('conferences.password')}
-            type="password"
-            isLoading={isLoading}
-            variant="default"
-          />
-        )}
         <SearchUsersOrGroups
+          value={getValues('invitedAttendees') as Attendee[]}
           onSearch={onAttendeesSearch}
           onChange={handleAttendeesChange}
         />

@@ -7,6 +7,7 @@ import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
+import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => {
   return (
     <AuthProvider {...oidcConfig}>
       <QueryClientProvider client={queryClient}>
+        <BBBFrame />
         <Router />
         <ReactQueryDevtools />
       </QueryClientProvider>

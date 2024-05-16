@@ -192,7 +192,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run check-circular-deps && npm run format && npm run check-translations && npm run lint"
+      "pre-commit": "npm run check-circular-deps && npm run format && npm run check-translations && npm run lint && npm run test"
     }
   }
 }

@@ -10,7 +10,6 @@ import { AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 
 const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -22,8 +21,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const { updateAppConfig } = useAppConfigQuery();
+  const { appConfig, updateAppConfig } = useAppConfigsStore();
 
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
@@ -70,10 +68,10 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                     linkPath: '',
                     icon: optionsConfig.icon,
                     appType: AppIntegrationType.FORWARDED,
+                    options: {},
                   };
                   const updatedConfig = [...appConfig, newConfig];
 
-                  setAppConfig(updatedConfig);
                   updateAppConfig(updatedConfig)
                     .then(() =>
                       toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`),

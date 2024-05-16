@@ -24,7 +24,7 @@ const useSettingsMenuConfig = () => {
     ],
   };
 
-  const settignsMenuConfig = (): MenuBarEntryProps => ({
+  const settingsMenuConfig = (): MenuBarEntryProps => ({
     ...SETTINGS_CONFIG,
     menuItems: [
       ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id) !== undefined).map(
@@ -35,14 +35,14 @@ const useSettingsMenuConfig = () => {
           action: () => navigate(`/settings/${item.id}`),
         }),
       ),
-      ...SETTINGS_CONFIG.menuItems.map((items) => ({
-        ...items,
+      ...SETTINGS_CONFIG.menuItems.map((item) => ({
+        ...item,
         action: () => setSearchParams({ mode: 'add' }),
       })),
     ],
   });
 
-  return settignsMenuConfig();
+  return settingsMenuConfig();
 };
 
 export default useSettingsMenuConfig;

@@ -1,37 +1,33 @@
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
+import FormData from '@/pages/ConferencePage/CreateConference/form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import FormData from '@/pages/ConferencePage/CreateConference/form';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useUserStore from '@/store/userStore';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 
-interface CreateConferenceDialogProps {
+interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
 }
 
-const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
-  const {
-    isCreateConferenceDialogOpen,
-    openCreateConferenceDialog,
-    closeCreateConferenceDialog,
-    isLoading,
-    error,
-    createConference,
-  } = useCreateConferenceDialogStore();
-  const { getConferences } = useConferenceStore();
-
+const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
+  const { user } = useUserStore();
+  const { getConferences } = useConferenceStore();
+  const { isLoading, error, selectedConference, setSelectedConference, updateConference } =
+    useConferenceDetailsDialogStore();
 
   const initialFormValues: FormData = {
-    name: '',
-    password: '',
-    invitedAttendees: [],
+    name: selectedConference?.name || 'asd',
+    password: selectedConference?.password || '',
+    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user) || [],
   };
 
   const formSchema = z.object({
@@ -55,7 +51,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     ),
   });
 
-  const form = useForm<FormData>({
+  const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
@@ -65,16 +61,16 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: form.getValues('invitedAttendees'),
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username: user } as Attendee],
+      meetingID: selectedConference?.meetingID,
     };
 
-    await createConference(newConference);
+    await updateConference(newConference);
     await getConferences();
     form.reset();
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
-
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
@@ -98,7 +94,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
           size="lg"
           type="submit"
         >
-          {t('common.create')}
+          {t('common.save')}
         </Button>
       </form>
     </div>
@@ -106,14 +102,14 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
 
   return (
     <AdaptiveDialog
-      isOpen={isCreateConferenceDialogOpen}
+      isOpen
       trigger={trigger}
-      handleOpenChange={isCreateConferenceDialogOpen ? closeCreateConferenceDialog : openCreateConferenceDialog}
-      title={t('conferences.create')}
+      handleOpenChange={() => setSelectedConference(null)}
+      title={t('conferences.editConference')}
       body={getDialogBody()}
       footer={getFooter()}
     />
   );
 };
 
-export default CreateConferenceDialog;
+export default ConferenceDetailsDialog;
