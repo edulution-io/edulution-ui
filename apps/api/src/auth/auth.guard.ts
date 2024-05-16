@@ -47,4 +47,5 @@ class AuthenticationGuard implements CanActivate {
     }
   }
 }
+
 export default AuthenticationGuard;

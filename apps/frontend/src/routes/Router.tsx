@@ -116,7 +116,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                   element={<SurveyCreatorWidget />}
                 />
               ))}
-          </Route>
+            </Route>
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.NATIVE ? (
                 <Route
