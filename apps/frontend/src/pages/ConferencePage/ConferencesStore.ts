@@ -49,7 +49,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       const response = await eduApi.delete<Conference[]>(apiEndpoint, {
         data: conferences.map((c) => c.meetingID),
       });
-      set({ conferences: response.data, isLoading: false });
+      set({ conferences: response.data, isLoading: false, selectedRows: {} });
     } catch (error) {
       handleApiError(error, set);
     }

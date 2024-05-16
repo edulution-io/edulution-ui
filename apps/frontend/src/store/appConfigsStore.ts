@@ -2,7 +2,7 @@ import eduApi from '@/api/eduApi';
 import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
-import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type AppConfigsStore = {
   appConfig: AppConfig[];
@@ -23,7 +23,7 @@ const EDU_API_CONFIG_ENDPOINT = 'appconfig';
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
-      appConfig: [{ name: '', linkPath: '', icon: '', appType: AppIntegrationType.NATIVE }],
+      appConfig: [{ name: '', linkPath: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
       isLoading: false,
       error: null,
 

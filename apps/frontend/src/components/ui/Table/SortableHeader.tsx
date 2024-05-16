@@ -4,15 +4,22 @@ import { ArrowUpDown } from 'lucide-react';
 import { Column, Table } from '@tanstack/react-table';
 import { translateKey } from '@/utils/common';
 import Checkbox from '@/components/ui/Checkbox';
+import cn from '@/lib/utils';
 
 interface SortableHeaderProps<TData, TValue> {
   titleTranslationId: string;
   table?: Table<TData>;
   column: Column<TData, TValue>;
+  className?: string;
 }
 
-const SortableHeader = <TData, TValue>({ titleTranslationId, table, column }: SortableHeaderProps<TData, TValue>) => (
-  <div className="flex items-center">
+const SortableHeader = <TData, TValue>({
+  titleTranslationId,
+  table,
+  column,
+  className,
+}: SortableHeaderProps<TData, TValue>) => (
+  <div className={cn('flex items-center', className)}>
     {table ? (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}

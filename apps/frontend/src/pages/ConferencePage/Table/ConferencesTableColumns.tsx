@@ -44,6 +44,8 @@ function getRowAction(
   return { icon: undefined, text: '' };
 }
 
+const hideOnMobileClassName = 'hidden lg:flex';
+
 const ConferencesTableColumns: ColumnDef<Conference>[] = [
   {
     id: 'conference-name',
@@ -56,6 +58,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
+      const { user } = useUserStore();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const onClick = async () => {
         if (row.original.isRunning) {
@@ -69,7 +72,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
           onClick={onClick}
           icon={row.original.isRunning ? <MdLogin /> : undefined}
           text={row.original.name}
-          row={row}
+          row={user === row.original.creator?.username ? row : undefined}
         />
       );
     },
@@ -78,6 +81,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     id: 'conference-creator',
     header: ({ column }) => (
       <SortableHeader<Conference, unknown>
+        className={hideOnMobileClassName}
         titleTranslationId="conferences.creator"
         column={column}
       />
@@ -88,6 +92,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
+          className={hideOnMobileClassName}
           onClick={
             user === row.original.creator?.username
               ? () => {
@@ -104,6 +109,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     id: 'conference-password',
     header: ({ column }) => (
       <SortableHeader<Conference, unknown>
+        className={hideOnMobileClassName}
         titleTranslationId="conferences.password"
         column={column}
       />
@@ -115,6 +121,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
+          className={hideOnMobileClassName}
           onClick={
             user === row.original.creator?.username
               ? () => {
@@ -144,6 +151,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     id: 'conference-invited-attendees',
     header: ({ column }) => (
       <SortableHeader<Conference, unknown>
+        className={hideOnMobileClassName}
         titleTranslationId="conferences.invitedAttendees"
         column={column}
       />
@@ -154,6 +162,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
+          className={hideOnMobileClassName}
           onClick={
             user === row.original.creator?.username
               ? () => {
@@ -170,12 +179,18 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     id: 'conference-joined-attendees',
     header: ({ column }) => (
       <SortableHeader<Conference, unknown>
+        className={hideOnMobileClassName}
         titleTranslationId="conferences.joinedAttendees"
         column={column}
       />
     ),
     accessorFn: (row) => row.joinedAttendees.length,
-    cell: ({ row }) => <SelectableTextCell text={`${row.original.joinedAttendees.length || '-'}`} />,
+    cell: ({ row }) => (
+      <SelectableTextCell
+        className={hideOnMobileClassName}
+        text={`${row.original.joinedAttendees.length || '-'}`}
+      />
+    ),
   },
   {
     id: 'conference-action-button',

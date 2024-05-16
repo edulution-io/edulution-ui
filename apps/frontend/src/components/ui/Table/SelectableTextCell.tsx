@@ -9,11 +9,12 @@ interface SelectableTextCellProps<TData> {
   row?: Row<TData>;
   text: string;
   onClick?: () => void;
+  className?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<any>>(
-  ({ icon, row, text, onClick }, ref) => {
+  ({ icon, row, text, onClick, className }, ref) => {
     const isChecked = row?.getIsSelected();
 
     return (
@@ -24,8 +25,9 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         tabIndex={0}
         role="button"
         className={cn(
-          'flex items-center justify-between space-x-2 py-2 sm:justify-start',
+          'flex items-center justify-start space-x-2 py-2',
           onClick ? 'cursor-pointer' : 'cursor-default',
+          className,
         )}
       >
         {row ? (
@@ -36,7 +38,9 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
             }}
             aria-label="Select row"
           />
-        ) : null}
+        ) : (
+          <div className="mx-2 my-5" />
+        )}
         {icon ? <Icon className="mb-3 ml-2 mr-2 mt-3">{icon}</Icon> : null}
         <span className="text-md truncate font-medium">{text}</span>
       </div>

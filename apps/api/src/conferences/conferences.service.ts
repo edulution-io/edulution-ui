@@ -12,6 +12,7 @@ import JWTUser from '../types/JWTUser';
 import { Attendee } from './dto/attendee';
 import ConferenceRole from './dto/conference-role.enum';
 
+// TODO: NIEDUUI-127
 const BBB_API_URL = 'https://ncc.netzint.de/bigbluebutton/api/';
 const BBB_SECRET = '44aae5eec7adc10e6eabbe30e0b0c0e242ca3c6495c24a924c9e09317b7e585e';
 
@@ -156,9 +157,15 @@ class ConferencesService {
       .exec();
   }
 
-  async remove(meetingIDs: string[]): Promise<boolean> {
-    await this.conferenceModel.deleteMany({ meetingID: { $in: meetingIDs } }).exec();
-    return true;
+  async remove(meetingIDs: string[], username: string): Promise<boolean> {
+    const result = await this.conferenceModel
+      .deleteMany({
+        meetingID: { $in: meetingIDs },
+        'creator.username': username,
+      })
+      .exec();
+
+    return result.deletedCount > 0;
   }
 
   static handleBBBApiError(result: { response: { returncode: string } }) {

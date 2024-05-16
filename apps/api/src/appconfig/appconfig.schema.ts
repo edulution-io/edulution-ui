@@ -15,6 +15,9 @@ class AppConfig extends Document {
 
   @Prop({ required: true, enum: Object.values(AppIntegrationType) })
   appType: string;
+
+  @Prop({ type: Map, of: String })
+  options: Map<string, string>;
 }
 
 const AppConfigSchema = SchemaFactory.createForClass(AppConfig);

@@ -8,9 +8,15 @@ export enum AppIntegrationType {
 
 export type AppConfig = {
   name: string;
+  /* @deprecated use options.url */
   linkPath: string;
   icon: string;
   appType: AppIntegrationType;
+  options: {
+    url?: string;
+    apiKey?: string;
+    [key: string]: string | undefined;
+  };
 };
 
 export interface MenuItem {

@@ -3,7 +3,7 @@ import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import LoginUserDto from './dto/login-user.dto';
-import GetToken from '../common/decorators/getToken';
+import GetTokenDecorator from '../common/decorators/getToken.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -40,7 +40,7 @@ export class UsersController {
   }
 
   @Get('search/:searchString')
-  async search(@GetToken() token: string, @Param('searchString') searchString: string) {
+  async search(@GetTokenDecorator() token: string, @Param('searchString') searchString: string) {
     return this.usersService.searchUsersByName(token, searchString);
   }
 }

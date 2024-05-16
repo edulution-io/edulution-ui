@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/
 import ConferencesService from './conferences.service';
 import CreateConferenceDto from './dto/create-conference.dto';
 import { Conference } from './conference.schema';
-import GetUser, { GetUsername } from '../common/decorators/getUser';
+import GetUserDecorator, { GetUsername } from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';
 
 @Controller('conferences')
@@ -10,12 +10,12 @@ class ConferencesController {
   constructor(private readonly conferencesService: ConferencesService) {}
 
   @Post()
-  create(@Body() createConferenceDto: CreateConferenceDto, @GetUser() user: JWTUser) {
+  create(@Body() createConferenceDto: CreateConferenceDto, @GetUserDecorator() user: JWTUser) {
     return this.conferencesService.create(createConferenceDto, user);
   }
 
   @Get('join/:meetingID')
-  join(@Param('meetingID') meetingID: string, @GetUser() user: JWTUser) {
+  join(@Param('meetingID') meetingID: string, @GetUserDecorator() user: JWTUser) {
     return this.conferencesService.join(meetingID, user);
   }
 
@@ -38,7 +38,7 @@ class ConferencesController {
 
   @Delete()
   async remove(@Body() meetingIDs: string[], @GetUsername() username: string) {
-    await this.conferencesService.remove(meetingIDs);
+    await this.conferencesService.remove(meetingIDs, username);
     return this.conferencesService.findAll(username);
   }
 }

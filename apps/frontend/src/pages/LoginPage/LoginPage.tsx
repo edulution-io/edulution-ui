@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
-      const username = form.getValues('username') as string;
+      const username = (form.getValues('username') as string).trim();
       const password = form.getValues('password') as string;
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
@@ -53,11 +53,11 @@ const LoginPage: React.FC = () => {
       if (requestUser) {
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
-          data: form.getValues('password') as string,
+          data: password,
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
 
-        setUser(form.getValues('username') as string);
+        setUser(username);
         setToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
