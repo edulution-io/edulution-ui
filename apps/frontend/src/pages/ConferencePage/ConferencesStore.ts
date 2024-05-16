@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import eduApi from '@/api/eduApi';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 

@@ -1,5 +1,9 @@
+import SurveyType from '../types/survey-type.enum';
+
 class CreateSurveyDto {
   surveyname: string;
+
+  type: SurveyType;
 
   participants: string[];
 

@@ -9,6 +9,7 @@ import { DropdownMenu } from '@/components';
 import Checkbox from '@/components/ui/Checkbox';
 import { DropdownOptions } from '@/components/ui/DropdownMenu/DropdownMenu';
 import AddOptionButton from '@/pages/Survey/Poll/components/AddOptionButton';
+import { Button } from '@/components/shared/Button';
 
 const PollEditor = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const PollEditor = () => {
 
     // @ts-expect-error - the option type corresponds to the type of the poll ("Text" | "Date" | "Rating")
     if (currentOptions.includes(option)) {
-      throw new Error('Option already exists');
+      // throw new Error('Option already exists');
       return;
     }
 
@@ -108,7 +109,7 @@ const PollEditor = () => {
         className="column"
         onSubmit={handleSubmit(() => {})}
       >
-        <div className="pb-10 pt-2">
+        <div className="w-full pb-10 pt-2">
           <div className="w-2/3">
             <DropdownMenu
               {...register('typeName')}
@@ -174,6 +175,13 @@ const PollEditor = () => {
               </div>
             ) : null}
           </div>
+
+          <Button
+            variant="btn-collaboration"
+            className="mt-8 flex justify-end"
+          >
+            <p>{t('survey.poll.save')}</p>
+          </Button>
         </div>
       </form>
     </Form>

@@ -1,5 +1,5 @@
-import { Survey } from '../survey.schema';
-import { SurveyAnswer } from '../users-surveys.schema';
+import { Survey } from '../types/survey.schema';
+import { SurveyAnswer } from '../types/users-surveys.schema';
 
 class CreateUsersSurveysDto {
   username: string;

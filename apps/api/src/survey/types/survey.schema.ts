@@ -1,17 +1,20 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type SurveyDocument = Survey & Document;
 
 @Schema()
 export class Survey {
-  @Prop()
+  @Prop({ required: true })
   surveyname: string;
 
   @Prop({ required: true })
+  type: string;
+
+  @Prop({ type: Array<string>, required: true })
   participants: string[];
 
-  @Prop({ required: true })
+  @Prop({ type: JSON, required: true })
   survey: JSON;
 
   @Prop({ required: false })

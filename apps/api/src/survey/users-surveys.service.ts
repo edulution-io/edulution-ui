@@ -1,9 +1,10 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
-import { Survey } from './survey.schema';
+import { Survey } from './types/survey.schema';
+import { SurveyAnswer } from './types/users-surveys.schema';
 
 @Injectable()
 class UsersSurveysService {
@@ -19,7 +20,7 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    return existingUser.UsersSurveys.openSurveys;
+    return existingUser.UsersSurveys?.openSurveys || [];
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
@@ -28,7 +29,16 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    return existingUser.UsersSurveys.createdSurveys;
+    return existingUser.UsersSurveys?.createdSurveys || [];
+  }
+
+  async getAnsweredSurveys(username: string): Promise<SurveyAnswer[]> {
+    const existingUser = await this.userModel.findOne<User>({ username }).exec();
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+
+    return existingUser.UsersSurveys?.answeredSurveys || [];
   }
 
   async removeFromOpenSurveys(username: string, surveyName: string): Promise<void> {
@@ -37,12 +47,12 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const index = existingUser.UsersSurveys.openSurveys.indexOf(surveyName);
+    const index = existingUser.UsersSurveys?.openSurveys?.indexOf(surveyName);
     if (index === -1) {
       throw new Error('Survey not found');
     }
 
-    const usersOpenSurveys = existingUser.UsersSurveys.openSurveys.splice(index, 1);
+    const usersOpenSurveys = existingUser.UsersSurveys?.openSurveys?.splice(index, 1);
     const newUser = {
       ...existingUser,
       UsersSurveys: {
@@ -60,7 +70,7 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const usersOpenSurveys = existingUser.UsersSurveys.openSurveys;
+    const usersOpenSurveys = existingUser.UsersSurveys?.openSurveys || [];
     usersOpenSurveys.push(surveyname);
 
     const newUser = {
@@ -88,7 +98,7 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const usersAnsweredSurveys = existingUser.UsersSurveys.answeredSurveys;
+    const usersAnsweredSurveys = existingUser.UsersSurveys?.answeredSurveys || [];
     usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
     const newUser = {
@@ -110,7 +120,7 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const usersAnsweredSurveys = existingUser.UsersSurveys.answeredSurveys.map((answer) =>
+    const usersAnsweredSurveys = existingUser.UsersSurveys?.answeredSurveys?.map((answer) =>
       answer.surveyname === surveyName ? { surveyname: surveyName, answer: newAnswer } : answer,
     );
 
@@ -137,7 +147,7 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const usersAnsweredSurveys = existingUser.UsersSurveys.answeredSurveys;
+    const usersAnsweredSurveys = existingUser.UsersSurveys?.answeredSurveys || [];
     const answer = usersAnsweredSurveys.find((a) => a.surveyname === surveyName);
 
     const name = isAnonymous ? Math.random().toString() : username;

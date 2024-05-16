@@ -1,0 +1,11 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*", "jest.config.ts", "vite.config.ts"],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "parserOptions": { "project": ["./tsconfig.json"], "sourceType": "module" }
+}
+

@@ -1,13 +1,20 @@
-export interface Survey {
-  name: string;
-  participants: string[];
-  survey: JSON;
-  isAnonymous: boolean;
-  isAnswerChangeable: boolean;
+/*
+ *  This file contains the model classes for the frontend of the application
+ *  and includes copies of all the necessary backend type
+ */
+
+export enum SurveyType {
+  FORMS = 'FORMS',
+  POLL = 'POLL',
 }
 
-export interface SurveysAPIsResponse {
-  surveys: Survey[];
+export interface Survey {
+  surveyname: string;
+  participants: string[];
+  survey: JSON;
+  type: SurveyType;
+  isAnonymous: boolean;
+  isAnswerChangeable: boolean;
 }
 
 export type SurveyAnswer = {
@@ -20,7 +27,7 @@ export class UserSurveys {
 
   openSurveys: string[];
 
-  createdSurveys: Survey[];
+  createdSurveys: string[];
 
   answeredSurveys: SurveyAnswer[];
 }

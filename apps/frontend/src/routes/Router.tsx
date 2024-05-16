@@ -11,6 +11,7 @@ import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
 import PollEditor from '@/pages/Survey/Poll/PollEditor';
 import SurveyCreatorWidget from '@/pages/Survey/Forms/SurveyCreatorWidget';
+import SurveyParticipation from '@/pages/Survey/Forms/SurveyParticipation';
 
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
@@ -98,7 +99,18 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                 />
               ))}
             </Route>
-
+            <Route
+              path="survey/forms/participate"
+              element={<SurveyParticipation />}
+            >
+              {Object.keys(appConfig).map((key) => (
+                <Route
+                  key={key}
+                  path={key}
+                  element={<SurveyParticipation />}
+                />
+              ))}
+            </Route>
             <Route
               path="survey/forms/create"
               element={<SurveyCreatorWidget />}

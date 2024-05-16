@@ -1,82 +1,87 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Model } from 'survey-core';
+import { Body, Controller, Delete, Get, Post, Query, Logger } from '@nestjs/common';
 import SurveyService from './survey.service';
-import UsersSurveysService from './users-surveys.service';
-import CreateSurveyDto from './dto/create-survey.dto';
-import UpdateSurveyDto from './dto/update-survey.dto';
-import { Survey } from './survey.schema';
-import MockedSurveys from './mocked-surveys';
+import DeleteSurveyDto from './dto/delete-survey.dto';
 
-@Controller('survey')
+import UsersSurveysService from './users-surveys.service';
+import UserSurveySearchTypes from './types/user-survey-search-types-enum';
+import { SurveyAnswer } from './types/users-surveys.schema';
+import CreateSurveyDto from './dto/create-survey.dto';
+import { Survey } from './types/survey.schema';
+import FindSurveyDto from './dto/find-survey.dto';
+// import { GetUsername } from '../auth/getUser.ts';
+
+@Controller('surveys')
 class SurveysController {
   constructor(
     private readonly surveyService: SurveyService,
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
+  @Get()
+  async find(@Query() params: FindSurveyDto /* , @GetUsername() username: string */) {
+    Logger.log('Fetching surveys with params: ', JSON.stringify(params, null, 2));
+    // Logger.log('Fetching surveys with username: ', username);
+
+    // only fetching a specific survey
+    if ('surveyname' in params && params.surveyname) {
+      return this.surveyService.findSurvey(params.surveyname);
+    }
+
+    // fetching multiple specific surveys
+    if ('surveynames' in params && params.surveynames) {
+      return this.surveyService.findSurveys(params.surveynames);
+    }
+
+    // fetch user surveys
+    if ('username' in params && params.username) {
+      const { search, username } = params;
+      switch (search) {
+        case UserSurveySearchTypes.OPEN:
+          return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveys(username));
+
+        case UserSurveySearchTypes.CREATED:
+          return this.usersSurveysService.getCreatedSurveys(username);
+
+        case UserSurveySearchTypes.ANSWERED:
+          return this.usersSurveysService
+            .getAnsweredSurveys(username)
+            .then((response) => response.map((surveyAnswer: SurveyAnswer) => surveyAnswer.surveyname))
+            .then((surveyNames) => this.surveyService.findSurveys(surveyNames))
+            .catch((e) => {
+              Logger.error(e);
+              return [];
+            });
+        case UserSurveySearchTypes.ALL:
+        default:
+          return this.surveyService.findAllSurveys();
+      }
+    }
+
+    // fetch all surveys
+    return this.surveyService.findAllSurveys();
+  }
+
   @Post()
-  async create(@Body() createSurveyDto: CreateSurveyDto) {
-    const newSurvey: Survey = await this.surveyService.createSurvey(createSurveyDto);
+  async createOrUpdate(@Body() createSurveyDto: CreateSurveyDto) {
+    const survey = new Model(createSurveyDto.survey);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const newCreateSurveyDto = { ...createSurveyDto, survey: survey.toJSON() };
+
+    const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(newCreateSurveyDto);
+    if (newSurvey == null) {
+      throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
+    }
+
     const { surveyname, participants } = newSurvey;
     await this.usersSurveysService.populateSurvey(participants, surveyname);
   }
 
-  @Post()
-  change(@Body() surveyName: string, createSurveyDto: CreateSurveyDto) {
-    return this.surveyService.updateSurvey(surveyName, createSurveyDto);
-  }
-
-  @Get()
-  findSurveyMockup() {
-    const survey = new MockedSurveys();
-    return survey;
-  }
-
-  @Get()
-  findAll() {
-    return this.surveyService.findAllSurveys();
-  }
-
-  @Get(':surveyName')
-  findOne(@Param('surveyName') surveyName: string) {
-    return this.surveyService.findSurvey(surveyName);
-  }
-
-  @Get()
-  findOpen() {
-    // const surveynames = this.usersSurveysService.
-    return this.surveyService.findAllSurveys();
-  }
-
-  @Patch(':surveyName')
-  update(@Param('surveyName') surveyName: string, @Body() updateSurveyDto: UpdateSurveyDto) {
-    return this.surveyService.updateSurvey(surveyName, updateSurveyDto);
-  }
-
-  @Delete(':surveyName')
-  remove(@Param('surveyName') surveyName: string) {
+  @Delete()
+  remove(@Body() deleteSurveyDto: DeleteSurveyDto) {
+    const surveyName = deleteSurveyDto.surveyname;
     return this.surveyService.removeSurvey(surveyName);
-  }
-
-  @Get(':surveyName')
-  async getAnswers(@Param('surveyName') surveyName: string, @Body() isAnonym = true) {
-    const survey = await this.surveyService.findSurvey(surveyName);
-    if (survey == null) {
-      throw new Error('Survey not found');
-    }
-
-    const promises: Promise<{ surveyname: string; answer: JSON | string }>[] = [];
-    survey.participants.forEach((participant) => {
-      promises.push(this.usersSurveysService.getAnswer(participant, surveyName, isAnonym));
-    });
-
-    const results = await Promise.all(promises);
-
-    return results;
-  }
-
-  @Patch(':username/:surveyName')
-  addAnswer(@Param('username') username: string, @Param('surveyName') surveyName: string, @Body() answer: JSON) {
-    return this.usersSurveysService.addAnswer(username, surveyName, answer);
   }
 }
 
