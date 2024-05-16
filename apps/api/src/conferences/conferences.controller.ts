@@ -26,7 +26,7 @@ class ConferencesController {
 
   @Patch()
   async update(@Body() conference: Conference, @GetUsername() username: string) {
-    await this.conferencesService.update(conference);
+    await this.conferencesService.update(conference, username);
     return this.conferencesService.findAll(username);
   }
 

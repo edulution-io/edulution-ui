@@ -68,6 +68,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                     linkPath: '',
                     icon: optionsConfig.icon,
                     appType: AppIntegrationType.FORWARDED,
+                    options: {},
                   };
                   const updatedConfig = [...appConfig, newConfig];
 

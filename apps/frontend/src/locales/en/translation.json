@@ -126,29 +126,18 @@
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
-    "addApp": {
-      "title": "Add app",
-      "description": "Please select an app:"
-    },
+    "addApp": { "title": "Add app", "description": "Please select an app:" },
     "description": "Here you can make all settings.",
     "appconfig": {
-      "update": {
-        "success": "Appliste saved successfully",
-        "failed": "Update failed"
-      },
-      "delete": {
-        "success": "App removed",
-        "failed": "App deletion failed"
-      },
-      "create": {
-        "success": "App created",
-        "failed": "App creation failed"
-      }
+      "update": { "success": "Appliste saved successfully", "failed": "Update failed" },
+      "delete": { "success": "App removed", "failed": "App deletion failed" },
+      "create": { "success": "App created", "failed": "App creation failed" }
     }
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window. No further authorization is required."
+    "description": "The application opens in a new window. No further authorization is required.",
+    "missing_link": "Missing link"
   },
   "menu": "Menu",
   "home": "Home",

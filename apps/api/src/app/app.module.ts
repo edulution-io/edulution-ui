@@ -14,8 +14,8 @@ import ConferencesModule from '../conferences/conferences.module';
     JwtModule.register({
       global: true,
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017', {
-      dbName: 'edulution',
+    MongooseModule.forRoot(process.env.MONGODB_SERVER_URL as string, {
+      dbName: process.env.MONGODB_DATABASE_NAME,
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
   ],

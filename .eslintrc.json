@@ -38,28 +38,26 @@
   },
   "ignorePatterns": [
     "vite.config.ts",
+    "prettier.config.cjs",
     "vitest.workspace.ts",
     "tailwind.config.ts",
     "jest.preset.cjs",
     "jest.config.ts",
     "postcss.config.mjs",
     "webpack.config.cjs",
-    "dist/apps/*"
+    "dist/apps/*",
+    "scripts/*"
   ],
   "rules": {
+    // Allowed console logs for debug purpose
+    "no-console": ["error", { "allow": ["info", "error"] }],
     // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/function-component-definition.md
-    "react/function-component-definition": [
-      "error",
-      {
-        "namedComponents": "arrow-function"
-      }
-    ],
+    "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
     // Spreading is very useful
     "react/jsx-props-no-spreading": "off",
     // TypeScript cares abput prop-types
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "no-console": ["error", { "allow": ["info", "error"] }],
     // Issue with react-hook-form -> https://github.com/orgs/react-hook-form/discussions/8622
     "@typescript-eslint/no-misused-promises": [
       "error",
@@ -73,9 +71,7 @@
   "overrides": [
     {
       "files": ["index.ts"],
-      "rules": {
-        "import/prefer-default-export": "off"
-      }
+      "rules": { "import/prefer-default-export": "off" }
     }
   ]
 }

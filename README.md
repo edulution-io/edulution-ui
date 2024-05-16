@@ -2,13 +2,13 @@
 
 ## Description
 
-A UI build with Vite+React
+A Full Stack Application build with Vite+React (frontend) and Nest.js for the API. NX is used to organise the monorepo.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18
+- Node.js 18 LTS
 
 ### Installation
 
@@ -18,65 +18,53 @@ A UI build with Vite+React
    npm install
    ```
 
-2. Start
+2. Set environment variables
+   Place a .env file in apps/api and apps/frontend (.env.default as template)
+
+3. Start API
 
    ```bash
    npm run dev
    ```
 
-   The FE will be served on http://localhost:5173/
+   The API will be served on http://localhost:3000/
 
-3. Production build
+4. Start Frontend
 
    ```bash
-   npm run build
+   npm run api
    ```
 
-# React + TypeScript + Vite
+   The FE will be served on http://localhost:5173/
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+5. Production build
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+   ```bash
+   npm run build:all
+   ```
 
 # Docker
 
-## Prepare
-
-Generate self signed key and cert
-
-```bash
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt
-```
-
 ## Build
 
-Build container and push to ghcr
+### Public Key
+
+Read the public key and certificate from oidc provider (Keycloak >> realm settings >> keys). Then add a public.pem file to the project root. Insert the key/cert as follwed:
+
+```
+-----BEGIN CERTIFICATE-----
+<CERTIFICATE CONTENT>
+-----END CERTIFICATE-----
+-----BEGIN PUBLIC KEY-----
+<PUBLIC KEY CONTENT>
+-----END PUBLIC KEY----
+```
+
+### Build apps, containers and start
 
 ```bash
-docker build -t ghcr.io/edulution-io/edulution-ui:0.0.1 . && docker push ghcr.io/edulution-io/edulution-ui:0.0.1
+npm run build:all && \
+docker build -t ghcr.io/edulution-io/edulution-ui -f apps/frontend/Dockerfile . && \
+docker build -t ghcr.io/edulution-io/edulution-api -f apps/api/Dockerfile . && \
+docker compose up -d
 ```

@@ -47,13 +47,13 @@ class ConferencesService {
     }
 
     if (conference.isRunning) {
-      await this.stopConference(conference);
+      await this.stopConference(conference, username);
     } else {
-      await this.startConference(conference);
+      await this.startConference(conference, username);
     }
   }
 
-  private async startConference(conference: Conference) {
+  private async startConference(conference: Conference, username: string) {
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
       const checksum = ConferencesService.createChecksum('create', query);
@@ -63,14 +63,14 @@ class ConferencesService {
       const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
       ConferencesService.handleBBBApiError(result);
 
-      await this.update({ ...conference, isRunning: true });
+      await this.update({ ...conference, isRunning: true }, username);
     } catch (e) {
       Logger.error(e, ConferencesService.name);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
     }
   }
 
-  private async stopConference(conference: Conference) {
+  private async stopConference(conference: Conference, username: string) {
     try {
       const query = `meetingID=${conference.meetingID}`;
       const checksum = ConferencesService.createChecksum('end', query);
@@ -80,7 +80,7 @@ class ConferencesService {
       const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
       ConferencesService.handleBBBApiError(result);
 
-      await this.update({ ...conference, isRunning: false });
+      await this.update({ ...conference, isRunning: false }, username);
     } catch (e) {
       Logger.error(e, ConferencesService.name);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
@@ -134,11 +134,11 @@ class ConferencesService {
         const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
         ConferencesService.handleBBBApiError(result);
 
-        await this.update({ ...conferenceObject, isRunning: true });
+        await this.update({ ...conferenceObject, isRunning: true }, username);
         return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
       } catch (_) {
         const updatedConference = { ...conferenceObject, isRunning: false };
-        await this.update(updatedConference);
+        await this.update(updatedConference, username);
         return updatedConference;
       }
     });
@@ -151,9 +151,18 @@ class ConferencesService {
     return this.conferenceModel.findOne<Conference>({ meetingID }).exec();
   }
 
-  async update(conference: Conference): Promise<Conference | null> {
+  async update(conference: Conference, username: string): Promise<Conference | null> {
     return this.conferenceModel
-      .findOneAndUpdate<Conference>({ meetingID: conference.meetingID }, conference, { new: true })
+      .findOneAndUpdate<Conference>(
+        {
+          meetingID: conference.meetingID,
+          'creator.username': username,
+        },
+        conference,
+        {
+          new: true,
+        },
+      )
       .exec();
   }
 

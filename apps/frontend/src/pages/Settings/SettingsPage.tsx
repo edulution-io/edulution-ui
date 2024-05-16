@@ -67,6 +67,7 @@ const SettingsPage: React.FC = () => {
           linkPath: getValues(`${settingLocation}.path`) as string,
           icon: selectedOption.icon,
           appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
+          options: {},
         };
 
         const updatedConfig = appConfig.map((entry) => {

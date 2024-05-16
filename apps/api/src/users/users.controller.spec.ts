@@ -1,10 +1,11 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
 
-const mockAppConfigModel = {
+const mockUserModel = {
   insertMany: jest.fn(),
   bulkWrite: jest.fn(),
   find: jest.fn(),
@@ -17,12 +18,17 @@ describe('UsersController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        CacheModule.register({
+          ttl: 10,
+        }),
+      ],
       controllers: [UsersController],
       providers: [
         UsersService,
         {
           provide: getModelToken(User.name),
-          useValue: mockAppConfigModel,
+          useValue: mockUserModel,
         },
       ],
     }).compile();
