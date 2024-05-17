@@ -120,7 +120,15 @@
   "students": "Schüler",
   "login": {
     "forgot_password": "Passwort vergessen?",
-    "remember_me": "Merken"
+    "remember_me": "Eingeloggt bleiben",
+    "username": {
+      "too_long": "Benutzername zu lang",
+      "required": "Bitte Benutzername eingeben."
+    },
+    "password": {
+      "too_long": "Passwort zu lang",
+      "required": "Bitte Passwort eingeben."
+    }
   },
   "common": {
     "add": "Hinzufügen",

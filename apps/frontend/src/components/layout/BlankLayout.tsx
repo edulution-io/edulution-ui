@@ -1,16 +1,16 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from 'react-oidc-context';
 
+import useUserStore from '@/store/userStore';
 import backgroundImage from '@/assets/background.jpg';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import Sidebar from '../ui/Sidebar';
 
 const BlankLayout: React.FC<PropsWithChildren> = () => {
-  const auth = useAuth();
   const { pathname } = useLocation();
   const isMainPage = pathname === '/';
+  const { isAuthenticated } = useUserStore();
 
   return (
     <div
@@ -24,7 +24,7 @@ const BlankLayout: React.FC<PropsWithChildren> = () => {
         </main>
         <Footer />
       </div>
-      {auth.isAuthenticated ? <Sidebar /> : null}
+      {isAuthenticated ? <Sidebar /> : null}
     </div>
   );
 };

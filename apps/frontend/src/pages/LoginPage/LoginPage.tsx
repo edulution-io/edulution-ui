@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -11,24 +11,34 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
+import { QRCodeSVG } from 'qrcode.react';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
+import OtpInput from './OtpInput';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated } = useUserStore();
+  const { user, setUser, setWebdavKey, setToken, postCheckTotp } = useUserStore();
+  const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
+  const [totp, setTotp] = useState<string>('');
 
   const { isLoading } = auth;
   const { getToken } = useLmnUserStore((state) => ({
     getToken: state.getToken,
   }));
 
-  const formSchema: z.Schema = z.object({
-    username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
-    password: z.string({ required_error: t('password.required') }).max(32, { message: t('password.too_long') }),
-  });
+  const formSchema: z.Schema = isEnterTotpVisible
+    ? z.object({}).optional()
+    : z.object({
+        username: z
+          .string({ required_error: t('login.username.required') })
+          .max(32, { message: t('login.username.too_long') }),
+        password: z
+          .string({ required_error: t('login.password.required') })
+          .max(32, { message: t('login.password.too_long') }),
+      });
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
@@ -43,14 +53,16 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
-      const username = form.getValues('username') as string;
+      const username = (form.getValues('username') as string).trim();
       const password = form.getValues('password') as string;
+
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password,
       });
 
       if (requestUser) {
+        setIsEnterTotpVisible(true);
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
           data: form.getValues('password') as string,
@@ -58,8 +70,8 @@ const LoginPage: React.FC = () => {
         });
 
         setUser(form.getValues('username') as string);
+        setToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
-        setIsAuthenticated(true);
 
         createWebdavClient();
         await getToken(username, password);
@@ -69,6 +81,11 @@ const LoginPage: React.FC = () => {
     } finally {
       /* empty */
     }
+  };
+
+  const handleCheckTotp = async (otp: string) => {
+    setTotp(otp);
+    await postCheckTotp(otp);
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
@@ -111,18 +128,29 @@ const LoginPage: React.FC = () => {
           className="space-y-4"
           data-testid="test-id-login-page-form"
         >
-          {renderFormField('username', t('common.username'))}
-          {renderFormField('password', t('common.password'), 'password')}
+          {isEnterTotpVisible ? (
+            <div className="flex justify-between">
+              <OtpInput
+                length={6}
+                onComplete={(otp) => handleCheckTotp(otp)}
+              />
+            </div>
+          ) : (
+            <>
+              {renderFormField('username', t('common.username'))}
+              {renderFormField('password', t('common.password'), 'password')}
+            </>
+          )}
+          {isEnterTotpVisible && (
+            <div className="mx-auto w-full justify-center">
+              <QRCodeSVG
+                value={`otpauth://totp/edulution-ui:${user}?secret=JBSWY3DPEHPK3PXP&issuer=edulution-ui&algorithm=SHA1&digits=6&period=30`}
+              />
+            </div>
+          )}
           <div className="flex justify-between">
             {/* TODO: Add valid Password reset page -> NIEDUUI-53 */}
             {/* <div className="my-4 block font-bold text-gray-500">
-              <input
-                type="checkbox"
-                className="mr-2 leading-loose"
-              />
-              <span className="mr-4 text-p">{t('login.remember_me')}</span>
-            </div>
-            <div className="my-4 block font-bold text-gray-500">
               <Link
                 to="/"
                 className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
@@ -131,15 +159,28 @@ const LoginPage: React.FC = () => {
               </Link>
             </div> */}
           </div>
-          <Button
-            className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
-            type="submit"
-            variant="btn-security"
-            size="lg"
-            data-testid="test-id-login-page-submit-button"
-          >
-            {isLoading ? t('common.loading') : t('common.login')}
-          </Button>
+          {isEnterTotpVisible ? (
+            <Button
+              className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
+              type="button"
+              variant="btn-security"
+              size="lg"
+              data-testid="test-id-login-page-submit-button"
+              onClick={() => handleCheckTotp(totp)}
+            >
+              {isLoading ? t('common.loading') : t('common.login')}
+            </Button>
+          ) : (
+            <Button
+              className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
+              type="submit"
+              variant="btn-security"
+              size="lg"
+              data-testid="test-id-login-page-submit-button"
+            >
+              {isLoading ? t('common.loading') : t('common.login')}
+            </Button>
+          )}
         </form>
       </Form>
     </Card>
