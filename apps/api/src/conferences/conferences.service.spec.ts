@@ -8,6 +8,8 @@ import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
 import { Attendee } from './dto/attendee';
 import JWTUser from '../types/JWTUser';
+import AppConfigService from '../appconfig/appconfig.service';
+import mockAppConfigService from '../appconfig/appconfig.service.mock';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -38,7 +40,6 @@ const mockConferenceDocument: ConferenceDocument = {
 
 const conferencesModelMock = {
   create: jest.fn().mockResolvedValue(mockConferenceDocument),
-
   find: jest.fn().mockReturnValue({
     exec: jest.fn().mockResolvedValue([mockConferenceDocument]),
   }),
@@ -64,6 +65,10 @@ describe(ConferencesService.name, () => {
         {
           provide: getModelToken(Conference.name),
           useValue: conferencesModelMock,
+        },
+        {
+          provide: AppConfigService,
+          useValue: mockAppConfigService,
         },
       ],
     }).compile();
