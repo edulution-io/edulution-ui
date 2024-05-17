@@ -20,7 +20,7 @@ const IframeLayout: React.FC = () => {
         <iframe
           className="h-screen w-full pr-[58px]"
           title={pathname}
-          src={appConfig.find((app) => app.name === rootPathName)?.linkPath}
+          src={appConfig.find((app) => app.name === rootPathName)?.options.url}
         />
       </div>
       <Sidebar />

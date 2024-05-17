@@ -3,6 +3,8 @@ import { getModelToken } from '@nestjs/mongoose';
 import ConferencesService from './conferences.service';
 import ConferencesController from './conferences.controller';
 import { Conference } from './conference.schema';
+import AppConfigService from '../appconfig/appconfig.service';
+import mockAppConfigService from '../appconfig/appconfig.service.mock';
 
 const mockConferencesModel = {
   insertMany: jest.fn(),
@@ -23,6 +25,10 @@ describe(ConferencesController.name, () => {
         {
           provide: getModelToken(Conference.name),
           useValue: mockConferencesModel,
+        },
+        {
+          provide: AppConfigService,
+          useValue: mockAppConfigService,
         },
       ],
     }).compile();

@@ -1,4 +1,5 @@
 import { DirectoryFile } from '@/datatypes/filesystem';
+import { AppConfigOptions } from '@/datatypes/appConfigOptions';
 
 export enum AppIntegrationType {
   NATIVE = 'native',
@@ -8,15 +9,9 @@ export enum AppIntegrationType {
 
 export type AppConfig = {
   name: string;
-  /* @deprecated use options.url */
-  linkPath: string;
   icon: string;
   appType: AppIntegrationType;
-  options: {
-    url?: string;
-    apiKey?: string;
-    [key: string]: string | undefined;
-  };
+  options: AppConfigOptions;
 };
 
 export interface MenuItem {
