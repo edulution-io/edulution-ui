@@ -10,14 +10,14 @@ import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
-import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
+import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserStore from '@/store/userStore';
+import useUserQuery from '@/api/useUserQuery';
+import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -69,13 +69,13 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
             <Route
               path="settings"
-              element={<SettingsPage />}
+              element={<AppConfigPage />}
             >
               {appConfig.map((item) => (
                 <Route
                   key={item.name}
                   path={item.name}
-                  element={<SettingsPage />}
+                  element={<AppConfigPage />}
                 />
               ))}
             </Route>
@@ -129,18 +129,27 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
-  const { getAppConfigs } = useAppConfigQuery();
+  const { appConfig, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
+  const { loginUser } = useUserQuery();
+  const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
+
+  useEffect(() => {
+    if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
+      const { profile } = auth.user;
+
+      // Send here the user password for Webdav to the API
+      loginUser(profile)
+        .then(() => setIsLoggedInInEduApi(true))
+        .catch((e) => console.error(e));
+    }
+  }, [auth.isAuthenticated, auth.user?.profile]);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          const configData = await getAppConfigs();
-          if (configData) {
-            setAppConfig(configData);
-          }
+          await getAppConfigs(true);
         } catch (e) {
           console.error('Error fetching data:', e);
         }
@@ -156,6 +165,7 @@ const AppRouter = () => {
         if (auth.user?.expired) {
           console.info('Session expired');
           auth.removeUser().catch((e) => console.error('Error fetching data:', e));
+          setIsLoggedInInEduApi(false);
           sessionStorage.clear();
         }
       });

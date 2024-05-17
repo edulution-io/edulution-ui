@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Router from '@/routes/Router';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
-
-const queryClient = new QueryClient();
+import useUserStore from '@/store/userStore';
+import eduApi from '@/api/eduApi';
+import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 
 const App = () => {
   const { lang } = useLanguage();
+  const { token } = useUserStore();
+
+  eduApi.defaults.headers.Authorization = `Bearer ${token}`;
 
   useEffect(() => {
     i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
@@ -26,10 +28,8 @@ const App = () => {
 
   return (
     <AuthProvider {...oidcConfig}>
-      <QueryClientProvider client={queryClient}>
-        <Router />
-        <ReactQueryDevtools />
-      </QueryClientProvider>
+      <BBBFrame />
+      <Router />
     </AuthProvider>
   );
 };
