@@ -18,6 +18,7 @@ import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -65,6 +66,11 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
             <Route
               path="/"
               element={<HomePage />}
+            />
+
+            <Route
+              path="/schoolmanagement"
+              element={<SchoolManagementPage />}
             />
 
             <Route

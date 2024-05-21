@@ -302,7 +302,38 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-  "groupsPage": {
+    "groupsPage": {
     "classes": "Klassen"
+  },
+
+  "schoolManagement": {
+    "title": "Klassenzimmer",
+    "lesson": "Unterricht",
+    "enrol": "Einschreiben",
+    "passwords": "Erst-Passwörter",
+    "addStudent": "Schüler hinzufügen",
+    "addGroup": "Gruppe hinzufügen",
+    "share": "Austeilen",
+    "collect": "Einsammeln",
+    "showCollectedFiles": "Dateien zeigen",
+    "exam": "Prüfung",
+    "wifi": "WLAN",
+    "internet": "Internet",
+    "printer": "Drucker",
+    "class": "Klassen",
+    "projects": "Projekte",
+    "project": "Projekt anlegen",
+    "availableGroups": "Alle verfügbaren Gruppen in der {{schoolname}} Schule",
+    "noDataAvailable": "Keine Daten verfügbar",
+    "myClasses": "Meine Klassen",
+    "myGroups": "Meine Gruppen",
+    "myProjects": "Meine Projekte",
+    "initialPasswordHint":"Sie können das Passwort einer Klasse direkt über das Symbol drucken oder mehrere Klassen auswählen, um alle gleichzeitig auszudrucken.",
+    "downloadInitPassword": "Erst-Passwörter herunterladen",
+    "projectPage": "Hier können Sie ein neues Projekt anlegen sowie Ihre aktuellen Projekte sehen.",
+    "createProject": "Projekt anlegen",
+    "newProject": "Neues Projekt",
+    "createGroup": "Gruppe anlegen",
+      "newGroup": "Neue Gruppe"
   }
 }

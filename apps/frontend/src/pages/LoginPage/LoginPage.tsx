@@ -14,16 +14,15 @@ import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
+import { OriginalIdTokenClaims } from '@/pages/SchoolmanagementPage/utilis/types.ts';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated, setToken } = useUserStore();
+  const { setUser, setWebdavKey, setUserInfo, setIsAuthenticated, setToken } = useUserStore();
+  const { setLmnApiToken } = useLmnUserStore();
 
   const { isLoading } = auth;
-  const { getToken } = useLmnUserStore((state) => ({
-    getToken: state.getToken,
-  }));
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -57,13 +56,14 @@ const LoginPage: React.FC = () => {
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
 
+        await setLmnApiToken(username, password);
+
         setUser(username);
         setToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
-
+        setUserInfo(requestUser.profile as unknown as OriginalIdTokenClaims);
         createWebdavClient();
-        await getToken(username, password);
       }
 
       return null;

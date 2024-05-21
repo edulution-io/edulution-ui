@@ -27,6 +27,7 @@
     "@nestjs/axios": "^3.0.2",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.2",
+    "@radix-ui/react-accordion": "^1.1.2",
     "@nestjs/core": "^10.0.2",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "^2.0.5",
