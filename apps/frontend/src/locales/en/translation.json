@@ -221,6 +221,11 @@
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "Scan Qr-Code"
+  },
+
   "fileRenameContent": {
     "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",

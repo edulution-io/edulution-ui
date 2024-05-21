@@ -1,7 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStore from '@/store/fileManagerStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
@@ -16,33 +15,31 @@ interface DeleteDialogProps {
 }
 
 const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
-  const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-  const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
+  const { selectedItems, setSelectedItems, setFileOperationSuccessful, deleteItem } = useFileManagerStore();
   const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
-  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
+
   const deleteItems = async () => {
     try {
-      const itemsToDelete = selectedItems.length > 1 ? selectedItems : [file].flat();
-      const deletePromises = itemsToDelete.map((item) => WebDavFunctions.deleteItem(item.filename));
-      const deleteResults = await Promise.all(deletePromises);
-      const allSuccessful = deleteResults.every((result) => result.success);
+      const itemsToDelete = selectedItems.length > 0 ? selectedItems : [file].flat();
+      const deleteResults = await Promise.all(
+        itemsToDelete.map(async (item) => deleteItem(item.filename.replace('/webdav/', ''))),
+      );
+      const allSuccessful = deleteResults.every((result) => result);
       const combinedMessage = deleteResults
-        .map((result, index) => `Item ${index + 1}: ${'message' in result ? result.message : 'No message provided'}`)
+        .map((result, index) => `Item ${itemsToDelete[index].basename}: ${result.success || 'No message provided'}`)
         .join('; ');
-
-      setFileOperationSuccessful(allSuccessful, combinedMessage);
-
+      setFileOperationSuccessful(allSuccessful, combinedMessage).catch(console.error);
       if (allSuccessful) {
         setRowSelection({});
         setSelectedItems([]);
       }
       setIsOpen(false);
-    } catch (error: unknown) {
+    } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during deletion';
-      setFileOperationSuccessful(false, errorMessage);
+      setFileOperationSuccessful(false, errorMessage).catch(console.error);
     }
   };
 

@@ -3,7 +3,7 @@ import { toast, Toaster } from 'sonner';
 import useFileManagerStore from '@/store/fileManagerStore';
 import Progress from '@/components/ui/Progress';
 
-const UploadToast = () => {
+const OperationsToaster = () => {
   const fileUploadProgresses = useFileManagerStore((state) => state.uploadProgresses);
 
   useEffect(() => {
@@ -41,4 +41,4 @@ const UploadToast = () => {
   return <Toaster />;
 };
 
-export default UploadToast;
+export default OperationsToaster;

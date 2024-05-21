@@ -1,165 +1,68 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ContentType } from '@/datatypes/filesystem';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import { ContentType } from '@/datatypes/filesystem';
-import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import { Button } from '@/components/shared/Button';
-import { useMediaQuery } from 'usehooks-ts';
+import CreateContentDialog from '@/components/ui/Dialogs/CreateContentDialog';
 
 interface CreateNewContentDialogProps {
-  trigger: ReactNode;
+  trigger: React.ReactNode;
   contentType: ContentType;
 }
 
 const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const {
-    fileName,
-    setFileName,
-    directoryName,
-    setDirectoryName,
-    currentPath,
-    setFileOperationSuccessful,
-    fetchFiles,
-    handleWebDavAction,
-  } = useFileManagerStore();
+  const [fileName, setFileName] = useState('');
+  const [directoryName, setDirectoryName] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control the dialog visibility
+  const { handleWebDavAction, setFileOperationSuccessful, createNewFile, createNewFolder, currentPath } =
+    useFileManagerStore();
 
-  const createFile = async (path: string): Promise<void> => {
-    await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
-      .then(async (resp) => {
-        if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
-        } else {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
-        }
-        await fetchFiles(currentPath);
-      })
-      .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
-        setFileOperationSuccessful(false, errorMessage);
-      });
-  };
+  const onSubmit = async () => {
+    const name = contentType === ContentType.file ? fileName : directoryName;
+    const action = contentType === ContentType.file ? createNewFile : createNewFolder;
+    if (!name) return;
 
-  const createDirectory = async (path: string): Promise<void> => {
-    await handleWebDavAction(() => WebDavFunctions.createDirectory(`${currentPath}/${path}`))
-      .then(async (resp) => {
-        if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.fileOperationSuccessful'));
-        } else {
-          setFileOperationSuccessful(resp.success, t('fileCreateNewContent.noMessageAvailable'));
-        }
-        await fetchFiles(currentPath);
-      })
-      .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
-        setFileOperationSuccessful(false, errorMessage);
-      });
-  };
-
-  const handleCreateContent = async () => {
-    if (contentType === ContentType.file) {
-      await createFile(fileName);
-    } else {
-      await createDirectory(directoryName);
-    }
-    setIsOpen(false);
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) {
-      setDirectoryName('');
-      setFileName('');
+    try {
+      const resp = await handleWebDavAction(() => action(name, currentPath));
+      console.log('Response:', resp);
+      if (resp.success) {
+        await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
+      } else {
+        await setFileOperationSuccessful(false, t('fileCreateNewContent.unknownErrorOccurred'));
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
+      await setFileOperationSuccessful(false, errorMessage);
+    } finally {
+      setIsDialogOpen(false); // Close the dialog after the operation completes
     }
   };
 
-  const mobileContent = (
-    <Sheet
-      open={isOpen}
-      onOpenChange={handleOpenChange}
+  const isFormInvalid = contentType === ContentType.file ? fileName.length === 0 : directoryName.length === 0;
+  const formTitle =
+    contentType === ContentType.file
+      ? t('fileCreateNewContent.fileDialogTitle')
+      : t('fileCreateNewContent.directoryDialogTitle');
+  const FormComponent = contentType === ContentType.file ? FileCreationForm : DirectoryCreationForm;
+
+  return (
+    <CreateContentDialog
+      trigger={trigger}
+      title={formTitle}
+      onSubmit={onSubmit}
+      isDisabled={isFormInvalid}
+      isOpen={isDialogOpen}
+      onOpenChange={setIsDialogOpen}
     >
-      <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent
-        side="bottom"
-        className="flex flex-col"
-      >
-        <SheetHeader>
-          {contentType === ContentType.file ? (
-            <>
-              <SheetTitle>{t('fileCreateNewContent.fileDialogTitle')}</SheetTitle>
-              <SheetDescription>
-                <FileCreationForm />
-              </SheetDescription>
-            </>
-          ) : (
-            <>
-              <SheetTitle>{t('fileCreateNewContent.directoryDialogTitle')}</SheetTitle>
-              <SheetDescription>
-                <DirectoryCreationForm />
-              </SheetDescription>
-            </>
-          )}
-        </SheetHeader>
-
-        <div className="mt-4 flex justify-end px-6">
-          <Button
-            variant="btn-collaboration"
-            disabled={directoryName.length <= 0 && fileName.length <= 0}
-            onClick={() => {
-              handleCreateContent().catch(() => null);
-            }}
-          >
-            {t('fileCreateNewContent.createButtonText')}
-          </Button>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-  const desktopContent = (
-    <DialogHeader>
-      {contentType === ContentType.file ? (
-        <>
-          <DialogTitle>{t('fileCreateNewContent.fileDialogTitle')}</DialogTitle>
-
-          <FileCreationForm />
-        </>
-      ) : (
-        <>
-          <DialogTitle>{t('fileCreateNewContent.directoryDialogTitle')}</DialogTitle>
-
-          <DirectoryCreationForm />
-        </>
-      )}
-      <div className="container mx-auto flex justify-end p-4">
-        <Button
-          variant="btn-collaboration"
-          disabled={directoryName.length <= 0 && fileName.length <= 0}
-          onClick={() => {
-            handleCreateContent().catch(() => null);
-          }}
-        >
-          {t('fileCreateNewContent.createButtonText')}
-        </Button>
-      </div>
-    </DialogHeader>
-  );
-
-  return isMobile ? (
-    mobileContent
-  ) : (
-    <Dialog
-      open={isOpen}
-      onOpenChange={handleOpenChange}
-    >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>{desktopContent}</DialogContent>
-    </Dialog>
+      <FormComponent
+        fileName={fileName}
+        setFileName={setFileName}
+        directoryName={directoryName}
+        setDirectoryName={setDirectoryName}
+      />
+    </CreateContentDialog>
   );
 };
 
