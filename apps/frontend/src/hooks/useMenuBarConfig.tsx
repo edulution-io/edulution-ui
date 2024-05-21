@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
 import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
+import USERSETTINGS_MENUBAR_CONFIG from '@/pages/UserSettings/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
@@ -18,6 +19,7 @@ const useMenuBarConfig = () => {
     const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
+    if (rootPathName === 'user') return USERSETTINGS_MENUBAR_CONFIG;
 
     switch (rootPathName as APPS) {
       case APPS.FILE_SHARING: {

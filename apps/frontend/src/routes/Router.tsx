@@ -18,6 +18,7 @@ import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
+import UserSettings from '@/pages/UserSettings/UserSettings';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -65,6 +66,11 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
             <Route
               path="/"
               element={<HomePage />}
+            />
+
+            <Route
+              path="user"
+              element={<UserSettings />}
             />
 
             <Route
@@ -154,7 +160,8 @@ const AppRouter = () => {
         }
       };
 
-      fetchData().catch(() => null);
+      // eslint-disable-next-line no-void
+      void fetchData();
     }
   }, [auth.isAuthenticated]);
 
