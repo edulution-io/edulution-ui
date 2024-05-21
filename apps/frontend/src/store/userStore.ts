@@ -9,6 +9,7 @@ type UserStore = {
   isAuthenticated: boolean;
   isLoggedInInEduApi: boolean;
   isLoading: boolean;
+  isMfaEnabled: boolean;
   setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   setUser: (user: string) => void;
   token: string;
@@ -17,6 +18,16 @@ type UserStore = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   reset: () => void;
   postCheckTotp: (otp: string) => Promise<void>;
+  getUserInfoFromDb: (username: string, setIsLoading?: boolean) => Promise<UserInfo | null>;
+};
+
+type UserInfo = {
+  _id: string;
+  username: string;
+  email: string;
+  roles: string[];
+  mfaEnabled: boolean;
+  isTotpSet: boolean;
 };
 
 const initialState = {
@@ -33,6 +44,7 @@ type PersistedUserStore = (
 ) => StateCreator<UserStore>;
 
 const EDU_API_AUTH_ENDPOINT = 'auth';
+const EDU_API_USERS_ENDPOINT = 'users';
 
 const useUserStore = create<UserStore>(
   (persist as PersistedUserStore)(
@@ -58,6 +70,8 @@ const useUserStore = create<UserStore>(
       setToken: (token) => set({ token }),
       reset: () => set(initialState),
 
+      isMfaEnabled: false,
+
       postCheckTotp: async (otp) => {
         set({ isLoading: true });
         try {
@@ -66,6 +80,18 @@ const useUserStore = create<UserStore>(
           set({ isLoading: false, isAuthenticated: isTotpValid });
         } catch (e) {
           handleApiError(e, set);
+        }
+      },
+
+      getUserInfoFromDb: async (username, setIsLoading = true) => {
+        set({ isLoading: setIsLoading });
+        try {
+          const response = await eduApi.get<UserInfo>(`${EDU_API_USERS_ENDPOINT}/${username}`);
+          const userInfo = response.data;
+          return userInfo;
+        } catch (e) {
+          handleApiError(e, set);
+          return null;
         }
       },
     }),

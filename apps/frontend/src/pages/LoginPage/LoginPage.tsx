@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import { QRCodeSVG } from 'qrcode.react';
+// import { QRCodeSVG } from 'qrcode.react';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
@@ -20,7 +20,7 @@ import OtpInput from './OtpInput';
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { user, setUser, setWebdavKey, setToken, postCheckTotp } = useUserStore();
+  const { setIsAuthenticated, setUser, setWebdavKey, setToken, postCheckTotp, getUserInfoFromDb } = useUserStore();
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState<string>('');
 
@@ -62,7 +62,6 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        setIsEnterTotpVisible(true);
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
           data: form.getValues('password') as string,
@@ -75,6 +74,11 @@ const LoginPage: React.FC = () => {
 
         createWebdavClient();
         await getToken(username, password);
+        const userInfo = await getUserInfoFromDb(username);
+        const { mfaEnabled } = userInfo as { mfaEnabled: boolean };
+
+        if (mfaEnabled) setIsEnterTotpVisible(true);
+        else setIsAuthenticated(true);
       }
     } catch (e) {
       /* empty */
@@ -141,13 +145,13 @@ const LoginPage: React.FC = () => {
               {renderFormField('password', t('common.password'), 'password')}
             </>
           )}
-          {isEnterTotpVisible && (
+          {/* {isEnterTotpVisible && (
             <div className="mx-auto w-full justify-center">
               <QRCodeSVG
                 value={`otpauth://totp/edulution-ui:${user}?secret=JBSWY3DPEHPK3PXP&issuer=edulution-ui&algorithm=SHA1&digits=6&period=30`}
               />
             </div>
-          )}
+          )} */}
           <div className="flex justify-between">
             {/* TODO: Add valid Password reset page -> NIEDUUI-53 */}
             {/* <div className="my-4 block font-bold text-gray-500">

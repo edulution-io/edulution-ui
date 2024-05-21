@@ -44,6 +44,10 @@ describe('AppConfigService', () => {
           linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
       model.insertMany?.mockResolvedValue(appConfigs);
@@ -60,6 +64,10 @@ describe('AppConfigService', () => {
           linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
       model.bulkWrite?.mockResolvedValue({ modifiedCount: 1 });
