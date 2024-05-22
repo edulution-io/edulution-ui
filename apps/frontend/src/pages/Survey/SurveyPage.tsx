@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyStore from '@/pages/Survey/SurveyStore';
 import SurveyTable from '@/pages/Survey/components/SurveyTable';
-import CreateButton from '@/pages/Survey/components/CreateButton';
 import ParticipateSurveyDialog from '@/pages/Survey/components/participation-dialog/ParticipateSurveyDialog';
 import EditSurveyDialog from '@/pages/Survey/components/edit-dialog/EditSurveyDialog';
 import SurveyResultsDialog from '@/pages/Survey/components/results-dialog/SurveyResultsDialog';
+import FloatingButtonsBarSurveyManagement from '@/pages/Survey/components/FloatingButtonsBarSurveyManagement';
+import UserSurveyTypes from '@/pages/Survey/backend-copy/user-survey-search-types-enum.dto';
 
 const SurveyPage = () => {
   const {
-    surveys,
     getAllSurveys,
     openSurveys,
     getOpenSurveys,
@@ -19,24 +18,28 @@ const SurveyPage = () => {
     answeredSurveys,
     getAnsweredSurveys,
     setSelectedSurvey,
+    setSelectedSurveyType,
+    shouldRefresh,
+    setShouldRefresh,
     isLoading,
     error,
   } = useSurveyStore();
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchSurveys = async () => {
       const promises = [getAllSurveys(), getOpenSurveys(), getCreatedSurveys(), getAnsweredSurveys()];
       await Promise.all(promises).catch((e) => console.error(e));
     };
+    if (!shouldRefresh) {
+      return;
+    }
+
+    setSelectedSurvey(undefined);
+    setSelectedSurveyType(undefined);
+    setShouldRefresh(false);
 
     fetchSurveys().catch((e) => console.error(e));
-
-    return () => {
-      setSelectedSurvey(undefined);
-    };
-  }, []);
+  }, [shouldRefresh]);
 
   if (error) return <div>Error: {error.message}</div>;
 
@@ -44,51 +47,19 @@ const SurveyPage = () => {
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
 
-      {openSurveys?.length > 1 ? (
-        <>
-          <h4>{`${t('survey.openSurveys')}`}</h4>
-          <SurveyTable
-            surveys={openSurveys}
-            showParticipateButton
-          />
-        </>
-      ) : null}
+      {openSurveys?.length > 1 ? <SurveyTable surveyType={UserSurveyTypes.OPEN} /> : null}
 
-      {createdSurveys?.length > 1 ? (
-        <>
-          <h4>{`${t('survey.createdSurveys')}`}</h4>
-          <SurveyTable
-            surveys={createdSurveys}
-            showEditSurveyButton
-            showDeleteSurveyButton
-            showLoadResultsButton
-          />
-        </>
-      ) : null}
+      {createdSurveys?.length > 1 ? <SurveyTable surveyType={UserSurveyTypes.CREATED} /> : null}
 
-      {answeredSurveys?.length > 1 ? (
-        <>
-          <h4>{`${t('survey.answeredSurveys')}`}</h4>
-          <SurveyTable
-            surveys={answeredSurveys}
-            showLoadResultsButton
-          />
-        </>
-      ) : null}
+      {answeredSurveys?.length > 1 ? <SurveyTable surveyType={UserSurveyTypes.ANSWERED} /> : null}
 
-      <h4>{`${t('survey.allSurveys')}`}</h4>
-      <SurveyTable
-        surveys={surveys}
-        showDeleteSurveyButton
-        showEditSurveyButton
-        showParticipateButton
-      />
-
-      <CreateButton />
+      <SurveyTable surveyType={UserSurveyTypes.ALL} />
 
       <EditSurveyDialog />
       <ParticipateSurveyDialog />
       <SurveyResultsDialog />
+
+      <FloatingButtonsBarSurveyManagement />
     </>
   );
 };

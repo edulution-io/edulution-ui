@@ -15,8 +15,8 @@ interface ParticipateSurveyDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
 
-  survey: Survey;
-  setSurvey: (survey: Survey) => void;
+  participatingSurvey: Survey | undefined;
+  setParticipatingSurvey: (survey: Survey | undefined) => void;
 
   answerSurvey: (surveyName: string, answer: string, options?: CompleteEvent) => void;
   success: boolean | undefined;
@@ -32,7 +32,7 @@ const initialState: Partial<ParticipateSurveyDialogStore> = {
 
 const useParticipateSurveyDialogStore = create<ParticipateSurveyDialogStore>((set) => ({
   ...(initialState as ParticipateSurveyDialogStore),
-  setSurvey: (survey) => set({ survey }),
+  setParticipatingSurvey: (survey) => set({ participatingSurvey: survey }),
   openParticipateSurveyDialog: () => set({ isParticipateSurveyDialogOpen: true }),
   closeParticipateSurveyDialog: () => set({ isParticipateSurveyDialogOpen: false }),
   setIsLoading: (isLoading) => set({ isLoading }),

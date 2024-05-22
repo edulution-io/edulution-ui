@@ -137,6 +137,10 @@
       "add": "Add question"
     }
   },
+  "surveys": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys"
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"

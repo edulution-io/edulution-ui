@@ -37,7 +37,6 @@ const SurveyResultsDialog = ({ trigger }: SurveyResultsDialogProps) => {
       handleOpenChange={isSurveyResultsDialogOpen ? closeSurveyResultsDialog : openSurveyResultsDialog}
       title={t('survey.resulting')}
       body={getDialogBody()}
-      // footer={getFooter()}
       desktopContentClassName="max-w-[75%]"
     />
   );

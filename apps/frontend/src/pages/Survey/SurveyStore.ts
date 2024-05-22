@@ -4,7 +4,7 @@ import { Survey } from '@/pages/Survey/backend-copy/model';
 import getSurvey from '@/pages/Survey/components/dto/get-survey.dto';
 import deleteSurvey from '@/pages/Survey/components/dto/delete-survey.dto';
 import getUserSurveys from '@/pages/Survey/components/dto/get-user-surveys.dto';
-import UserSurveySearchTypes from '@/pages/Survey/backend-copy/user-survey-search-types-enum.dto';
+import UserSurveyTypes from '@/pages/Survey/backend-copy/user-survey-search-types-enum.dto';
 import getSurveys from '@/pages/Survey/components/dto/get-surveys.dto';
 
 interface SurveyStore {
@@ -14,30 +14,42 @@ interface SurveyStore {
   getCreatedSurveys: () => Promise<Survey[] | undefined>;
   answeredSurveys: Survey[];
   getAnsweredSurveys: () => Promise<Survey[] | undefined>;
-  surveys: Survey[];
+  allSurveys: Survey[];
   getAllSurveys: () => Promise<Survey[] | undefined>;
   getSurvey: (surveyname: string) => Promise<Survey | undefined>;
-  deleteSurvey: (surveyname: string) => void;
+  deleteSurvey: (surveyname: string | undefined) => void;
   selectedSurvey: Survey | undefined;
   setSelectedSurvey: (selectSurvey: Survey | undefined) => void;
+  selectedSurveyType: UserSurveyTypes | undefined;
+  setSelectedSurveyType: (userSurveyTypes: UserSurveyTypes | undefined) => void;
+  shouldRefresh: boolean;
+  setShouldRefresh: (refresh: boolean) => void;
   isLoading: boolean;
   error: Error | null;
   reset: () => void;
 }
 
-const useSurveyStore = create<SurveyStore>((set) => ({
-  selectedSurvey: undefined,
-  setSelectedSurvey: (selectSurvey: Survey | undefined) => set({ selectedSurvey: selectSurvey }),
-  surveys: [],
+const initialState: Partial<SurveyStore> = {
+  allSurveys: [],
   openSurveys: [],
   createdSurveys: [],
   answeredSurveys: [],
+  selectedSurvey: undefined,
+  selectedSurveyType: undefined,
+  shouldRefresh: true,
   isLoading: false,
   error: null,
+};
+
+const useSurveyStore = create<SurveyStore>((set) => ({
+  ...(initialState as SurveyStore),
+  setSelectedSurveyType: (userSurveyTypes: UserSurveyTypes | undefined) => set({ selectedSurveyType: userSurveyTypes }),
+  setSelectedSurvey: (selectSurvey: Survey | undefined) => set({ selectedSurvey: selectSurvey }),
+  setShouldRefresh: (refresh: boolean) => set({ shouldRefresh: refresh }),
   getOpenSurveys: async (): Promise<Survey[] | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await getUserSurveys(UserSurveySearchTypes.OPEN);
+      const response = await getUserSurveys(UserSurveyTypes.OPEN);
       if (response) {
         set({ openSurveys: response });
       }
@@ -53,7 +65,7 @@ const useSurveyStore = create<SurveyStore>((set) => ({
   getCreatedSurveys: async (): Promise<Survey[] | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await getUserSurveys(UserSurveySearchTypes.CREATED);
+      const response = await getUserSurveys(UserSurveyTypes.CREATED);
       if (response) {
         set({ createdSurveys: response });
       }
@@ -69,7 +81,7 @@ const useSurveyStore = create<SurveyStore>((set) => ({
   getAnsweredSurveys: async (): Promise<Survey[] | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await getUserSurveys(UserSurveySearchTypes.ANSWERED);
+      const response = await getUserSurveys(UserSurveyTypes.ANSWERED);
       if (response) {
         set({ answeredSurveys: response });
       }
@@ -87,7 +99,7 @@ const useSurveyStore = create<SurveyStore>((set) => ({
     try {
       const response = await getSurveys();
       if (response) {
-        set({ surveys: response });
+        set({ allSurveys: response });
       }
       return response;
     } catch (error) {
@@ -110,31 +122,23 @@ const useSurveyStore = create<SurveyStore>((set) => ({
       throw new Error(error);
     }
   },
-  deleteSurvey: async (surveyName: string): Promise<void> => {
+  deleteSurvey: async (surveyName: string | undefined) => {
+    if (!surveyName) {
+      return;
+    }
     set({ isLoading: true });
     try {
       await deleteSurvey(surveyName);
-      const responseOne = await getUserSurveys(UserSurveySearchTypes.OPEN);
-      if (responseOne) {
-        set({ openSurveys: responseOne });
-      }
-      const responseTwo = await getUserSurveys(UserSurveySearchTypes.CREATED);
-      if (responseTwo) {
-        set({ createdSurveys: responseTwo });
-      }
-      const response = await getUserSurveys(UserSurveySearchTypes.ANSWERED);
-      if (response) {
-        set({ answeredSurveys: response });
-      }
+      set({ shouldRefresh: true });
+      set({ isLoading: false });
     } catch (error) {
       handleApiError(error, set);
+      set({ isLoading: false });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       throw new Error(error);
-    } finally {
-      set({ isLoading: false });
     }
   },
-  reset: () => set({ surveys: [], isLoading: false, error: null }),
+  reset: () => set({ allSurveys: [], isLoading: false, error: null }),
 }));
 
 export default useSurveyStore;

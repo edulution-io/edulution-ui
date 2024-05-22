@@ -90,8 +90,8 @@
   "RATING": "Bewertung",
   "save": "Speichern",
   "survey": {
-    "title": "UMFRAGEN",
-    "sidebar": "Umfragen",
+    "title": "UMFRAGE",
+    "sidebar": "Umfrage",
     "description": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
     "participants": "Teilnehmer",
     "participate": "teilnehmen",
@@ -136,6 +136,10 @@
       "remove": "Entferne Frage",
       "add": "Füge Frage hinzu"
     }
+  },
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen"
   },
   "printer": {
     "title": "DRUCKER",

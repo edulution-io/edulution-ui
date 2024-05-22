@@ -3,11 +3,12 @@
  *  and includes copies of the necessary backend types
  */
 
-enum UserSurveySearchTypes {
+enum UserSurveyTypes {
   OPEN = 'open',
   CREATED = 'created',
   ANSWER = 'answer',
   ANSWERED = 'answered',
+  ALL = 'all',
 }
 
-export default UserSurveySearchTypes;
+export default UserSurveyTypes;

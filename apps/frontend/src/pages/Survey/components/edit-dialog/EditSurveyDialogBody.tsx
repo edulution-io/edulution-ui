@@ -5,13 +5,6 @@ import Attendee from '@/pages/ConferencePage/dto/attendee';
 import useUserStore from '@/store/userStore';
 import useEditSurveyDialogStore from '@/pages/Survey/components/edit-dialog/EditSurveyDialogStore';
 import EditSurvey from '@/pages/Survey/components/edit-dialog/EditSurvey';
-// import { UseFormReturn } from 'react-hook-form';
-// import { Form } from '@/components/ui/Form.tsx';
-//
-// interface EditSurveyDialogBodyProps {
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   form: UseFormReturn<any>;
-// }
 
 const EditSurveyDialogBody = (/* { form }: EditSurveyDialogBodyProps */) => {
   const { user } = useUserStore();
@@ -33,13 +26,6 @@ const EditSurveyDialogBody = (/* { form }: EditSurveyDialogBodyProps */) => {
   };
 
   return (
-    // <Form {...form}>
-    //   <form
-    //     className="space-y-4"
-    //     onSubmit={(event) => {
-    //       event.preventDefault();
-    //     }}
-    //   >
     <>
       <SearchUsersOrGroups
         value={participants}
@@ -48,8 +34,6 @@ const EditSurveyDialogBody = (/* { form }: EditSurveyDialogBodyProps */) => {
       />
       <EditSurvey />
     </>
-    //   </form>
-    // </Form>
   );
 };
 

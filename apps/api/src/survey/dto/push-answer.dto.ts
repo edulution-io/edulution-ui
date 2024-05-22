@@ -1,5 +1,6 @@
 class PushAnswerDto {
   surveyname: string;
+
   answer: string;
 }
 

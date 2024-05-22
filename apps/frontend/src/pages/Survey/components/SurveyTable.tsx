@@ -1,37 +1,57 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Model } from 'survey-core';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { Survey } from '@/pages/Survey/backend-copy/model';
-import EditButton, { CELL_BUTTON_EDIT_WIDTH } from '@/pages/Survey/components/edit-dialog/EditButton';
-import DeleteButton, { CELL_BUTTON_DELETE_WIDTH } from '@/pages/Survey/components/DeleteButton';
-import ParticipateButton, {
-  CELL_BUTTON_PARTICIPATE_WIDTH,
-} from '@/pages/Survey/components/participation-dialog/ParticipateButton';
-import ResultsButton, { CELL_BUTTON_ANSWER_WIDTH } from '@/pages/Survey/components/results-dialog/ResultsButton';
 import useSurveyStore from '@/pages/Survey/SurveyStore';
+import UserSurveyTypes from '@/pages/Survey/backend-copy/user-survey-search-types-enum.dto';
 
 interface SurveyTableProps {
-  surveys: Survey[];
-  showEditSurveyButton?: boolean;
-  showDeleteSurveyButton?: boolean;
-  showParticipateButton?: boolean;
-  showLoadResultsButton?: boolean;
+  surveyType: UserSurveyTypes;
 }
 
 const SurveyTable = (props: SurveyTableProps) => {
-  const {
-    surveys,
-    showParticipateButton = false,
-    showEditSurveyButton = false,
-    showDeleteSurveyButton = false,
-    showLoadResultsButton = false,
-  } = props;
+  const { surveyType } = props;
 
-  const { setSelectedSurvey } = useSurveyStore();
+  const { openSurveys, createdSurveys, answeredSurveys, allSurveys, setSelectedSurvey, setSelectedSurveyType } =
+    useSurveyStore();
+  const { t } = useTranslation();
+  const title = () => {
+    switch (surveyType) {
+      case UserSurveyTypes.OPEN:
+        return <h4>{`${t('survey.openSurveys')}`}</h4>;
+      case UserSurveyTypes.CREATED:
+        return <h4>{`${t('survey.createdSurveys')}`}</h4>;
+      case UserSurveyTypes.ANSWERED:
+        return <h4>{`${t('survey.answeredSurveys')}`}</h4>;
+      case UserSurveyTypes.ALL:
+        return <h4>{`${t('survey.allSurveys')}`}</h4>;
+    }
+  };
+  const surveys = () => {
+    switch (surveyType) {
+      case UserSurveyTypes.OPEN:
+        return openSurveys;
+      case UserSurveyTypes.CREATED:
+        return createdSurveys;
+      case UserSurveyTypes.ANSWERED:
+        return answeredSurveys;
+      case UserSurveyTypes.ALL:
+        return allSurveys;
+    }
+  };
+
+  const currentTitle = title();
+  const currentSurveys = surveys();
+
+  if (!currentTitle || !currentSurveys || currentSurveys.length === 0) {
+    return null;
+  }
 
   return (
     <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
+      {currentTitle}
       <ScrollArea className="max-h-[80vh] overflow-y-auto overflow-x-hidden">
         <Table>
           <TableHeader>
@@ -40,37 +60,24 @@ const SurveyTable = (props: SurveyTableProps) => {
               <TableHead>Type</TableHead>
               <TableHead>Participant count</TableHead>
               <TableHead>Page count</TableHead>
-              {showParticipateButton ? <TableHead className={`max-w-[${CELL_BUTTON_PARTICIPATE_WIDTH}]`} /> : null}
-              {showLoadResultsButton ? <TableHead className={`max-w-[${CELL_BUTTON_ANSWER_WIDTH}]`} /> : null}
-              {showEditSurveyButton ? <TableHead className={`max-w-[${CELL_BUTTON_EDIT_WIDTH}]`} /> : null}
-              {showDeleteSurveyButton ? <TableHead className={`max-w-[${CELL_BUTTON_DELETE_WIDTH}]`} /> : null}
             </TableRow>
           </TableHeader>
           <TableBody className="container">
-            {surveys.map((survey: Survey) => {
+            {currentSurveys.map((survey: Survey) => {
               const surv = JSON.parse(JSON.stringify(survey.survey)) as Model;
               return (
                 <TableRow
                   key={`survey_row_-_${survey.surveyname}`}
                   className="cursor-pointer"
-                  onClick={() => setSelectedSurvey(survey)}
+                  onClick={() => {
+                    setSelectedSurveyType(surveyType);
+                    setSelectedSurvey(survey);
+                  }}
                 >
                   <TableCell className="text-white">{surv.title}</TableCell>
                   <TableCell className="text-white">{survey.type}</TableCell>
                   <TableCell className="text-white">{survey.participants.length || 0}</TableCell>
                   <TableCell className="text-white">{surv.pages.length || 0}</TableCell>
-                  <TableCell className={`max-w-[${CELL_BUTTON_PARTICIPATE_WIDTH}]`}>
-                    {showParticipateButton ? <ParticipateButton survey={survey} /> : null}
-                  </TableCell>
-                  <TableCell className={`max-w-[${CELL_BUTTON_ANSWER_WIDTH}]`}>
-                    {showLoadResultsButton ? <ResultsButton survey={survey} /> : null}
-                  </TableCell>
-                  <TableCell className={`max-w-[${CELL_BUTTON_PARTICIPATE_WIDTH}]`}>
-                    {showEditSurveyButton ? <EditButton survey={survey} /> : null}
-                  </TableCell>
-                  <TableCell className={`max-w-[${CELL_BUTTON_DELETE_WIDTH}]`}>
-                    {showDeleteSurveyButton ? <DeleteButton surveyName={survey.surveyname} /> : null}
-                  </TableCell>
                 </TableRow>
               );
             })}

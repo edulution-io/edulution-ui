@@ -21,8 +21,9 @@ async function saveSurveyJson(
     });
     if (response.status === 200 || response.status === 201) {
       callback(saveNo, true);
+    } else {
+      callback(saveNo, false);
     }
-    callback(saveNo, false);
   } catch (error) {
     console.error('ERROR saving and updating the survey in the db: ', error);
     callback(saveNo, false);

@@ -78,7 +78,7 @@ class SurveysController {
   }
 
   @Post()
-  async createOrUpdate(@Body() createSurveyDto: CreateSurveyDto) {
+  async createOrUpdate(@Body() createSurveyDto: CreateSurveyDto, @GetUsername() username: string) {
     const survey = new Model(createSurveyDto.survey);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -90,6 +90,7 @@ class SurveysController {
     }
 
     const { surveyname, participants } = newSurvey;
+    await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
     await this.usersSurveysService.populateSurvey(participants, surveyname);
   }
 

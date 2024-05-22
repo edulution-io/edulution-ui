@@ -40,4 +40,3 @@ export { default as TrashIcon } from '@/assets/icons/trash.png';
 export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveyIcon } from '@/assets/icons/third-party/document.svg';
-export { default as EditIcon } from '@/assets/icons/third-party/pencil-square.svg';

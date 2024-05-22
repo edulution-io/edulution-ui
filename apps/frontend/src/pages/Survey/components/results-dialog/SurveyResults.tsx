@@ -10,12 +10,12 @@ import useSurveyResultsDialogStore from '@/pages/Survey/components/results-dialo
 const SurveyResults = () => {
   const { t } = useTranslation();
 
-  const { survey, surveyAnswer } = useSurveyResultsDialogStore();
+  const { resultingSurvey, surveyAnswer } = useSurveyResultsDialogStore();
 
-  if (!survey || !surveyAnswer?.answer) {
+  if (!resultingSurvey || !surveyAnswer?.answer) {
     return <div className="bg-gray-600 p-4 text-center">{t('survey.noAnswerWasSubmitted')}</div>;
   }
-  const surveyModel = new Model(survey.survey);
+  const surveyModel = new Model(resultingSurvey.survey);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   surveyModel.data = JSON.parse(surveyAnswer?.answer);

@@ -14,11 +14,11 @@ interface SurveyResultsDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
 
-  survey: Survey;
-  setSurvey: (survey: Survey) => void;
+  resultingSurvey: Survey | undefined;
+  setResultingSurvey: (survey: Survey | undefined) => void;
 
   surveyAnswer: SurveyAnswer | undefined;
-  getSurveyAnswer: (surveyname: string) => Promise<SurveyAnswer | undefined>;
+  getSurveyAnswer: (surveyname: string | undefined) => Promise<SurveyAnswer | undefined>;
 }
 
 const initialState: Partial<SurveyResultsDialogStore> = {
@@ -29,14 +29,18 @@ const initialState: Partial<SurveyResultsDialogStore> = {
 
 const useSurveyResultsDialogStore = create<SurveyResultsDialogStore>((set) => ({
   ...(initialState as SurveyResultsDialogStore),
-  setSurvey: (survey) => set({ survey }),
+  setResultingSurvey: (survey) => set({ resultingSurvey: survey }),
   openSurveyResultsDialog: () => set({ isSurveyResultsDialogOpen: true }),
   closeSurveyResultsDialog: () => set({ isSurveyResultsDialogOpen: false }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
-  getSurveyAnswer: async (surveyName: string): Promise<SurveyAnswer | undefined> => {
+  getSurveyAnswer: async (surveyName: string | undefined): Promise<SurveyAnswer | undefined> => {
+    if (!surveyName) {
+      set({ surveyAnswer: undefined });
+      return;
+    }
     set({ isLoading: true, error: null });
     try {
       const response = await getUserAnswer({ surveyName });

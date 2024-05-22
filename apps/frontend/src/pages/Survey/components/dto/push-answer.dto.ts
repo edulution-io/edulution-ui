@@ -5,9 +5,7 @@ import SURVEY_ENDPOINT from '@/pages/Survey/components/dto/survey-endpoint.dto';
 
 async function pushAnswer(
   surveyName: string,
-
   answer: string,
-
   options?: CompleteEvent,
 ): Promise<SurveyAnswer | undefined> {
   try {
@@ -17,7 +15,6 @@ async function pushAnswer(
       surveyname: surveyName,
       answer,
     });
-
     // Display the "Success" message (pass a string value to display a custom message)
     options?.showSaveSuccess();
     return response.data;

@@ -1,10 +1,8 @@
-
 /*
  * ADDED BY DM
  */
 /* ------------------------- */
 .svc-text,
-.sd-title,
 .spg-panel__title--expanded,
 .sv-action-bar-item__title {
   color: rgba(255, 255, 255, 1) !important;
@@ -13,11 +11,12 @@
 .sd-item__control-label,
 .spg-panel__title,
 .spg-action-button__text {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: rgba(150, 150, 150, 0.8) !important;
 }
 .sd-description,
+.sd-question__title,
 .spg-question__title {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(175, 175, 175, 0.7) !important;
 }
 
 .svc-flex-row,
@@ -46,7 +45,8 @@
 .svc-side-bar__container-header,
 .spg-search-editor_container,
 .sd-element--collapsed>.sd-element__header {
-  background-color: rgba(0, 0, 0, 0.8) !important;
+  /* background-color: rgba(70, 80, 90, 0.8) !important; */
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 .svc-btn,
 .svc-tabbed-menu-item--selected,
@@ -63,13 +63,13 @@
   color: rgba(255, 255, 255, 0.8) !important;
 }
 
-.sv-svg-icon,
-.sv-action-bar,
-.svc-test-tab__content-actions,
-.svc-action-bar-item__title--with-icon:after {
-  background-color: unset !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
+/*.sv-svg-icon,*/
+/*.sv-action-bar,*/
+/*.svc-test-tab__content-actions,*/
+/*.svc-action-bar-item__title--with-icon:after {*/
+/*  background-color: unset !important;*/
+/*  color: rgba(255, 255, 255, 0.8) !important;*/
+/*}*/
 
 /*
 .svc-question__content--selected {

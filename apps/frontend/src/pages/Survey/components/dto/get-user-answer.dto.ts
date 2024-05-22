@@ -1,6 +1,6 @@
 import eduApi from '@/api/eduApi';
 import { SurveyAnswer } from '@/pages/Survey/backend-copy/model';
-import UserSurveySearchTypes from '@/pages/Survey/backend-copy/user-survey-search-types-enum.dto';
+import UserSurveyTypes from '@/pages/Survey/backend-copy/user-survey-search-types-enum.dto';
 import SURVEY_ENDPOINT from '@/pages/Survey/components/dto/survey-endpoint.dto';
 
 interface getUserAnswerProps {
@@ -11,7 +11,7 @@ async function getUserAnswer(props: getUserAnswerProps): Promise<SurveyAnswer | 
   try {
     const { surveyName } = props;
     const response = await eduApi.get<SurveyAnswer>(SURVEY_ENDPOINT, {
-      params: { search: UserSurveySearchTypes.ANSWER, surveyname: surveyName },
+      params: { search: UserSurveyTypes.ANSWER, surveyname: surveyName },
     });
     return response.data;
   } catch (error) {

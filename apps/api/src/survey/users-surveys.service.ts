@@ -10,8 +10,6 @@ class UsersSurveysService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async updateUser(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    console.log('updateUser');
-
     return this.userModel.findOneAndUpdate<User>({ username }, updateUserDto, { new: true }).exec();
   }
 
@@ -74,15 +72,36 @@ class UsersSurveysService {
     const usersOpenSurveys = existingUser.usersSurveys?.openSurveys || [];
     usersOpenSurveys.push(surveyname);
 
-    const newUser = {
-      ...existingUser,
+    const newUser: UpdateUserDto = {
       usersSurveys: {
-        ...existingUser.usersSurveys,
-        openSurveys: usersOpenSurveys,
+        createdSurveys: [...(existingUser.usersSurveys?.createdSurveys || [])],
+        openSurveys: [...usersOpenSurveys],
+        answeredSurveys: [...(existingUser.usersSurveys?.answeredSurveys || [])],
       },
     };
 
     await this.updateUser(username, newUser);
+  }
+
+  async addToCreatedSurveys(username: string, surveyname: string): Promise<User | null> {
+    const existingUser = await this.userModel.findOne<User>({ username }).exec();
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+
+    const usersCreatedSurveys = existingUser.usersSurveys?.createdSurveys || [];
+    usersCreatedSurveys.push(surveyname);
+
+    const newUser: UpdateUserDto = {
+      usersSurveys: {
+        createdSurveys: [...usersCreatedSurveys],
+        openSurveys: [...(existingUser.usersSurveys?.openSurveys || [])],
+        answeredSurveys: [...(existingUser.usersSurveys?.answeredSurveys || [])],
+      },
+    };
+
+    const updatedUser = await this.updateUser(username, newUser);
+    return updatedUser;
   }
 
   async populateSurvey(participants: string[], surveyName: string): Promise<void> {

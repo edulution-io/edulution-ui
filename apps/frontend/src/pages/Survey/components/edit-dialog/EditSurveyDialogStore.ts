@@ -17,8 +17,8 @@ interface EditSurveyDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
 
-  survey: Survey | undefined;
-  setSurvey: (survey: Survey | undefined) => void;
+  editSurvey: Survey | undefined;
+  setEditSurvey: (survey: Survey | undefined) => void;
 
   saveSurvey: (
     surveyName: string,
@@ -39,13 +39,14 @@ const initialState: Partial<EditSurveyDialogStore> = {
   isEditSurveyDialogOpen: false,
   isLoading: false,
   error: null,
+  editSurvey: undefined,
   searchAttendeesResult: [],
   participants: [],
 };
 
 const useEditSurveyDialogStore = create<EditSurveyDialogStore>((set) => ({
   ...(initialState as EditSurveyDialogStore),
-  setSurvey: (survey) => set({ survey }),
+  setEditSurvey: (survey) => set({ editSurvey: survey }),
   setParticipants: (attendees: Attendee[]) => set({ participants: attendees }),
   openEditSurveyDialog: () => set({ isEditSurveyDialogOpen: true }),
   closeEditSurveyDialog: () => set({ isEditSurveyDialogOpen: false }),

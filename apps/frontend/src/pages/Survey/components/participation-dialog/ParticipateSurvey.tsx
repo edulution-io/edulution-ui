@@ -8,7 +8,7 @@ import { defaultSurveyTheme } from '@/pages/Survey/components/theme/survey-theme
 import useParticipateSurveyDialogStore from '@/pages/Survey/components/participation-dialog/ParticipateSurveyDialogStore';
 
 const ParticipateSurvey = () => {
-  const { selectedSurvey, getOpenSurveys, getAllSurveys } = useSurveyStore();
+  const { selectedSurvey, setShouldRefresh } = useSurveyStore();
   const { answerSurvey, closeParticipateSurveyDialog } = useParticipateSurveyDialogStore();
 
   if (!selectedSurvey) {
@@ -21,8 +21,7 @@ const ParticipateSurvey = () => {
   surveyModel.onComplete.add(async function (sender, options) {
     answerSurvey(selectedSurvey.surveyname, JSON.stringify(sender.data), options);
     closeParticipateSurveyDialog();
-    await getOpenSurveys();
-    await getAllSurveys();
+    setShouldRefresh(true);
   });
 
   return (
