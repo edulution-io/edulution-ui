@@ -7,7 +7,14 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { useMediaQuery } from 'usehooks-ts';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  DialogSH,
+  DialogContentSH,
+  DialogFooterSH,
+  DialogHeaderSH,
+  DialogTitleSH,
+  DialogTriggerSH,
+} from '@/components/ui/DialogSH.tsx';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -83,26 +90,26 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
       </SheetContent>
     </Sheet>
   ) : (
-    <Dialog
+    <DialogSH
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t('deleteDialog.areYouSure')}</DialogTitle>
-        </DialogHeader>
+      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
+      <DialogContentSH>
+        <DialogHeaderSH>
+          <DialogTitleSH>{t('deleteDialog.areYouSure')}</DialogTitleSH>
+        </DialogHeaderSH>
         {contentToDelete}
-        <DialogFooter>
+        <DialogFooterSH>
           <Button
             variant="btn-attention"
             onClick={deleteItems}
           >
             {t('deleteDialog.continue')}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DialogFooterSH>
+      </DialogContentSH>
+    </DialogSH>
   );
 };
 

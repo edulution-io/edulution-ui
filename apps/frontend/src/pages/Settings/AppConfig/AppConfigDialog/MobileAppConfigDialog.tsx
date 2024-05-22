@@ -36,7 +36,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
           <DropdownMenu
             options={filteredAppOptions()}
             selectedVal={t(option)}
-            handleChange={setOption}
+            handleChange={(value) => setOption(value.name)}
           />
         </div>
         <div className="container mx-auto flex justify-end p-4 sm:pr-10 md:right-20">

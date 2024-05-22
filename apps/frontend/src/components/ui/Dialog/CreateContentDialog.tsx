@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/Dialog';
+import { DialogSH, DialogTriggerSH, DialogContentSH } from '@/components/ui/DialogSH';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/Sheet';
 import { useMediaQuery } from 'usehooks-ts';
@@ -74,13 +74,13 @@ const CreateContentDialog: React.FC<CreateContentDialogProps> = ({
       </SheetContent>
     </Sheet>
   ) : (
-    <Dialog
+    <DialogSH
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>{content}</DialogContent>
-    </Dialog>
+      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
+      <DialogContentSH>{content}</DialogContentSH>
+    </DialogSH>
   );
 };
 

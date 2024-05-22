@@ -30,6 +30,11 @@ class UsersService {
         roles: loginUserDto.ldapGroups,
         mfaEnabled: false,
         isTotpSet: false,
+        usersSurveys: {
+          openSurveys: [],
+          createdSurveys: [],
+          answeredSurveys: [],
+        },
       });
     } else {
       newUser = await this.update(loginUserDto.preferred_username, {
@@ -84,7 +89,16 @@ class UsersService {
           user.lastName?.toLowerCase().includes(searchString) ||
           user.username?.toLowerCase().includes(searchString),
       )
-      .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
+      .map((u) => ({
+        firstName: u.firstName,
+        lastName: u.lastName,
+        username: u.username,
+        usersSurveys: {
+          openSurveys: [],
+          createdSurveys: [],
+          answeredSurveys: [],
+        },
+      }));
   }
 
   private static async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {

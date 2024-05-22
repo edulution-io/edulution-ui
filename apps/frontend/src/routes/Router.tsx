@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
-import { HomePage } from '@/pages/Home';
+import { useAuth } from 'react-oidc-context';
 
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import IframeLayout from '@/components/layout/IframeLayout';
-import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
+import { HomePage } from '@/pages/Home';
+import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
+import SurveyPage from '@/pages/Survey/SurveyPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import { useAuth } from 'react-oidc-context';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
@@ -23,13 +24,17 @@ import UserSettings from '@/pages/UserSettings/UserSettings';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
-    case APPS.CONFERENCES:
+    case APPS.CONFERENCES: {
       return <ConferencePage />;
+    }
     case APPS.FILE_SHARING: {
       return <FileSharing />;
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.SURVEYS: {
+      return <SurveyPage />;
     }
     default: {
       return (
@@ -68,7 +73,6 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="/"
               element={<HomePage />}
             />
-
             <Route
               path="user"
               element={<UserSettings />}

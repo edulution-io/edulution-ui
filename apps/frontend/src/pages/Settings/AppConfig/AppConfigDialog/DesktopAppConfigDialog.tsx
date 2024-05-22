@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/shared/Button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
-import { DialogFooter, DialogHeader } from '@/components/ui/Dialog';
+import { DialogFooterSH, DialogHeaderSH } from '@/components/ui/DialogSH';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { DropdownMenu } from '@/components';
 import { toast } from 'sonner';
@@ -33,7 +33,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
         ref={dialogRef}
         className="data-[state=open]:animate-contentShow fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] text-black shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
       >
-        <DialogHeader>
+        <DialogHeaderSH>
           <DialogTitle>{t('settings.addApp.title')}</DialogTitle>
           <DialogDescription>{t('settings.addApp.description')}</DialogDescription>
           <DialogClose asChild>
@@ -45,13 +45,13 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
               <Cross2Icon />
             </button>
           </DialogClose>
-        </DialogHeader>
+        </DialogHeaderSH>
         <DropdownMenu
           options={filteredAppOptions()}
           selectedVal={t(option)}
-          handleChange={setOption}
+          handleChange={(value) => setOption(value.name)}
         />
-        <DialogFooter className="justify-center pt-4 text-white">
+        <DialogFooterSH className="justify-center pt-4 text-white">
           <DialogClose asChild>
             <Button
               type="button"
@@ -84,7 +84,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
               {t('common.add')}
             </Button>
           </DialogClose>
-        </DialogFooter>
+        </DialogFooterSH>
       </DialogContent>
     </Dialog>
   );

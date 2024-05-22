@@ -86,6 +86,64 @@
     "title": "SCHOOL MANAGEMENT",
     "sidebar": "School Management"
   },
+  "add": "Add",
+  "DATE": "Date",
+  "days": "Days",
+  "TEXT": "Text",
+  "RATING": "Rating",
+  "save": "Save",
+  "survey": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
+    "description": "Create forms for exercise sheets or other more sophisticated surveys",
+    "participants": "Participant",
+    "participation": "Survey participation",
+    "participate": "participate",
+    "openSurveys": "Surveys that you have not answered jet",
+    "createdSurveys": "Surveys that you created",
+    "answeredSurveys": "Surveys that you have answered already",
+    "allSurveys": "Admins can see the full list of surveys",
+    "load": "load forms",
+    "result": "load Answer",
+    "resulting": "Answer",
+    "create": "create new survey",
+    "edit": "edit survey",
+    "editing": "Edit survey",
+    "delete": "delete survey",
+    "editor": {
+      "title": "Survey Editor"
+    },
+    "page": {
+      "page": "Page",
+      "title": "Add a title to the page",
+      "description": "Add a text for the description of the page",
+      "remove": "Remove page",
+      "add": "Add page"
+    },
+    "panel": {
+      "panel": "Panel",
+      "remove": "Remove panel",
+      "add": "Add new panel"
+    },
+    "question": {
+      "question": "Question",
+      "type": "Select a type for the question/answer",
+      "title": "Add a title to the question/answer",
+      "text": "Add here the question (text body) for the question/answer",
+      "choices": "add a new select option for the question/answer",
+      "addChoice": "new option",
+      "removeChoice": "remove option",
+      "mostUnlikely": "Most unlikely",
+      "mostLikely": "Most likely",
+      "description": "Add a text for the description of the question/answer",
+      "remove": "Remove question",
+      "add": "Add question"
+    }
+  },
+  "surveys": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys"
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"

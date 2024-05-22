@@ -1,5 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { UsersSurveys } from '../survey/types/users-surveys.schema';
 
 export type UserDocument = User & Document;
 
@@ -28,6 +29,16 @@ export class User {
 
   @Prop()
   isTotpSet?: boolean;
+
+  @Prop({ type: SchemaFactory.createForClass(UsersSurveys) })
+  usersSurveys: {
+    openSurveys: string[];
+    createdSurveys: string[];
+    answeredSurveys: {
+      surveyname: string;
+      answer: string;
+    }[];
+  };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

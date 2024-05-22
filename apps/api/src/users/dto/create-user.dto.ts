@@ -10,6 +10,15 @@ class CreateUserDto {
   mfaEnabled?: boolean;
 
   isTotpSet?: boolean;
+
+  usersSurveys: {
+    openSurveys: string[];
+    createdSurveys: string[];
+    answeredSurveys: {
+      surveyname: string;
+      answer: string;
+    }[];
+  };
 }
 
 export default CreateUserDto;

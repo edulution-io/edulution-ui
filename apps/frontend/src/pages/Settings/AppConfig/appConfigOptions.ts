@@ -17,6 +17,7 @@ import {
   RoomBookingIcon,
   SchoolInformationIcon,
   SchoolManagementIcon,
+  SurveyIcon,
   TicketSystemIcon,
   VirtualizationIcon,
   WlanIcon,
@@ -46,6 +47,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey'],
   },
+  { id: APPS.SURVEYS, icon: SurveyIcon, color: 'bg-ciDarkBlue' },
   {
     id: APPS.KNOWLEDGE_BASE,
     icon: KnowledgeBaseIcon,

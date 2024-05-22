@@ -8,6 +8,7 @@ import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
 import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolManagementPageMenu';
+import useSurveysPageMenu from '@/pages/Survey/useSurveyPageMenu';
 
 const useMenuBarConfig = () => {
   const { pathname } = useLocation();
@@ -17,6 +18,7 @@ const useMenuBarConfig = () => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
+  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
 
   const menuBarConfigSwitch = () => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -36,6 +38,9 @@ const useMenuBarConfig = () => {
       }
       case APPS.SCHOOL_MANAGEMENT: {
         return SCHOOLMANAGEMENT_MENUBAR_CONFIG;
+      }
+      case APPS.SURVEYS: {
+        return SURVEYS_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '' };

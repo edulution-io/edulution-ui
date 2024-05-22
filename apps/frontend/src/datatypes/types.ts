@@ -45,6 +45,7 @@ export enum APPS {
   NETWORK = 'network',
   LOCATION_SERVICES = 'locationservices',
   DESKTOP_DEPLOYMENT = 'desktopdeployment',
+  SURVEYS = 'surveys',
   WLAN = 'wlan',
   MOBILE_DEVICES = 'mobiledevices',
   VIRTUALIZATION = 'virtualization',
