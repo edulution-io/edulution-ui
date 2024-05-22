@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ isLogoShown }) => {
 
   return (
     <div className="mb-3 pb-1">
-      <div className="flex max-w-[1440px] items-center justify-between">
+      <div className="max-w-[1440px] items-center">
         <div className="flex items-center">
           {isLogoShown ? (
             <div className={`rounded-b-[8px] ${isDesktop ? 'mt-0 w-[250px] bg-white' : 'mt-3 w-[150px]'}`}>
@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ isLogoShown }) => {
           ) : null}
         </div>
         <Button
-          className="mb-7"
+          className={`absolute right-20  ${isDesktop ? 'top-5' : 'top-1'}`}
           type="button"
           onClick={() => {
             navigate('user');
