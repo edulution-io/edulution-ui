@@ -40,7 +40,7 @@ const EditSurveyDialog = ({ trigger }: EditSurveyDialogProps) => {
         isEditSurveyDialogOpen
           ? () => {
               setShouldRefresh(true);
-              closeEditSurveyDialog;
+              closeEditSurveyDialog();
             }
           : openEditSurveyDialog
       }
