@@ -55,17 +55,23 @@ const AppConfigPage: React.FC = () => {
 
   const areSettingsVisible = settingLocation !== '';
 
+  const updateSettings = () => {
+    const currentConfig = findAppConfigByName(appConfig, settingLocation);
+    if (!currentConfig) {
+      return;
+    }
+
+    setValue(`${settingLocation}.appType`, currentConfig.appType);
+    if (currentConfig.options) {
+      Object.keys(currentConfig.options).forEach((key) => {
+        setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
+      });
+    }
+  };
+
   useEffect(() => {
     if (areSettingsVisible) {
-      const currentConfig = findAppConfigByName(appConfig, settingLocation);
-      if (currentConfig) {
-        setValue(`${settingLocation}.appType`, currentConfig.appType);
-        if (currentConfig.options) {
-          Object.keys(currentConfig.options).forEach((key) => {
-            setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
-          });
-        }
-      }
+      updateSettings();
     }
   }, [areSettingsVisible, settingLocation, appConfig, setValue]);
 

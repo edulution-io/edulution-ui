@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import Sidebar from '@/components/ui/Sidebar';
 import backgroundImage from '@/assets/background.jpg';
-import { getFromPathName } from '@/utils/common';
+import { findAppConfigByName, getFromPathName } from '@/utils/common';
 
 const IframeLayout: React.FC = () => {
   const { pathname } = useLocation();
@@ -20,7 +20,7 @@ const IframeLayout: React.FC = () => {
         <iframe
           className="h-screen w-full pr-[58px]"
           title={pathname}
-          src={appConfig.find((app) => app.name === rootPathName)?.options.url}
+          src={findAppConfigByName(appConfig, rootPathName)?.options.url}
         />
       </div>
       <Sidebar />
