@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { MenuItem, MenuBarEntryProps, APPS } from '@/datatypes/types';
-import CONFERENCES_MENUBAR_CONFIG from '@/pages/ConferencePage/config';
+import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
+import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
+import useSurveysPageMenu from '@/pages/Survey/useSurveyPageMenu';
 
 const useMenuBarConfig = () => {
   const { pathname } = useLocation();
@@ -13,6 +14,8 @@ const useMenuBarConfig = () => {
 
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
+  const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
+  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
 
   const menuBarConfigSwitch = () => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -28,6 +31,9 @@ const useMenuBarConfig = () => {
       }
       case APPS.ROOM_BOOKING: {
         return ROOMBOOKING_MENUBAR_CONFIG;
+      }
+      case APPS.SURVEYS: {
+        return SURVEYS_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '' };

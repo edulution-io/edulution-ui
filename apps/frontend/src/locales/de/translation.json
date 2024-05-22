@@ -24,7 +24,35 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
-    "sidebar": "Konferenzen"
+    "sidebar": "Konferenzen",
+    "create": "Neue Konferenz erstellen",
+    "creator": "Ersteller",
+    "delete": "Löschen",
+    "deleteConferences": "{{count}} Konferenzen löschen",
+    "editConference": "Konferenz bearbeiten",
+    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "name": "Name der Konferenz",
+    "conference": "Konferenz",
+    "password": "Passwort",
+    "attendees": "Teilnehmer",
+    "invitedAttendees": "Eingeladen",
+    "joinedAttendees": "Beigetreten",
+    "privacyStatus": "Zutritt",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "cancel": "Abbrechen",
+    "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
+    "password_required": "Kein Passwort eingegeben",
+    "error": "Fehler",
+    "action": "Aktion",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "join": "Beitreten",
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "close": "Konferenz schließen"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
@@ -54,6 +82,64 @@
   "schoolmanagement": {
     "title": "SCHULVERWALTUNG",
     "sidebar": "Schulverwaltung"
+  },
+  "add": "Hinzufügen",
+  "DATE": "Datum",
+  "days": "Tage",
+  "TEXT": "Text",
+  "RATING": "Bewertung",
+  "save": "Speichern",
+  "survey": {
+    "title": "UMFRAGE",
+    "sidebar": "Umfrage",
+    "description": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
+    "participants": "Teilnehmer",
+    "participate": "teilnehmen",
+    "participation": "Teilnahme an Umfrage",
+    "openSurveys": "Offene/Unbeantwortete Umfragen",
+    "createdSurveys": "Selbst erstellte Umfragen",
+    "answeredSurveys": "Teilgenommene/Beantwortete Umfragen",
+    "allSurveys": "Als Admin ist die komplette Liste sichtbar",
+    "load": "Lade Formulare",
+    "result": "lade Abgabe",
+    "resulting": "Abgabe",
+    "create": "erstelle neue Umfrage",
+    "edit": "bearbeite Umfrage",
+    "editing": "Umfrage bearbeiten",
+    "delete": "lösche Umfrage",
+    "editor": {
+      "title": "Umfrage-Editor"
+    },
+    "page": {
+      "page": "Seite",
+      "title": "Fügen Sie der Seite einen Titel hinzu",
+      "description": "Fügen Sie der Seite eine Beschreibung hinzu (optional)",
+      "remove": "Entferne die Seite",
+      "add": "Füge eine neue Seite hinzu"
+    },
+    "panel": {
+      "panel": "Panel",
+      "remove": "Entferne das Panel",
+      "add": "Füge ein neues Panel hinzu"
+    },
+    "question": {
+      "question": "Frage",
+      "type": "Wählen Sie den Typ der Frage/Antwort-Möglichkeit",
+      "title": "Fügen Sie der Frage einen Titel hinzu",
+      "text": "Definieren Sie hier die Frage die Sie stellen möchten",
+      "choices": "Fügen Sie Antwortmöglichkeiten hinzu",
+      "addChoice": "Option hinzufügen",
+      "removeChoice": "Option entfernen",
+      "mostUnlikely": "nicht zutreffend/wahrscheinlich",
+      "mostLikely": "zutreffend/sehr wahrscheinlich",
+      "description": "Fügen Sie der Frage eine Beschreibung hinzu (optional)",
+      "remove": "Entferne Frage",
+      "add": "Füge Frage hinzu"
+    }
+  },
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen"
   },
   "printer": {
     "title": "DRUCKER",
@@ -98,15 +184,18 @@
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
-    "addApp": {
-      "title": "App hinzufügen",
-      "description": "Bitte wählen Sie eine App aus:"
-    },
-    "description": "Hier können Sie alle Einstellungen vornehmen."
+    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
+    "description": "Hier können Sie alle Einstellungen vornehmen.",
+    "appconfig": {
+      "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
+      "delete": { "success": "App wurde gelöscht", "failed": "Löschen fehlgeschlagen" },
+      "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
+    }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
-    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig."
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
+    "missing_link": "Link fehlt"
   },
   "menu": "MENÜ",
   "home": "Home",
@@ -129,7 +218,9 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "overview": "Übersicht",
+    "create": "Erstellen"
   },
   "form": {
     "path": "Link",
@@ -138,7 +229,11 @@
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
-    "saved": "Konfiguration gespeichert!"
+    "saved": "Konfiguration gespeichert!",
+    "url": "URL",
+    "urlDescription": "Bitte eine URL zur Applikation eintragen",
+    "apiKey": "API Schlüssel",
+    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -163,6 +258,11 @@
   },
   "loadingIndicator": {
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
+  },
+  "search": {
+    "type-to-search": "Tippen um zu suchen",
+    "loading": "Lade",
+    "no-results": "Keine Ergebnisse"
   },
   "fileCategory": {
     "folder": "Ordner",
@@ -260,7 +360,6 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-
   "groupsPage": {
     "classes": "Klassen"
   }

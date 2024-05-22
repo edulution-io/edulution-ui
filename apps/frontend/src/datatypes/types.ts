@@ -1,13 +1,17 @@
 import { DirectoryFile } from '@/datatypes/filesystem';
+import { AppConfigOptions } from '@/datatypes/appConfigOptions';
 
-export enum AppType {
+export enum AppIntegrationType {
   NATIVE = 'native',
   FORWARDED = 'forwarded',
   EMBEDDED = 'embedded',
 }
 
-export type ConfigType = {
-  [key: string]: { linkPath: string; icon: string; appType: AppType };
+export type AppConfig = {
+  name: string;
+  icon: string;
+  appType: AppIntegrationType;
+  options: AppConfigOptions;
 };
 
 export interface MenuItem {
@@ -41,6 +45,7 @@ export enum APPS {
   NETWORK = 'network',
   LOCATION_SERVICES = 'locationservices',
   DESKTOP_DEPLOYMENT = 'desktopdeployment',
+  SURVEYS = 'surveys',
   WLAN = 'wlan',
   MOBILE_DEVICES = 'mobiledevices',
   VIRTUALIZATION = 'virtualization',

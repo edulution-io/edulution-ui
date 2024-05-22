@@ -1,7 +1,13 @@
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  DialogSH,
+  DialogContentSH,
+  DialogDescriptionSH,
+  DialogTitleSH,
+  DialogTriggerSH,
+} from '@/components/ui/DialogSH.tsx';
 import React, { FC, ReactNode, useState } from 'react';
 
-import { Input } from '@/components/ui/Input';
+import InputSH from '@/components/ui/InputSH';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -72,7 +78,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           </SheetTitle>
         </SheetHeader>
         <SheetDescription>
-          <Input
+          <InputSH
             placeholder={t('fileRenameContent.placeholder')}
             value={localFileName}
             onChange={handleInputChange}
@@ -94,19 +100,19 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   );
 
   const desktopContent = (
-    <DialogContent>
-      <DialogTitle>
+    <DialogContentSH>
+      <DialogTitleSH>
         {item.type === ContentType.file
           ? `${t('fileRenameContent.renameYourFile')}`
           : `${t('fileRenameContent.renameYourDirectory')}`}
-      </DialogTitle>
-      <DialogDescription>
-        <Input
+      </DialogTitleSH>
+      <DialogDescriptionSH>
+        <InputSH
           placeholder={t('fileRenameContent.placeholder')}
           value={localFileName}
           onChange={handleInputChange}
         />
-      </DialogDescription>
+      </DialogDescriptionSH>
       <div className="flex flex-row justify-end space-x-4 pt-3 text-black">
         <Button
           variant="btn-collaboration"
@@ -120,19 +126,19 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
           {t('fileRenameContent.rename')}
         </Button>
       </div>
-    </DialogContent>
+    </DialogContentSH>
   );
 
   return isMobile ? (
     mobileContent
   ) : (
-    <Dialog
+    <DialogSH
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
       {desktopContent}
-    </Dialog>
+    </DialogSH>
   );
 };
 

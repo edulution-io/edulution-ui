@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { DialogSH, DialogContentSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
@@ -89,16 +89,16 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
       </SheetContent>
     </Sheet>
   ) : (
-    <Dialog
+    <DialogSH
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogTitle>{t(`filesharingUpload.title`)}</DialogTitle>
+      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
+      <DialogContentSH>
+        <DialogTitleSH>{t(`filesharingUpload.title`)}</DialogTitleSH>
         {uploadContent}
-      </DialogContent>
-    </Dialog>
+      </DialogContentSH>
+    </DialogSH>
   );
 };
 

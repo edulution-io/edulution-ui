@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "allowJs": true
+  },
+  "typeRoots": [
+    "./node_modules/@types",
+    "./src/@types"
+  ],
+  "include": [
+    "./**/*"
+  ]
+}

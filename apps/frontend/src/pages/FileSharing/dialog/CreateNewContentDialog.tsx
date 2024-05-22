@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  DialogSH,
+  DialogContentSH,
+  DialogHeaderSH,
+  DialogTitleSH,
+  DialogTriggerSH,
+} from '@/components/ui/DialogSH.tsx';
 import React, { ReactNode, useState } from 'react';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
@@ -122,16 +128,16 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     </Sheet>
   );
   const desktopContent = (
-    <DialogHeader>
+    <DialogHeaderSH>
       {contentType === ContentType.file ? (
         <>
-          <DialogTitle>{t('fileCreateNewContent.fileDialogTitle')}</DialogTitle>
+          <DialogTitleSH>{t('fileCreateNewContent.fileDialogTitle')}</DialogTitleSH>
 
           <FileCreationForm />
         </>
       ) : (
         <>
-          <DialogTitle>{t('fileCreateNewContent.directoryDialogTitle')}</DialogTitle>
+          <DialogTitleSH>{t('fileCreateNewContent.directoryDialogTitle')}</DialogTitleSH>
 
           <DirectoryCreationForm />
         </>
@@ -147,19 +153,19 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
           {t('fileCreateNewContent.createButtonText')}
         </Button>
       </div>
-    </DialogHeader>
+    </DialogHeaderSH>
   );
 
   return isMobile ? (
     mobileContent
   ) : (
-    <Dialog
+    <DialogSH
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>{desktopContent}</DialogContent>
-    </Dialog>
+      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
+      <DialogContentSH>{desktopContent}</DialogContentSH>
+    </DialogSH>
   );
 };
 

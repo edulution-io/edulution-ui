@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import { DialogSH, DialogContentSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
@@ -163,13 +163,13 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       </SheetContent>
     </Sheet>
   ) : (
-    <Dialog
+    <DialogSH
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogTitle>{t('moveItemDialog.changeDirectory')}</DialogTitle>
+      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
+      <DialogContentSH>
+        <DialogTitleSH>{t('moveItemDialog.changeDirectory')}</DialogTitleSH>
         <DirectoryBreadcrumb
           path={currentPath}
           onNavigate={handleBreadcrumbNavigate}
@@ -177,8 +177,8 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         />
         <ScrollArea className="h-[200px]">{renderDirectoryTable()}</ScrollArea>
         {renderMoveToSection()}
-      </DialogContent>
-    </Dialog>
+      </DialogContentSH>
+    </DialogSH>
   );
 };
 
