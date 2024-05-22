@@ -362,3 +362,4 @@ $RECYCLE.BIN/
 # Certificates
 *.crt
 *.key
+*.pem
