@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
 import { mapToDirectories, mapToDirectoryFiles } from './utilits';
 import WebdavClientFactory from './webdav.client.factory';
+import JWTUser from '../../types/JWTUser';
 
 @Injectable()
 class WebdavService {
@@ -37,7 +38,7 @@ class WebdavService {
   }
 
   private initializeClient(token: string) {
-    const decodedToken: any = jwt.decode(token);
+    const decodedToken = jwt.decode(token) as JWTUser;
     if (!decodedToken || !decodedToken.preferred_username) {
       throw new Error(`Invalid token: username not found${token}`);
     }
@@ -243,11 +244,9 @@ class WebdavService {
     const dirPath = this.ensureDownloadDir();
     const outputPath = join(dirPath, filename);
 
-    console.log(`Attempting to download file from URL: ${`${url}/${filename}`}`);
     try {
       const responseStream = await this.fetchFileStream(`${url}/${filename}`);
       await this.saveFileStream(responseStream, outputPath);
-      console.log(`File downloaded successfully: ${outputPath}`);
       return outputPath;
     } catch (error) {
       console.error('Failed to download file:', error);
@@ -264,7 +263,7 @@ class WebdavService {
   }
 
   private async fetchFileStream(url: string): Promise<WriteStream> {
-    const response = this.httpService.get(url, {
+    const response = this.httpService.get<WriteStream>(url, {
       responseType: 'stream',
       auth: {
         username: 'agy-netzint-teacher',

@@ -2,12 +2,11 @@ import create, { StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
+import { GroupInfo } from '@/pages/SchoolmanagementPage/utilis/groups';
 import { CustomIdTokenClaims, Project, UserInitialPasswordInfo } from '@/pages/SchoolmanagementPage/utilis/types';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
 import { transformGroupsToSchools } from '@/pages/SchoolmanagementPage/utilis/utilitys';
-import { GroupInfo } from '../../../../../api/src/types/groups';
-// @ts-ignore
-import { DetailedUserInfo, LDAPUser } from '../../../../../api/src/types/ldapUser';
+import { DetailedUserInfo, LDAPUser } from './ldapUser';
 
 interface SchoolmanagementStates {
   schoolclasses: Record<string, LDAPUser[]>;

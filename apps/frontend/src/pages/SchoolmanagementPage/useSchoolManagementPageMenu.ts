@@ -1,4 +1,4 @@
-import { MenuBarEntryProps } from '@/datatypes/types.ts';
+import { MenuBarEntryProps } from '@/datatypes/types';
 import { SchoolManagementIcon } from '@/assets/icons';
 import { useSearchParams } from 'react-router-dom';
 

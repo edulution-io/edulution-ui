@@ -4,7 +4,7 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import { RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import { QrCodeValues } from '@/pages/FileSharing/utilities/types.ts';
+import { QrCodeValues } from '@/pages/FileSharing/utilities/types';
 
 type WebDavActionResult = { success: boolean; message?: string; status?: number };
 

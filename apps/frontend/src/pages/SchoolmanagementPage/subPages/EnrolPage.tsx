@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { MdGroups, MdPrint, MdScience } from 'react-icons/md';
-import useUserStore from '@/store/userStore.ts';
-import useSchoolManagementStore from '../store/schoolManagementStore';
 import { t } from 'i18next';
+import { MdGroups, MdPrint, MdScience } from 'react-icons/md';
+import useUserStore from '@/store/userStore';
+import useSchoolManagementStore from '../store/schoolManagementStore';
 
 const EnrolPage: React.FC = () => {
   const { groupsData, fetchGroupsData } = useSchoolManagementStore();
@@ -11,7 +11,7 @@ const EnrolPage: React.FC = () => {
   const specificSchoolId = 'SCHOOLS';
 
   useEffect(() => {
-    fetchGroupsData();
+    fetchGroupsData().catch((e) => console.error(e));
   }, [fetchGroupsData]);
 
   const specificSchool = groupsData.schools.find((school) => school.name === specificSchoolId);

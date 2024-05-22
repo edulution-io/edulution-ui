@@ -9,6 +9,7 @@ import userStore from '@/store/userStore';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
 import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
 import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
+
 interface ManageContentPageProps {
   contentKey: string;
   contentType: 'class' | 'session' | 'project';

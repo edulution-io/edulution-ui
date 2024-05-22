@@ -1,15 +1,14 @@
 import userStore from '@/store/userStore';
-// @ts-ignore
-import { GroupInfo, SchoolData } from 'apps/api/src/types/groups';
+import { GroupInfo, SchoolData } from './groups';
 
-export const transformClasses = (classes: Record<string, any>): Record<string, any> =>
+export const transformClasses = (classes: Record<string, unknown>): Record<string, unknown> =>
   Object.keys(classes).reduce(
     (acc, key) => {
       const friendlyKey = key.split('/').pop() || key;
       acc[friendlyKey] = classes[key];
       return acc;
     },
-    {} as Record<string, any>,
+    {} as Record<string, unknown>,
   );
 
 export const transformGroupsToSchools = (groups: GroupInfo[]): SchoolData[] => {
@@ -23,7 +22,7 @@ export const transformGroupsToSchools = (groups: GroupInfo[]): SchoolData[] => {
           schoolClasses.name.includes(`${userInfo.ldapGroups.school}-student`),
         ),
       )
-      .flatMap((classes) => classes.subGroups);
+      .flatMap((c) => c.subGroups);
 
     const printers: GroupInfo[] = group.subGroups
       .filter((subGroup) => subGroup.name.includes(`${userInfo.ldapGroups.school}-r`))
