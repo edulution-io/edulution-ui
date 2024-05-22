@@ -137,6 +137,9 @@
     "password": {
       "too_long": "Passwort too long",
       "required": "Please enter your password."
+    },
+    "totp": {
+      "invalid": "Invalid token!"
     }
   },
   "common": {

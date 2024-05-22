@@ -22,6 +22,7 @@ const LoginPage: React.FC = () => {
   const { setIsAuthenticated, setUser, setWebdavKey, setToken, postCheckTotp, getUserInfoFromDb } = useUserStore();
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState<string>('');
+  const [error, setError] = useState<Error | null>(null);
 
   const { isLoading } = auth;
   const { getToken } = useLmnUserStore((state) => ({
@@ -88,7 +89,11 @@ const LoginPage: React.FC = () => {
 
   const handleCheckTotp = async (otp: string) => {
     setTotp(otp);
-    await postCheckTotp(otp);
+    try {
+      await postCheckTotp(otp);
+    } catch (e) {
+      setError(e instanceof Error ? e : null);
+    }
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
@@ -132,12 +137,15 @@ const LoginPage: React.FC = () => {
           data-testid="test-id-login-page-form"
         >
           {isEnterTotpVisible ? (
-            <div className="flex justify-between">
-              <OtpInput
-                length={6}
-                onComplete={(otp) => handleCheckTotp(otp)}
-              />
-            </div>
+            <>
+              <div className="flex justify-between">
+                <OtpInput
+                  length={6}
+                  onComplete={(otp) => handleCheckTotp(otp)}
+                />
+              </div>
+              {error && <p className="text-red-600">{t('login.totp.invalid')}</p>}
+            </>
           ) : (
             <>
               {renderFormField('username', t('common.username'))}
