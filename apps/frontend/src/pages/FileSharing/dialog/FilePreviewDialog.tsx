@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import { Dialog, DialogContent } from '@/components/ui/Dialog';
+import { DialogSH, DialogContentSH } from '@/components/ui/DialogSH.tsx';
 import Label from '@/components/ui/Label';
 import { getFileType } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import fileTypePreviews from '@/pages/FileSharing/previews/FileTypePreviews';
@@ -30,12 +30,12 @@ const FilePreviewDialog: FC<FilePreviewProps> = ({ file, isOpen, onClose }) => {
   };
   return (
     <div className="container w-full">
-      <Dialog
+      <DialogSH
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <DialogContent>{renderTypeSpecificPreview({ file })}</DialogContent>
-      </Dialog>
+        <DialogContentSH>{renderTypeSpecificPreview({ file })}</DialogContentSH>
+      </DialogSH>
     </div>
   );
 };

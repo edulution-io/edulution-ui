@@ -3,7 +3,7 @@ import { MenuBarEntryProps } from '@/datatypes/types';
 
 const useSurveysPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
-    title: 'survey.forms.title',
+    title: 'survey.title',
     icon: SurveyIcon,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [],

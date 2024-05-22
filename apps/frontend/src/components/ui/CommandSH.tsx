@@ -3,12 +3,11 @@
 /* eslint-disable react/no-unknown-property */
 
 import * as React from 'react';
+import { Command as CommandPrimitive } from 'cmdk';
+import cn from '@/lib/utils';
 import { type DialogProps } from '@radix-ui/react-dialog';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { Command as CommandPrimitive } from 'cmdk';
-
-import cn from '@/lib/utils';
-import { Dialog, DialogContent } from '@/components/ui/Dialog';
+import { DialogSH, DialogContentSH } from '@/components/ui/DialogSH';
 
 const CommandSH = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -28,13 +27,13 @@ CommandSH.displayName = CommandPrimitive.displayName;
 interface CommandDialogProps extends DialogProps {}
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => (
-  <Dialog {...props}>
-    <DialogContent className="overflow-hidden p-0">
+  <DialogSH {...props}>
+    <DialogContentSH className="overflow-hidden p-0">
       <CommandSH className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
         {children}
       </CommandSH>
-    </DialogContent>
-  </Dialog>
+    </DialogContentSH>
+  </DialogSH>
 );
 
 const CommandInput = React.forwardRef<

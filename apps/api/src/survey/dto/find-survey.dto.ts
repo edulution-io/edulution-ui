@@ -7,7 +7,7 @@ class FindSurveyDto {
 
   username?: string;
 
-  search: UserSurveySearchTypes;
+  search?: UserSurveySearchTypes;
 }
 
 export default FindSurveyDto;

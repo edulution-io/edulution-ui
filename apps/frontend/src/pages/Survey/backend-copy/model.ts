@@ -19,7 +19,7 @@ export interface Survey {
 
 export type SurveyAnswer = {
   surveyname: string;
-  answer: JSON;
+  answer: string;
 };
 
 export class UserSurveys {

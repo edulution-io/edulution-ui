@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
-import { Survey } from './types/survey.schema';
 import { SurveyAnswer } from './types/users-surveys.schema';
 
 @Injectable()
@@ -11,34 +10,36 @@ class UsersSurveysService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async updateUser(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
+    console.log('updateUser');
+
     return this.userModel.findOneAndUpdate<User>({ username }, updateUserDto, { new: true }).exec();
   }
 
-  async getOpenSurveys(username: string): Promise<string[]> {
+  async getOpenSurveyNames(username: string): Promise<string[]> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
 
-    return existingUser.UsersSurveys?.openSurveys || [];
+    return existingUser.usersSurveys?.openSurveys || [];
   }
 
-  async getCreatedSurveys(username: string): Promise<Survey[]> {
+  async getCreatedSurveyNames(username: string): Promise<string[]> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
 
-    return existingUser.UsersSurveys?.createdSurveys || [];
+    return existingUser.usersSurveys?.createdSurveys || [];
   }
 
-  async getAnsweredSurveys(username: string): Promise<SurveyAnswer[]> {
+  async getAnswers(username: string): Promise<SurveyAnswer[]> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
 
-    return existingUser.UsersSurveys?.answeredSurveys || [];
+    return existingUser.usersSurveys?.answeredSurveys || [];
   }
 
   async removeFromOpenSurveys(username: string, surveyName: string): Promise<void> {
@@ -47,16 +48,16 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const index = existingUser.UsersSurveys?.openSurveys?.indexOf(surveyName);
-    if (index === -1) {
+    const index = existingUser.usersSurveys?.openSurveys?.indexOf(surveyName);
+    if (!index || index === -1) {
       throw new Error('Survey not found');
     }
 
-    const usersOpenSurveys = existingUser.UsersSurveys?.openSurveys?.splice(index, 1);
+    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys?.splice(index, 1);
     const newUser = {
       ...existingUser,
-      UsersSurveys: {
-        ...existingUser.UsersSurveys,
+      usersSurveys: {
+        ...existingUser.usersSurveys,
         openSurveys: usersOpenSurveys,
       },
     };
@@ -70,13 +71,13 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const usersOpenSurveys = existingUser.UsersSurveys?.openSurveys || [];
+    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys || [];
     usersOpenSurveys.push(surveyname);
 
     const newUser = {
       ...existingUser,
-      surveys: {
-        ...existingUser.UsersSurveys,
+      usersSurveys: {
+        ...existingUser.usersSurveys,
         openSurveys: usersOpenSurveys,
       },
     };
@@ -92,68 +93,38 @@ class UsersSurveysService {
     await Promise.all(promises);
   }
 
-  async addAnswer(username: string, surveyName: string, answer: JSON): Promise<void> {
+  async addAnswer(username: string, surveyName: string, answer: string): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
 
-    const usersAnsweredSurveys = existingUser.UsersSurveys?.answeredSurveys || [];
+    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys.filter((survey) => survey !== surveyName) || [];
+
+    const usersAnsweredSurveys =
+      existingUser.usersSurveys?.answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
     usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
-    const newUser = {
-      ...existingUser,
-      surveys: {
-        ...existingUser.UsersSurveys,
-        answeredSurveys: usersAnsweredSurveys,
+    const newUser: UpdateUserDto = {
+      usersSurveys: {
+        createdSurveys: [...(existingUser.usersSurveys?.createdSurveys || [])],
+        openSurveys: [...usersOpenSurveys],
+        answeredSurveys: [...usersAnsweredSurveys],
       },
     };
 
-    await this.updateUser(username, newUser);
+    const updatedUser = await this.updateUser(username, newUser);
 
-    await this.removeFromOpenSurveys(username, surveyName);
+    return updatedUser;
   }
 
-  async changeAnswer(username: string, surveyName: string, newAnswer: JSON): Promise<void> {
+  async getAnswer(username: string, surveyName: string): Promise<SurveyAnswer | undefined> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
 
-    const usersAnsweredSurveys = existingUser.UsersSurveys?.answeredSurveys?.map((answer) =>
-      answer.surveyname === surveyName ? { surveyname: surveyName, answer: newAnswer } : answer,
-    );
-
-    const index = usersAnsweredSurveys.findIndex((answer) => answer.surveyname === surveyName);
-    usersAnsweredSurveys[index] = { surveyname: surveyName, answer: newAnswer };
-
-    const newUser = {
-      ...existingUser,
-      surveys: {
-        ...existingUser.UsersSurveys,
-        answeredSurveys: usersAnsweredSurveys,
-      },
-    };
-    await this.updateUser(username, newUser);
-  }
-
-  async getAnswer(
-    username: string,
-    surveyName: string,
-    isAnonymous: boolean,
-  ): Promise<{ surveyname: string; answer: JSON | string }> {
-    const existingUser = await this.userModel.findOne<User>({ username }).exec();
-    if (!existingUser) {
-      throw new Error('User not found');
-    }
-
-    const usersAnsweredSurveys = existingUser.UsersSurveys?.answeredSurveys || [];
-    const answer = usersAnsweredSurveys.find((a) => a.surveyname === surveyName);
-
-    const name = isAnonymous ? Math.random().toString() : username;
-    const result = answer ? answer.answer : 'Not answered yet';
-
-    return { surveyname: name, answer: result };
+    return existingUser.usersSurveys?.answeredSurveys.find((answer) => answer.surveyname === surveyName) || undefined;
   }
 }
 

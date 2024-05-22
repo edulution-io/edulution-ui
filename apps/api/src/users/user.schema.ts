@@ -24,8 +24,15 @@ export class User {
   @Prop()
   roles?: string[];
 
-  @Prop({ required: false })
-  UsersSurveys: UsersSurveys;
+  @Prop({ type: SchemaFactory.createForClass(UsersSurveys) })
+  usersSurveys: {
+    openSurveys: string[];
+    createdSurveys: string[];
+    answeredSurveys: {
+      surveyname: string;
+      answer: string;
+    }[];
+  };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

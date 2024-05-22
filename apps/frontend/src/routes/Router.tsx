@@ -9,8 +9,6 @@ import IframeLayout from '@/components/layout/IframeLayout';
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import SurveyPage from '@/pages/Survey/SurveyPage';
-import SurveyCreatorWidget from '@/pages/Survey/Forms/SurveyCreatorWidget';
-import SurveyParticipation from '@/pages/Survey/Forms/SurveyParticipation';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
@@ -24,13 +22,17 @@ import useUserQuery from '@/api/useUserQuery';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
-    case APPS.CONFERENCES:
+    case APPS.CONFERENCES: {
       return <ConferencePage />;
+    }
     case APPS.FILE_SHARING: {
       return <FileSharing />;
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.SURVEYS: {
+      return <SurveyPage />;
     }
     default: {
       return (
@@ -78,42 +80,6 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                   key={item.name}
                   path={item.name}
                   element={<SettingsPage />}
-                />
-              ))}
-            </Route>
-            <Route
-              path="survey"
-              element={<SurveyPage />}
-            >
-              {Object.keys(appConfig).map((key) => (
-                <Route
-                  key={key}
-                  path={key}
-                  element={<SurveyPage />}
-                />
-              ))}
-            </Route>
-            <Route
-              path="survey/forms/participate"
-              element={<SurveyParticipation />}
-            >
-              {Object.keys(appConfig).map((key) => (
-                <Route
-                  key={key}
-                  path={key}
-                  element={<SurveyParticipation />}
-                />
-              ))}
-            </Route>
-            <Route
-              path="survey/forms/create"
-              element={<SurveyCreatorWidget />}
-            >
-              {Object.keys(appConfig).map((key) => (
-                <Route
-                  key={key}
-                  path={key}
-                  element={<SurveyCreatorWidget />}
                 />
               ))}
             </Route>
