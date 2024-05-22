@@ -1,5 +1,6 @@
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import { defaultSurveyTheme } from '@/pages/Survey/components/theme/survey-theme';
 import useEditSurveyDialogStore from '@/pages/Survey/components/edit-dialog/EditSurveyDialogStore';
@@ -37,8 +38,7 @@ const EditSurvey = () => {
     await saveSurveyJson(surveyName, creator.JSON, participants, saveNo, callback);
   };
 
-  // creator.getSurveyJSON();
-
+  localization.currentLocale = "de";
   return (
     <div className="rounded bg-gray-800 p-4">
       <SurveyCreatorComponent
