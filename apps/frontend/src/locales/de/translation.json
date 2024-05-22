@@ -10,6 +10,9 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
+  "auth": {
+    "totp": { "invalid": "Ungültiger Token", "setup": { "success": "TOTP-Authentifizierung erfolgreich gesetzt" } }
+  },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
     "sidebar": "Ticketsystem"

@@ -11,7 +11,7 @@ import SetupQrCodeDialog from './UserSettingsDialog/SetupQrCodeDialog';
 
 const UserSettings: React.FC = () => {
   const { t } = useTranslation();
-  const { user, getUserInfoFromDb, updateUserInfo } = useUserStore();
+  const { user, postSetupTotp, getUserInfoFromDb, updateUserInfo } = useUserStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const setupMfa = searchParams.get('setupMfa');
 
@@ -35,17 +35,33 @@ const UserSettings: React.FC = () => {
   useEffect(() => {
     if (checked && !mfaEnabled) {
       setSearchParams(new URLSearchParams('setupMfa=true'));
-    }
+    } else if (checked && mfaEnabled) setSearchParams(new URLSearchParams(''));
   }, [checked, mfaEnabled]);
+
+  const handleSetMfaEnabled = async (otp: string) => {
+    try {
+      const totpValid = await postSetupTotp(otp);
+
+      if (!totpValid) return;
+      await updateUserInfo(user, { mfaEnabled: true } as UserInfo);
+      setMfaEnabled(true);
+      setChecked(true);
+      toast.success(t('auth.totp.setup.success'));
+    } catch (error) {
+      toast.error(t('auth.totp.invalid'));
+    }
+  };
 
   const dialogProps: {
     isOpen: boolean;
     user: string;
     setSearchParams: (setParams: URLSearchParams | ((prevParams: URLSearchParams) => URLSearchParams)) => void;
+    handleSetMfaEnabled: (otp: string) => Promise<void>;
   } = {
     isOpen: setupMfa === 'true',
     user,
     setSearchParams,
+    handleSetMfaEnabled,
   };
 
   const handleRevertMfaSetup = async () => {
@@ -76,15 +92,6 @@ const UserSettings: React.FC = () => {
         </Button>
       </div>
       <SetupQrCodeDialog {...dialogProps} />
-      <div className="flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          onClick={() => {}}
-          size="lg"
-        >
-          {t('common.save')}
-        </Button>
-      </div>
       <Toaster />
     </>
   );

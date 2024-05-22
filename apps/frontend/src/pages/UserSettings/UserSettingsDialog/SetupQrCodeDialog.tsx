@@ -8,46 +8,40 @@ import { useOnClickOutside } from 'usehooks-ts';
 import { QRCodeSVG } from 'qrcode.react';
 import OtpInput from '@/pages/LoginPage/OtpInput';
 import useUserStore from '@/store/userStore';
-import { UserInfo } from '@/datatypes/types';
 
 const SetupQrCodeDialog: React.FC<{
   isOpen: boolean;
   user: string;
   setSearchParams: (setParams: URLSearchParams | ((prevParams: URLSearchParams) => URLSearchParams)) => void;
-}> = ({ isOpen, user, setSearchParams }) => {
+  handleSetMfaEnabled: (otp: string) => void;
+}> = ({ isOpen, user, setSearchParams, handleSetMfaEnabled }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
-  const { postSetupTotp, getQrCode, updateUserInfo } = useUserStore();
+  const { getQrCode } = useUserStore();
   const [qrcode, setQrcode] = useState('');
   const [totp, setTotp] = useState<string>('');
 
-  useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
+  useOnClickOutside(dialogRef, () => {
+    if (isOpen) {
+      setSearchParams(new URLSearchParams(''));
+    }
+  });
 
   useEffect(() => {
-    const fetchQrCode = async () => {
-      try {
-        const qrCodeQuery = (await getQrCode(user)) ?? '';
-        setQrcode(qrCodeQuery);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    // eslint-disable-next-line no-void
-    void fetchQrCode();
-  }, [isOpen]);
+    if (isOpen) {
+      const fetchQrCode = async () => {
+        try {
+          const qrCodeQuery = (await getQrCode(user)) ?? '';
+          setQrcode(qrCodeQuery);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-  const handleSetMfaEnabled = async (otp: string) => {
-    try {
-      const totpValid = await postSetupTotp(otp);
-
-      if (!totpValid) return;
-      await updateUserInfo(user, { mfaEnabled: true } as UserInfo)
-        .then(() => setSearchParams(new URLSearchParams('')))
-        .catch((error) => console.error(error));
-    } catch (e) {
-      console.error(e);
+      // eslint-disable-next-line no-void
+      void fetchQrCode();
     }
-  };
+  }, [isOpen, user, getQrCode]);
 
   return (
     <Dialog
@@ -78,7 +72,7 @@ const SetupQrCodeDialog: React.FC<{
           <OtpInput
             length={6}
             onComplete={(otp) => {
-              handleSetMfaEnabled(otp).catch((e) => console.error(e));
+              handleSetMfaEnabled(otp);
               setTotp(otp);
             }}
           />

@@ -10,6 +10,9 @@
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
   },
+  "auth": {
+    "totp": { "invalid": "Invalid token", "setup": { "success": "TOTP setup successful" } }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
