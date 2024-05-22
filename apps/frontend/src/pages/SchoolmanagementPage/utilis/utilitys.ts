@@ -1,14 +1,14 @@
 import userStore from '@/store/userStore';
 import { GroupInfo, SchoolData } from './groups';
 
-export const transformClasses = (classes: Record<string, unknown>): Record<string, unknown> =>
+export const transformClasses = (classes: Record<string, any>): Record<string, any> =>
   Object.keys(classes).reduce(
     (acc, key) => {
       const friendlyKey = key.split('/').pop() || key;
       acc[friendlyKey] = classes[key];
       return acc;
     },
-    {} as Record<string, unknown>,
+    {} as Record<string, any>,
   );
 
 export const transformGroupsToSchools = (groups: GroupInfo[]): SchoolData[] => {

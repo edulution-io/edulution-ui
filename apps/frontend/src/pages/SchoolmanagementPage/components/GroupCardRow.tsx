@@ -5,7 +5,7 @@ import { MdGroups } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
 import { SessionInfo } from '@/datatypes/sessionInfo';
 import { MemberInfo } from '@/datatypes/schoolclassInfo';
-import { translateKey } from '@/utils/common.ts';
+import { translateKey } from '@/utils/common';
 
 interface GroupCardRowProps {
   schoolclasses?: Record<string, MemberInfo>;
