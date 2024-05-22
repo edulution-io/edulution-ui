@@ -73,7 +73,10 @@ const UserSettings: React.FC = () => {
 
   return (
     <>
-      <h3>{t('usersettings.config.mfa')}</h3>
+      <div className="pt-5 sm:pt-0">
+        <h3>{t('usersettings.config.mfa')}</h3>
+        <p className="pb-4">{t('settings.description')}</p>
+      </div>
       <div className="mb-4 flex items-center justify-between">
         <Switch
           className="border-white bg-white"
