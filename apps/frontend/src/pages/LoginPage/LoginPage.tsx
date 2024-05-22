@@ -14,7 +14,7 @@ import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
 import OtpInput from './OtpInput';
-import { OriginalIdTokenClaims } from '@/datatypes/types.ts';
+import { OriginalIdTokenClaims } from '@/pages/SchoolmanagementPage/utilis/types.ts';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -71,29 +71,20 @@ const LoginPage: React.FC = () => {
 
         setUser(username);
         setToken(requestUser.access_token);
+
+        const userInfo = await getUserInfoFromDb(username);
+        const { mfaEnabled } = userInfo as { mfaEnabled: boolean };
+
+        if (mfaEnabled) setIsEnterTotpVisible(true);
+        else {
+          setIsAuthenticated(true);
+          setUserInfo(requestUser.profile as unknown as OriginalIdTokenClaims);
+        }
       }
     } catch (e) {
       console.error(e);
     }
   };
-
-  useEffect(() => {
-    const login = async () => {
-      if (!token || !auth.isAuthenticated || !auth.user?.profile?.preferred_username) {
-        return;
-      }
-      const userInfo = await getUserInfoFromDb(auth.user.profile.preferred_username);
-      const { mfaEnabled } = userInfo as { mfaEnabled: boolean };
-
-      if (mfaEnabled) setIsEnterTotpVisible(true);
-      else {
-        setIsAuthenticated(true);
-        setUserInfo(auth.user.profile as unknown as OriginalIdTokenClaims);
-      }
-    };
-
-    login().catch((e) => console.error(e));
-  }, [auth.isAuthenticated, token]);
 
   const handleCheckTotp = async (otp: string) => {
     setTotp(otp);

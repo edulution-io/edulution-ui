@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const eduApi = axios.create({
+const lmnApi = axios.create({
   baseURL: `${window.location.origin}/api/v1/`,
 });
 
-export default eduApi;
+export default lmnApi;

@@ -13,6 +13,10 @@ type LDAPUserAccess = {
   manage: boolean;
 };
 
+export interface DetailedUserInfo extends LDAPUser {
+  ldapGroups: string[];
+}
+
 export type LDAPUser = {
   id: string;
   username: string;
