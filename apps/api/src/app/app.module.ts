@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-
+import AuthModule from 'src/auth/auth.module';
+import UsersModule from 'src/users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
-import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
+import FilemanagerModule from '../filemanager/filemanager.module.ts';
 import ClassManagementModule from '../classManagement/classManagement.module.ts';
 
 @Module({
@@ -13,6 +14,8 @@ import ClassManagementModule from '../classManagement/classManagement.module.ts'
     UsersModule,
     ConferencesModule,
     ClassManagementModule,
+    FilemanagerModule,
+    AuthModule,
     JwtModule.register({
       global: true,
     }),

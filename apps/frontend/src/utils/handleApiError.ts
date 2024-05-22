@@ -21,6 +21,7 @@ const handleApiError = (
 
   if (axios.isAxiosError(error)) {
     set({ [errorName]: error, [isLoadingName]: false });
+    throw new Error();
   } else {
     set({ [error]: new Error('An unexpected error occurred'), [isLoadingName]: false });
   }

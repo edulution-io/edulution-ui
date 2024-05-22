@@ -36,9 +36,6 @@ function validateFileName(path: string): ValidateNameResult {
   if (/\s/.test(filename) && !(filename.length <= 0)) {
     return { isValid: false, error: 'File name should not contain spaces.' };
   }
-  if (!filename.endsWith('.txt')) {
-    return { isValid: false, error: 'File name must end with .txt' };
-  }
   return { isValid: true, error: '' };
 }
 
@@ -59,7 +56,27 @@ function getFileType(fullPath: string): string {
   return parts.length > 1 ? parts.pop() || '' : '';
 }
 
+function triggerFileDownload(file: File) {
+  try {
+    const url = window.URL.createObjectURL(file); // Create a blob URL from the file
+
+    // Create an invisible anchor element
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = file.name; // Use the file name from the File object
+    document.body.appendChild(anchor); // Append the anchor to the body
+    anchor.click(); // Trigger a click on the anchor
+    document.body.removeChild(anchor); // Remove the anchor from the body
+
+    // Revoke the object URL after the download is triggered
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading file:', error);
+  }
+}
+
 export {
+  triggerFileDownload,
   getPathWithoutFileName,
   getFileNameFromPath,
   validateFileName,

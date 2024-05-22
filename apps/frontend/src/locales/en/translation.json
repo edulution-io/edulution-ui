@@ -10,6 +10,9 @@
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
   },
+  "auth": {
+    "totp": { "invalid": "Invalid token", "setup": { "success": "TOTP setup successful" } }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -134,6 +137,12 @@
       "create": { "success": "App created", "failed": "App creation failed" }
     }
   },
+  "usersettings": {
+    "title": "USER",
+    "security": "Security",
+    "config": { "mfa": "Setup Two-Factor-Authentication" },
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
+  },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
     "description": "The application opens in a new window. No further authorization is required.",
@@ -148,7 +157,18 @@
   "students": "Students",
   "login": {
     "forgot_password": "Forgot password?",
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "username": {
+      "too_long": "Username too long",
+      "required": "Please enter a username."
+    },
+    "password": {
+      "too_long": "Passwort too long",
+      "required": "Please enter your password."
+    },
+    "totp": {
+      "invalid": "Invalid token!"
+    }
   },
   "common": {
     "add": "Add",
@@ -162,7 +182,8 @@
     "password": "Password",
     "loading": "Loading...",
     "overview": "Overview",
-    "create": "Create"
+    "create": "Create",
+    "revert": "Revert"
   },
   "form": {
     "path": "Path",
@@ -221,6 +242,11 @@
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "Scan Qr-Code"
+  },
+
   "fileRenameContent": {
     "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",

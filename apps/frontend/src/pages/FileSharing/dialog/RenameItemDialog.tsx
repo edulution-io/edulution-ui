@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import useFileManagerStore from '@/store/fileManagerStore';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import {
   getPathWithoutFileName,
@@ -25,7 +24,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [isNameValid, setIsNameValid] = useState(false);
   const [localFileName, setLocalFileName] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
+  const { setFileOperationSuccessful, handleWebDavAction, renameItem } = useFileManagerStore();
   const { t } = useTranslation();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -33,18 +32,18 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   };
 
   const renameFile = async (oldName: string, newName: string) => {
-    await handleWebDavAction(() => WebDavFunctions.renameItem(oldName, newName))
-      .then((resp) => {
+    await handleWebDavAction(() => renameItem(oldName, newName))
+      .then(async (resp) => {
         if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, resp.message);
+          await setFileOperationSuccessful(resp.success, resp.message || '');
         } else {
-          setFileOperationSuccessful(resp.success, '');
+          await setFileOperationSuccessful(resp.success, '');
         }
         setIsOpen(false);
       })
-      .catch((error: unknown) => {
+      .catch(async (error: unknown) => {
         const errorMessage = error instanceof Error ? error.message : t('fileRenameContent.unknownErrorOccurred');
-        setFileOperationSuccessful(false, errorMessage);
+        await setFileOperationSuccessful(false, errorMessage);
         setIsOpen(false);
       });
   };

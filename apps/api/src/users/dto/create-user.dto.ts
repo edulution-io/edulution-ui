@@ -6,6 +6,10 @@ class CreateUserDto {
   password?: string;
 
   roles: string[];
+
+  mfaEnabled?: boolean;
+
+  isTotpSet?: boolean;
 }
 
 export default CreateUserDto;

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Input from '@/components/shared/Input';
-import useFileManagerStore from '@/store/fileManagerStore';
 import { validateFileName } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
-const FileCreationForm = () => {
-  const [localFileName, setLocalFileName] = useState('');
-  const setFileName = useFileManagerStore((state) => state.setFileName);
-  const [error, setError] = useState('');
+interface FileCreationFormProps {
+  fileName: string;
+  setFileName: (fileName: string) => void;
+}
+
+const FileCreationForm: React.FC<FileCreationFormProps> = ({ fileName, setFileName }) => {
+  const [error, setError] = React.useState('');
 
   const handleValidateFileName = (name: string) => {
     const validationResult = validateFileName(name);
@@ -23,7 +25,6 @@ const FileCreationForm = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
     handleValidateFileName(name);
-    setLocalFileName(name);
   };
 
   return (
@@ -32,10 +33,11 @@ const FileCreationForm = () => {
       <Input
         variant="default"
         placeholder="ExampleName.txt"
-        value={localFileName}
+        value={fileName}
         onChange={handleInputChange}
       />
     </>
   );
 };
+
 export default FileCreationForm;
