@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Input from '@/components/shared/Input';
-import useFileManagerStore from '@/store/fileManagerStore';
 import { validateDirectoryName } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
-const DirectoryCreationForm = () => {
-  const [localDirectoryName, setLocalDirectoryName] = useState('');
-  const setDirectoryName = useFileManagerStore((state) => state.setDirectoryName);
-  const [error, setError] = useState('');
+interface DirectoryCreationFormProps {
+  directoryName: string;
+  setDirectoryName: (name: string) => void;
+}
+
+const DirectoryCreationForm: React.FC<DirectoryCreationFormProps> = ({ directoryName, setDirectoryName }) => {
+  const [error, setError] = React.useState('');
 
   const handleValidateDirectoryName = (name: string) => {
     const validationResult = validateDirectoryName(name);
@@ -22,7 +24,7 @@ const DirectoryCreationForm = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
-    setLocalDirectoryName(name);
+    setDirectoryName(name);
     handleValidateDirectoryName(name);
   };
 
@@ -31,11 +33,12 @@ const DirectoryCreationForm = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
         variant="default"
-        placeholder="ExampleName.txt"
-        value={localDirectoryName}
+        placeholder="NewDirectory"
+        value={directoryName}
         onChange={handleInputChange}
       />
     </>
   );
 };
+
 export default DirectoryCreationForm;

@@ -1,73 +1,74 @@
-import { create } from 'zustand';
-import { AxiosRequestConfig } from 'axios';
+import { create, StateCreator } from 'zustand';
 import UserLmnInfo from '@/datatypes/userInfo';
-import axiosInstanceLmn from '@/api/axiosInstanceLmn';
+import lmnApiBasicAuth from '@/api/lmnApiBasicAuth';
+import lmnApi from '@/api/lmnApi';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import userStore from './userStore';
 
 interface UserLmnInfoStore {
+  lmnApiToken: string;
   userData: UserLmnInfo | null;
   loading: boolean;
   error: Error | null;
-  getToken: (username: string, password: string) => Promise<void>;
+  setLmnApiToken: (username: string, password: string) => Promise<void>;
+  setToken: (token: string) => void;
   getUserData: () => Promise<void>;
   reset: () => void;
 }
 
-const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUserData' | 'reset'> = {
+const initialState: Omit<UserLmnInfoStore, 'setLmnApiToken' | 'getUserData' | 'setToken' | 'reset'> = {
+  lmnApiToken: '',
   userData: null,
   loading: false,
   error: null,
 };
 
-const lmnServerUrl = import.meta.env.VITE_LMN_API_URL as string;
+type PersistedUserLmnInfoStore = (
+  userData: StateCreator<UserLmnInfoStore>,
+  options: PersistOptions<UserLmnInfoStore>,
+) => StateCreator<UserLmnInfoStore>;
 
-const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
-  ...initialState,
-  getToken: async (username: string, password: string) => {
-    set({ loading: true });
-    const encodedCredentials = btoa(`${username}:${password}`);
-    const config: AxiosRequestConfig = {
-      url: `${lmnServerUrl}/v1/auth/`,
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
+const useLmnUserStore = create<UserLmnInfoStore>(
+  (persist as PersistedUserLmnInfoStore)(
+    (set) => ({
+      ...initialState,
+
+      setToken: (token: string) => {
+        console.log(token);
+        set({ lmnApiToken: token });
       },
-    };
+      setLmnApiToken: async (username, password): Promise<void> => {
+        set({ loading: true });
 
-    try {
-      const response = await axiosInstanceLmn(config);
-      const token = response.data as string;
-      sessionStorage.setItem('lmnApiToken', token);
-      set({ loading: false, error: null });
-    } catch (error) {
-      set({ error: error as Error, loading: false });
-    }
-  },
-  getUserData: async () => {
-    set({ loading: true });
-    const token = sessionStorage.getItem('lmnApiToken');
-    if (!token) {
-      set({ error: new Error('No API token found'), loading: false });
-      return;
-    }
-    const config: AxiosRequestConfig = {
-      url: `${lmnServerUrl}/v1/users/${userStore.getState().user}`,
-      method: 'GET',
-      headers: { 'X-Api-Key': token },
-    };
-
-    try {
-      const response = await axiosInstanceLmn(config);
-      set({
-        userData: response.data as UserLmnInfo,
-        loading: false,
-        error: null,
-      });
-    } catch (error) {
-      set({ error: error as Error, loading: false });
-    }
-  },
-  reset: () => set({ ...initialState }),
-}));
+        try {
+          lmnApiBasicAuth.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
+          const response = await lmnApiBasicAuth.get<string>('/auth/');
+          set({ loading: false, error: null, lmnApiToken: response.data });
+        } catch (error) {
+          set({ error: error as Error, loading: false });
+        }
+      },
+      getUserData: async () => {
+        set({ loading: true });
+        try {
+          const response = await lmnApi.get(`/users/${userStore.getState().user}`);
+          console.log(response.data);
+          set({
+            userData: response.data as UserLmnInfo,
+            loading: false,
+            error: null,
+          });
+        } catch (error) {
+          set({ error: error as Error, loading: false });
+        }
+      },
+      reset: () => set({ ...initialState }),
+    }),
+    {
+      name: 'lmn-user-storage',
+      storage: createJSONStorage(() => sessionStorage),
+    } as PersistOptions<UserLmnInfoStore>,
+  ),
+);
 
 export default useLmnUserStore;

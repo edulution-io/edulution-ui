@@ -5,12 +5,14 @@ import AuthModule from 'src/auth/auth.module';
 import UsersModule from 'src/users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
 import ConferencesModule from '../conferences/conferences.module';
+import FilemanagerModule from '../filemanager/filemanager.module.ts';
 
 @Module({
   imports: [
     AppConfigModule,
     UsersModule,
     ConferencesModule,
+    FilemanagerModule,
     AuthModule,
     JwtModule.register({
       global: true,

@@ -11,23 +11,22 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
 import OtpInput from './OtpInput';
+import { OriginalIdTokenClaims } from '@/datatypes/types.ts';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setIsAuthenticated, setUser, setWebdavKey, setToken, postCheckTotp, getUserInfoFromDb } = useUserStore();
+  const { setIsAuthenticated, setUser, setToken, token, setUserInfo, postCheckTotp, getUserInfoFromDb } =
+    useUserStore();
+  const { setLmnApiToken } = useLmnUserStore();
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState<string>('');
   const [error, setError] = useState<Error | null>(null);
 
   const { isLoading } = auth;
-  const { getToken } = useLmnUserStore((state) => ({
-    getToken: state.getToken,
-  }));
 
   const formSchema: z.Schema = isEnterTotpVisible
     ? z.object({}).optional()
@@ -62,30 +61,39 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        const encryptedPassword = useEncryption({
+        useEncryption({
           mode: 'encrypt',
           data: password,
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
 
+        await setLmnApiToken(username, password);
+
         setUser(username);
         setToken(requestUser.access_token);
-        setWebdavKey(encryptedPassword);
-
-        createWebdavClient();
-        await getToken(username, password);
-        const userInfo = await getUserInfoFromDb(username);
-        const { mfaEnabled } = userInfo as { mfaEnabled: boolean };
-
-        if (mfaEnabled) setIsEnterTotpVisible(true);
-        else setIsAuthenticated(true);
       }
     } catch (e) {
       console.error(e);
-    } finally {
-      /* empty */
     }
   };
+
+  useEffect(() => {
+    const login = async () => {
+      if (!token || !auth.isAuthenticated || !auth.user?.profile?.preferred_username) {
+        return;
+      }
+      const userInfo = await getUserInfoFromDb(auth.user.profile.preferred_username);
+      const { mfaEnabled } = userInfo as { mfaEnabled: boolean };
+
+      if (mfaEnabled) setIsEnterTotpVisible(true);
+      else {
+        setIsAuthenticated(true);
+        setUserInfo(auth.user.profile as unknown as OriginalIdTokenClaims);
+      }
+    };
+
+    login().catch((e) => console.error(e));
+  }, [auth.isAuthenticated, token]);
 
   const handleCheckTotp = async (otp: string) => {
     setTotp(otp);

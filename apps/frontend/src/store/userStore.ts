@@ -2,12 +2,13 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import { UserInfo } from '@/datatypes/types';
+import { CustomIdTokenClaims, OriginalIdTokenClaims, processIdTokenClaims, UserInfo } from '@/datatypes/types';
 
 type UserStore = {
   user: string;
-  webdavKey: string;
+  basicAuth: string;
   isAuthenticated: boolean;
+  userInfo: CustomIdTokenClaims;
   isLoggedInInEduApi: boolean;
   isLoading: boolean;
   isMfaEnabled: boolean;
@@ -15,8 +16,9 @@ type UserStore = {
   setUser: (user: string) => void;
   token: string;
   setToken: (token: string) => void;
-  setWebdavKey: (webdavKey: string) => void;
+  setUserInfo: (user: OriginalIdTokenClaims) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
+  setBasicAuth: (basicAuth: string) => void;
   reset: () => void;
   postCheckTotp: (otp: string) => Promise<boolean>;
   postSetupTotp: (otp: string) => Promise<boolean>;
@@ -25,12 +27,29 @@ type UserStore = {
   getQrCode: (username: string, setIsLoading?: boolean) => Promise<string | null>;
 };
 
-const initialState = {
+const initialState: Omit<
+  UserStore,
+  | 'setIsLoggedInInEduApi'
+  | 'setUser'
+  | 'setToken'
+  | 'setBasicAuth'
+  | 'reset'
+  | 'setIsAuthenticated'
+  | 'setUserInfo'
+  | 'isLoading'
+  | 'isMfaEnabled'
+  | 'postSetupTotp'
+  | 'postCheckTotp'
+  | 'getUserInfoFromDb'
+  | 'updateUserInfo'
+  | 'getQrCode'
+> = {
   user: '',
-  webdavKey: '',
   isAuthenticated: false,
   isLoggedInInEduApi: false,
   token: '',
+  basicAuth: 'Basic',
+  userInfo: {} as CustomIdTokenClaims,
 };
 
 type PersistedUserStore = (
@@ -44,15 +63,17 @@ const EDU_API_USERS_ENDPOINT = 'users';
 const useUserStore = create<UserStore>(
   (persist as PersistedUserStore)(
     (set) => ({
-      user: '',
+      ...initialState,
+
+      setUserInfo: (userInfo: OriginalIdTokenClaims) => {
+        const processedUserInfo = processIdTokenClaims(userInfo);
+        set({ userInfo: processedUserInfo });
+      },
+
       setUser: (user: string) => {
         set({ user });
       },
-      webdavKey: '',
       isLoading: false,
-      setWebdavKey: (webdavKey: string) => {
-        set({ webdavKey });
-      },
       isAuthenticated: false,
       setIsAuthenticated: (isAuthenticated: boolean) => {
         set({ isAuthenticated });
@@ -61,9 +82,15 @@ const useUserStore = create<UserStore>(
       setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => {
         set({ isLoggedInInEduApi });
       },
-      token: '',
       setToken: (token) => set({ token }),
-      reset: () => set(initialState),
+
+      setBasicAuth: (basicAuth: string) => {
+        set({ basicAuth });
+      },
+
+      reset: () => {
+        set({ ...initialState });
+      },
 
       isMfaEnabled: false,
 

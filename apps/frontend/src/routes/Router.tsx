@@ -137,7 +137,7 @@ const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
   const { loginUser } = useUserQuery();
-  const { isAuthenticated, isLoggedInInEduApi, setIsLoggedInInEduApi } = useUserStore();
+  const { isAuthenticated, isLoggedInInEduApi, setIsLoggedInInEduApi, token } = useUserStore();
 
   useEffect(() => {
     if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
@@ -151,7 +151,7 @@ const AppRouter = () => {
   }, [auth.isAuthenticated, auth.user?.profile]);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (auth.isAuthenticated && token) {
       const fetchData = async () => {
         try {
           await getAppConfigs(true);
@@ -163,7 +163,7 @@ const AppRouter = () => {
       // eslint-disable-next-line no-void
       void fetchData();
     }
-  }, [auth.isAuthenticated]);
+  }, [auth.isAuthenticated, token]);
 
   useEffect(() => {
     if (auth.isAuthenticated) {

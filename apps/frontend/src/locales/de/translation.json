@@ -235,6 +235,11 @@
     "audio": "Audio",
     "acrobat": "PDF"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "QR-Code scannen"
+  },
+
   "fileCreateNewContent": {
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
