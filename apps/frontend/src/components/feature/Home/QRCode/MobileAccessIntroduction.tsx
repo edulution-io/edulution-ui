@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader } from '@/components/ui/Sheet';
-import { Dialog, DialogContent } from '@/components/ui/Dialog';
+import { DialogSH, DialogContentSH } from '@/components/ui/DialogSH';
 import React, { FC, useEffect, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import useFileManagerStore from '@/store/fileManagerStore';
@@ -82,12 +82,12 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
   return isMobile ? (
     mobileContent
   ) : (
-    <Dialog
+    <DialogSH
       open={isMobileAccessIntroductionOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogContent>{desktopContent}</DialogContent>
-    </Dialog>
+      <DialogContentSH>{desktopContent}</DialogContentSH>
+    </DialogSH>
   );
 };
 
