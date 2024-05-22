@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import * as OTPAuth from 'otpauth';
 import UsersService from '../users/users.service';
 import LoggerEnum from '../types/logger';
@@ -28,16 +28,20 @@ class AuthService {
     const newTotp = new OTPAuth.TOTP({ ...totpConfig, label: username, secret });
 
     const isTotpValid = newTotp.validate({ token }) !== null;
-    const message = isTotpValid ? 'TOTP token is valid' : 'TOTP token is invalid';
 
-    const newUser = await this.usersService.update(username, {
-      isTotpSet: true,
-    });
-
-    Logger.log(newUser, LoggerEnum.EDULUTIONAPI);
-    Logger.log(message, LoggerEnum.AUTH);
-
-    return isTotpValid;
+    if (isTotpValid) {
+      Logger.log(`Totp is valid`, LoggerEnum.AUTH);
+      try {
+        await this.usersService.update(username, {
+          isTotpSet: true,
+        });
+        throw new HttpException('Totp is valid', HttpStatus.OK);
+      } catch (e) {
+        return false;
+      }
+    } else {
+      throw new HttpException('Totp is invalid', HttpStatus.UNAUTHORIZED);
+    }
   }
 
   getQrCode(username: string): string {

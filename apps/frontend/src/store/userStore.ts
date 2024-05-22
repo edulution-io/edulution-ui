@@ -71,7 +71,7 @@ const useUserStore = create<UserStore>(
         set({ isLoading: true });
         try {
           const response = await eduApi.post(EDU_API_AUTH_ENDPOINT, { totpToken: otp });
-          const isTotpValid = response.data as boolean;
+          const isTotpValid = response.status === 201;
           set({ isLoading: false, isAuthenticated: isTotpValid });
           return isTotpValid;
         } catch (e) {
