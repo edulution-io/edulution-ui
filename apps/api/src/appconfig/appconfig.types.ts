@@ -5,13 +5,13 @@ export enum AppIntegrationType {
 }
 export type AppConfig = {
   name: string;
-  /* @deprecated use options.url */
-  linkPath: string;
   icon: string;
   appType: AppIntegrationType;
-  options: {
-    url?: string;
-    apiKey?: string;
-    [key: string]: string | undefined;
-  };
+  options: AppConfigOptions;
+};
+
+export type AppConfigOptionType = 'url' | 'apiKey';
+
+export type AppConfigOptions = {
+  [T in AppConfigOptionType]?: string;
 };

@@ -4,12 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 import AuthModule from 'src/auth/auth.module';
 import UsersModule from 'src/users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
+import ConferencesModule from '../conferences/conferences.module';
 
 @Module({
   imports: [
     AppConfigModule,
-    AuthModule,
     UsersModule,
+    ConferencesModule,
+    AuthModule,
     JwtModule.register({
       global: true,
     }),

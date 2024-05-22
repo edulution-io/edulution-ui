@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import Input from '@/components/shared/Input';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
 import { AppIntegrationType } from '@/datatypes/types';
-import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
-import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
-import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
+import MobileSettingsDialog from '@/pages/Settings/AppConfig/AppConfigDialog/MobileAppConfigDialog';
+import DesktopSettingsDialog from '@/pages/Settings/AppConfig/AppConfigDialog/DesktopAppConfigDialog';
+import { SettingsDialogProps } from '@/pages/Settings/AppConfig/AppConfigDialog/settingTypes';
+import { AppConfigOptions, AppConfigOptionType } from '@/datatypes/appConfigOptions';
+import AppConfigTypeSelect from './AppConfigTypeSelect';
 
-const SettingsPage: React.FC = () => {
+const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,9 +35,13 @@ const SettingsPage: React.FC = () => {
 
   const formSchemaObject: { [key: string]: z.Schema } = {};
 
-  SETTINGS_APPSELECT_OPTIONS.forEach((item) => {
-    formSchemaObject[`${item.id}.path`] = z.string().optional();
+  APP_CONFIG_OPTIONS.forEach((item) => {
     formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppIntegrationType).optional();
+    if (item.options) {
+      item.options.forEach((itemOption) => {
+        formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
+      });
+    }
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -52,21 +57,32 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (areSettingsVisible) {
-      setValue(`${settingLocation}.path`, findAppConfigByName(appConfig, settingLocation)?.linkPath);
-      setValue(`${settingLocation}.appType`, findAppConfigByName(appConfig, settingLocation)?.appType);
+      const currentConfig = findAppConfigByName(appConfig, settingLocation);
+      if (currentConfig) {
+        setValue(`${settingLocation}.appType`, currentConfig.appType);
+        if (currentConfig.options) {
+          Object.keys(currentConfig.options).forEach((key) => {
+            setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
+          });
+        }
+      }
     }
-  }, [areSettingsVisible, settingLocation, appConfig]);
+  }, [areSettingsVisible, settingLocation, appConfig, setValue]);
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
-      const selectedOption = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(settingLocation));
+      const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
 
       if (selectedOption) {
         const newConfig = {
           name: settingLocation,
-          linkPath: getValues(`${settingLocation}.path`) as string,
           icon: selectedOption.icon,
           appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
+          options:
+            selectedOption.options?.reduce((acc, o) => {
+              acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
+              return acc;
+            }, {} as AppConfigOptions) || {},
         };
 
         const updatedConfig = appConfig.map((entry) => {
@@ -81,6 +97,7 @@ const SettingsPage: React.FC = () => {
           .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
       }
     };
+
     if (areSettingsVisible) {
       return (
         <Form {...form}>
@@ -88,67 +105,39 @@ const SettingsPage: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="column w-2/3 space-y-6"
           >
-            {SETTINGS_APPSELECT_OPTIONS.map((item) => (
+            {APP_CONFIG_OPTIONS.map((item) => (
               <div
                 key={item.id}
                 className="m-5"
               >
                 {settingLocation === item.id ? (
                   <>
-                    <FormField
-                      control={control}
-                      name={`${item.id}.path`}
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <h4>{t('form.path')}</h4>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              className="text-white"
-                            />
-                          </FormControl>
-                          <p>{t('form.pathDescription')}</p>
-                          <FormMessage className="text-p" />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="pt-10">
-                      <FormField
+                    {item.options?.map((itemOption) => (
+                      <FormFieldSH
+                        key={`${item.id}.${itemOption}`}
                         control={control}
-                        name={`${item.id}.appType`}
+                        name={`${item.id}.${itemOption}`}
+                        defaultValue=""
                         render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <h4>{t('form.apptype')}</h4>
+                          <FormItem>
+                            <h4>{t(`form.${itemOption}`)}</h4>
                             <FormControl>
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                defaultValue={findAppConfigByName(appConfig, settingLocation)?.appType}
-                                className="flex flex-col space-y-1"
-                              >
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.NATIVE} />
-                                  </FormControl>
-                                  <p>{t('form.native')}</p>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.FORWARDED} />
-                                  </FormControl>
-                                  <p>{t('form.forwarded')}</p>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value={AppIntegrationType.EMBEDDED} />
-                                  </FormControl>
-                                  <p>{t('form.embedded')}</p>
-                                </FormItem>
-                              </RadioGroup>
+                              <Input
+                                {...field}
+                                className="text-white"
+                              />
                             </FormControl>
-                            <FormMessage />
+                            <p>{t(`form.${itemOption}Description`)}</p>
+                            <FormMessage className="text-p" />
                           </FormItem>
                         )}
+                      />
+                    ))}
+                    <div className="pt-10">
+                      <AppConfigTypeSelect
+                        control={control}
+                        settingLocation={settingLocation}
+                        appConfig={appConfig}
                       />
                     </div>
                     <div className="absolute right-20 sm:pr-10 md:right-20">
@@ -174,7 +163,7 @@ const SettingsPage: React.FC = () => {
 
   const filteredAppOptions = () => {
     const existingOptions = appConfig.map((item) => item.name);
-    const filteredOptions = SETTINGS_APPSELECT_OPTIONS.filter((item) => !existingOptions.includes(item.id));
+    const filteredOptions = APP_CONFIG_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
   };
@@ -194,33 +183,12 @@ const SettingsPage: React.FC = () => {
       );
   };
 
-  const handleAddApp = () => {
-    setSearchParams('');
-    const selectedOption = option.toLowerCase().split('.')[0];
-    const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
-
-    if (optionsConfig) {
-      const newConfig = {
-        name: selectedOption,
-        linkPath: '',
-        icon: optionsConfig.icon,
-        appType: AppIntegrationType.FORWARDED,
-      };
-      const updatedConfig = [...appConfig, newConfig];
-
-      updateAppConfig(updatedConfig)
-        .then(() => toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`))
-        .catch(() => toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`));
-    }
-  };
-
   const dialogProps: SettingsDialogProps = {
     isOpen: mode === 'add',
     option,
     setOption,
     filteredAppOptions,
     setSearchParams,
-    handleAddApp,
   };
 
   return (
@@ -254,4 +222,4 @@ const SettingsPage: React.FC = () => {
   );
 };
 
-export default SettingsPage;
+export default AppConfigPage;

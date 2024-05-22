@@ -27,7 +27,35 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
-    "sidebar": "Konferenzen"
+    "sidebar": "Konferenzen",
+    "create": "Neue Konferenz erstellen",
+    "creator": "Ersteller",
+    "delete": "Löschen",
+    "deleteConferences": "{{count}} Konferenzen löschen",
+    "editConference": "Konferenz bearbeiten",
+    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "name": "Name der Konferenz",
+    "conference": "Konferenz",
+    "password": "Passwort",
+    "attendees": "Teilnehmer",
+    "invitedAttendees": "Eingeladen",
+    "joinedAttendees": "Beigetreten",
+    "privacyStatus": "Zutritt",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "cancel": "Abbrechen",
+    "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
+    "password_required": "Kein Passwort eingegeben",
+    "error": "Fehler",
+    "action": "Aktion",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "join": "Beitreten",
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "close": "Konferenz schließen"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
@@ -153,6 +181,8 @@
     "username": "Benutzername",
     "password": "Passwort",
     "loading": "Laden...",
+    "overview": "Übersicht",
+    "create": "Erstellen",
     "revert": "Zurücksetzen"
   },
   "form": {
@@ -162,7 +192,11 @@
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
-    "saved": "Konfiguration gespeichert!"
+    "saved": "Konfiguration gespeichert!",
+    "url": "URL",
+    "urlDescription": "Bitte eine URL zur Applikation eintragen",
+    "apiKey": "API Schlüssel",
+    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -187,6 +221,11 @@
   },
   "loadingIndicator": {
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
+  },
+  "search": {
+    "type-to-search": "Tippen um zu suchen",
+    "loading": "Lade",
+    "no-results": "Keine Ergebnisse"
   },
   "fileCategory": {
     "folder": "Ordner",
@@ -284,7 +323,6 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-
   "groupsPage": {
     "classes": "Klassen"
   }

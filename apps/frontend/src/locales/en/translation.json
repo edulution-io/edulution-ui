@@ -27,7 +27,35 @@
   },
   "conferences": {
     "title": "CONFERENCES",
-    "sidebar": "Conferences"
+    "sidebar": "Conferences",
+    "create": "Create new conference",
+    "creator": "Creator",
+    "delete": "Delete",
+    "deleteConferences": "Delete {count}} conferences",
+    "editConference": "Edit conference",
+    "confirmDelete": "Should these conferences really be deleted?",
+    "name": "Name of conference",
+    "conference": "Conference",
+    "password": "Password",
+    "attendees": "Teilnehmer",
+    "invitedAttendees": "Invited",
+    "joinedAttendees": "Joined",
+    "privacyStatus": "Access",
+    "public": "Public",
+    "private": "Private",
+    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "cancel": "Cancel",
+    "min_3_chars": "Minimum 3 characters",
+    "max_30_chars": "Maximum 30 characters",
+    "password_required": "No Password entered",
+    "error": "Error",
+    "action": "Action",
+    "start": "Start",
+    "stop": "Stop",
+    "join": "Join",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close conference"
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
@@ -153,6 +181,8 @@
     "username": "Username",
     "password": "Password",
     "loading": "Loading...",
+    "overview": "Overview",
+    "create": "Create",
     "revert": "Revert"
   },
   "form": {
@@ -162,7 +192,11 @@
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
-    "saved": "Configuration saved!"
+    "saved": "Configuration saved!",
+    "url": "URL",
+    "urlDescription": "Please insert an URL to the application",
+    "apiKey": "API Key",
+    "apiKeyDescription": "The API Key will be used for authentication"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
@@ -186,6 +220,11 @@
   },
   "loadingIndicator": {
     "message": "Please wait while we process your request..."
+  },
+  "search": {
+    "type-to-search": "Type to search",
+    "loading": "Loading",
+    "no-results": "No results"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -284,7 +323,6 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-
   "groupsPage": {
     "classes": "Classes"
   }
