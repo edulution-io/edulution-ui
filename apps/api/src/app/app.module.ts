@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-
+import AuthModule from 'src/auth/auth.module';
+import UsersModule from 'src/users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
-import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 
 @Module({
@@ -11,6 +11,7 @@ import ConferencesModule from '../conferences/conferences.module';
     AppConfigModule,
     UsersModule,
     ConferencesModule,
+    AuthModule,
     JwtModule.register({
       global: true,
     }),
