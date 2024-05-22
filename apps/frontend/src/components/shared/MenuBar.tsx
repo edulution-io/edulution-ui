@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
@@ -6,7 +6,8 @@ import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@/utils/common';
 
-import { useMediaQuery, useToggle, useOnClickOutside } from 'usehooks-ts';
+import { useOnClickOutside, useToggle } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
@@ -16,7 +17,7 @@ const MenuBar: React.FC = () => {
   const { pathname } = useLocation();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
 
   useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
 
@@ -65,7 +66,7 @@ const MenuBar: React.FC = () => {
 
   return (
     <div>
-      {isMobile ? (
+      {isMobileView ? (
         <>
           {isOpen && (
             <div

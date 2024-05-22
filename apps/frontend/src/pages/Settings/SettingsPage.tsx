@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMediaQuery } from 'usehooks-ts';
 import { toast } from 'sonner';
 
 import Input from '@/components/shared/Input';
@@ -20,13 +19,14 @@ import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingType
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 const SettingsPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const { appConfig, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const [option, setOption] = useState('');
 
@@ -229,7 +229,7 @@ const SettingsPage: React.FC = () => {
         ) : null}
       </div>
       {settingsForm()}
-      {isMobile ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}
+      {isMobileView ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}
       <Toaster />
     </>
   );

@@ -13,7 +13,7 @@ import {
   validateFileName,
 } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
@@ -24,7 +24,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isNameValid, setIsNameValid] = useState(false);
   const [localFileName, setLocalFileName] = useState('');
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
   const { t } = useTranslation();
   const handleOpenChange = (open: boolean) => {
@@ -123,7 +123,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
     </DialogContent>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     mobileContent
   ) : (
     <Dialog

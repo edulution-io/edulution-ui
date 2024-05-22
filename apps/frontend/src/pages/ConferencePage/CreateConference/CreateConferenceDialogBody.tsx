@@ -8,7 +8,6 @@ import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchU
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import useUserStore from '@/store/userStore';
-import { useMediaQuery } from 'usehooks-ts';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +15,6 @@ interface CreateConferenceDialogBodyProps {
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
   const { setValue, getValues } = form;
   const { user } = useUserStore();
   const { isLoading, searchAttendees } = useCreateConferenceDialogStore();
@@ -46,7 +44,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.name')}
           isLoading={isLoading}
-          variant={isMobile ? 'white' : 'default'}
+          variant="default"
           inputVariant="default"
         />
         <FormField
@@ -55,7 +53,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           labelTranslationId={t('conferences.password')}
           type="password"
           isLoading={isLoading}
-          variant={isMobile ? 'white' : 'default'}
+          variant="default"
           inputVariant="default"
         />
         <SearchUsersOrGroups

@@ -367,7 +367,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'group rounded-md border border-input bg-white px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            'group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
             className,
           )}
         >
@@ -424,13 +424,13 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 inputProps?.onFocus?.(event);
               }}
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
-              className={cn('ml-2 flex-1 text-black outline-none placeholder:text-black', inputProps?.className)}
+              className={cn('ml-2 flex-1 outline-none placeholder:text-muted-foreground', inputProps?.className)}
             />
           </div>
         </div>
         <div className="relative mt-2">
           {open && (
-            <CommandList className="absolute top-0 z-10 w-full rounded-md border bg-popover bg-white text-black shadow-md outline-none animate-in">
+            <CommandList className="absolute top-0 z-10 w-full rounded-md border bg-popover bg-white text-popover-foreground shadow-md outline-none animate-in">
               {isLoading ? (
                 <>{loadingIndicator}</>
               ) : (
@@ -469,7 +469,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                               setSelected(newOptions);
                               onChange?.(newOptions);
                             }}
-                            className={cn('cursor-pointer', option.disable && 'cursor-default text-black')}
+                            className={cn('cursor-pointer', option.disable && 'cursor-default text-muted-foreground')}
                           >
                             {option.label}
                           </CommandItem>
