@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Router from '@/routes/Router';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
@@ -8,8 +6,6 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
-
-const queryClient = new QueryClient();
 
 const App = () => {
   const { lang } = useLanguage();
@@ -32,11 +28,8 @@ const App = () => {
 
   return (
     <AuthProvider {...oidcConfig}>
-      <QueryClientProvider client={queryClient}>
-        <BBBFrame />
-        <Router />
-        <ReactQueryDevtools />
-      </QueryClientProvider>
+      <BBBFrame />
+      <Router />
     </AuthProvider>
   );
 };

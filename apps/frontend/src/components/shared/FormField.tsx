@@ -11,6 +11,10 @@ const variants = cva([], {
   variants: {
     variant: {
       default: 'text-black',
+      white: 'text-white',
+    },
+    inputVariant: {
+      default: 'text-black',
     },
   },
 });
@@ -23,7 +27,7 @@ type FormFieldProps = {
   type?: 'password';
 } & VariantProps<typeof variants>;
 
-const FormField = ({ form, name, isLoading, labelTranslationId, type, variant }: FormFieldProps) => {
+const FormField = ({ form, name, isLoading, labelTranslationId, type, variant, inputVariant }: FormFieldProps) => {
   const { t } = useTranslation();
 
   return (
@@ -41,7 +45,7 @@ const FormField = ({ form, name, isLoading, labelTranslationId, type, variant }:
               {...field}
               type={type}
               disabled={isLoading}
-              variant={variant}
+              variant={inputVariant}
             />
           </FormControl>
           <FormMessage className={cn('text-p', variants({ variant }))} />

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
-import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import { DropdownMenu } from '@/components';
 import { toast } from 'sonner';
-import { AppIntegrationType } from '@/datatypes/types';
+import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
+import { SettingsDialogProps } from '@/pages/Settings/AppConfig/AppConfigDialog/settingTypes';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
 const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   isOpen,
@@ -47,12 +47,11 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
             onClick={() => {
               setSearchParams(new URLSearchParams(''));
               const selectedOption = option.toLowerCase().split('.')[0];
-              const optionsConfig = SETTINGS_APPSELECT_OPTIONS.find((item) => item.id.includes(selectedOption));
+              const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
 
               if (optionsConfig) {
-                const newConfig = {
+                const newConfig: AppConfig = {
                   name: selectedOption,
-                  linkPath: '',
                   icon: optionsConfig.icon,
                   appType: AppIntegrationType.FORWARDED,
                   options: {},

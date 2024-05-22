@@ -225,7 +225,11 @@
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
-    "saved": "Configuration saved!"
+    "saved": "Configuration saved!",
+    "url": "URL",
+    "urlDescription": "Please insert an URL to the application",
+    "apiKey": "API Key",
+    "apiKeyDescription": "The API Key will be used for authentication"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
