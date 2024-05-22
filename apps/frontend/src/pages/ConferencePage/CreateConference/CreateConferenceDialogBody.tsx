@@ -45,7 +45,6 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           labelTranslationId={t('conferences.name')}
           isLoading={isLoading}
           variant="default"
-          inputVariant="default"
         />
         <FormField
           name="password"
@@ -54,7 +53,6 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           type="password"
           isLoading={isLoading}
           variant="default"
-          inputVariant="default"
         />
         <SearchUsersOrGroups
           value={getValues('invitedAttendees') as Attendee[]}

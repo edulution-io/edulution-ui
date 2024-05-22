@@ -3,11 +3,11 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
-import { useMediaQuery } from 'usehooks-ts';
-import cn from '@/lib/utils'; // If you are fetching the HTML content dynamically
+import cn from '@/lib/utils';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 const BBBIFrame = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const { t } = useTranslation();
   const { joinConferenceUrl, setJoinConferenceUrl, toggleIsJoinedConferenceMinimized, isJoinedConferenceMinimized } =
     useConferenceDetailsDialogStore();
@@ -16,14 +16,14 @@ const BBBIFrame = () => {
     return null;
   }
 
-  const style = isJoinedConferenceMinimized ? { width: 0 } : { width: isMobile ? '100%' : 'calc(100% - 56px)' };
+  const style = isJoinedConferenceMinimized ? { width: 0 } : { width: isMobileView ? '100%' : 'calc(100% - 56px)' };
 
   return createPortal(
     <>
       <div
         className={cn(
           'fixed -top-1 left-1/2 z-10 -translate-x-1/2 transform',
-          isMobile && 'flex items-center space-x-4',
+          isMobileView && 'flex items-center space-x-4',
         )}
       >
         <button
@@ -32,14 +32,14 @@ const BBBIFrame = () => {
           onClick={toggleIsJoinedConferenceMinimized}
         >
           {isJoinedConferenceMinimized ? <MdMaximize className="inline" /> : <MdMinimize className="inline" />}{' '}
-          {isMobile ? '' : t(isJoinedConferenceMinimized ? 'conferences.maximize' : 'conferences.minimize')}
+          {isMobileView ? '' : t(isJoinedConferenceMinimized ? 'conferences.maximize' : 'conferences.minimize')}
         </button>
         <button
           type="button"
           className="rounded bg-red-500 px-4 text-white hover:bg-red-700"
           onClick={() => setJoinConferenceUrl('')}
         >
-          <MdClose className="inline" /> {isMobile ? '' : t('conferences.close')}
+          <MdClose className="inline" /> {isMobileView ? '' : t('conferences.close')}
         </button>
       </div>
       <iframe
