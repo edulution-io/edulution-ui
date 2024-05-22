@@ -10,6 +10,9 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
+  "auth": {
+    "totp": { "invalid": "Ungültiger Token", "setup": { "success": "TOTP-Authentifizierung erfolgreich gesetzt" } }
+  },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
     "sidebar": "Ticketsystem"
@@ -192,6 +195,12 @@
       "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
     }
   },
+  "usersettings": {
+    "title": "BENUTZER",
+    "security": "Sicherheit",
+    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
+    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+  },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
@@ -206,7 +215,18 @@
   "students": "Schüler",
   "login": {
     "forgot_password": "Passwort vergessen?",
-    "remember_me": "Merken"
+    "remember_me": "Eingeloggt bleiben",
+    "username": {
+      "too_long": "Benutzername zu lang",
+      "required": "Bitte Benutzername eingeben."
+    },
+    "password": {
+      "too_long": "Passwort zu lang",
+      "required": "Bitte Passwort eingeben."
+    },
+    "totp": {
+      "invalid": "Ungültiger Token!"
+    }
   },
   "common": {
     "add": "Hinzufügen",
@@ -220,7 +240,8 @@
     "password": "Passwort",
     "loading": "Laden...",
     "overview": "Übersicht",
-    "create": "Erstellen"
+    "create": "Erstellen",
+    "revert": "Zurücksetzen"
   },
   "form": {
     "path": "Link",
@@ -272,6 +293,11 @@
     "audio": "Audio",
     "acrobat": "PDF"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "QR-Code scannen"
+  },
+
   "fileCreateNewContent": {
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",

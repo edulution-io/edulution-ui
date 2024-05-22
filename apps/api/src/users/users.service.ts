@@ -28,6 +28,8 @@ class UsersService {
         email: loginUserDto.email,
         username: loginUserDto.preferred_username,
         roles: loginUserDto.ldapGroups,
+        mfaEnabled: false,
+        isTotpSet: false,
         usersSurveys: {
           openSurveys: [],
           createdSurveys: [],

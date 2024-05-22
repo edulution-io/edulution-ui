@@ -1,0 +1,10 @@
+/* Special file for shadcn*/
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "components": ["./apps/frontend/src/components"],
+      "utils": ["./apps/frontend/src/utils"]
+    }
+  }
+}

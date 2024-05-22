@@ -43,7 +43,10 @@ describe('AppConfigService', () => {
           name: 'Test',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
-          options: {},
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
       model.insertMany?.mockResolvedValue(appConfigs);
@@ -59,7 +62,10 @@ describe('AppConfigService', () => {
           name: 'Test',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
-          options: {},
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
       model.bulkWrite?.mockResolvedValue({ modifiedCount: 1 });

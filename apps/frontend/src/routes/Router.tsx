@@ -19,6 +19,7 @@ import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import UserSettings from '@/pages/UserSettings/UserSettings';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -71,6 +72,11 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               path="/"
               element={<HomePage />}
             />
+            <Route
+              path="user"
+              element={<UserSettings />}
+            />
+
             <Route
               path="settings"
               element={<AppConfigPage />}
@@ -134,9 +140,8 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated } = useUserStore();
   const { loginUser } = useUserQuery();
-  const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
+  const { isAuthenticated, isLoggedInInEduApi, setIsLoggedInInEduApi, token } = useUserStore();
 
   useEffect(() => {
     if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
@@ -150,7 +155,7 @@ const AppRouter = () => {
   }, [auth.isAuthenticated, auth.user?.profile]);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (auth.isAuthenticated && token) {
       const fetchData = async () => {
         try {
           await getAppConfigs(true);
@@ -159,9 +164,10 @@ const AppRouter = () => {
         }
       };
 
-      fetchData().catch(() => null);
+      // eslint-disable-next-line no-void
+      void fetchData();
     }
-  }, [auth.isAuthenticated]);
+  }, [auth.isAuthenticated, token]);
 
   useEffect(() => {
     if (auth.isAuthenticated) {

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { DialogSH, DialogContentSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore from '@/store/fileManagerStore';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'usehooks-ts';
+import { useSearchParams } from 'react-router-dom';
+import useFileManagerStore from '@/store/fileManagerStore';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;
@@ -14,14 +14,12 @@ interface UploadItemDialogProps {
 
 const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const currentPath = useFileManagerStore((state) => state.currentPath);
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
-  const setProgress = useFileManagerStore((state) => state.setUploadProgress);
-  const resetProgress = useFileManagerStore((state) => state.resetProgress);
-
+  const [searchParams] = useSearchParams();
+  const path = searchParams.get('path');
   const { t } = useTranslation();
+  const { handleWebDavAction, uploadFile, setFileOperationSuccessful } = useFileManagerStore();
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -30,20 +28,28 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     }
   };
 
-  const handleProgressUpdate = (file: File, progress: number) => {
-    setProgress(file.name, progress);
+  const uploadMultipleFiles = async (files: File[], path: string): Promise<boolean[]> => {
+    const uploadPromises = files.map(async (file) => {
+      const result = await handleWebDavAction(() => uploadFile(file, path));
+      return result.success;
+    });
+    return Promise.all(uploadPromises);
   };
 
   const uploadFiles = async () => {
     setIsOpen(false);
     try {
-      await WebDavFunctions.uploadMultipleFiles(selectedFiles, currentPath, handleProgressUpdate);
-      setFileOperationSuccessful(true, t('fileOperationSuccessful'));
-      resetProgress();
+      const resp = await uploadMultipleFiles(selectedFiles, path || '/');
+      const allSuccess = resp.every((success) => success);
+      if (allSuccess) {
+        await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
+      } else {
+        await setFileOperationSuccessful(false, t('fileCreateNewContent.unknownErrorOccurred'));
+      }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : t('unknownErrorOccurred');
-      setFileOperationSuccessful(false, errorMessage);
-      resetProgress();
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      console.log(errorMessage);
+      await setFileOperationSuccessful(false, errorMessage);
     } finally {
       setSelectedFiles([]);
     }
@@ -89,16 +95,16 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
       </SheetContent>
     </Sheet>
   ) : (
-    <DialogSH
+    <Dialog
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
-      <DialogContentSH>
-        <DialogTitleSH>{t(`filesharingUpload.title`)}</DialogTitleSH>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent>
+        <DialogTitle>{t('filesharingUpload.title')}</DialogTitle>
         {uploadContent}
-      </DialogContentSH>
-    </DialogSH>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -24,6 +24,12 @@ export class User {
   @Prop()
   roles?: string[];
 
+  @Prop()
+  mfaEnabled?: boolean;
+
+  @Prop()
+  isTotpSet?: boolean;
+
   @Prop({ type: SchemaFactory.createForClass(UsersSurveys) })
   usersSurveys: {
     openSurveys: string[];
