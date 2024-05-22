@@ -143,7 +143,7 @@ const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
   const { loginUser } = useUserQuery();
-  const { isAuthenticated, isLoggedInInEduApi, setIsLoggedInInEduApi, token } = useUserStore();
+  const { isAuthenticated, isLoggedInInEduApi, setIsLoggedInInEduApi } = useUserStore();
 
   useEffect(() => {
     if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {

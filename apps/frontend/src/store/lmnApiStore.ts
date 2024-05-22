@@ -34,7 +34,6 @@ const useLmnUserStore = create<UserLmnInfoStore>(
       ...initialState,
 
       setToken: (token: string) => {
-        console.log(token);
         set({ lmnApiToken: token });
       },
       setLmnApiToken: async (username, password): Promise<void> => {
@@ -52,7 +51,6 @@ const useLmnUserStore = create<UserLmnInfoStore>(
         set({ loading: true });
         try {
           const response = await lmnApi.get(`/users/${userStore.getState().user}`);
-          console.log(response.data);
           set({
             userData: response.data as UserLmnInfo,
             loading: false,

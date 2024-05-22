@@ -4,9 +4,9 @@ import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolM
 import { Button } from '@/components/shared/Button';
 import { transformClasses } from '@/pages/SchoolmanagementPage/utilis/utilitys';
 import { t } from 'i18next';
-import FloatingActionButton from '@/pages/SchoolmanagementPage/components/FloatingActionButton.tsx';
+import FloatingActionButton from '@/pages/SchoolmanagementPage/components/FloatingActionButton';
 import { FaKey } from 'react-icons/fa';
-import { translateKey } from '@/utils/common.ts';
+import { translateKey } from '@/utils/common';
 
 const PasswordsPage: React.FC = () => {
   const { fetchInitialPasswords, schoolclasses } = useSchoolManagementStore();
@@ -50,6 +50,7 @@ const PasswordsPage: React.FC = () => {
 
   const handleDownloadAllSelected = async () => {
     if (selectedClasses.length === 0) {
+      // eslint-disable-next-line no-alert
       alert('Please select at least one class.');
       return;
     }

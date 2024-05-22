@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import PathContent from '@/pages/SchoolmanagementPage/components/PathComponent.tsx';
-import CreateContentTypes from '@/pages/SchoolmanagementPage/CreateContentTypes.ts';
-import useUserStore from '@/store/userStore.ts';
-import Input from '@/components/shared/Input.tsx';
-import CreateContentDialog from '@/components/ui/Dialog/CreateContentDialog.tsx';
+import PathContent from '@/pages/SchoolmanagementPage/components/PathComponent';
+import CreateContentTypes from '@/pages/SchoolmanagementPage/CreateContentTypes';
+import useUserStore from '@/store/userStore';
+import Input from '@/components/shared/Input';
+import CreateContentDialog from '@/components/ui/Dialog/CreateContentDialog';
 import { t } from 'i18next';
 
 const ProjectPage = () => {
@@ -43,7 +43,7 @@ const ProjectPage = () => {
           setDialogTitle={setDialogTitle}
           setIsCreateDialogOpen={setIsCreateDialogOpen}
           setCreateContentType={setCreateContentType}
-          isAdmin={true}
+          isAdmin
         />
       </div>
     </div>
