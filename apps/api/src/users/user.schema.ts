@@ -22,6 +22,12 @@ export class User {
 
   @Prop()
   roles?: string[];
+
+  @Prop()
+  mfaEnabled?: boolean;
+
+  @Prop()
+  isTotpSet?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

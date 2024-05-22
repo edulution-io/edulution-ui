@@ -4,6 +4,10 @@ class LoginUserDto {
   email: string;
 
   ldapGroups: string[];
+
+  mfaEnabled: boolean;
+
+  isTotpSet: boolean;
 }
 
 export default LoginUserDto;

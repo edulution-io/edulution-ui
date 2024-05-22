@@ -139,3 +139,13 @@ export const processIdTokenClaims = (claims: OriginalIdTokenClaims): CustomIdTok
 
   return { ...claims, ldapGroups };
 };
+
+// TODO: Move to library
+export type UserInfo = {
+  _id: string;
+  username: string;
+  email: string;
+  roles: string[];
+  mfaEnabled: boolean;
+  isTotpSet: boolean;
+};

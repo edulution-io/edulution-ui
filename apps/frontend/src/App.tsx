@@ -25,7 +25,7 @@ const App = () => {
     authority: `${window.location.origin}/auth/realms/${import.meta.env.VITE_AUTH_REALM}`,
     client_id: import.meta.env.VITE_AUTH_CLIENT_ID as string,
     client_secret: import.meta.env.VITE_AUTH_CLIENT_SECRET as string,
-    redirect_uri: '',
+    redirect_uri: `${window.location.origin}`,
     loadUserInfo: true,
     automaticSilentRenew: true,
   };

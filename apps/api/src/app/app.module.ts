@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-
+import AuthModule from 'src/auth/auth.module';
+import UsersModule from 'src/users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
-import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import FilemanagerModule from '../filemanager/filemanager.module.ts';
 
@@ -13,6 +13,7 @@ import FilemanagerModule from '../filemanager/filemanager.module.ts';
     UsersModule,
     ConferencesModule,
     FilemanagerModule,
+    AuthModule,
     JwtModule.register({
       global: true,
     }),
