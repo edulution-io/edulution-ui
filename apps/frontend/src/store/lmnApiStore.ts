@@ -19,13 +19,15 @@ const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUserData' | 'reset'>
   error: null,
 };
 
+const lmnServerUrl = import.meta.env.VITE_LMN_API_URL as string;
+
 const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
   ...initialState,
   getToken: async (username: string, password: string) => {
     set({ loading: true });
     const encodedCredentials = btoa(`${username}:${password}`);
     const config: AxiosRequestConfig = {
-      url: '/api/v1/auth/',
+      url: `${lmnServerUrl}/v1/auth/`,
       method: 'GET',
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
@@ -49,7 +51,7 @@ const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
       return;
     }
     const config: AxiosRequestConfig = {
-      url: `/api/v1/users/${userStore.getState().user}`,
+      url: `${lmnServerUrl}/v1/users/${userStore.getState().user}`,
       method: 'GET',
       headers: { 'X-Api-Key': token },
     };
