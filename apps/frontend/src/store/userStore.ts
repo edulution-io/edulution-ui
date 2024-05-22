@@ -7,6 +7,7 @@ import { CustomIdTokenClaims, OriginalIdTokenClaims, processIdTokenClaims, UserI
 type UserStore = {
   user: string;
   basicAuth: string;
+  basicAuth: string;
   isAuthenticated: boolean;
   userInfo: CustomIdTokenClaims;
   isLoggedInInEduApi: boolean;
@@ -16,6 +17,7 @@ type UserStore = {
   setUser: (user: string) => void;
   token: string;
   setToken: (token: string) => void;
+  setUserInfo: (user: OriginalIdTokenClaims) => void;
   setUserInfo: (user: OriginalIdTokenClaims) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setBasicAuth: (basicAuth: string) => void;

@@ -6,6 +6,7 @@ import UsersModule from 'src/users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
 import ConferencesModule from '../conferences/conferences.module';
 import FilemanagerModule from '../filemanager/filemanager.module.ts';
+import ClassManagementModule from '../classManagement/classManagement.module.ts';
 import SurveysModule from '../survey/surveys.module';
 
 @Module({
@@ -13,6 +14,7 @@ import SurveysModule from '../survey/surveys.module';
     AppConfigModule,
     UsersModule,
     ConferencesModule,
+    ClassManagementModule,
     FilemanagerModule,
     AuthModule,
     SurveysModule,

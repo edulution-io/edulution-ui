@@ -14,7 +14,7 @@ import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
 import OtpInput from './OtpInput';
-import { OriginalIdTokenClaims } from '@/datatypes/types.ts';
+import { OriginalIdTokenClaims } from '@/pages/SchoolmanagementPage/utilis/types.ts';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
