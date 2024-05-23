@@ -40,7 +40,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
       <p className="mr-2 text-white">{t('currentDirectory')}</p>
       <BreadcrumbList>
         <BreadcrumbItem key="home">
-          <BreadcrumbLink onClick={() => onNavigate(`/${userInfo.ldapGroups.role}s/${userInfo.preferred_username}`)}>
+          <BreadcrumbLink onClick={() => onNavigate(`/${userInfo?.ldapGroups?.role}s/${userInfo.preferred_username}`)}>
             {t('home')}
           </BreadcrumbLink>
         </BreadcrumbItem>

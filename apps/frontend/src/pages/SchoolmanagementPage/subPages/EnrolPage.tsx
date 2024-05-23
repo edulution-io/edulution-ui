@@ -20,17 +20,17 @@ const EnrolPage: React.FC = () => {
     <div className=" p-4">
       {specificSchool ? (
         <div
-          key={userInfo.ldapGroups.school}
+          key={userInfo?.ldapGroups?.school}
           className="mb-8"
         >
           <h2 className="mb-2 text-xl font-semibold">
-            {t('schoolManagement.availableGroups', { schoolname: userInfo.ldapGroups.school })}
+            {t('schoolManagement.availableGroups', { schoolname: userInfo?.ldapGroups?.school })}
           </h2>
 
           <div className="mb-4">
             <h3 className="mb-2 text-lg font-semibold">{t('schoolManagement.class')}</h3>
             <div className="grid grid-cols-4 gap-4">
-              {specificSchool.classes.map((classItem) => (
+              {specificSchool?.classes?.map((classItem) => (
                 <div
                   key={classItem.id}
                   className="flex items-center justify-between rounded border p-2"

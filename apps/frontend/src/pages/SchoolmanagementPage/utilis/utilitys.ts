@@ -2,7 +2,7 @@ import userStore from '@/store/userStore';
 import { GroupInfo, SchoolData } from './groups';
 
 export const transformClasses = (classes: Record<string, any>): Record<string, any> =>
-  Object.keys(classes).reduce(
+  Object.keys(classes)?.reduce(
     (acc, key) => {
       const friendlyKey = key.split('/').pop() || key;
       acc[friendlyKey] = classes[key];
@@ -16,22 +16,24 @@ export const transformGroupsToSchools = (groups: GroupInfo[]): SchoolData[] => {
 
   return groups.map((group) => {
     const classes = group.subGroups
-      .filter((subGroup) => subGroup.name.includes(`s_${userInfo.ldapGroups.school}`))
+      .filter((subGroup) => subGroup.name.includes(`s_${userInfo?.ldapGroups?.school}`))
       .flatMap((subGroup) =>
         subGroup.subGroups.filter((schoolClasses) =>
-          schoolClasses.name.includes(`${userInfo.ldapGroups.school}-student`),
+          schoolClasses.name.includes(`${userInfo?.ldapGroups?.school}-student`),
         ),
       )
       .flatMap((c) => c.subGroups);
 
     const printers: GroupInfo[] = group.subGroups
-      .filter((subGroup) => subGroup.name.includes(`${userInfo.ldapGroups.school}-r`))
+      .filter((subGroup) => subGroup.name.includes(`${userInfo?.ldapGroups?.school}-r`))
       .flatMap((subGroup) => [
         subGroup,
-        ...subGroup.subGroups.filter((innerSubGroup) => innerSubGroup.name.includes(`${userInfo.ldapGroups.school}-r`)),
+        ...subGroup.subGroups.filter((innerSubGroup) =>
+          innerSubGroup.name.includes(`${userInfo?.ldapGroups?.school}-r`),
+        ),
       ]);
 
-    const projects = groups.filter((topGroup) => topGroup.name.startsWith(`p_${userInfo.ldapGroups.school}`));
+    const projects = groups.filter((topGroup) => topGroup.name.startsWith(`p_${userInfo?.ldapGroups?.school}`));
 
     return {
       id: group.id,

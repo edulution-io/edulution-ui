@@ -1,4 +1,4 @@
-import create, { StateCreator } from 'zustand';
+import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
@@ -140,7 +140,7 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
         try {
           const excludedMemberName = 'agy-netzint-teacher';
 
-          const classInfoPromises = classes.map(async (className) => {
+          const classInfoPromises = classes?.map(async (className) => {
             const response = await eduApi.get(`/classmanagement/${className}`);
             const classInfo = response.data as LDAPUser[];
             classInfo.filter((member) => !member.username.includes(excludedMemberName));

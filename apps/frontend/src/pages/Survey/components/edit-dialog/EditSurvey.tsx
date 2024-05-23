@@ -38,7 +38,7 @@ const EditSurvey = () => {
     await saveSurveyJson(surveyName, creator.JSON, participants, saveNo, callback);
   };
 
-  localization.currentLocale = "de";
+  localization.currentLocale = 'de';
   return (
     <div className="rounded bg-gray-800 p-4">
       <SurveyCreatorComponent

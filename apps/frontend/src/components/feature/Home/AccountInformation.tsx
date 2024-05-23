@@ -14,8 +14,8 @@ const AccountInformation = () => {
       label: t('accountData.email'),
       value: userInfo ? userInfo.email : '...',
     },
-    { label: t('accountData.school'), value: userInfo ? userInfo.ldapGroups.school : '...' },
-    { label: t('accountData.role'), value: userInfo ? userInfo.ldapGroups.role : '...' },
+    { label: t('accountData.school'), value: userInfo ? userInfo?.ldapGroups?.school : '...' },
+    { label: t('accountData.role'), value: userInfo ? userInfo?.ldapGroups?.role : '...' },
   ];
 
   return (

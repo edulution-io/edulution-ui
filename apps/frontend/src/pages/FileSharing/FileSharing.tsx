@@ -34,9 +34,9 @@ const FileSharingPage = () => {
   const { t } = useTranslation();
   const { userInfo } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const path = searchParams.get('path') || `/${userInfo.ldapGroups.role}s/${userInfo.preferred_username}`;
+  const path = searchParams.get('path') || `/${userInfo?.ldapGroups?.role}s/${userInfo?.preferred_username}`;
   if (path === '/') {
-    searchParams.set('path', `/${userInfo.ldapGroups.role}/${userInfo.preferred_username}`);
+    searchParams.set('path', `/${userInfo?.ldapGroups?.role}/${userInfo?.preferred_username}`);
     setSearchParams(searchParams);
   }
   useEffect(() => {

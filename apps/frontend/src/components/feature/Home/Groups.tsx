@@ -14,7 +14,7 @@ const Groups = () => {
       <CardContent>
         <div className="flex flex-col gap-1">
           <h4 className="text-md font-bold">{t('groupsPage.classes')}</h4>
-          {userInfo?.ldapGroups.classes.map((group) => (
+          {userInfo?.ldapGroups?.classes?.map((group) => (
             <div
               key={group}
               className="flex flex-col"

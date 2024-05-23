@@ -1,4 +1,4 @@
-import create, { StateCreator } from 'zustand';
+import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { RowSelectionState } from '@tanstack/react-table';

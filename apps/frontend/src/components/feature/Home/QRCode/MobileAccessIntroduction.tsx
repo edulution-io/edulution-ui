@@ -70,9 +70,9 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
 
   const desktopContent = (
     <div>
-      <p className="text-black">
+      <div className="text-black">
         <p>{t('filesharingMobile.scanQRCode')}</p>
-      </p>
+      </div>
       <div className="flex justify-center">
         <QRCodeDisplay value={qrCodeContent} />
       </div>

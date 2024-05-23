@@ -35,7 +35,7 @@ const LessonPage = () => {
 
   const createNewProject = () => {
     if ((!user && !userData) || userData === null) return;
-    createProject(user, projectClassName, userData.school)
+    createProject(user, projectClassName, userData?.school)
       .then(() => getUserData().catch(console.error))
       .catch(console.error);
   };
