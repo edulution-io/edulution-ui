@@ -61,7 +61,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
             name="searchTerm"
             onChange={(e) => {
               setQuery(e.target.value);
-              handleChange('');
+              handleChange({} as DropdownOptions);
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
           />
