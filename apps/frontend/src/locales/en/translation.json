@@ -52,7 +52,7 @@
     "join": "Join",
     "minimize": "Minimize",
     "maximize": "Maximize",
-    "close": "Close conference"
+    "close": "Leave conference"
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
