@@ -20,7 +20,7 @@ export class Conference {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: uuidv4() })
   meetingID: string;
 
   @Prop({ required: true })
