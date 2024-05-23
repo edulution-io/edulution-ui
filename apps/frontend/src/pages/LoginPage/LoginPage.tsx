@@ -13,8 +13,8 @@ import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
-import OtpInput from './OtpInput';
 import { OriginalIdTokenClaims } from '@/pages/SchoolmanagementPage/utilis/types.ts';
+import OtpInput from './OtpInput';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -99,6 +99,8 @@ const LoginPage: React.FC = () => {
     setTotp(otp);
     try {
       await postCheckTotp(otp);
+      setIsAuthenticated(true);
+      setUserInfo(auth.user.profile as unknown as OriginalIdTokenClaims);
     } catch (e) {
       setError(e instanceof Error ? e : null);
     }
