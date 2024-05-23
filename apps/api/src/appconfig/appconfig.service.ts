@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
 import { AppConfig } from './appconfig.types';
 import LoggerEnum from '../types/logger';
 
@@ -26,7 +25,6 @@ class AppConfigService {
           filter: { name: appConfig.name },
           update: {
             $set: {
-              linkPath: appConfig.linkPath,
               icon: appConfig.icon,
               appType: appConfig.appType,
               options: appConfig.options,
@@ -48,6 +46,20 @@ class AppConfigService {
     try {
       const appConfig = await this.appConfigModel.find();
       Logger.log('Get settings appConfig from mongoDB', LoggerEnum.EDULUTIONAPI);
+      return appConfig;
+    } catch (e) {
+      Logger.error(e, LoggerEnum.MONGODB);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+  }
+
+  async getAppConfigByName(name: string): Promise<AppConfig | null> {
+    try {
+      const appConfig = await this.appConfigModel.findOne({ name });
+      if (!appConfig) {
+        throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
+      }
+      Logger.log(`Get ${name} appConfig from mongoDB`, LoggerEnum.EDULUTIONAPI);
       return appConfig;
     } catch (e) {
       Logger.error(e, LoggerEnum.MONGODB);

@@ -23,7 +23,7 @@ const EDU_API_CONFIG_ENDPOINT = 'appconfig';
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
-      appConfig: [{ name: '', linkPath: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
+      appConfig: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
       isLoading: false,
       error: null,
 

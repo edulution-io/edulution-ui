@@ -10,7 +10,6 @@ import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
-import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
@@ -18,6 +17,7 @@ import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
+import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -69,13 +69,13 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
             <Route
               path="settings"
-              element={<SettingsPage />}
+              element={<AppConfigPage />}
             >
               {appConfig.map((item) => (
                 <Route
                   key={item.name}
                   path={item.name}
-                  element={<SettingsPage />}
+                  element={<AppConfigPage />}
                 />
               ))}
             </Route>

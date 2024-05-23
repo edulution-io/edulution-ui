@@ -9,13 +9,13 @@ import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
 import cleanAllStores from '@/store/utilis/cleanAllStores';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -35,7 +35,7 @@ const Sidebar = () => {
   const { setIsAuthenticated } = useUserStore();
 
   const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
+    ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
