@@ -161,7 +161,7 @@ const AppRouter = () => {
   }, [auth.isAuthenticated, auth.user?.profile]);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (isAuthenticated) {
       const fetchData = async () => {
         try {
           await getAppConfigs(true);

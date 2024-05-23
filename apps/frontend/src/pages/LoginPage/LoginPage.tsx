@@ -100,7 +100,7 @@ const LoginPage: React.FC = () => {
     try {
       await postCheckTotp(otp);
       setIsAuthenticated(true);
-      setUserInfo(auth.user.profile as unknown as OriginalIdTokenClaims);
+      setUserInfo(auth?.user?.profile as unknown as OriginalIdTokenClaims);
     } catch (e) {
       setError(e instanceof Error ? e : null);
     }
