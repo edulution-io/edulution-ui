@@ -16,7 +16,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import FilemanagerService from './filemanager.service';
-import GetTokenDecorator from '../common/decorators/getToken.decorator.ts';
+import GetTokenDecorator from '../common/decorators/getToken.decorator';
 
 @Controller('filemanager')
 class FilemanagerController {
@@ -171,15 +171,6 @@ class FilemanagerController {
       res.sendFile(localFilePath);
     } catch (error) {
       res.status(500).send('Failed to process file request');
-    }
-  }
-
-  @Get('qrcode')
-  async getQrCode(@GetTokenDecorator() token: string) {
-    try {
-      return await this.filemanagerService.getQrCode(token);
-    } catch (error) {
-      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

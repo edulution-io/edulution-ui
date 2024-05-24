@@ -4,7 +4,6 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import { RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import { QrCodeValues } from '@/pages/FileSharing/utilities/types';
 
 type WebDavActionResult = { success: boolean; message?: string; status?: number };
 
@@ -21,7 +20,6 @@ interface FileManagerState {
   uploadProgresses: { [key: string]: number };
   fileOperationMessage: string;
   selectedRows: RowSelectionState;
-  QRCode: QrCodeValues;
 }
 
 interface FileManagerActions {
@@ -39,7 +37,6 @@ interface FileManagerActions {
   fetchFiles: (path: string) => Promise<void>;
   fetchDirs: (path: string) => Promise<void>;
   fetchMountPoints: () => Promise<void>;
-  fetchQRCode: () => Promise<void>;
   uploadFile: (file: File, path: string) => Promise<WebDavActionResult>;
   handleWebDavAction: (action: () => Promise<WebDavActionResult>) => Promise<WebDavActionResult>;
   createNewFolder: (folderName: string, path: string) => Promise<WebDavActionResult>;
@@ -80,7 +77,6 @@ const initialState: Omit<
   | 'renameItem'
   | 'moveItem'
   | 'deleteItem'
-  | 'fetchQRCode'
 > = {
   files: [],
   directorys: [],
@@ -94,7 +90,6 @@ const initialState: Omit<
   uploadProgresses: {},
   fileOperationMessage: '',
   selectedRows: {},
-  QRCode: {} as QrCodeValues,
 };
 
 type PersistedFileManagerStore = (
@@ -120,15 +115,6 @@ const useFileManagerStore = create<FileManagerStore>(
 
       setDirectorys: (directorys: DirectoryFile[]) => {
         set({ directorys });
-      },
-
-      fetchQRCode: async () => {
-        try {
-          const response = await eduApi.get<QrCodeValues>('/filemanager/qrcode');
-          set({ QRCode: response.data });
-        } catch (error) {
-          console.error('Error fetching QR code:', error);
-        }
       },
 
       downloadFile: async (path: string) => {

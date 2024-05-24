@@ -88,14 +88,6 @@ export interface CustomIdTokenClaims extends Omit<OriginalIdTokenClaims, 'ldapGr
   };
 }
 
-export interface QrCodeValues {
-  displayName: string;
-  url: string;
-  username: string;
-  password: string;
-  token: string;
-}
-
 export const processIdTokenClaims = (claims: OriginalIdTokenClaims): CustomIdTokenClaims => {
   const schoolRegex = /^\/SCHOOLS\/s_([^/]+)\/?/;
   const studentDetailRegex = /^\/SCHOOLS\/s_[^/]+\/.*students.*\/([^/]+)$/;

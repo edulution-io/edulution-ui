@@ -32,8 +32,6 @@ class FilemanagerService {
     this.webdavClientService.downloadFile(token, url, filename);
 
   fileExists = async (token: string, path: string) => this.webdavClientService.fileExists(token, path);
-
-  getQrCode = async (token: string) => this.webdavClientService.getQrCode(token);
 }
 
 export default FilemanagerService;

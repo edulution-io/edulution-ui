@@ -2,9 +2,9 @@ import { Sheet, SheetContent, SheetHeader } from '@/components/ui/Sheet';
 import { DialogSH, DialogContentSH } from '@/components/ui/DialogSH';
 import React, { FC, useEffect, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
-import useFileManagerStore from '@/store/fileManagerStore';
-import QRCodeDisplay from '@/components/feature/Home/QRCode/QRCodeDisplay.tsx';
+import QRCodeDisplay from '@/components/feature/Home/QRCode/QRCodeDisplay';
 import { t } from 'i18next';
+import useUserStore from '@/store/userStore';
 
 interface MobileAccessIntroductionProps {
   isMobileAccessIntroductionOpen: boolean;
@@ -16,34 +16,22 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
   setIsMobileAccessIntroductionOpen,
 }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { QRCode, fetchQRCode } = useFileManagerStore();
-  const [qrCodeContent, setQrCodeContent] = useState<string>('');
+  const { user } = useUserStore();
+  const [qrCodeContent, setQrCodeContent] = useState<string>();
 
   useEffect(() => {
-    const getQrCode = async () => {
-      await fetchQRCode().catch(console.error);
-    };
-
-    getQrCode().catch(console.error);
-  }, []);
-
-  const generateQRCodeContent = () => {
-    const { displayName, url, username } = QRCode;
-    const structuredData = {
-      displayName,
-      url,
-      username,
-      password: '',
-      token: '',
-    };
-    const qrContent = JSON.stringify(structuredData);
-    console.log(qrContent);
-    setQrCodeContent(qrContent);
-  };
-
-  useEffect(() => {
-    generateQRCodeContent();
-  }, [QRCode]);
+    if (isMobileAccessIntroductionOpen) {
+      const qrData = {
+        displayName: 'edulution UI',
+        url: `${window.location.origin}/webdav`,
+        username: user,
+        password: '',
+        token: '',
+      };
+      const qrContent = JSON.stringify(qrData);
+      setQrCodeContent(qrContent);
+    }
+  }, [isMobileAccessIntroductionOpen]);
 
   const handleOpenChange = (open: boolean) => {
     setIsMobileAccessIntroductionOpen(open);
@@ -59,23 +47,17 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
         className="flex flex-col"
       >
         <SheetHeader>
-          <p>{t('filesharingMobile.scanQRCode')}</p>
-          <div className="flex justify-center">
-            <QRCodeDisplay value={qrCodeContent} />
-          </div>
+          <h3>{t('filesharingMobile.scanQRCode')}</h3>
+          <div className="flex justify-center">{qrCodeContent && <QRCodeDisplay value={qrCodeContent} />}</div>
         </SheetHeader>
       </SheetContent>
     </Sheet>
   );
 
   const desktopContent = (
-    <div>
-      <div className="text-black">
-        <p>{t('filesharingMobile.scanQRCode')}</p>
-      </div>
-      <div className="flex justify-center">
-        <QRCodeDisplay value={qrCodeContent} />
-      </div>
+    <div className="flex-col">
+      <h3 className="flex justify-center text-black">{t('filesharingMobile.scanQRCode')}</h3>
+      <div className="justify-center">{qrCodeContent && <QRCodeDisplay value={qrCodeContent} />}</div>
     </div>
   );
 

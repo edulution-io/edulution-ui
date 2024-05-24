@@ -19,8 +19,6 @@ class WebdavService {
 
   private baseurl = 'https://server.schulung.multi.schule/webdav/';
 
-  private baseWebDavAPI = 'https://server.schulung.multi.schule/api/webdav/';
-
   constructor(
     private webdavClientFactory: WebdavClientFactory,
     private httpService: HttpService,
@@ -300,24 +298,6 @@ class WebdavService {
       writer.on('finish', () => resolve());
       writer.on('error', reject);
     });
-  }
-
-  async getQrCode(token: string) {
-    await this.initializeClient(token);
-    if (!token) return { success: false };
-    try {
-      const response: AxiosResponse = await this.client({
-        method: 'GET',
-        url: `${this.baseWebDavAPI}qrcode`,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      });
-      return response.data as File;
-    } catch (error) {
-      console.error('Failed to download file:', error);
-      throw error;
-    }
   }
 }
 
