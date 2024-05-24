@@ -24,6 +24,7 @@ services:
     environment:
       EDUI_PORT: 3000
       EDUI_TOTP_SECRET: <SECRET>
+      EDUI_ENCRYPTION_KEY: <WEBDAV_KEY>
 
       PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
 

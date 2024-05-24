@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import ReactPlayer from 'react-player';
+import FilePlayer from 'react-player';
 import { FileTypePreviewProps } from '@/datatypes/types';
 
 const MediaPreview: FC<FileTypePreviewProps> = ({ file }) => {
@@ -16,7 +16,7 @@ const MediaPreview: FC<FileTypePreviewProps> = ({ file }) => {
         <h3 className="text-lg font-semibold">Media Preview</h3>
       </div>
       <div className="relative pt-[56.25%]">
-        <ReactPlayer
+        <FilePlayer
           url={mediaUrl}
           playing={playing}
           controls
