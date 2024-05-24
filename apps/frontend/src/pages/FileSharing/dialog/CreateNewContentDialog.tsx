@@ -4,7 +4,7 @@ import { ContentType } from '@/datatypes/filesystem';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/store/fileManagerStore';
-import CreateContentDialog from '@/components/ui/Dialogs/CreateContentDialog';
+import CreateContentDialog from '@/components/ui/Dialog/CreateContentDialog';
 
 interface CreateNewContentDialogProps {
   trigger: React.ReactNode;
@@ -26,7 +26,6 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
 
     try {
       const resp = await handleWebDavAction(() => action(name, currentPath));
-      console.log('Response:', resp);
       if (resp.success) {
         await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
       } else {

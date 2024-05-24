@@ -197,6 +197,7 @@
   },
   "usersettings": {
     "title": "USER",
+    "sidebar": "Einstellungen",
     "security": "Security",
     "config": { "mfa": "Setup Two-Factor-Authentication" },
     "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
@@ -389,7 +390,7 @@
   "groupsPage": {
     "classes": "Classes"
   },
-    "schoolManagement": {
+  "schoolManagement": {
     "title": "Class Room",
     "lesson": "Lesson",
     "enrol": "Enrol",
@@ -414,9 +415,9 @@
     "initialPasswordHint": "You can print the password of a class directly via the icon or select several classes to print them all at the same time.",
     "projectPage": "Here you can create a new project. You can also see all projects that have already been created.",
     "downloadInitPassword": "Download initial password",
-      "createProject": "Create Project",
-      "newProject": "New Project",
-      "createGroup": "Create Group",
-      "newGroup": "New Group"
+    "createProject": "Create Project",
+    "newProject": "New Project",
+    "createGroup": "Create Group",
+    "newGroup": "New Group"
   }
 }
