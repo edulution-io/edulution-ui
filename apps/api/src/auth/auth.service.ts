@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import * as OTPAuth from 'otpauth';
 import UsersService from '../users/users.service';
-import LoggerEnum from '../types/logger';
 
 type AuthType = {
   totpToken: string;
@@ -30,7 +29,7 @@ class AuthService {
     const isTotpValid = newTotp.validate({ token }) !== null;
 
     if (isTotpValid) {
-      Logger.log(`Totp is valid`, LoggerEnum.AUTH);
+      Logger.log(`Totp is valid`, AuthService.name);
       try {
         await this.usersService.update(username, {
           isTotpSet: true,

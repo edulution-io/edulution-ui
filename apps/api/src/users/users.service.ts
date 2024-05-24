@@ -27,6 +27,7 @@ class UsersService {
       newUser = await this.create({
         email: loginUserDto.email,
         username: loginUserDto.preferred_username,
+        password: loginUserDto.password,
         roles: loginUserDto.ldapGroups,
         mfaEnabled: false,
         isTotpSet: false,

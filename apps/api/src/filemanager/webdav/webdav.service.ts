@@ -1,10 +1,12 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { createWriteStream, existsSync, mkdirSync, WriteStream } from 'fs';
 import { join } from 'path';
 import { firstValueFrom } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
+import { AES, enc } from 'crypto-js';
+import UsersService from '../../users/users.service';
 import { mapToDirectories, mapToDirectoryFiles } from './utilits';
 import WebdavClientFactory from './webdav.client.factory';
 import JWTUser from '../../types/JWTUser';
@@ -22,6 +24,7 @@ class WebdavService {
   constructor(
     private webdavClientFactory: WebdavClientFactory,
     private httpService: HttpService,
+    private usersService: UsersService,
   ) {
     this.webdavXML =
       '<?xml version="1.0"?>\n' +
@@ -37,13 +40,22 @@ class WebdavService {
       '</d:propfind>\n';
   }
 
-  private initializeClient(token: string) {
+  private async initializeClient(token: string) {
     const decodedToken = jwt.decode(token) as JWTUser;
     if (!decodedToken || !decodedToken.preferred_username) {
       throw new Error(`Invalid token: username not found${token}`);
     }
+
     const username: string = decodedToken.preferred_username;
-    this.client = this.webdavClientFactory.createWebdavClient(this.baseurl, username, 'TestMuster123!');
+    try {
+      const user = await this.usersService.findOne(username);
+      const encryptedPassword = user?.password as string;
+      const password = AES.decrypt(encryptedPassword, process.env.EDUI_ENCRYPTION_KEY as string).toString(enc.Utf8);
+      this.client = this.webdavClientFactory.createWebdavClient(this.baseurl, username, password);
+    } catch (e) {
+      Logger.log(e, WebdavService.name);
+      throw new HttpException('DB access failed', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async fileExists(token: string, path: string): Promise<boolean> {
@@ -61,7 +73,8 @@ class WebdavService {
   }
 
   async getMountPoints(token: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
+
     const data = this.webdavXML;
     if (!token) return { success: false };
     try {
@@ -80,7 +93,7 @@ class WebdavService {
   }
 
   async getFilesAtPath(token: string, path: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     const pathWithoutWebdav = path.replace('/webdav', '');
     const data = this.webdavXML;
     if (!token) return [];
@@ -99,7 +112,7 @@ class WebdavService {
   }
 
   async createFolder(token: string, path: string, folderName: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     if (!token) return { success: false };
     try {
       const response: AxiosResponse = await this.client({
@@ -116,7 +129,7 @@ class WebdavService {
   }
 
   async createFile(token: string, path: string, fileName: string, content: string = '') {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     const fullPath = `${path.replace('/webdav/', '')}/${fileName}`;
     if (!token) return { success: false };
     try {
@@ -136,7 +149,7 @@ class WebdavService {
   }
 
   async uploadFile(token: string, path: string, file: File, name: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     const fullPath = `${path}/${name}`;
     if (!token) return { success: false, filename: file.name };
 
@@ -158,7 +171,7 @@ class WebdavService {
   }
 
   async deleteFile(token: string, path: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     if (!token) return { success: false };
     try {
       const response: AxiosResponse = await this.client({
@@ -178,7 +191,7 @@ class WebdavService {
   }
 
   async renameFile(token: string, originPath: string, newPath: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     if (!token) return { success: false };
     try {
       const response: AxiosResponse = await this.client({
@@ -199,7 +212,7 @@ class WebdavService {
   }
 
   async moveItems(token: string, originPath: string, newPath: string | undefined) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     if (!token) return { success: false };
     try {
       const response: AxiosResponse = await this.client({
@@ -220,7 +233,7 @@ class WebdavService {
   }
 
   async getDirAtPath(token: string, path: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     const pathWithoutWebdav = path.replace('/webdav', '');
     const data = this.webdavXML;
     if (!token) return [];
@@ -239,13 +252,20 @@ class WebdavService {
   }
 
   async downloadFile(token: string, url: string, filename: string): Promise<string> {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     if (!token) return '';
     const dirPath = this.ensureDownloadDir();
     const outputPath = join(dirPath, filename);
 
+    const decodedToken = jwt.decode(token) as JWTUser;
+    const username: string = decodedToken.preferred_username;
+
+    const user = await this.usersService.findOne(username);
+    const encryptedPassword = user?.password as string;
+    const password = AES.decrypt(encryptedPassword, process.env.EDUI_ENCRYPTION_KEY as string).toString(enc.Utf8);
+
     try {
-      const responseStream = await this.fetchFileStream(`${url}/${filename}`);
+      const responseStream = await this.fetchFileStream(username, password, `${url}/${filename}`);
       await this.saveFileStream(responseStream, outputPath);
       return outputPath;
     } catch (error) {
@@ -262,12 +282,12 @@ class WebdavService {
     return dirPath;
   }
 
-  private async fetchFileStream(url: string): Promise<WriteStream> {
+  private async fetchFileStream(username: string, password: string, url: string): Promise<WriteStream> {
     const response = this.httpService.get<WriteStream>(url, {
       responseType: 'stream',
       auth: {
-        username: 'agy-netzint-teacher',
-        password: 'TestMuster123!',
+        username,
+        password,
       },
     });
     return firstValueFrom(response).then((resp) => resp.data);
@@ -283,7 +303,7 @@ class WebdavService {
   }
 
   async getQrCode(token: string) {
-    this.initializeClient(token);
+    await this.initializeClient(token);
     if (!token) return { success: false };
     try {
       const response: AxiosResponse = await this.client({

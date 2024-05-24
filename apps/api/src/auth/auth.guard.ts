@@ -3,7 +3,6 @@ import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, L
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import LoggerEnum from '../types/logger';
 import JWTUser from '../types/JWTUser';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
@@ -42,7 +41,7 @@ class AuthenticationGuard implements CanActivate {
 
       return true;
     } catch (e) {
-      Logger.warn(e, LoggerEnum.AUTH);
+      Logger.warn(e, AuthenticationGuard.name);
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.UNAUTHORIZED);
     }
   }

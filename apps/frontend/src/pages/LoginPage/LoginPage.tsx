@@ -13,18 +13,28 @@ import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/userStore';
 import useLmnUserStore from '@/store/lmnApiStore';
-import { OriginalIdTokenClaims } from '@/pages/SchoolmanagementPage/utilis/types.ts';
+import { OriginalIdTokenClaims } from '@/pages/SchoolmanagementPage/utilis/types';
+import useUserQuery from '@/api/useUserQuery';
 import OtpInput from './OtpInput';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setIsAuthenticated, setUser, setToken, token, setUserInfo, postCheckTotp, getUserInfoFromDb } =
-    useUserStore();
+  const {
+    setIsAuthenticated,
+    setUser,
+    setToken,
+    token,
+    setUserInfo,
+    postCheckTotp,
+    getUserInfoFromDb,
+    setIsLoggedInInEduApi,
+  } = useUserStore();
   const { setLmnApiToken } = useLmnUserStore();
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState<string>('');
   const [error, setError] = useState<Error | null>(null);
+  const { loginUser } = useUserQuery();
 
   const { isLoading } = auth;
 
@@ -61,12 +71,6 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        useEncryption({
-          mode: 'encrypt',
-          data: password,
-          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-        });
-
         await setLmnApiToken(username, password);
 
         setUser(username);
@@ -77,6 +81,25 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleLogin = () => {
+    const password = form.getValues('password') as string;
+    const encryptedPassword = useEncryption({
+      mode: 'encrypt',
+      data: password,
+      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+    });
+
+    const profile = auth?.user?.profile as unknown as OriginalIdTokenClaims;
+    const newProfile = { ...profile, password: encryptedPassword };
+    loginUser(newProfile)
+      .then(() => {
+        setIsLoggedInInEduApi(true);
+        setIsAuthenticated(true);
+        setUserInfo(profile);
+      })
+      .catch((e) => console.error(e));
+  };
+
   useEffect(() => {
     const login = async () => {
       if (!token || !auth.isAuthenticated || !auth.user?.profile?.preferred_username) {
@@ -85,10 +108,10 @@ const LoginPage: React.FC = () => {
       const userInfo = await getUserInfoFromDb(auth.user.profile.preferred_username);
       const { mfaEnabled } = userInfo as { mfaEnabled: boolean };
 
-      if (mfaEnabled) setIsEnterTotpVisible(true);
-      else {
-        setIsAuthenticated(true);
-        setUserInfo(auth.user.profile as unknown as OriginalIdTokenClaims);
+      if (mfaEnabled) {
+        setIsEnterTotpVisible(true);
+      } else {
+        handleLogin();
       }
     };
 
@@ -99,8 +122,7 @@ const LoginPage: React.FC = () => {
     setTotp(otp);
     try {
       await postCheckTotp(otp);
-      setIsAuthenticated(true);
-      setUserInfo(auth?.user?.profile as unknown as OriginalIdTokenClaims);
+      handleLogin();
     } catch (e) {
       setError(e instanceof Error ? e : null);
     }

@@ -17,7 +17,6 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
-import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
@@ -146,19 +145,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
-  const { loginUser } = useUserQuery();
-  const { isAuthenticated, isLoggedInInEduApi, setIsLoggedInInEduApi } = useUserStore();
-
-  useEffect(() => {
-    if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
-      const { profile } = auth.user;
-
-      // Send here the user password for Webdav to the API
-      loginUser(profile)
-        .then(() => setIsLoggedInInEduApi(true))
-        .catch((e) => console.error(e));
-    }
-  }, [auth.isAuthenticated, auth.user?.profile]);
+  const { isAuthenticated, setIsLoggedInInEduApi } = useUserStore();
 
   useEffect(() => {
     if (isAuthenticated) {

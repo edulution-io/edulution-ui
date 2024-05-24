@@ -51,6 +51,19 @@ export default defineConfig({
           Origin: 'https://ui.schulung.multi.schule',
         },
       },
+      '/SOGo': {
+        target: 'https://localhost:5555/',
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          Origin: 'http://localhost:5173/',
+          'X-Frame-Options': 'ALLOWALL',
+          Host: 'localhost',
+          'X-Forwarded-For': 'client-ip-address',
+          'X-Forwarded-Proto': 'https',
+          'X-Forwarded-Host': 'localhost',
+        },
+      },
       //TODO docs
     },
   },
