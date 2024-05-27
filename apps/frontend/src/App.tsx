@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import Router from '@/routes/Router';
+import AppRouter from '@/routes/AppRouter';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import EmbeddedIframes from '@/components/layout/EmbeddedIframes';
 import useLmnUserStore from '@/store/lmnApiStore.ts';
 import lmnApi from '@/api/lmnApi.ts';
 
@@ -33,7 +34,8 @@ const App = () => {
   return (
     <AuthProvider {...oidcConfig}>
       <BBBFrame />
-      <Router />
+      <AppRouter />
+      <EmbeddedIframes />
     </AuthProvider>
   );
 };

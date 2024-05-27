@@ -1,22 +1,19 @@
-import React, { useEffect } from 'react';
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
-import { useAuth } from 'react-oidc-context';
+import React from 'react';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
 
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import IframeLayout from '@/components/layout/IframeLayout';
+import IframePlaceholder from '@/components/layout/IframePlaceholder';
 
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import SurveyPage from '@/pages/Survey/SurveyPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
-import { ConferencePage } from '@/pages/ConferencePage';
-import { RoomBookingPage } from '@/pages/RoomBookingPage';
+import ConferencePage from '@/pages/ConferencePage/ConferencePage';
+import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
@@ -24,21 +21,16 @@ import MailPage from '@/pages/Mail/MailPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
-    case APPS.CONFERENCES: {
+    case APPS.CONFERENCES:
       return <ConferencePage />;
-    }
-    case APPS.FILE_SHARING: {
+    case APPS.FILE_SHARING:
       return <FileSharing />;
-    }
-    case APPS.ROOM_BOOKING: {
+    case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
-    }
-    case APPS.MAIL: {
+    case APPS.MAIL:
       return <MailPage />;
-    }
-    case APPS.SURVEYS: {
+    case APPS.SURVEYS:
       return <SurveyPage />;
-    }
     default: {
       return (
         <Navigate
@@ -50,7 +42,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
+const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -130,13 +122,13 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
             )}
           </Route>
 
-          <Route element={<IframeLayout />}>
+          <Route>
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.EMBEDDED ? (
                 <Route
                   key={item.name}
                   path={item.name}
-                  element={null}
+                  element={<IframePlaceholder />}
                 />
               ) : null,
             )}
@@ -146,39 +138,4 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
     ),
   );
 
-const AppRouter = () => {
-  const auth = useAuth();
-  const { appConfig, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setIsLoggedInInEduApi } = useUserStore();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          await getAppConfigs(true);
-        } catch (e) {
-          console.error('Error fetching data:', e);
-        }
-      };
-
-      // eslint-disable-next-line no-void
-      void fetchData();
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (auth.isAuthenticated) {
-      auth.events.addAccessTokenExpiring(() => {
-        if (auth.user?.expired) {
-          console.info('Session expired');
-          auth.removeUser().catch((e) => console.error('Error fetching data:', e));
-          setIsLoggedInInEduApi(false);
-          sessionStorage.clear();
-        }
-      });
-    }
-  }, [auth.events, auth.isAuthenticated]);
-
-  return <RouterProvider router={router(isAuthenticated, appConfig)} />;
-};
-export default AppRouter;
+export default createRouter;

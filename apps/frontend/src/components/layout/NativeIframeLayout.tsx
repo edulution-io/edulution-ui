@@ -5,17 +5,27 @@ import Sidebar from '@/components/ui/Sidebar';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
 import useUserStore from '@/store/userStore';
 
-interface IframeLayoutProps {
+interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
   scriptOnStop?: string;
+  handleLoadIframe: (appName: string) => void;
 }
 
-const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop }) => {
+const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop, handleLoadIframe }) => {
   const { pathname } = useLocation();
   const rootPathName = getFromPathName(pathname, 1);
   const { appConfig } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
+
+  useEffect(() => {
+    if (isAuthenticated && handleLoadIframe) {
+      const appName = findAppConfigByName(appConfig, rootPathName)?.name;
+      if (appName) {
+        handleLoadIframe(appName);
+      }
+    }
+  }, [isAuthenticated, pathname]);
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
@@ -63,4 +73,4 @@ const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnSt
   );
 };
 
-export default IframeLayout;
+export default NativeIframeLayout;

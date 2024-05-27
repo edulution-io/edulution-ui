@@ -1,7 +1,7 @@
 import React from 'react';
-import IframeLayout from '@/components/layout/IframeLayout';
 import useUserStore from '@/store/userStore';
 import { useEncryption } from '@/hooks/mutations';
+import NativeIframeLayout from '@/components/layout/NativeIframeLayout';
 
 const SOGoIFrame: React.FC = () => {
   const { user, webdavKey } = useUserStore();
@@ -53,9 +53,10 @@ const SOGoIFrame: React.FC = () => {
   `;
 
   return (
-    <IframeLayout
+    <NativeIframeLayout
       scriptOnStartUp={loginScript}
       scriptOnStop={logoutScript}
+      handleLoadIframe={() => {}}
     />
   );
 };
