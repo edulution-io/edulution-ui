@@ -273,7 +273,7 @@ const Sidebar = () => {
   );
 
   const renderListItem = () => (
-    <div className="fixed right-0 h-screen border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none">
+    <div className="fixed right-0 z-10 h-screen border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none">
       {!isDesktop && isOpen ? (
         <>
           <div className="relative right-0 top-0 z-[98] h-[100px] bg-black" />
