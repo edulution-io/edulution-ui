@@ -12,16 +12,7 @@ const SOGoIFrame: React.FC = () => {
     key: `${import.meta.env.VITE_WEBDAV_KEY}`,
   });
 
-  const styleString = `
-    <style>
-      a[aria-label="Beenden"] {
-        display: none;
-      }
-    </style>
-  `;
-
   const loginScript = `
-    ${styleString}
     function fillAndSubmitLoginForm() {
       console.info('fillAndSubmitLoginForm');
       const usernameField = document.getElementById('input_1');
