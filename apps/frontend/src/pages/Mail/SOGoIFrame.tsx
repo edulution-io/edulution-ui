@@ -14,9 +14,12 @@ const SOGoIFrame: React.FC = () => {
 
   const loginScript = `
     function fillAndSubmitLoginForm() {
+      console.info('fillAndSubmitLoginForm');
       const usernameField = document.getElementById('input_1');
       const passwordField = document.getElementById('passwordField');
 
+      console.info('usernameField', usernameField);
+      console.info('passwordField', passwordField);
       if (usernameField && passwordField) {
         usernameField.value = '${user}';
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
@@ -29,15 +32,26 @@ const SOGoIFrame: React.FC = () => {
       if (submitButton && !submitButton.disabled) {
         submitButton.click();
       }
+    
+      let logoutButton = document.querySelector('a[aria-label="Beenden"]');
+      if (logoutButton) {
+        logoutButton.style = "display: none;"
+      }
     }
     
     document.addEventListener('DOMContentLoaded', function() {
       fillAndSubmitLoginForm();
     });
+
+    // If DOMContentLoaded has already fired
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      fillAndSubmitLoginForm();
+    }
   `;
 
   const logoutScript = `
-    const logoutButton = document.querySelector('a.md-icon-button.md-button.md-ink-ripple[ng-href="../logoff"][aria-label="Beenden"][href="../logoff"]');
+    logoutButton = document.querySelector('a[aria-label="Beenden"]');
+    console.info('logoutButton', logoutButton);
     if (logoutButton) {
       logoutButton.click();
     }

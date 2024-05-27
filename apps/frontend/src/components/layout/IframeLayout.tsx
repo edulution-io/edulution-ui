@@ -15,35 +15,38 @@ const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnSt
   const rootPathName = getFromPathName(pathname, 1);
   const { appConfig } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated, isPreparingLogout } = useUserStore();
 
-  const injectScript = (script: string) => {
-    const iframe = iframeRef.current;
-    if (iframe) {
-      iframe.onload = () => {
-        console.info('Injecting script into iframe.');
-        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
-        if (iframeDocument) {
-          const scriptElement = iframeDocument.createElement('script');
-          scriptElement.type = 'text/javascript';
-          scriptElement.innerHTML = script;
-          iframeDocument.head.appendChild(scriptElement);
-        }
-      };
-    }
+  const injectScript = (iframe: HTMLIFrameElement, script: string) => {
+    const attemptInject = () => {
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+      if (iframeDocument && iframeDocument.readyState === 'complete') {
+        const scriptElement = iframeDocument.createElement('script');
+        scriptElement.type = 'text/javascript';
+        scriptElement.innerHTML = script;
+        iframeDocument.head.appendChild(scriptElement);
+      } else {
+        console.log('iframe not ready, retrying...');
+        setTimeout(attemptInject, 100);
+      }
+    };
+    attemptInject();
   };
 
   useEffect(() => {
-    if (scriptOnStartUp && isAuthenticated) {
-      injectScript(scriptOnStartUp);
+    const iframe = iframeRef.current;
+    if (iframe && scriptOnStartUp) {
+      iframe.onload = () => {
+        injectScript(iframe, scriptOnStartUp);
+      };
     }
-  }, [isAuthenticated]);
+  }, [scriptOnStartUp, isAuthenticated]);
 
   useEffect(() => {
-    if (scriptOnStop && !isAuthenticated) {
-      injectScript(scriptOnStop);
+    if (isPreparingLogout && scriptOnStop && iframeRef.current) {
+      injectScript(iframeRef.current, scriptOnStop);
     }
-  }, [isAuthenticated]);
+  }, [isPreparingLogout, scriptOnStop]);
 
   return (
     <div className="flex">

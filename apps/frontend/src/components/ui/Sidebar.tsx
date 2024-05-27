@@ -14,7 +14,6 @@ import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
 import Avatar from '../shared/Avatar';
@@ -35,7 +34,7 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
+  const { logout } = useUserStore();
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
@@ -238,11 +237,9 @@ const Sidebar = () => {
     </div>
   );
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     auth.removeUser().catch(console.error);
-    setIsAuthenticated(false);
-    cleanAllStores();
-    sessionStorage.clear();
+    await logout();
   };
 
   const userMenu = () => (

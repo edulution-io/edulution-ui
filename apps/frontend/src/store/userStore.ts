@@ -3,6 +3,7 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { CustomIdTokenClaims, OriginalIdTokenClaims, processIdTokenClaims, UserInfo } from '@/datatypes/types';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
 
 type UserStore = {
   user: string;
@@ -19,6 +20,8 @@ type UserStore = {
   webdavKey: string;
   setWebdavKey: (webdavKey: string) => void;
   setUserInfo: (user: OriginalIdTokenClaims) => void;
+  isPreparingLogout: boolean;
+  logout: () => Promise<void>;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setBasicAuth: (basicAuth: string) => void;
   reset: () => void;
@@ -38,6 +41,7 @@ const initialState: Omit<
   | 'setBasicAuth'
   | 'reset'
   | 'setIsAuthenticated'
+  | 'logout'
   | 'setUserInfo'
   | 'isLoading'
   | 'isMfaEnabled'
@@ -51,6 +55,7 @@ const initialState: Omit<
   webdavKey: '',
   isAuthenticated: false,
   isLoggedInInEduApi: false,
+  isPreparingLogout: false,
   token: '',
   basicAuth: 'Basic',
   userInfo: {} as CustomIdTokenClaims,
@@ -89,6 +94,13 @@ const useUserStore = create<UserStore>(
       setToken: (token) => set({ token }),
       setWebdavKey: (webdavKey: string) => {
         set({ webdavKey });
+      },
+      logout: async () => {
+        set({ isPreparingLogout: true });
+        await new Promise((r) => setTimeout(r, 200));
+        set({ isAuthenticated: false });
+        cleanAllStores();
+        sessionStorage.clear();
       },
 
       setBasicAuth: (basicAuth: string) => {
