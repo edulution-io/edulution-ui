@@ -10,6 +10,8 @@
     "api": "nx serve api",
     "serveFrontendAndApi": "nx run-many --target=serve --projects=frontend,api",
     "build": "nx build frontend --emptyOutDir",
+    "build:docker:frontend": "npm run build && sudo docker build -t edulution-ui -f apps/frontend/Dockerfile .",
+    "build:docker:api": "npm run build:api && sudo docker build -t edulution-api -f apps/api/Dockerfile .",
     "build:api": "nx build api",
     "build:all": "nx run-many --target=build --projects=frontend,api",
     "lint": "nx run-many --target=lint --projects=frontend,api",
