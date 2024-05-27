@@ -20,6 +20,7 @@ import useUserStore from '@/store/userStore';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
+import MailPage from '@/pages/Mail/MailPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -31,6 +32,9 @@ const pageSwitch = (page: string) => {
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.MAIL: {
+      return <MailPage />;
     }
     case APPS.SURVEYS: {
       return <SurveyPage />;
