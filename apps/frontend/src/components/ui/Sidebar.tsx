@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
@@ -240,6 +241,7 @@ const Sidebar = () => {
   const handleLogout = async () => {
     auth.removeUser().catch(console.error);
     await logout();
+    cleanAllStores();
   };
 
   const userMenu = () => (

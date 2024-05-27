@@ -12,7 +12,16 @@ const SOGoIFrame: React.FC = () => {
     key: `${import.meta.env.VITE_WEBDAV_KEY}`,
   });
 
+  const styleString = `
+    <style>
+      a[aria-label="Beenden"] {
+        display: none;
+      }
+    </style>
+  `;
+
   const loginScript = `
+    ${styleString}
     function fillAndSubmitLoginForm() {
       console.info('fillAndSubmitLoginForm');
       const usernameField = document.getElementById('input_1');
@@ -32,11 +41,6 @@ const SOGoIFrame: React.FC = () => {
       if (submitButton && !submitButton.disabled) {
         submitButton.click();
       }
-    
-      let logoutButton = document.querySelector('a[aria-label="Beenden"]');
-      if (logoutButton) {
-        logoutButton.style = "display: none;"
-      }
     }
     
     document.addEventListener('DOMContentLoaded', function() {
@@ -50,7 +54,7 @@ const SOGoIFrame: React.FC = () => {
   `;
 
   const logoutScript = `
-    logoutButton = document.querySelector('a[aria-label="Beenden"]');
+    const logoutButton = document.querySelector('a[aria-label="Beenden"]');
     console.info('logoutButton', logoutButton);
     if (logoutButton) {
       logoutButton.click();

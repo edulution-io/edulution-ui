@@ -3,7 +3,6 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { CustomIdTokenClaims, OriginalIdTokenClaims, processIdTokenClaims, UserInfo } from '@/datatypes/types';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 
 type UserStore = {
   user: string;
@@ -99,7 +98,6 @@ const useUserStore = create<UserStore>(
         set({ isPreparingLogout: true });
         await new Promise((r) => setTimeout(r, 200));
         set({ isAuthenticated: false });
-        cleanAllStores();
         sessionStorage.clear();
       },
 
