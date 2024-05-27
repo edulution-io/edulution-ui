@@ -16,6 +16,8 @@ type UserStore = {
   setUser: (user: string) => void;
   token: string;
   setToken: (token: string) => void;
+  webdavKey: string;
+  setWebdavKey: (webdavKey: string) => void;
   setUserInfo: (user: OriginalIdTokenClaims) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setBasicAuth: (basicAuth: string) => void;
@@ -32,6 +34,7 @@ const initialState: Omit<
   | 'setIsLoggedInInEduApi'
   | 'setUser'
   | 'setToken'
+  | 'setWebdavKey'
   | 'setBasicAuth'
   | 'reset'
   | 'setIsAuthenticated'
@@ -45,6 +48,7 @@ const initialState: Omit<
   | 'getQrCode'
 > = {
   user: '',
+  webdavKey: '',
   isAuthenticated: false,
   isLoggedInInEduApi: false,
   token: '',
@@ -83,6 +87,9 @@ const useUserStore = create<UserStore>(
         set({ isLoggedInInEduApi });
       },
       setToken: (token) => set({ token }),
+      setWebdavKey: (webdavKey: string) => {
+        set({ webdavKey });
+      },
 
       setBasicAuth: (basicAuth: string) => {
         set({ basicAuth });

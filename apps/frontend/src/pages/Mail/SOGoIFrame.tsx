@@ -1,9 +1,16 @@
 import React from 'react';
 import IframeLayout from '@/components/layout/IframeLayout';
 import useUserStore from '@/store/userStore';
+import { useEncryption } from '@/hooks/mutations';
 
 const SOGoIFrame: React.FC = () => {
   const { user, webdavKey } = useUserStore();
+
+  const decryptedPassword = useEncryption({
+    mode: 'decrypt',
+    data: webdavKey,
+    key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+  });
 
   const loginScript = `
     function fillAndSubmitLoginForm() {
@@ -14,7 +21,7 @@ const SOGoIFrame: React.FC = () => {
         usernameField.value = '${user}';
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
 
-        passwordField.value = '${webdavKey}';
+        passwordField.value = '${decryptedPassword}';
         passwordField.dispatchEvent(new Event('input', { bubbles: true }));
       }
 
