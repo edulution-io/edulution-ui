@@ -1,5 +1,6 @@
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import delay from '@/lib/delay';
 
 type UserStore = {
   user: string;
@@ -8,6 +9,8 @@ type UserStore = {
   isLoggedInInEduApi: boolean;
   setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   setUser: (user: string) => void;
+  isPreparingLogout: boolean;
+  logout: () => Promise<void>;
   token: string;
   setToken: (token: string) => void;
   setWebdavKey: (webdavKey: string) => void;
@@ -20,6 +23,7 @@ const initialState = {
   webdavKey: '',
   isAuthenticated: false,
   isLoggedInInEduApi: false,
+  isPreparingLogout: false,
   token: '',
 };
 
@@ -31,6 +35,7 @@ type PersistedUserStore = (
 const useUserStore = create<UserStore>(
   (persist as PersistedUserStore)(
     (set) => ({
+      ...initialState,
       user: '',
       setUser: (user: string) => {
         set({ user });
@@ -42,6 +47,12 @@ const useUserStore = create<UserStore>(
       isAuthenticated: false,
       setIsAuthenticated: (isAuthenticated: boolean) => {
         set({ isAuthenticated });
+      },
+      logout: async () => {
+        set({ isPreparingLogout: true });
+        await delay(200);
+        set({ isAuthenticated: false });
+        sessionStorage.clear();
       },
       isLoggedInInEduApi: false,
       setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => {

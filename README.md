@@ -62,9 +62,21 @@ Read the public key and certificate from oidc provider (Keycloak >> realm settin
 
 ### Build apps, containers and start
 
+#### Local
+
 ```bash
 npm run build:all && \
 docker build -t ghcr.io/edulution-io/edulution-ui -f apps/frontend/Dockerfile . && \
 docker build -t ghcr.io/edulution-io/edulution-api -f apps/api/Dockerfile . && \
 docker compose up -d
+```
+
+#### Deploy
+
+```bash
+echo "<GH_PERSONAL_ACCESS_TOKEN" | docker login ghcr.io -u <USERNAME> --password-stdin
+npm run build:docker:ui
+npm run build:docker:api
+npm run push:docker:ui
+npm run push:docker:api
 ```
