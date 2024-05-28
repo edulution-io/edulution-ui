@@ -16,6 +16,7 @@ const BBBIFrame = () => {
     return null;
   }
 
+  // Fix 56px width calculated value: NIEDUUI-162
   const style = isJoinedConferenceMinimized ? { width: 0 } : { width: isMobile ? '100%' : 'calc(100% - 56px)' };
 
   return createPortal(

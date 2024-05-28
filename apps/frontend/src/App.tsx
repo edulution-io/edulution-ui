@@ -6,7 +6,8 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
-import EmbeddedIframes from '@/components/layout/EmbeddedIframes';
+import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';
+import NativeFrames from '@/components/layout/Native/NativeIframes';
 import useLmnUserStore from '@/store/lmnApiStore.ts';
 import lmnApi from '@/api/lmnApi.ts';
 
@@ -36,6 +37,7 @@ const App = () => {
       <BBBFrame />
       <AppRouter />
       <EmbeddedIframes />
+      <NativeFrames />
     </AuthProvider>
   );
 };

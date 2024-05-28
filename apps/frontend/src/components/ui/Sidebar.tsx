@@ -158,7 +158,7 @@ const Sidebar = () => {
     <Button
       variant="btn-outline"
       size="sm"
-      className="rounded-xl border-[3px]"
+      className="rounded-xl border-[3px] bg-black"
       onClick={toggle}
     >
       {t('menu')}
@@ -310,7 +310,7 @@ const Sidebar = () => {
   if (!isDesktop) {
     return (
       <>
-        {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
+        {!isOpen ? <div className="fixed right-0 top-0 z-20 pr-4 pt-4">{menuButton()}</div> : null}
         <div
           ref={sidebarRef}
           className={`${sidebarClasses}`}
