@@ -44,6 +44,13 @@ const DesktopDeploymentPage: React.FC = () => {
 
   return (
     <>
+      <div className="flex-col justify-between pl-20 pt-4">
+        <h2>{t('desktopdeployment.topic')}</h2>
+        <div className="pt-5 sm:pt-0">
+          <p className="pb-4">{t('desktopdeployment.description')}</p>
+        </div>
+      </div>
+
       {token && <VDIFrame />}
       {error && (
         <ConnectionErrorDialog

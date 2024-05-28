@@ -158,6 +158,8 @@
   },
   "desktopdeployment": {
     "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
     "sidebar": "Desktop",
     "connect": "Verbinden",
     "close": "Verbindung schließen",
