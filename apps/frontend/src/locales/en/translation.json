@@ -89,6 +89,18 @@
   "TEXT": "Text",
   "RATING": "Rating",
   "save": "Save",
+  "surveys": {
+    "title": "QUESTIONS-AND-EXERCISES-PORTAL",
+    "sidebar": "Questions and exercises portal",
+    "polls": {
+      "title": "POLLS",
+      "sidebar": "Polls"
+    },
+    "surveys": {
+      "title": "SURVEYS",
+      "sidebar": "Surveys"
+    }
+  },
   "survey": {
     "title": "SURVEY",
     "sidebar": "Survey",
@@ -137,9 +149,12 @@
       "add": "Add question"
     }
   },
-  "surveys": {
-    "title": "SURVEYS",
-    "sidebar": "Surveys"
+  "poll": {
+    "create": "create new poll",
+    "openSurveys": "Polls that you have not attended jet",
+    "createdSurveys": "Polls that you created",
+    "answeredSurveys": "Polls that you have attended",
+    "allSurveys": "Admins can see the full list of polls"
   },
   "printer": {
     "title": "PRINTER",

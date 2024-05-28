@@ -89,6 +89,18 @@
   "TEXT": "Text",
   "RATING": "Bewertung",
   "save": "Speichern",
+  "surveys": {
+    "title": "FRAGEN-UND-AUFGABEN-PORTAL",
+    "sidebar": "Fragen und Aufgaben Portal",
+    "polls": {
+      "title": "ABSTIMMUNGEN",
+      "sidebar": "Abstimmungen"
+    },
+    "surveys": {
+      "title": "UMFRAGEN",
+      "sidebar": "Umfragen"
+    }
+  },
   "survey": {
     "title": "UMFRAGE",
     "sidebar": "Umfrage",
@@ -137,9 +149,12 @@
       "add": "Füge Frage hinzu"
     }
   },
-  "surveys": {
-    "title": "UMFRAGEN",
-    "sidebar": "Umfragen"
+  "poll": {
+    "create": "erstelle Abstimmung",
+    "openSurveys": "Offene/Unbeantwortete Abstimmungen",
+    "createdSurveys": "Selbst erstellte Abstimmungen",
+    "answeredSurveys": "Teilgenommene/Beantwortete Abstimmungen",
+    "allSurveys": "Als Admin ist die komplette Liste sichtbar"
   },
   "printer": {
     "title": "DRUCKER",

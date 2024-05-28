@@ -7,6 +7,12 @@ class CreateUserDto {
 
   roles: string[];
 
+  usersPolls: {
+    openPolls: string[];
+    createdPolls: string[];
+    answeredPolls: string[];
+  };
+
   usersSurveys: {
     openSurveys: string[];
     createdSurveys: string[];

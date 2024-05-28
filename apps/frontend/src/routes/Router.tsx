@@ -8,11 +8,11 @@ import IframeLayout from '@/components/layout/IframeLayout';
 
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
-import SurveyPage from '@/pages/Survey/SurveyPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
+import PollsAndSurveysPage from '@/pages/PollsAndSurveysPage/PollsAndSurveysPage.tsx';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
@@ -32,7 +32,7 @@ const pageSwitch = (page: string) => {
       return <RoomBookingPage />;
     }
     case APPS.SURVEYS: {
-      return <SurveyPage />;
+      return <PollsAndSurveysPage />;
     }
     default: {
       return (

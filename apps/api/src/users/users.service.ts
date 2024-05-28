@@ -28,6 +28,11 @@ class UsersService {
         email: loginUserDto.email,
         username: loginUserDto.preferred_username,
         roles: loginUserDto.ldapGroups,
+        usersPolls: {
+          openPolls: [],
+          createdPolls: [],
+          answeredPolls: [],
+        },
         usersSurveys: {
           openSurveys: [],
           createdSurveys: [],
@@ -91,6 +96,11 @@ class UsersService {
         firstName: u.firstName,
         lastName: u.lastName,
         username: u.username,
+        usersPolls: {
+          openPolls: [],
+          createdPolls: [],
+          answeredPolls: [],
+        },
         usersSurveys: {
           openSurveys: [],
           createdSurveys: [],

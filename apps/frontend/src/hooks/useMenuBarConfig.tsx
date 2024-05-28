@@ -6,7 +6,7 @@ import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
-import useSurveysPageMenu from '@/pages/Survey/useSurveyPageMenu';
+import usePollsAndSurveysPageMenu from '@/pages/PollsAndSurveysPage/usePollsAndSurveysPageMenu.ts';
 
 const useMenuBarConfig = () => {
   const { pathname } = useLocation();
@@ -15,7 +15,7 @@ const useMenuBarConfig = () => {
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
-  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
+  const SURVEYS_MENUBAR_CONFIG = usePollsAndSurveysPageMenu();
 
   const menuBarConfigSwitch = () => {
     const rootPathName = getFromPathName(pathname, 1);
