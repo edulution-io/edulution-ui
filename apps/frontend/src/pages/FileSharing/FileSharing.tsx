@@ -5,7 +5,7 @@ import {
   MdOutlineFileDownload,
   MdOutlineNoteAdd,
 } from 'react-icons/md';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { IconContext } from 'react-icons';
 import { FiUpload } from 'react-icons/fi';

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import useFileManagerStore from '@/store/fileManagerStore.ts';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { convertDownloadLinkToBlob } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
 import PreviewMenuBar from '@/pages/FileSharing/previews/documents/PreviewMenuBar.tsx';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';

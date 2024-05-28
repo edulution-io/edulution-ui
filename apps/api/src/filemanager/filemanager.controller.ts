@@ -167,9 +167,8 @@ class FilemanagerController {
         throw new HttpException('Failed to download file', HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
-      // Generate the download link
       const encodedFilename = encodeURIComponent(filename);
-      const downloadLink = `http://localhost:3001/downloads/${encodedFilename}`;
+      const downloadLink = (process.env.EDUI_DOWNLOAD_DIR as string) + encodedFilename;
       res.status(200).json({ downloadLink });
     } catch (error) {
       console.error('Error in downloadFile controller:', error);

@@ -2,17 +2,17 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { MdFolder } from 'react-icons/md';
 
-import useFileManagerStore from '@/store/fileManagerStore';
 import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import FileIconComponent from '@/pages/FileSharing/mimetypes/FileIconComponent';
-import { getFileCategorie, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getElapsedTime, getFileCategorie, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import FileOperations from '@/pages/FileSharing/table/FileOperations';
-import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
+import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';

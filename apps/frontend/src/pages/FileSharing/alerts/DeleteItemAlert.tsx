@@ -1,17 +1,17 @@
 import React, { ReactNode, useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { useMediaQuery } from 'usehooks-ts';
 import {
-  DialogSH,
   DialogContentSH,
   DialogFooterSH,
   DialogHeaderSH,
+  DialogSH,
   DialogTitleSH,
   DialogTriggerSH,
 } from '@/components/ui/DialogSH.tsx';

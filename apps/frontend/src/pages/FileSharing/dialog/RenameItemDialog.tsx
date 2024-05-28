@@ -1,7 +1,7 @@
 import {
-  DialogSH,
   DialogContentSH,
   DialogDescriptionSH,
+  DialogSH,
   DialogTitleSH,
   DialogTriggerSH,
 } from '@/components/ui/DialogSH.tsx';
@@ -10,7 +10,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import InputSH from '@/components/ui/InputSH';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import {
   getPathWithoutFileName,

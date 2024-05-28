@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { toast, Toaster } from 'sonner';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import Progress from '@/components/ui/Progress';
 
 const OperationsToaster = () => {

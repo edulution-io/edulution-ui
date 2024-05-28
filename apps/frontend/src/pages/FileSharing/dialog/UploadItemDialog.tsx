@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { DialogSH, DialogContentSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
+import { DialogContentSH, DialogSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'usehooks-ts';
 import { useSearchParams } from 'react-router-dom';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import { DirectoryFile } from '@/datatypes/filesystem';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import useFileEditorStore from './fileEditorStore';
 import PreviewMenuBar from '@/pages/FileSharing/previews/documents/PreviewMenuBar.tsx';
 

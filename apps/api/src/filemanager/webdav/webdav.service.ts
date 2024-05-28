@@ -17,7 +17,7 @@ class WebdavService {
 
   private readonly webdavXML;
 
-  private baseurl = 'https://server.schulung.multi.schule/webdav/';
+  private baseurl = process.env.EDUI_WEBDAV_URL as string;
 
   constructor(
     private webdavClientFactory: WebdavClientFactory,
@@ -40,7 +40,6 @@ class WebdavService {
 
   private async initializeClient(token: string) {
     const decodedToken = jwt.decode(token) as JWTUser;
-    console.log('decodedToken', decodedToken);
     if (!decodedToken || !decodedToken.preferred_username) {
       throw new Error(`Invalid token: username not found${token}`);
     }
@@ -153,16 +152,15 @@ class WebdavService {
     if (!token) return { success: false, filename: file.originalname };
 
     try {
-      const response: AxiosResponse = await this.client({
-        method: 'PUT',
-        url: `${this.baseurl}${fullPath}`,
-        headers: { 'Content-Type': file.mimetype },
-        data: file,
+      const response: AxiosResponse = await this.client.put(fullPath, file.buffer, {
+        headers: {
+          'Content-Type': file.mimetype,
+        },
       });
 
       return response.status === 201 || response.status === 200
-        ? { success: true, filename: file.filename }
-        : { success: false, status: response.status, filename: file.filename };
+        ? { success: true, filename: file.originalname }
+        : { success: false, status: response.status, filename: file.originalname };
     } catch (error) {
       console.error('Failed to upload file:', error);
       throw error;
@@ -251,7 +249,6 @@ class WebdavService {
   }
 
   async downloadFile(token: string, path: string, filename: string): Promise<string> {
-    console.log('downloadFile', token, path, filename);
     await this.initializeClient(token);
     if (!token) return '';
     const dirPath = this.ensureDownloadDir();
@@ -276,7 +273,7 @@ class WebdavService {
   }
 
   private ensureDownloadDir(): string {
-    const dirPath = join(__dirname, `tmp/downloads/${new Date().getDay()}`);
+    const dirPath = join(__dirname, '..', 'public', 'downloads');
     if (!existsSync(dirPath)) {
       mkdirSync(dirPath, { recursive: true });
     }

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import useFileManagerStore from '@/store/fileManagerStore';
+import { useEffect, useState } from 'react';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import {

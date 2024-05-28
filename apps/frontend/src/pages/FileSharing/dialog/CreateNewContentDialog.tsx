@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ContentType } from '@/datatypes/filesystem';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import CreateContentDialog from '@/components/ui/Dialog/CreateContentDialog';
 
 interface CreateNewContentDialogProps {
