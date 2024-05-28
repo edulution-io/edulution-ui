@@ -17,6 +17,7 @@ import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard.tsx';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -26,6 +27,8 @@ const pageSwitch = (page: string) => {
       return <FileSharing />;
     case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
+    case APPS.WHITEBOARD:
+      return <Whiteboard />;
     case APPS.MAIL:
       return <IframePlaceholder />;
     case APPS.SURVEYS:

@@ -6,7 +6,7 @@ import { AiOutlineGlobal } from 'react-icons/ai';
 import { FaWifi, FaGraduationCap } from 'react-icons/fa';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { t } from 'i18next';
-import FloatingActionButton from './FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
 
 const FloatingButtonsBarClassManagement = () => (
   <div className="fixed bottom-8 flex flex-row space-x-8 bg-opacity-90">

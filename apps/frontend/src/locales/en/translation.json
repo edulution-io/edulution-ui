@@ -144,6 +144,10 @@
     "title": "SURVEYS",
     "sidebar": "Surveys"
   },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"
@@ -291,7 +295,9 @@
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "spreadsheet": "Table",
+    "presentation": "Presentation"
   },
   "fileCreateNewContent": {
     "fileDialogTitle": "Create a new file",
@@ -419,5 +425,13 @@
     "newProject": "New Project",
     "createGroup": "Create Group",
     "newGroup": "New Group"
+  },
+  "fileEditingPage": {
+    "fileNotFound": "File not found",
+    "closeFile": "Close file",
+    "goBack": "Go back",
+    "maximize": "Open full screen",
+    "minimize": "minimalize",
+    "close": "Close full screen"
   }
 }

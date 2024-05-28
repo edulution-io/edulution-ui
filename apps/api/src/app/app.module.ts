@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import AuthModule from 'src/auth/auth.module';
 import UsersModule from 'src/users/users.module';
@@ -10,12 +9,13 @@ import ConferencesModule from '../conferences/conferences.module';
 import FilemanagerModule from '../filemanager/filemanager.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
 import SurveysModule from '../survey/surveys.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
-      serveRoot: '/edu-api/',
+      serveRoot: '/',
     }),
     AppConfigModule,
     UsersModule,

@@ -4,9 +4,9 @@ import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolM
 import { Button } from '@/components/shared/Button';
 import { transformClasses } from '@/pages/SchoolmanagementPage/utilis/utilitys';
 import { t } from 'i18next';
-import FloatingActionButton from '@/pages/SchoolmanagementPage/components/FloatingActionButton';
 import { FaKey } from 'react-icons/fa';
 import { translateKey } from '@/utils/common';
+import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
 
 const PasswordsPage: React.FC = () => {
   const { fetchInitialPasswords, schoolclasses } = useSchoolManagementStore();
