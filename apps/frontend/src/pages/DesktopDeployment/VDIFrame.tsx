@@ -47,7 +47,7 @@ const VDIFrame = () => {
   useEffect(() => {
     if (token === '' || !displayRef.current) return;
     const url = new URL(window.location.origin);
-    const webSocketFullUrl = `ws://${url.host}/guacamole/websocket-tunnel`;
+    const webSocketFullUrl = `wss://${url.host}/guacamole/websocket-tunnel`;
     const tunnel = new Guacamole.WebSocketTunnel(webSocketFullUrl);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
