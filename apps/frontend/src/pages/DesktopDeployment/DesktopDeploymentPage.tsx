@@ -52,7 +52,7 @@ const DesktopDeploymentPage: React.FC = () => {
           handleReload={authenticate}
         />
       )}
-      <div className="fixed bottom-8 flex flex-row space-x-8 bg-opacity-90">
+      <div className="fixed bottom-20 left-20 flex flex-row space-x-8">
         <TooltipProvider>
           <div className="flex flex-col items-center">
             <Button
