@@ -72,7 +72,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       );
 
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
-      set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false });
+      set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false, error: null });
     } catch (error) {
       handleApiError(error, set);
     }
@@ -82,7 +82,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     set({ isLoading: true });
     try {
       const response = await axios.get(`${baseUrl}/session/data/${get().dataSource}/connections?token=${get().token}`);
-      set({ isLoading: false, connections: response.data as Connections });
+      set({ isLoading: false, connections: response.data as Connections, error: null });
     } catch (error) {
       handleApiError(error, set);
     }

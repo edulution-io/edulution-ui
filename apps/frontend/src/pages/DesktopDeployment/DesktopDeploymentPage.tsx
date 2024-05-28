@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { TooltipProvider } from '@/components/ui/Tooltip';
@@ -41,6 +41,11 @@ const DesktopDeploymentPage: React.FC = () => {
   // } else {
   //   console.log('No connections found.');
   // }
+  useEffect(() => {
+    if (error) {
+      setIsErrorDialogOpen(true);
+    }
+  }, [error]);
 
   return (
     <>
