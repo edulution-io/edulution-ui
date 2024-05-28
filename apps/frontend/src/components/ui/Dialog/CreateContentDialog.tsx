@@ -27,7 +27,6 @@ const CreateContentDialog: React.FC<CreateContentDialogProps> = ({
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    console.log('externalIsOpen:', externalIsOpen);
     if (externalIsOpen !== undefined) {
       setIsOpen(externalIsOpen);
     }

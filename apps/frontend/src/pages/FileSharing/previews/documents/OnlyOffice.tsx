@@ -1,17 +1,133 @@
-import React from 'react';
-import { FileTypePreviewProps } from '@/datatypes/types';
+import React, { FC, useEffect, useState } from 'react';
+import { DocumentEditor } from '@onlyoffice/document-editor-react';
+import { DirectoryFile } from '@/datatypes/filesystem';
+import useFileManagerStore from '@/store/fileManagerStore';
+import useFileEditorStore from './fileEditorStore';
+import PreviewMenuBar from '@/pages/FileSharing/previews/documents/PreviewMenuBar.tsx';
 
-interface OnlyOfficeProps extends FileTypePreviewProps {
-  callbackUrl?: string;
+interface OnlyOfficeProps {
+  file: DirectoryFile;
+  type: 'desktop' | 'mobile';
+  mode: 'view' | 'edit';
+  onClose: () => void;
+  isPreview?: boolean;
 }
 
-const OnlyOffice: React.FC<OnlyOfficeProps> = ({ file, callbackUrl = '' }) => (
-  <h1>
-    OnlyOffice will be a feature which will be available soon: ${file.filename} ${callbackUrl}
-  </h1>
-);
-OnlyOffice.defaultProps = {
-  callbackUrl: 'http://192.168.0.1/file-sharing:5173',
+interface OnlyOfficeConfig {
+  id: string;
+  key: string;
+  documentType: string;
+}
+
+const getFileType = (filename: string): string => {
+  const extension = filename.split('.').pop();
+  return extension ? extension.toLowerCase() : '';
+};
+
+const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
+  switch (fileType) {
+    case 'doc':
+    case 'docx':
+      return { id: 'docxEditor', key: 'docx' + Math.random() * 100, documentType: 'word' };
+    case 'xlsx':
+    case 'csv':
+      return { id: 'xlsxEditor', key: 'xlsx' + Math.random() * 100, documentType: 'cell' };
+    case 'pptx':
+      return { id: 'pptxEditor', key: 'pptx' + Math.random() * 100, documentType: 'slide' };
+    case 'pdf':
+      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'pdf' };
+    default:
+      return { id: 'docxEditor', key: 'word' + Math.random() * 100, documentType: 'word' };
+  }
+};
+
+const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview }) => {
+  const [token, setToken] = useState<string | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+
+  const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
+    id: 'docxEditor',
+    key: 'word' + Math.random(),
+    documentType: 'word',
+  });
+
+  const { previewFile, appendEditorFile } = useFileEditorStore();
+  const { getOnlyOfficeJwtToken, downloadFile } = useFileManagerStore();
+  useEffect(() => {
+    const fileType = getFileType(file.filename);
+    const editorConfig = findDocumentsEditorType(fileType);
+    setEditorType(editorConfig);
+
+    const fetchFileUrlAndToken = async () => {
+      try {
+        const rawUrl = await downloadFile(file.filename);
+        const formattedUrl = rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001');
+
+        setFileUrl(formattedUrl);
+
+        const config = {
+          document: {
+            fileType,
+            type: type,
+            key: editorConfig.key,
+            title: file.basename,
+            url: formattedUrl,
+            height: '100%',
+            width: '100%',
+          },
+          documentType: editorConfig.documentType,
+          editorConfig: {
+            callbackUrl: 'http://host.docker.internal:3001/edu-api/filemanager/callback',
+            mode: mode,
+          },
+        };
+        const generatedToken = await getOnlyOfficeJwtToken(config);
+        setToken(generatedToken);
+      } catch (error) {
+        console.error('Error fetching OnlyOffice JWT token or file URL:', error);
+      }
+    };
+
+    if (editorConfig) {
+      fetchFileUrlAndToken();
+    }
+  }, [file, getOnlyOfficeJwtToken, previewFile, mode]);
+
+  return (
+    <div className="relative h-[80vh]">
+      {isPreview && (
+        <PreviewMenuBar
+          file={file}
+          previewFile={previewFile}
+          onClose={onClose}
+          appendEditorFile={appendEditorFile}
+        />
+      )}
+      {token && editorType ? (
+        <DocumentEditor
+          key={editorType.key}
+          id={editorType.id}
+          documentServerUrl="http://localhost:80/"
+          config={{
+            document: {
+              fileType: getFileType(file.filename),
+              key: editorType.key,
+              title: file.basename,
+              url: fileUrl || '',
+            },
+            documentType: editorType.documentType,
+            token,
+            editorConfig: {
+              callbackUrl: 'http://host.docker.internal:3001/edu-api/filemanager/callback',
+              mode: mode,
+            },
+          }}
+        />
+      ) : (
+        <div>Loading document...</div>
+      )}
+    </div>
+  );
 };
 
 export default OnlyOffice;

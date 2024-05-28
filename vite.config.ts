@@ -6,6 +6,9 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), nxViteTsPaths()],
+  define: {
+    'process.env': {},
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './apps/frontend/src'),

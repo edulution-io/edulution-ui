@@ -40,6 +40,7 @@ class WebdavService {
 
   private async initializeClient(token: string) {
     const decodedToken = jwt.decode(token) as JWTUser;
+    console.log('decodedToken', decodedToken);
     if (!decodedToken || !decodedToken.preferred_username) {
       throw new Error(`Invalid token: username not found${token}`);
     }
@@ -146,22 +147,22 @@ class WebdavService {
     }
   }
 
-  async uploadFile(token: string, path: string, file: File, name: string) {
+  async uploadFile(token: string, path: string, file: Express.Multer.File, name: string) {
     await this.initializeClient(token);
     const fullPath = `${path}/${name}`;
-    if (!token) return { success: false, filename: file.name };
+    if (!token) return { success: false, filename: file.originalname };
 
     try {
       const response: AxiosResponse = await this.client({
         method: 'PUT',
         url: `${this.baseurl}${fullPath}`,
-        headers: { 'Content-Type': file.type },
+        headers: { 'Content-Type': file.mimetype },
         data: file,
       });
 
       return response.status === 201 || response.status === 200
-        ? { success: true, filename: file.name }
-        : { success: false, status: response.status, filename: file.name };
+        ? { success: true, filename: file.filename }
+        : { success: false, status: response.status, filename: file.filename };
     } catch (error) {
       console.error('Failed to upload file:', error);
       throw error;
@@ -249,7 +250,8 @@ class WebdavService {
     }
   }
 
-  async downloadFile(token: string, url: string, filename: string): Promise<string> {
+  async downloadFile(token: string, path: string, filename: string): Promise<string> {
+    console.log('downloadFile', token, path, filename);
     await this.initializeClient(token);
     if (!token) return '';
     const dirPath = this.ensureDownloadDir();
@@ -262,6 +264,7 @@ class WebdavService {
     const encryptedPassword = user?.password as string;
     const password = AES.decrypt(encryptedPassword, process.env.EDUI_ENCRYPTION_KEY as string).toString(enc.Utf8);
 
+    const url = `${this.baseurl}/${path}`;
     try {
       const responseStream = await this.fetchFileStream(username, password, `${url}/${filename}`);
       await this.saveFileStream(responseStream, outputPath);

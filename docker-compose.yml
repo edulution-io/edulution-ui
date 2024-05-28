@@ -29,13 +29,10 @@ services:
       PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
 
       EDUI_CORS_URL: '*'
-
       MONGODB_DATABASE_NAME: edulution
       MONGODB_USERNAME: <DBUSER>
       MONGODB_PASSWORD: <DBPASSWORD>
       MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
-
-      KEYCLOAK_API: <URL>
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
 
@@ -49,14 +46,67 @@ services:
       MONGO_INITDB_ROOT_USERNAME: <DBUSER>
       MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>
 
-  # A simole web frontend for mongoDB
-  # mongoEdu-express:
-  #   image: mongo-express
-  #   restart: always
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: <DBUSER>
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: <DBPASSWORD>
-  #     ME_CONFIG_MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
-  #     ME_CONFIG_BASICAUTH: false
+  onlyoffice-documentserver:
+    container_name: onlyoffice-documentserver
+    image: onlyoffice/documentserver
+    depends_on:
+      - onlyoffice-postgresql
+      - onlyoffice-rabbitmq
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=onlyoffice-postgresql
+      - DB_PORT=5432
+      - DB_NAME=onlyoffice
+      - DB_USER=onlyoffice
+      - AMQP_URI=amqp://guest:guest@onlyoffice-rabbitmq
+      - JWT_ENABLED=true
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudCI6eyJmaWxlVHlwZSI6ImRvY3giLCJrZXkiOiJLaGlyejZ6VFBkZmQyIiwidGl0bGUiOiJ0aXRsZSIsInVybCI6Imh0dHBzOi8vZmlsZS1leGFtcGxlcy5jb20vd3AtY29udGVudC9zdG9yYWdlLzIwMTcvMDIvZmlsZS1zYW1wbGVfMTAwa0IuZG9jIn0sImRvY3VtZW50VHlwZSI6IndvcmQifQ.Ua2wD6Aduo5yljVKluHwlvoQySrk9gq6Fg1hF_OBUD4
+      - JWT_HEADER=Authorization
+      - JWT_IN_BODY=true
+    ports:
+      - '80:80'
+      - '443:443'
+    stdin_open: true
+    restart: always
+    stop_grace_period: 60s
+    volumes:
+      - /var/www/onlyoffice/Data
+      - /var/log/onlyoffice
+      - /var/lib/onlyoffice/documentserver/App_Data/cache/files
+      - /var/www/onlyoffice/documentserver-example/public/files
+      - /usr/share/fonts
+
+  onlyoffice-rabbitmq:
+    container_name: onlyoffice-rabbitmq
+    image: rabbitmq
+    restart: always
+    expose:
+      - '5672'
+
+  onlyoffice-postgresql:
+    container_name: onlyoffice-postgresql
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=onlyoffice
+      - POSTGRES_USER=onlyoffice
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: always
+    expose:
+      - '5432'
+    volumes:
+      - postgresql_data:/var/lib/postgresql
+
+volumes:
+  postgresql_data:
+
+# A simple web frontend for mongoDB
+# mongoEdu-express:
+#   image: mongo-express
+#   restart: always
+#   ports:
+#     - 8081:8081
+#   environment:
+#     ME_CONFIG_MONGODB_ADMINUSERNAME: ${DBUSER}
+#     ME_CONFIG_MONGODB_ADMINPASSWORD: ${DBPASSWORD}
+#     ME_CONFIG_MONGODB_SERVER_URL: mongodb://${DBUSER}:${DBPASSWORD}@mongoEdu:27017/
+#     ME_CONFIG_BASICAUTH: false

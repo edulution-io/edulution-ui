@@ -12,6 +12,7 @@ import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import FileOperations from '@/pages/FileSharing/table/FileOperations';
+import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
@@ -33,15 +34,19 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     accessorFn: (row) => row.type + row.filename,
 
     cell: ({ row }) => {
+      const { closeOnlyOfficeDocEditor, setPreviewFile } = useFileEditorStore();
       const [searchParams, setSearchParams] = useSearchParams();
       const handleFilenameClick = (filenamePath: string) => {
-        console.log('filenamePath', filenamePath);
-        console.log('row.original.type', row.original.type);
         if (row.original.type === ContentType.file) {
+          closeOnlyOfficeDocEditor();
+          setPreviewFile(null);
+          setPreviewFile(row.original);
         }
         if (row.original.type === ContentType.directory) {
           searchParams.set('path', filenamePath);
           setSearchParams(searchParams);
+          closeOnlyOfficeDocEditor();
+          setPreviewFile(null);
         }
       };
 

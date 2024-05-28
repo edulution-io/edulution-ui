@@ -17,7 +17,7 @@ class FilemanagerService {
   createFile = async (token: string, path: string, fileName: string, content: string) =>
     this.webdavClientService.createFile(token, path, fileName, content);
 
-  uploadFile = async (token: string, path: string, file: File, name: string) =>
+  uploadFile = async (token: string, path: string, file: Express.Multer.File, name: string) =>
     this.webdavClientService.uploadFile(token, path, file, name);
 
   deleteFolder = async (token: string, path: string) => this.webdavClientService.deleteFile(token, path);
@@ -28,8 +28,8 @@ class FilemanagerService {
   moveFile = async (token: string, originPath: string, newPath: string) =>
     this.webdavClientService.moveItems(token, originPath, newPath);
 
-  downloadFile = (token: string, url: string, filename: string) =>
-    this.webdavClientService.downloadFile(token, url, filename);
+  downloadFile = (username: string, path: string, filename: string) =>
+    this.webdavClientService.downloadFile(username, path, filename);
 
   fileExists = async (token: string, path: string) => this.webdavClientService.fileExists(token, path);
 }
