@@ -8,8 +8,8 @@ import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';
 import NativeFrames from '@/components/layout/Native/NativeIframes';
-import useLmnUserStore from '@/store/lmnApiStore.ts';
-import lmnApi from '@/api/lmnApi.ts';
+import useLmnUserStore from '@/store/lmnApiStore';
+import lmnApi from '@/api/lmnApi';
 
 const App = () => {
   const { lang } = useLanguage();

@@ -17,6 +17,7 @@ import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
+import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard.tsx';
 
 const pageSwitch = (page: string) => {
@@ -33,6 +34,8 @@ const pageSwitch = (page: string) => {
       return <IframePlaceholder />;
     case APPS.SURVEYS:
       return <SurveyPage />;
+    case APPS.DESKTOP_DEPLOYMENT:
+      return <DesktopDeploymentPage />;
     default: {
       return (
         <Navigate
@@ -113,6 +116,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                 />
               }
             />
+
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.FORWARDED ? (
                 <Route
