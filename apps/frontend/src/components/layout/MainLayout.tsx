@@ -9,7 +9,6 @@ import MenuBar from '@/components/shared/MenuBar';
 const MainLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();
   const isMainPage = pathname === '/';
-
   return (
     <div
       className="flex bg-cover bg-center opacity-90"

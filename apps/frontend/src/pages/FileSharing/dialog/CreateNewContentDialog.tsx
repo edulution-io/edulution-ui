@@ -26,7 +26,6 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
 
     try {
       const resp = await handleWebDavAction(() => action(name, currentPath));
-      console.log('Response:', resp);
       if (resp.success) {
         await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
       } else {

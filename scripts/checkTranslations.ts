@@ -38,5 +38,4 @@ if (missingNestedInEN.length > 0 || missingNestedInDE.length > 0) {
   }
   process.exit(1);
 } else {
-  console.log('All keys and nested keys match.');
 }

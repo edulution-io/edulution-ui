@@ -58,13 +58,10 @@ const useFileSharingMenuConfig = () => {
   }, [mountPoints.length, fetchMountPoints, setMountPoints]);
 
   useEffect(() => {
-    console.log('mountPoints:', mountPoints);
     if (mountPoints.length === 0) return;
 
     const items = mountPoints.map((mountPoint) => {
       const isHomePoint = mountPoint.filename.includes(`${userInfo.ldapGroups.role}s`);
-      console.log(`Mount point: ${mountPoint.filename}, Home condition: ${isHomePoint}`);
-
       return {
         id: mountPoint.basename,
         label: isHomePoint ? 'home' : mountPoint.basename,
@@ -75,7 +72,6 @@ const useFileSharingMenuConfig = () => {
             if (isHomePoint) {
               newPath = mountPoint.filename.replace(`/webdav/server/${userInfo.ldapGroups.school}/`, '');
             }
-            console.log('Setting path to:', newPath);
             searchParams.set('path', newPath);
             setSearchParams(searchParams);
           } catch (error) {
@@ -89,7 +85,6 @@ const useFileSharingMenuConfig = () => {
 
   useEffect(() => {
     if (path) {
-      console.log('fetching files', path);
       fetchFiles(path).catch(console.error);
     }
   }, [path, fetchFiles]);

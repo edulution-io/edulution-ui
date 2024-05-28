@@ -45,7 +45,12 @@ interface FileManagerActions {
   createNewFolder: (folderName: string, path: string) => Promise<WebDavActionResult>;
   createNewFile: (fileName: string, path: string) => Promise<WebDavActionResult>;
   renameItem: (path: string, newPath: string) => Promise<WebDavActionResult>;
-  downloadFile: (path: string) => Promise<WebDavActionResult>;
+  downloadFile: (path: string) => Promise<string>;
+  getBasicAuthDownloadLink: (path: string) => Promise<string>;
+  getOnlyOfficeJwtToken: (config: {
+    documentType: string;
+    document: { title: string; fileType: string; key: string; url: string };
+  }) => Promise<string>;
   moveItem: (originPath: string, newPath: string) => Promise<WebDavActionResult>;
   deleteItem: (path: string) => Promise<WebDavActionResult>;
   reset: () => void;
@@ -59,11 +64,13 @@ const initialState: Omit<
   | 'resetProgress'
   | 'uploadFile'
   | 'setSelectedRows'
+  | 'getBasicAuthDownloadLink'
   | 'downloadFile'
   | 'setCurrentPath'
   | 'setFiles'
   | 'setMountPoints'
   | 'setFileName'
+  | 'getOnlyOfficeJwtToken'
   | 'setDirectoryName'
   | 'setSelectedItems'
   | 'setFileOperationSuccessful'
@@ -131,13 +138,26 @@ const useFileManagerStore = create<FileManagerStore>(
         }
       },
 
-      downloadFile: async (path: string) => {
+      downloadFile: async (fullPath: string) => {
         try {
-          const response = await eduApi.get(`/filemanager/download/${path}`);
-          return { response, success: true };
+          const parts = fullPath.split('/');
+          const filename = parts.pop() || '';
+          const path = parts.join('/').replace('/webdav/', '');
+
+          const response = await eduApi.get(`/filemanager/download/?path=${path}&filename=${filename}`);
+          const { downloadLink } = response.data;
+          return downloadLink;
         } catch (error) {
           console.error('Error downloading file:', error);
-          return { success: false };
+        }
+      },
+
+      getBasicAuthDownloadLink: async (path: string) => {
+        try {
+          const response = await eduApi.get(`/filemanager/downloadUrl/${path}`);
+          return response.data;
+        } catch (error) {
+          console.error('Error fetching download link:', error);
         }
       },
 
@@ -148,7 +168,7 @@ const useFileManagerStore = create<FileManagerStore>(
           formData.append('name', file.name);
           formData.append('path', path.replace('/webdav/', ''));
 
-          const response = await eduApi.put('/filemanager/uploadFile', formData, {
+          const response = await eduApi.post('/filemanager/uploadFile', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -252,6 +272,21 @@ const useFileManagerStore = create<FileManagerStore>(
           get().setDirectorys(directoryFiles.data as DirectoryFile[]);
         } catch (error) {
           console.error('Error fetching directory contents:', error);
+        }
+      },
+
+      getOnlyOfficeJwtToken: async (config) => {
+        try {
+          const response = await eduApi.post('/filemanager/oftoken/', JSON.stringify(config), {
+            headers: {
+              'Content-Type': 'application/json',
+              // Add other headers if needed, like authorization
+            },
+          });
+          return response.data;
+        } catch (error) {
+          console.error('Error fetching OnlyOffice JWT token:', error);
+          throw error;
         }
       },
 

@@ -1,14 +1,13 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { createWriteStream, existsSync, mkdirSync, WriteStream } from 'fs';
-import { join } from 'path';
-import { firstValueFrom } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
 import { mapToDirectories, mapToDirectoryFiles } from './utilits';
 import WebdavClientFactory from './webdav.client.factory';
 import JWTUser from '../../types/JWTUser';
-
+import { createWriteStream, existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 @Injectable()
 class WebdavService {
   private client: AxiosInstance;
@@ -18,6 +17,8 @@ class WebdavService {
   private baseurl = 'https://server.schulung.multi.schule/webdav/';
 
   private baseWebDavAPI = 'https://server.schulung.multi.schule/api/webdav/';
+  private baseWebDavAPIBasicAuth = 'https://agy-netzint-teacher:TestMuster123!@server.schulung.multi.schule/webdav/';
+  // private baseAuthWebDavAPI = 'https://server.schulung.multi.schule/';
 
   constructor(
     private webdavClientFactory: WebdavClientFactory,
@@ -37,12 +38,16 @@ class WebdavService {
       '</d:propfind>\n';
   }
 
-  private initializeClient(token: string) {
+  private getUsernameFromToken(token: string): string {
     const decodedToken = jwt.decode(token) as JWTUser;
     if (!decodedToken || !decodedToken.preferred_username) {
       throw new Error(`Invalid token: username not found${token}`);
     }
-    const username: string = decodedToken.preferred_username;
+    return decodedToken.preferred_username;
+  }
+
+  private initializeClient(token: string) {
+    const username: string = this.getUsernameFromToken(token);
     this.client = this.webdavClientFactory.createWebdavClient(this.baseurl, username, 'TestMuster123!');
   }
 
@@ -135,22 +140,21 @@ class WebdavService {
     }
   }
 
-  async uploadFile(token: string, path: string, file: File, name: string) {
+  async uploadFile(token: string, path: string, file: Express.Multer.File, name: string) {
     this.initializeClient(token);
     const fullPath = `${path}/${name}`;
-    if (!token) return { success: false, filename: file.name };
+    if (!token) return { success: false, filename: file.originalname };
 
     try {
-      const response: AxiosResponse = await this.client({
-        method: 'PUT',
-        url: `${this.baseurl}${fullPath}`,
-        headers: { 'Content-Type': file.type },
-        data: file,
+      const response: AxiosResponse = await this.client.put(fullPath, file.buffer, {
+        headers: {
+          'Content-Type': file.mimetype,
+        },
       });
 
       return response.status === 201 || response.status === 200
-        ? { success: true, filename: file.name }
-        : { success: false, status: response.status, filename: file.name };
+        ? { success: true, filename: file.originalname }
+        : { success: false, status: response.status, filename: file.originalname };
     } catch (error) {
       console.error('Failed to upload file:', error);
       throw error;
@@ -237,15 +241,17 @@ class WebdavService {
       throw error;
     }
   }
-
-  async downloadFile(token: string, url: string, filename: string): Promise<string> {
-    this.initializeClient(token);
+  async getBasicAuthDownloadLink(token: string, url: string, filename: string): Promise<string> {
     if (!token) return '';
+    return this.baseWebDavAPIBasicAuth + url + '/' + filename;
+  }
+
+  async downloadFile(username: string, path: string, filename: string): Promise<string> {
     const dirPath = this.ensureDownloadDir();
     const outputPath = join(dirPath, filename);
-
+    const url = `${this.baseurl}/${path}/${filename}`;
     try {
-      const responseStream = await this.fetchFileStream(`${url}/${filename}`);
+      const responseStream = await this.fetchFileStream(url, username);
       await this.saveFileStream(responseStream, outputPath);
       return outputPath;
     } catch (error) {
@@ -255,30 +261,35 @@ class WebdavService {
   }
 
   private ensureDownloadDir(): string {
-    const dirPath = join(__dirname, `tmp/downloads/${new Date().getDay()}`);
+    const dirPath = join(__dirname, '..', 'public', 'downloads');
     if (!existsSync(dirPath)) {
       mkdirSync(dirPath, { recursive: true });
     }
     return dirPath;
   }
 
-  private async fetchFileStream(url: string): Promise<WriteStream> {
-    const response = this.httpService.get<WriteStream>(url, {
+  private async fetchFileStream(url: string, username: string): Promise<NodeJS.ReadableStream> {
+    const response = this.httpService.get(url, {
       responseType: 'stream',
       auth: {
-        username: 'agy-netzint-teacher',
+        username,
         password: 'TestMuster123!',
       },
     });
     return firstValueFrom(response).then((resp) => resp.data);
   }
 
-  private async saveFileStream(fileStream: WriteStream, outputPath: string): Promise<void> {
+  private async saveFileStream(fileStream: NodeJS.ReadableStream, outputPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const writer = createWriteStream(outputPath);
       fileStream.pipe(writer);
-      writer.on('finish', () => resolve());
-      writer.on('error', reject);
+      writer.on('finish', () => {
+        resolve();
+      });
+      writer.on('error', (error) => {
+        console.error(`Error saving file to ${outputPath}`, error);
+        reject(error);
+      });
     });
   }
 

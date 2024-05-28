@@ -51,10 +51,12 @@ export enum APPS {
   FIREWALL = 'firewall',
   ANTIMALWARE = 'antimalware',
   BACKUP = 'backup',
+  WHITEBOARD = 'whiteboard',
 }
 
 export interface FileTypePreviewProps {
   file: DirectoryFile;
+  onClose?: () => void;
 }
 
 export interface OriginalIdTokenClaims {

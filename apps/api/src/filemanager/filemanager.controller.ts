@@ -9,18 +9,29 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
 import FilemanagerService from './filemanager.service';
 import GetTokenDecorator from '../common/decorators/getToken.decorator.ts';
+import OnlyofficeService from './onlyoffice/onlyoffice.service';
+import { Request, Response } from 'express';
+import { GetUsername } from '../common/decorators/getUser.decorator.ts';
+import { Public } from '../common/decorators/public.decorator.ts';
+import * as fs from 'fs';
+import syncRequest from 'sync-request';
 
 @Controller('filemanager')
 class FilemanagerController {
-  constructor(private filemanagerService: FilemanagerService) {}
+  private pathForSave: './apps';
+  constructor(
+    private filemanagerService: FilemanagerService,
+    private onlyOfficeService: OnlyofficeService,
+  ) {}
 
   @Get('mountpoints')
   async getMountPoints(@GetTokenDecorator() token: string) {
@@ -77,11 +88,11 @@ class FilemanagerController {
     }
   }
 
-  @Put('uploadFile')
+  @Post('uploadFile')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @GetTokenDecorator() token: string,
-    @UploadedFile() file: File,
+    @UploadedFile() file: Express.Multer.File,
     @Body('path') path: string,
     @Body('name') name: string,
   ) {
@@ -141,36 +152,50 @@ class FilemanagerController {
     }
   }
 
-  @Get('download/*')
-  async downloadResource(@GetTokenDecorator() token: string, @Param('0') fullpath: string, @Res() res: Response) {
-    const parts = fullpath.split('/');
-    const filename = parts.pop() || '';
-    const filepath = parts.join('/');
-
-    Logger.log(`Downloading file: ${filename} from path: ${filepath}`);
-    const fileURL = `https://server.schulung.multi.schule/webdav/${filepath}`;
+  @Get('download')
+  async downloadFile(
+    @GetUsername() username: string,
+    @Query('path') path: string,
+    @Query('filename') filename: string,
+    @Res() res: Response,
+  ) {
+    if (!path || !filename) {
+      throw new HttpException('Path and filename are required', HttpStatus.BAD_REQUEST);
+    }
 
     try {
-      const localFilePath = await this.filemanagerService.downloadFile(token, fileURL, filename);
-      res.sendFile(localFilePath);
+      const filePath = await this.filemanagerService.downloadFile(username, path, filename);
+      if (!filePath) {
+        throw new HttpException('Failed to download file', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      // Generate the download link
+      const encodedFilename = encodeURIComponent(filename);
+      const downloadLink = `http://localhost:3000/downloads/${encodedFilename}`;
+      res.status(200).json({ downloadLink });
     } catch (error) {
-      res.status(500).send('Failed to process file request');
+      console.error('Error in downloadFile controller:', error);
+      res.status(500).send('Failed to download file');
     }
   }
 
-  @Get('open/*')
-  async getFile(@Param('0') fullpath: string, @GetTokenDecorator() token: string, @Res() res: Response) {
-    const parts = fullpath.split('/');
-    const filename = parts.pop() || '';
-    const filepath = parts.join('/');
-
-    const fileURL = `https://server.schulung.multi.schule/webdav/${filepath}`;
-
+  @Get('downloadUrl/*')
+  async ressourceUrl(@GetTokenDecorator() token: string, @Param('0') fullpath: string) {
     try {
-      const localFilePath = await this.filemanagerService.downloadFile(token, fileURL, filename);
-      res.sendFile(localFilePath);
+      const parts = fullpath.split('/');
+      const filename = parts.pop() || '';
+      const filepath = parts.join('/');
+
+      Logger.log(`Downloading file: ${filename} from path: ${filepath + filename}`);
+
+      return await this.filemanagerService.getBasicAuthDownloadLink(
+        token,
+        filepath.replace('/webdav/', ''),
+        filename.replace('/webdav/', ''),
+      );
     } catch (error) {
-      res.status(500).send('Failed to process file request');
+      Logger.error(`Error downloading file: ${error.message}`);
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -180,6 +205,49 @@ class FilemanagerController {
       return await this.filemanagerService.getQrCode(token);
     } catch (error) {
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('oftoken')
+  async getOnlyofficeToken(@GetTokenDecorator() token: string, @Body() payload: string) {
+    return this.onlyOfficeService.getOnlyofficeToken(token, payload);
+  }
+
+  @Public()
+  @Post('callback')
+  async handleCallback(@Req() req: Request, @Res() res: Response) {
+    const callbackData = req.body;
+    if (!callbackData) return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+
+    const updateFile = (response: Response, body: any, path: string) => {
+      try {
+        if (body.status === 2) {
+          const file = syncRequest('GET', body.url);
+          fs.writeFileSync(path, file.getBody());
+        }
+        response.status(HttpStatus.OK).send({ error: 0 });
+      } catch (error) {
+        console.error('Error updating file:', error);
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ error: 1 });
+      }
+    };
+
+    if (callbackData.hasOwnProperty('status')) {
+      updateFile(res, callbackData, this.pathForSave);
+    } else {
+      let content = '';
+      req.on('data', (data) => {
+        content += data;
+      });
+      req.on('end', () => {
+        try {
+          const body = JSON.parse(content);
+          updateFile(res, body, this.pathForSave);
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+          res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+        }
+      });
     }
   }
 }

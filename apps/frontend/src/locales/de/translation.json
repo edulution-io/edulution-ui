@@ -110,6 +110,10 @@
     "title": "MOBILE ENDGERÄTE",
     "sidebar": "Mobile Endgeräte"
   },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
   "virtualization": {
     "title": "VIRTUALISATION",
     "sidebar": "Virtualisation"
@@ -233,7 +237,9 @@
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "spreadsheet": "Tabelle",
+    "presentation": "Präsentation"
   },
 
   "filesharingMobile": {
@@ -361,5 +367,14 @@
     "newProject": "Neues Projekt",
     "createGroup": "Gruppe anlegen",
       "newGroup": "Neue Gruppe"
+  },
+  "fileEditingPage": {
+    "fileNotFound": "Datei nicht gefunden",
+    "closeFile": "Datei schließen",
+    "goBack": "Zurück",
+    "closeFullScreen": "Vollbild schließen",
+    "maximize": "Vollbild öffnen",
+    "minimize": "Minimieren",
+    "close": "Vollbild schließen"
   }
 }

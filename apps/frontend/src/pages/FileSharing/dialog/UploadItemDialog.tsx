@@ -48,7 +48,6 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      console.log(errorMessage);
       await setFileOperationSuccessful(false, errorMessage);
     } finally {
       setSelectedFiles([]);

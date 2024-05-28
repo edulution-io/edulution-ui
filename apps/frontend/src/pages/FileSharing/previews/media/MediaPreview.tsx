@@ -1,10 +1,36 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { FileTypePreviewProps } from '@/datatypes/types';
+import useFileManagerStore from '@/store/fileManagerStore.ts';
+import { convertDownloadLinkToBlob } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
+import PreviewMenuBar from '@/pages/FileSharing/previews/documents/PreviewMenuBar.tsx';
+import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
+import { DirectoryFile } from '@/datatypes/filesystem.ts';
 
-const MediaPreview: FC<FileTypePreviewProps> = ({ file }) => {
+interface MediaPreviewProps {
+  file: DirectoryFile;
+  onClose: () => void;
+  isPreview?: boolean;
+}
+
+const MediaPreview: FC<MediaPreviewProps> = ({ file, onClose, isPreview }) => {
   const [playing, setPlaying] = useState(false);
-  const mediaUrl = `webdav/${file.filename}`;
+  const { appendEditorFile } = useFileEditorStore();
+  const [fileUrl, setFileUrl] = useState<string>('');
+  const { downloadFile } = useFileManagerStore();
+
+  useEffect(() => {
+    const fetchFileUrl = async () => {
+      try {
+        const rawUrl = await downloadFile(file.filename);
+        const blobUrl = await convertDownloadLinkToBlob(rawUrl);
+        setFileUrl(blobUrl || '');
+      } catch (error) {
+        setFileUrl('');
+        console.error('Error fetching file URL:', error);
+      }
+    };
+    fetchFileUrl();
+  }, [file.filename, downloadFile]);
 
   const startPlaying = () => {
     setPlaying(true);
@@ -12,12 +38,17 @@ const MediaPreview: FC<FileTypePreviewProps> = ({ file }) => {
 
   return (
     <div className="relative rounded-lg bg-white shadow-lg">
-      <div className="flex items-center justify-between border-b p-4">
-        <h3 className="text-lg font-semibold">Media Preview</h3>
-      </div>
+      {isPreview && (
+        <PreviewMenuBar
+          file={file}
+          previewFile={file}
+          onClose={onClose}
+          appendEditorFile={appendEditorFile}
+        />
+      )}
       <div className="relative pt-[56.25%]">
         <ReactPlayer
-          url={mediaUrl}
+          url={fileUrl}
           playing={playing}
           controls
           width="100%"
@@ -27,7 +58,7 @@ const MediaPreview: FC<FileTypePreviewProps> = ({ file }) => {
         />
       </div>
       <div className="p-4">
-        <span className="block text-sm font-medium text-gray-800">File Name: {file.filename}</span>
+        {isPreview && <span className="block text-sm font-medium text-gray-800">{file.basename}</span>}
       </div>
     </div>
   );

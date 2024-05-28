@@ -37,7 +37,6 @@ const MobileAccessIntroduction: FC<MobileAccessIntroductionProps> = ({
       token: '',
     };
     const qrContent = JSON.stringify(structuredData);
-    console.log(qrContent);
     setQrCodeContent(qrContent);
   };
 

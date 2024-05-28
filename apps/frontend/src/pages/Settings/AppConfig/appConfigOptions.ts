@@ -11,6 +11,7 @@ import {
   LearningManagementIcon,
   LocationServicesIcon,
   MailIcon,
+  WhiteBoardIcon,
   MobileDevicesIcon,
   NetworkIcon,
   PrinterIcon,
@@ -39,6 +40,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url'],
   },
   { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url'] },
+  { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', options: ['url'] },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url'] },
   {
     id: APPS.CONFERENCES,

@@ -20,6 +20,7 @@ import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard.tsx';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -30,6 +31,9 @@ const pageSwitch = (page: string) => {
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.WHITEBOARD: {
+      return <Whiteboard />;
     }
     default: {
       return (
