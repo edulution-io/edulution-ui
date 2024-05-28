@@ -6,7 +6,6 @@ const useConferencesPageMenu = () => {
     title: 'conferences.title',
     disabled: true,
     icon: ConferencesIcon,
-    disabled: true,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [
       {
