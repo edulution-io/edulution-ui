@@ -11,10 +11,10 @@ import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
 import Avatar from '../shared/Avatar';
@@ -35,7 +35,7 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
+  const { logout } = useUserStore();
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
@@ -158,7 +158,7 @@ const Sidebar = () => {
     <Button
       variant="btn-outline"
       size="sm"
-      className="rounded-xl border-[3px]"
+      className="rounded-xl border-[3px] bg-black"
       onClick={toggle}
     >
       {t('menu')}
@@ -238,11 +238,10 @@ const Sidebar = () => {
     </div>
   );
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     auth.removeUser().catch(console.error);
-    setIsAuthenticated(false);
+    await logout();
     cleanAllStores();
-    sessionStorage.clear();
   };
 
   const userMenu = () => (
@@ -311,7 +310,7 @@ const Sidebar = () => {
   if (!isDesktop) {
     return (
       <>
-        {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
+        {!isOpen ? <div className="fixed right-0 top-0 z-20 pr-4 pt-4">{menuButton()}</div> : null}
         <div
           ref={sidebarRef}
           className={`${sidebarClasses}`}

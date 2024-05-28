@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import ClassManagementService from './classManagement.service';
 import GetTokenDecorator from '../common/decorators/getToken.decorator';
+
 @Controller('classmanagement')
 export class ClassManagementController {
   constructor(private readonly classManagementService: ClassManagementService) {}

@@ -16,7 +16,11 @@ type UserStore = {
   setUser: (user: string) => void;
   token: string;
   setToken: (token: string) => void;
+  webdavKey: string;
+  setWebdavKey: (webdavKey: string) => void;
   setUserInfo: (user: OriginalIdTokenClaims) => void;
+  isPreparingLogout: boolean;
+  logout: () => Promise<void>;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setBasicAuth: (basicAuth: string) => void;
   reset: () => void;
@@ -32,9 +36,11 @@ const initialState: Omit<
   | 'setIsLoggedInInEduApi'
   | 'setUser'
   | 'setToken'
+  | 'setWebdavKey'
   | 'setBasicAuth'
   | 'reset'
   | 'setIsAuthenticated'
+  | 'logout'
   | 'setUserInfo'
   | 'isLoading'
   | 'isMfaEnabled'
@@ -45,8 +51,10 @@ const initialState: Omit<
   | 'getQrCode'
 > = {
   user: '',
+  webdavKey: '',
   isAuthenticated: false,
   isLoggedInInEduApi: false,
+  isPreparingLogout: false,
   token: '',
   basicAuth: 'Basic',
   userInfo: {} as CustomIdTokenClaims,
@@ -83,6 +91,15 @@ const useUserStore = create<UserStore>(
         set({ isLoggedInInEduApi });
       },
       setToken: (token) => set({ token }),
+      setWebdavKey: (webdavKey: string) => {
+        set({ webdavKey });
+      },
+      logout: async () => {
+        set({ isPreparingLogout: true });
+        await new Promise((r) => setTimeout(r, 200));
+        set({ isAuthenticated: false });
+        sessionStorage.clear();
+      },
 
       setBasicAuth: (basicAuth: string) => {
         set({ basicAuth });

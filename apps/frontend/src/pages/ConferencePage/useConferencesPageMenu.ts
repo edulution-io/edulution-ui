@@ -4,6 +4,7 @@ import { MenuBarEntryProps } from '@/datatypes/types';
 const useConferencesPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
     title: 'conferences.title',
+    disabled: true,
     icon: ConferencesIcon,
     disabled: true,
     color: 'hover:bg-ciDarkBlue',

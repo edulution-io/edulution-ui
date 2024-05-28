@@ -10,18 +10,20 @@ import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
 import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolManagementPageMenu';
 import useSurveysPageMenu from '@/pages/Survey/useSurveyPageMenu';
+import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 
-const useMenuBarConfig = () => {
+const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
+  const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
 
-  const menuBarConfigSwitch = () => {
+  const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
@@ -42,6 +44,9 @@ const useMenuBarConfig = () => {
       }
       case APPS.SURVEYS: {
         return SURVEYS_MENUBAR_CONFIG;
+      }
+      case APPS.MAIL: {
+        return MAIL_MENUBAR_CONFIG;
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;

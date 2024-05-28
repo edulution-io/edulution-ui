@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react-swc';
-import path from 'path';
+import * as path from 'path';
 import { defineConfig } from 'vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
@@ -43,8 +43,7 @@ export default defineConfig({
         },
       },
       '/edu-api': {
-        rewrite: (path) => path.replace(/^\/edu-api/, ''),
-        target: 'http://localhost:3000/edu-api',
+        target: 'http://localhost:3001',
         changeOrigin: false,
         secure: false,
         headers: {

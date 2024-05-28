@@ -29,6 +29,7 @@ const LoginPage: React.FC = () => {
     postCheckTotp,
     getUserInfoFromDb,
     setIsLoggedInInEduApi,
+    setWebdavKey,
   } = useUserStore();
   const { setLmnApiToken } = useLmnUserStore();
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -71,9 +72,16 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
+        const encryptedPassword = useEncryption({
+          mode: 'encrypt',
+          data: password,
+          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+        });
+
         await setLmnApiToken(username, password);
 
         setUser(username);
+        setWebdavKey(encryptedPassword);
         setToken(requestUser.access_token);
       }
     } catch (e) {
