@@ -2,7 +2,7 @@ import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import IframePlaceholder from '@/components/layout/IframePlaceholder';
+import IframePlaceholder from '@/components/layout/Embedded/IframePlaceholder';
 import HomePage from '@/pages/Home/HomePage';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
@@ -11,7 +11,6 @@ import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
-import MailPage from '@/pages/Mail/MailPage';
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 
 const pageSwitch = (page: string) => {
@@ -23,7 +22,7 @@ const pageSwitch = (page: string) => {
     case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
     case APPS.MAIL:
-      return <MailPage />;
+      return <IframePlaceholder />;
     default:
       return (
         <Navigate

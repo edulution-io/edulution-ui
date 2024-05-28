@@ -6,7 +6,8 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
-import EmbeddedIframes from '@/components/layout/EmbeddedIframes';
+import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';
+import NativeFrames from '@/components/layout/Native/NativeIframes';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -32,6 +33,7 @@ const App = () => {
       <BBBFrame />
       <AppRouter />
       <EmbeddedIframes />
+      <NativeFrames />
     </AuthProvider>
   );
 };

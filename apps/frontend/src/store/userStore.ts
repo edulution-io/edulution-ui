@@ -50,7 +50,7 @@ const useUserStore = create<UserStore>(
       },
       logout: async () => {
         set({ isPreparingLogout: true });
-        await delay(200);
+        await delay(50);
         set({ isAuthenticated: false });
         sessionStorage.clear();
       },
