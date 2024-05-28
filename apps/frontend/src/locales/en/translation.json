@@ -157,8 +157,14 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    }
   },
   "wlan": {
     "title": "WLAN",

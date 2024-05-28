@@ -64,6 +64,19 @@ export default defineConfig({
           'X-Forwarded-Host': 'localhost',
         },
       },
+      '/guacamole': {
+        rewrite: (path) => path.replace(/^\/guacamole/, ''),
+        target: 'http://192.168.188.110:8082/',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        headers: {
+          Origin: 'https://ui.schulung.multi.schule',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      },
       //TODO docs
     },
   },

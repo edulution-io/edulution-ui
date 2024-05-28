@@ -6,8 +6,8 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
-import useLmnUserStore from '@/store/lmnApiStore.ts';
-import lmnApi from '@/api/lmnApi.ts';
+import useLmnUserStore from '@/store/lmnApiStore';
+import lmnApi from '@/api/lmnApi';
 
 const App = () => {
   const { lang } = useLanguage();

@@ -157,8 +157,14 @@
     "sidebar": "Standortverbindung"
   },
   "desktopdeployment": {
-    "title": "DESKTOP-BEREITSTELLUNG",
-    "sidebar": "Desktop-Bereitstellung"
+    "title": "DESKTOP",
+    "sidebar": "Desktop",
+    "connect": "Verbinden",
+    "close": "Verbindung schließen",
+    "error": {
+      "title": "Verbindungsfehler",
+      "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -242,7 +248,8 @@
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
-    "revert": "Zurücksetzen"
+    "revert": "Zurücksetzen",
+    "close": "Schließen"
   },
   "form": {
     "path": "Link",

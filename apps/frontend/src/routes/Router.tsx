@@ -20,6 +20,7 @@ import useUserStore from '@/store/userStore';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
+import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -34,6 +35,9 @@ const pageSwitch = (page: string) => {
     }
     case APPS.SURVEYS: {
       return <SurveyPage />;
+    }
+    case APPS.DESKTOP_DEPLOYMENT: {
+      return <DesktopDeploymentPage />;
     }
     default: {
       return (
@@ -115,6 +119,7 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                 />
               }
             />
+
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.FORWARDED ? (
                 <Route

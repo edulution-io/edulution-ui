@@ -5,6 +5,7 @@ const useConferencesPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
     title: 'conferences.title',
     icon: ConferencesIcon,
+    disabled: true,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [
       {

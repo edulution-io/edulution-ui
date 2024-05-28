@@ -4,6 +4,7 @@ import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import USERSETTINGS_MENUBAR_CONFIG from '@/pages/UserSettings/config';
+import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
@@ -42,8 +43,11 @@ const useMenuBarConfig = () => {
       case APPS.SURVEYS: {
         return SURVEYS_MENUBAR_CONFIG;
       }
+      case APPS.DESKTOP_DEPLOYMENT: {
+        return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
+      }
       default: {
-        return { menuItems: [], title: '', icon: '', color: '' };
+        return { menuItems: [], title: '', icon: '', color: '', disabled: false };
       }
     }
   };
@@ -59,6 +63,7 @@ const useMenuBarConfig = () => {
   const menuBarEntries: MenuBarEntryProps = {
     menuItems,
     title: t(configValues.title),
+    disabled: configValues.disabled,
     icon: configValues.icon,
     color: configValues.color,
   };
