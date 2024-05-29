@@ -30,6 +30,8 @@ import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEdito
 import EditableFilesMenu from '@/pages/FileSharing/previews/documents/EditableFilesMenu.tsx';
 import Previews from '@/pages/FileSharing/previews/Previews.tsx';
 import EditFile from '@/pages/FileSharing/previews/EditFile.tsx';
+import { convertDownloadLinkToBlob } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
+import { triggerFileDownload } from '@/pages/FileSharing/utilities/fileManagerUtilits.ts';
 
 const FileSharingPage = () => {
   const {
@@ -70,15 +72,6 @@ const FileSharingPage = () => {
   useEffect(() => {
     setShowEditor(true);
   }, [previewFile]);
-
-  const triggerFileDownload = (downloadUrl: string) => {
-    const anchor = document.createElement('a');
-    anchor.href = downloadUrl;
-    anchor.download = '';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-  };
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
@@ -236,26 +229,31 @@ const FileSharingPage = () => {
                       />
                     }
                   />
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText={t('tooltip.download')}
-                    trigger={
-                      <Button
-                        type="button"
-                        variant="btn-hexagon"
-                        className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                        data-testid="test-id-file-sharing-page-download-button"
-                        onClick={async () => {
-                          const downloadUrl = await downloadFile(selectedItems[0].filename);
-                          triggerFileDownload(downloadUrl);
-                        }}
-                      >
-                        <IconContext.Provider value={iconContextValue}>
-                          <MdOutlineFileDownload />
-                        </IconContext.Provider>
-                      </Button>
-                    }
-                  />
+                  {selectedItems.length < 2 && (
+                    <ActionTooltip
+                      onAction={() => {}}
+                      tooltipText={t('tooltip.download')}
+                      trigger={
+                        <Button
+                          type="button"
+                          variant="btn-hexagon"
+                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
+                          data-testid="test-id-file-sharing-page-download-button"
+                          onClick={async () => {
+                            const downloadUrl =
+                              (await convertDownloadLinkToBlob(
+                                (await downloadFile(selectedItems[0].filename)) || '',
+                              )) || '';
+                            triggerFileDownload(downloadUrl);
+                          }}
+                        >
+                          <IconContext.Provider value={iconContextValue}>
+                            <MdOutlineFileDownload />
+                          </IconContext.Provider>
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
               )}
             </TooltipProvider>
