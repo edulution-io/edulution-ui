@@ -1,14 +1,12 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { DialogSH, DialogContentSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
+import { DialogContentSH, DialogSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
-import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { useMediaQuery } from 'usehooks-ts';
 import { ArrowRightIcon } from 'lucide-react';
@@ -22,15 +20,15 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
-  const [currentPath, setCurrentPath] = useState('');
-  const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStore();
+  const [currentPath, setCurrentPath] = useState('/');
+  const { setFileOperationSuccessful, fetchDirs, moveItem, directorys } = useFileManagerStore();
+
   useEffect(() => {
     if (isOpen) {
-      fetchDirectory(currentPath)
-        .then(setDirectorys)
-        .catch(() => null);
+      fetchDirs(currentPath).catch((error) => {
+        console.error('Error fetching directories:', error);
+      });
     }
   }, [currentPath, isOpen]);
 
@@ -41,9 +39,9 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      fetchDirectory(currentPath)
-        .then(setDirectorys)
-        .catch(() => null);
+      fetchDirs(currentPath).catch((error) => {
+        console.error('Error fetching directories on open change:', error);
+      });
     }
   };
 
@@ -53,25 +51,34 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       if (!newCurrentPath.endsWith('/')) {
         newCurrentPath += '/';
       }
-      newCurrentPath += getFileNameFromPath(nextItem.filename);
-
+      if (newCurrentPath === '/') {
+        newCurrentPath += nextItem.filename.replace('/webdav/', '').replace('server/agy/', '');
+      } else {
+        newCurrentPath += nextItem.basename;
+      }
       setCurrentPath(newCurrentPath);
     }
   };
 
-  const moveItem = async (items: DirectoryFile | DirectoryFile[], toPath: string | undefined) => {
-    await WebDavFunctions.moveItems(items, toPath)
-      .then((resp) => {
-        if ('message' in resp) {
-          setFileOperationSuccessful(resp.success, resp.message);
-        } else {
-          setFileOperationSuccessful(resp.success, '');
-        }
-      })
-      .catch((error: unknown) => {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        setFileOperationSuccessful(false, errorMessage);
-      });
+  const moveItems = async (items: DirectoryFile | DirectoryFile[], toPath: string | undefined) => {
+    if (!toPath) return;
+
+    const originPaths = Array.isArray(items) ? items.map((file) => file.filename) : [items.filename];
+
+    const movePromises = originPaths.map((originPath) => moveItem(originPath, toPath));
+
+    try {
+      const results = await Promise.all(movePromises);
+      const success = results.every((result) => result.success);
+      const message = success
+        ? t('fileCreateNewContent.fileOperationSuccessful')
+        : t('fileCreateNewContent.unknownErrorOccurred');
+      await setFileOperationSuccessful(success, message);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      await setFileOperationSuccessful(false, errorMessage);
+    }
+
     setIsOpen(false);
   };
 
@@ -94,7 +101,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     >
       <TableCell>
         <div className="flex w-full items-center justify-between">
-          <div>{getFileNameFromPath(row.filename)}</div>
+          <div>{row.basename}</div>
           <Button onClick={() => handleNextFolder(row)}>
             <ArrowRightIcon />
           </Button>
@@ -131,7 +138,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
           disabled={!selectedRow}
           onClick={() => {
             try {
-              moveItem(item, selectedRow?.filename).catch((error) => console.error(error));
+              moveItems(item, selectedRow?.filename).catch((error) => console.error(error));
             } catch (error) {
               console.error(error);
             }

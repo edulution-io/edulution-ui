@@ -36,9 +36,6 @@ function validateFileName(path: string): ValidateNameResult {
   if (/\s/.test(filename) && !(filename.length <= 0)) {
     return { isValid: false, error: 'File name should not contain spaces.' };
   }
-  if (!filename.endsWith('.txt')) {
-    return { isValid: false, error: 'File name must end with .txt' };
-  }
   return { isValid: true, error: '' };
 }
 
@@ -54,10 +51,10 @@ function formatBytes(bytes: number, decimals = 2): string {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
-function getFileType(fullPath: string): string {
-  const parts = fullPath.split('.');
-  return parts.length > 1 ? parts.pop() || '' : '';
-}
+const getFileType = (filename: string): string => {
+  const extension = filename.split('.').pop();
+  return extension ? extension.toLowerCase() : '';
+};
 
 export {
   getPathWithoutFileName,

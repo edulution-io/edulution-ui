@@ -13,6 +13,8 @@ const mockUser = {
   email: 'test@example.com',
   username: 'testuser',
   roles: ['user'],
+  mfaEnabled: false,
+  isTotpSet: false,
 };
 
 const userModelMock = {
@@ -86,6 +88,8 @@ describe('UsersService', () => {
       createUserDto.email = 'test@example.com';
       createUserDto.username = 'testuser';
       createUserDto.roles = ['user'];
+      createUserDto.mfaEnabled = false;
+      createUserDto.isTotpSet = false;
 
       const newUser = await service.create(createUserDto);
       expect(newUser).toEqual(mockUser);

@@ -19,15 +19,17 @@ class UsersService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async login(loginUserDto: LoginUserDto): Promise<User | null> {
+  async login(loginUserDto: LoginUserDto): Promise<void> {
     const existingUser = await this.userModel.findOne<User>({ username: loginUserDto.preferred_username }).exec();
 
-    let newUser;
     if (!existingUser) {
-      newUser = await this.create({
+      await this.create({
         email: loginUserDto.email,
         username: loginUserDto.preferred_username,
+        password: loginUserDto.password,
         roles: loginUserDto.ldapGroups,
+        mfaEnabled: false,
+        isTotpSet: false,
         usersPolls: {
           openPolls: [],
           createdPolls: [],
@@ -40,12 +42,12 @@ class UsersService {
         },
       });
     } else {
-      newUser = await this.update(loginUserDto.preferred_username, {
+      await this.update(loginUserDto.preferred_username, {
+        password: loginUserDto.password,
         roles: loginUserDto.ldapGroups,
       });
     }
-
-    return newUser;
+    Logger.log(`User ${loginUserDto.preferred_username} logged in`, UsersService.name);
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {

@@ -1,4 +1,3 @@
-// TODO: COPIED FROM SCHOOLMANAGEMENT PR -> MOVE AFTER MERGE
 import React, { FC, ReactElement } from 'react';
 import { MdContentCopy, MdEdit, MdDelete, MdAdd } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
@@ -18,18 +17,18 @@ interface CardProps {
 }
 
 const GroupCard: FC<CardProps> = ({
-                                    icon,
-                                    title,
-                                    participants = 0,
-                                    showActions = true,
-                                    isAddNew = false,
-                                    onEdit,
-                                    onCopy,
-                                    onDelete,
-                                    onAdd,
-                                    onItemClicked,
-                                    isComponentSelected = false,
-                                  }) => {
+  icon,
+  title,
+  participants = 0,
+  showActions = true,
+  isAddNew = false,
+  onEdit,
+  onCopy,
+  onDelete,
+  onAdd,
+  onItemClicked,
+  isComponentSelected = false,
+}) => {
   const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       if (onItemClicked) {

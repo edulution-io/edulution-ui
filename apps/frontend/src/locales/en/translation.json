@@ -10,6 +10,9 @@
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
   },
+  "auth": {
+    "totp": { "invalid": "Invalid token", "setup": { "success": "TOTP setup successful" } }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -86,6 +89,7 @@
   "add": "Add",
   "DATE": "Date",
   "days": "Days",
+  "EMPTY": "LEER",
   "TEXT": "Text",
   "RATING": "Rating",
   "save": "Save",
@@ -102,8 +106,8 @@
     }
   },
   "survey": {
-    "title": "SURVEY",
-    "sidebar": "Survey",
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
     "description": "Create forms for exercise sheets or other more sophisticated surveys",
     "participate": "Participate",
     "participation": "Survey participation",
@@ -111,7 +115,7 @@
     "openSurveys": "Surveys that you have not answered jet",
     "createdSurveys": "Surveys that you created",
     "answeredSurveys": "Surveys that you have answered already",
-    "allSurveys": "Admins can see the full list of surveys",
+    "allSurveys": "Surveys management",
     "load": "Load",
     "result": "Your answer",
     "resulting": "Your commited answer",
@@ -159,7 +163,7 @@
     "openPolls": "Polls that you not have been participating jet",
     "createdPolls": "Polls that you created",
     "answeredPolls": "Polls you have participated in",
-    "allPolls": "Admins can see the full list of polls",
+    "allPolls": "Polls management",
     "load": "Load",
     "result": "Your choices",
     "resulting": "Your commited choices",
@@ -167,6 +171,10 @@
     "edit": "Edit",
     "editing": "Edit poll",
     "delete": "Delete"
+  },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
   },
   "printer": {
     "title": "PRINTER",
@@ -181,8 +189,16 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -219,6 +235,13 @@
       "create": { "success": "App created", "failed": "App creation failed" }
     }
   },
+  "usersettings": {
+    "title": "USER",
+    "sidebar": "Einstellungen",
+    "security": "Security",
+    "config": { "mfa": "Setup Two-Factor-Authentication" },
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
+  },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
     "description": "The application opens in a new window. No further authorization is required.",
@@ -233,7 +256,18 @@
   "students": "Students",
   "login": {
     "forgot_password": "Forgot password?",
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "username": {
+      "too_long": "Username too long",
+      "required": "Please enter a username."
+    },
+    "password": {
+      "too_long": "Passwort too long",
+      "required": "Please enter your password."
+    },
+    "totp": {
+      "invalid": "Invalid token!"
+    }
   },
   "common": {
     "add": "Add",
@@ -247,7 +281,8 @@
     "password": "Password",
     "loading": "Loading...",
     "overview": "Overview",
-    "create": "Create"
+    "create": "Create",
+    "revert": "Revert"
   },
   "form": {
     "path": "Path",
@@ -296,7 +331,9 @@
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "spreadsheet": "Table",
+    "presentation": "Presentation"
   },
   "fileCreateNewContent": {
     "fileDialogTitle": "Create a new file",
@@ -306,6 +343,11 @@
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "Scan Qr-Code"
+  },
+
   "fileRenameContent": {
     "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",
@@ -389,5 +431,43 @@
   },
   "groupsPage": {
     "classes": "Classes"
+  },
+  "schoolManagement": {
+    "title": "Class Room",
+    "lesson": "Lesson",
+    "enrol": "Enrol",
+    "passwords": "Initial-Passwords",
+    "addStudent": "Add Student",
+    "addGroup": "Add Group",
+    "share": "Austeilen",
+    "collect": "Einsammeln",
+    "showCollectedFiles": "Dateien zeigen",
+    "exam": "Prüfung",
+    "wifi": "WLAN",
+    "internet": "Internet",
+    "printer": "Drucker",
+    "class": "Classes",
+    "project": "Neues Projekt",
+    "projects": "Projects",
+    "availableGroups": "Alle available Groups at {{schoolname}} School",
+    "noDataAvailable": "No data available",
+    "myClasses": "My Classes",
+    "myGroups": "My Groups",
+    "myProjects": "My Projects",
+    "initialPasswordHint": "You can print the password of a class directly via the icon or select several classes to print them all at the same time.",
+    "projectPage": "Here you can create a new project. You can also see all projects that have already been created.",
+    "downloadInitPassword": "Download initial password",
+    "createProject": "Create Project",
+    "newProject": "New Project",
+    "createGroup": "Create Group",
+    "newGroup": "New Group"
+  },
+  "fileEditingPage": {
+    "fileNotFound": "File not found",
+    "closeFile": "Close file",
+    "goBack": "Go back",
+    "maximize": "Open full screen",
+    "minimize": "minimalize",
+    "close": "Close full screen"
   }
 }

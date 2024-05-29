@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import useFileManagerStore from '@/store/fileManagerStore';
+import { useEffect, useState } from 'react';
+import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import {
@@ -11,68 +11,83 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
+import { useSearchParams } from 'react-router-dom';
+import userStore from '@/store/userStore';
 
-const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
-  if (mounts.filename.includes('teachers')) {
+const findCorrespondingMountPointIcon = (mount: DirectoryFile) => {
+  if (mount.filename.includes('teachers')) {
     return TeacherIcon;
   }
-  if (mounts.filename.includes('projects')) {
+  if (mount.filename.includes('projects')) {
     return ProjectIcon;
   }
-  if (mounts.filename.includes('iso')) {
+  if (mount.filename.includes('iso')) {
     return IsoIcon;
   }
-  if (mounts.filename.includes('programs')) {
+  if (mount.filename.includes('programs')) {
     return ProgrammIcon;
   }
-  if (mounts.filename.includes('share')) {
+  if (mount.filename.includes('share')) {
     return ShareIcon;
   }
-  if (mounts.filename.includes('students')) {
+  if (mount.filename.includes('students')) {
     return StudentsIcon;
   }
   return FileSharingIcon;
 };
 
 const useFileSharingMenuConfig = () => {
-  const { fetchMountPoints, fetchFiles } = useFileManagerStore();
+  const { fetchFiles, mountPoints, setMountPoints, fetchMountPoints } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-
-  function constructFilePath(mountPoint: DirectoryFile, username: string) {
-    return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
-  }
-
-  type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { userInfo } = userStore();
+  const path = searchParams.get('path');
 
   useEffect(() => {
-    const fetchAndPrepareMenuItems = async () => {
+    const fetchAndSetMountPoints = async () => {
       try {
-        const userStorageString: string | null = sessionStorage.getItem('user-storage');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-        const { user } = userStorage.state;
-
-        const mounts: DirectoryFile[] = await fetchMountPoints();
-        const items = mounts.map((mountPoint) => ({
-          id: mountPoint.basename,
-          label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
-          icon: findCorrespondingMountPointIcon(mountPoint),
-          action: async () => {
-            try {
-              await fetchFiles(constructFilePath(mountPoint, user));
-            } catch (error) {
-              console.error('Error fetching files:', error);
-            }
-          },
-        }));
-        setMenuItems(items);
+        const mounts = await fetchMountPoints();
+        if (Array.isArray(mounts)) {
+          setMountPoints(mounts);
+        }
       } catch (error) {
         console.error('Error fetching mount points:', error);
       }
     };
+    if (mountPoints.length === 0) fetchAndSetMountPoints();
+  }, [mountPoints.length, fetchMountPoints, setMountPoints]);
 
-    fetchAndPrepareMenuItems().catch(() => {});
-  }, []);
+  useEffect(() => {
+    if (mountPoints.length === 0) return;
+
+    const items = mountPoints.map((mountPoint) => {
+      const isHomePoint = mountPoint.filename.includes(`${userInfo?.ldapGroups?.role}s`);
+      return {
+        id: mountPoint.basename,
+        label: isHomePoint ? 'home' : mountPoint.basename,
+        icon: findCorrespondingMountPointIcon(mountPoint),
+        action: () => {
+          try {
+            let newPath = mountPoint.filename.replace('/webdav', '');
+            if (isHomePoint) {
+              newPath = mountPoint.filename.replace(`/webdav/server/${userInfo?.ldapGroups?.school}/`, '');
+            }
+            searchParams.set('path', newPath);
+            setSearchParams(searchParams);
+          } catch (error) {
+            console.error('Error setting path:', error);
+          }
+        },
+      };
+    });
+    setMenuItems(items);
+  }, [mountPoints, userInfo?.ldapGroups?.role, userInfo?.ldapGroups?.school, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (path) {
+      fetchFiles(path).catch(console.error);
+    }
+  }, [path, fetchFiles]);
 
   const fileSharingMenuConfig = (): MenuBarEntryProps => ({
     menuItems,

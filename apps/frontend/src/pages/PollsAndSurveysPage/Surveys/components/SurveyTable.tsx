@@ -1,10 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
-import LoadingIndicator from "@/components/shared/LoadingIndicator.tsx";
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { SurveyUpdateSelection } from '@/pages/PollsAndSurveysPage/Surveys/SurveyPageStore';
-import UsersSurveysTypes from "@/pages/PollsAndSurveysPage/Surveys/backend-copy/users-surveys-types-enum.dto.ts";
+import UsersSurveysTypes from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/users-surveys-types-enum.dto';
 
 interface SurveyTableProps {
   surveyType: UsersSurveysTypes;
@@ -16,6 +17,9 @@ interface SurveyTableProps {
 
 const SurveyTable = (props: SurveyTableProps) => {
   const { surveyType, isLoading, title, surveys, updateSurveySelection } = props;
+
+  const { t } = useTranslation();
+
   if (isLoading) {
     return <LoadingIndicator isOpen={isLoading} />
   }
@@ -25,7 +29,7 @@ const SurveyTable = (props: SurveyTableProps) => {
       <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
         <h4>{title}</h4>
         <ScrollArea>
-          <div>EMPTY</div>
+          <div>{t('EMPTY')}</div>
         </ScrollArea>
       </div>
     );

@@ -1,12 +1,21 @@
 FROM node:18-alpine
 
-USER node
+RUN mkdir -p /opt/edulution/public/downloads
+
 WORKDIR /opt/edulution/api
 
 ENV NODE_ENV production
-COPY --chown=node:node ./dist/apps/api/* .
-RUN npm i
+
+COPY ./dist/apps/api/ ./
+
+USER root
+
+RUN npm ci
+
+RUN chown -R node:node /opt/edulution/api/
+
+USER node
 
 EXPOSE 3000
 
-CMD [ "node", "./main.js" ]
+CMD ["node", "./main.js"]

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
@@ -30,6 +31,8 @@ const PollTable = (props: PollTableProps) => {
     // deletePoll,
   } = props;
 
+  const { t } = useTranslation();
+
   if (isLoading) {
     return <LoadingIndicator isOpen={isLoading}/>
   }
@@ -39,7 +42,7 @@ const PollTable = (props: PollTableProps) => {
       <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
         <h4>{title}</h4>
         <ScrollArea>
-          <div>EMPTY</div>
+          <div>{t('EMPTY')}</div>
         </ScrollArea>
       </div>
     );

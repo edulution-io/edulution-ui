@@ -1,16 +1,22 @@
 import React, { useEffect } from 'react';
-import Router from '@/routes/Router';
+import AppRouter from '@/routes/AppRouter';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';
+import NativeFrames from '@/components/layout/Native/NativeIframes';
+import useLmnUserStore from '@/store/lmnApiStore';
+import lmnApi from '@/api/lmnApi';
 
 const App = () => {
   const { lang } = useLanguage();
   const { token } = useUserStore();
+  const { lmnApiToken } = useLmnUserStore();
 
+  lmnApi.defaults.headers.common['x-api-key'] = lmnApiToken;
   eduApi.defaults.headers.Authorization = `Bearer ${token}`;
 
   useEffect(() => {
@@ -21,7 +27,7 @@ const App = () => {
     authority: `${window.location.origin}/auth/realms/${import.meta.env.VITE_AUTH_REALM}`,
     client_id: import.meta.env.VITE_AUTH_CLIENT_ID as string,
     client_secret: import.meta.env.VITE_AUTH_CLIENT_SECRET as string,
-    redirect_uri: '',
+    redirect_uri: `${window.location.origin}`,
     loadUserInfo: true,
     automaticSilentRenew: true,
   };
@@ -29,7 +35,9 @@ const App = () => {
   return (
     <AuthProvider {...oidcConfig}>
       <BBBFrame />
-      <Router />
+      <AppRouter />
+      <EmbeddedIframes />
+      <NativeFrames />
     </AuthProvider>
   );
 };

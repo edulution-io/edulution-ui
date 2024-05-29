@@ -7,6 +7,10 @@ class CreateUserDto {
 
   roles: string[];
 
+  mfaEnabled?: boolean;
+
+  isTotpSet?: boolean;
+
   usersPolls: {
     openPolls: string[];
     createdPolls: string[];

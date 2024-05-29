@@ -10,6 +10,9 @@
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
   },
+  "auth": {
+    "totp": { "invalid": "Ungültiger Token", "setup": { "success": "TOTP-Authentifizierung erfolgreich gesetzt" } }
+  },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
     "sidebar": "Ticketsystem"
@@ -86,6 +89,7 @@
   "add": "Hinzufügen",
   "DATE": "Datum",
   "days": "Tage",
+  "EMPTY": "LEER",
   "TEXT": "Text",
   "RATING": "Bewertung",
   "save": "Speichern",
@@ -102,8 +106,8 @@
     }
   },
   "survey": {
-    "title": "UMFRAGE",
-    "sidebar": "Umfrage",
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
     "description": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
     "participate": "Teilnehmen",
     "participation": "Teilnahme an der Umfrage",
@@ -111,7 +115,7 @@
     "openSurveys": "Umfragen die noch offen sind",
     "createdSurveys": "Selbst erstellte Umfragen",
     "answeredSurveys": "Umfragen an denen Sie teilgenommen haben",
-    "allSurveys": "Als Admin ist die komplette Liste sichtbar",
+    "allSurveys": "Umfragen Manager",
     "load": "Lade",
     "result": "Abgabe",
     "resulting": "Ihre hochgeladene Abgabe",
@@ -159,7 +163,7 @@
     "openPolls": "Abstimmungen die noch offen sind",
     "createdPolls": "Selbst erstellte Abstimmungen",
     "answeredPolls": "Abstimmungen an denen Sie teilgenommen haben",
-    "allPolls": "Als Admin ist die komplette Liste sichtbar",
+    "allPolls": "Abstimmungs Manager",
     "load": "Lade",
     "result": "Abgabe",
     "resulting": "Ihre hochgeladene Abgabe",
@@ -181,8 +185,16 @@
     "sidebar": "Standortverbindung"
   },
   "desktopdeployment": {
-    "title": "DESKTOP-BEREITSTELLUNG",
-    "sidebar": "Desktop-Bereitstellung"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
+    "sidebar": "Desktop",
+    "connect": "Verbinden",
+    "close": "Verbindung schließen",
+    "error": {
+      "title": "Verbindungsfehler",
+      "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -191,6 +203,10 @@
   "mobiledevices": {
     "title": "MOBILE ENDGERÄTE",
     "sidebar": "Mobile Endgeräte"
+  },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
   },
   "virtualization": {
     "title": "VIRTUALISATION",
@@ -219,6 +235,13 @@
       "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
     }
   },
+  "usersettings": {
+    "title": "BENUTZER",
+    "sidebar": "Einstellungen",
+    "security": "Sicherheit",
+    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
+    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+  },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
@@ -233,7 +256,18 @@
   "students": "Schüler",
   "login": {
     "forgot_password": "Passwort vergessen?",
-    "remember_me": "Merken"
+    "remember_me": "Eingeloggt bleiben",
+    "username": {
+      "too_long": "Benutzername zu lang",
+      "required": "Bitte Benutzername eingeben."
+    },
+    "password": {
+      "too_long": "Passwort zu lang",
+      "required": "Bitte Passwort eingeben."
+    },
+    "totp": {
+      "invalid": "Ungültiger Token!"
+    }
   },
   "common": {
     "add": "Hinzufügen",
@@ -247,7 +281,9 @@
     "password": "Passwort",
     "loading": "Laden...",
     "overview": "Übersicht",
-    "create": "Erstellen"
+    "create": "Erstellen",
+    "revert": "Zurücksetzen",
+    "close": "Schließen"
   },
   "form": {
     "path": "Link",
@@ -297,8 +333,15 @@
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "spreadsheet": "Tabelle",
+    "presentation": "Präsentation"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "QR-Code scannen"
+  },
+
   "fileCreateNewContent": {
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
@@ -389,5 +432,45 @@
   },
   "groupsPage": {
     "classes": "Klassen"
+  },
+
+  "schoolManagement": {
+    "title": "Klassenzimmer",
+    "lesson": "Unterricht",
+    "enrol": "Einschreiben",
+    "passwords": "Erst-Passwörter",
+    "addStudent": "Schüler hinzufügen",
+    "addGroup": "Gruppe hinzufügen",
+    "share": "Austeilen",
+    "collect": "Einsammeln",
+    "showCollectedFiles": "Dateien zeigen",
+    "exam": "Prüfung",
+    "wifi": "WLAN",
+    "internet": "Internet",
+    "printer": "Drucker",
+    "class": "Klassen",
+    "projects": "Projekte",
+    "project": "Projekt anlegen",
+    "availableGroups": "Alle verfügbaren Gruppen in der {{schoolname}} Schule",
+    "noDataAvailable": "Keine Daten verfügbar",
+    "myClasses": "Meine Klassen",
+    "myGroups": "Meine Gruppen",
+    "myProjects": "Meine Projekte",
+    "initialPasswordHint": "Sie können das Passwort einer Klasse direkt über das Symbol drucken oder mehrere Klassen auswählen, um alle gleichzeitig auszudrucken.",
+    "downloadInitPassword": "Erst-Passwörter herunterladen",
+    "projectPage": "Hier können Sie ein neues Projekt anlegen sowie Ihre aktuellen Projekte sehen.",
+    "createProject": "Projekt anlegen",
+    "newProject": "Neues Projekt",
+    "createGroup": "Gruppe anlegen",
+    "newGroup": "Neue Gruppe"
+  },
+  "fileEditingPage": {
+    "fileNotFound": "Datei nicht gefunden",
+    "closeFile": "Datei schließen",
+    "goBack": "Zurück",
+    "closeFullScreen": "Vollbild schließen",
+    "maximize": "Vollbild öffnen",
+    "minimize": "Minimieren",
+    "close": "Vollbild schließen"
   }
 }

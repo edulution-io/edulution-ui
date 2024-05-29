@@ -1,22 +1,18 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from 'react-oidc-context';
 
-import backgroundImage from '@/assets/background.jpg';
+import useUserStore from '@/store/userStore';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import Sidebar from '../ui/Sidebar';
 
 const BlankLayout: React.FC<PropsWithChildren> = () => {
-  const auth = useAuth();
   const { pathname } = useLocation();
   const isMainPage = pathname === '/';
+  const { isAuthenticated } = useUserStore();
 
   return (
-    <div
-      className="flex bg-cover bg-center opacity-90"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
+    <div className="flex">
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
         <Header isLogoShown={!isMainPage} />
         <main className="flex-1">
@@ -24,7 +20,7 @@ const BlankLayout: React.FC<PropsWithChildren> = () => {
         </main>
         <Footer />
       </div>
-      {auth.isAuthenticated ? <Sidebar /> : null}
+      {isAuthenticated ? <Sidebar /> : null}
     </div>
   );
 };

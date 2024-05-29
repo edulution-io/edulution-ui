@@ -9,27 +9,37 @@
 @tailwind utilities;
 
 @keyframes slideInFromRight {
-    0% {
-        transform: translateX(+100%);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  0% {
+    transform: translateX(+100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .alert-enter {
-    animation: slideInFromRight 0.5s forwards;
+  animation: slideInFromRight 0.5s forwards;
 }
 
 .alert-exit {
-    animation: slideInFromRight 0.5s reverse forwards;
-    animation-delay: 4.5s;
+  animation: slideInFromRight 0.5s reverse forwards;
+  animation-delay: 4.5s;
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
+}
+
+.bg-global {
+  @apply bg-cover bg-center bg-no-repeat;
+  background-image: url('./assets/background.jpg');
+}
+
+iframe {
+  @apply bg-cover bg-center bg-no-repeat;
+  background-image: url('./assets/background.jpg');
 }
