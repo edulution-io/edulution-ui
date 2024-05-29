@@ -185,7 +185,7 @@ const LoginPage: React.FC = () => {
                   onComplete={(otp) => handleCheckTotp(otp)}
                 />
               </div>
-              {error && <p className="text-red-600">{t('login.totp.invalid')}</p>}
+              {error ? <p className="text-red-600">{t('login.totp.invalid')}</p> : <p>{t('login.totp.description')}</p>}
             </>
           ) : (
             <>
@@ -206,9 +206,22 @@ const LoginPage: React.FC = () => {
             </div> */}
           </div>
           {isEnterTotpVisible ? (
-            <>
+            <div className="flex justify-around">
               <Button
-                className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
+                className="w-1/4 justify-center pt-4 text-white shadow-xl"
+                type="button"
+                variant="btn-security"
+                size="lg"
+                onClick={() => {
+                  setError(null);
+                  setIsEnterTotpVisible(false);
+                  cleanAllStores();
+                }}
+              >
+                {t('login.totp.back')}
+              </Button>
+              <Button
+                className="w-1/4 justify-center pt-4 text-white shadow-xl"
                 type="button"
                 variant="btn-security"
                 size="lg"
@@ -217,20 +230,7 @@ const LoginPage: React.FC = () => {
               >
                 {isLoading ? t('common.loading') : t('common.login')}
               </Button>
-
-              <Button
-                className="mx-auto mt-2 w-full justify-center pt-4 text-white shadow-xl"
-                type="button"
-                variant="btn-security"
-                size="lg"
-                onClick={() => {
-                  setIsEnterTotpVisible(false);
-                  cleanAllStores();
-                }}
-              >
-                {t('login.totp.back')}
-              </Button>
-            </>
+            </div>
           ) : (
             <Button
               className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
