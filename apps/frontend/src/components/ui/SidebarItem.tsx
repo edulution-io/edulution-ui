@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import { getFromPathName } from '@/utils/common';
+import { useTranslation } from 'react-i18next';
 
 type SidebarMenuItem = {
   title: string;
@@ -12,18 +13,23 @@ type SidebarMenuItem = {
 };
 
 interface SidebarItemProps {
+  userRole: string;
   menuItem: SidebarMenuItem;
   isDesktop: boolean;
   pathname: string;
   translate: number;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname, translate }) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop, pathname, translate }) => {
+  const { t } = useTranslation();
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
 
   const rootPathName = `/${getFromPathName(pathname, 1)}`;
+
+  if (userRole !== 'globaladministrator' && menuItem.title === t('settings.sidebar')) return null;
+  if (userRole === 'student' && menuItem.title === t('schoolmanagement.sidebar')) return null;
 
   useEffect(() => {
     if (buttonRef.current == null) return;
