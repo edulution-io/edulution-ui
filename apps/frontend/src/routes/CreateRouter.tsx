@@ -18,7 +18,7 @@ import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
-import Whiteboard from '@/pages/Whiteboard/Whiteboard.tsx';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -47,7 +47,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
+const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole: string) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
@@ -78,23 +78,27 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
               element={<UserSettings />}
             />
 
-            <Route
-              path="/schoolmanagement"
-              element={<SchoolManagementPage />}
-            />
+            {userRole !== 'student' && (
+              <Route
+                path="/schoolmanagement"
+                element={<SchoolManagementPage />}
+              />
+            )}
 
-            <Route
-              path="settings"
-              element={<AppConfigPage />}
-            >
-              {appConfig.map((item) => (
-                <Route
-                  key={item.name}
-                  path={item.name}
-                  element={<AppConfigPage />}
-                />
-              ))}
-            </Route>
+            {userRole === 'globaladministrator' && (
+              <Route
+                path="settings"
+                element={<AppConfigPage />}
+              >
+                {appConfig.map((item) => (
+                  <Route
+                    key={item.name}
+                    path={item.name}
+                    element={<AppConfigPage />}
+                  />
+                ))}
+              </Route>
+            )}
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.NATIVE ? (
                 <Route

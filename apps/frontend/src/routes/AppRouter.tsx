@@ -10,7 +10,8 @@ interface AppRouterProps {}
 const AppRouter: React.FC<AppRouterProps> = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setIsLoggedInInEduApi } = useUserStore();
+  const { isAuthenticated, setIsLoggedInInEduApi, userInfo } = useUserStore();
+  const userRole = userInfo?.ldapGroups?.role ?? '';
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -40,7 +41,7 @@ const AppRouter: React.FC<AppRouterProps> = () => {
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={createRouter(isAuthenticated, appConfig)} />;
+  return <RouterProvider router={createRouter(isAuthenticated, appConfig, userRole)} />;
 };
 
 export default AppRouter;
