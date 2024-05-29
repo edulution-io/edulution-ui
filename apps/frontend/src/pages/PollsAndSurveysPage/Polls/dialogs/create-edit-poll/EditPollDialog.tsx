@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,19 +28,9 @@ interface EditPollDialogProps {
 }
 
 const EditPollDialog = (props: EditPollDialogProps) => {
-  const {
-    trigger,
-    poll,
-    isOpenEditPollDialog,
-    openEditPollDialog,
-    closeEditPollDialog
-  } = props;
+  const { trigger, poll, isOpenEditPollDialog, openEditPollDialog, closeEditPollDialog } = props;
 
-  const {
-    isSaving,
-    commitPoll,
-    error,
-  } = useEditPollDialogStore();
+  const { isSaving, commitPoll, error } = useEditPollDialogStore();
 
   const { user } = useUserStore();
 
@@ -89,16 +79,9 @@ const EditPollDialog = (props: EditPollDialogProps) => {
   });
 
   const onSubmit = async () => {
-
     console.log('onSubmit');
 
-    const {
-      pollName,
-      pollFormula,
-      participants,
-      saveNo,
-      created
-    } = form.getValues();
+    const { pollName, pollFormula, participants, saveNo, created } = form.getValues();
 
     if (!pollName || !pollFormula || !participants) {
       throw new Error('Invalid form data');
@@ -115,7 +98,10 @@ const EditPollDialog = (props: EditPollDialogProps) => {
     if (isSaving) return <LoadingIndicator isOpen={isSaving} />;
     return (
       <>
-        <EditPollDialogBody userName={user} form={form} />
+        <EditPollDialogBody
+          userName={user}
+          form={form}
+        />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
             {t('poll.error')}: {error.message}

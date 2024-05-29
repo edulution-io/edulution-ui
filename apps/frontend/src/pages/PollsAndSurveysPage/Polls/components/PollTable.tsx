@@ -16,18 +16,12 @@ interface PollTableProps {
 }
 
 const PollTable = (props: PollTableProps) => {
-  const {
-    pollType,
-    polls,
-    title,
-    isLoading,
-    updatePollSelection,
-  } = props;
+  const { pollType, polls, title, isLoading, updatePollSelection } = props;
 
   const { t } = useTranslation();
 
   if (isLoading) {
-    return <LoadingIndicator isOpen={isLoading}/>
+    return <LoadingIndicator isOpen={isLoading} />;
   }
 
   if (polls.length === 0) {
@@ -63,7 +57,7 @@ const PollTable = (props: PollTableProps) => {
                 key={`poll_row_-_${poll.pollName}`}
                 className="cursor-pointer"
                 onClick={() => {
-                  updatePollSelection({poll, pollType});
+                  updatePollSelection({ poll, pollType });
                 }}
               >
                 <TableCell className="text-white">{pl.title}</TableCell>

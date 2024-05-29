@@ -4,7 +4,7 @@ interface EditPollFormData {
   pollName: string;
   pollFormula: string | undefined;
   participants: Attendee[];
-  saveNo: number | undefined,
+  saveNo: number | undefined;
   created: Date;
 }
 

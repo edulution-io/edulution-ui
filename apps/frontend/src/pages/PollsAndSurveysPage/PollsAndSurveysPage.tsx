@@ -1,5 +1,5 @@
 import React from 'react';
-import useQuestionsAndExercisesStore, { PageView } from "@/pages/PollsAndSurveysPage/PollsAndSurveysPageStore.ts";
+import useQuestionsAndExercisesStore, { PageView } from '@/pages/PollsAndSurveysPage/PollsAndSurveysPageStore.ts';
 import SurveyPage from '@/pages/PollsAndSurveysPage/Surveys/SurveyPage';
 import PollPage from '@/pages/PollsAndSurveysPage/Polls/PollPage';
 

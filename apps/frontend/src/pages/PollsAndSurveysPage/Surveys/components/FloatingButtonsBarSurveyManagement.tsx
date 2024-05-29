@@ -4,10 +4,8 @@ import UsersSurveysTypes from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/
 import FloatingButtonCreateSurvey from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/Create';
 import FloatingButtonDeleteSurvey from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/Delete';
 import FloatingButtonEditSurvey from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/Edit';
-import FloatingButtonParticipateSurvey
-  from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/Participate';
-import FloatingButtonOpenAnswerSurvey
-  from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/OpenAnswer';
+import FloatingButtonParticipateSurvey from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/Participate';
+import FloatingButtonOpenAnswerSurvey from '@/pages/PollsAndSurveysPage/Surveys/components/floating-buttons/OpenAnswer';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
 
 interface FloatingButtonsBarSurveyManagementProps {
@@ -40,24 +38,24 @@ const FloatingButtonsBarSurveyManagement = (props: FloatingButtonsBarSurveyManag
   } = props;
 
   const AddButton = (
-    <FloatingButtonCreateSurvey setSelectedSurvey={ setSelectedSurvey } openEditSurveyDialog={ openEditSurveyDialog } />
-  )
+    <FloatingButtonCreateSurvey
+      setSelectedSurvey={setSelectedSurvey}
+      openEditSurveyDialog={openEditSurveyDialog}
+    />
+  );
 
   const getOtherButtons = () => {
     switch (selectedType) {
       case UsersSurveysTypes.OPEN:
-        return (
-              <FloatingButtonParticipateSurvey openParticipateSurveyDialog={openParticipateSurveyDialog}/>
-        );
+        return <FloatingButtonParticipateSurvey openParticipateSurveyDialog={openParticipateSurveyDialog} />;
       case UsersSurveysTypes.ALL:
       case UsersSurveysTypes.CREATED:
         return (
           <>
-            <FloatingButtonParticipateSurvey openParticipateSurveyDialog={openParticipateSurveyDialog}/>
-            <FloatingButtonEditSurvey openEditSurveyDialog={openEditSurveyDialog}/>
+            <FloatingButtonParticipateSurvey openParticipateSurveyDialog={openParticipateSurveyDialog} />
+            <FloatingButtonEditSurvey openEditSurveyDialog={openEditSurveyDialog} />
             <FloatingButtonDeleteSurvey
               deleteSurvey={deleteSurvey}
-
               shouldRefreshOpen={shouldRefreshOpen}
               shouldRefreshParticipated={shouldRefreshParticipated}
               shouldRefreshCreated={shouldRefreshCreated}
@@ -66,18 +64,16 @@ const FloatingButtonsBarSurveyManagement = (props: FloatingButtonsBarSurveyManag
           </>
         );
       case UsersSurveysTypes.ANSWERED:
-        return (
-              <FloatingButtonOpenAnswerSurvey openSurveyResultsDialog={openSurveyResultsDialog}/>
-        );
+        return <FloatingButtonOpenAnswerSurvey openSurveyResultsDialog={openSurveyResultsDialog} />;
       default:
         return null;
     }
-  }
+  };
   const OtherButtons = getOtherButtons();
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-8 bg-opacity-90 flex flex-row items-center space-x-8">
+      <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
         {AddButton}
         {OtherButtons}
       </div>

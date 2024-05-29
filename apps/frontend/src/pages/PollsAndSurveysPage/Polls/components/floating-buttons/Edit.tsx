@@ -8,7 +8,7 @@ interface FloatingButtonEditPollProps {
 }
 
 const FloatingButtonEditPoll = (props: FloatingButtonEditPollProps) => {
-  const {openEditPollDialog} = props;
+  const { openEditPollDialog } = props;
 
   return (
     <FloatingActionButton
@@ -17,6 +17,6 @@ const FloatingButtonEditPoll = (props: FloatingButtonEditPollProps) => {
       onClick={openEditPollDialog}
     />
   );
-}
+};
 
 export default FloatingButtonEditPoll;

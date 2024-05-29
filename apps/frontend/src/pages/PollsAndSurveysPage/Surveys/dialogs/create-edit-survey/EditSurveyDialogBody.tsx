@@ -4,8 +4,7 @@ import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchU
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SurveyEditor from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/SurveyEditor.tsx';
-import useEditSurveyDialogStore
-  from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogStore';
+import useEditSurveyDialogStore from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogStore';
 
 interface EditSurveyDialogBodyProps {
   userName: string;
@@ -14,7 +13,9 @@ interface EditSurveyDialogBodyProps {
 }
 
 const EditSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
-  const { userName, form, // saveSurveyLocally
+  const {
+    userName,
+    form, // saveSurveyLocally
   } = props;
   const { isSaving, searchAttendees } = useEditSurveyDialogStore();
 
@@ -36,13 +37,11 @@ const EditSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   return (
     <>
       <SearchUsersOrGroups
-        value={form.getValues("participants")}
+        value={form.getValues('participants')}
         onSearch={onAttendeesSearch}
         onChange={handleAttendeesChange}
       />
-      <SurveyEditor
-        form={form}
-      />
+      <SurveyEditor form={form} />
     </>
   );
 };

@@ -4,7 +4,7 @@ import eduApi from '@/api/eduApi';
 import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
 import handleApiError from '@/utils/handleApiError';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
-import commitPollUpdate from "@/pages/PollsAndSurveysPage/Polls/components/dto/commit-poll-update.dto.ts";
+import commitPollUpdate from '@/pages/PollsAndSurveysPage/Polls/components/dto/commit-poll-update.dto.ts';
 
 interface EditPollDialogStore {
   isSaving: boolean;

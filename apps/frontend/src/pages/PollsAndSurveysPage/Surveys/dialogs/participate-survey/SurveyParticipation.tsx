@@ -4,7 +4,7 @@ import { Survey } from 'survey-react-ui';
 import '@/pages/PollsAndSurveysPage/Surveys/components/theme/creator.min.css';
 import '@/pages/PollsAndSurveysPage/Surveys/components/theme/default2.min.css';
 import { defaultSurveyTheme } from '@/pages/PollsAndSurveysPage/Surveys/components/theme/survey-theme.ts';
-import {UseFormReturn} from "react-hook-form";
+import { UseFormReturn } from 'react-hook-form';
 
 interface SurveyParticipationProps {
   surveyName: string;

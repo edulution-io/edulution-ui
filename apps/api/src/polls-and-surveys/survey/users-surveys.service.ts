@@ -148,7 +148,8 @@ class UsersSurveysService {
       throw new Error('User not found');
     }
 
-    const answeredSurvey = existingUser.usersSurveys?.answeredSurveys.find((answer) => answer.surveyname === surveyName) || undefined;
+    const answeredSurvey =
+      existingUser.usersSurveys?.answeredSurveys.find((answer) => answer.surveyname === surveyName) || undefined;
     return answeredSurvey?.answer;
   }
 }

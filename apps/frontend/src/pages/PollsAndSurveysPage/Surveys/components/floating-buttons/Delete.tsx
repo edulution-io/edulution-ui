@@ -26,15 +26,15 @@ const FloatingButtonDeleteSurvey = (props: FloatingButtonDeleteSurveyProps) => {
     <FloatingActionButton
       icon={FiDelete}
       text={t('survey.delete')}
-      onClick={ () => {
+      onClick={() => {
         deleteSurvey();
         shouldRefreshOpen ? shouldRefreshOpen(true) : null;
         shouldRefreshParticipated ? shouldRefreshParticipated(true) : null;
         shouldRefreshCreated ? shouldRefreshCreated(true) : null;
         shouldRefreshGlobalList ? shouldRefreshGlobalList(true) : null;
-      } }
+      }}
     />
   );
-}
+};
 
 export default FloatingButtonDeleteSurvey;

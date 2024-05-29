@@ -2,14 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import SurveySection from '@/pages/PollsAndSurveysPage/Surveys/components/SurveySection.tsx';
 import UsersSurveysTypes from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/users-surveys-types-enum.dto.ts';
-import FloatingButtonsBarSurveyManagement
-  from '@/pages/PollsAndSurveysPage/Surveys/components/FloatingButtonsBarSurveyManagement';
+import FloatingButtonsBarSurveyManagement from '@/pages/PollsAndSurveysPage/Surveys/components/FloatingButtonsBarSurveyManagement';
 import useSurveyPageStore from '@/pages/PollsAndSurveysPage/Surveys/SurveyPageStore';
 import EditSurveyDialog from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialog';
-import ParticipateSurveyDialog
-  from '@/pages/PollsAndSurveysPage/Surveys/dialogs/participate-survey/ParticipateSurveyDialog';
-import ShowSurveyAnswerDialog
-  from '@/pages/PollsAndSurveysPage/Surveys/dialogs/show-submitted-answer/ShowSurveyAnswerDialog.tsx';
+import ParticipateSurveyDialog from '@/pages/PollsAndSurveysPage/Surveys/dialogs/participate-survey/ParticipateSurveyDialog';
+import ShowSurveyAnswerDialog from '@/pages/PollsAndSurveysPage/Surveys/dialogs/show-submitted-answer/ShowSurveyAnswerDialog.tsx';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 const SurveyPage = () => {
@@ -52,23 +49,21 @@ const SurveyPage = () => {
         <SurveySection
           surveyType={UsersSurveysTypes.CREATED}
           title={t('survey.createdSurveys')}
-
           updateSurveySelection={updateSurveySelection}
           shouldRefresh={refreshCreated}
         />
         <SurveySection
           surveyType={UsersSurveysTypes.ANSWERED}
           title={t('survey.answeredSurveys')}
-
           updateSurveySelection={updateSurveySelection}
           shouldRefresh={refreshParticipated}
         />
-         <SurveySection
-           surveyType={UsersSurveysTypes.ALL}
-           title={t('survey.allSurveys')}
-           updateSurveySelection={updateSurveySelection}
-           shouldRefresh={refreshGlobalList}
-         />
+        <SurveySection
+          surveyType={UsersSurveysTypes.ALL}
+          title={t('survey.allSurveys')}
+          updateSurveySelection={updateSurveySelection}
+          shouldRefresh={refreshGlobalList}
+        />
       </ScrollArea>
       <EditSurveyDialog
         survey={selectedSurvey}
@@ -99,7 +94,6 @@ const SurveyPage = () => {
         openEditSurveyDialog={openEditSurveyDialog}
         openParticipateSurveyDialog={openParticipateSurveyDialog}
         openSurveyResultsDialog={openSurveyResultsDialog}
-
         shouldRefreshOpen={shouldRefreshOpen}
         shouldRefreshParticipated={shouldRefreshParticipated}
         shouldRefreshCreated={shouldRefreshCreated}
@@ -107,6 +101,6 @@ const SurveyPage = () => {
       />
     </>
   );
-}
+};
 
 export default SurveyPage;

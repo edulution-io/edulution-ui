@@ -8,7 +8,6 @@ async function pushAnswer(
   answer: string,
   options?: CompleteEvent,
 ): Promise<SurveyAnswer | undefined> {
-
   console.log('pushAnswer::surveyName', surveyName, 'answer', answer, 'options', options);
 
   try {

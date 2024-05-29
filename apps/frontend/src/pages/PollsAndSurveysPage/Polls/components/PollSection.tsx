@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Poll} from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
+import React, { useEffect, useState } from 'react';
+import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
 import UsersPollsTypes from '@/pages/PollsAndSurveysPage/Polls/backend-copy/users-polls-types-enum.dto';
-import {PollUpdateSelection} from '@/pages/PollsAndSurveysPage/Polls/PollPageStore';
+import { PollUpdateSelection } from '@/pages/PollsAndSurveysPage/Polls/PollPageStore';
 import PollTable from '@/pages/PollsAndSurveysPage/Polls/components/PollTable';
 import getUsersPolls from '@/pages/PollsAndSurveysPage/Polls/components/dto/get-users-polls.dto';
 
@@ -16,12 +16,7 @@ interface PollTableProps {
 }
 
 const PollSection = (props: PollTableProps) => {
-  const {
-    pollType,
-    title,
-    updatePollSelection,
-    shouldRefresh,
-  } = props;
+  const { pollType, title, updatePollSelection, shouldRefresh } = props;
 
   const [polls, setPolls] = useState<Poll[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,17 +37,17 @@ const PollSection = (props: PollTableProps) => {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
     fetchPolls();
   }, [shouldRefresh]);
 
   return (
     <PollTable
-      pollType={ pollType }
-      polls={ polls }
-      title={ title }
-      isLoading={ isLoading }
-      updatePollSelection={ updatePollSelection }
+      pollType={pollType}
+      polls={polls}
+      title={title}
+      isLoading={isLoading}
+      updatePollSelection={updatePollSelection}
     />
   );
 };

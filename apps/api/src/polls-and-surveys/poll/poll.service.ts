@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {Poll, PollChoice, PollDocument} from './types/poll.schema';
+import { Poll, PollChoice, PollDocument } from './types/poll.schema';
 import CreatePollDto from './dto/create-poll.dto';
 import PushChoiceDto from './dto/push-choice.dto';
 import UpdatePollDto from './dto/update-poll.dto';
@@ -31,11 +31,12 @@ class PollService {
   }
 
   async updateOrCreatePoll(createPollDto: CreatePollDto): Promise<Poll | null> {
-    const poll = await this.pollModel.findOneAndUpdate<Poll>(
-      { pollName: createPollDto.pollName },
-      { ...createPollDto,
-        created: createPollDto.created ? createPollDto.created.toString() : new Date().toString(),
-      } ).exec();
+    const poll = await this.pollModel
+      .findOneAndUpdate<Poll>(
+        { pollName: createPollDto.pollName },
+        { ...createPollDto, created: createPollDto.created ? createPollDto.created.toString() : new Date().toString() },
+      )
+      .exec();
 
     if (poll != null) {
       return poll;
@@ -46,7 +47,7 @@ class PollService {
 
   async addUserChoice(pushChoiceDto: PushChoiceDto): Promise<Poll | null> {
     const { pollName, choice, userLabel, userName } = pushChoiceDto;
-    const existingPoll =  await this.pollModel.findOne<Poll>({ pollName: pollName }).exec();
+    const existingPoll = await this.pollModel.findOne<Poll>({ pollName: pollName }).exec();
     if (!existingPoll) {
       throw new Error('Poll not found');
     }
@@ -64,7 +65,7 @@ class PollService {
   }
 
   async getChoices(pollName: string): Promise<PollChoice[] | undefined> {
-    const existingPoll =  await this.pollModel.findOne<Poll>({ pollName: pollName }).exec();
+    const existingPoll = await this.pollModel.findOne<Poll>({ pollName: pollName }).exec();
     if (!existingPoll) {
       throw new Error('Poll not found');
     }

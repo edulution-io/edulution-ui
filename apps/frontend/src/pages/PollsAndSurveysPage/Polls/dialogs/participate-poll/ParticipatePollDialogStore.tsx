@@ -25,7 +25,12 @@ const useParticipatePollDialogStore = create<ParticipatePollDialogStore>((set) =
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
-  commitChoice: async (pollName: string, choice: string, userLabel?: string, options?: CompleteEvent): Promise<void> => {
+  commitChoice: async (
+    pollName: string,
+    choice: string,
+    userLabel?: string,
+    options?: CompleteEvent,
+  ): Promise<void> => {
     set({ isAnswering: true });
     try {
       await pushChoice(pollName, choice, userLabel, options);

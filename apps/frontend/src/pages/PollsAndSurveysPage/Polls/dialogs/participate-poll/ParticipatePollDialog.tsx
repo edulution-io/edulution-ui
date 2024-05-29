@@ -6,13 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
-import ParticipatePollFormData
-  from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/participate-poll-form';
-import ParticipatePollDialogBody
-  from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/ParticipatePollDialogBody';
-import useParticipatePollDialogStore
-  from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/ParticipatePollDialogStore';
-
+import ParticipatePollFormData from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/participate-poll-form';
+import ParticipatePollDialogBody from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/ParticipatePollDialogBody';
+import useParticipatePollDialogStore from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/ParticipatePollDialogStore';
 
 interface ParticipatePollDialogProps {
   isOpenParticipatePollDialog: boolean;
@@ -39,11 +35,7 @@ const ParticipatePollDialog = (props: ParticipatePollDialogProps) => {
     poll,
   } = props;
 
-  const {
-    isAnswering,
-    commitChoice,
-    error,
-  } = useParticipatePollDialogStore();
+  const { isAnswering, commitChoice, error } = useParticipatePollDialogStore();
 
   const { t } = useTranslation();
 
@@ -68,7 +60,7 @@ const ParticipatePollDialog = (props: ParticipatePollDialogProps) => {
 
     console.log('choice', choice);
 
-    if(!choice) {
+    if (!choice) {
       throw new Error('Invalid form data');
     }
 
@@ -82,18 +74,18 @@ const ParticipatePollDialog = (props: ParticipatePollDialogProps) => {
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const getDialogBody = () => {
-    if(!poll) return null;
+    if (!poll) return null;
     const pollJSON = poll.poll;
     if (isAnswering) return <LoadingIndicator isOpen={isAnswering} />;
     return (
       <>
         <ParticipatePollDialogBody
-          pollName={ poll.pollName }
-          pollString={ pollJSON }
-          closeParticipatePollDialog={ closeParticipatePollDialog }
-          isAnswering={ isAnswering }
-          handleFormSubmit={ handleFormSubmit }
-          form={ form }
+          pollName={poll.pollName}
+          pollString={pollJSON}
+          closeParticipatePollDialog={closeParticipatePollDialog}
+          isAnswering={isAnswering}
+          handleFormSubmit={handleFormSubmit}
+          form={form}
         />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">

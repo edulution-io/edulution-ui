@@ -8,11 +8,9 @@ import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
-import useEditSurveyDialogStore
-  from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogStore';
+import useEditSurveyDialogStore from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogStore';
 import EditSurveyFormData from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/edit-survey-form';
-import EditSurveyDialogBody
-  from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogBody';
+import EditSurveyDialogBody from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogBody';
 import useUserStore from '@/store/userStore';
 
 const createSurveyName = () => {
@@ -30,19 +28,9 @@ interface EditSurveyDialogProps {
 }
 
 const EditSurveyDialog = (props: EditSurveyDialogProps) => {
-  const {
-    trigger,
-    survey,
-    isOpenEditSurveyDialog,
-    openEditSurveyDialog,
-    closeEditSurveyDialog
-  } = props;
+  const { trigger, survey, isOpenEditSurveyDialog, openEditSurveyDialog, closeEditSurveyDialog } = props;
 
-  const {
-    isSaving,
-    commitSurvey,
-    error,
-  } = useEditSurveyDialogStore();
+  const { isSaving, commitSurvey, error } = useEditSurveyDialogStore();
 
   const { user } = useUserStore();
 
@@ -92,13 +80,7 @@ const EditSurveyDialog = (props: EditSurveyDialogProps) => {
   });
 
   const onSubmit = async () => {
-    const {
-      surveyname,
-      survey,
-      participants,
-      saveNo,
-      created
-    } = form.getValues();
+    const { surveyname, survey, participants, saveNo, created } = form.getValues();
 
     if (!surveyname || !survey || !participants) {
       throw new Error('Invalid form data');
@@ -114,7 +96,10 @@ const EditSurveyDialog = (props: EditSurveyDialogProps) => {
     if (isSaving) return <LoadingIndicator isOpen={isSaving} />;
     return (
       <>
-        <EditSurveyDialogBody userName={user} form={form}/>
+        <EditSurveyDialogBody
+          userName={user}
+          form={form}
+        />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
             {t('survey.error')}: {error.message}
@@ -148,7 +133,7 @@ const EditSurveyDialog = (props: EditSurveyDialogProps) => {
       body={getDialogBody()}
       footer={getFooter()}
       desktopContentClassName="min-h-[75%] max-w-[85%]"
-  />
+    />
   );
 };
 

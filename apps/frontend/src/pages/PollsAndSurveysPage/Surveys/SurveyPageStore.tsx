@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
-import deleteSurvey from "@/pages/PollsAndSurveysPage/Surveys/components/dto/delete-survey.dto.ts";
-import handleApiError from "@/utils/handleApiError.ts";
-import UsersSurveysTypes from "@/pages/PollsAndSurveysPage/Surveys/backend-copy/users-surveys-types-enum.dto.ts";
+import deleteSurvey from '@/pages/PollsAndSurveysPage/Surveys/components/dto/delete-survey.dto.ts';
+import handleApiError from '@/utils/handleApiError.ts';
+import UsersSurveysTypes from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/users-surveys-types-enum.dto.ts';
 
 export interface SurveyUpdateSelection {
   survey: Survey | undefined;
@@ -18,23 +18,21 @@ interface SurveyPageStore {
 
   updateSurveySelection: (selection: SurveyUpdateSelection) => void;
 
-
   deleteSurvey: () => Promise<void>;
 
-
-  refreshOpen: boolean
+  refreshOpen: boolean;
   shouldRefreshOpen: () => void;
   finishRefreshOpen: () => void;
 
-  refreshCreated: boolean
+  refreshCreated: boolean;
   shouldRefreshCreated: () => void;
   finishRefreshCreated: () => void;
 
-  refreshParticipated: boolean
+  refreshParticipated: boolean;
   shouldRefreshParticipated: () => void;
   finishRefreshParticipated: () => void;
 
-  refreshGlobalList: boolean
+  refreshGlobalList: boolean;
   shouldRefreshGlobalList: () => void;
   finishRefreshGlobalList: () => void;
 
@@ -76,7 +74,8 @@ const useSurveyPageStore = create<SurveyPageStore>((set) => ({
   ...(initialState as SurveyPageStore),
   setSelectedSurvey: (selectSurvey: Survey | undefined) => set({ selectedSurvey: selectSurvey }),
   setSelectedType: (type: UsersSurveysTypes | undefined) => set({ selectedType: type }),
-  updateSurveySelection: ({ survey, surveyType }: SurveyUpdateSelection) => set({ selectedSurvey: survey, selectedType: surveyType }),
+  updateSurveySelection: ({ survey, surveyType }: SurveyUpdateSelection) =>
+    set({ selectedSurvey: survey, selectedType: surveyType }),
   deleteSurvey: async () => {
     const surveyName = useSurveyPageStore.getState().selectedSurvey?.surveyname;
     if (!surveyName) {

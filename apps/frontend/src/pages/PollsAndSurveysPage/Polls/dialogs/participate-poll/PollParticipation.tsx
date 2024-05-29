@@ -18,15 +18,15 @@ interface PollParticipationProps {
 }
 
 function PollParticipation(props: PollParticipationProps) {
-  const { pollName, pollString, handleFormSubmit , form } = props;
+  const { pollName, pollString, handleFormSubmit, form } = props;
 
   if (!pollName || !pollString) {
     return null;
   }
 
   const previewOptions = {
-    orientation: 'portrait'
-  }
+    orientation: 'portrait',
+  };
   const survey = new Model(pollString, previewOptions);
 
   survey.applyTheme(defaultSurveyTheme);
@@ -39,7 +39,7 @@ function PollParticipation(props: PollParticipationProps) {
 
   return (
     <div className="max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
-      <Survey model={survey}/>
+      <Survey model={survey} />
     </div>
   );
 }

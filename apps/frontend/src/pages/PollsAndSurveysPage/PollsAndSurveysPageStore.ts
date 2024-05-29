@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 export enum PageView {
-  SURVEY = "Survey",
-  POLL = "Poll",
+  SURVEY = 'Survey',
+  POLL = 'Poll',
 }
 
 interface PollsAndSurveysPageStore {

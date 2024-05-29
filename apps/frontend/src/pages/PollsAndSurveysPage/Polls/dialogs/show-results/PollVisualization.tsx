@@ -33,34 +33,34 @@ const PollVisualization = (props: PollSubmissionsProps) => {
   }, [pollFormula]);
 
   useEffect(() => {
-    setVizPanel(survey
-      ? new VisualizationPanel(
-          survey.getAllQuestions(),
-          choices.map((choice) => JSON.parse(choice.choice)),
-          {
-            allowHideQuestions: true,
-            allowDynamicLayout: false,
-            // useValuesAsLabels: true,
-            allowHideEmptyAnswers: true,
-            answersOrder: "asc",
-            // layoutEngine: "column",
-            haveCommercialLicense: true,
-            defaultChartType: "bar",
-          }
-        )
-      : undefined
-    )
+    setVizPanel(
+      survey
+        ? new VisualizationPanel(
+            survey.getAllQuestions(),
+            choices.map((choice) => JSON.parse(choice.choice)),
+            {
+              allowHideQuestions: true,
+              allowDynamicLayout: false,
+              // useValuesAsLabels: true,
+              allowHideEmptyAnswers: true,
+              answersOrder: 'asc',
+              // layoutEngine: "column",
+              haveCommercialLicense: true,
+              defaultChartType: 'bar',
+            },
+          )
+        : undefined,
+    );
   }, [survey, choices]);
 
-
   useEffect(() => {
-    vizPanel?.render("surveyVizPanel");
+    vizPanel?.render('surveyVizPanel');
 
-    const component = document.getElementById("surveyVizPanel");
+    const component = document.getElementById('surveyVizPanel');
     if (component) {
       return () => {
-        component.innerHTML = "";
-      }
+        component.innerHTML = '';
+      };
     }
     return;
   }, [vizPanel]);
@@ -76,7 +76,10 @@ const PollVisualization = (props: PollSubmissionsProps) => {
   }
 
   return (
-    <div className="p-4 text-center" id="surveyVizPanel" />
+    <div
+      className="p-4 text-center"
+      id="surveyVizPanel"
+    />
   );
 };
 

@@ -38,7 +38,7 @@ class SurveysController {
           try {
             const answer = await this.usersSurveysService.getAnswer(username, surveyname);
 
-            Logger.log('SurveysController::FIND <- surveyStringAnswer', answer)
+            Logger.log('SurveysController::FIND <- surveyStringAnswer', answer);
 
             if (!answer) {
               throw new Error('Survey answer not found');

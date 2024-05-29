@@ -15,14 +15,7 @@ interface ParticipateSurveyDialogBodyProps {
 }
 
 const ParticipateSurveyDialogBody = (props: ParticipateSurveyDialogBodyProps) => {
-  const {
-    surveyName,
-    surveyFormula,
-    closeParticipateSurveyDialog,
-    isAnswering,
-    handleFormSubmit,
-    form
-  } = props;
+  const { surveyName, surveyFormula, closeParticipateSurveyDialog, isAnswering, handleFormSubmit, form } = props;
 
   if (isAnswering) return <div>Loading...</div>;
 
@@ -31,9 +24,7 @@ const ParticipateSurveyDialogBody = (props: ParticipateSurveyDialogBodyProps) =>
       surveyName={surveyName}
       surveyFormula={surveyFormula}
       closeParticipateSurveyDialog={closeParticipateSurveyDialog}
-
       handleFormSubmit={handleFormSubmit}
-
       form={form}
     />
   );

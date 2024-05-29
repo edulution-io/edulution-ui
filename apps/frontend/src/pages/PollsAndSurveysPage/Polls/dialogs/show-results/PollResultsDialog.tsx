@@ -14,7 +14,7 @@ interface PollResultsDialogProps {
 }
 
 const PollResultsDialog = (props: PollResultsDialogProps) => {
-  const { isOpenPollResultsDialog, openPollResultsDialog, closePollResultsDialog, poll, trigger} = props;
+  const { isOpenPollResultsDialog, openPollResultsDialog, closePollResultsDialog, poll, trigger } = props;
 
   const { t } = useTranslation();
 
@@ -22,7 +22,10 @@ const PollResultsDialog = (props: PollResultsDialogProps) => {
     if (!poll?.poll) return <div>{t('poll.noFormula')}</div>;
     return (
       <ScrollArea>
-        <PollVisualization pollFormula={poll.poll} choices={poll.choices} />
+        <PollVisualization
+          pollFormula={poll.poll}
+          choices={poll.choices}
+        />
       </ScrollArea>
     );
   };

@@ -33,7 +33,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent side="bottom" className={mobileContentClassName}>
+      <SheetContent
+        side="bottom"
+        className={mobileContentClassName}
+      >
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>

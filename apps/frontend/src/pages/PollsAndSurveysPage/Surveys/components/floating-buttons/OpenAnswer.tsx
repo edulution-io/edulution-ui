@@ -8,7 +8,7 @@ interface FloatingButtonOpenAnswerSurveyProps {
 }
 
 const FloatingButtonOpenAnswerSurvey = (props: FloatingButtonOpenAnswerSurveyProps) => {
-  const {openSurveyResultsDialog} = props;
+  const { openSurveyResultsDialog } = props;
 
   return (
     <FloatingActionButton
@@ -17,6 +17,6 @@ const FloatingButtonOpenAnswerSurvey = (props: FloatingButtonOpenAnswerSurveyPro
       onClick={openSurveyResultsDialog}
     />
   );
-}
+};
 
 export default FloatingButtonOpenAnswerSurvey;

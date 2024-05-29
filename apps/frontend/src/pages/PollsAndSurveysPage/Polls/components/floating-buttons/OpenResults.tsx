@@ -8,7 +8,7 @@ interface FloatingButtonOpenPollResultsProps {
 }
 
 const FloatingButtonOpenPollResults = (props: FloatingButtonOpenPollResultsProps) => {
-  const {openPollResultsDialog} = props;
+  const { openPollResultsDialog } = props;
 
   return (
     <FloatingActionButton
@@ -17,6 +17,6 @@ const FloatingButtonOpenPollResults = (props: FloatingButtonOpenPollResultsProps
       onClick={openPollResultsDialog}
     />
   );
-}
+};
 
 export default FloatingButtonOpenPollResults;

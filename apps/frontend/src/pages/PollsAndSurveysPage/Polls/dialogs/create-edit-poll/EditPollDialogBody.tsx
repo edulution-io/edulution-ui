@@ -34,13 +34,11 @@ const EditPollDialogBody = (props: EditPollDialogBodyProps) => {
   return (
     <>
       <SearchUsersOrGroups
-        value={form.getValues("participants")}
+        value={form.getValues('participants')}
         onSearch={onAttendeesSearch}
         onChange={handleAttendeesChange}
       />
-      <PollEditor
-        form={form}
-      />
+      <PollEditor form={form} />
     </>
   );
 };

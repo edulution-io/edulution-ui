@@ -3,13 +3,11 @@ import { useTranslation } from 'react-i18next';
 import UsersPollsTypes from '@/pages/PollsAndSurveysPage/Polls/backend-copy/users-polls-types-enum.dto.ts';
 import usePollPageStore from '@/pages/PollsAndSurveysPage/Polls/PollPageStore';
 import PollSection from '@/pages/PollsAndSurveysPage/Polls/components/PollSection';
-import ParticipatePollDialog
-  from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/ParticipatePollDialog';
+import ParticipatePollDialog from '@/pages/PollsAndSurveysPage/Polls/dialogs/participate-poll/ParticipatePollDialog';
 import EditPollDialog from '@/pages/PollsAndSurveysPage/Polls/dialogs/create-edit-poll/EditPollDialog';
 import PollResultsDialog from '@/pages/PollsAndSurveysPage/Polls/dialogs/show-results/PollResultsDialog';
-import FloatingButtonsBarPollManagement
-  from '@/pages/PollsAndSurveysPage/Polls/components/FloatingButtonsBarPollManagement';
-import {ScrollArea} from "@/components/ui/ScrollArea.tsx";
+import FloatingButtonsBarPollManagement from '@/pages/PollsAndSurveysPage/Polls/components/FloatingButtonsBarPollManagement';
+import { ScrollArea } from '@/components/ui/ScrollArea.tsx';
 
 const PollPage = () => {
   const { t } = useTranslation();
@@ -60,12 +58,12 @@ const PollPage = () => {
           updatePollSelection={updatePollSelection}
           shouldRefresh={refreshParticipated}
         />
-         <PollSection
-           pollType={UsersPollsTypes.ALL}
-           title={t('poll.allPolls')}
-           updatePollSelection={updatePollSelection}
-           shouldRefresh={refreshGlobalList}
-         />
+        <PollSection
+          pollType={UsersPollsTypes.ALL}
+          title={t('poll.allPolls')}
+          updatePollSelection={updatePollSelection}
+          shouldRefresh={refreshGlobalList}
+        />
       </ScrollArea>
       <EditPollDialog
         poll={selectedPoll}
@@ -96,7 +94,6 @@ const PollPage = () => {
         openEditPollDialog={openEditPollDialog}
         openParticipatePollDialog={openParticipatePollDialog}
         openPollResultsDialog={openPollResultsDialog}
-
         shouldRefreshOpen={shouldRefreshOpen}
         shouldRefreshParticipated={shouldRefreshParticipated}
         shouldRefreshCreated={shouldRefreshCreated}
@@ -104,6 +101,6 @@ const PollPage = () => {
       />
     </>
   );
-}
+};
 
 export default PollPage;

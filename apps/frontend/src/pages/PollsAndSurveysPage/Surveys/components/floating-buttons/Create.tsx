@@ -10,7 +10,7 @@ interface FloatingButtonCreateSurveyProps {
 }
 
 const FloatingButtonCreateSurvey = (props: FloatingButtonCreateSurveyProps) => {
-  const {setSelectedSurvey, openEditSurveyDialog} = props;
+  const { setSelectedSurvey, openEditSurveyDialog } = props;
 
   return (
     <FloatingActionButton
@@ -22,6 +22,6 @@ const FloatingButtonCreateSurvey = (props: FloatingButtonCreateSurveyProps) => {
       }}
     />
   );
-}
+};
 
 export default FloatingButtonCreateSurvey;

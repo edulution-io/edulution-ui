@@ -30,9 +30,9 @@ const SurveyEditor = (props: EditSurveyProps) => {
     form.setValue('survey', creator.text);
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
-  }
+  };
 
-  localization.currentLocale = "de";
+  localization.currentLocale = 'de';
   return (
     <div className="rounded bg-gray-800 p-4">
       <SurveyCreatorComponent

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
 import UsersSurveysTypes from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/users-surveys-types-enum.dto.ts';
 import SurveyTable from '@/pages/PollsAndSurveysPage/Surveys/components/SurveyTable';
@@ -13,17 +13,10 @@ interface SurveyTableProps {
 }
 
 const SurveySection = (props: SurveyTableProps) => {
-  const {
-    surveyType,
-    title,
-    updateSurveySelection,
-    shouldRefresh,
-  } = props;
+  const { surveyType, title, updateSurveySelection, shouldRefresh } = props;
 
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-
 
   useEffect(() => {
     if (!shouldRefresh || isLoading) {
@@ -41,17 +34,17 @@ const SurveySection = (props: SurveyTableProps) => {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
     fetchSurveys();
   }, [shouldRefresh]);
 
   return (
     <SurveyTable
-      surveyType={ surveyType }
-      surveys={ surveys }
-      title={ title }
-      isLoading={ isLoading }
-      updateSurveySelection={ updateSurveySelection }
+      surveyType={surveyType}
+      surveys={surveys}
+      title={title}
+      isLoading={isLoading}
+      updateSurveySelection={updateSurveySelection}
     />
   );
 };

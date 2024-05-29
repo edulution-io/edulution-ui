@@ -19,7 +19,7 @@ const PollEditor = (props: EditPollProps) => {
     isAutoSave: true,
     showJSONEditorTab: false,
     maxNestedPanels: 0,
-    pageEditMode: "single" as "single" | "standard",
+    pageEditMode: 'single' as 'single' | 'standard',
     showHeaderInEmptySurvey: true,
   };
   const creator = new SurveyCreator(creatorOptions);
@@ -34,9 +34,9 @@ const PollEditor = (props: EditPollProps) => {
     form.setValue('pollFormula', creator.text);
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
-  }
+  };
 
-  localization.currentLocale = "de";
+  localization.currentLocale = 'de';
   return (
     <div className="rounded bg-gray-800 p-4">
       <SurveyCreatorComponent

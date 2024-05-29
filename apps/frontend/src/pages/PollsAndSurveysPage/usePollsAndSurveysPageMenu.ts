@@ -1,10 +1,9 @@
-import {SurveyIcon, PollIcon, SurveyPageMenuIcon} from '@/assets/icons';
+import { SurveyIcon, PollIcon, SurveyPageMenuIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import useQuestionsAndExercisesStore from '@/pages/PollsAndSurveysPage/PollsAndSurveysPageStore.ts';
 
 const usePollsAndSurveysPageMenu = () => {
-
-  const {setPageViewSurveyPage, setPageViewPollPage} = useQuestionsAndExercisesStore();
+  const { setPageViewSurveyPage, setPageViewPollPage } = useQuestionsAndExercisesStore();
 
   const menuBar = (): MenuBarEntryProps => ({
     title: 'surveys.title',

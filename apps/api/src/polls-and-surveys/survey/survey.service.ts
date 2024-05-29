@@ -26,14 +26,16 @@ class SurveyService {
 
   async updateOrCreateSurvey(createSurveyDto: CreateSurveyDto): Promise<Survey | null> {
 
-    console.log('createSurveyDto', createSurveyDto);
-
-    const survey = await this.surveyModel.findOneAndUpdate<Survey>(
-      { surveyname: createSurveyDto.surveyname },
-      { ...createSurveyDto,
-        saveNo: createSurveyDto.saveNo ? createSurveyDto.saveNo.toString() : undefined,
-        created: createSurveyDto.created ? createSurveyDto.created.toString() : new Date().toString(),
-      } ).exec();
+    const survey = await this.surveyModel
+      .findOneAndUpdate<Survey>(
+        { surveyname: createSurveyDto.surveyname },
+        {
+          ...createSurveyDto,
+          saveNo: createSurveyDto.saveNo ? createSurveyDto.saveNo.toString() : undefined,
+          created: createSurveyDto.created ? createSurveyDto.created.toString() : new Date().toString(),
+        },
+      )
+      .exec();
     if (survey != null) {
       return survey;
     }

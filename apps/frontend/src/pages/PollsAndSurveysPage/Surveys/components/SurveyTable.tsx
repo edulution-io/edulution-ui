@@ -21,7 +21,7 @@ const SurveyTable = (props: SurveyTableProps) => {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return <LoadingIndicator isOpen={isLoading} />
+    return <LoadingIndicator isOpen={isLoading} />;
   }
 
   if (surveys.length === 0) {
@@ -58,11 +58,13 @@ const SurveyTable = (props: SurveyTableProps) => {
                 key={`survey_row_-_${survey.surveyname}`}
                 className="cursor-pointer"
                 onClick={() => {
-                  updateSurveySelection({survey, surveyType: surveyType});
+                  updateSurveySelection({ survey, surveyType: surveyType });
                 }}
               >
                 <TableCell className="text-white">{srv.title}</TableCell>
-                <TableCell className="text-white">{survey.created ? survey.created.toString() : 'not-available'}</TableCell>
+                <TableCell className="text-white">
+                  {survey.created ? survey.created.toString() : 'not-available'}
+                </TableCell>
                 <TableCell className="text-white">{survey.participants.length || 0}</TableCell>
                 <TableCell className="text-white">{srv.pages.length || 0}</TableCell>
               </TableRow>

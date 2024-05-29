@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
 import UsersPollsTypes from '@/pages/PollsAndSurveysPage/Polls/backend-copy/users-polls-types-enum.dto';
 import handleApiError from '@/utils/handleApiError';
-import deletePoll from "@/pages/PollsAndSurveysPage/Polls/components/dto/delete-poll.dto.ts";
+import deletePoll from '@/pages/PollsAndSurveysPage/Polls/components/dto/delete-poll.dto.ts';
 
 export interface PollUpdateSelection {
   poll: Poll | undefined;
@@ -18,23 +18,21 @@ interface PollPageStore {
 
   updatePollSelection: (selection: PollUpdateSelection) => void;
 
-
   deletePoll: () => Promise<void>;
 
-
-  refreshOpen: boolean
+  refreshOpen: boolean;
   shouldRefreshOpen: () => void;
   finishRefreshOpen: () => void;
 
-  refreshCreated: boolean
+  refreshCreated: boolean;
   shouldRefreshCreated: () => void;
   finishRefreshCreated: () => void;
 
-  refreshParticipated: boolean
+  refreshParticipated: boolean;
   shouldRefreshParticipated: () => void;
   finishRefreshParticipated: () => void;
 
-  refreshGlobalList: boolean
+  refreshGlobalList: boolean;
   shouldRefreshGlobalList: () => void;
   finishRefreshGlobalList: () => void;
 
@@ -77,7 +75,7 @@ const usePollPageStore = create<PollPageStore>((set) => ({
   ...(initialState as PollPageStore),
   setSelectedPoll: (selectPoll: Poll | undefined) => set({ selectedPoll: selectPoll }),
   setSelectedType: (type: UsersPollsTypes | undefined) => set({ selectedType: type }),
-  updatePollSelection: ({ poll, pollType }: PollUpdateSelection) =>     set({ selectedPoll: poll, selectedType: pollType }),
+  updatePollSelection: ({ poll, pollType }: PollUpdateSelection) => set({ selectedPoll: poll, selectedType: pollType }),
   deletePoll: async () => {
     const pollName = usePollPageStore.getState().selectedPoll?.pollName;
     if (!pollName) {
@@ -95,7 +93,7 @@ const usePollPageStore = create<PollPageStore>((set) => ({
       refreshCreated: true,
       refreshParticipated: true,
       refreshGlobalList: true,
-    })
+    });
   },
   shouldRefreshOpen: () => set({ refreshOpen: true }),
   finishRefreshOpen: () => set({ refreshOpen: false }),

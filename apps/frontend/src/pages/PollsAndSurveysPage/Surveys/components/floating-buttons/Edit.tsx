@@ -8,7 +8,7 @@ interface FloatingButtonEditSurveyProps {
 }
 
 const FloatingButtonEditSurvey = (props: FloatingButtonEditSurveyProps) => {
-  const {openEditSurveyDialog} = props;
+  const { openEditSurveyDialog } = props;
 
   return (
     <FloatingActionButton
@@ -17,6 +17,6 @@ const FloatingButtonEditSurvey = (props: FloatingButtonEditSurveyProps) => {
       onClick={openEditSurveyDialog}
     />
   );
-}
+};
 
 export default FloatingButtonEditSurvey;

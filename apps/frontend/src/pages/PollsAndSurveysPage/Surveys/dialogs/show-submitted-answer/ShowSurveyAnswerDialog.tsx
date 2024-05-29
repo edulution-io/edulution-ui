@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea.tsx';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog.tsx';
@@ -16,15 +16,14 @@ interface ShowSurveyAnswerDialogProps {
 }
 
 const ShowSurveyAnswerDialog = (props: ShowSurveyAnswerDialogProps) => {
-  const { isOpenSurveyResultsDialog, openSurveyResultsDialog, closeSurveyResultsDialog, survey, trigger} = props;
-  const { isLoading, error, answer, getSurveyAnswer } =
-    useShowSurveyAnswerDialogStore();
+  const { isOpenSurveyResultsDialog, openSurveyResultsDialog, closeSurveyResultsDialog, survey, trigger } = props;
+  const { isLoading, error, answer, getSurveyAnswer } = useShowSurveyAnswerDialogStore();
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    if(!survey) return;
-    if(!isOpenSurveyResultsDialog) return;
+    if (!survey) return;
+    if (!isOpenSurveyResultsDialog) return;
     getSurveyAnswer(survey?.surveyname);
   }, [survey, isOpenSurveyResultsDialog]);
 
@@ -40,7 +39,10 @@ const ShowSurveyAnswerDialog = (props: ShowSurveyAnswerDialogProps) => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
       <ScrollArea>
-        <SurveySubmission surveyFormula={survey.survey} answer={answer}/>
+        <SurveySubmission
+          surveyFormula={survey.survey}
+          answer={answer}
+        />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
             {t('survey.error')}: {error.message}

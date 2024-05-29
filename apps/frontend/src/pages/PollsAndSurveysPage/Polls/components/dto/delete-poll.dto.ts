@@ -1,6 +1,6 @@
 import eduApi from '@/api/eduApi';
 import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model.ts';
-import POLL_ENDPOINT from "@/pages/PollsAndSurveysPage/Polls/components/dto/poll-endpoint.dto.ts";
+import POLL_ENDPOINT from '@/pages/PollsAndSurveysPage/Polls/components/dto/poll-endpoint.dto.ts';
 
 async function deletePoll(pollName: string) {
   try {

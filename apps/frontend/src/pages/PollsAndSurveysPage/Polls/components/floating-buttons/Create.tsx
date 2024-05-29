@@ -10,7 +10,7 @@ interface FloatingButtonCreatePollProps {
 }
 
 const FloatingButtonCreatePoll = (props: FloatingButtonCreatePollProps) => {
-  const {setSelectedPoll, openEditPollDialog} = props;
+  const { setSelectedPoll, openEditPollDialog } = props;
 
   return (
     <FloatingActionButton
@@ -22,6 +22,6 @@ const FloatingButtonCreatePoll = (props: FloatingButtonCreatePollProps) => {
       }}
     />
   );
-}
+};
 
 export default FloatingButtonCreatePoll;
