@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
@@ -10,10 +10,10 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
 import useEditSurveyDialogStore
   from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogStore';
-import EditSurveyFormData from "@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/edit-survey-form.ts";
+import EditSurveyFormData from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/edit-survey-form';
 import EditSurveyDialogBody
   from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogBody';
-import useUserStore from "@/store/userStore.ts";
+import useUserStore from '@/store/userStore';
 
 const createSurveyName = () => {
   const currentDate = new Date();
@@ -104,13 +104,7 @@ const EditSurveyDialog = (props: EditSurveyDialogProps) => {
       throw new Error('Invalid form data');
     }
 
-    await commitSurvey(
-      surveyname,
-      survey,
-      participants,
-      saveNo,
-      created,
-    );
+    await commitSurvey(surveyname, survey, participants, saveNo, created);
     form.reset();
   };
 

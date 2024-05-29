@@ -40,29 +40,6 @@ class UsersSurveysService {
     return existingUser.usersSurveys?.answeredSurveys || [];
   }
 
-  async removeFromOpenSurveys(username: string, surveyName: string): Promise<void> {
-    const existingUser = await this.userModel.findOne<User>({ username }).exec();
-    if (!existingUser) {
-      throw new Error('User not found');
-    }
-
-    const index = existingUser.usersSurveys?.openSurveys?.indexOf(surveyName);
-    if (!index || index === -1) {
-      throw new Error('Survey not found');
-    }
-
-    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys?.splice(index, 1);
-    const newUser = {
-      ...existingUser,
-      usersSurveys: {
-        ...existingUser.usersSurveys,
-        openSurveys: usersOpenSurveys,
-      },
-    };
-
-    await this.updateUser(username, newUser);
-  }
-
   async addToOpenSurveys(username: string, surveyname: string): Promise<void> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
@@ -74,9 +51,8 @@ class UsersSurveysService {
 
     const newUser: UpdateUserDto = {
       usersSurveys: {
-        createdSurveys: [...(existingUser.usersSurveys?.createdSurveys || [])],
+        ...existingUser.usersSurveys,
         openSurveys: [...usersOpenSurveys],
-        answeredSurveys: [...(existingUser.usersSurveys?.answeredSurveys || [])],
       },
     };
 
@@ -94,9 +70,8 @@ class UsersSurveysService {
 
     const newUser: UpdateUserDto = {
       usersSurveys: {
+        ...existingUser.usersSurveys,
         createdSurveys: [...usersCreatedSurveys],
-        openSurveys: [...(existingUser.usersSurveys?.openSurveys || [])],
-        answeredSurveys: [...(existingUser.usersSurveys?.answeredSurveys || [])],
       },
     };
 
@@ -112,6 +87,36 @@ class UsersSurveysService {
     await Promise.all(promises);
   }
 
+  // async onRemoveSurvey(surveyName: string): Promise<void> {
+  //   const existingUsers = await this.userModel.find<User>().exec();
+  //
+  //   const promises = existingUsers.map(async (user) => {
+  //     const {
+  //       createdSurveys = [],
+  //       openSurveys = [],
+  //       answeredSurveys = [],
+  //       ...remainingUserSurveys
+  //     } = user.usersSurveys;
+  //
+  //     const usersCreatedSurveys = createdSurveys.filter((survey) => survey !== surveyName) || [];
+  //     const usersOpenSurveys = openSurveys.filter((survey) => survey !== surveyName) || [];
+  //     const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
+  //
+  //     const newUser: UpdateUserDto = {
+  //       usersSurveys: {
+  //         ...remainingUserSurveys,
+  //         createdSurveys: [...usersCreatedSurveys],
+  //         openSurveys: [...usersOpenSurveys],
+  //         answeredSurveys: [...usersAnsweredSurveys],
+  //       },
+  //     };
+  //
+  //     return await this.updateUser(user.username, newUser);
+  //   });
+  //
+  //   await Promise.all(promises);
+  // }
+
   async addAnswer(username: string, surveyName: string, answer: string): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
@@ -126,7 +131,7 @@ class UsersSurveysService {
 
     const newUser: UpdateUserDto = {
       usersSurveys: {
-        createdSurveys: [...(existingUser.usersSurveys?.createdSurveys || [])],
+        ...existingUser.usersSurveys,
         openSurveys: [...usersOpenSurveys],
         answeredSurveys: [...usersAnsweredSurveys],
       },

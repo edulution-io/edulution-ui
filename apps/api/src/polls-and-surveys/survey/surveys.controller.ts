@@ -100,6 +100,7 @@ class SurveysController {
   @Delete()
   remove(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const surveyName = deleteSurveyDto.surveyname;
+    // this.usersSurveysService.onRemoveSurvey(surveyName);
     return this.surveyService.removeSurvey(surveyName);
   }
 

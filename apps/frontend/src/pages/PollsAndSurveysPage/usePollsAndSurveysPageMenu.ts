@@ -13,13 +13,13 @@ const usePollsAndSurveysPageMenu = () => {
     menuItems: [
       {
         id: 'poll-overview',
-        label: 'surveys.polls.title',
+        label: 'surveys.polls.sidebar',
         icon: PollIcon,
         action: () => setPageViewPollPage(),
       },
       {
         id: 'survey-overview',
-        label: 'surveys.surveys.title',
+        label: 'surveys.surveys.sidebar',
         icon: SurveyIcon,
         action: () => setPageViewSurveyPage(),
       },

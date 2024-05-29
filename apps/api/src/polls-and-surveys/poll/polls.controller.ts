@@ -71,6 +71,7 @@ class PollsController {
   @Delete()
   remove(@Body() deletePollDto: DeletePollDto) {
     const pollName = deletePollDto.pollName;
+    // this.usersPollsService.onRemovePoll(pollName);
     return this.pollService.removePoll(pollName);
   }
 
@@ -80,7 +81,7 @@ class PollsController {
 
     const updatedPoll = this.pollService.addUserChoice({ pollName, choice, userLabel, userName: username });
     if (updatedPoll != null) {
-      await this.usersPollsService.addToAnsweredPolls(username, pollName);
+      await this.usersPollsService.movePollFromOpenToAnsweredPolls(username, pollName);
     }
   }
 }

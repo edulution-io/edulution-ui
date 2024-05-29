@@ -73,11 +73,10 @@ const ParticipatePollDialog = (props: ParticipatePollDialogProps) => {
     }
 
     commitChoice(poll.pollName, choice, options);
-    form.reset();
-    closeParticipatePollDialog();
-
     shouldRefreshOpen();
     shouldRefreshParticipated();
+    closeParticipatePollDialog();
+    form.reset();
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);

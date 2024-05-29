@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
@@ -89,6 +89,9 @@ const EditPollDialog = (props: EditPollDialogProps) => {
   });
 
   const onSubmit = async () => {
+
+    console.log('onSubmit');
+
     const {
       pollName,
       pollFormula,
@@ -101,13 +104,8 @@ const EditPollDialog = (props: EditPollDialogProps) => {
       throw new Error('Invalid form data');
     }
 
-    await commitPoll(
-      pollName,
-      pollFormula,
-      participants,
-      saveNo,
-      created,
-    );
+    commitPoll(pollName, pollFormula, participants, saveNo, created);
+    closeEditPollDialog();
     form.reset();
   };
 

@@ -39,29 +39,6 @@ class UsersPollsService {
     return existingUser.usersPolls?.answeredPolls || [];
   }
 
-  async removeFromOpenPolls(userName: string, pollName: string): Promise<void> {
-    const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
-    if (!existingUser) {
-      throw new Error('User not found');
-    }
-
-    const index = existingUser.usersPolls?.openPolls?.indexOf(pollName);
-    if (!index || index === -1) {
-      throw new Error('Poll not found');
-    }
-
-    const usersOpenPolls = existingUser.usersPolls?.openPolls?.splice(index, 1);
-    const newUser = {
-      ...existingUser,
-      usersPolls: {
-        ...existingUser.usersPolls,
-        openPolls: usersOpenPolls,
-      },
-    };
-
-    await this.updateUser(userName, newUser);
-  }
-
   async addToOpenPolls(userName: string, pollName: string): Promise<void> {
     const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
     if (!existingUser) {
@@ -103,19 +80,21 @@ class UsersPollsService {
     return updatedUser;
   }
 
-  async addToAnsweredPolls(userName: string, pollName: string): Promise<User | null> {
+  async movePollFromOpenToAnsweredPolls(userName: string, pollName: string): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
+
+    const usersOpenPolls = existingUser.usersPolls?.openPolls.filter((poll) => poll != pollName) || [];
 
     const usersAnsweredPolls = existingUser.usersPolls?.answeredPolls || [];
     usersAnsweredPolls.push(pollName);
 
     const newUser: UpdateUserDto = {
       usersPolls: {
-        createdPolls: [...(existingUser.usersPolls?.createdPolls || [])],
-        openPolls: [...(existingUser.usersPolls?.openPolls || [])],
+        ...existingUser.usersPolls,
+        openPolls: [...usersOpenPolls],
         answeredPolls: [...usersAnsweredPolls],
       },
     };
@@ -131,6 +110,36 @@ class UsersPollsService {
     });
     await Promise.all(promises);
   }
+
+  // async onRemovePoll(pollName: string): Promise<void> {
+  //   const existingUsers = await this.userModel.find<User>().exec();
+  //
+  //   const promises = existingUsers.map(async (user) => {
+  //     const {
+  //       createdPolls = [],
+  //       openPolls = [],
+  //       answeredPolls = [],
+  //       ...remainingUserSurveys
+  //     } = user.usersPolls;
+  //
+  //     const usersCreatedPoll = createdPolls.filter((poll) => poll !== pollName) || [];
+  //     const usersOpenPolls = openPolls.filter((poll) => poll !== pollName) || [];
+  //     const usersAnsweredPolls = answeredPolls.filter((poll) => poll !== pollName) || [];
+  //
+  //     const newUser: UpdateUserDto = {
+  //       usersPolls: {
+  //         ...remainingUserSurveys,
+  //         createdPolls: usersCreatedPoll,
+  //         openPolls: usersOpenPolls,
+  //         answeredPolls: usersAnsweredPolls,
+  //       },
+  //     };
+  //
+  //     return await this.updateUser(user.username, newUser);
+  //   });
+  //
+  //   await Promise.all(promises);
+  // }
 }
 
 export default UsersPollsService;

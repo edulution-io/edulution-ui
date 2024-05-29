@@ -70,11 +70,10 @@ const ParticipateSurveyDialog = (props: ParticipateSurveyDialogProps) => {
     }
 
     commitAnswer(survey.surveyname, answer, options);
-    form.reset();
-    closeParticipateSurveyDialog();
-
     shouldRefreshOpen();
     shouldRefreshParticipated();
+    closeParticipateSurveyDialog();
+    form.reset();
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);

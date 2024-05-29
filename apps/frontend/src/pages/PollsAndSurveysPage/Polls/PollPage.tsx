@@ -22,7 +22,6 @@ const PollPage = () => {
     deletePoll,
     isOpenEditPollDialog,
     openEditPollDialog,
-    // openCreatePollDialog,
     closeEditPollDialog,
     isOpenParticipatePollDialog,
     openParticipatePollDialog,
@@ -46,37 +45,25 @@ const PollPage = () => {
         <PollSection
           pollType={UsersPollsTypes.OPEN}
           title={t('poll.openPolls')}
-          // selectedPoll={selectedPoll}
           updatePollSelection={updatePollSelection}
-          // openCreateDialog={openCreatePollDialog}
-          // deletePoll={deletePoll}
           shouldRefresh={refreshOpen}
         />
         <PollSection
           pollType={UsersPollsTypes.CREATED}
           title={t('poll.createdPolls')}
-          // selectedPoll={selectedPoll}
           updatePollSelection={updatePollSelection}
-          // openCreateDialog={openCreatePollDialog}
-          // deletePoll={deletePoll}
           shouldRefresh={refreshCreated}
         />
         <PollSection
           pollType={UsersPollsTypes.ANSWERED}
           title={t('poll.answeredPolls')}
-          // selectedPoll={selectedPoll}
           updatePollSelection={updatePollSelection}
-          // openCreateDialog={openCreatePollDialog}
-          // deletePoll={deletePoll}
           shouldRefresh={refreshParticipated}
         />
          <PollSection
            pollType={UsersPollsTypes.ALL}
            title={t('poll.allPolls')}
-           // selectedPoll={selectedPoll}
            updatePollSelection={updatePollSelection}
-           // openCreateDialog={openCreatePollDialog}
-           // deletePoll={deletePoll}
            shouldRefresh={refreshGlobalList}
          />
       </ScrollArea>
