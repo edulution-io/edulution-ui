@@ -129,6 +129,7 @@ const useFileManagerStore = create<FileManagerStore>(
           const parts = fullPath.split('/');
           const filename = parts.pop() || '';
           const path = parts.join('/').replace('/webdav/', '');
+          console.log('path:', path);
 
           const response = await eduApi.get(`/filemanager/download/?path=${path}&filename=${filename}`);
           const { downloadLink } = response.data;

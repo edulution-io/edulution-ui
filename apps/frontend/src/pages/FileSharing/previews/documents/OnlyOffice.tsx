@@ -4,6 +4,7 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import useFileEditorStore from './fileEditorStore';
 import PreviewMenuBar from '@/pages/FileSharing/previews/documents/PreviewMenuBar.tsx';
+import { useAuth } from 'react-oidc-context';
 
 interface OnlyOfficeProps {
   file: DirectoryFile;
@@ -44,13 +45,13 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
 const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview }) => {
   const [token, setToken] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-
+  const { user } = useAuth();
   const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
     id: 'docxEditor',
     key: 'word' + Math.random(),
     documentType: 'word',
   });
-
+  console.log('user', user?.access_token);
   const { previewFile, appendEditorFile } = useFileEditorStore();
   const { getOnlyOfficeJwtToken, downloadFile } = useFileManagerStore();
   useEffect(() => {
@@ -61,7 +62,9 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     const fetchFileUrlAndToken = async () => {
       try {
         const rawUrl = await downloadFile(file.filename);
-        setFileUrl(rawUrl);
+        const formattedUrl = rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001');
+
+        setFileUrl(formattedUrl);
 
         const config = {
           document: {
@@ -69,14 +72,40 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             type: type,
             key: editorConfig.key,
             title: file.basename,
-            url: rawUrl,
+            url: formattedUrl,
             height: '100%',
             width: '100%',
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: 'https://ui.schulung.multi.schule/edu-api/filemanager/callback',
+            callbackUrl: `http://host.docker.internal:3001/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
             mode: mode,
+            customization: {
+              anonymous: {
+                request: true,
+                label: 'Guest',
+              },
+              autosave: true,
+              comments: true,
+              compactHeader: false,
+              compactToolbar: false,
+              compatibleFeatures: false,
+              forcesave: false,
+              help: true,
+              hideRightMenu: false,
+              hideRulers: false,
+              integrationMode: 'embed',
+              macros: true,
+              macrosMode: 'Warn',
+              mentionShare: true,
+              mobileForceView: true,
+              plugins: true,
+              toolbarHideFileName: false,
+              toolbarNoTabs: false,
+              uiTheme: 'theme-dark',
+              unit: 'cm',
+              zoom: 100,
+            },
           },
         };
         const generatedToken = await getOnlyOfficeJwtToken(config);
@@ -92,7 +121,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
   }, [file, getOnlyOfficeJwtToken, previewFile, mode]);
 
   return (
-    <div className="relative h-[80vh]">
+    <div className={`relative ${isPreview ? 'h-[80vh]' : 'h-[100vh]'}`}>
       {isPreview && (
         <PreviewMenuBar
           file={file}
@@ -105,19 +134,45 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl="https://office.schulung.multi.schule"
+          documentServerUrl="http://localhost:80/"
           config={{
             document: {
               fileType: getFileType(file.filename),
               key: editorType.key,
               title: file.basename,
-              url: fileUrl || '',
+              url: fileUrl || '152',
             },
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: 'https://ui.schulung.multi.schule/edu-api/filemanager/callback',
+              callbackUrl: `http://host.docker.internal:3001/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
               mode: mode,
+              customization: {
+                anonymous: {
+                  request: true,
+                  label: 'Guest',
+                },
+                autosave: true,
+                comments: true,
+                compactHeader: false,
+                compactToolbar: false,
+                compatibleFeatures: false,
+                forcesave: false,
+                help: true,
+                hideRightMenu: false,
+                hideRulers: false,
+                integrationMode: 'embed',
+                macros: true,
+                macrosMode: 'Warn',
+                mentionShare: true,
+                mobileForceView: true,
+                plugins: true,
+                toolbarHideFileName: false,
+                toolbarNoTabs: false,
+                uiTheme: 'theme-dark',
+                unit: 'cm',
+                zoom: 100,
+              },
             },
           }}
         />

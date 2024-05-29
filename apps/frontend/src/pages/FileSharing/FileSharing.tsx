@@ -27,7 +27,6 @@ import Toaster from '@/components/ui/Sonner';
 import { toast } from 'sonner';
 import userStore from '@/store/userStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
-import EditableFilesMenu from '@/pages/FileSharing/previews/documents/EditableFilesMenu.tsx';
 import Previews from '@/pages/FileSharing/previews/Previews.tsx';
 import EditFile from '@/pages/FileSharing/previews/EditFile.tsx';
 import { convertDownloadLinkToBlob } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
@@ -46,7 +45,7 @@ const FileSharingPage = () => {
   } = useFileManagerStore();
 
   const { t } = useTranslation();
-  const { previewFile, editableFiles, closeOnlyOfficeDocEditor, setShowEditor, showEditor } = useFileEditorStore();
+  const { previewFile, closeOnlyOfficeDocEditor, setShowEditor, showEditor } = useFileEditorStore();
   const { userInfo } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || `/${userInfo?.ldapGroups?.role}s/${userInfo?.preferred_username}`;
@@ -78,11 +77,6 @@ const FileSharingPage = () => {
   return (
     <div className="w-full overflow-x-auto">
       <div>{isVisible && <Toaster />}</div>
-      {editableFiles.length > 0 && (
-        <div className="rounded border border-gray-300 bg-gray-50 p-2">
-          <EditableFilesMenu editableFiles={editableFiles} />
-        </div>
-      )}
       {!editableFile ? (
         <div className="flex-1 overflow-auto">
           <div className="flex w-full justify-between pb-3 pt-3">
@@ -101,7 +95,7 @@ const FileSharingPage = () => {
               </div>
             </TooltipProvider>
           </div>
-          <div className="flex">
+          <div className="flex max-h-[70vh]">
             <div className={`w-full ${previewFile ? 'w-1/2' : ''}`}>
               <DataTable
                 columns={Columns}
