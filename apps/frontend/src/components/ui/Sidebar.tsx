@@ -35,7 +35,9 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { logout } = useUserStore();
+  const { logout, userInfo } = useUserStore();
+
+  const userRole = userInfo?.ldapGroups?.role ?? '';
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
@@ -293,6 +295,7 @@ const Sidebar = () => {
       >
         {sidebarItems.map((item) => (
           <SidebarItem
+            userRole={userRole}
             key={item.link}
             menuItem={item}
             isDesktop={isDesktop}
