@@ -31,6 +31,7 @@ const OtpInput = ({ length = 4, onComplete }: OtpInputProps) => {
     <div className="grid grid-cols-6 gap-5">
       {Array.from({ length }, (_, index) => (
         <Input
+          className="text-center"
           key={index}
           type="text"
           variant="login"

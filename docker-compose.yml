@@ -35,6 +35,7 @@ services:
       MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
+      - ./public/downloads:/opt/edulution/public/downloads
 
   mongoEdu:
     container_name: mongoEdu
@@ -98,7 +99,6 @@ services:
 
 volumes:
   postgresql_data:
-
 # A simple web frontend for mongoDB
 # mongoEdu-express:
 #   image: mongo-express

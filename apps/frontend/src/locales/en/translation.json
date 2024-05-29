@@ -238,7 +238,9 @@
       "required": "Please enter your password."
     },
     "totp": {
-      "invalid": "Invalid token!"
+      "invalid": "Invalid code! Please try again.",
+      "back": "Back",
+      "description": "Please enter the 2-Factor-Code from your Authenticator App."
     }
   },
   "common": {

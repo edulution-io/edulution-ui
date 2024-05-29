@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { useEncryption } from '@/hooks/mutations';
 
+import cleanAllStores from '@/store/utilis/cleanAllStores';
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -184,7 +185,7 @@ const LoginPage: React.FC = () => {
                   onComplete={(otp) => handleCheckTotp(otp)}
                 />
               </div>
-              {error && <p className="text-red-600">{t('login.totp.invalid')}</p>}
+              {error ? <p className="text-red-600">{t('login.totp.invalid')}</p> : <p>{t('login.totp.description')}</p>}
             </>
           ) : (
             <>
@@ -205,16 +206,31 @@ const LoginPage: React.FC = () => {
             </div> */}
           </div>
           {isEnterTotpVisible ? (
-            <Button
-              className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
-              type="button"
-              variant="btn-security"
-              size="lg"
-              data-testid="test-id-login-page-submit-button"
-              onClick={() => handleCheckTotp(totp)}
-            >
-              {isLoading ? t('common.loading') : t('common.login')}
-            </Button>
+            <div className="flex justify-around">
+              <Button
+                className="w-1/4 justify-center pt-4 text-white shadow-xl"
+                type="button"
+                variant="btn-security"
+                size="lg"
+                onClick={() => {
+                  setError(null);
+                  setIsEnterTotpVisible(false);
+                  cleanAllStores();
+                }}
+              >
+                {t('login.totp.back')}
+              </Button>
+              <Button
+                className="w-1/4 justify-center pt-4 text-white shadow-xl"
+                type="button"
+                variant="btn-security"
+                size="lg"
+                data-testid="test-id-login-page-submit-button"
+                onClick={() => handleCheckTotp(totp)}
+              >
+                {isLoading ? t('common.loading') : t('common.login')}
+              </Button>
+            </div>
           ) : (
             <Button
               className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
