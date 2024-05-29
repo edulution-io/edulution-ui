@@ -11,6 +11,12 @@ class CreateUserDto {
 
   isTotpSet?: boolean;
 
+  usersPolls: {
+    openPolls: string[];
+    createdPolls: string[];
+    answeredPolls: string[];
+  };
+
   usersSurveys: {
     openSurveys: string[];
     createdSurveys: string[];

@@ -9,8 +9,8 @@ import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
 import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolManagementPageMenu';
-import useSurveysPageMenu from '@/pages/Survey/useSurveyPageMenu';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
+import usePollsAndSurveysPageMenu from '@/pages/PollsAndSurveysPage/usePollsAndSurveysPageMenu.ts';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -21,7 +21,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
-  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
+  const SURVEYS_MENUBAR_CONFIG = usePollsAndSurveysPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);

@@ -89,27 +89,40 @@
   "add": "Add",
   "DATE": "Date",
   "days": "Days",
+  "EMPTY": "LEER",
   "TEXT": "Text",
   "RATING": "Rating",
   "save": "Save",
+  "surveys": {
+    "title": "POLLS-AND-SURVEYS",
+    "sidebar": "Polls and Surveys",
+    "polls": {
+      "title": "POLLS",
+      "sidebar": "Polls"
+    },
+    "surveys": {
+      "title": "SURVEYS",
+      "sidebar": "Surveys"
+    }
+  },
   "survey": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "description": "Create forms for exercise sheets or other more sophisticated surveys",
-    "participants": "Participant",
+    "participate": "Participate",
     "participation": "Survey participation",
-    "participate": "participate",
+    "participants": "Participant",
     "openSurveys": "Surveys that you have not answered jet",
     "createdSurveys": "Surveys that you created",
     "answeredSurveys": "Surveys that you have answered already",
-    "allSurveys": "Admins can see the full list of surveys",
-    "load": "load forms",
-    "result": "load Answer",
-    "resulting": "Answer",
-    "create": "create new survey",
-    "edit": "edit survey",
+    "allSurveys": "Surveys management",
+    "load": "Load",
+    "result": "Your answer",
+    "resulting": "Your commited answer",
+    "create": "Create",
+    "edit": "Edit",
     "editing": "Edit survey",
-    "delete": "delete survey",
+    "delete": "Delete",
     "editor": {
       "title": "Survey Editor"
     },
@@ -140,9 +153,24 @@
       "add": "Add question"
     }
   },
-  "surveys": {
-    "title": "SURVEYS",
-    "sidebar": "Surveys"
+  "poll": {
+    "title": "POLL",
+    "sidebar": "Poll",
+    "description": "Create polls to gather opinions or to create a quiz",
+    "participants": "Participant",
+    "participation": "Poll participation",
+    "participate": "Participate",
+    "openPolls": "Polls that you not have been participating jet",
+    "createdPolls": "Polls that you created",
+    "answeredPolls": "Polls you have participated in",
+    "allPolls": "Polls management",
+    "load": "Load",
+    "result": "Your choices",
+    "resulting": "Your commited choices",
+    "create": "Create new",
+    "edit": "Edit",
+    "editing": "Edit poll",
+    "delete": "Delete"
   },
   "whiteboard": {
     "title": "WHITEBOARD",

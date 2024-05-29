@@ -30,6 +30,11 @@ class UsersService {
         roles: loginUserDto.ldapGroups,
         mfaEnabled: false,
         isTotpSet: false,
+        usersPolls: {
+          openPolls: [],
+          createdPolls: [],
+          answeredPolls: [],
+        },
         usersSurveys: {
           openSurveys: [],
           createdSurveys: [],
@@ -93,6 +98,11 @@ class UsersService {
         firstName: u.firstName,
         lastName: u.lastName,
         username: u.username,
+        usersPolls: {
+          openPolls: [],
+          createdPolls: [],
+          answeredPolls: [],
+        },
         usersSurveys: {
           openSurveys: [],
           createdSurveys: [],

@@ -7,11 +7,11 @@ import IframePlaceholder from '@/components/layout/Embedded/IframePlaceholder';
 
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
-import SurveyPage from '@/pages/Survey/SurveyPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
+import PollsAndSurveysPage from '@/pages/PollsAndSurveysPage/PollsAndSurveysPage.tsx';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
@@ -33,7 +33,7 @@ const pageSwitch = (page: string) => {
     case APPS.MAIL:
       return <IframePlaceholder />;
     case APPS.SURVEYS:
-      return <SurveyPage />;
+      return <PollsAndSurveysPage />;
     case APPS.DESKTOP_DEPLOYMENT:
       return <DesktopDeploymentPage />;
     default: {

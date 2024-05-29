@@ -11,6 +11,7 @@ interface AdaptiveDialogProps {
   trigger?: React.ReactNode;
   body: React.ReactNode;
   footer?: React.ReactNode;
+  mobileContentClassName?: string;
   desktopContentClassName?: string;
 }
 
@@ -21,6 +22,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   trigger,
   body,
   footer,
+  mobileContentClassName,
   desktopContentClassName,
 }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -31,7 +33,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent side="bottom">
+      <SheetContent side="bottom" className={mobileContentClassName}>
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>

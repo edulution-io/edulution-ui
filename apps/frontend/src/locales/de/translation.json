@@ -89,27 +89,40 @@
   "add": "Hinzufügen",
   "DATE": "Datum",
   "days": "Tage",
+  "EMPTY": "LEER",
   "TEXT": "Text",
   "RATING": "Bewertung",
   "save": "Speichern",
+  "surveys": {
+    "title": "ABSTIMMUNGEN-UND-UMFRAGEN",
+    "sidebar": "Abstimmungen und Umfragen",
+    "polls": {
+      "title": "ABSTIMMUNGEN",
+      "sidebar": "Abstimmungen"
+    },
+    "surveys": {
+      "title": "UMFRAGEN",
+      "sidebar": "Umfragen"
+    }
+  },
   "survey": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "description": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
+    "participate": "Teilnehmen",
+    "participation": "Teilnahme an der Umfrage",
     "participants": "Teilnehmer",
-    "participate": "teilnehmen",
-    "participation": "Teilnahme an Umfrage",
-    "openSurveys": "Offene/Unbeantwortete Umfragen",
+    "openSurveys": "Umfragen die noch offen sind",
     "createdSurveys": "Selbst erstellte Umfragen",
-    "answeredSurveys": "Teilgenommene/Beantwortete Umfragen",
-    "allSurveys": "Als Admin ist die komplette Liste sichtbar",
-    "load": "Lade Formulare",
-    "result": "lade Abgabe",
-    "resulting": "Abgabe",
-    "create": "erstelle neue Umfrage",
-    "edit": "bearbeite Umfrage",
-    "editing": "Umfrage bearbeiten",
-    "delete": "lösche Umfrage",
+    "answeredSurveys": "Umfragen an denen teilgenommen wurde",
+    "allSurveys": "Umfragen Manager",
+    "load": "Lade",
+    "result": "Abgabe",
+    "resulting": "Ihre hochgeladene Abgabe",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "editing": "Umfrage erstellen oder bearbeiten",
+    "delete": "löschen",
     "editor": {
       "title": "Umfrage-Editor"
     },
@@ -140,9 +153,24 @@
       "add": "Füge Frage hinzu"
     }
   },
-  "surveys": {
-    "title": "UMFRAGEN",
-    "sidebar": "Umfragen"
+  "poll": {
+    "title": "ABSTIMMUNG",
+    "sidebar": "Abstimmung",
+    "description": "Hier können Sie eine Abstimmungen erstellen",
+    "participate": "Teilnehmen",
+    "participation": "Teilnahme an der Abstimmung",
+    "participants": "Teilnehmer",
+    "openPolls": "Abstimmungen die noch offen sind",
+    "createdPolls": "Selbst erstellte Abstimmungen",
+    "answeredPolls": "Abstimmungen an denen teilgenommen wurde",
+    "allPolls": "Abstimmungs Manager",
+    "load": "Lade",
+    "result": "Abgabe",
+    "resulting": "Ihre hochgeladene Abgabe",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "editing": "Abstimmung erstellen oder bearbeiten",
+    "delete": "löschen"
   },
   "printer": {
     "title": "DRUCKER",
