@@ -2,8 +2,7 @@ import React from 'react';
 import { t } from 'i18next';
 import { AiOutlinePlusSquare } from 'react-icons/ai';
 import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
-// TODO: DELETE AFTER MERGING CLASS MANAGEMENT BRANCH AND UPDATE THE IMPORT
-import FloatingActionButton from '../../../FloatingActionButton.tsx';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 
 interface FloatingButtonCreateSurveyProps {
   setSelectedSurvey: (survey: Survey | undefined) => void;

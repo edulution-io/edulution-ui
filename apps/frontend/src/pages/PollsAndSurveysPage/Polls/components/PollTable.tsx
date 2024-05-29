@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
-// import PollCardRow from '@/pages/PollsAndSurveysPage/Polls/components/PollCardRow';
 import { PollUpdateSelection } from '@/pages/PollsAndSurveysPage/Polls/PollPageStore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import UsersPollsTypes from '@/pages/PollsAndSurveysPage/Polls/backend-copy/users-polls-types-enum.dto';
@@ -13,10 +12,7 @@ interface PollTableProps {
   polls: Poll[];
   title: string;
   isLoading: boolean;
-  // selectedPoll: Poll | undefined;
   updatePollSelection: (selection: PollUpdateSelection) => void;
-  // openCreateDialog: () => void;
-  // deletePoll: (pollName: string | undefined) => Promise<void>;
 }
 
 const PollTable = (props: PollTableProps) => {
@@ -25,10 +21,7 @@ const PollTable = (props: PollTableProps) => {
     polls,
     title,
     isLoading,
-    // selectedPoll,
     updatePollSelection,
-    // openCreateDialog,
-    // deletePoll,
   } = props;
 
   const { t } = useTranslation();
@@ -47,22 +40,6 @@ const PollTable = (props: PollTableProps) => {
       </div>
     );
   }
-
-  // return (
-  //   <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
-  //     {title}
-  //     <ScrollArea className="max-h-[80vh] overflow-y-auto overflow-x-hidden">
-  //       <PollCardRow
-  //         polls={polls}
-  //         selectedPoll={selectedPoll}
-  //         updatePollSelection={updatePollSelection}
-  //         openCreateDialog={openCreateDialog}
-  //         deletePoll={deletePoll}
-  //         isAdmin={true}
-  //       />
-  //     </ScrollArea>
-  //   </div>
-  // );
 
   return (
     <div className="w-50 m-4 flex-1 pl-3 pr-3.5">

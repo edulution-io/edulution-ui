@@ -19,10 +19,7 @@ const PollSection = (props: PollTableProps) => {
   const {
     pollType,
     title,
-    // selectedPoll,
     updatePollSelection,
-    // openCreateDialog,
-    // deletePoll,
     shouldRefresh,
   } = props;
 
@@ -55,10 +52,7 @@ const PollSection = (props: PollTableProps) => {
       polls={ polls }
       title={ title }
       isLoading={ isLoading }
-      // selectedPoll={ selectedPoll }
       updatePollSelection={ updatePollSelection }
-      // openCreateDialog={ openCreateDialog }
-      // deletePoll={ deletePoll }
     />
   );
 };

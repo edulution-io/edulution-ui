@@ -1,9 +1,8 @@
 import React from 'react';
 import { t } from 'i18next';
 import { AiOutlinePlusSquare } from 'react-icons/ai';
-import {Poll} from "@/pages/PollsAndSurveysPage/Polls/backend-copy/model.ts";
-// TODO: DELETE AFTER MERGING CLASS MANAGEMENT BRANCH AND UPDATE THE IMPORT
-import FloatingActionButton from '../../../FloatingActionButton.tsx';
+import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 
 interface FloatingButtonCreatePollProps {
   setSelectedPoll: (poll: Poll | undefined) => void;

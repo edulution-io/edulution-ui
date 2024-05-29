@@ -1,14 +1,14 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import AuthModule from 'src/auth/auth.module';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import FilemanagerModule from '../filemanager/filemanager.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import PollsAndSurveysModule from '../polls-and-surveys/polls-and-surveys.module';
 
 @Module({

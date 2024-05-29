@@ -41,7 +41,6 @@ export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';
 export { default as SurveyPageMenuIcon } from '@/assets/icons/third-party/survey-page-menu.svg';
-export { default as SurveyPageIcon } from '@/assets/icons/edulution/survey-page.svg';
-// export { default as SurveyPageIcon } from '@/assets/icons/third-party/survey-page.svg';
+export { default as SurveyPageIcon } from '@/assets/icons/third-party/survey-page.svg';
 export { default as SurveyIcon } from '@/assets/icons/third-party/survey.svg';
 export { default as PollIcon } from '@/assets/icons/third-party/poll.svg';

@@ -1,8 +1,7 @@
 import React from 'react';
 import { t } from 'i18next';
 import { AiOutlineDownSquare } from 'react-icons/ai';
-// TODO: DELETE AFTER MERGING CLASS MANAGEMENT BRANCH AND UPDATE THE IMPORT
-import FloatingActionButton from '../../../FloatingActionButton.tsx';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 
 interface FloatingButtonOpenPollResultsProps {
   openPollResultsDialog: () => void;
