@@ -44,3 +44,4 @@ export { default as SurveyPageMenuIcon } from '@/assets/icons/third-party/survey
 export { default as SurveyPageIcon } from '@/assets/icons/third-party/survey-page.svg';
 export { default as SurveyIcon } from '@/assets/icons/third-party/survey.svg';
 export { default as PollIcon } from '@/assets/icons/third-party/poll.svg';
+export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';

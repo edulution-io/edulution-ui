@@ -83,8 +83,12 @@
     "sidebar": "Schulinformation"
   },
   "schoolmanagement": {
-    "title": "SCHULVERWALTUNG",
-    "sidebar": "Schulverwaltung"
+    "title": "KLASSENZIMMER",
+    "sidebar": "Klassenzimmer"
+  },
+  "aichat": {
+    "title": "KI CHAT",
+    "sidebar": "KI Chat"
   },
   "add": "Hinzufügen",
   "DATE": "Datum",

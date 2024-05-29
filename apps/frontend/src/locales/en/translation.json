@@ -83,8 +83,12 @@
     "sidebar": "School Information"
   },
   "schoolmanagement": {
-    "title": "SCHOOL MANAGEMENT",
-    "sidebar": "School Management"
+    "title": "CLASS ROOM",
+    "sidebar": "Class Room"
+  },
+  "aichat": {
+    "title": "AI CHAT",
+    "sidebar": "AI Chat"
   },
   "add": "Add",
   "DATE": "Date",
