@@ -238,7 +238,8 @@
       "required": "Bitte Passwort eingeben."
     },
     "totp": {
-      "invalid": "Ungültiger Token!"
+      "invalid": "Ungültiger Token!",
+      "back": "Zurück"
     }
   },
   "common": {

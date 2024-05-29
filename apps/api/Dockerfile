@@ -14,6 +14,8 @@ RUN npm ci
 
 RUN chown -R node:node /opt/edulution/api/
 
+RUN chown -R node:node /opt/edulution/public/
+
 USER node
 
 EXPOSE 3000

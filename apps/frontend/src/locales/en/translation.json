@@ -238,7 +238,8 @@
       "required": "Please enter your password."
     },
     "totp": {
-      "invalid": "Invalid token!"
+      "invalid": "Invalid token!",
+      "back": "Zurück"
     }
   },
   "common": {
