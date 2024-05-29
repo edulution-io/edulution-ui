@@ -9,7 +9,8 @@ import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import FilemanagerModule from '../filemanager/filemanager.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
-import PollsAndSurveysModule from '../polls-and-surveys/polls-and-surveys.module';
+import PollsModule from '../polls-and-surveys/poll/polls.module';
+import SurveyModule from '../polls-and-surveys/survey/surveys.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import PollsAndSurveysModule from '../polls-and-surveys/polls-and-surveys.module
     AppConfigModule,
     UsersModule,
     ConferencesModule,
-    PollsAndSurveysModule,
+    PollsModule,
+    SurveyModule,
     ClassManagementModule,
     FilemanagerModule,
     AuthModule,

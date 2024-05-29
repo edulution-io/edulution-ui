@@ -1,7 +1,7 @@
 import eduApi from '@/api/eduApi.ts';
-import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model.ts';
-import UsersPollsTypes from '@/pages/PollsAndSurveysPage/Polls/backend-copy/users-polls-types-enum.dto.ts';
-import POLL_ENDPOINT from '@/pages/PollsAndSurveysPage/Polls/components/dto/poll-endpoint.dto.ts';
+import { Poll } from '@/pages/PollsAndSurveysPage/Polls/backend-copy/model';
+import UsersPollsTypes from '@/pages/PollsAndSurveysPage/Polls/backend-copy/users-polls-types-enum.dto';
+import POLL_ENDPOINT from '@/pages/PollsAndSurveysPage/Polls/components/dto/poll-endpoint.dto';
 
 async function getUsersPolls(param: UsersPollsTypes): Promise<Poll[] | undefined> {
   try {
@@ -10,7 +10,7 @@ async function getUsersPolls(param: UsersPollsTypes): Promise<Poll[] | undefined
     });
     return response.data;
   } catch (error) {
-    throw new Error(`ERROR fetching users surveys: ${error}`);
+    throw new Error(`ERROR fetching users polls: ${error}`);
   }
 }
 

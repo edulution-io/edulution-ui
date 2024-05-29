@@ -94,8 +94,8 @@
   "RATING": "Rating",
   "save": "Save",
   "surveys": {
-    "title": "POLLS-AND-SURVEYS",
-    "sidebar": "Polls and Surveys",
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
     "polls": {
       "title": "POLLS",
       "sidebar": "Polls"
