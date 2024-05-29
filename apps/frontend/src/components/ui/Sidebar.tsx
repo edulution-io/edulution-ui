@@ -44,7 +44,7 @@ const Sidebar = () => {
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
-      color: item.color,
+      color: 'bg-ciGreenToBlue',
     })),
     {
       title: t('settings.sidebar'),

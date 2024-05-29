@@ -1,5 +1,6 @@
 import {
   AntiMalwareIcon,
+  AiChatIcon,
   BackupIcon,
   ChatIcon,
   ConferencesIcon,
@@ -66,52 +67,52 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.ROOM_BOOKING,
     icon: RoomBookingIcon,
-    color: 'bg-ciLightBlue',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
   {
     id: APPS.LEARNING_MANAGEMENT,
     icon: LearningManagementIcon,
-    color: 'bg-ciLightBlue',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
   {
     id: APPS.SCHOOL_INFORMATION,
     icon: SchoolInformationIcon,
-    color: 'bg-ciLightBlue',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
   {
     id: APPS.SCHOOL_MANAGEMENT,
     icon: SchoolManagementIcon,
-    color: 'bg-ciLightBlue',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
-  { id: APPS.PRINTER, icon: PrinterIcon, color: 'bg-ciLightGreen', options: ['url'] },
-  { id: APPS.NETWORK, icon: NetworkIcon, color: 'bg-ciLightGreen', options: ['url'] },
+  { id: APPS.PRINTER, icon: PrinterIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
+  { id: APPS.NETWORK, icon: NetworkIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   {
     id: APPS.LOCATION_SERVICES,
     icon: LocationServicesIcon,
-    color: 'bg-ciLightGreen',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
   {
     id: APPS.DESKTOP_DEPLOYMENT,
     icon: DesktopDeploymentIcon,
-    color: 'bg-ciLightGreen',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
-  { id: APPS.WLAN, icon: WlanIcon, color: 'bg-ciLightGreen', options: ['url'] },
+  { id: APPS.WLAN, icon: WlanIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   {
     id: APPS.MOBILE_DEVICES,
     icon: MobileDevicesIcon,
-    color: 'bg-ciLightGreen',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
   {
     id: APPS.VIRTUALIZATION,
     icon: VirtualizationIcon,
-    color: 'bg-ciLightGreen',
+    color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
   { id: APPS.FIREWALL, icon: FirewallIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
@@ -122,6 +123,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url'],
   },
   { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
+  { id: APPS.AICHAT, icon: AiChatIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
 ];
 
 export default APP_CONFIG_OPTIONS;
