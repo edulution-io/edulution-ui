@@ -1,0 +1,23 @@
+import { ForumsIcon, VideoConferenceIcon } from '@/assets/icons';
+import { MenuBarEntryProps } from '@/datatypes/types';
+
+const useConferencesPageMenu = () => {
+  const menuBar = (): MenuBarEntryProps => ({
+    title: 'conferences.title',
+    disabled: true,
+    icon: ForumsIcon,
+    color: 'hover:bg-ciDarkBlue',
+    menuItems: [
+      {
+        id: 'overview',
+        label: 'common.overview',
+        icon: VideoConferenceIcon,
+        action: () => {},
+      },
+    ],
+  });
+
+  return menuBar();
+};
+
+export default useConferencesPageMenu;

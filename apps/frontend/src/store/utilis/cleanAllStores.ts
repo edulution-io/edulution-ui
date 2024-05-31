@@ -6,6 +6,7 @@ import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
 import useIframeStore from '@/routes/IframeStore';
+import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore.ts';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
@@ -16,6 +17,7 @@ const cleanAllStores = () => {
   useCreateConferenceDialogStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useFileEditorStore.getState().reset();
+  useSchoolManagementStore.getState().reset();
 };
 
 export default cleanAllStores;

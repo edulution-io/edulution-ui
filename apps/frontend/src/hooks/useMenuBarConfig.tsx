@@ -11,6 +11,7 @@ import { getFromPathName } from '@/utils/common';
 import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolManagementPageMenu';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import usePollsAndSurveysPageMenu from '@/pages/PollsAndSurveysPage/usePollsAndSurveysPageMenu.ts';
+import useFAQPageMenu from '@/pages/FAQ/useFAQPageMenu.ts';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
   const SURVEYS_MENUBAR_CONFIG = usePollsAndSurveysPageMenu();
+  const FAQ_MENUBAR_CONFIG = useFAQPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -50,6 +52,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
+      }
+      case APPS.FAQ: {
+        return FAQ_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

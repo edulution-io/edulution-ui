@@ -5,10 +5,13 @@ import { FaArrowLeft } from 'react-icons/fa';
 import ProfileCard from '@/pages/SchoolmanagementPage/components/profiles/ProfileCard';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingButtonsBarClassManagement from '@/pages/SchoolmanagementPage/components/FloatingButtonsBarClassManagement';
-import userStore from '@/store/userStore';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
 import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
 import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
+import ComputerMonitoringDialog from '@/pages/SchoolmanagementPage/components/dialogs/ComputerMonitoringDialog.tsx';
+import useSchoolmanagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
+import AddStudentsDialog from '@/pages/SchoolmanagementPage/components/dialogs/AddStudentsDialog.tsx';
+import { t } from 'i18next';
 
 interface ManageContentPageProps {
   contentKey: string;
@@ -16,10 +19,12 @@ interface ManageContentPageProps {
 }
 
 const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, contentType }) => {
-  const { schoolclasses, availableSessions } = useSchoolManagementStore();
-  const { userInfo } = userStore();
+  const { schoolclasses, projects, availableSessions } = useSchoolManagementStore();
   const [currentMembers, setCurrentMembers] = useState<MemberInfo[]>([]);
   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { isVideoModalOpen, videoModalUrl, videoModalUsername, setIsVideoModalOpen, resetVideoModal } =
+    useSchoolmanagementComponentStore();
 
   useEffect(() => {
     let fullKey: string | undefined;
@@ -43,12 +48,14 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         );
       }
     } else if (contentType === 'project') {
-      // const project = userInfo.ldapGroups.projects.find((project) => project === contentKey);
-      // if (project) members = userInfo;
+      fullKey =
+        Object.keys(projects).find((key) => key.endsWith(`/${contentKey}`)) ||
+        Object.keys(projects).find((key) => key.includes(contentKey));
+      if (fullKey) members = projects[fullKey];
     }
 
     setCurrentMembers(members || []);
-  }, [contentKey, contentType, schoolclasses, availableSessions, userInfo]);
+  }, []);
 
   const removeContentParamAndNavigate = () => {
     const url = new URL(window.location.href);
@@ -65,7 +72,18 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
   if (!currentMembers.length) {
     return (
       <div>
-        No Data for {contentType} {contentKey}
+        <div className="flex flex-row items-center p-4">
+          <FaArrowLeft
+            onClick={removeContentParamAndNavigate}
+            className="cursor-pointer"
+            size={24}
+          />
+          <h2 className="ml-2">{t('schoolManagement.noUsersInGroup', { name: contentKey })}</h2>
+        </div>
+        <ProfileCard
+          isAddCard
+          onSelect={() => setIsDialogOpen(true)}
+        />
       </div>
     );
   }
@@ -83,6 +101,23 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
       <div className="flex-1 overflow-hidden p-4">
         <ScrollArea className="h-full w-full overflow-auto">
           <div className="flex flex-wrap gap-4">
+            <ComputerMonitoringDialog
+              isOpen={isVideoModalOpen}
+              setIsOpen={() => setIsVideoModalOpen(false)}
+              username={videoModalUsername}
+              videoUrl={videoModalUrl}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  resetVideoModal();
+                }
+              }}
+            />
+
+            <AddStudentsDialog
+              isOpen={isDialogOpen}
+              schoolClass={contentKey}
+              handleOpenChange={setIsDialogOpen}
+            />
             {currentMembers.map((member, count) => (
               <ProfileCard
                 key={member.id}
@@ -92,10 +127,13 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
                 isAddCard={false}
                 isSelected={selectedProfiles.includes(member.id)}
                 onSelect={() => handleSelectProfile(member.id)}
-                vidoUrl={count % 2 === 0 ? linuxRec : windowsRec}
+                videoUrl={count % 2 === 0 ? linuxRec : windowsRec}
               />
             ))}
-            <ProfileCard isAddCard />
+            <ProfileCard
+              isAddCard
+              onSelect={() => setIsDialogOpen(true)}
+            />
           </div>
         </ScrollArea>
       </div>

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { useMediaQuery } from 'usehooks-ts';
 import { ArrowRightIcon } from 'lucide-react';
+import userStore from '@/store/userStore.ts';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -23,6 +24,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
   const [currentPath, setCurrentPath] = useState('/');
   const { setFileOperationSuccessful, fetchDirs, moveItem, directorys } = useFileManagerStore();
+  const { userInfo } = userStore();
 
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +54,9 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
         newCurrentPath += '/';
       }
       if (newCurrentPath === '/') {
-        newCurrentPath += nextItem.filename.replace('/webdav/', '').replace('server/agy/', '');
+        newCurrentPath += nextItem.filename
+          .replace('/webdav/', '')
+          .replace(`server/${userInfo.ldapGroups.school}/`, '');
       } else {
         newCurrentPath += nextItem.basename;
       }

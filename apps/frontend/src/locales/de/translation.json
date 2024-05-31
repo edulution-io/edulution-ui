@@ -289,7 +289,8 @@
     "overview": "Übersicht",
     "create": "Erstellen",
     "revert": "Zurücksetzen",
-    "close": "Schließen"
+    "close": "Schließen",
+    "rename": "Umbenennen"
   },
   "form": {
     "path": "Link",
@@ -440,6 +441,20 @@
     "classes": "Klassen"
   },
 
+  "faq": {
+    "title": "FAQ",
+    "sidebar": "FAQ",
+    "description": "Hier finden Sie Antworten auf häufig gestellte Fragen.",
+    "filemangerIntroductionTitle": "Wie nutze ich den Dateimanager?",
+    "classManagementIntroductionTitle": "Für was nutze ich die Klassenverwaltung?",
+    "aiChatIntroductionTitle": "Wie kann ich den AI Chat nutzen?",
+    "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
+    "emailIntroductionTitle": "Muss ich mir extra eine Mailadresse anlegen?",
+    "learnManagementIntroductionTitle": "Was kann ich im Lernmanagement machen?",
+    "pollsIntroductionTitle": "Wie nutzte ich die Abstimmungen?",
+    "vdiIntroductionTitle": "Wie nutze ich den virtuellen Desktop?",
+    "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?"
+  },
   "schoolManagement": {
     "title": "Klassenzimmer",
     "lesson": "Unterricht",
@@ -468,7 +483,9 @@
     "createProject": "Projekt anlegen",
     "newProject": "Neues Projekt",
     "createGroup": "Gruppe anlegen",
-    "newGroup": "Neue Gruppe"
+    "newGroup": "Neue Gruppe",
+    "addUser": "Benutzer hinzufügen",
+    "noUsersInGroup": "Momentan befinden sich keine Benutzer in {{name}}. Füge jetzt einen hinzu."
   },
   "fileEditingPage": {
     "fileNotFound": "Datei nicht gefunden",

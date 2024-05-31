@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { MdContentCopy, MdEdit, MdDelete, MdAdd } from 'react-icons/md';
+import { MdAdd, MdContentCopy, MdDelete, MdEdit } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
 
 interface CardProps {

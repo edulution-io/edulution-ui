@@ -1,8 +1,12 @@
-enum UserManagementEnum {
+export enum UserManagementEnum {
   WIFI = 'wifi',
   Internet = 'internet',
   PRINTER = 'printer',
   EXAM = 'Exam',
 }
 
-export default UserManagementEnum;
+export enum ItemTypes {
+  PROJECT = 'project',
+  SESSION = 'session',
+  CLASS = 'class',
+}

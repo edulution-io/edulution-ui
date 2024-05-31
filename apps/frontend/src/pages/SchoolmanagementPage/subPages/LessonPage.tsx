@@ -5,7 +5,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import CreateContentTypes from '@/pages/SchoolmanagementPage/CreateContentTypes';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import Input from '@/components/shared/Input';
-import { AccordionItem, AccordionSH, AccordionTrigger, AccordionContent } from '@/components/ui/AccordionSH';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { useSearchParams } from 'react-router-dom';
 
 import PathContent from '@/pages/SchoolmanagementPage/components/PathComponent';
@@ -13,12 +13,26 @@ import ManageClassPage from '@/pages/SchoolmanagementPage/subPages/ManageClassPa
 import { transformClasses } from '@/pages/SchoolmanagementPage/utilis/utilitys';
 import CreateContentDialog from '@/components/ui/Dialog/CreateContentDialog';
 import { t } from 'i18next';
+import RenameItemDialog from '@/pages/SchoolmanagementPage/components/dialogs/RenameItemDialog.tsx';
+import useSchoolManagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
+import DeleteItemDialog from '@/pages/SchoolmanagementPage/components/dialogs/DeleteItemDialog.tsx';
 
 const LessonPage = () => {
   const { userData, getUserData } = useLmnUserStore();
   const { user, userInfo } = userStore();
-  const { schoolclasses, availableSessions, getSessions, createSession, createProject, deleteSession } =
+  const { schoolclasses, availableSessions, projects, getSessions, createSession, createProject, deleteSession } =
     useSchoolManagementStore();
+  const {
+    isEditModalOpen,
+    setIsEditModalOpen,
+    setIsDeleteModalOpen,
+    isDeleteModalOpen,
+    isCopyModalOpen,
+    setIsCopyModalOpen,
+    editModalItem,
+    copyModalItem,
+    deleteModalItem,
+  } = useSchoolManagementComponentStore();
 
   const [projectClassName, setProjectClassName] = useState<string>('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
@@ -132,7 +146,7 @@ const LessonPage = () => {
                   {userInfo && (
                     <PathContent
                       pathType="projects"
-                      data={userInfo.ldapGroups.projects}
+                      data={transformClasses(projects)}
                       setDialogTitle={setDialogTitle}
                       setIsCreateDialogOpen={setIsCreateDialogOpen}
                       setCreateContentType={setCreateContentType}
@@ -143,6 +157,35 @@ const LessonPage = () => {
               </AccordionItem>
             </div>
           </AccordionSH>
+          {isEditModalOpen && (
+            <RenameItemDialog
+              isCopy={false}
+              isOpen={isEditModalOpen}
+              onOpenChange={() => {
+                setIsEditModalOpen(false);
+              }}
+              item={editModalItem || { itemEditName: '', type: '' }}
+            />
+          )}
+          {isDeleteModalOpen && (
+            <DeleteItemDialog
+              isOpen={isDeleteModalOpen}
+              onOpenChange={() => {
+                setIsDeleteModalOpen(false);
+              }}
+              item={deleteModalItem || { itemEditName: '', type: '' }}
+            />
+          )}
+          {isCopyModalOpen && (
+            <RenameItemDialog
+              isOpen={isCopyModalOpen}
+              isCopy={true}
+              onOpenChange={() => {
+                setIsCopyModalOpen(false);
+              }}
+              item={copyModalItem || { itemEditName: '', type: '' }}
+            />
+          )}
         </ScrollArea>
       )}
     </div>

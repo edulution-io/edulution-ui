@@ -45,3 +45,6 @@ export { default as SurveyPageIcon } from '@/assets/icons/third-party/survey-pag
 export { default as SurveyIcon } from '@/assets/icons/third-party/survey.svg';
 export { default as PollIcon } from '@/assets/icons/third-party/poll.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
+export { default as EnrolIcon } from '@/assets/icons/enrol.svg';
+export { default as FirstPasswordIcon } from '@/assets/icons/first-Password.svg';
+export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg';

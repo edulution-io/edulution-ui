@@ -19,7 +19,7 @@ import DataTable from '@/pages/FileSharing/table/DataTable';
 import Columns from '@/pages/FileSharing/table/Columns';
 import OperationsToaster from '@/pages/FileSharing/toast/OperationsToaster';
 import { ContentType } from '@/datatypes/filesystem';
-import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
+import DeleteItemAlert from '@/pages/FileSharing/dialog/DeleteItemAlert';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { useSearchParams } from 'react-router-dom';

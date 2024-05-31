@@ -288,7 +288,8 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
-    "revert": "Revert"
+    "revert": "Revert",
+    "rename": "Rename"
   },
   "form": {
     "path": "Path",
@@ -466,7 +467,9 @@
     "createProject": "Create Project",
     "newProject": "New Project",
     "createGroup": "Create Group",
-    "newGroup": "New Group"
+    "newGroup": "New Group",
+    "addUser": "Add user",
+    "noUsersInGroup": "Currently, there are no users in {{name}}. Add one now."
   },
   "fileEditingPage": {
     "fileNotFound": "File not found",
@@ -475,5 +478,19 @@
     "maximize": "Open full screen",
     "minimize": "minimalize",
     "close": "Close full screen"
+  },
+  "faq": {
+    "title": "FAQ",
+    "sidebar": "FAQ",
+    "description": "Here you can find answers to frequently asked questions.",
+    "filemangerIntroductionTitle": "How to use the File Manager",
+    "classManagementIntroductionTitle": "What is the class management?",
+    "aiChatIntroductionTitle": "How to use the AI Chat?",
+    "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
+    "emailIntroductionTitle": "Do I have to create an extra email address?",
+    "learnManagementIntroductionTitle": "What can I do in learning management?",
+    "pollsIntroductionTitle": "How do I use the polls?",
+    "vdiIntroductionTitle": "How do I use the virtual desktop?",
+    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?"
   }
 }

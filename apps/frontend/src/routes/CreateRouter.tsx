@@ -19,6 +19,7 @@ import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementP
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
+import FAQPage from '@/pages/FAQ/FAQPage.tsx';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -36,6 +37,9 @@ const pageSwitch = (page: string) => {
       return <PollsAndSurveysPage />;
     case APPS.DESKTOP_DEPLOYMENT:
       return <DesktopDeploymentPage />;
+    case APPS.FAQ:
+      return <FAQPage />;
+
     default: {
       return (
         <Navigate

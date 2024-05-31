@@ -1,6 +1,6 @@
 import {
-  AntiMalwareIcon,
   AiChatIcon,
+  AntiMalwareIcon,
   BackupIcon,
   ChatIcon,
   ConferencesIcon,
@@ -12,7 +12,6 @@ import {
   LearningManagementIcon,
   LocationServicesIcon,
   MailIcon,
-  WhiteBoardIcon,
   MobileDevicesIcon,
   NetworkIcon,
   PrinterIcon,
@@ -22,6 +21,7 @@ import {
   SurveyPageIcon,
   TicketSystemIcon,
   VirtualizationIcon,
+  WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
 import { APPS } from '@/datatypes/types';
@@ -99,6 +99,12 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.DESKTOP_DEPLOYMENT,
     icon: DesktopDeploymentIcon,
+    color: 'bg-ciGreenToBlue',
+    options: ['url'],
+  },
+  {
+    id: APPS.FAQ,
+    icon: ForumsIcon,
     color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
