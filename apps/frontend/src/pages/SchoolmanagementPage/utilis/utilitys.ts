@@ -44,7 +44,6 @@ export const fetchAndFilterData = async (
 
 export const transformGroupsToSchools = (groups: GroupInfo[]): SchoolData[] => {
   const { userInfo } = userStore.getState();
-  console.log(userInfo.ldapGroups.school);
   return groups.map((group) => {
     const classes = group.subGroups
       .filter((subGroup) => subGroup.name.includes(`s_${userInfo?.ldapGroups?.school}`))

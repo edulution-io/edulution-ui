@@ -51,7 +51,6 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     key: 'word' + Math.random(),
     documentType: 'word',
   });
-  console.log('user', user?.access_token);
   const { previewFile, appendEditorFile } = useFileEditorStore();
   const { getOnlyOfficeJwtToken, downloadFile } = useFileManagerStore();
   useEffect(() => {

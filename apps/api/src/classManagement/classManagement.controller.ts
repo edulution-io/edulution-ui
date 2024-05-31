@@ -14,7 +14,6 @@ export class ClassManagementController {
   @Get('*')
   async getClassMembersWithDetails(@GetTokenDecorator() token: string, @Param() params: string) {
     const className = params[0] || '';
-    console.log('className', className);
     return this.classManagementService.getClassMembersWithDetails(token, className);
   }
 }

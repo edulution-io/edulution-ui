@@ -204,12 +204,9 @@ class FilemanagerController {
     }
 
     const updateFile = async (response: Response, body: any) => {
-      console.log('Body:', body);
-
       try {
         if (body.status === 4 || body.status === 2) {
           const file = syncRequest('GET', body.url);
-          console.log('File:', filename);
           const filePath = pathNode.join(__dirname, `../public/downloads/${filename}`);
           fs.mkdirSync(pathNode.dirname(filePath), { recursive: true });
           fs.writeFileSync(filePath, file.getBody());
