@@ -11,7 +11,7 @@ import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import PollsAndSurveysPage from '@/pages/PollsAndSurveysPage/PollsAndSurveysPage.tsx';
+import PollsAndSurveysPage from '@/pages/PollsAndSurveysPage/PollsAndSurveysPage';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
@@ -19,7 +19,7 @@ import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementP
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
-import FAQPage from '@/pages/FAQ/FAQPage.tsx';
+import FAQPage from '@/pages/FAQ/FAQPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -37,8 +37,6 @@ const pageSwitch = (page: string) => {
       return <PollsAndSurveysPage />;
     case APPS.DESKTOP_DEPLOYMENT:
       return <DesktopDeploymentPage />;
-    case APPS.FAQ:
-      return <FAQPage />;
 
     default: {
       return (
@@ -80,6 +78,10 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole
             <Route
               path="user"
               element={<UserSettings />}
+            />
+            <Route
+              path="faq"
+              element={<FAQPage />}
             />
 
             {userRole !== 'student' && (

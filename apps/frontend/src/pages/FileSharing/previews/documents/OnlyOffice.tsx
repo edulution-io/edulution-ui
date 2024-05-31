@@ -70,7 +70,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         const config = {
           document: {
             fileType,
-            type: type,
+            type,
             key: editorConfig.key,
             title: file.basename,
             url: dev ? formattedUrl : rawUrl,
@@ -79,8 +79,8 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_URL_DEV as string}${file.filename}/${file.basename}/${user?.access_token}`,
-            mode: mode,
+            callbackUrl: `${window.location.origin}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+            mode,
             customization: {
               anonymous: {
                 request: true,
@@ -135,7 +135,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL_DEV as string}
+          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL as string}
           config={{
             document: {
               fileType: getFileType(file.filename),
@@ -146,8 +146,8 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_URL_DEV as string}${file.filename}/${file.basename}/${user?.access_token}`,
-              mode: mode,
+              callbackUrl: `${window.location.origin}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+              mode,
               customization: {
                 anonymous: {
                   request: true,

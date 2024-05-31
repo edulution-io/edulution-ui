@@ -11,9 +11,7 @@ services:
       VITE_AUTH_CLIENT_SECRET: <CLIENT_SECRET>
       VITE_AUTH_CLIENT_ID: <CLIENT_ID>
       VITE_AUTH_REALM: <REALM>
-      VITE_LMN_API_URL: <URL>
-
-      EDU_API_URL: http://edulution-api:3000
+      VITE_ONLYOFFICE_URL: <ONLYOFFICE_URL>
 
   edu-api:
     container_name: edulution-api
