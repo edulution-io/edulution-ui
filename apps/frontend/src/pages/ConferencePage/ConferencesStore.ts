@@ -13,6 +13,8 @@ interface ConferencesStore {
   error: Error | null;
   getConferences: (setIsLoading?: boolean) => Promise<void>;
   deleteConferences: (conferences: Conference[]) => Promise<void>;
+  isDeleteConferencesDialogOpen: boolean;
+  setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
   toggleConferenceRunningState: (conferenceID: string) => Promise<void>;
   toggleConferenceRunningStateIsLoading: boolean;
   toggleConferenceRunningStateError: Error | null;
@@ -26,6 +28,7 @@ const initialValues = {
   selectedRows: {},
   toggleConferenceRunningStateError: null,
   toggleConferenceRunningStateIsLoading: false,
+  isDeleteConferencesDialogOpen: false,
 };
 
 const useConferenceStore = create<ConferencesStore>((set) => ({
@@ -43,6 +46,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
     }
   },
 
+  setIsDeleteConferencesDialogOpen: (isOpen) => set({ isDeleteConferencesDialogOpen: isOpen }),
   deleteConferences: async (conferences: Conference[]) => {
     set({ isLoading: true });
     try {
