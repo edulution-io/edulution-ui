@@ -66,7 +66,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         const config = {
           document: {
             fileType,
-            type: type,
+            type,
             key: editorConfig.key,
             title: file.basename,
             url: rawUrl,
@@ -75,8 +75,8 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: 'https://ui.schulung.multi.schule/edu-api/filemanager/callback',
-            mode: mode,
+            callbackUrl: `${window.location.origin}/edu-api/filemanager/callback`,
+            mode,
           },
         };
         const generatedToken = await getOnlyOfficeJwtToken(config);
@@ -105,7 +105,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl="https://office.schulung.multi.schule"
+          documentServerUrl="https://office.demo.multi.schule"
           config={{
             document: {
               fileType: getFileType(file.filename),
@@ -116,8 +116,8 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: 'https://ui.schulung.multi.schule/edu-api/filemanager/callback',
-              mode: mode,
+              callbackUrl: `${window.location.origin}/edu-api/filemanager/callback`,
+              mode,
             },
           }}
         />

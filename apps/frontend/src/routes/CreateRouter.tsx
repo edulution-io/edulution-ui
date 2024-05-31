@@ -11,7 +11,7 @@ import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import PollsAndSurveysPage from '@/pages/PollsAndSurveysPage/PollsAndSurveysPage.tsx';
+import PollsAndSurveysPage from '@/pages/PollsAndSurveysPage/PollsAndSurveysPage';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
@@ -45,6 +45,20 @@ const pageSwitch = (page: string) => {
       );
     }
   }
+};
+
+const shouldRenderEmbeddedRoute = (item: AppConfig, userRole: string) => {
+  const { appType, name } = item;
+
+  if (appType !== AppIntegrationType.EMBEDDED) {
+    return false;
+  }
+
+  if (name === 'ticketsystem') {
+    return userRole === 'globaladministrator';
+  }
+
+  return true;
 };
 
 const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole: string) =>
@@ -134,7 +148,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole
 
           <Route>
             {appConfig.map((item) =>
-              item.appType === AppIntegrationType.EMBEDDED ? (
+              shouldRenderEmbeddedRoute(item, userRole) ? (
                 <Route
                   key={item.name}
                   path={item.name}

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios, { AxiosError } from 'axios';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/userStore';
+import CryptoJS from 'crypto-js';
 
 type ConnectionAttributes = {
   'guacd-encryption': string;
@@ -62,11 +63,15 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   authenticate: async () => {
     set({ isLoading: true });
     try {
+      const key = `${import.meta.env.VITE_WEBDAV_KEY}`;
+      const decryptedValue = CryptoJS.AES.decrypt(userStore.getState().webdavKey, key);
+      const password = decryptedValue.toString(CryptoJS.enc.Utf8);
+
       const response = await axios.post(
         `${baseUrl}/tokens`,
         {
           username: userStore.getState().user,
-          password: 'Muster!',
+          password,
         },
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
       );
