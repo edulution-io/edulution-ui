@@ -67,8 +67,7 @@ export default defineConfig({
         },
       },
       '/guacamole': {
-        rewrite: (path) => path.replace(/^\/guacamole/, ''),
-        target: 'http://192.168.188.110:8082/',
+        target: 'https://ui.schulung.multi.schule/guacamole',
         changeOrigin: true,
         secure: false,
         ws: true,
