@@ -58,7 +58,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     const editorConfig = findDocumentsEditorType(fileType);
     setEditorType(editorConfig);
 
-    const dev = true;
+    const dev = false;
 
     const fetchFileUrlAndToken = async () => {
       try {
