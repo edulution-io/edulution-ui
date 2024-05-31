@@ -59,12 +59,14 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     const editorConfig = findDocumentsEditorType(fileType);
     setEditorType(editorConfig);
 
+    const dev = true;
+
     const fetchFileUrlAndToken = async () => {
       try {
         const rawUrl = await downloadFile(file.filename);
         const formattedUrl = rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001');
 
-        setFileUrl(formattedUrl);
+        dev ? setFileUrl(formattedUrl) : setFileUrl(rawUrl);
 
         const config = {
           document: {
@@ -72,13 +74,13 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             type: type,
             key: editorConfig.key,
             title: file.basename,
-            url: formattedUrl,
+            url: dev ? formattedUrl : rawUrl,
             height: '100%',
             width: '100%',
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: `http://host.docker.internal:3001/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+            callbackUrl: `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_URL_DEV as string}${file.filename}/${file.basename}/${user?.access_token}`,
             mode: mode,
             customization: {
               anonymous: {
@@ -134,7 +136,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl="http://localhost:80/"
+          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL_DEV as string}
           config={{
             document: {
               fileType: getFileType(file.filename),
@@ -145,7 +147,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: `http://host.docker.internal:3001/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+              callbackUrl: `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_URL_DEV as string}${file.filename}/${file.basename}/${user?.access_token}`,
               mode: mode,
               customization: {
                 anonymous: {
