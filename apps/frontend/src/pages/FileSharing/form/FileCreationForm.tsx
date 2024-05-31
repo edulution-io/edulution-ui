@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '@/components/shared/Input';
 import { validateFileName } from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { t } from 'i18next';
 
 interface FileCreationFormProps {
   fileName: string;
@@ -32,7 +33,7 @@ const FileCreationForm: React.FC<FileCreationFormProps> = ({ fileName, setFileNa
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
         variant="default"
-        placeholder="ExampleName.txt"
+        placeholder={t('fileCreateNewContent.fileNamePlaceholder')}
         value={fileName}
         onChange={handleInputChange}
       />

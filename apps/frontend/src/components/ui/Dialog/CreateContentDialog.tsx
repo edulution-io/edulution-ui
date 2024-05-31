@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { DialogSH, DialogTriggerSH, DialogContentSH } from '@/components/ui/DialogSH';
+import React, { useEffect, useState } from 'react';
+import { DialogContentSH, DialogSH, DialogTriggerSH } from '@/components/ui/DialogSH';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/Sheet';
 import { useMediaQuery } from 'usehooks-ts';
+import { t } from 'i18next';
 
 interface CreateContentDialogProps {
   children: React.ReactNode;
@@ -53,7 +54,7 @@ const CreateContentDialog: React.FC<CreateContentDialogProps> = ({
             onSubmit();
           }}
         >
-          Submit
+          {t('createContent.submit')}
         </Button>
       </div>
     </>

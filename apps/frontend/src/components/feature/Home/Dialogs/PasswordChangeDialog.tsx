@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { DialogContentSH, DialogSH, DialogTitleSH } from '@/components/ui/DialogSH.tsx';
+import { t } from 'i18next';
 
 interface PasswordChangeDialogProps {
   isOpen: boolean;
@@ -19,15 +20,18 @@ const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({ isOpen, setIsOpen
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<PasswordChangeFormInputs>();
 
-  const onSubmit = (data: PasswordChangeFormInputs) => {
-    console.log(data);
+  const onSubmit = () => {
+    handleOpenChange(false);
+    reset();
   };
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
+    reset();
     if (onOpenChange) {
       onOpenChange(open);
     }
@@ -49,13 +53,15 @@ const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({ isOpen, setIsOpen
               htmlFor="currentPassword"
               className="block text-sm font-medium text-gray-700"
             >
-              Aktuelles Passwort
+              {t('changePassword.title')}
             </label>
             <input
               id="currentPassword"
               type="password"
-              {...register('currentPassword', { required: 'Aktuelles Passwort ist erforderlich' })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              {...register('currentPassword', { required: t('changePassword.currentPasswordRequired') })}
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                errors.currentPassword ? 'border-red-500' : ''
+              }`}
             />
             {errors.currentPassword && <p className="mt-2 text-sm text-red-600">{errors.currentPassword.message}</p>}
           </div>
@@ -64,16 +70,18 @@ const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({ isOpen, setIsOpen
               htmlFor="newPassword"
               className="block text-sm font-medium text-gray-700"
             >
-              Neues Passwort
+              {t('changePassword.newPassword')}
             </label>
             <input
               id="newPassword"
               type="password"
               {...register('newPassword', {
-                required: 'Neues Passwort ist erforderlich',
-                minLength: { value: 8, message: 'Das Passwort muss mindestens 8 Zeichen lang sein' },
+                required: t('changePassword.newPasswordRequired'),
+                minLength: { value: 8, message: t('changePassword.passwordLength') },
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                errors.newPassword ? 'border-red-500' : ''
+              }`}
             />
             {errors.newPassword && <p className="mt-2 text-sm text-red-600">{errors.newPassword.message}</p>}
           </div>
@@ -82,16 +90,18 @@ const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({ isOpen, setIsOpen
               htmlFor="confirmPassword"
               className="block text-sm font-medium text-gray-700"
             >
-              Passwort bestätigen
+              {t('changePassword.confirmPassword')}
             </label>
             <input
               id="confirmPassword"
               type="password"
               {...register('confirmPassword', {
-                required: 'Passwortbestätigung ist erforderlich',
-                validate: (value) => value === watch('newPassword') || 'Die Passwörter stimmen nicht überein',
+                required: t('changePassword.confirmPasswordRequired'),
+                validate: (value) => value === watch('newPassword') || t('changePassword.passwordsDoNotMatch'),
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                errors.confirmPassword ? 'border-red-500' : ''
+              }`}
             />
             {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword.message}</p>}
           </div>
@@ -99,9 +109,8 @@ const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({ isOpen, setIsOpen
             <button
               type="submit"
               className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              onClick={() => handleOpenChange(false)}
             >
-              Passwort ändern
+              {t('changePassword.title')}
             </button>
           </div>
         </form>

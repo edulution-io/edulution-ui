@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '@/components/shared/Input';
 import { validateDirectoryName } from '@/pages/FileSharing/utilities/fileManagerCommon';
+import { t } from 'i18next';
 
 interface DirectoryCreationFormProps {
   directoryName: string;
@@ -33,7 +34,7 @@ const DirectoryCreationForm: React.FC<DirectoryCreationFormProps> = ({ directory
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Input
         variant="default"
-        placeholder="NewDirectory"
+        placeholder={t('fileCreateNewContent.fileNamePlaceholder')}
         value={directoryName}
         onChange={handleInputChange}
       />

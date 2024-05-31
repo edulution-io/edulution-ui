@@ -343,6 +343,7 @@
     "presentation": "Presentation"
   },
   "fileCreateNewContent": {
+    "fileNamePlaceholder": "Enter file name",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
@@ -434,13 +435,21 @@
     "my_information": "My Information",
     "mail_alias": "Mail-Alias",
     "change_my_data": "Change my data",
-    "school_classes": "School Classes"
+    "school_classes": "School Classes",
+    "FAQ": "FAQ"
   },
+
+  "createContent":{
+    "submit": "Submit"
+  },
+
+
   "groupsPage": {
     "classes": "Classes"
   },
   "schoolManagement": {
     "title": "Class Room",
+    "description": "Here you can manage your classes and groups.",
     "lesson": "Lesson",
     "enrol": "Enrol",
     "passwords": "Initial-Passwords",
@@ -494,7 +503,11 @@
     "shareFilesWithAllUsersMessage": "Share files with all users. Place the file in the _share folder of all users.",
     "shareFiles": "Share Files",
     "showCollectedFilesMessage": "Display the collected files from the users. These are located in the _collect folder of the user.",
-    "allRight": "All Right"
+    "allRight": "All Right",
+    "copySession": "Copy Session {{name}}",
+    "copyProject": "Copy Project {{name}}",
+    "renameSession": "Rename Session {{name}}",
+    "renameProject": "Rename Project {{name}}"
 
   },
   "fileEditingPage": {
@@ -518,5 +531,15 @@
     "pollsIntroductionTitle": "How do I use the polls?",
     "vdiIntroductionTitle": "How do I use the virtual desktop?",
     "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "newPassword": "New Password",
+    "currentPasswordRequired": "Current password is required.",
+    "newPasswordRequired": "New password is required.",
+    "passwordLength": "Password must be at least 8 characters long.",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordRequired": "Confirm password is required.",
+    "passwordsDoNotMatch": "Passwords do not match."
   }
 }

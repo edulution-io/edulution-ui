@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react';
 import { ItemTypes } from '@/pages/SchoolmanagementPage/utilis/enums.ts';
 import GeneralDeleteDialog from '@/components/ui/Dialog/GeneralDeleteDialog.tsx';
+import { t } from 'i18next';
 
 interface DeleteItemDialogProps {
   trigger?: ReactNode;
@@ -20,8 +21,8 @@ const DeleteItemDialog: FC<DeleteItemDialogProps> = ({ trigger, isOpen, item, on
       isOpen={isOpen}
       title={
         item.type === ItemTypes.SESSION
-          ? `Delete your Session ${item.itemEditName}`
-          : `Delete your Project ${item.itemEditName}`
+          ? t('schoolManagement.deleteSession', { name: item.itemEditName })
+          : t('schoolManagement.deleteProject', { name: item.itemEditName })
       }
       onConfirm={deleteItem}
       onOpenChange={onOpenChange}

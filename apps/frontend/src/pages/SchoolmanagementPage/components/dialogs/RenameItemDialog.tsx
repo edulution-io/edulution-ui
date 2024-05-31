@@ -15,12 +15,12 @@ const RenameItemDialog: FC<RenameItemDialogProps> = ({ trigger, isOpen, isCopy, 
   const getTitle = () => {
     if (isCopy) {
       return item.type === ItemTypes.SESSION
-        ? `Copy your Session ${item.itemEditName}`
-        : `Copy your Project ${item.itemEditName}`;
+        ? t('schoolManagement.copySession', { name: item.itemEditName })
+        : t('schoolManagement.copyProject', { name: item.itemEditName });
     }
     return item.type === ItemTypes.SESSION
-      ? `Rename your Session ${item.itemEditName}`
-      : `Rename your Project ${item.itemEditName}`;
+      ? t('schoolManagement.renameSession', { name: item.itemEditName })
+      : t('schoolManagement.renameProject', { name: item.itemEditName });
   };
 
   return (

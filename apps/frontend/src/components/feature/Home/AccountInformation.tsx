@@ -4,12 +4,13 @@ import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import userStore from '@/store/userStore';
 import PasswordChangeDialog from '@/components/feature/Home/Dialogs/PasswordChangeDialog.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const AccountInformation = () => {
   const { userInfo } = userStore();
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const navigate = useNavigate();
   const userInfoFields = [
     { label: t('accountData.name'), value: userInfo ? userInfo?.name : '...' },
     {
@@ -46,6 +47,14 @@ const AccountInformation = () => {
             onClick={() => setIsDialogOpen(true)}
           >
             {t('accountData.change_password')}
+          </Button>
+          <Button
+            variant="btn-collaboration"
+            className="mt-4"
+            size="sm"
+            onClick={() => navigate('/faq')}
+          >
+            {t('accountData.FAQ')}
           </Button>
 
           <PasswordChangeDialog

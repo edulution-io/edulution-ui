@@ -16,14 +16,12 @@ const SchoolManagementPage = () => {
   const page = searchParams.get('page');
 
   useEffect(() => {
-    if (userInfo) {
-      fetchAndStoreUserProjectsAndClasses(
-        userInfo.ldapGroups.classPaths,
-        userInfo.ldapGroups.projectPaths,
-        userInfo,
-      ).catch(console.error);
-    }
-  }, [userInfo]);
+    fetchAndStoreUserProjectsAndClasses(
+      userInfo.ldapGroups.classPaths,
+      userInfo.ldapGroups.projectPaths,
+      userInfo,
+    ).catch(console.error);
+  }, []);
 
   const renderPage = () => {
     switch (page) {

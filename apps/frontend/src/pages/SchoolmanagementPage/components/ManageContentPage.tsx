@@ -93,11 +93,16 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
             className="cursor-pointer"
             size={24}
           />
-          <h2 className="ml-2">{t('schoolManagement.noUsersInGroup', { name: contentKey })}</h2>
+          <h3 className="ml-2">{t('schoolManagement.noUsersInGroup', { name: contentKey })}</h3>
         </div>
         <ProfileCard
           isAddCard
           onSelect={() => setIsDialogOpen(true)}
+        />
+        <AddStudentsDialog
+          isOpen={isDialogOpen}
+          schoolClass={contentKey}
+          handleOpenChange={setIsDialogOpen}
         />
       </div>
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import {
   MdOutlineDeleteOutline,
   MdOutlineDriveFileMove,
@@ -7,11 +7,9 @@ import {
 } from 'react-icons/md';
 import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import { IconContext } from 'react-icons';
 import { FiUpload } from 'react-icons/fi';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
-import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
 import CreateNewContentDialog from '@/pages/FileSharing/dialog/CreateNewContentDialog';
 import UploadItemDialog from '@/pages/FileSharing/dialog/UploadItemDialog';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
@@ -21,7 +19,6 @@ import OperationsToaster from '@/pages/FileSharing/toast/OperationsToaster';
 import { ContentType } from '@/datatypes/filesystem';
 import DeleteItemAlert from '@/pages/FileSharing/dialog/DeleteItemAlert';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
 import { useSearchParams } from 'react-router-dom';
 import Toaster from '@/components/ui/Sonner';
 import { toast } from 'sonner';
@@ -31,6 +28,7 @@ import Previews from '@/pages/FileSharing/previews/Previews.tsx';
 import EditFile from '@/pages/FileSharing/previews/EditFile.tsx';
 import { convertDownloadLinkToBlob } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
 import { triggerFileDownload } from '@/pages/FileSharing/utilities/fileManagerUtilits.ts';
+import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
 
 const FileSharingPage = () => {
   const {
@@ -71,8 +69,6 @@ const FileSharingPage = () => {
   useEffect(() => {
     setShowEditor(true);
   }, [previewFile]);
-
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   return (
     <div className="w-full overflow-x-auto">
@@ -115,66 +111,33 @@ const FileSharingPage = () => {
             )}
           </div>
 
-          <div className="fixed bottom-8 flex flex-row space-x-24 bg-opacity-90">
+          <div className="fixed bottom-8 flex flex-row bg-opacity-90">
             <TooltipProvider>
               {selectedItems.length === 0 && (
                 <>
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText={t('tooltip.create.file')}
+                  <CreateNewContentDialog
                     trigger={
-                      <CreateNewContentDialog
-                        trigger={
-                          <Button
-                            type="button"
-                            variant="btn-hexagon"
-                            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                          >
-                            <IconContext.Provider value={iconContextValue}>
-                              <MdOutlineNoteAdd />
-                            </IconContext.Provider>
-                          </Button>
-                        }
-                        contentType={ContentType.file}
+                      <FloatingActionButton
+                        icon={MdOutlineNoteAdd}
+                        text={t('tooltip.create.file')}
                       />
                     }
+                    contentType={ContentType.file}
                   />
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText={t('tooltip.create.folder')}
+                  <CreateNewContentDialog
                     trigger={
-                      <CreateNewContentDialog
-                        trigger={
-                          <Button
-                            type="button"
-                            variant="btn-hexagon"
-                            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                          >
-                            <IconContext.Provider value={iconContextValue}>
-                              <HiOutlineFolderAdd />
-                            </IconContext.Provider>
-                          </Button>
-                        }
-                        contentType={ContentType.directory}
+                      <FloatingActionButton
+                        icon={HiOutlineFolderAdd}
+                        text={t('tooltip.create.folder')}
                       />
                     }
+                    contentType={ContentType.directory}
                   />
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText={t('tooltip.upload')}
+                  <UploadItemDialog
                     trigger={
-                      <UploadItemDialog
-                        trigger={
-                          <Button
-                            type="button"
-                            variant="btn-hexagon"
-                            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                          >
-                            <IconContext.Provider value={iconContextValue}>
-                              <FiUpload />
-                            </IconContext.Provider>
-                          </Button>
-                        }
+                      <FloatingActionButton
+                        icon={FiUpload}
+                        text={t('tooltip.upload')}
                       />
                     }
                   />
@@ -182,70 +145,35 @@ const FileSharingPage = () => {
               )}
               {selectedItems.length > 0 && (
                 <div className="flex flex-row space-x-24">
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText={t('tooltip.move')}
+                  <MoveItemDialog
                     trigger={
-                      <MoveItemDialog
-                        trigger={
-                          <Button
-                            type="button"
-                            variant="btn-hexagon"
-                            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                          >
-                            <IconContext.Provider value={iconContextValue}>
-                              <MdOutlineDriveFileMove />
-                            </IconContext.Provider>
-                          </Button>
-                        }
-                        item={selectedItems}
+                      <FloatingActionButton
+                        icon={MdOutlineDriveFileMove}
+                        text={t('tooltip.move')}
                       />
                     }
+                    item={selectedItems}
+                  />
+                  <DeleteItemAlert
+                    trigger={
+                      <FloatingActionButton
+                        icon={MdOutlineDeleteOutline}
+                        text={t('tooltip.delete')}
+                      />
+                    }
+                    file={selectedItems}
                   />
 
-                  <ActionTooltip
-                    onAction={() => {}}
-                    tooltipText={t('tooltip.delete')}
-                    trigger={
-                      <DeleteItemAlert
-                        trigger={
-                          <Button
-                            type="button"
-                            variant="btn-hexagon"
-                            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                          >
-                            <IconContext.Provider value={iconContextValue}>
-                              <MdOutlineDeleteOutline />
-                            </IconContext.Provider>
-                          </Button>
-                        }
-                        file={selectedItems}
-                      />
-                    }
-                  />
                   {selectedItems.length < 2 && (
-                    <ActionTooltip
-                      onAction={() => {}}
-                      tooltipText={t('tooltip.download')}
-                      trigger={
-                        <Button
-                          type="button"
-                          variant="btn-hexagon"
-                          className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-                          data-testid="test-id-file-sharing-page-download-button"
-                          onClick={async () => {
-                            const downloadUrl =
-                              (await convertDownloadLinkToBlob(
-                                (await downloadFile(selectedItems[0].filename)) || '',
-                              )) || '';
-                            triggerFileDownload(downloadUrl);
-                          }}
-                        >
-                          <IconContext.Provider value={iconContextValue}>
-                            <MdOutlineFileDownload />
-                          </IconContext.Provider>
-                        </Button>
-                      }
+                    <FloatingActionButton
+                      icon={MdOutlineFileDownload}
+                      text={t('tooltip.download')}
+                      onClick={async () => {
+                        const downloadUrl =
+                          (await convertDownloadLinkToBlob((await downloadFile(selectedItems[0].filename)) || '')) ||
+                          '';
+                        triggerFileDownload(downloadUrl);
+                      }}
                     />
                   )}
                 </div>

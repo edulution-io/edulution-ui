@@ -83,18 +83,13 @@ class ClassManagementService {
       Logger.log('Sending request to fetch all groups', 'UsersService');
       const response = await axios.request<GroupInfo[]>(config);
       Logger.log('Response received', 'UsersService');
-      Logger.log(response.status, 'UsersService'); // Log status code
-      Logger.log(response.statusText, 'UsersService'); // Log status text
-      Logger.log(response.headers, 'UsersService'); // Log headers
-      Logger.log(response.data, 'UsersService'); // Log response data
-
       if (!response.data || response.data.length === 0) {
         Logger.warn('Empty response received from the API', 'UsersService');
       }
 
       return response.data;
     } catch (e) {
-      Logger.error(e, 'UsersService'); // Ensure correct service name
+      Logger.error(e, 'UsersService');
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
     }
   }
