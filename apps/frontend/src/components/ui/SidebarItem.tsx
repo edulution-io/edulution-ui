@@ -28,7 +28,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop
 
   const rootPathName = `/${getFromPathName(pathname, 1)}`;
 
-  if (userRole !== 'globaladministrator' && menuItem.title === t('settings.sidebar')) return null;
+  if (
+    (userRole !== 'globaladministrator' && menuItem.title === t('settings.sidebar')) ||
+    (userRole !== 'globaladministrator' && menuItem.title === t('ticketsystem.sidebar'))
+  )
+    return null;
   if (userRole === 'student' && menuItem.title === t('schoolmanagement.sidebar')) return null;
 
   useEffect(() => {

@@ -48,6 +48,20 @@ const pageSwitch = (page: string) => {
   }
 };
 
+const shouldRenderEmbeddedRoute = (item: AppConfig, userRole: string) => {
+  const { appType, name } = item;
+
+  if (appType !== AppIntegrationType.EMBEDDED) {
+    return false;
+  }
+
+  if (name === 'ticketsystem') {
+    return userRole === 'globaladministrator';
+  }
+
+  return true;
+};
+
 const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole: string) =>
   createBrowserRouter(
     createRoutesFromElements(
@@ -135,7 +149,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole
 
           <Route>
             {appConfig.map((item) =>
-              item.appType === AppIntegrationType.EMBEDDED ? (
+              shouldRenderEmbeddedRoute(item, userRole) ? (
                 <Route
                   key={item.name}
                   path={item.name}

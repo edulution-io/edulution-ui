@@ -141,7 +141,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
               fileType: getFileType(file.filename),
               key: editorType.key,
               title: file.basename,
-              url: fileUrl || '152',
+              url: fileUrl || '',
             },
             documentType: editorType.documentType,
             token,
