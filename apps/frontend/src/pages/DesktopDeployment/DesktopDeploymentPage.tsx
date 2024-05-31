@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { RiShareForward2Line } from 'react-icons/ri';
 import { IconContext } from 'react-icons';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import { DesktopDeploymentIcon } from '@/assets/icons';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import { DesktopDeploymentIcon } from '@/assets/icons';
 
 const iconContextValue = { className: 'h-8 w-8 m-5' };
 
@@ -62,7 +62,7 @@ const DesktopDeploymentPage: React.FC = () => {
         <ConnectionErrorDialog
           isErrorDialogOpen={isErrorDialogOpen}
           setIsErrorDialogOpen={setIsErrorDialogOpen}
-          handleReload={authenticate}
+          handleReload={() => authenticate()}
         />
       )}
       <div className="fixed bottom-20 left-20 flex flex-row space-x-8">
@@ -72,7 +72,7 @@ const DesktopDeploymentPage: React.FC = () => {
               type="button"
               variant="btn-hexagon"
               className="bg-opacity-90 p-4"
-              onClickCapture={authenticate}
+              onClickCapture={() => authenticate()}
             >
               <IconContext.Provider value={iconContextValue}>
                 <RiShareForward2Line />

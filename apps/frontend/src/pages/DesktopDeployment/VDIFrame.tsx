@@ -7,6 +7,8 @@ import { useMediaQuery } from 'usehooks-ts';
 import cn from '@/lib/utils';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
+const websocketProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
@@ -47,7 +49,7 @@ const VDIFrame = () => {
   useEffect(() => {
     if (token === '' || !displayRef.current) return;
     const url = new URL(window.location.origin);
-    const webSocketFullUrl = `wss://${url.host}/guacamole/websocket-tunnel`;
+    const webSocketFullUrl = `${websocketProtocol}://${url.host}/guacamole/websocket-tunnel`;
     const tunnel = new Guacamole.WebSocketTunnel(webSocketFullUrl);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
@@ -55,7 +57,7 @@ const VDIFrame = () => {
 
     const paramsObject = {
       token,
-      GUAC_ID: 1,
+      GUAC_ID: 6,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
       GUAC_WIDTH: screenWidth - 56,

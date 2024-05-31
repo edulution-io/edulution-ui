@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import AuthModule from 'src/auth/auth.module';
+import VdiModule from 'src/vdi/vdi.module';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
@@ -26,6 +27,7 @@ import SurveyModule from '../polls-and-surveys/survey/surveys.module';
     ClassManagementModule,
     FilemanagerModule,
     AuthModule,
+    VdiModule,
     JwtModule.register({
       global: true,
     }),
