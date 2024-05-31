@@ -7,6 +7,8 @@ import { IconContext } from 'react-icons';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import { DesktopDeploymentIcon } from '@/assets/icons';
 
 const iconContextValue = { className: 'h-8 w-8 m-5' };
 
@@ -48,13 +50,12 @@ const DesktopDeploymentPage: React.FC = () => {
   }, [error]);
 
   return (
-    <>
-      <div className="flex-col justify-between pl-20 pt-4">
-        <h2>{t('desktopdeployment.topic')}</h2>
-        <div className="pt-5 sm:pt-0">
-          <p className="pb-4">{t('desktopdeployment.description')}</p>
-        </div>
-      </div>
+    <div className="p-5 lg:px-20">
+      <NativeAppHeader
+        title={t('desktopdeployment.topic')}
+        description={t('desktopdeployment.description')}
+        iconSrc={DesktopDeploymentIcon}
+      />
 
       {token && <VDIFrame />}
       {error && (
@@ -81,7 +82,7 @@ const DesktopDeploymentPage: React.FC = () => {
           </div>
         </TooltipProvider>
       </div>
-    </>
+    </div>
   );
 };
 
