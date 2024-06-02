@@ -96,7 +96,9 @@
   "DATE": "Datum",
   "Date": "Datum",
   "days": "Tage",
-  "new": "Neu",
+  "expires": "Abgabe Datum",
+  "abort": "Abbrechen",
+  "options": "Optionen",
   "ParticipantCount": "Teilnehmeranzahl",
   "PageCount": "Seitenanzahl",
   "RATING": "Bewertung",
@@ -106,7 +108,7 @@
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "openSurveys": "Offen",
-    "createdSurveys": "Erstellt",
+    "createdSurveys": "Eigene",
     "answeredSurveys": "Beantwortet"
   },
   "survey": {
@@ -117,7 +119,7 @@
     "participation": "Teilnahme an der Umfrage",
     "participants": "Teilnehmer",
     "propagate": "Verbreiten",
-    "openSurveys": "Umfragen die noch offen sind",
+    "openSurveys": "An diesen Umfragen hast du noch nicht teil genommen",
     "createdSurveys": "Selbst erstellte Umfragen",
     "answeredSurveys": "Umfragen an denen teilgenommen wurde",
     "allSurveys": "Umfragen Manager",
@@ -125,11 +127,13 @@
     "answer": "Abgabe",
     "result": "Resultat",
     "resulting": "Ihre hochgeladene Abgabe",
-    "create": "Erstellen",
+    "create": "Neue erstellen",
     "delete": "löschen",
     "edit": "Bearbeiten",
     "editing": "Umfrage erstellen oder bearbeiten",
     "manage": "Management",
+    "isAnonymous": "Die Teilnahme an der Umfrage ist Anonym",
+    "canSubmitMultipleAnswers": "Mehrfache Abgaben sind erlaubt",
     "editor": {
       "title": "Umfrage-Editor"
     },

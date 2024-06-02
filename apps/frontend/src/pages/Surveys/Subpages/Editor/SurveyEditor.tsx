@@ -1,36 +1,27 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import useUserStore from '@/store/userStore';
-
-import { TooltipProvider } from '@/components/ui/Tooltip.tsx';
-import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
-import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore.tsx';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore.ts';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
+import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import { createSurveyName } from '@/pages/Surveys/Subpages/components/create-survey-name';
-
-import { ScrollArea } from '@/components/ui/ScrollArea.tsx';
-import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog.tsx';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog.tsx';
-import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog.tsx';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog.tsx';
+import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
-import { PageView } from "@/pages/Surveys/Subpages/components/types/page-view.ts";
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view';
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 
 const SurveyEditor = () => {
   // const { user } = useUserStore();
   const {
     selectedPageView,
     selectedSurvey,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
   } = useSurveysPageStore();
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog } = usePropagateSurveyDialogStore();
@@ -125,58 +116,34 @@ const SurveyEditor = () => {
 
   return (
     <>
-      <ScrollArea className="overflow-y-auto overflow-x-hidden">
-        <Editor form={form} survey={selectedSurvey?.survey} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
-        {error ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            {t('survey.error')}: {error.message}
-          </div>
-        ) : null}
-      </ScrollArea>
+      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+        <ScrollArea className="overflow-y-auto overflow-x-hidden">
+          <Editor form={form} survey={selectedSurvey?.survey} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
+          {error ? (
+            <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+              {t('survey.error')}: {error.message}
+            </div>
+          ) : null}
+        </ScrollArea>
+      </div>
+
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <FloatingActionButton
             icon={SurveyButtonProps.Save.icon}
             text={t(SurveyButtonProps.Save.title)}
-            onClick={saveSurvey}
+            onClick={openPropagateSurveyDialog}
           />
-          {
-            selectedPageView === PageView.SURVEY_EDITOR ? (
-              <>
-                <FloatingActionButton
-                  icon={SurveyButtonProps.Options.icon}
-                  text={t(SurveyButtonProps.Options.title)}
-                  onClick={openPropagateSurveyDialog}
-                />
-              </>
-            ) : null
-          }
-          {
-            selectedPageView === PageView.SURVEY_CREATOR ? (
-              <>
-                <FloatingActionButton
-                  icon={SurveyButtonProps.Propagate.icon}
-                  text={t(SurveyButtonProps.Propagate.title)}
-                  onClick={openPropagateSurveyDialog}
-                />
-              </>
-            ) : null
-          }
-          <FloatingActionButton
-            icon={SurveyButtonProps.New.icon}
-            text={t(SurveyButtonProps.New.title)}
-            onClick={createNew}
-          />
+          { selectedPageView === PageView.CREATED_SURVEYS ? (
+            <FloatingActionButton
+              icon={SurveyButtonProps.Abort.icon}
+              text={t(SurveyButtonProps.Abort.title)}
+              onClick={createNew}
+            />
+          ) : null}
         </div>
       </TooltipProvider>
-      <ParticipateSurveyDialog
-        survey={selectedSurvey!}
-        updateOpenSurveys={updateOpenSurveys}
-        updateAnsweredSurveys={updateAnsweredSurveys}
-      />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
-      <ShowSurveyAnswerDialog survey={selectedSurvey!} />
-      <ShowSurveyResultsDialog survey={selectedSurvey!} />
+      <PropagateSurveyDialog form={form} propagateSurvey={saveSurvey} isSaving={isSaving}/>
     </>
   );
 };

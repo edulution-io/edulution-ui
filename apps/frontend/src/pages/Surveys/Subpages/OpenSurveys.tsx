@@ -7,7 +7,6 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
 import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
@@ -19,7 +18,6 @@ const OpenSurveysPage = () => {
     updateOpenSurveys,
     updateAnsweredSurveys,
     isFetchingOpenSurveys,
-    setPageViewSurveyCreator,
     selectedSurvey,
   } = useSurveysPageStore();
   const { openParticipateSurveyDialog } = useParticipateSurveyDialogStore();
@@ -44,18 +42,15 @@ const OpenSurveysPage = () => {
       </ScrollArea>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={SurveyButtonProps.Create.icon}
-            text={t(SurveyButtonProps.Create.title)}
-            onClick={setPageViewSurveyCreator}
-          />
-          {selectedSurvey ? (
-            <FloatingActionButton
-              icon={SurveyButtonProps.Participate.icon}
-              text={t(SurveyButtonProps.Participate.title)}
-              onClick={openParticipateSurveyDialog}
-            />
-          ) : null}
+          {
+            selectedSurvey ? (
+              <FloatingActionButton
+                icon={SurveyButtonProps.Participate.icon}
+                text={t(SurveyButtonProps.Participate.title)}
+                onClick={openParticipateSurveyDialog}
+              />
+            ) : null
+          }
         </div>
       </TooltipProvider>
       <ParticipateSurveyDialog
@@ -63,7 +58,6 @@ const OpenSurveysPage = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>

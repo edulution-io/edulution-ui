@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
-import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
 import handleApiError from '@/utils/handleApiError';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
@@ -18,6 +17,7 @@ interface EditorStore {
   expires: Date | undefined;
 
   isAnonymous: boolean | undefined;
+
   commitSurvey: (
     surveyname: string,
     survey?: string,
@@ -29,8 +29,6 @@ interface EditorStore {
     canSubmitMultipleAnswers?: boolean,
   ) => Promise<Survey | undefined>;
 
-  searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
-  searchAttendeesResult: Attendee[];
   setIsSaving: (isLoading: boolean) => void;
   isSaving: boolean;
   error: AxiosError | null;
@@ -44,7 +42,6 @@ const initialState: Partial<EditorStore> = {
   participants: [],
   created: undefined,
   expires: undefined,
-  searchAttendeesResult: [],
   isSaving: false,
   error: null,
 };
@@ -82,29 +79,6 @@ const useEditorStore = create<EditorStore>((set) => ({
     } catch (error) {
       handleApiError(error, set);
       set({ error: error, isSaving: false });
-    }
-  },
-
-  searchAttendees: async (searchParam) => {
-    set({ error: null });
-    try {
-      const response = await eduApi.get<Attendee[]>(`${USERS_SEARCH_EDU_API_ENDPOINT}${searchParam}`);
-
-      if (!Array.isArray(response.data)) {
-        return [];
-      }
-
-      const searchAttendeesResult = response.data?.map((d) => ({
-        ...d,
-        value: d.username,
-        label: `${d.firstName} ${d.lastName} (${d.username})`,
-      }));
-
-      set({ searchAttendeesResult });
-      return searchAttendeesResult;
-    } catch (error) {
-      handleApiError(error, set);
-      return [];
     }
   },
 }));

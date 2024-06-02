@@ -1,11 +1,14 @@
 import React from 'react';
+// import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import useUserStore from '@/store/userStore';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
-import { RadioGroupSH } from '@/components/ui/RadioGroupSH';
+// import Checkbox from '@/components/ui/Checkbox';
+// import DatePicker from '@/components/shared/DatePicker';
+import { Form } from '@/components/ui/Form';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import Group from '@/pages/ConferencePage/dto/group';
 import { toast } from 'sonner';
@@ -27,6 +30,7 @@ const PropagateSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const { searchGroups, getGroupMembers, searchAttendees, isGetGroupMembersLoading } = useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
+  // const { t } = useTranslation();
   if (isPropagating) return <CircleLoader className={'mx-auto'} />;
 
   const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
@@ -66,9 +70,46 @@ const PropagateSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups);
   };
 
+  // const onExpiredDateChange = async (value: Date | undefined) => {
+  //   form.setValue('expires', value)
+  // }
+  //
+  // const onIsAnonymousChange = async (value: boolean) => {
+  //   form.setValue('isAnonymous', value)
+  // }
+  //
+  // const onCanSubmitMultipleAnswersChange = async (value: boolean) => {
+  //   form.setValue('isAnonymous', value)
+  // }
+    
   return (
     <>
-      <RadioGroupSH />
+      {/* TODO: Activate the following fields (they do not update soberly)! */}
+      {/*<div>*/}
+      {/*  {t('expires')}*/}
+      {/*  <DatePicker*/}
+      {/*    selected={form.getValues('expires')}*/}
+      {/*    onSelect={onExpiredDateChange}*/}
+      {/*  />*/}
+      {/*</div>*/}
+      {/*<div>*/}
+      {/*  {t('survey.isAnonymous')}*/}
+      {/*  <Checkbox*/}
+      {/*    checked={form.getValues('isAnonymous')}*/}
+      {/*    // onClick={(e) => e.stopPropagation()}*/}
+      {/*    onCheckedChange={onIsAnonymousChange}*/}
+      {/*    aria-label={`${t('survey.isAnonymous')}`}*/}
+      {/*  />*/}
+      {/*</div>*/}
+      {/*<div>*/}
+      {/*  {t('survey.canSubmitMultipleAnswers')}*/}
+      {/*  <Checkbox*/}
+      {/*    checked={form.getValues('canSubmitMultipleAnswers')}*/}
+      {/*    // onClick={(e) => e.stopPropagation()}*/}
+      {/*    onCheckedChange={onCanSubmitMultipleAnswersChange}*/}
+      {/*    aria-label={`${t('survey.canSubmitMultipleAnswers')}`}*/}
+      {/*  />*/}
+      {/*</div>*/}
       <SearchUsersOrGroups
         users={watch('participants')}
         onSearch={onAttendeesSearch}

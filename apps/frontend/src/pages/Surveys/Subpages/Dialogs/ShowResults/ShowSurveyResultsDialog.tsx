@@ -40,10 +40,14 @@ const ShowSurveyResultsDialog = (props: PollResultsDialogProps) => {
     console.log('survey', survey, JSON.stringify(survey, null, 2));
     console.log('answers', answers, JSON.stringify(answers, null, 2));
 
+    if (!answers?.length || answers.length === 0) {
+      return null;
+    }
+
     return (
       <ScrollArea>
         <SurveyVisualization
-          surveyFormula={survey.survey}
+          surveyFormula={JSON.parse(survey.survey)}
           answers={answers || []}
         />
         {error ? (

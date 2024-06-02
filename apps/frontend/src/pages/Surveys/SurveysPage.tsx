@@ -4,7 +4,7 @@ import AnsweredSurveysPage from '@/pages/Surveys/Subpages/AnsweredSurveys';
 import CreatedSurveysPage from '@/pages/Surveys/Subpages/CreatedSurveys';
 import OpenSurveysPage from '@/pages/Surveys/Subpages/OpenSurveys';
 import SurveyManagement from '@/pages/Surveys/Subpages/SurveyManagement';
-import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor.tsx';
+import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 
 const SurveysPage = () => {

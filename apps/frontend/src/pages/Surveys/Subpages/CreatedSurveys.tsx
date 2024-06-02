@@ -5,16 +5,15 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
-import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+// import useShowSurveyResultsDialogStore
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 
 const CreatedSurveysPage = () => {
   const {
@@ -22,7 +21,6 @@ const CreatedSurveysPage = () => {
     createdSurveys,
     updateCreatedSurveys,
     isFetchingCreatedSurveys,
-    setPageViewSurveyCreator,
     setPageViewSurveyEditor,
     selectedSurvey,
     deleteSurvey,
@@ -31,7 +29,7 @@ const CreatedSurveysPage = () => {
     updateAllSurveys,
   } = useSurveysPageStore();
   const { openParticipateSurveyDialog } = useParticipateSurveyDialogStore();
-  const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
+  // const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
   const { t } = useTranslation();
@@ -54,11 +52,6 @@ const CreatedSurveysPage = () => {
       </ScrollArea>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={SurveyButtonProps.Create.icon}
-            text={t(SurveyButtonProps.Create.title)}
-            onClick={setPageViewSurveyCreator}
-          />
           {selectedSurvey ? (
             <>
               <FloatingActionButton
@@ -76,11 +69,12 @@ const CreatedSurveysPage = () => {
                 text={t(SurveyButtonProps.Answer.title)}
                 onClick={openSurveyAnswerDialog}
               />
-              <FloatingActionButton
-                icon={SurveyButtonProps.Results.icon}
-                text={t(SurveyButtonProps.Results.title)}
-                onClick={openSurveyResultsDialog}
-              />
+              {/* TODO: FIX This view somehow it got broken (data.forEach is not a function) */}
+              {/*<FloatingActionButton*/}
+              {/*  icon={SurveyButtonProps.Results.icon}*/}
+              {/*  text={t(SurveyButtonProps.Results.title)}*/}
+              {/*  onClick={openSurveyResultsDialog}*/}
+              {/*/>*/}
               <FloatingActionButton
                 icon={SurveyButtonProps.Delete.icon}
                 text={t(SurveyButtonProps.Delete.title)}
@@ -101,7 +95,6 @@ const CreatedSurveysPage = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>

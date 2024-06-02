@@ -10,7 +10,6 @@ import useShowSurveyResultsDialogStore
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
 import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
@@ -20,7 +19,6 @@ const AnsweredSurveysPage = () => {
     selectedSurvey,
     setSelectedSurvey,
     answeredSurveys,
-    setPageViewSurveyCreator,
     updateOpenSurveys,
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
@@ -48,11 +46,6 @@ const AnsweredSurveysPage = () => {
       </ScrollArea>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={SurveyButtonProps.Create.icon}
-            text={t(SurveyButtonProps.Create.title)}
-            onClick={setPageViewSurveyCreator}
-          />
           {selectedSurvey ? (
             <>
               <FloatingActionButton
@@ -74,7 +67,6 @@ const AnsweredSurveysPage = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>

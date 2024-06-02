@@ -51,7 +51,7 @@
 .svc-side-bar__container,
 .svc-side-bar__container-header,
 .sd-element--collapsed>.sd-element__header {
-  background-color: rgba(40, 40, 40, 0.6) !important;
+  background-color: rgba(40, 40, 40, 1) !important;
 }
 
 .svc-btn,
