@@ -32,6 +32,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     name: '',
     password: '',
     invitedAttendees: [],
+    invitedGroups: [],
   };
 
   const formSchema = z.object({
@@ -53,6 +54,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<FormData>({

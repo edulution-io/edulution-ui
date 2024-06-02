@@ -3,27 +3,64 @@ import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
-import { useMediaQuery } from 'usehooks-ts';
 import cn from '@/lib/utils';
+import Group from '@/pages/ConferencePage/dto/group';
+import { Button } from '@/components/shared/Button';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface SearchUsersOrGroupsProps {
-  value: Attendee[];
-  onChange: (options: MultipleSelectorOptionSH[]) => void;
+  users: Attendee[];
+  onUserChange: (options: MultipleSelectorOptionSH[]) => void;
   onSearch: (value: string) => Promise<Attendee[]>;
+  groups: Group[];
+  onGroupSearch: (value: string) => Promise<Group[]>;
+  onGroupsChange: (options: MultipleSelectorOptionSH[]) => void;
+  isGetGroupMembersLoading: boolean;
 }
 
-const SearchUsersOrGroups = ({ value, onChange, onSearch }: SearchUsersOrGroupsProps) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+const SearchUsersOrGroups = ({
+  users,
+  onUserChange,
+  onSearch,
+  groups,
+  onGroupsChange,
+  onGroupSearch,
+  isGetGroupMembersLoading,
+}: SearchUsersOrGroupsProps) => {
   const { t } = useTranslation();
 
   return (
     <div className={cn('flex w-full flex-col')}>
-      <p className={cn('text-m font-bold', isMobile ? 'text-white' : 'text-black')}>{t('conferences.attendees')}</p>
+      <p className={cn('text-m font-bold', 'text-black')}>{t('conferences.attendees')}</p>
       <AsyncMultiSelect<Attendee>
-        value={value}
+        value={users}
         onSearch={onSearch}
-        onChange={onChange}
+        onChange={onUserChange}
         placeholder={t('search.type-to-search')}
+      />
+      {users?.length && users.length > 1 ? (
+        <div className={'flex justify-end'}>
+          <Button
+            variant="btn-collaboration"
+            size="lg"
+            type="button"
+            onClick={() => {
+              onUserChange([]);
+              onGroupsChange([]);
+            }}
+          >
+            {t('common.clearSelection')}
+          </Button>
+        </div>
+      ) : null}
+      {isGetGroupMembersLoading ? <CircleLoader className={'mx-auto'} /> : null}
+      <p className={cn('text-m font-bold', 'text-black')}>{t('common.groups')}</p>
+      <AsyncMultiSelect<Group>
+        value={groups}
+        onSearch={onGroupSearch}
+        onChange={onGroupsChange}
+        placeholder={t('search.type-to-search')}
+        badgeClassName="hidden"
       />
     </div>
   );

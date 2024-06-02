@@ -27,8 +27,9 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
+    "description": "Das Videokonferenz Tool verbindet freigegebene Audio- und Videosignale der Teilnehmer und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen – wie Zeiger, Zoomen und Zeichnen.",
     "sidebar": "Konferenzen",
-    "create": "Neue Konferenz erstellen",
+    "create": "Konferenz erstellen",
     "creator": "Ersteller",
     "delete": "Löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
@@ -276,6 +277,8 @@
     "overview": "Übersicht",
     "create": "Erstellen",
     "revert": "Zurücksetzen",
+    "groups": "Gruppen",
+    "clearSelection": "Auswahl löschen",
     "close": "Schließen",
     "rename": "Umbenennen"
   },
@@ -319,7 +322,8 @@
   "search": {
     "type-to-search": "Tippen um zu suchen",
     "loading": "Lade",
-    "no-results": "Keine Ergebnisse"
+    "no-results": "Keine Ergebnisse",
+    "usersAdded": "{{ count }} hinzugefügt"
   },
   "fileCategory": {
     "folder": "Ordner",

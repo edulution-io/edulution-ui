@@ -17,6 +17,11 @@ interface AddStudentsDialogProps {
 const AddStudentsDialog = ({ trigger, isOpen, handleOpenChange, schoolClass }: AddStudentsDialogProps) => {
   const { t } = useTranslation();
 
+  const initialFormValues = {
+    invitedAttendees: [],
+    invitedGroups: [],
+  };
+
   const formSchema = z.object({
     invitedAttendees: z.array(
       z.intersection(
@@ -31,11 +36,13 @@ const AddStudentsDialog = ({ trigger, isOpen, handleOpenChange, schoolClass }: A
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
+    defaultValues: initialFormValues,
   });
 
   const onSubmit = async () => {
