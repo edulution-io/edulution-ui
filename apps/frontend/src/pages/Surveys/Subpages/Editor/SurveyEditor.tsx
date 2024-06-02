@@ -115,7 +115,7 @@ const SurveyEditor = () => {
   if (isSaving) return <div>Loading...</div>;
 
   return (
-    <div className="p-5 lg:px-20">
+    <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
           <Editor form={form} survey={selectedSurvey?.survey} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
@@ -144,7 +144,7 @@ const SurveyEditor = () => {
         </div>
       </TooltipProvider>
       <PropagateSurveyDialog form={form} propagateSurvey={saveSurvey} isSaving={isSaving}/>
-    </div>
+    </>
   );
 };
 

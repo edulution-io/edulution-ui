@@ -5,8 +5,8 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
-import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+// import useShowSurveyResultsDialogStore
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
@@ -29,7 +29,7 @@ const CreatedSurveysPage = () => {
     updateAllSurveys,
   } = useSurveysPageStore();
   const { openParticipateSurveyDialog } = useParticipateSurveyDialogStore();
-  const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
+  // const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
   const { t } = useTranslation();
@@ -69,6 +69,7 @@ const CreatedSurveysPage = () => {
                 text={t(SurveyButtonProps.Answer.title)}
                 onClick={openSurveyAnswerDialog}
               />
+              {/* TODO: FIX This view somehow it got broken (data.forEach is not a function) */}
               {/*<FloatingActionButton*/}
               {/*  icon={SurveyButtonProps.Results.icon}*/}
               {/*  text={t(SurveyButtonProps.Results.title)}*/}

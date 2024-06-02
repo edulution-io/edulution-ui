@@ -58,6 +58,7 @@ const PropagateSurveyDialog = (props: PropagateSurveyDialogProps) => {
       title={t('survey.editing')}
       body={getDialogBody()}
       footer={getFooter()}
+      desktopContentClassName="max-w-[50%]"
     />
   );
 };
