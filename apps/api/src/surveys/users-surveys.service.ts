@@ -87,7 +87,6 @@ class UsersSurveysService {
     await Promise.all(promises);
   }
 
-
   // async onRemoveSurvey(surveyName: string): Promise<void> {
   //   const existingUsers = await this.userModel.find<User>().exec();
   //
@@ -119,12 +118,12 @@ class UsersSurveysService {
   // }
 
   async addToAnsweredSurveys(userName: string, surveyName: string, answer?: string): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({username: userName}).exec();
+    const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
     const usersAnsweredSurveys = existingUser.usersSurveys?.answeredSurveys || [];
-    usersAnsweredSurveys.push({surveyname: surveyName, answer});
+    usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
     const newUser: UpdateUserDto = {
       usersSurveys: {
@@ -137,8 +136,12 @@ class UsersSurveysService {
     return updatedUser;
   }
 
-  async moveSurveyFromOpenToAnsweredSurveys(userName: string, surveyName: string, answer?: string): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({username: userName}).exec();
+  async moveSurveyFromOpenToAnsweredSurveys(
+    userName: string,
+    surveyName: string,
+    answer?: string,
+  ): Promise<User | null> {
+    const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
     if (!existingUser) {
       throw new Error('User not found');
     }
@@ -146,7 +149,7 @@ class UsersSurveysService {
     const usersOpenSurveys = existingUser.usersSurveys?.openSurveys.filter((survey) => survey != surveyName) || [];
 
     const usersAnsweredSurveys = existingUser.usersSurveys?.answeredSurveys || [];
-    usersAnsweredSurveys.push({surveyname: surveyName, answer});
+    usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
     const newUser: UpdateUserDto = {
       usersSurveys: {
@@ -160,7 +163,12 @@ class UsersSurveysService {
     return updatedUser;
   }
 
-  async addAnswer(username: string, surveyName: string, answer: string, canSubmitMultipleAnswers: boolean = false): Promise<User | null> {
+  async addAnswer(
+    username: string,
+    surveyName: string,
+    answer: string,
+    canSubmitMultipleAnswers: boolean = false,
+  ): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');

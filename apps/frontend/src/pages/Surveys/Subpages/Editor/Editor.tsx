@@ -1,98 +1,68 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { Survey } from '@/pages/PollsAndSurveysPage/Surveys/backend-copy/model';
-import useEditSurveyDialogStore from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogStore';
-import EditSurveyFormData from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/edit-survey-form';
-import EditSurveyDialogBody from '@/pages/PollsAndSurveysPage/Surveys/dialogs/create-edit-survey/EditSurveyDialogBody';
-import useUserStore from '@/store/userStore';
+import { localization } from 'survey-creator-core';
+import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import 'survey-creator-core/i18n/german';
+import '@/pages/Surveys/Subpages/components/theme/default2.min.css';
+import '@/pages/Surveys/Subpages/components/theme/creator.min.css';
 
-const createSurveyName = () => {
-  const currentDate = new Date();
-  const id = uuidv4();
-  return `${currentDate.getFullYear()}${currentDate.getMonth()}${currentDate.getDay()}${currentDate.getHours()}${currentDate.getMinutes()}${currentDate.getSeconds()}${id}`;
-};
-
-interface EditSurveyDialogProps {
-  isOpenEditSurveyDialog: boolean;
-  openEditSurveyDialog: () => void;
-  closeEditSurveyDialog: () => void;
-  survey?: Survey;
-  trigger?: React.ReactNode;
+interface EditorProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: UseFormReturn<any>;
+  error: Error | null;
+  saveNumber: number;
+  survey?: string;
 }
 
-const EditSurveyDialog = (props: EditSurveyDialogProps) => {
-  const { trigger, survey, isOpenEditSurveyDialog, openEditSurveyDialog, closeEditSurveyDialog } = props;
+const Editor = (props: EditorProps) => {
+  const {
+    form,
+    saveNumber,
+    survey,
+    error,
+  } = props;
 
-  const { isSaving, commitSurvey, error } = useEditSurveyDialogStore();
+  const creatorOptions = {
+    isAutoSave: true,
 
-  const { user } = useUserStore();
+    showPreviewTab: false,
+    showJSONEditorTab: false,
+    maxNestedPanels: 0,
+  };
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (survey) {
-      form.setValue('surveyname', survey.surveyname || createSurveyName());
-      form.setValue('survey', survey.survey);
-      form.setValue('participants', survey.participants);
-      form.setValue('created', survey.created || new Date());
-    }
-  }, [survey]);
+  const creator = new SurveyCreator(creatorOptions);
 
-  const initialFormValues: EditSurveyFormData = {
-    surveyname: survey?.surveyname || createSurveyName(),
-    survey: survey?.survey || undefined,
-    participants: survey?.participants || [],
-    saveNo: undefined,
-    created: survey?.created || new Date(),
-  };
+  creator.saveNo = saveNumber;
+  if(survey) {
+    creator.text = survey;
+  }
 
-  const formSchema = z.object({
-    surveyname: z.string(),
-    survey: z.string(),
-    participants: z.array(
-      z.intersection(
-        z.object({
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          username: z.string(),
-        }),
-        z.object({
-          value: z.string(),
-          label: z.string(),
-        }),
-      ),
-    ),
-    saveNo: z.number().optional(),
-    created: z.date().optional(),
-  });
+  creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
+    form.setValue('survey', JSON.stringify(creator.JSON));
+    form.setValue('saveNo', saveNo);
+    callback(saveNo, true);
+  }
 
-  const form = useForm<EditSurveyFormData>({
-    mode: 'onChange',
-    resolver: zodResolver(formSchema),
-    defaultValues: initialFormValues,
-  });
-
-  const onSubmit = async () => {
-    const { surveyname, survey, participants, saveNo, created } = form.getValues();
-
-    if (!surveyname || !survey || !participants) {
-      throw new Error('Invalid form data');
-    }
-
-    await commitSurvey(surveyname, survey, participants, saveNo, created);
-    form.reset();
-  };
-
-  const handleFormSubmit = form.handleSubmit(onSubmit);
-
-
+  localization.currentLocale = 'de';
+  return (
+    <>
+      <SurveyCreatorComponent
+        creator={creator}
+        style={{
+          height: '85vh',
+          width: '100%',
+        }}
+      />
+      {error ? (
+        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+          {t('conferences.error')}: {error.message}
+        </div>
+      ) : null}
+    </>
+  );
 };
 
-export default EditSurveyDialog;
+export default Editor;

@@ -4,58 +4,81 @@ import eduApi from '@/api/eduApi';
 import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
 import handleApiError from '@/utils/handleApiError';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
-import commitPollUpdate from '@/pages/PollsAndSurveysPage/Polls/components/dto/commit-poll-update.dto.ts';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
+import SURVEY_ENDPOINT from '@/pages/Surveys/Subpages/components/survey-endpoint.ts';
 
-interface EditPollDialogStore {
-  isSaving: boolean;
-  setIsSaving: (isLoading: boolean) => void;
-  error: AxiosError | null;
-  reset: () => void;
-
-  surveyFormula: string;
+interface EditorStore {
+  Name: string;
+  Formula: string;
+  setCreatorText: (creatorText: string) => void;
   saveNo: number | undefined;
+  setSaveNumber: (saveNo: number) => void;
+  participants: Attendee[];
+  created: Date | undefined;
+  expires: Date | undefined;
 
-  saveSurveyLocally: (creatorText: string, saveNo: number, callback: (saNo: number, b: boolean) => void) => void;
-
+  isAnonymous: boolean | undefined;
   commitSurvey: (
-    pollName: string,
-    pollFormula: string,
-    pollParticipants: Attendee[],
+    surveyname: string,
+    survey?: string,
+    participants?: Attendee[],
     saveNo?: number,
     created?: Date,
-  ) => void;
+    expires?: Date,
+    isAnonymous?: boolean,
+    canSubmitMultipleAnswers?: boolean,
+  ) => Promise<Survey | undefined>;
 
   searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
   searchAttendeesResult: Attendee[];
+  setIsSaving: (isLoading: boolean) => void;
+  isSaving: boolean;
+  error: AxiosError | null;
+  reset: () => void;
 }
 
-const initialState: Partial<EditPollDialogStore> = {
+const initialState: Partial<EditorStore> = {
+  Name: '',
+  Formula: '',
+  saveNo: undefined,
+  participants: [],
+  created: undefined,
+  expires: undefined,
+  searchAttendeesResult: [],
   isSaving: false,
   error: null,
-  searchAttendeesResult: [],
-  surveyFormula: '',
-  saveNo: undefined,
 };
 
-const useEditPollDialogStore = create<EditPollDialogStore>((set) => ({
-  ...(initialState as EditPollDialogStore),
-  setIsSaving: (isSaving) => set({ isSaving }),
+const useEditorStore = create<EditorStore>((set) => ({
+  ...(initialState as EditorStore),
+  setIsSaving: (isSaving: boolean) => set({ isSaving }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
-  saveSurveyLocally: (creatorText: string, saveNo: number, callback: (saNo: number, b: boolean) => void) => set({ isSaving }),
-
   commitSurvey: async (
-    surveyName: string,
-    surveyFormula: string,
-    surveyParticipants: Attendee[],
+    surveyname: string,
+    survey?: string,
+    participants?: Attendee[],
     saveNo?: number,
     created?: Date,
-  ) => {
+    expires?: Date,
+    isAnonymous: boolean = false,
+    canSubmitMultipleAnswers: boolean = false,
+  ): Promise<Survey | undefined> => {
     set({ isSaving: true, error: null });
     try {
-      await commitPollUpdate(surveyName, surveyFormula, surveyParticipants, saveNo, created);
+      const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, {
+        surveyname,
+        survey,
+        participants,
+        saveNo,
+        created,
+        expires,
+        isAnonymous,
+        canSubmitMultipleAnswers,
+      });
       set({ error: undefined, isSaving: false });
+      return response.data;
     } catch (error) {
       handleApiError(error, set);
       set({ error: error, isSaving: false });
@@ -86,4 +109,4 @@ const useEditPollDialogStore = create<EditPollDialogStore>((set) => ({
   },
 }));
 
-export default useEditPollDialogStore;
+export default useEditorStore;

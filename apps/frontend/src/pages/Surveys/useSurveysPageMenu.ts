@@ -1,22 +1,36 @@
 import {
-  AnsweredSurveysPageIcon,
-  CreatedSurveysPageIcon, ManageSurveysPageIcon,
+  // AnsweredSurveysPageIcon,
+  // CreatedSurveysPageIcon,
+  // ManageSurveysPageIcon,
   OpenSurveysPageIcon,
   SurveyCreatorPageIcon,
+  SurveyCreatorPageIconNew,
   SurveyIcon,
-  SurveyPageMenuIcon
+  SurveyPageMenuIcon,
 } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types.ts';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore.ts';
 
 const useSurveysPageMenu = () => {
-  const { setPageViewOpenSurveys, setPageViewAnsweredSurveys, setPageViewCreatedSurveys, setPageViewSurveyCreator, setPageViewSurveysManagement } = useSurveysPageStore();
+  const {
+    setPageViewOpenSurveys,
+    setPageViewAnsweredSurveys,
+    setPageViewCreatedSurveys,
+    setPageViewSurveyCreator,
+    // setPageViewSurveysManagement,
+  } = useSurveysPageStore();
 
   const menuBar = (): MenuBarEntryProps => ({
     title: 'surveys.title',
     icon: SurveyPageMenuIcon,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [
+      // {
+      //   id: 'surveys-management',
+      //   label: 'survey.manage',
+      //   icon: SurveyIcon || ManageSurveysPageIcon,
+      //   action: () => setPageViewSurveysManagement(),
+      // },
       {
         id: 'overview-open-surveys',
         label: 'surveys.openSurveys',
@@ -26,26 +40,20 @@ const useSurveysPageMenu = () => {
       {
         id: 'overview-answered-surveys',
         label: 'surveys.answeredSurveys',
-        icon: AnsweredSurveysPageIcon,
+        icon: SurveyIcon,
         action: () => setPageViewAnsweredSurveys(),
       },
       {
         id: 'overview-created-surveys',
         label: 'surveys.createdSurveys',
-        icon: CreatedSurveysPageIcon,
+        icon: SurveyCreatorPageIcon,
         action: () => setPageViewCreatedSurveys(),
       },
       {
         id: 'survey-editor-view',
         label: 'survey.create',
-        icon: SurveyCreatorPageIcon,
+        icon: SurveyCreatorPageIconNew,
         action: () => setPageViewSurveyCreator(),
-      },
-      {
-        id: 'surveys-management',
-        label: 'survey.manage',
-        icon: SurveyIcon || ManageSurveysPageIcon,
-        action: () => setPageViewSurveysManagement(),
       },
     ],
   });

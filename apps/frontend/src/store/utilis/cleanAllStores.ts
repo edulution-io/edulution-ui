@@ -7,12 +7,10 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore';
 import useIframeStore from '@/routes/IframeStore';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
-import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Dialogs/show-survey-results/ShowSurveyResultsDialogStore';
-import useShowSurveyAnswerDialogStore
-  from '@/pages/Surveys/Dialogs/show-submitted-answer/ShowSurveyAnswerDialogStore';
-import usePropagateSurveyDialogStore from "@/pages/Surveys/Dialogs/Propagate/PropagateSurveyDialogStore.ts";
-import useParticipateSurveyDialogStore from "@/pages/Surveys/Dialogs/Participate/ParticipateSurveyDialogStore.ts";
+import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
+import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
+import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
@@ -30,7 +28,6 @@ const cleanAllStores = () => {
   useParticipateSurveyDialogStore.getState().reset();
   useShowSurveyAnswerDialogStore.getState().reset();
   useShowSurveyResultsDialogStore.getState().reset();
-
 };
 
 export default cleanAllStores;

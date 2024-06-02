@@ -91,11 +91,12 @@
   "DATE": "Datum",
   "Date": "Datum",
   "days": "Tage",
-  "TEXT": "Text",
+  "new": "Neu",
   "ParticipantCount": "Teilnehmeranzahl",
   "PageCount": "Seitenanzahl",
   "RATING": "Bewertung",
   "save": "Speichern",
+  "TEXT": "Text",
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",

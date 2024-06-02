@@ -52,10 +52,7 @@ class SurveyService {
     answers.push(answer);
 
     const updateSurvey = await this.surveyModel
-      .findOneAndUpdate<Survey>(
-        { surveyname: surveyName },
-        { anonymousAnswers: answers },
-      )
+      .findOneAndUpdate<Survey>({ surveyname: surveyName }, { anonymousAnswers: answers })
       .exec();
     if (updateSurvey != null) {
       return updateSurvey;

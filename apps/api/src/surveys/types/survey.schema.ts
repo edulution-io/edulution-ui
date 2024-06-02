@@ -24,10 +24,13 @@ export class Survey {
   created: string;
 
   @Prop({ required: false })
+  expires: string;
+
+  @Prop({ required: false })
   isAnonymous: boolean;
 
   @Prop({ required: false })
-  isAnswerChangeable: boolean;
+  canSubmitMultipleAnswers: boolean;
 }
 
 const SurveySchema = SchemaFactory.createForClass(Survey);

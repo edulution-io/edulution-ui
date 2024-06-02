@@ -1,4 +1,4 @@
-import { Model } from 'survey-core';
+// import { Model } from 'survey-core';
 import { Body, Controller, Delete, Get, Logger, Post, Query, Patch } from '@nestjs/common';
 import SurveyService from './survey.service';
 import DeleteSurveyDto from './dto/delete-survey.dto';
@@ -36,7 +36,7 @@ class SurveysController {
             throw new Error('Survey name is required for this search type');
           }
 
-          const {participants, isAnonymous} = body;
+          const { participants, isAnonymous } = body;
           if (isAnonymous) {
             try {
               const survey = await this.surveyService.findSurvey(surveyname);
@@ -56,7 +56,7 @@ class SurveysController {
             try {
               const answers: string[] = [];
               const promises: Promise<void>[] = participants.map(async (participant: string) => {
-                const answer = await this.usersSurveysService.getAnswer(participant, surveyname)
+                const answer = await this.usersSurveysService.getAnswer(participant, surveyname);
                 if (!!answer) {
                   answers.push(answer);
                 }
@@ -118,20 +118,25 @@ class SurveysController {
   }
 
   @Post()
-  async createOrUpdate(@Body() createSurveyDto: CreateSurveyDto, @GetUsername() username: string) {
-    const survey = new Model(createSurveyDto.survey);
+  async createOrUpdate(
+    @Body() body: CreateSurveyDto,
+    @GetUsername() username: string
+  ) {
+    try {
+      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(body);
+      if (newSurvey == null) {
+        throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
+      }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const newCreateSurveyDto = { ...createSurveyDto, survey: survey.toJSON() };
+      const {surveyname, participants} = newSurvey;
+      await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
+      await this.usersSurveysService.populateSurvey(participants, surveyname);
 
-    const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(newCreateSurveyDto);
-    if (newSurvey == null) {
-      throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
+      return newSurvey;
+    } catch (error) {
+      Logger.error(error);
+      return error;
     }
-
-    const { surveyname, participants } = newSurvey;
-    await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
-    await this.usersSurveysService.populateSurvey(participants, surveyname);
   }
 
   @Delete()
@@ -142,7 +147,11 @@ class SurveysController {
   }
 
   @Patch()
-  async manageUsersSurveys(@Body() body: PushAnswerDto, @Query() pushAnswerDto: PushAnswerDto, @GetUsername() username: string) {
+  async manageUsersSurveys(
+    @Body() body: PushAnswerDto,
+    @Query() pushAnswerDto: PushAnswerDto,
+    @GetUsername() username: string,
+  ) {
     const { surveyname, answer } = pushAnswerDto;
 
     const { isAnonymous, canSubmitMultipleAnswers } = body;

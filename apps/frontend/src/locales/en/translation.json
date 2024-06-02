@@ -86,17 +86,17 @@
     "title": "SCHOOL MANAGEMENT",
     "sidebar": "School Management"
   },
-
   "Title": "Title",
   "add": "Add",
   "DATE": "Date",
   "Date": "Date",
   "days": "Days",
-  "TEXT": "Text",
+  "new": "New",
   "ParticipantCount": "Participant count",
   "PageCount": "PageCount",
   "RATING": "Rating",
   "save": "Save",
+  "TEXT": "Text",
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",

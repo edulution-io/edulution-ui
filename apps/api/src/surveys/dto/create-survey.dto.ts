@@ -13,11 +13,11 @@ class CreateSurveyDto {
 
   created?: Date;
 
+  expires?: Date;
+
   isAnonymous?: boolean;
 
-  isAnswerChangeable?: boolean;
-
-  // canSubmitMultipleTimes?: boolean;
+  canSubmitMultipleAnswers?: boolean;
 }
 
 export default CreateSurveyDto;
