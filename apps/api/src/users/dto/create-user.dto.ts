@@ -22,7 +22,7 @@ class CreateUserDto {
     createdSurveys: string[];
     answeredSurveys: {
       surveyname: string;
-      answer: string;
+      answer?: string;
     }[];
   };
 }

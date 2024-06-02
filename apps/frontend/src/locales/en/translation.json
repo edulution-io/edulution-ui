@@ -90,24 +90,23 @@
     "title": "AI CHAT",
     "sidebar": "AI Chat"
   },
+  "Title": "Title",
   "add": "Add",
   "DATE": "Date",
+  "Date": "Date",
   "days": "Days",
-  "EMPTY": "LEER",
-  "TEXT": "Text",
+  "new": "New",
+  "ParticipantCount": "Participant count",
+  "PageCount": "PageCount",
   "RATING": "Rating",
   "save": "Save",
+  "TEXT": "Text",
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
-    "polls": {
-      "title": "POLLS",
-      "sidebar": "Polls"
-    },
-    "surveys": {
-      "title": "SURVEYS",
-      "sidebar": "Surveys"
-    }
+    "openSurveys": "Offen",
+    "createdSurveys": "Erstellt",
+    "answeredSurveys": "Beantwortet"
   },
   "survey": {
     "title": "SURVEYS",
@@ -116,20 +115,23 @@
     "participate": "Participate",
     "participation": "Survey participation",
     "participants": "Participant",
+    "propagate": "Propagate",
     "openSurveys": "Surveys that you have not answered jet",
     "createdSurveys": "Surveys that you created",
     "answeredSurveys": "Surveys that you have answered already",
     "allSurveys": "Surveys management",
     "load": "Load",
-    "result": "Your answer",
+    "answer": "Your answer",
+    "result": "Result",
     "resulting": "Your commited answer",
     "create": "Create",
+    "delete": "Delete",
     "edit": "Edit",
     "editing": "Edit survey",
-    "delete": "Delete",
     "editor": {
       "title": "Survey Editor"
     },
+    "manage": "Manage",
     "page": {
       "page": "Page",
       "title": "Add a title to the page",
@@ -156,25 +158,6 @@
       "remove": "Remove question",
       "add": "Add question"
     }
-  },
-  "poll": {
-    "title": "POLL",
-    "sidebar": "Poll",
-    "description": "Create polls to gather opinions or to create a quiz",
-    "participants": "Participant",
-    "participation": "Poll participation",
-    "participate": "Participate",
-    "openPolls": "Polls that you not have been participating jet",
-    "createdPolls": "Polls that you created",
-    "answeredPolls": "Polls you have participated in",
-    "allPolls": "Polls management",
-    "load": "Load",
-    "result": "Your choices",
-    "resulting": "Your commited choices",
-    "create": "Create new",
-    "edit": "Edit",
-    "editing": "Edit poll",
-    "delete": "Delete"
   },
   "whiteboard": {
     "title": "WHITEBOARD",

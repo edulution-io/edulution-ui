@@ -90,24 +90,23 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "Title": "Titel",
   "add": "Hinzufügen",
   "DATE": "Datum",
+  "Date": "Datum",
   "days": "Tage",
-  "EMPTY": "LEER",
-  "TEXT": "Text",
+  "new": "Neu",
+  "ParticipantCount": "Teilnehmeranzahl",
+  "PageCount": "Seitenanzahl",
   "RATING": "Bewertung",
   "save": "Speichern",
+  "TEXT": "Text",
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "polls": {
-      "title": "ABSTIMMUNGEN",
-      "sidebar": "Abstimmungen"
-    },
-    "surveys": {
-      "title": "UMFRAGEN",
-      "sidebar": "Umfragen"
-    }
+    "openSurveys": "Offen",
+    "createdSurveys": "Erstellt",
+    "answeredSurveys": "Beantwortet"
   },
   "survey": {
     "title": "UMFRAGEN",
@@ -116,17 +115,20 @@
     "participate": "Teilnehmen",
     "participation": "Teilnahme an der Umfrage",
     "participants": "Teilnehmer",
+    "propagate": "Verbreiten",
     "openSurveys": "Umfragen die noch offen sind",
     "createdSurveys": "Selbst erstellte Umfragen",
     "answeredSurveys": "Umfragen an denen teilgenommen wurde",
     "allSurveys": "Umfragen Manager",
     "load": "Lade",
-    "result": "Abgabe",
+    "answer": "Abgabe",
+    "result": "Resultat",
     "resulting": "Ihre hochgeladene Abgabe",
     "create": "Erstellen",
+    "delete": "löschen",
     "edit": "Bearbeiten",
     "editing": "Umfrage erstellen oder bearbeiten",
-    "delete": "löschen",
+    "manage": "Management",
     "editor": {
       "title": "Umfrage-Editor"
     },
@@ -156,25 +158,6 @@
       "remove": "Entferne Frage",
       "add": "Füge Frage hinzu"
     }
-  },
-  "poll": {
-    "title": "ABSTIMMUNG",
-    "sidebar": "Abstimmung",
-    "description": "Hier können Sie eine Abstimmungen erstellen",
-    "participate": "Teilnehmen",
-    "participation": "Teilnahme an der Abstimmung",
-    "participants": "Teilnehmer",
-    "openPolls": "Abstimmungen die noch offen sind",
-    "createdPolls": "Selbst erstellte Abstimmungen",
-    "answeredPolls": "Abstimmungen an denen teilgenommen wurde",
-    "allPolls": "Abstimmungs Manager",
-    "load": "Lade",
-    "result": "Abgabe",
-    "resulting": "Ihre hochgeladene Abgabe",
-    "create": "Erstellen",
-    "edit": "Bearbeiten",
-    "editing": "Abstimmung erstellen oder bearbeiten",
-    "delete": "löschen"
   },
   "printer": {
     "title": "DRUCKER",
