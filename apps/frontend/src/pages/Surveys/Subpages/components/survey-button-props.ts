@@ -1,5 +1,5 @@
 import {
-  AiOutlineDeliveredProcedure, /* AiOutlineDownSquare, */
+  AiOutlineDeliveredProcedure, AiOutlineCloseSquare, /* AiOutlineDownSquare, */
   AiOutlinePlusSquare, AiOutlineSave,
   AiOutlineUpSquare
 } from 'react-icons/ai';
@@ -28,13 +28,13 @@ const SurveyButtonProps = ({
     icon: FiEdit,
     title: 'survey.edit',
   },
-  New: {
-    icon: AiOutlinePlusSquare,
-    title: 'new',
+  Abort: {
+    icon: AiOutlineCloseSquare,
+    title: 'abort',
   },
   Options: {
     icon: BsGear,
-    title: 'survey.options',
+    title: 'options',
   },
   Participate: {
     icon: AiOutlineUpSquare,

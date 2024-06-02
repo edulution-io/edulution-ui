@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table.tsx';
-import LoadingIndicator from '@/components/shared/LoadingIndicator.tsx';
-import { Survey } from '@/pages/Surveys/Subpages/components/types/survey.ts';
-import SurveyTableHeaders from '@/pages/Surveys/Subpages/components/table/survey-table-table-headers.ts';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
+import SurveyTableHeaders from '@/pages/Surveys/Subpages/components/table/survey-table-table-headers';
 
 interface SurveyTableProps {
   title: string;
@@ -26,7 +26,7 @@ const SurveyTable = (props: SurveyTableProps) => {
       <h4>{title}</h4>
       <Table>
         <TableHeader>
-          <TableRow className="text-2xl text-white">
+          <TableRow className="text-white">
             {SurveyTableHeaders.map((header) => (
               <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
             ))}

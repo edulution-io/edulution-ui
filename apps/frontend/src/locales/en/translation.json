@@ -95,7 +95,8 @@
   "DATE": "Date",
   "Date": "Date",
   "days": "Days",
-  "new": "New",
+  "abort": "Abort",
+  "options": "Options",
   "ParticipantCount": "Participant count",
   "PageCount": "PageCount",
   "RATING": "Rating",
@@ -105,7 +106,7 @@
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "openSurveys": "Offen",
-    "createdSurveys": "Erstellt",
+    "createdSurveys": "Own",
     "answeredSurveys": "Beantwortet"
   },
   "survey": {
@@ -124,10 +125,12 @@
     "answer": "Your answer",
     "result": "Result",
     "resulting": "Your commited answer",
-    "create": "Create",
+    "create": "Create new",
     "delete": "Delete",
     "edit": "Edit",
     "editing": "Edit survey",
+    "isAnonymous": "Participating at the survey is anonymous",
+    "canSubmitMultipleAnswers": "Participating multiple times is allowed",
     "editor": {
       "title": "Survey Editor"
     },
