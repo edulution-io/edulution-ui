@@ -54,6 +54,8 @@ export enum APPS {
   ANTIMALWARE = 'antimalware',
   BACKUP = 'backup',
   WHITEBOARD = 'whiteboard',
+  AICHAT = 'aichat',
+  FAQ = 'faq',
 }
 
 export interface FileTypePreviewProps {

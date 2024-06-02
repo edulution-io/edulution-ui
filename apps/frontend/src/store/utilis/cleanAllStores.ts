@@ -11,6 +11,7 @@ import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/Sh
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
+import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore.ts';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
@@ -22,12 +23,12 @@ const cleanAllStores = () => {
   useConferenceDetailsDialogStore.getState().reset();
 
   useFileEditorStore.getState().reset();
-
   useSurveysPageStore.getState().reset();
   usePropagateSurveyDialogStore.getState().reset();
   useParticipateSurveyDialogStore.getState().reset();
   useShowSurveyAnswerDialogStore.getState().reset();
   useShowSurveyResultsDialogStore.getState().reset();
+  useSchoolManagementStore.getState().reset();
 };
 
 export default cleanAllStores;

@@ -1,7 +1,8 @@
-import { MdMinimize, MdOutlineOpenInFull } from 'react-icons/md';
+import { MdFullscreen } from 'react-icons/md';
 import React, { FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DirectoryFile } from '@/datatypes/filesystem.ts';
+import { IoMdArrowForward } from 'react-icons/io';
 
 interface OnlyOfficePreviewMenuBarProps {
   previewFile: DirectoryFile | null;
@@ -14,17 +15,17 @@ const PreviewMenuBar: FC<OnlyOfficePreviewMenuBarProps> = ({ previewFile, append
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   return (
-    <div className="flex w-full justify-between space-x-2">
+    <div className="flex w-full justify-end space-x-2">
       <button
         type="button"
-        className="mr-1 rounded bg-blue-500 px-4 text-white hover:bg-blue-700 "
+        className="mr-1 rounded bg-yellow-500 px-4 text-white hover:bg-blue-700 "
         onClick={onClose}
       >
-        <MdMinimize className="inline" />
+        <IoMdArrowForward className="inline" />
       </button>
       <button
         type="button"
-        className="rounded bg-green-500 px-4 text-white hover:bg-red-700"
+        className="rounded bg-blue-500 px-4 text-white hover:bg-red-700"
         onClick={() => {
           if (previewFile != null) {
             appendEditorFile(previewFile);
@@ -38,7 +39,7 @@ const PreviewMenuBar: FC<OnlyOfficePreviewMenuBarProps> = ({ previewFile, append
           }
         }}
       >
-        <MdOutlineOpenInFull className="inline" />
+        <MdFullscreen className="inline" />
       </button>
     </div>
   );

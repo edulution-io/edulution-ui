@@ -76,8 +76,16 @@ export function getElapsedTime(dateParam: Date): string {
   return date.toLocaleDateString();
 }
 
+export const triggerFileDownload = (downloadUrl: string) => {
+  const anchor = document.createElement('a');
+  anchor.href = downloadUrl;
+  anchor.download = '';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+};
+
 export default {
   parseDate,
-  getFileCategorie,
-  getElapsedTime,
+  triggerFileDownload,
 };

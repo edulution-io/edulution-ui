@@ -99,6 +99,7 @@ const LoginPage: React.FC = () => {
     });
 
     const profile = auth?.user?.profile as unknown as OriginalIdTokenClaims;
+
     const newProfile = { ...profile, password: encryptedPassword };
     loginUser(newProfile)
       .then(() => {

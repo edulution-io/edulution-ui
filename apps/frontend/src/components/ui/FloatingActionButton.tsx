@@ -11,7 +11,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ icon: Icon,
   const iconContextValue = { className: 'h-8 w-8 m-5' };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center justify-center space-x-2">
       <Button
         type="button"
         variant="btn-hexagon"
@@ -22,7 +22,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ icon: Icon,
           <Icon />
         </IconContext.Provider>
       </Button>
-      <p className="mt-2 text-white">{text}</p>
+      <p className="justify-center text-center text-white">{text}</p>
     </div>
   );
 };

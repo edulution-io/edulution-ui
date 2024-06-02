@@ -55,3 +55,7 @@ export { default as CreatedSurveysPageIcon } from '@/assets/icons/third-party/cr
 export { default as ManageSurveysPageIcon } from '@/assets/icons/third-party/manage-surveys.svg';
 export { default as SurveyCreatorPageIcon } from '@/assets/icons/third-party/create-survey.svg';
 export { default as SurveyCreatorPageIconNew } from '@/assets/icons/third-party/create-survey-new.svg';
+export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
+export { default as EnrolIcon } from '@/assets/icons/enrol.svg';
+export { default as FirstPasswordIcon } from '@/assets/icons/first-Password.svg';
+export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg';

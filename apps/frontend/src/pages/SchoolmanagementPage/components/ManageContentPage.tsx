@@ -5,10 +5,18 @@ import { FaArrowLeft } from 'react-icons/fa';
 import ProfileCard from '@/pages/SchoolmanagementPage/components/profiles/ProfileCard';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingButtonsBarClassManagement from '@/pages/SchoolmanagementPage/components/FloatingButtonsBarClassManagement';
-import userStore from '@/store/userStore';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
 import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
 import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
+import ComputerMonitoringDialog from '@/pages/SchoolmanagementPage/components/dialogs/ComputerMonitoringDialog.tsx';
+import useSchoolmanagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
+import AddStudentsDialog from '@/pages/SchoolmanagementPage/components/dialogs/AddStudentsDialog.tsx';
+import { t } from 'i18next';
+import StartExamModeDialog from '@/pages/SchoolmanagementPage/components/dialogs/StartExamModeDialog.tsx';
+import SetPermissionsToStudentsDialog from '@/pages/SchoolmanagementPage/components/dialogs/SetPermissionsToStudentsDialog.tsx';
+import CollectFilesDialog from '@/pages/SchoolmanagementPage/components/dialogs/CollectFilesDialog.tsx';
+import ShareFilesDialog from '@/pages/SchoolmanagementPage/components/dialogs/ShareFilesDialog.tsx';
+import ShowCollectedFilesDialog from '@/pages/SchoolmanagementPage/components/dialogs/ShowCollectedFilesDialog.tsx';
 
 interface ManageContentPageProps {
   contentKey: string;
@@ -16,10 +24,20 @@ interface ManageContentPageProps {
 }
 
 const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, contentType }) => {
-  const { schoolclasses, availableSessions } = useSchoolManagementStore();
-  const { userInfo } = userStore();
+  const { schoolclasses, projects, availableSessions } = useSchoolManagementStore();
   const [currentMembers, setCurrentMembers] = useState<MemberInfo[]>([]);
-  const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
+  const [selectedProfiles, setSelectedProfiles] = useState<MemberInfo[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { isVideoModalOpen, videoModalUrl, videoModalUsername, setIsVideoModalOpen, resetVideoModal } =
+    useSchoolmanagementComponentStore();
+
+  const [shareState, setShareState] = useState(false);
+  const [collectState, setCollectState] = useState(false);
+  const [showFilesState, setShowFilesState] = useState(false);
+  const [examState, setExamState] = useState(false);
+  const [wifiState, setWifiState] = useState(false);
+  const [internetState, setInternetState] = useState(false);
+  const [printerState, setPrinterState] = useState(false);
 
   useEffect(() => {
     let fullKey: string | undefined;
@@ -43,12 +61,14 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         );
       }
     } else if (contentType === 'project') {
-      // const project = userInfo.ldapGroups.projects.find((project) => project === contentKey);
-      // if (project) members = userInfo;
+      fullKey =
+        Object.keys(projects).find((key) => key.endsWith(`/${contentKey}`)) ||
+        Object.keys(projects).find((key) => key.includes(contentKey));
+      if (fullKey) members = projects[fullKey];
     }
 
     setCurrentMembers(members || []);
-  }, [contentKey, contentType, schoolclasses, availableSessions, userInfo]);
+  }, []);
 
   const removeContentParamAndNavigate = () => {
     const url = new URL(window.location.href);
@@ -56,16 +76,34 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
     window.location.href = url.toString();
   };
 
-  const handleSelectProfile = (id: string) => {
+  const handleSelectProfile = (member: MemberInfo) => {
     setSelectedProfiles((prevSelected) =>
-      prevSelected.includes(id) ? prevSelected.filter((profileId) => profileId !== id) : [...prevSelected, id],
+      prevSelected.includes(member)
+        ? prevSelected.filter((selectedMember) => selectedMember.id !== member.id)
+        : [...prevSelected, member],
     );
   };
 
   if (!currentMembers.length) {
     return (
       <div>
-        No Data for {contentType} {contentKey}
+        <div className="flex flex-row items-center p-4">
+          <FaArrowLeft
+            onClick={removeContentParamAndNavigate}
+            className="cursor-pointer"
+            size={24}
+          />
+          <h3 className="ml-2">{t('schoolManagement.noUsersInGroup', { name: contentKey })}</h3>
+        </div>
+        <ProfileCard
+          isAddCard
+          onSelect={() => setIsDialogOpen(true)}
+        />
+        <AddStudentsDialog
+          isOpen={isDialogOpen}
+          schoolClass={contentKey}
+          handleOpenChange={setIsDialogOpen}
+        />
       </div>
     );
   }
@@ -83,6 +121,23 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
       <div className="flex-1 overflow-hidden p-4">
         <ScrollArea className="h-full w-full overflow-auto">
           <div className="flex flex-wrap gap-4">
+            <ComputerMonitoringDialog
+              isOpen={isVideoModalOpen}
+              setIsOpen={() => setIsVideoModalOpen(false)}
+              username={videoModalUsername}
+              videoUrl={videoModalUrl}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  resetVideoModal();
+                }
+              }}
+            />
+
+            <AddStudentsDialog
+              isOpen={isDialogOpen}
+              schoolClass={contentKey}
+              handleOpenChange={setIsDialogOpen}
+            />
             {currentMembers.map((member, count) => (
               <ProfileCard
                 key={member.id}
@@ -90,16 +145,115 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
                 name={`${member.firstName} ${member.lastName}`}
                 username={member.firstName}
                 isAddCard={false}
-                isSelected={selectedProfiles.includes(member.id)}
-                onSelect={() => handleSelectProfile(member.id)}
-                vidoUrl={count % 2 === 0 ? linuxRec : windowsRec}
+                isSelected={selectedProfiles.includes(member)}
+                onSelect={() => handleSelectProfile(member)}
+                videoUrl={count % 2 === 0 ? linuxRec : windowsRec}
               />
             ))}
-            <ProfileCard isAddCard />
+            <ProfileCard
+              isAddCard
+              onSelect={() => setIsDialogOpen(true)}
+            />
           </div>
         </ScrollArea>
       </div>
-      <FloatingButtonsBarClassManagement />
+      <FloatingButtonsBarClassManagement
+        setShareState={() => setShareState(!shareState)}
+        setCollectState={() => setCollectState(!collectState)}
+        setShowFilesState={() => setShowFilesState(!showFilesState)}
+        setExamState={() => setExamState(!examState)}
+        setWifiState={() => setWifiState(!wifiState)}
+        setInternetState={() => setInternetState(!internetState)}
+        setPrinterState={() => setPrinterState(!printerState)}
+      />
+      <StartExamModeDialog
+        open={examState}
+        onClose={() => setExamState(false)}
+        onConfirm={() => setExamState(false)}
+      />
+
+      <SetPermissionsToStudentsDialog
+        open={wifiState}
+        onClose={() => setWifiState(false)}
+        onConfirm={() => {
+          setWifiState(false);
+          selectedProfiles.splice(0, selectedProfiles.length);
+        }}
+        title={t('schoolManagement.wifiSettings')}
+        message={
+          selectedProfiles.length > 0
+            ? t('schoolManagement.wifiSettingsSelectedUserMessage')
+            : t('schoolManagement.wifiSettingsMessage')
+        }
+        confirmText={t('schoolManagement.turnOn')}
+        members={selectedProfiles}
+      />
+      <SetPermissionsToStudentsDialog
+        open={internetState}
+        onClose={() => setInternetState(false)}
+        onConfirm={() => {
+          setInternetState(false);
+          selectedProfiles.splice(0, selectedProfiles.length);
+        }}
+        title={t('schoolManagement.internetSettings')}
+        message={
+          selectedProfiles.length > 0
+            ? t('schoolManagement.internetSettingsSelectedUserMessage')
+            : t('schoolManagement.internetSettingsMessage')
+        }
+        confirmText={t('schoolManagement.turnOn')}
+        members={selectedProfiles}
+      />
+      <SetPermissionsToStudentsDialog
+        open={printerState}
+        onClose={() => setPrinterState(false)}
+        onConfirm={() => {
+          setPrinterState(false);
+          selectedProfiles.splice(0, selectedProfiles.length);
+        }}
+        title={t('schoolManagement.printerSettings')}
+        message={
+          selectedProfiles.length > 0
+            ? t('schoolManagement.printerSettingsSelectedUserMessage')
+            : t('schoolManagement.printerSettingsMessage')
+        }
+        confirmText={t('schoolManagement.turnOn')}
+        members={selectedProfiles}
+      />
+      <CollectFilesDialog
+        open={collectState}
+        onClose={() => setCollectState(false)}
+        onConfirm={() => setCollectState(false)}
+        title={t('schoolManagement.collectFiles')}
+        message={
+          selectedProfiles.length > 0
+            ? t('schoolManagement.collectFilesSelectedUserMessage')
+            : t('schoolManagement.collectFilesFromAllUsersMessage')
+        }
+        confirmText={t('schoolManagement.collect')}
+        members={selectedProfiles}
+      />
+      <ShareFilesDialog
+        open={shareState}
+        onClose={() => setShareState(false)}
+        onConfirm={() => setShareState(false)}
+        title={t('schoolManagement.shareFiles')}
+        message={
+          selectedProfiles.length > 0
+            ? t('schoolManagement.shareFilesSelectedUserMessage')
+            : t('schoolManagement.shareFilesWithAllUsersMessage')
+        }
+        confirmText={t('schoolManagement.allRight')}
+        members={selectedProfiles}
+      />
+      <ShowCollectedFilesDialog
+        open={showFilesState}
+        onClose={() => setShowFilesState(false)}
+        onConfirm={() => setShowFilesState(false)}
+        title={t('schoolManagement.showCollectedFiles')}
+        message={t('schoolManagement.showCollectedFilesMessage')}
+        confirmText={t('schoolManagement.allRight')}
+      />
     </div>
   );
 };

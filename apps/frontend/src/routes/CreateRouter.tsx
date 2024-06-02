@@ -19,6 +19,7 @@ import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementP
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
+import FAQPage from '@/pages/FAQ/FAQPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -36,6 +37,7 @@ const pageSwitch = (page: string) => {
       return <SurveysPage />;
     case APPS.DESKTOP_DEPLOYMENT:
       return <DesktopDeploymentPage />;
+
     default: {
       return (
         <Navigate
@@ -76,6 +78,10 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole
             <Route
               path="user"
               element={<UserSettings />}
+            />
+            <Route
+              path="faq"
+              element={<FAQPage />}
             />
 
             {userRole !== 'student' && (

@@ -83,8 +83,12 @@
     "sidebar": "School Information"
   },
   "schoolmanagement": {
-    "title": "SCHOOL MANAGEMENT",
-    "sidebar": "School Management"
+    "title": "CLASS ROOM",
+    "sidebar": "Class Room"
+  },
+  "aichat": {
+    "title": "AI CHAT",
+    "sidebar": "AI Chat"
   },
   "Title": "Title",
   "add": "Add",
@@ -267,7 +271,8 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
-    "revert": "Revert"
+    "revert": "Revert",
+    "rename": "Rename"
   },
   "form": {
     "path": "Path",
@@ -321,6 +326,7 @@
     "presentation": "Presentation"
   },
   "fileCreateNewContent": {
+    "fileNamePlaceholder": "Enter file name",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
@@ -412,13 +418,21 @@
     "my_information": "My Information",
     "mail_alias": "Mail-Alias",
     "change_my_data": "Change my data",
-    "school_classes": "School Classes"
+    "school_classes": "School Classes",
+    "FAQ": "FAQ"
   },
+
+  "createContent":{
+    "submit": "Submit"
+  },
+
+
   "groupsPage": {
     "classes": "Classes"
   },
   "schoolManagement": {
     "title": "Class Room",
+    "description": "Here you can manage your classes and groups.",
     "lesson": "Lesson",
     "enrol": "Enrol",
     "passwords": "Initial-Passwords",
@@ -445,7 +459,39 @@
     "createProject": "Create Project",
     "newProject": "New Project",
     "createGroup": "Create Group",
-    "newGroup": "New Group"
+    "newGroup": "New Group",
+    "addUser": "Add user",
+    "noUsersInGroup": "Currently, there are no users in {{name}}. Add one now.",
+    "examMode": "Exam mode",
+    "cancelStartExamMode" : "Cancel",
+    "startExamMode": "Start",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "examModeDescription": "In exam mode, the students can only access the applications that are allowed by the teacher.",
+    "wifiSettingsSelectedUserMessage": "Set the printer WI-FI for the selected users",
+    "internetSettingsSelectedUserMessage": "Set the internet settings for the selected users",
+    "printerSettingsSelectedUserMessage": "Set the printer settings for the selected users",
+    "wifiSettingsMessage": "Set WI-FI for all users",
+    "internetSettingsMessage": "Set internet for all users",
+    "printerSettingsMessage": "Set printer for all users",
+    "wifiSettings": "WI-FI Settings",
+    "internetSettings": "Internet Settings",
+    "printerSettings": "Printer Settings",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off",
+    "collectFiles": "Collect Files",
+    "collectFilesSelectedUserMessage": "Collect files from the selected users. The collected files will be displayed in the user specified folder.",
+    "collectFilesFromAllUsersMessage": "Collect files from all users. The collected files are located in the _collect folder.",
+    "shareFilesSelectedUserMessage": "Share files with selected users. Place the file in the selected user's folder.",
+    "shareFilesWithAllUsersMessage": "Share files with all users. Place the file in the _share folder of all users.",
+    "shareFiles": "Share Files",
+    "showCollectedFilesMessage": "Display the collected files from the users. These are located in the _collect folder of the user.",
+    "allRight": "All Right",
+    "copySession": "Copy Session {{name}}",
+    "copyProject": "Copy Project {{name}}",
+    "renameSession": "Rename Session {{name}}",
+    "renameProject": "Rename Project {{name}}"
+
   },
   "fileEditingPage": {
     "fileNotFound": "File not found",
@@ -454,5 +500,29 @@
     "maximize": "Open full screen",
     "minimize": "minimalize",
     "close": "Close full screen"
+  },
+  "faq": {
+    "title": "FAQ",
+    "sidebar": "FAQ",
+    "description": "Here you can find answers to frequently asked questions.",
+    "filemangerIntroductionTitle": "How to use the File Manager",
+    "classManagementIntroductionTitle": "What is the class management?",
+    "aiChatIntroductionTitle": "How to use the AI Chat?",
+    "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
+    "emailIntroductionTitle": "Do I have to create an extra email address?",
+    "learnManagementIntroductionTitle": "What can I do in learning management?",
+    "pollsIntroductionTitle": "How do I use the polls?",
+    "vdiIntroductionTitle": "How do I use the virtual desktop?",
+    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "newPassword": "New Password",
+    "currentPasswordRequired": "Current password is required.",
+    "newPasswordRequired": "New password is required.",
+    "passwordLength": "Password must be at least 8 characters long.",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordRequired": "Confirm password is required.",
+    "passwordsDoNotMatch": "Passwords do not match."
   }
 }

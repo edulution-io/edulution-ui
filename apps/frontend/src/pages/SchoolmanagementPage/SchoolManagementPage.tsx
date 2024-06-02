@@ -11,15 +11,17 @@ import ProjectPage from '@/pages/SchoolmanagementPage/subPages/ProjectPage.tsx';
 const SchoolManagementPage = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const { fetchAndStoreAllClasses } = useSchoolManagementStore();
+  const { fetchAndStoreUserProjectsAndClasses } = useSchoolManagementStore();
   const { userInfo } = useUserStore();
   const page = searchParams.get('page');
 
   useEffect(() => {
-    if (userInfo) {
-      fetchAndStoreAllClasses(userInfo.ldapGroups.classPaths, userInfo).catch(console.error);
-    }
-  }, [userInfo]);
+    fetchAndStoreUserProjectsAndClasses(
+      userInfo.ldapGroups.classPaths,
+      userInfo.ldapGroups.projectPaths,
+      userInfo,
+    ).catch(console.error);
+  }, []);
 
   const renderPage = () => {
     switch (page) {

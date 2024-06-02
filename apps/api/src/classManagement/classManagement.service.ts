@@ -6,11 +6,13 @@ import { GroupInfo } from '../types/groups';
 
 @Injectable()
 class ClassManagementService {
+  private keycloakBaseUrl = process.env.KEYCLOAK_API;
+
   async fetchClassesInfo(token: string, groupPath: string): Promise<GroupInfo> {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://auth.schulung.multi.schule/auth/admin/realms/edulution/group-by-path/${groupPath}`,
+      url: `${this.keycloakBaseUrl}group-by-path/${groupPath}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,
@@ -30,7 +32,7 @@ class ClassManagementService {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://auth.schulung.multi.schule/auth/admin/realms/edulution/groups/${groupId}/members?briefRepresentation=true`,
+      url: `${this.keycloakBaseUrl}groups/${groupId}/members?briefRepresentation=true`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,
@@ -50,7 +52,7 @@ class ClassManagementService {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://auth.schulung.multi.schule/auth/admin/realms/edulution/users/${userId}`,
+      url: `${this.keycloakBaseUrl}users/${userId}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,
@@ -70,7 +72,7 @@ class ClassManagementService {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'https://auth.schulung.multi.schule/auth/admin/realms/edulution/groups?search=',
+      url: `${this.keycloakBaseUrl}groups?search=`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,
@@ -81,18 +83,13 @@ class ClassManagementService {
       Logger.log('Sending request to fetch all groups', 'UsersService');
       const response = await axios.request<GroupInfo[]>(config);
       Logger.log('Response received', 'UsersService');
-      Logger.log(response.status, 'UsersService'); // Log status code
-      Logger.log(response.statusText, 'UsersService'); // Log status text
-      Logger.log(response.headers, 'UsersService'); // Log headers
-      Logger.log(response.data, 'UsersService'); // Log response data
-
       if (!response.data || response.data.length === 0) {
         Logger.warn('Empty response received from the API', 'UsersService');
       }
 
       return response.data;
     } catch (e) {
-      Logger.error(e, 'UsersService'); // Ensure correct service name
+      Logger.error(e, 'UsersService');
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
     }
   }

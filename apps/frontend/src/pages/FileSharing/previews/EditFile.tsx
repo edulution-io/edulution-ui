@@ -5,12 +5,11 @@ import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEdito
 import Previews from '@/pages/FileSharing/previews/Previews.tsx';
 import backgroundImage from '@/assets/background.jpg';
 import { determinePreviewType } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
-import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 
 const EditFile = () => {
   const [searchParams] = useSearchParams();
   const { editableFiles, removeEditorFile, showEditor, setShowEditor } = useFileEditorStore();
-  const [isEditorMinimized] = useState(false);
   const [fileType, setFileType] = useState<string>('');
 
   const navigateBack = () => {
@@ -49,14 +48,6 @@ const EditFile = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="fixed left-1/2 top-0 z-10 flex -translate-x-1/2 transform items-center space-x-4">
-        <button
-          type="button"
-          className="mr-1 rounded bg-blue-500 px-4 text-white hover:bg-blue-700"
-          onClick={navigateBack}
-        >
-          {isEditorMinimized ? <MdMaximize className="inline" /> : <MdMinimize className="inline" />}{' '}
-          {t(isEditorMinimized ? 'fileEditingPage.maximize' : 'fileEditingPage.minimize')}
-        </button>
         <button
           type="button"
           className="rounded bg-red-500 px-4 text-white hover:bg-red-700"

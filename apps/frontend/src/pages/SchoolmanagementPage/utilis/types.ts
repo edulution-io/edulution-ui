@@ -1,3 +1,7 @@
+import { MemberInfo } from '@/datatypes/schoolclassInfo.ts';
+import { SessionInfo } from '@/datatypes/sessionInfo.ts';
+import CreateContentTypes from '@/pages/SchoolmanagementPage/CreateContentTypes.ts';
+
 export interface UserInitialPasswordInfo {
   username: string;
   firstPassword: string;
@@ -71,6 +75,18 @@ export interface CustomIdTokenClaims extends Omit<OriginalIdTokenClaims, 'ldapGr
     role: string;
     others: string[];
   };
+}
+
+export interface GroupCardRowProps {
+  schoolclasses?: Record<string, MemberInfo>;
+  sessions?: SessionInfo[];
+  projects?: Record<string, MemberInfo>;
+  setIsCreateDialogOpen?: (isOpen: boolean) => void;
+  isCreateDialogOpen?: boolean;
+  setDialogTitle?: (title: string) => void;
+  setCreateContentType?: (type: CreateContentTypes) => void;
+  isAdmin: boolean;
+  deleteSession?: (sid: string) => Promise<void>;
 }
 
 export const processIdTokenClaims = (claims: OriginalIdTokenClaims): CustomIdTokenClaims => {

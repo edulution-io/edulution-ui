@@ -2,24 +2,42 @@
 import React, { FC } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import { DialogSH, DialogContentSH, DialogFooterSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH';
+import { DialogContentSH, DialogFooterSH, DialogSH, DialogTitleSH, DialogTriggerSH } from '@/components/ui/DialogSH';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
-  handleOpenChange: () => void;
+  onClose?: () => void;
+  handleOpenChange: (open: boolean) => void;
   title: string;
   trigger?: React.ReactNode;
   body: React.ReactNode;
   footer?: React.ReactNode;
 }
 
-const AdaptiveDialogSH: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, title, trigger, body, footer }) => {
+const AdaptiveDialogSH: FC<AdaptiveDialogProps> = ({
+  isOpen,
+  onClose,
+  handleOpenChange,
+  title,
+  trigger,
+  body,
+  footer,
+}) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const handleChange = (open: boolean) => {
+    handleOpenChange(open);
+    if (!open) {
+      if (onClose) {
+        onClose();
+      }
+    }
+  };
 
   return isMobile ? (
     <Sheet
       open={isOpen}
-      onOpenChange={handleOpenChange}
+      onOpenChange={handleChange}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent side="bottom">
@@ -33,7 +51,7 @@ const AdaptiveDialogSH: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, t
   ) : (
     <DialogSH
       open={isOpen}
-      onOpenChange={handleOpenChange}
+      onOpenChange={handleChange}
     >
       <DialogTriggerSH asChild>{trigger}</DialogTriggerSH>
       <DialogContentSH>

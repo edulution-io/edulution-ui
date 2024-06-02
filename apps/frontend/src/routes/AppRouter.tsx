@@ -23,7 +23,6 @@ const AppRouter: React.FC<AppRouterProps> = () => {
         }
       };
 
-      // eslint-disable-next-line no-void
       void fetchData();
     }
   }, [isAuthenticated]);

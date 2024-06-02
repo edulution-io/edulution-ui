@@ -21,11 +21,12 @@ import OnlyofficeService from './onlyoffice/onlyoffice.service';
 import { Request, Response } from 'express';
 import { Public } from '../common/decorators/public.decorator.ts';
 import * as fs from 'fs';
+import * as pathNode from 'path';
 import syncRequest from 'sync-request';
+import * as jwt from 'jsonwebtoken';
 
 @Controller('filemanager')
 class FilemanagerController {
-  private pathForSave: './apps';
   constructor(
     private filemanagerService: FilemanagerService,
     private onlyOfficeService: OnlyofficeService,
@@ -182,26 +183,67 @@ class FilemanagerController {
   }
 
   @Public()
-  @Post('callback')
-  async handleCallback(@Req() req: Request, @Res() res: Response) {
+  @Post('callback/:path(*)/:filename/:eduToken')
+  async handleCallback(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('path') path: string,
+    @Param('filename') filename: string,
+    @Param('eduToken') eduToken: string,
+  ) {
     const callbackData = req.body;
-    if (!callbackData) return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+    if (!callbackData || !callbackData.token) {
+      return res.status(HttpStatus.BAD_REQUEST).send({ error: 1, message: 'Token is missing.' });
+    }
+    const secret = process.env.EDUI_ONLYOFFICE_SECRET as string;
+    try {
+      jwt.verify(callbackData.token, secret);
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      return res.status(HttpStatus.UNAUTHORIZED).send({ error: 1, message: 'Invalid token.' });
+    }
 
-    const updateFile = (response: Response, body: any, path: string) => {
+    const updateFile = async (response: Response, body: any) => {
       try {
-        if (body.status === 2) {
+        if (body.status === 4 || body.status === 2) {
           const file = syncRequest('GET', body.url);
-          fs.writeFileSync(path, file.getBody());
+          const filePath = pathNode.join(__dirname, `../public/downloads/${filename}`);
+          fs.mkdirSync(pathNode.dirname(filePath), { recursive: true });
+          fs.writeFileSync(filePath, file.getBody());
+          const fileBuffer = fs.readFileSync(filePath);
+
+          const multerFile = {
+            fieldname: 'file',
+            originalname: filename,
+            encoding: '7bit',
+            mimetype: 'text/plain',
+            buffer: fileBuffer,
+            size: fileBuffer.length,
+          } as Express.Multer.File;
+
+          const uploadResult = await this.filemanagerService.uploadFile(
+            eduToken,
+            path.replace('/webdav/', ''),
+            multerFile,
+            '',
+          );
+          if (!uploadResult.success) {
+            throw new HttpException(
+              `Failed to upload the file. Server responded with status: ${uploadResult.status}`,
+              HttpStatus.BAD_REQUEST,
+            );
+          }
         }
-        response.status(HttpStatus.OK).send({ error: 0 });
+        console.log('File updated and uploaded successfully:', body.url, filename);
+        response.status(200).send({ error: 0 });
       } catch (error) {
         console.error('Error updating file:', error);
-        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ error: 1 });
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ error: 1, message: error.message });
       }
     };
 
-    if (callbackData.hasOwnProperty('status')) {
-      updateFile(res, callbackData, this.pathForSave);
+    if (Object.prototype.hasOwnProperty.call(callbackData, 'status')) {
+      updateFile(res, callbackData);
     } else {
       let content = '';
       req.on('data', (data) => {
@@ -210,7 +252,7 @@ class FilemanagerController {
       req.on('end', () => {
         try {
           const body = JSON.parse(content);
-          updateFile(res, body, this.pathForSave);
+          updateFile(res, body);
         } catch (error) {
           console.error('Error parsing JSON:', error);
           res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
