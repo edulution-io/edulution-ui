@@ -32,6 +32,7 @@ const PropagateSurveyDialog = (props: PropagateSurveyDialogProps) => {
 
   const initialFormValues: PropagateSurveyFormData = {
     participants: survey?.participants || [],
+    invitedGroups: [],
   };
 
   const formSchema = z.object({
@@ -49,6 +50,7 @@ const PropagateSurveyDialog = (props: PropagateSurveyDialogProps) => {
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<PropagateSurveyFormData>({

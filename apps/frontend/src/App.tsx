@@ -10,6 +10,7 @@ import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';
 import NativeFrames from '@/components/layout/Native/NativeIframes';
 import useLmnUserStore from '@/store/lmnApiStore';
 import lmnApi from '@/api/lmnApi';
+import Toaster from '@/components/ui/Sonner';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -38,6 +39,7 @@ const App = () => {
       <AppRouter />
       <EmbeddedIframes />
       <NativeFrames />
+      <Toaster />
     </AuthProvider>
   );
 };

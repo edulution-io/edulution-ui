@@ -61,6 +61,7 @@ class ClassManagementService {
 
     try {
       const response = await axios.request<DetailedUserInfo>(config);
+
       return response.data;
     } catch (e) {
       Logger.error(e, UsersService.name);
@@ -68,11 +69,11 @@ class ClassManagementService {
     }
   }
 
-  public async fetchAllGroups(token: string): Promise<GroupInfo[]> {
+  public async fetchAllGroups(token: string, searchKeyWord?: string): Promise<GroupInfo[]> {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `${this.keycloakBaseUrl}groups?search=`,
+      url: `${this.keycloakBaseUrl}groups?search=${searchKeyWord}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,

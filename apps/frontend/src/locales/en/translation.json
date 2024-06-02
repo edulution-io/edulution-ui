@@ -273,6 +273,8 @@
     "overview": "Overview",
     "create": "Create",
     "revert": "Revert",
+    "groups": "Groups",
+    "clearSelection": "Clear selection",
     "rename": "Rename"
   },
   "form": {
@@ -314,7 +316,8 @@
   "search": {
     "type-to-search": "Type to search",
     "loading": "Loading",
-    "no-results": "No results"
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
   },
   "fileCategory": {
     "folder": "Folder",

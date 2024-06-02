@@ -25,9 +25,10 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     useConferenceDetailsDialogStore();
 
   const initialFormValues: FormData = {
-    name: selectedConference?.name || 'asd',
+    name: selectedConference?.name || '',
     password: selectedConference?.password || '',
     invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user) || [],
+    invitedGroups: [],
   };
 
   const formSchema = z.object({
@@ -49,6 +50,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

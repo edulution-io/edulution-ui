@@ -8,7 +8,8 @@ import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchU
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import useUserStore from '@/store/userStore';
-import { useMediaQuery } from 'usehooks-ts';
+import Group from '@/pages/ConferencePage/dto/group';
+import { toast } from 'sonner';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,10 +17,10 @@ interface CreateConferenceDialogBodyProps {
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const { setValue, getValues } = form;
+  const { setValue, getValues, watch } = form;
   const { user } = useUserStore();
-  const { isLoading, searchAttendees } = useCreateConferenceDialogStore();
+  const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
+    useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
   if (isLoading) return <div>Loading...</div>;
@@ -31,6 +32,34 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
   const onAttendeesSearch = async (value: string): Promise<Attendee[]> => {
     const result = await searchAttendees(value);
     return result.filter((r) => r.username !== user);
+  };
+
+  const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
+    const selectedGroups = getValues('invitedGroups') as Group[];
+
+    const newlySelectedGroups = groups.filter((g) => !selectedGroups.some((sg) => sg.id === g.id));
+
+    if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
+      const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
+      const attendees = getValues('invitedAttendees') as Attendee[];
+
+      const combinedAttendees = [...groupMembers, ...attendees];
+
+      const uniqueAttendeesMap = new Map(combinedAttendees.map((a) => [a.username, a]));
+      const uniqueAttendees = Array.from(uniqueAttendeesMap.values());
+
+      uniqueAttendees.sort((a, b) => a.username.localeCompare(b.username));
+
+      const newlyAddedAttendeesCount = groupMembers.filter(
+        (member) => !attendees.some((attendee) => attendee.username === member.username),
+      ).length;
+
+      setValue('invitedAttendees', uniqueAttendees, { shouldValidate: true });
+
+      toast.success(t('search.usersAdded', { count: newlyAddedAttendeesCount }));
+    }
+
+    setValue('invitedGroups', groups);
   };
 
   return (
@@ -46,8 +75,16 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.name')}
           isLoading={isLoading}
-          variant={isMobile ? 'white' : 'default'}
-          inputVariant="default"
+          variant={'default'}
+        />
+        <SearchUsersOrGroups
+          users={watch('invitedAttendees')}
+          onSearch={onAttendeesSearch}
+          onUserChange={handleAttendeesChange}
+          groups={watch('invitedGroups')}
+          onGroupSearch={searchGroups}
+          onGroupsChange={handleGroupsChange}
+          isGetGroupMembersLoading={isGetGroupMembersLoading}
         />
         <FormField
           name="password"
@@ -55,13 +92,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           labelTranslationId={t('conferences.password')}
           type="password"
           isLoading={isLoading}
-          variant={isMobile ? 'white' : 'default'}
-          inputVariant="default"
-        />
-        <SearchUsersOrGroups
-          value={getValues('invitedAttendees') as Attendee[]}
-          onSearch={onAttendeesSearch}
-          onChange={handleAttendeesChange}
+          variant={'default'}
         />
       </form>
     </Form>
