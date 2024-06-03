@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Model } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import { SurveyAnswer } from '@/pages/Surveys/Subpages/components/types/survey-answer';
@@ -17,21 +16,56 @@ interface SurveyVisualizationProps {
 const SurveyVisualization = (props: SurveyVisualizationProps) => {
   const { surveyFormula, answers } = props;
 
-  const { t } = useTranslation();
+  const [survey, setSurvey] = useState<Model | undefined>(undefined);
+  const [vizPanel, setVizPanel] = useState<VisualizationPanel | undefined>(undefined);
 
-  const [survey, setSurvey] = useState<Model | null>(null);
-  const [vizPanel, setVizPanel] = useState<VisualizationPanel | null>(null);
+  if (!survey) {
+    const survey = new Model(JSON.parse(JSON.stringify(surveyFormula)));
+    survey.data = answers.map((answer) => answer.answer);
+    setSurvey(survey);
+  }
 
+  if (!vizPanel && !!survey) {
+    const surveyQuestions = survey?.getAllQuestions();
+    const surveyVizPanelOptions = {
+      haveCommercialLicense: true,
+      defaultChartType: 'bar',
+      showToolbar: false,
+    };
+    const surveyVizPanel = new VisualizationPanel(surveyQuestions, answers, surveyVizPanelOptions);
+    setVizPanel(surveyVizPanel);
+  }
+
+  useEffect(() => {
+    vizPanel?.render('surveyVizPanel');
+    const component = document.getElementById('surveyVizPanel');
+    if (component) {
+      return () => {
+        component.innerHTML = '';
+      };
+    }
+    return;
+  }, [vizPanel]);
+
+  return (
+    <div id="surveyVizPanel" />
+  );
+};
+
+export default SurveyVisualization;
+
+/*
   useEffect(() => {
     try {
       // const surveyModel = new Model(JSON.parse(JSON.stringify(surveyFormula)));
       const surveyModel = new Model(JSON.stringify(surveyFormula));
       setSurvey(surveyModel);
     } catch (error) {
-      setSurvey(null);
+      setSurvey(undefined);
       console.error(error);
     }
   }, [surveyFormula]);
+
 
   useEffect(() => {
     if (!survey) {
@@ -47,15 +81,17 @@ const SurveyVisualization = (props: SurveyVisualizationProps) => {
         // answersOrder: 'asc' as "default" | "asc" | "desc" | undefined,
         haveCommercialLicense: true,
         defaultChartType: 'bar',
+        showToolbar: false,
       };
       const surveyVizPanel = new VisualizationPanel(surveyQuestions, answers, surveyVizPanelOptions);
       surveyVizPanel.showToolbar = false;
       setVizPanel(surveyVizPanel);
     } catch (error) {
-      setVizPanel(null);
+      setVizPanel(undefined);
       console.error(error);
     }
   }, [survey, answers]);
+
 
   useEffect(() => {
     if (!vizPanel) {
@@ -72,15 +108,10 @@ const SurveyVisualization = (props: SurveyVisualizationProps) => {
     return;
   }, [vizPanel]);
 
-  if (!answers) {
-    return <div className="p-4 text-center">{t('survey.noAnswerWasSubmitted')}</div>;
+  if(!survey || !vizPanel) {
+    return null;
   }
-  if (!survey) {
-    return <div className="p-4 text-center">Survey model is not defined</div>;
-  }
-  if (!vizPanel) {
-    return <div className="p-4 text-center">Visualization panel is not defined</div>;
-  }
+
 
   return (
     <div
@@ -92,3 +123,5 @@ const SurveyVisualization = (props: SurveyVisualizationProps) => {
 };
 
 export default SurveyVisualization;
+
+*/

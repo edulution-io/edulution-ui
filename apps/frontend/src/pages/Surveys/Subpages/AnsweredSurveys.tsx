@@ -5,14 +5,16 @@ import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-// import useShowSurveyResultsDialogStore
-//   from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import useShowSurveyResultsDialogStore
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import useShowSurveyResultsTableDialogStore
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
 
 const AnsweredSurveysPage = () => {
   const {
@@ -23,7 +25,8 @@ const AnsweredSurveysPage = () => {
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
   } = useSurveysPageStore();
-  // const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
+  const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
+  const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
   const { t } = useTranslation();
@@ -53,11 +56,16 @@ const AnsweredSurveysPage = () => {
                 text={t(SurveyButtonProps.Answer.title)}
                 onClick={openSurveyAnswerDialog}
               />
-              {/*<FloatingActionButton*/}
-              {/*  icon={SurveyButtonProps.Results.icon}*/}
-              {/*  text={t(SurveyButtonProps.Results.title)}*/}
-              {/*  onClick={openSurveyResultsDialog}*/}
-              {/*/>*/}
+              <FloatingActionButton
+                icon={SurveyButtonProps.Results.icon}
+                text={t(SurveyButtonProps.Results.title)}
+                onClick={openSurveyResultsTableDialog}
+              />
+              <FloatingActionButton
+                icon={SurveyButtonProps.Results.icon}
+                text={t(SurveyButtonProps.Results.title)}
+                onClick={openSurveyResultsDialog}
+              />
             </>
           ) : null}
         </div>

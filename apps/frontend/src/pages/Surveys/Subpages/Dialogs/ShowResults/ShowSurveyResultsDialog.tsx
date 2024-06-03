@@ -5,6 +5,7 @@ import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 import SurveyVisualization from '@/pages/Surveys/Subpages/Dialogs/ShowResults/SurveyVisualization';
 import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 interface ShowSurveyResultsDialogProps {
   survey: Survey;
@@ -20,14 +21,21 @@ const ShowSurveyResultsDialog = (props: ShowSurveyResultsDialogProps) => {
     error,
     answers,
     getAllSurveyAnswers,
+    isLoading,
   } = useShowSurveyResultsDialogStore();
 
   const { t } = useTranslation();
 
   useEffect(() => {
+    const fetchAnswers = async () => {
+      await getAllSurveyAnswers(survey?.surveyname, survey?.participants);
+    }
+
     if (!survey) return;
     if (!isOpenSurveyResultsDialog) return;
-    getAllSurveyAnswers(survey?.surveyname, survey?.participants);
+
+    fetchAnswers();
+
   }, [survey, isOpenSurveyResultsDialog]);
 
   if (!survey) {
@@ -35,14 +43,9 @@ const ShowSurveyResultsDialog = (props: ShowSurveyResultsDialogProps) => {
   }
 
   const getDialogBody = () => {
+    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+
     if (!survey?.survey) return <div>{t('survey.noFormula')}</div>;
-
-    console.log('survey', survey, JSON.stringify(survey, null, 2));
-    console.log('answers', answers, JSON.stringify(answers, null, 2));
-
-    // if (!answers?.length || answers.length === 0) {
-    //   return null;
-    // }
 
     return (
       <ScrollArea>
