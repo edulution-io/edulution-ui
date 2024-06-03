@@ -13,7 +13,7 @@ const useSchoolManagementPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
     title: 'schoolManagement.title',
     icon: SchoolManagementIcon,
-    color: 'hover:bg-ciLightBlue',
+    color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
         id: 'lesson',
