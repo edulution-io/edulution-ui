@@ -5,14 +5,12 @@ import useUserStore from '@/store/userStore';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 // import Checkbox from '@/Components/ui/Checkbox';
 // import DatePicker from '@/Components/shared/DatePicker';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import Group from '@/pages/ConferencePage/dto/group';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import CircleLoader from '@/components/ui/CircleLoader';
 
 interface EditSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,13 +22,9 @@ const PropagateSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
     form, // saveSurveyLocally
   } = props;
   const { setValue, getValues, watch } = form;
-  const { isPropagating } = usePropagateSurveyDialogStore();
   const { user } = useUserStore();
   const { searchGroups, getGroupMembers, searchAttendees, isGetGroupMembersLoading } = useCreateConferenceDialogStore();
   const { t } = useTranslation();
-
-  // const { t } = useTranslation();
-  if (isPropagating) return <CircleLoader className={'mx-auto'} />;
 
   const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('participants', attendees, { shouldValidate: true });

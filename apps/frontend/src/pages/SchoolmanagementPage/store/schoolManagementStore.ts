@@ -8,9 +8,6 @@ import { SessionInfoState } from '@/datatypes/sessionInfo';
 import { fetchAndFilterData, transformGroupsToSchools } from '@/pages/SchoolmanagementPage/utilis/utilitys';
 import { DetailedUserInfo, LDAPUser } from './ldapUser';
 import lmnRootAdminApi from '@/api/lmnRootAdminApi.ts';
-import Attendee from '@/pages/ConferencePage/dto/attendee.ts';
-import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery.tsx';
-import handleApiError from '@/utils/handleApiError.ts';
 import { AxiosError } from 'axios';
 
 interface SchoolmanagementStates {
@@ -34,7 +31,6 @@ interface SchoolmanagementStates {
 }
 
 interface SchoolmanagementActions {
-  searchAttendeesResult: Attendee[];
   createSession: (user: string, name: string) => Promise<void>;
   createProject: (user: string, name: string, school: string) => Promise<void>;
   getSessions: (user: string) => Promise<void>;
@@ -54,7 +50,6 @@ interface SchoolmanagementActions {
   ) => Promise<void>;
 
   fetchGroupsData: () => Promise<void>;
-  searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
   reset: () => void;
 }
 
@@ -70,7 +65,6 @@ const initialState: Omit<
   | 'fetchAndStoreAllUserProjectsClassesAndPrinters'
   | 'fetchInitialPasswords'
   | 'fetchGroupsData'
-  | 'searchAttendees'
   | 'reset'
 > = {
   allSchoolProjects: {},
@@ -78,7 +72,6 @@ const initialState: Omit<
   allSchoolPrinters: {},
   projects: {},
   error: null,
-  searchAttendeesResult: [],
   schoolclasses: {},
   availableSessions: [],
   members: {},
@@ -217,29 +210,6 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
           },
         }));
         console.log('Fetched all user projects, classes and printers');
-      },
-
-      searchAttendees: async (searchParam) => {
-        set({ error: null });
-        try {
-          const response = await eduApi.get<Attendee[]>(`${USERS_SEARCH_EDU_API_ENDPOINT}${searchParam}`);
-
-          if (!Array.isArray(response.data)) {
-            return [];
-          }
-
-          const searchAttendeesResult = response.data?.map((d) => ({
-            ...d,
-            value: d.username,
-            label: `${d.firstName} ${d.lastName} (${d.username})`,
-          }));
-
-          set({ searchAttendeesResult });
-          return searchAttendeesResult;
-        } catch (error) {
-          handleApiError(error, set);
-          return [];
-        }
       },
 
       reset: () => set({ ...initialState }),
