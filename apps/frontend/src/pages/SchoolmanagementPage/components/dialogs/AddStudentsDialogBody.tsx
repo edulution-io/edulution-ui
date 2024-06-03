@@ -34,13 +34,13 @@ const AddStudentsDialogBody = ({ form }: AddConferenceDialogBodyProps) => {
   };
 
   const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
-    const selectedGroups = getValues('invitedGroups') as Group[];
+    const selectedGroups = (getValues('invitedGroups') as Group[]) || [];
 
     const newlySelectedGroups = groups.filter((g) => !selectedGroups.some((sg) => sg.id === g.id));
 
     if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
       const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
-      const attendees = getValues('invitedAttendees') as Attendee[];
+      const attendees = (getValues('invitedAttendees') as Attendee[]) || [];
 
       const combinedAttendees = [...groupMembers, ...attendees];
 

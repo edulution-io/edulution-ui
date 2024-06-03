@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import ReactPlayer from 'react-player';
 import QuotaBar from '@/pages/SchoolmanagementPage/components/profiles/QuotaBar';
@@ -28,6 +27,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onSelect,
   setStudentsDialogOpen,
 }) => {
+  const globalQuota = Math.floor(Math.random() * (1500 - 10 + 1)) + 10;
+  const userQuota = Math.floor(Math.random() * (1500 - 10 + 1)) + 10;
   const { setIsVideoModalOpen, setVideoModalUsername, setVideoModalUrl } = useSchoolmanagementComponentStore();
   return (
     <div
@@ -80,7 +81,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
             <div className="flex flex-row">
               <div className="ml-4 flex flex-col justify-center">
-                <QuotaBar />
+                <QuotaBar
+                  schoolQuota={globalQuota}
+                  userQuota={userQuota}
+                />
               </div>
             </div>
           </div>

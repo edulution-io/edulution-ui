@@ -1,4 +1,4 @@
-import { AntiMalwareIcon, AppConfigIcon, FAQIcon, UserIcon } from '@/assets/icons';
+import { AppConfigIcon, FAQIcon, SecurityIcon, UserIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { useSearchParams } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ const useUserSettingsMenuConfig = () => {
       {
         id: 'security',
         label: 'usersettings.security',
-        icon: AntiMalwareIcon,
+        icon: SecurityIcon,
         action: () => setSearchParams({ section: 'security' }),
       },
       {
