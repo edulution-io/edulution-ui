@@ -33,7 +33,7 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick }) => {
           className=""
           variant="btn-collaboration"
           size="sm"
-          onClick={() => onClick()}
+          onClick={onClick}
         >
           {t('common.start')}
         </Button>

@@ -8,14 +8,14 @@ import useUserStore from '@/store/userStore';
 import { useTranslation } from 'react-i18next';
 import { IconContext } from 'react-icons';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import useFrameStore from '@/routes/IframeStore';
+import { APPS } from '@/datatypes/types';
+import cn from '@/lib/utils';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
 import VdiCard from './components/VdiCard';
 import { Connections } from './DesktopDeploymentTypes';
-import useFrameStore from '@/routes/IframeStore';
-import { APPS } from '@/datatypes/types';
-import cn from '@/lib/utils';
 
 const iconContextValue = { className: 'h-8 w-8 m-5' };
 
