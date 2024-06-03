@@ -37,13 +37,13 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
 
     switch (fileEnding) {
       case '.pptx':
-        blob = await generatePPTX(user.username);
+        blob = await generatePPTX(user);
         break;
       case '.xlsx':
-        blob = generateXLSX(user.username);
+        blob = generateXLSX(user);
         break;
       case '.docx':
-        blob = await generateDOCX(user.username);
+        blob = await generateDOCX(user);
         break;
       default:
         break;
