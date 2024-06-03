@@ -133,7 +133,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL_PROD as string}
+          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL as string}
           config={{
             document: {
               fileType: getFileType(file.filename),
