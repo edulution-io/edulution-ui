@@ -46,6 +46,11 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
     }
   };
 
+  const initialFormValues = {
+    invitedAttendees: [],
+    invitedGroups: [],
+  };
+
   const formSchema = z.object({
     invitedAttendees: z.array(
       z.intersection(
@@ -60,11 +65,13 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
+    defaultValues: initialFormValues,
   });
 
   const onSubmit = async () => {
@@ -155,7 +162,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             <AccordionSH type="multiple">
               <AccordionItem value="addUser">
                 <AccordionTrigger className="w-full text-xl font-bold">Nutzer hinzufügen</AccordionTrigger>
-                <AccordionContent className="h-[20vh]">
+                <AccordionContent className="h-[20vh] overflow-auto">
                   <AddStudentsDialogBody form={form} />
                 </AccordionContent>
               </AccordionItem>
