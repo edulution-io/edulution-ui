@@ -9,7 +9,7 @@ import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Pa
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 
 const OpenSurveysPage = () => {
   const {
