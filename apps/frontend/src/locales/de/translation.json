@@ -200,6 +200,10 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
   },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
+  },
   "virtualization": {
     "title": "VIRTUALISATION",
     "sidebar": "Virtualisation"

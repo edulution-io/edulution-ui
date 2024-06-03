@@ -12,10 +12,12 @@ import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/Sho
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore.ts';
+import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
   useFrameStore.getState().reset();
+  useEditorStore.getState().reset();
   useLmnUserStore.getState().reset();
   useConferenceStore.getState().reset();
   useFileManagerStore.getState().reset();

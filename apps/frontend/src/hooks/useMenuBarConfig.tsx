@@ -11,6 +11,7 @@ import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolM
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useMenuConfig.ts';
+import useLinuxmusterPageMenu from '@/pages/Linuxmuster/useLinuxmusterPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -23,6 +24,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
+  const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -51,6 +53,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
+      }
+      case APPS.LINUXMUSTER: {
+        return LINUXMUSTER_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };
