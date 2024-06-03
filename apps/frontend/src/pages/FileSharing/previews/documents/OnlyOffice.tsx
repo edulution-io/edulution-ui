@@ -58,14 +58,12 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     const editorConfig = findDocumentsEditorType(fileType);
     setEditorType(editorConfig);
 
-    const dev = true;
-
     const fetchFileUrlAndToken = async () => {
       try {
         const rawUrl = await downloadFile(file.filename);
         const formattedUrl = rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001');
 
-        dev ? setFileUrl(formattedUrl) : setFileUrl(rawUrl);
+        import.meta.env.VITE_ENV === 'dev' ? setFileUrl(formattedUrl) : setFileUrl(rawUrl);
 
         const config = {
           document: {
@@ -73,7 +71,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             type,
             key: editorConfig.key,
             title: file.basename,
-            url: dev ? formattedUrl : rawUrl,
+            url: import.meta.env.VITE_ENV === 'dev' ? formattedUrl : rawUrl,
             height: '100%',
             width: '100%',
           },
@@ -135,13 +133,13 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL_DEV as string}
+          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL as string}
           config={{
             document: {
               fileType: getFileType(file.filename),
               key: editorType.key,
               title: file.basename,
-              url: fileUrl || '152',
+              url: fileUrl || '',
             },
             documentType: editorType.documentType,
             token,

@@ -20,6 +20,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
           </main>
         </div>
         <Sidebar />
+        <Footer />
       </div>
     );
   }
@@ -32,9 +33,9 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
         <main className="flex-1">
           <Outlet />
         </main>
-        <Footer />
       </div>
       <Sidebar />
+      <Footer />
     </div>
   );
 };

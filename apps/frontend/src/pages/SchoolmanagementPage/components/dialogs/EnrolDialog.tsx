@@ -46,11 +46,6 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
     }
   };
 
-  const initialFormValues = {
-    invitedAttendees: [],
-    invitedGroups: [],
-  };
-
   const formSchema = z.object({
     invitedAttendees: z.array(
       z.intersection(
@@ -71,7 +66,6 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
-    defaultValues: initialFormValues,
   });
 
   const onSubmit = async () => {

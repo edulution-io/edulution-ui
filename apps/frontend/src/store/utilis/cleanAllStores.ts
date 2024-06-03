@@ -5,7 +5,7 @@ import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConfere
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore';
-import useIframeStore from '@/routes/IframeStore';
+import useFrameStore from '@/routes/IframeStore';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
@@ -15,7 +15,7 @@ import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolM
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
-  useIframeStore.getState().reset();
+  useFrameStore.getState().reset();
   useLmnUserStore.getState().reset();
   useConferenceStore.getState().reset();
   useFileManagerStore.getState().reset();

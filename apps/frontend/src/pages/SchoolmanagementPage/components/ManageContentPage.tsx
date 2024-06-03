@@ -122,7 +122,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         <h2 className="ml-2">{contentKey}</h2>
       </div>
       <div className="flex-1 overflow-hidden p-4">
-        <ScrollArea className="h-full w-full overflow-auto">
+        <ScrollArea className="max-h-[70vh] w-full overflow-auto">
           <div className="flex flex-wrap gap-4">
             <ComputerMonitoringDialog
               isOpen={isVideoModalOpen}

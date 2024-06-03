@@ -9,7 +9,7 @@ import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Pa
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
 
 const OpenSurveysPage = () => {
   const {
@@ -41,16 +41,14 @@ const OpenSurveysPage = () => {
         />
       </ScrollArea>
       <TooltipProvider>
-        <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          {
-            selectedSurvey ? (
-              <FloatingActionButton
-                icon={SurveyButtonProps.Participate.icon}
-                text={t(SurveyButtonProps.Participate.title)}
-                onClick={openParticipateSurveyDialog}
-              />
-            ) : null
-          }
+        <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+          {selectedSurvey ? (
+            <FloatingActionButton
+              icon={SurveyButtonProps.Participate.icon}
+              text={t(SurveyButtonProps.Participate.title)}
+              onClick={openParticipateSurveyDialog}
+            />
+          ) : null}
         </div>
       </TooltipProvider>
       <ParticipateSurveyDialog
