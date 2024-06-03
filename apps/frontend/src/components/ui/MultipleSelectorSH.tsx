@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable react/no-unknown-property, react/no-unstable-nested-components, @typescript-eslint/no-shadow, react/button-has-type, @typescript-eslint/no-unused-expressions, react/jsx-no-useless-fragment */
+/* eslint-disable react/no-unknown-property, react/no-unstable-nested-Components, @typescript-eslint/no-shadow, react/button-has-type, @typescript-eslint/no-unused-expressions, react/jsx-no-useless-fragment */
 
 import * as React from 'react';
 import { forwardRef, useEffect } from 'react';
@@ -27,6 +27,7 @@ interface GroupOption {
 }
 
 interface MultipleSelectorProps {
+  showRemoveIconInBadge?: boolean;
   value?: MultipleSelectorOptionSH[];
   defaultOptions?: MultipleSelectorOptionSH[];
   /** manually controlled options */
@@ -164,6 +165,7 @@ CommandEmpty.displayName = 'CommandEmpty';
 const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
   (
     {
+      showRemoveIconInBadge = true,
       value,
       onChange,
       placeholder,
@@ -384,24 +386,26 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 data-disabled={disabled}
               >
                 {option.label}
-                <button
-                  className={cn(
-                    'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                    (disabled || option.fixed) && 'hidden',
-                  )}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleUnselect(option);
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClick={() => handleUnselect(option)}
-                >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                </button>
+                {showRemoveIconInBadge && (
+                  <button
+                    className={cn(
+                      'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                      (disabled || option.fixed) && 'hidden',
+                    )}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleUnselect(option);
+                      }
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={() => handleUnselect(option)}
+                  >
+                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  </button>
+                )}
               </BadgeSH>
             ))}
             {/* Avoid having the "Search" Icon */}
@@ -430,7 +434,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         </div>
         <div className="relative mt-2">
           {open && (
-            <CommandList className="absolute top-0 z-10 w-full rounded-md border bg-popover bg-white text-black shadow-md outline-none animate-in">
+            <CommandList className="absolute top-0 z-50 w-full rounded-md border bg-popover bg-white text-black shadow-md outline-none animate-in">
               {isLoading ? (
                 <>{loadingIndicator}</>
               ) : (

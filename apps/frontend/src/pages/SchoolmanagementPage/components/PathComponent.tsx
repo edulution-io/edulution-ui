@@ -22,24 +22,26 @@ const PathContent: FC<PathContentProps> = ({
   setIsCreateDialogOpen,
   setCreateContentType,
   deleteSession,
-}) => (
-  <GroupCardRow
-    {...(pathType === 'schoolclasses' && { schoolclasses: data as Record<string, MemberInfo> })}
-    {...(pathType === 'sessions' && {
-      sessions: data as SessionInfo[],
-      setDialogTitle,
-      setIsCreateDialogOpen,
-      setCreateContentType,
-      deleteSession,
-    })}
-    {...(pathType === 'projects' && {
-      projects: data as string[],
-      setDialogTitle,
-      setIsCreateDialogOpen,
-      setCreateContentType,
-    })}
-    isAdmin={isAdmin}
-  />
-);
+}) => {
+  return (
+    <GroupCardRow
+      {...(pathType === 'schoolclasses' && { schoolclasses: data as Record<string, MemberInfo> })}
+      {...(pathType === 'sessions' && {
+        sessions: data as SessionInfo[],
+        setDialogTitle,
+        setIsCreateDialogOpen,
+        setCreateContentType,
+        deleteSession,
+      })}
+      {...(pathType === 'projects' && {
+        projects: data as Record<string, MemberInfo>,
+        setDialogTitle,
+        setIsCreateDialogOpen,
+        setCreateContentType,
+      })}
+      isAdmin={isAdmin}
+    />
+  );
+};
 
 export default PathContent;

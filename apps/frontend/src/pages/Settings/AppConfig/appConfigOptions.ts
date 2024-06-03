@@ -1,6 +1,6 @@
 import {
-  AntiMalwareIcon,
   AiChatIcon,
+  AntiMalwareIcon,
   BackupIcon,
   ChatIcon,
   ConferencesIcon,
@@ -10,9 +10,9 @@ import {
   ForumsIcon,
   KnowledgeBaseIcon,
   LearningManagementIcon,
+  LinuxmusterIcon,
   LocationServicesIcon,
   MailIcon,
-  WhiteBoardIcon,
   MobileDevicesIcon,
   NetworkIcon,
   PrinterIcon,
@@ -22,6 +22,7 @@ import {
   SurveyPageIcon,
   TicketSystemIcon,
   VirtualizationIcon,
+  WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
 import { APPS } from '@/datatypes/types';
@@ -124,6 +125,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   { id: APPS.AICHAT, icon: AiChatIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
+  { id: APPS.LINUXMUSTER, icon: LinuxmusterIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
 ];
 
 export default APP_CONFIG_OPTIONS;

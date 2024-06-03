@@ -25,7 +25,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         tabIndex={0}
         role="button"
         className={cn(
-          'flex items-center justify-start space-x-2 py-2',
+          'flex items-center justify-start space-x-2 py-1',
           onClick ? 'cursor-pointer' : 'cursor-default',
           className,
         )}

@@ -1,13 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
-import { Button } from '@/components/shared/Button';
 import userStore from '@/store/userStore';
 
 const AccountInformation = () => {
   const { userInfo } = userStore();
   const { t } = useTranslation();
-
   const userInfoFields = [
     { label: t('accountData.name'), value: userInfo ? userInfo?.name : '...' },
     {
@@ -20,7 +18,7 @@ const AccountInformation = () => {
 
   return (
     <Card
-      variant="collaboration"
+      variant="security"
       className="min-h-[100%]"
     >
       <CardContent>
@@ -36,25 +34,6 @@ const AccountInformation = () => {
               </p>
             </div>
           ))}
-
-          <Button
-            variant="btn-collaboration"
-            className="mt-4"
-            size="sm"
-          >
-            {t('accountData.change_password')}
-          </Button>
-        </div>
-
-        <div className="mt-6">
-          <h4 className="font-bold">{t('accountData.my_information')}</h4>
-          <Button
-            variant="btn-collaboration"
-            className="mt-4"
-            size="sm"
-          >
-            {t('accountData.change_my_data')}
-          </Button>
         </div>
       </CardContent>
     </Card>

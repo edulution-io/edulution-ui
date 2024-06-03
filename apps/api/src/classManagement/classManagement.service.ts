@@ -6,7 +6,7 @@ import { GroupInfo } from '../types/groups';
 
 @Injectable()
 class ClassManagementService {
-  private keycloakBaseUrl = process.env.KEYCLOAK_API;
+  private keycloakBaseUrl = process.env.KEYCLOAK_API as string;
 
   async fetchClassesInfo(token: string, groupPath: string): Promise<GroupInfo> {
     const config = {
@@ -61,6 +61,7 @@ class ClassManagementService {
 
     try {
       const response = await axios.request<DetailedUserInfo>(config);
+
       return response.data;
     } catch (e) {
       Logger.error(e, UsersService.name);
@@ -68,33 +69,30 @@ class ClassManagementService {
     }
   }
 
-  public async fetchAllGroups(token: string): Promise<GroupInfo[]> {
+  public async fetchAllGroups(token: string, searchKeyWord?: string): Promise<GroupInfo[]> {
+    if (searchKeyWord === undefined) searchKeyWord = '';
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `${this.keycloakBaseUrl}groups?search=`,
+      url: `${this.keycloakBaseUrl}groups?search=${searchKeyWord}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,
       },
     };
+    Logger.log(config, 'config');
 
     try {
       Logger.log('Sending request to fetch all groups', 'UsersService');
       const response = await axios.request<GroupInfo[]>(config);
       Logger.log('Response received', 'UsersService');
-      Logger.log(response.status, 'UsersService'); // Log status code
-      Logger.log(response.statusText, 'UsersService'); // Log status text
-      Logger.log(response.headers, 'UsersService'); // Log headers
-      Logger.log(response.data, 'UsersService'); // Log response data
-
       if (!response.data || response.data.length === 0) {
         Logger.warn('Empty response received from the API', 'UsersService');
       }
 
       return response.data;
     } catch (e) {
-      Logger.error(e, 'UsersService'); // Ensure correct service name
+      Logger.error(e, 'UsersService');
       throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
     }
   }

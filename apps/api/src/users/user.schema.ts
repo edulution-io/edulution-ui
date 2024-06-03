@@ -1,7 +1,6 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UsersSurveys } from '../polls-and-surveys/survey/types/users-surveys.schema';
-import { UsersPolls } from '../polls-and-surveys/poll/types/users-polls.schema';
+import { UsersSurveys } from '../surveys/types/users-surveys.schema';
 
 export type UserDocument = User & Document;
 
@@ -31,20 +30,13 @@ export class User {
   @Prop()
   isTotpSet?: boolean;
 
-  @Prop({ type: SchemaFactory.createForClass(UsersPolls) })
-  usersPolls: {
-    openPolls: string[];
-    createdPolls: string[];
-    answeredPolls: string[];
-  };
-
   @Prop({ type: SchemaFactory.createForClass(UsersSurveys) })
   usersSurveys: {
     openSurveys: string[];
     createdSurveys: string[];
     answeredSurveys: {
       surveyname: string;
-      answer: string;
+      answer?: string;
     }[];
   };
 }

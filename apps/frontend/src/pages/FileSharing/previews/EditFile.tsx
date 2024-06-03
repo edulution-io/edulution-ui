@@ -1,22 +1,21 @@
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { t } from 'i18next';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
 import Previews from '@/pages/FileSharing/previews/Previews.tsx';
 import backgroundImage from '@/assets/background.jpg';
 import { determinePreviewType } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
-import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 
 const EditFile = () => {
   const [searchParams] = useSearchParams();
   const { editableFiles, removeEditorFile, showEditor, setShowEditor } = useFileEditorStore();
-  const [isEditorMinimized] = useState(false);
   const [fileType, setFileType] = useState<string>('');
-
+  const navigate = useNavigate();
   const navigateBack = () => {
     const url = new URL(window.location.href);
     url.searchParams.delete('editFile');
-    window.location.href = url.toString();
+    navigate(url);
   };
 
   const removeItemFromEditMenu = (file: string) => {
@@ -45,18 +44,10 @@ const EditFile = () => {
 
   return (
     <div
-      className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14"
+      className=" absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="fixed left-1/2 top-0 z-10 flex -translate-x-1/2 transform items-center space-x-4">
-        <button
-          type="button"
-          className="mr-1 rounded bg-blue-500 px-4 text-white hover:bg-blue-700"
-          onClick={navigateBack}
-        >
-          {isEditorMinimized ? <MdMaximize className="inline" /> : <MdMinimize className="inline" />}{' '}
-          {t(isEditorMinimized ? 'fileEditingPage.maximize' : 'fileEditingPage.minimize')}
-        </button>
         <button
           type="button"
           className="rounded bg-red-500 px-4 text-white hover:bg-red-700"

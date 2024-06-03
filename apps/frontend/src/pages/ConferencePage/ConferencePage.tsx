@@ -14,7 +14,7 @@ const ConferencePage: React.FC = () => {
   const { selectedConference } = useConferenceDetailsDialogStore();
 
   return (
-    <div className="p-5 lg:px-20">
+    <div className="p-5 lg:pr-20">
       <NativeAppHeader
         title={t('conferences.title')}
         description={t('conferences.description')}

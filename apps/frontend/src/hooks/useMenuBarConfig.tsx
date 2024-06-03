@@ -3,14 +3,15 @@ import { useLocation } from 'react-router-dom';
 import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-import USERSETTINGS_MENUBAR_CONFIG from '@/pages/UserSettings/config';
 import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import { getFromPathName } from '@/utils/common';
 import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolManagementPageMenu';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
-import usePollsAndSurveysPageMenu from '@/pages/PollsAndSurveysPage/usePollsAndSurveysPageMenu.ts';
+import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
+import useUserSettingsMenuConfig from '@/pages/UserSettings/useMenuConfig.ts';
+import useLinuxmusterPageMenu from '@/pages/Linuxmuster/useLinuxmusterPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -21,7 +22,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
-  const SURVEYS_MENUBAR_CONFIG = usePollsAndSurveysPageMenu();
+  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
+  const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
+  const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -50,6 +53,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
+      }
+      case APPS.LINUXMUSTER: {
+        return LINUXMUSTER_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

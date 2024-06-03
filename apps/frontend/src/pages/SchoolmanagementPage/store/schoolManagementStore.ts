@@ -3,14 +3,20 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import { GroupInfo } from '@/pages/SchoolmanagementPage/utilis/groups';
-import { CustomIdTokenClaims, Project, UserInitialPasswordInfo } from '@/pages/SchoolmanagementPage/utilis/types';
+import { CustomIdTokenClaims, UserInitialPasswordInfo } from '@/pages/SchoolmanagementPage/utilis/types';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
-import { transformGroupsToSchools } from '@/pages/SchoolmanagementPage/utilis/utilitys';
+import { fetchAndFilterData, transformGroupsToSchools } from '@/pages/SchoolmanagementPage/utilis/utilitys';
 import { DetailedUserInfo, LDAPUser } from './ldapUser';
+import lmnRootAdminApi from '@/api/lmnRootAdminApi.ts';
+import { AxiosError } from 'axios';
 
 interface SchoolmanagementStates {
   schoolclasses: Record<string, LDAPUser[]>;
-  allProjects: Project[];
+  projects: Record<string, LDAPUser[]>;
+  allSchoolProjects: Record<string, LDAPUser[]>;
+  allSchoolClasses: Record<string, LDAPUser[]>;
+  allSchoolPrinters: Record<string, LDAPUser[]>;
+  error: AxiosError | null;
   availableSessions: SessionInfoState[];
   members: Record<string, DetailedUserInfo>;
   groupsData: {
@@ -30,7 +36,19 @@ interface SchoolmanagementActions {
   getSessions: (user: string) => Promise<void>;
   deleteSession: (user: string, sid: string) => Promise<void>;
   fetchInitialPasswords: (className: string) => Promise<UserInitialPasswordInfo[]>;
-  fetchAndStoreAllClasses: (classes: string[], userinfo: CustomIdTokenClaims) => Promise<void>;
+  fetchAndStoreUserProjectsAndClasses: (
+    classes: string[],
+    projects: string[],
+    userinfo: CustomIdTokenClaims,
+  ) => Promise<void>;
+
+  fetchAndStoreAllUserProjectsClassesAndPrinters: (
+    classes: string[],
+    projects: string[],
+    printers: string[],
+    userinfo: CustomIdTokenClaims,
+  ) => Promise<void>;
+
   fetchGroupsData: () => Promise<void>;
   reset: () => void;
 }
@@ -43,15 +61,20 @@ const initialState: Omit<
   | 'createProject'
   | 'getSessions'
   | 'deleteSession'
-  | 'fetchAndStoreAllClasses'
+  | 'fetchAndStoreUserProjectsAndClasses'
+  | 'fetchAndStoreAllUserProjectsClassesAndPrinters'
   | 'fetchInitialPasswords'
   | 'fetchGroupsData'
   | 'reset'
 > = {
+  allSchoolProjects: {},
+  allSchoolClasses: {},
+  allSchoolPrinters: {},
+  projects: {},
+  error: null,
   schoolclasses: {},
   availableSessions: [],
   members: {},
-  allProjects: [],
   groupsData: { schools: [] },
 };
 
@@ -66,15 +89,15 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
       ...initialState,
       createProject: async (user: string, name: string, school: string) => {
         try {
-          await lmnApi.post(`/projects/${name}`, {
+          await lmnRootAdminApi.post(`/projects/${name}`, {
             description: 'ffefefefefefefefe',
             quota: '',
             mailquota: '',
             join: true,
             hide: false,
-            admins: [],
+            admins: [user],
             admingroups: [],
-            members: [user],
+            members: ['agy-netzint5'],
             membergroups: [],
             school,
           });
@@ -122,8 +145,12 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
       fetchGroupsData: async () => {
         try {
           const response = await eduApi.get<GroupInfo[]>('/classmanagement/groups');
+
+          console.log(response.data);
           const groups = response.data;
           const schoolData = transformGroupsToSchools(groups);
+
+          console.log(schoolData);
 
           set((state) => ({
             groupsData: {
@@ -136,26 +163,10 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
         }
       },
 
-      fetchAndStoreAllClasses: async (classes, userInfo) => {
+      fetchAndStoreUserProjectsAndClasses: async (classes, projects, userInfo) => {
         try {
-          const excludedMemberName = 'agy-netzint-teacher';
-
-          const classInfoPromises = classes?.map(async (className) => {
-            const response = await eduApi.get(`/classmanagement/${className}`);
-            const classInfo = response.data as LDAPUser[];
-            classInfo.filter((member) => !member.username.includes(excludedMemberName));
-
-            return { [className]: classInfo };
-          });
-
-          const classInfoArray = await Promise.all(classInfoPromises);
-
-          const validClassInfoArray = classInfoArray.filter((info) => info !== null);
-
-          const classInfoMap = validClassInfoArray.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-          Object.entries(classInfoMap).forEach(([key, members]) => {
-            classInfoMap[key] = members.filter((member) => member.email !== userInfo.email);
-          });
+          const classInfoMap = await fetchAndFilterData(classes, 'classmanagement', userInfo, true);
+          const projectInfoMap = await fetchAndFilterData(projects, 'classmanagement', userInfo, true);
 
           set((state) => ({
             schoolclasses: {
@@ -163,9 +174,44 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
               ...classInfoMap,
             },
           }));
+          set((state) => ({
+            projects: {
+              ...state.projects,
+              ...projectInfoMap,
+            },
+          }));
         } catch (error) {
           console.error('Failed to fetch class information:', error);
         }
+      },
+
+      fetchAndStoreAllUserProjectsClassesAndPrinters: async (classes, projects, printers, userInfo) => {
+        console.log('Fetching all user projects, classes and printers', classes, projects, printers, userInfo);
+        const classInfoMap = await fetchAndFilterData(classes, 'classmanagement', userInfo, false);
+        const projectInfoMap = await fetchAndFilterData(projects, 'classmanagement', userInfo, false);
+        const printersInfoMap = await fetchAndFilterData(printers, 'classmanagement', userInfo, false);
+
+        console.log('classInfoMap', classInfoMap);
+
+        set((state) => ({
+          allSchoolClasses: {
+            ...state.allSchoolClasses,
+            ...classInfoMap,
+          },
+        }));
+        set((state) => ({
+          allSchoolProjects: {
+            ...state.allSchoolProjects,
+            ...projectInfoMap,
+          },
+        }));
+        set((state) => ({
+          allSchoolPrinters: {
+            ...state.allSchoolPrinters,
+            ...printersInfoMap,
+          },
+        }));
+        console.log('Fetched all user projects, classes and printers');
       },
 
       reset: () => set({ ...initialState }),
@@ -175,7 +221,11 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
         schoolclasses: state.schoolclasses,
+        allSchoolProjects: state.allSchoolProjects,
+        allSchoolClasses: state.allSchoolClasses,
+        allSchoolPrinters: state.allSchoolPrinters,
         members: state.members,
+        projects: state.projects,
         availableSessions: state.availableSessions,
       }),
     } as PersistOptions<SchoolclassInfoStore>,

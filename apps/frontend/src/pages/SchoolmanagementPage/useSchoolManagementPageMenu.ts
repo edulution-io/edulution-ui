@@ -1,5 +1,11 @@
 import { MenuBarEntryProps } from '@/datatypes/types';
-import { SchoolManagementIcon } from '@/assets/icons';
+import {
+  CreateProjectIcon,
+  EnrolIcon,
+  FirstPasswordIcon,
+  LearningManagementIcon,
+  SchoolManagementIcon,
+} from '@/assets/icons';
 import { useSearchParams } from 'react-router-dom';
 
 const useSchoolManagementPageMenu = () => {
@@ -7,12 +13,12 @@ const useSchoolManagementPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
     title: 'schoolManagement.title',
     icon: SchoolManagementIcon,
-    color: 'hover:bg-ciLightBlue',
+    color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
         id: 'lesson',
         label: 'schoolManagement.lesson',
-        icon: SchoolManagementIcon,
+        icon: LearningManagementIcon,
         action: () => {
           setSearchParams({ page: 'lesson' });
         },
@@ -20,7 +26,7 @@ const useSchoolManagementPageMenu = () => {
       {
         id: 'enrol',
         label: 'schoolManagement.enrol',
-        icon: SchoolManagementIcon,
+        icon: EnrolIcon,
         action: () => {
           setSearchParams({ page: 'enrol' });
         },
@@ -28,7 +34,7 @@ const useSchoolManagementPageMenu = () => {
       {
         id: 'passwords',
         label: 'schoolManagement.passwords',
-        icon: SchoolManagementIcon,
+        icon: FirstPasswordIcon,
         action: () => {
           setSearchParams({ page: 'passwords' });
         },
@@ -36,7 +42,7 @@ const useSchoolManagementPageMenu = () => {
       {
         id: 'project',
         label: 'schoolManagement.project',
-        icon: SchoolManagementIcon,
+        icon: CreateProjectIcon,
         action: () => {
           setSearchParams({ page: 'project' });
         },

@@ -20,6 +20,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
           </main>
         </div>
         <Sidebar />
+        <Footer />
       </div>
     );
   }
@@ -27,14 +28,14 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
   return (
     <div className="flex">
       {isMainPage ? null : <MenuBar />}
-      <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
+      <div className="flex min-h-[100vh] w-full flex-col px-5 lg:pr-20">
         <Header isLogoShown={isMainPage} />
         <main className="flex-1">
           <Outlet />
         </main>
-        <Footer />
       </div>
       <Sidebar />
+      <Footer />
     </div>
   );
 };

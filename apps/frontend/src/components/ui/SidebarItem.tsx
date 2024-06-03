@@ -61,7 +61,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop
         />
         {isInView ? (
           <div
-            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px]  ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
             <p className="whitespace-nowrap font-bold">{menuItem.title}</p>
             <img

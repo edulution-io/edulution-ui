@@ -7,9 +7,10 @@ import useUserStore from '@/store/userStore';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';
-import NativeFrames from '@/components/layout/Native/NativeIframes';
+import NativeFrames from '@/components/layout/Native/NativeFrames';
 import useLmnUserStore from '@/store/lmnApiStore';
 import lmnApi from '@/api/lmnApi';
+import Toaster from '@/components/ui/Sonner';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -38,6 +39,7 @@ const App = () => {
       <AppRouter />
       <EmbeddedIframes />
       <NativeFrames />
+      <Toaster />
     </AuthProvider>
   );
 };

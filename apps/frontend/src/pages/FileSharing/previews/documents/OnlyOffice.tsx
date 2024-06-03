@@ -4,6 +4,7 @@ import { DirectoryFile } from '@/datatypes/filesystem';
 import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import useFileEditorStore from './fileEditorStore';
 import PreviewMenuBar from '@/pages/FileSharing/previews/documents/PreviewMenuBar.tsx';
+import { useAuth } from 'react-oidc-context';
 
 interface OnlyOfficeProps {
   file: DirectoryFile;
@@ -35,7 +36,7 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
     case 'pptx':
       return { id: 'pptxEditor', key: 'pptx' + Math.random() * 100, documentType: 'slide' };
     case 'pdf':
-      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'pdf' };
+      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'word' };
     default:
       return { id: 'docxEditor', key: 'word' + Math.random() * 100, documentType: 'word' };
   }
@@ -44,7 +45,9 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
 const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview }) => {
   const [token, setToken] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-
+  const [callbackURLLocation, setCallbackURLLocation] = useState<string | null>(null);
+  const [documentServerURL, setDocumentServerURL] = useState<string>('');
+  const { user } = useAuth();
   const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
     id: 'docxEditor',
     key: 'word' + Math.random(),
@@ -56,12 +59,40 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
   useEffect(() => {
     const fileType = getFileType(file.filename);
     const editorConfig = findDocumentsEditorType(fileType);
+    console.log(editorConfig);
     setEditorType(editorConfig);
 
     const fetchFileUrlAndToken = async () => {
       try {
         const rawUrl = await downloadFile(file.filename);
-        setFileUrl(rawUrl);
+        const isDev = (import.meta.env.VITE_ENV as string) === 'dev';
+
+        const formattedUrl = isDev
+          ? rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001')
+          : rawUrl;
+        const callbackBaseUrl = isDev ? 'http://host.docker.internal:3001' : 'https://ui.schulung.multi.schule/';
+        console.log(`({
+                  file, getOnlyOfficeJwtToken, previewFile, mode, rawUrl, isDev, callbackBaseUrl
+                }) ${JSON.stringify(
+                  {
+                    file,
+                    getOnlyOfficeJwtToken,
+                    previewFile,
+                    mode,
+                    rawUrl,
+                    isDev,
+                    callbackBaseUrl,
+                  },
+                  null,
+                  2,
+                )}`);
+
+        const documentSerURL = isDev ? 'http://localhost:80' : (import.meta.env.VITE_ONLYOFFICE_URL as string);
+
+        setDocumentServerURL(documentSerURL);
+        console.log(callbackBaseUrl);
+        setFileUrl(formattedUrl);
+        setCallbackURLLocation(callbackBaseUrl);
 
         const config = {
           document: {
@@ -69,14 +100,40 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             type,
             key: editorConfig.key,
             title: file.basename,
-            url: rawUrl,
+            url: import.meta.env.VITE_ENV === 'dev' ? formattedUrl : rawUrl,
             height: '100%',
             width: '100%',
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: `${window.location.origin}/edu-api/filemanager/callback`,
+            callbackUrl: `${callbackBaseUrl}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
             mode,
+            customization: {
+              anonymous: {
+                request: true,
+                label: 'Guest',
+              },
+              autosave: true,
+              comments: true,
+              compactHeader: false,
+              compactToolbar: false,
+              compatibleFeatures: false,
+              forcesave: false,
+              help: true,
+              hideRightMenu: false,
+              hideRulers: false,
+              integrationMode: 'embed',
+              macros: true,
+              macrosMode: 'Warn',
+              mentionShare: true,
+              mobileForceView: true,
+              plugins: true,
+              toolbarHideFileName: false,
+              toolbarNoTabs: false,
+              uiTheme: 'theme-dark',
+              unit: 'cm',
+              zoom: 100,
+            },
           },
         };
         const generatedToken = await getOnlyOfficeJwtToken(config);
@@ -92,7 +149,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
   }, [file, getOnlyOfficeJwtToken, previewFile, mode]);
 
   return (
-    <div className="relative h-[80vh]">
+    <div className={`relative ${isPreview ? 'h-[75vh]' : 'h-[100vh]'}`}>
       {isPreview && (
         <PreviewMenuBar
           file={file}
@@ -105,7 +162,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl="https://office.demo.multi.schule"
+          documentServerUrl={documentServerURL}
           config={{
             document: {
               fileType: getFileType(file.filename),
@@ -116,8 +173,34 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: `${window.location.origin}/edu-api/filemanager/callback`,
+              callbackUrl: `${callbackURLLocation}edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
               mode,
+              customization: {
+                anonymous: {
+                  request: true,
+                  label: 'Guest',
+                },
+                autosave: true,
+                comments: true,
+                compactHeader: false,
+                compactToolbar: false,
+                compatibleFeatures: false,
+                forcesave: false,
+                help: true,
+                hideRightMenu: false,
+                hideRulers: false,
+                integrationMode: 'embed',
+                macros: true,
+                macrosMode: 'Warn',
+                mentionShare: true,
+                mobileForceView: true,
+                plugins: true,
+                toolbarHideFileName: false,
+                toolbarNoTabs: false,
+                uiTheme: 'theme-dark',
+                unit: 'cm',
+                zoom: 100,
+              },
             },
           }}
         />

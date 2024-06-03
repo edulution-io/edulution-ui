@@ -13,6 +13,9 @@ import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
 import VdiCard from './components/VdiCard';
 import { Connections } from './DesktopDeploymentTypes';
+import useFrameStore from '@/routes/IframeStore';
+import { APPS } from '@/datatypes/types';
+import cn from '@/lib/utils';
 
 const iconContextValue = { className: 'h-8 w-8 m-5' };
 
@@ -46,6 +49,9 @@ const DesktopDeploymentPage: React.FC = () => {
     postRequestVdi,
     getStatusOfClones,
   } = useDesktopDeploymentStore();
+  const { activeFrame } = useFrameStore();
+
+  const getStyle = () => (activeFrame === APPS.DESKTOP_DEPLOYMENT ? 'block' : 'hidden');
 
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [cloneVms, setCloneVms] = useState({});
@@ -106,7 +112,7 @@ const DesktopDeploymentPage: React.FC = () => {
   };
 
   return (
-    <div className="p-5 lg:px-20">
+    <div className={cn('absolute inset-y-0 left-0 ml-0 mr-14 w-screen p-5 lg:pr-20', getStyle())}>
       <NativeAppHeader
         title={t('desktopdeployment.topic')}
         description={t('desktopdeployment.description')}
@@ -126,7 +132,7 @@ const DesktopDeploymentPage: React.FC = () => {
         availableClients={Object.keys(cloneVms).length}
         onClick={() => handleConnnect()}
       />
-      <div className="fixed bottom-20 left-20 flex flex-row space-x-8">
+      <div className="fixed bottom-10 left-10 flex flex-row space-x-8">
         <TooltipProvider>
           <div className="flex flex-col items-center">
             <Button

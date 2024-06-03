@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import { DirectoryFile, WebDAVPropStat, WebDAVMultiStatus } from './types';
+import { DirectoryFile, WebDAVMultiStatus, WebDAVPropStat } from './types';
 
 const options = {
   ignoreAttributes: false,
@@ -14,16 +14,18 @@ const options = {
 export function mapToDirectoryFiles(xmlData: string): DirectoryFile[] {
   const parser = new XMLParser(options);
   const jsonObj: WebDAVMultiStatus = parser.parse(xmlData) as WebDAVMultiStatus;
-  if (!jsonObj['d:multistatus'] || !Array.isArray(jsonObj['d:multistatus']['d:response'])) {
+
+  if (!jsonObj['d:multistatus'] || !jsonObj['d:multistatus']['d:response']) {
     console.warn('Invalid or empty WebDAV response structure: missing "d:response".');
     return [];
   }
 
+  // Ensure responses is always an array
   const responses = Array.isArray(jsonObj['d:multistatus']['d:response'])
     ? jsonObj['d:multistatus']['d:response']
     : [jsonObj['d:multistatus']['d:response']];
-  const responseArray = Array.isArray(responses) ? responses : [responses];
-  return responseArray.map((response) => {
+
+  return responses.map((response) => {
     const props = response['d:propstat']
       .filter((ps: WebDAVPropStat) => ps['d:status'].includes('200 OK'))
       .map((ps: WebDAVPropStat) => ps['d:prop'])[0];
@@ -42,7 +44,8 @@ export function mapToDirectoryFiles(xmlData: string): DirectoryFile[] {
 export function mapToDirectories(xmlData: string): DirectoryFile[] {
   const parser = new XMLParser(options);
   const jsonObj: WebDAVMultiStatus = parser.parse(xmlData) as WebDAVMultiStatus;
-  if (!jsonObj['d:multistatus'] || !Array.isArray(jsonObj['d:multistatus']['d:response'])) {
+
+  if (!jsonObj['d:multistatus'] || !jsonObj['d:multistatus']['d:response']) {
     console.warn('Invalid or empty WebDAV response structure: missing "d:response".');
     return [];
   }
@@ -73,4 +76,5 @@ export function mapToDirectories(xmlData: string): DirectoryFile[] {
       };
     });
 }
+
 export default { mapToDirectoryFiles, mapToDirectories };

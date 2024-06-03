@@ -1,42 +1,28 @@
-import { create, StateCreator } from 'zustand';
-import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { create } from 'zustand';
 
-interface IframeStore {
-  loadedIframes: string[];
+interface FrameStore {
+  loadedFrames: string[];
   setFrameLoaded: (appName: string) => void;
-  activeIframe: string | null;
-  setActiveIframe: (iframe: string | null) => void;
+  activeFrame: string | null;
+  setActiveFrame: (frameName: string | null) => void;
   reset: () => void;
 }
 
 const initialStore = {
-  loadedIframes: [],
-  activeIframe: null,
+  loadedFrames: [],
+  activeFrame: null,
 };
 
-type PersistedIframeStoreStore = (
-  appConfig: StateCreator<IframeStore>,
-  options: PersistOptions<IframeStore>,
-) => StateCreator<IframeStore>;
+const useFrameStore = create<FrameStore>((set, get) => ({
+  ...initialStore,
+  setFrameLoaded: (appName) => {
+    const { loadedFrames } = get();
+    if (!loadedFrames.includes(appName)) {
+      set({ loadedFrames: [...loadedFrames, appName] });
+    }
+  },
+  setActiveFrame: (activeFrame) => set({ activeFrame: activeFrame }),
+  reset: () => set({ ...initialStore }),
+}));
 
-const useIframeStore = create<IframeStore>(
-  (persist as PersistedIframeStoreStore)(
-    (set, get) => ({
-      ...initialStore,
-      setFrameLoaded: (appName) => {
-        const { loadedIframes } = get();
-        if (!loadedIframes.includes(appName)) {
-          set({ loadedIframes: [...loadedIframes, appName] });
-        }
-      },
-      setActiveIframe: (activeIframe) => set({ activeIframe }),
-      reset: () => set({ ...initialStore }),
-    }),
-    {
-      name: 'appConfig-storage',
-      storage: createJSONStorage(() => sessionStorage),
-    },
-  ),
-);
-
-export default useIframeStore;
+export default useFrameStore;

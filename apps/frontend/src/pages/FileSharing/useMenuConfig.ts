@@ -93,9 +93,8 @@ const useFileSharingMenuConfig = () => {
     menuItems,
     title: 'filesharing.title',
     icon: FileSharingIcon,
-    color: 'hover:bg-ciDarkBlue',
+    color: 'hover:bg-ciGreenToBlue',
   });
-
   return fileSharingMenuConfig();
 };
 

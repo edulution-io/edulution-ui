@@ -4,7 +4,7 @@ import { MdOutlineFileDownload, MdOutlineMoreVert } from 'react-icons/md';
 import React, { FC } from 'react';
 import MoveItemDialog from '@/pages/FileSharing/dialog/MoveItemDialog';
 import { translateKey } from '@/utils/common';
-import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
+import DeleteItemAlert from '@/pages/FileSharing/dialog/DeleteItemAlert';
 import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog';
 import { triggerFileDownload } from '@/pages/FileSharing/utilities/fileManagerUtilits.ts';
 
