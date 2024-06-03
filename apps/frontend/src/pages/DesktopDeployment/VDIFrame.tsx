@@ -14,8 +14,16 @@ const VDIFrame = () => {
   const guacRef = useRef<Guacamole.Client | null>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation();
-  const { error, token, dataSource, isVdiConnectionMinimized, setIsVdiConnectionMinimized, setToken } =
-    useDesktopDeploymentStore();
+  const {
+    error,
+    token,
+    dataSource,
+    isVdiConnectionMinimized,
+    guacId,
+    setIsVdiConnectionMinimized,
+    setToken,
+    setOpenVdiConnection,
+  } = useDesktopDeploymentStore();
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const [connectionState, setConnectionState] = useState<string>('');
@@ -24,6 +32,11 @@ const VDIFrame = () => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
       setScreenHeight(window.innerHeight);
+      if (guacRef.current) {
+        const layer = guacRef.current.getDisplay().getDefaultLayer();
+        console.log(layer);
+        guacRef.current.getDisplay().resize(layer, window.innerWidth, window.innerHeight);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -44,6 +57,7 @@ const VDIFrame = () => {
       displayRef.current.innerHTML = '';
     }
     setToken('');
+    setOpenVdiConnection(false);
   };
 
   useEffect(() => {
@@ -57,11 +71,11 @@ const VDIFrame = () => {
 
     const paramsObject = {
       token,
-      GUAC_ID: 6,
+      GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
-      GUAC_WIDTH: screenWidth - 56,
-      GUAC_HEIGHT: screenHeight,
+      // GUAC_WIDTH: screenWidth - 56,
+      // GUAC_HEIGHT: screenHeight,
       GUAC_TIMEZONE: 'Europe/Berlin',
       GUAC_AUDIO: ['audio/L8', 'audio/L16'],
       GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
@@ -73,12 +87,10 @@ const VDIFrame = () => {
       if (Array.isArray(value)) {
         value.forEach((val) => params.append(key, val));
       } else {
-        params.append(key, value as string);
+        params.append(key, value);
       }
     });
     guac.connect(params);
-
-    guac.sendSize(screenWidth, screenHeight);
 
     const mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
     // @ts-expect-error due to readability
@@ -128,6 +140,12 @@ const VDIFrame = () => {
       displayElement.innerHTML = '';
     };
   }, []);
+
+  // useEffect(() => {
+  //   if (displayRef.current && guacRef.current) {
+  //     guacRef.current.sendSize(screenWidth, screenHeight);
+  //   }
+  // }, [displayRef, guacRef, screenWidth, screenHeight]);
 
   useEffect(() => {
     const displayElement = displayRef.current;

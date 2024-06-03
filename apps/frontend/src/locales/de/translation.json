@@ -199,7 +199,10 @@
     "error": {
       "title": "Verbindungsfehler",
       "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
-    }
+    },
+    "win10": "Windows 10",
+    "clients": "Clients verfügbar",
+    "client": "Client verfügbar"
   },
   "wlan": {
     "title": "WLAN",
@@ -290,7 +293,8 @@
     "overview": "Übersicht",
     "create": "Erstellen",
     "revert": "Zurücksetzen",
-    "close": "Schließen"
+    "close": "Schließen",
+    "start": "Starten"
   },
   "form": {
     "path": "Link",

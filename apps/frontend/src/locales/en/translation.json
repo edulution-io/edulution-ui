@@ -203,7 +203,10 @@
     "error": {
       "title": "Connection error",
       "description": "Please check your network connection and try again."
-    }
+    },
+    "win10": "Windows 10",
+    "clients": "Clients available",
+    "client": "Client available"
   },
   "wlan": {
     "title": "WLAN",
@@ -289,7 +292,9 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
-    "revert": "Revert"
+    "revert": "Revert",
+    "close": "Schließen",
+    "start": "Starten"
   },
   "form": {
     "path": "Path",

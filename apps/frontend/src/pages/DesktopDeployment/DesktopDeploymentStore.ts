@@ -3,30 +3,8 @@ import axios, { AxiosError } from 'axios';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/userStore';
 import CryptoJS from 'crypto-js';
-
-type ConnectionAttributes = {
-  'guacd-encryption': string;
-  'failover-only': string | null;
-  weight: string | null;
-  'max-connections': string;
-  'guacd-hostname': string | null;
-  'guacd-port': string | null;
-  'max-connections-per-user': string;
-};
-
-type Connection = {
-  name: string;
-  identifier: string;
-  parentIdentifier: string;
-  protocol: string;
-  attributes: ConnectionAttributes;
-  activeConnections: number;
-  lastActive: number;
-};
-
-type Connections = {
-  [key: string]: Connection;
-};
+import eduApi from '@/api/eduApi';
+import { Connections, StatusOfClones, VdiConnectionRequest } from './DesktopDeploymentTypes';
 
 interface DesktopDeploymentStore {
   token: string;
@@ -35,11 +13,17 @@ interface DesktopDeploymentStore {
   error: AxiosError | null;
   connections: Connections | null;
   isVdiConnectionMinimized: boolean;
+  openVdiConnection: boolean;
+  guacId: string;
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized: boolean) => void;
+  setOpenVdiConnection: (openVdiConnection: boolean) => void;
   setToken: (token: string) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setGuacId: (guacId: string) => void;
   authenticate: () => Promise<void>;
   getConnections: () => Promise<void>;
+  postRequestVdi: () => Promise<VdiConnectionRequest | null>;
+  getStatusOfClones: () => Promise<StatusOfClones | null>;
 }
 
 const initialState = {
@@ -49,9 +33,12 @@ const initialState = {
   error: null,
   connections: null,
   isVdiConnectionMinimized: false,
+  openVdiConnection: false,
+  guacId: '',
 };
 
 const baseUrl = `${window.location.origin}/guacamole/api`;
+const EDU_API_VDI_ENDPOINT = 'vdi';
 
 const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => ({
   ...initialState,
@@ -59,6 +46,8 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setToken: (token) => set({ token }),
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized) => set({ isVdiConnectionMinimized }),
+  setOpenVdiConnection: (openVdiConnection) => set({ openVdiConnection }),
+  setGuacId: (guacId) => set({ guacId }),
 
   authenticate: async () => {
     set({ isLoading: true });
@@ -90,6 +79,36 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       set({ isLoading: false, connections: response.data as Connections, error: null });
     } catch (error) {
       handleApiError(error, set);
+    }
+  },
+
+  postRequestVdi: async () => {
+    set({ isLoading: true });
+
+    const vdiConnectionRequestBody = {
+      group: 'win10-vdi',
+      user: userStore.getState().user,
+    };
+
+    try {
+      const response = await eduApi.post<VdiConnectionRequest>(`${EDU_API_VDI_ENDPOINT}`, vdiConnectionRequestBody);
+      set({ isLoading: false, error: null });
+      return response.data;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
+    }
+  },
+
+  getStatusOfClones: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await eduApi.get<StatusOfClones>(`${EDU_API_VDI_ENDPOINT}/clones`);
+      set({ isLoading: false, error: null });
+      return response.data;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
     }
   },
 }));

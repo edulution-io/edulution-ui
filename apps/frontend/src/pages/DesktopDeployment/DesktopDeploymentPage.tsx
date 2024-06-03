@@ -1,53 +1,109 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/shared/Button';
-import { useTranslation } from 'react-i18next';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { RiShareForward2Line } from 'react-icons/ri';
-import { IconContext } from 'react-icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
+import useUserStore from '@/store/userStore';
+import { useTranslation } from 'react-i18next';
+import { IconContext } from 'react-icons';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
+import VdiCard from './components/VdiCard';
+import { Connections } from './DesktopDeploymentTypes';
 
 const iconContextValue = { className: 'h-8 w-8 m-5' };
 
+const findVmByIp = (clones: { [vmId: string]: { ip: string; vmid: string } }, ip: string) =>
+  Object.values(clones).filter((vm) => vm.ip === ip)[0]?.vmid || '';
+
+const searchForName = (connections: Connections | null, vmid: string) => {
+  if (connections) {
+    const keys = Object.keys(connections);
+    for (let i = 0; i < keys.length; i += 1) {
+      if (connections[keys[i]].name === vmid) {
+        return connections[keys[i]].identifier || '';
+      }
+    }
+  }
+  return '';
+};
 const DesktopDeploymentPage: React.FC = () => {
   const { t } = useTranslation();
-  const { token, error, authenticate } = useDesktopDeploymentStore();
+  const { user } = useUserStore();
+  const {
+    token,
+    error,
+    openVdiConnection,
+    isLoading,
+    connections,
+    authenticate,
+    setOpenVdiConnection,
+    setGuacId,
+    getConnections,
+    postRequestVdi,
+    getStatusOfClones,
+  } = useDesktopDeploymentStore();
 
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+  const [cloneVms, setCloneVms] = useState({});
 
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-void
-  //   void authenticate();
-  // }, [user]);
+  useEffect(() => {
+    // eslint-disable-next-line no-void
+    void authenticate();
 
-  // useEffect(() => {
-  //   if (token) {
-  //     getConnections().catch((e) => console.error(e));
-  //   }
-  // }, [token]);
+    const getClones = async () => {
+      try {
+        const response = await getStatusOfClones();
+        const clones = response?.data?.['win10-vdi']?.clone_vms || {};
+        setCloneVms(clones);
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-  // const getFirstConnection = (conns) => {
-  //   const keys = Object.keys(conns);
-  //   if (keys.length === 0) return undefined;
-  //   const firstKey = keys[0];
-  //   return conns[firstKey];
-  // };
+    // eslint-disable-next-line no-void
+    void getClones();
+  }, [user]);
 
-  // const firstConnection = connections && getFirstConnection(connections);
+  useEffect(() => {
+    if (token) {
+      // eslint-disable-next-line no-void
+      void getConnections();
+    }
+  }, [token]);
 
-  // if (firstConnection) {
-  //   console.log('First connection:', firstConnection);
-  // } else {
-  //   console.log('No connections found.');
-  // }
+  useEffect(() => {
+    if (Object.keys(cloneVms).length > 0) {
+      const requestVdi = async () => {
+        try {
+          const response = await postRequestVdi();
+          const vdiConnection = response?.data;
+          if (vdiConnection) {
+            const result = findVmByIp(cloneVms, vdiConnection.ip);
+            const identifier = searchForName(connections, result);
+            setGuacId(identifier);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      // eslint-disable-next-line no-void
+      void requestVdi();
+    }
+  }, [cloneVms]);
+
   useEffect(() => {
     if (error) {
       setIsErrorDialogOpen(true);
     }
   }, [error]);
+
+  const handleConnnect = () => {
+    setOpenVdiConnection(true);
+  };
 
   return (
     <div className="p-5 lg:px-20">
@@ -57,7 +113,7 @@ const DesktopDeploymentPage: React.FC = () => {
         iconSrc={DesktopDeploymentIcon}
       />
 
-      {token && <VDIFrame />}
+      {openVdiConnection && <VDIFrame />}
       {error && (
         <ConnectionErrorDialog
           isErrorDialogOpen={isErrorDialogOpen}
@@ -65,6 +121,11 @@ const DesktopDeploymentPage: React.FC = () => {
           handleReload={() => authenticate()}
         />
       )}
+      <VdiCard
+        title={t('desktopdeployment.win10')}
+        availableClients={Object.keys(cloneVms).length}
+        onClick={() => handleConnnect()}
+      />
       <div className="fixed bottom-20 left-20 flex flex-row space-x-8">
         <TooltipProvider>
           <div className="flex flex-col items-center">
@@ -72,7 +133,7 @@ const DesktopDeploymentPage: React.FC = () => {
               type="button"
               variant="btn-hexagon"
               className="bg-opacity-90 p-4"
-              onClickCapture={() => authenticate()}
+              onClickCapture={() => handleConnnect()}
             >
               <IconContext.Provider value={iconContextValue}>
                 <RiShareForward2Line />
@@ -82,6 +143,7 @@ const DesktopDeploymentPage: React.FC = () => {
           </div>
         </TooltipProvider>
       </div>
+      <LoadingIndicator isOpen={isLoading} />
     </div>
   );
 };
