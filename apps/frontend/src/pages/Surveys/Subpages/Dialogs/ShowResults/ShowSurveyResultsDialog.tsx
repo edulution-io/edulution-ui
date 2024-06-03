@@ -6,12 +6,12 @@ import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 import SurveyVisualization from '@/pages/Surveys/Subpages/Dialogs/ShowResults/SurveyVisualization';
 import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
 
-interface PollResultsDialogProps {
+interface ShowSurveyResultsDialogProps {
   survey: Survey;
   trigger?: React.ReactNode;
 }
 
-const ShowSurveyResultsDialog = (props: PollResultsDialogProps) => {
+const ShowSurveyResultsDialog = (props: ShowSurveyResultsDialogProps) => {
   const { survey, trigger } = props;
   const {
     isOpenSurveyResultsDialog,
@@ -27,7 +27,7 @@ const ShowSurveyResultsDialog = (props: PollResultsDialogProps) => {
   useEffect(() => {
     if (!survey) return;
     if (!isOpenSurveyResultsDialog) return;
-    getAllSurveyAnswers(survey?.surveyname, survey?.participants || []);
+    getAllSurveyAnswers(survey?.surveyname, survey?.participants);
   }, [survey, isOpenSurveyResultsDialog]);
 
   if (!survey) {
@@ -40,15 +40,15 @@ const ShowSurveyResultsDialog = (props: PollResultsDialogProps) => {
     console.log('survey', survey, JSON.stringify(survey, null, 2));
     console.log('answers', answers, JSON.stringify(answers, null, 2));
 
-    if (!answers?.length || answers.length === 0) {
-      return null;
-    }
+    // if (!answers?.length || answers.length === 0) {
+    //   return null;
+    // }
 
     return (
       <ScrollArea>
         <SurveyVisualization
-          surveyFormula={JSON.parse(survey.survey)}
-          answers={answers || []}
+          surveyFormula={survey.survey}
+          answers={answers}
         />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">

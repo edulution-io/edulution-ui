@@ -130,7 +130,7 @@
     "create": "Create new",
     "delete": "Delete",
     "edit": "Edit",
-    "editing": "Edit survey",
+    "editing": "Add participants",
     "isAnonymous": "Participating at the survey is anonymous",
     "canSubmitMultipleAnswers": "Participating multiple times is allowed",
     "editor": {
@@ -529,9 +529,10 @@
     "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
     "emailIntroductionTitle": "Do I have to create an extra email address?",
     "learnManagementIntroductionTitle": "What can I do in learning management?",
-    "pollsIntroductionTitle": "How do I use the polls?",
+    "pullsIntroductionTitle": "How do I use pulls?",
     "vdiIntroductionTitle": "How do I use the virtual desktop?",
-    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?"
+    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?",
+    "surveysIntroductionTitle": "How do I use the survey tool?"
   },
   "changePassword": {
     "title": "Change Password",

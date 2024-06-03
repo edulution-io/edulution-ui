@@ -24,7 +24,7 @@ export class Survey {
   created: string;
 
   @Prop({ required: false })
-  expires: string;
+  expires?: string;
 
   @Prop({ required: false })
   isAnonymous: boolean;

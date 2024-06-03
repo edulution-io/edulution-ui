@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Survey, SurveyDocument } from './types/survey.schema';
-import CreateSurveyDto from './dto/create-survey.dto';
 
 @Injectable()
 class SurveyService {
@@ -24,7 +23,7 @@ class SurveyService {
     return this.surveyModel.deleteOne({ surveyname: surveyName }).exec();
   }
 
-  async updateOrCreateSurvey(createSurveyDto: CreateSurveyDto): Promise<Survey | null> {
+  async updateOrCreateSurvey(createSurveyDto: Survey): Promise<Survey | null> {
     const survey = await this.surveyModel
       .findOneAndUpdate<Survey>(
         { surveyname: createSurveyDto.surveyname },
@@ -45,7 +44,7 @@ class SurveyService {
   async addAnonymousAnswer(surveyName: string, answer: string): Promise<Survey | undefined> {
     const existingSurvey = await this.surveyModel.findOne<Survey>({ surveyname: surveyName }).exec();
     if (!existingSurvey) {
-      throw new Error('Poll not found');
+      throw new Error('Survey not found');
     }
 
     const answers = existingSurvey.anonymousAnswers;
@@ -60,11 +59,11 @@ class SurveyService {
   }
 
   async getAnonymousAnswers(surveyName: string): Promise<string[] | undefined> {
-    const existingPoll = await this.surveyModel.findOne<Survey>({ surveyname: surveyName }).exec();
-    if (!existingPoll) {
-      throw new Error('Poll not found');
+    const existingSurvey = await this.surveyModel.findOne<Survey>({ surveyname: surveyName }).exec();
+    if (!existingSurvey) {
+      throw new Error('Survey not found');
     }
-    return existingPoll.anonymousAnswers;
+    return existingSurvey.anonymousAnswers;
   }
 }
 

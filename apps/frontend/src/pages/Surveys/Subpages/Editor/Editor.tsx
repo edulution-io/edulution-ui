@@ -10,9 +10,9 @@ import '@/pages/Surveys/Subpages/components/theme/creator.min.css';
 interface EditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
-  error: Error | null;
   saveNumber: number;
   survey?: string;
+  error: Error | null;
 }
 
 const Editor = (props: EditorProps) => {

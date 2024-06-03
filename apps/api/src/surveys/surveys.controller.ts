@@ -63,8 +63,6 @@ class SurveysController {
               });
               await Promise.all(promises);
 
-              Logger.log(answers);
-
               if (!answers) {
                 throw new Error('Survey answers not found');
               }
@@ -123,14 +121,30 @@ class SurveysController {
     @GetUsername() username: string
   ) {
     try {
-      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(body);
+      const { participants } = body;
+
+      const participantList = participants.map((participant) => participant.username);
+
+      const createSurveyDto: Survey = {
+        ...body,
+        survey: JSON.parse(body.survey),
+        participants: participantList,
+        anonymousAnswers: body.anonymousAnswers ? body.anonymousAnswers : [],
+        saveNo: body.saveNo ? body.saveNo.toString() : '0',
+        created: body.created ? body.created.toString() : new Date().toString(),
+        expires: body.expires ? body.expires.toString() : undefined,
+        isAnonymous: body.isAnonymous ? body.isAnonymous : false,
+        canSubmitMultipleAnswers: body.canSubmitMultipleAnswers ? body.canSubmitMultipleAnswers : false,
+      };
+
+      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(createSurveyDto);
       if (newSurvey == null) {
         throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
       }
 
-      const {surveyname, participants} = newSurvey;
+      const {surveyname} = newSurvey;
       await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
-      await this.usersSurveysService.populateSurvey(participants, surveyname);
+      await this.usersSurveysService.populateSurvey(participantList, surveyname);
 
       return newSurvey;
     } catch (error) {
@@ -149,12 +163,10 @@ class SurveysController {
   @Patch()
   async manageUsersSurveys(
     @Body() body: PushAnswerDto,
-    @Query() pushAnswerDto: PushAnswerDto,
     @GetUsername() username: string,
   ) {
-    const { surveyname, answer } = pushAnswerDto;
 
-    const { isAnonymous, canSubmitMultipleAnswers } = body;
+    const { surveyname, answer, isAnonymous = false, canSubmitMultipleAnswers = false } = body;
 
     if (isAnonymous) {
       await this.surveyService.addAnonymousAnswer(surveyname, answer);

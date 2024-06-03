@@ -130,7 +130,7 @@
     "create": "Neue erstellen",
     "delete": "löschen",
     "edit": "Bearbeiten",
-    "editing": "Umfrage erstellen oder bearbeiten",
+    "editing": "Teilnehmer hinzufügen",
     "manage": "Management",
     "isAnonymous": "Die Teilnahme an der Umfrage ist Anonym",
     "canSubmitMultipleAnswers": "Mehrfache Abgaben sind erlaubt",
@@ -459,9 +459,10 @@
     "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
     "emailIntroductionTitle": "Muss ich mir extra eine Mailadresse anlegen?",
     "learnManagementIntroductionTitle": "Was kann ich im Lernmanagement machen?",
-    "pollsIntroductionTitle": "Wie nutzte ich die Abstimmungen?",
+    "pullsIntroductionTitle": "Wie pulls erstellt und genutz werden um Programn Änderungen zu erbitten?",
     "vdiIntroductionTitle": "Wie nutze ich den virtuellen Desktop?",
-    "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?"
+    "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?",
+    "surveysIntroductionTitle": "Wie nutzte ich das Umfragen-Tool?"
   },
   "schoolManagement": {
     "title": "Klassenzimmer",

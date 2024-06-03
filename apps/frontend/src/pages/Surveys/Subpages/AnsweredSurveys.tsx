@@ -5,8 +5,8 @@ import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+// import useShowSurveyResultsDialogStore
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
@@ -23,7 +23,7 @@ const AnsweredSurveysPage = () => {
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
   } = useSurveysPageStore();
-  const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
+  // const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
   const { t } = useTranslation();
@@ -53,11 +53,11 @@ const AnsweredSurveysPage = () => {
                 text={t(SurveyButtonProps.Answer.title)}
                 onClick={openSurveyAnswerDialog}
               />
-              <FloatingActionButton
-                icon={SurveyButtonProps.Results.icon}
-                text={t(SurveyButtonProps.Results.title)}
-                onClick={openSurveyResultsDialog}
-              />
+              {/*<FloatingActionButton*/}
+              {/*  icon={SurveyButtonProps.Results.icon}*/}
+              {/*  text={t(SurveyButtonProps.Results.title)}*/}
+              {/*  onClick={openSurveyResultsDialog}*/}
+              {/*/>*/}
             </>
           ) : null}
         </div>

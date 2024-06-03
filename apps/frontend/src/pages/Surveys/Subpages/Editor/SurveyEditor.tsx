@@ -26,6 +26,8 @@ const SurveyEditor = () => {
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
+  const [editorSurveyText, setEditorSurveyText] = React.useState<string | undefined>(JSON.stringify(selectedSurvey?.survey));
+
   const { t } = useTranslation();
 
   const initialFormValues: EditorFormData = {
@@ -90,26 +92,22 @@ const SurveyEditor = () => {
       isAnonymous,
       canSubmitMultipleAnswers
     } = form.getValues();
-
-    const updatedSurvey = await commitSurvey(
-      surveyname,
-      survey,
-      participants,
-      saveNo,
-      created,
-      expires,
-      isAnonymous,
-      canSubmitMultipleAnswers,
-    );
-
-    form.setValue('surveyname', updatedSurvey?.surveyname || surveyname);
-    form.setValue('survey', updatedSurvey?.survey || survey);
-    form.setValue('participants', updatedSurvey?.participants || participants);
-    form.setValue('saveNo', updatedSurvey?.saveNo || saveNo);
-    form.setValue('created',updatedSurvey?.created || created);
-    form.setValue('expires', updatedSurvey?.expires || expires);
-    form.setValue('isAnonymous', updatedSurvey?.isAnonymous || isAnonymous);
-    form.setValue('canSubmitMultipleAnswers', updatedSurvey?.canSubmitMultipleAnswers || canSubmitMultipleAnswers);
+    try {
+      const updatedSurvey = await commitSurvey(
+        surveyname,
+        survey,
+        participants,
+        saveNo,
+        created,
+        expires,
+        isAnonymous,
+        canSubmitMultipleAnswers,
+      );
+      setEditorSurveyText(JSON.stringify(updatedSurvey!.survey));
+    } catch (error) {
+      setEditorSurveyText(survey!);
+      console.error(error);
+    }
   }
 
   if (isSaving) return <div>Loading...</div>;
@@ -118,7 +116,7 @@ const SurveyEditor = () => {
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          <Editor form={form} survey={selectedSurvey?.survey} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
+          <Editor form={form} survey={editorSurveyText} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
           {error ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {error.message}
