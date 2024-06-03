@@ -32,11 +32,6 @@ const VDIFrame = () => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
       setScreenHeight(window.innerHeight);
-      if (guacRef.current) {
-        const layer = guacRef.current.getDisplay().getDefaultLayer();
-        console.log(layer);
-        guacRef.current.getDisplay().resize(layer, window.innerWidth, window.innerHeight);
-      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -45,6 +40,14 @@ const VDIFrame = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [isVdiConnectionMinimized]);
+
+  useEffect(() => {
+    if (guacRef.current) {
+      // const layer = guacRef.current.getDisplay().getDefaultLayer();
+      // guacRef.current.getDisplay().resize(layer, screenWidth, screenHeight);
+      guacRef.current.sendSize(screenWidth, screenHeight);
+    }
+  }, [guacRef.current, screenWidth, screenHeight]);
 
   const handleDisconnect = () => {
     if (guacRef.current) {
@@ -74,8 +77,8 @@ const VDIFrame = () => {
       GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
-      // GUAC_WIDTH: screenWidth - 56,
-      // GUAC_HEIGHT: screenHeight,
+      GUAC_WIDTH: screenWidth - 56,
+      GUAC_HEIGHT: screenHeight,
       GUAC_TIMEZONE: 'Europe/Berlin',
       GUAC_AUDIO: ['audio/L8', 'audio/L16'],
       GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
@@ -87,7 +90,7 @@ const VDIFrame = () => {
       if (Array.isArray(value)) {
         value.forEach((val) => params.append(key, val));
       } else {
-        params.append(key, value);
+        params.append(key, value as string);
       }
     });
     guac.connect(params);
