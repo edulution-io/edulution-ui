@@ -46,6 +46,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
   const [token, setToken] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [callbackURLLocation, setCallbackURLLocation] = useState<string | null>(null);
+  const [documentServerURL, setDocumentServerURL] = useState<string>('');
   const { user } = useAuth();
   const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
     id: 'docxEditor',
@@ -86,6 +87,10 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
                   2,
                 )}`);
 
+        const documentSerURL = isDev ? 'http://localhost:80' : (import.meta.env.VITE_ONLYOFFICE_URL as string);
+
+        setDocumentServerURL(documentSerURL);
+        console.log(callbackBaseUrl);
         setFileUrl(formattedUrl);
         setCallbackURLLocation(callbackBaseUrl);
 
@@ -157,7 +162,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl="http://localhost:80/"
+          documentServerUrl={documentServerURL}
           config={{
             document: {
               fileType: getFileType(file.filename),

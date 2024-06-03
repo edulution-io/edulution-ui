@@ -255,7 +255,7 @@ class FilemanagerController {
     };
 
     if (Object.prototype.hasOwnProperty.call(callbackData, 'status')) {
-      updateFile(res, callbackData);
+      await updateFile(res, callbackData);
     } else {
       let content = '';
       req.on('data', (data) => {

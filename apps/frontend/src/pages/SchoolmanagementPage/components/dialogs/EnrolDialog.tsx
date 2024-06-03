@@ -80,10 +80,10 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <ScrollArea className="max-h-[80vh] overflow-auto">
+      <ScrollArea className="max-h-[80vh] min-w-[50vh] overflow-auto">
         <DialogContentSH className="text-black">
           <DialogTitleSH>{title}</DialogTitleSH>
-          <div className="p-4">
+          <div className="min-w-[50vh]  p-4">
             {showPropertiesSection && properties.length > 0 && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Eigenschaften</h3>
@@ -112,7 +112,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             {showPrintersSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Devices</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4">
                   {printers.map((printer, index) => (
                     <div
                       key={index}
@@ -128,7 +128,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             {showAdminsSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Gruppenadministratoren</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4">
                   {admins.map((admin, index) => (
                     <div
                       key={index}
@@ -144,7 +144,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             {showMembersSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Gruppenmitglieder</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4">
                   {members.map((member, index) => (
                     <div
                       key={index}
