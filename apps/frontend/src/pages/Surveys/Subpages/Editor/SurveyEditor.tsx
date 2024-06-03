@@ -19,10 +19,7 @@ import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button
 
 const SurveyEditor = () => {
   // const { user } = useUserStore();
-  const {
-    selectedPageView,
-    selectedSurvey,
-  } = useSurveysPageStore();
+  const { selectedPageView, selectedSurvey } = useSurveysPageStore();
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
@@ -37,6 +34,7 @@ const SurveyEditor = () => {
     expires: selectedSurvey?.expires || undefined,
     isAnonymous: selectedSurvey?.isAnonymous || false,
     canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
+    invitedGroups: [],
   };
 
   const formSchema = z.object({
@@ -60,6 +58,7 @@ const SurveyEditor = () => {
     expires: z.date().optional(),
     isAnonymous: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<EditorFormData>({
@@ -77,19 +76,11 @@ const SurveyEditor = () => {
     form.setValue('expires', undefined);
     form.setValue('isAnonymous', false);
     form.setValue('canSubmitMultipleAnswers', false);
-  }
+  };
 
   const saveSurvey = async () => {
-    const {
-      surveyname,
-      survey,
-      participants,
-      saveNo,
-      created,
-      expires,
-      isAnonymous,
-      canSubmitMultipleAnswers
-    } = form.getValues();
+    const { surveyname, survey, participants, saveNo, created, expires, isAnonymous, canSubmitMultipleAnswers } =
+      form.getValues();
 
     const updatedSurvey = await commitSurvey(
       surveyname,
@@ -106,11 +97,11 @@ const SurveyEditor = () => {
     form.setValue('survey', updatedSurvey?.survey || survey);
     form.setValue('participants', updatedSurvey?.participants || participants);
     form.setValue('saveNo', updatedSurvey?.saveNo || saveNo);
-    form.setValue('created',updatedSurvey?.created || created);
+    form.setValue('created', updatedSurvey?.created || created);
     form.setValue('expires', updatedSurvey?.expires || expires);
     form.setValue('isAnonymous', updatedSurvey?.isAnonymous || isAnonymous);
     form.setValue('canSubmitMultipleAnswers', updatedSurvey?.canSubmitMultipleAnswers || canSubmitMultipleAnswers);
-  }
+  };
 
   if (isSaving) return <div>Loading...</div>;
 
@@ -118,7 +109,12 @@ const SurveyEditor = () => {
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          <Editor form={form} survey={selectedSurvey?.survey} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
+          <Editor
+            form={form}
+            survey={selectedSurvey?.survey}
+            saveNumber={selectedSurvey?.saveNo || 0}
+            error={error}
+          />
           {error ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {error.message}
@@ -134,7 +130,7 @@ const SurveyEditor = () => {
             text={t(SurveyButtonProps.Save.title)}
             onClick={openPropagateSurveyDialog}
           />
-          { selectedPageView === PageView.CREATED_SURVEYS ? (
+          {selectedPageView === PageView.CREATED_SURVEYS ? (
             <FloatingActionButton
               icon={SurveyButtonProps.Abort.icon}
               text={t(SurveyButtonProps.Abort.title)}
@@ -143,7 +139,11 @@ const SurveyEditor = () => {
           ) : null}
         </div>
       </TooltipProvider>
-      <PropagateSurveyDialog form={form} propagateSurvey={saveSurvey} isSaving={isSaving}/>
+      <PropagateSurveyDialog
+        form={form}
+        propagateSurvey={saveSurvey}
+        isSaving={isSaving}
+      />
     </>
   );
 };
