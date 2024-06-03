@@ -52,7 +52,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     key: 'word' + Math.random(),
     documentType: 'word',
   });
-  console.log('user', user?.access_token);
+
   const { previewFile, appendEditorFile } = useFileEditorStore();
   const { getOnlyOfficeJwtToken, downloadFile } = useFileManagerStore();
   useEffect(() => {
@@ -65,12 +65,26 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
       try {
         const rawUrl = await downloadFile(file.filename);
         const isDev = (import.meta.env.VITE_ENV as string) === 'dev';
-        console.log('rawUrl', rawUrl);
-        console.log('isDev', isDev);
+
         const formattedUrl = isDev
           ? rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001')
           : rawUrl;
-        const callbackBaseUrl = isDev ? 'http://host.docker.internal:3001' : window.location.origin;
+        const callbackBaseUrl = isDev ? 'http://host.docker.internal:3001' : 'https://ui.schulung.multi.schule/';
+        console.log(`({
+                  file, getOnlyOfficeJwtToken, previewFile, mode, rawUrl, isDev, callbackBaseUrl
+                }) ${JSON.stringify(
+                  {
+                    file,
+                    getOnlyOfficeJwtToken,
+                    previewFile,
+                    mode,
+                    rawUrl,
+                    isDev,
+                    callbackBaseUrl,
+                  },
+                  null,
+                  2,
+                )}`);
 
         setFileUrl(formattedUrl);
         setCallbackURLLocation(callbackBaseUrl);
