@@ -2,11 +2,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
-import MyFavourites from './MyFavourites';
+// import MyFavourites from './MyFavourites';
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
+import NotificationWidget from '@/components/feature/Home/Notifications/NotificationWidget';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -48,7 +49,8 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            <MyFavourites />
+            {/*<MyFavourites />*/}
+            <NotificationWidget />
           </div>
         </div>
       </div>
