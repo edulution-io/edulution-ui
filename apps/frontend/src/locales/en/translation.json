@@ -168,6 +168,10 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
   },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"

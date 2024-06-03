@@ -33,6 +33,8 @@ const pageSwitch = (page: string) => {
       return <FramePlaceholder />;
     case APPS.DESKTOP_DEPLOYMENT:
       return <FramePlaceholder />;
+    case APPS.LINUXMUSTER:
+      return <FramePlaceholder />;
 
     default: {
       return (

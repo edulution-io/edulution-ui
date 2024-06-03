@@ -6,6 +6,7 @@ import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import SurveysPage from '@/pages/Surveys/SurveysPage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import useFrameStore from '@/routes/IframeStore';
+import LinuxmusterPage from '@/pages/Linuxmuster/LinuxmusterPage';
 
 const isActiveNativeFrame = (appConfig: AppConfig, loadedFrames: string[]) => {
   const { appType } = appConfig;
@@ -29,6 +30,8 @@ const NativeFrames = () => {
           return <SurveysPage key={appConfig.name} />;
         case APPS.DESKTOP_DEPLOYMENT:
           return <DesktopDeploymentPage key={appConfig.name} />;
+        case APPS.LINUXMUSTER:
+          return <LinuxmusterPage key={appConfig.name} />;
         default:
           return null;
       }
