@@ -5,16 +5,14 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
-import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
-import useShowSurveyAnswerDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
+import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
 
 const CreatedSurveysPage = () => {
   const {

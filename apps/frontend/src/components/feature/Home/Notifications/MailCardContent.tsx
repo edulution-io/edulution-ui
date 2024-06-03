@@ -1,11 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Mail from '@/assets/icons/edulution/Mail.svg';
+import MailIcon from '@/assets/icons/edulution/Mail.svg';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import { CardContent } from '@/components/shared/Card';
+import Mail from '@/components/feature/Home/Notifications/mail';
 
 interface MailCardContentProps {
-  mails: JSON[];
+  mails: JSON[] | Mail[]
 }
 
 const MailCardContent = (props: MailCardContentProps) => {
@@ -21,7 +22,7 @@ const MailCardContent = (props: MailCardContentProps) => {
         MAILBOX
         <p>{t('mail.sidebar')}</p>
         <img
-          src={Mail}
+          src={MailIcon}
           alt="mail"
           width={BUTTONS_ICON_WIDTH}
         />

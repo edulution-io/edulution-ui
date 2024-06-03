@@ -118,17 +118,14 @@ class SurveysController {
   }
 
   @Post()
-  async createOrUpdate(
-    @Body() body: CreateSurveyDto,
-    @GetUsername() username: string
-  ) {
+  async createOrUpdate(@Body() body: CreateSurveyDto, @GetUsername() username: string) {
     try {
       const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(body);
       if (newSurvey == null) {
         throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
       }
 
-      const {surveyname, participants} = newSurvey;
+      const { surveyname, participants } = newSurvey;
       await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
       await this.usersSurveysService.populateSurvey(participants, surveyname);
 

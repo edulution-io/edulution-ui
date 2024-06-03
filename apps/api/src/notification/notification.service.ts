@@ -16,7 +16,6 @@ class NotificationService {
     const ImapClient = new ImapFlowGetMailsClient(username);
     await ImapClient.connect();
     await ImapClient.getMails();
-
   }
 
   async getOpenSurveys(username: string): Promise<string[]> {

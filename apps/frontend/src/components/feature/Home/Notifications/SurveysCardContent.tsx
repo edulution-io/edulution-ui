@@ -27,11 +27,9 @@ const SurveysCardContent = (props: SurveysCardContentProps) => {
         />
       </h4>
       <div className="mt-4 flex flex-col justify-between gap-6">
-        {
-          surveys.map((survey) => (
-            <>{JSON.stringify(survey, null, 2)}</>
-          ))
-        }
+        {surveys.map((survey) => (
+          <>{JSON.stringify(survey, null, 2)}</>
+        ))}
       </div>
     </CardContent>
   );

@@ -21,17 +21,12 @@ import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResult
 
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
-import { PageView } from "@/pages/Surveys/Subpages/components/types/page-view.ts";
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view.ts';
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
 
 const SurveyEditor = () => {
   // const { user } = useUserStore();
-  const {
-    selectedPageView,
-    selectedSurvey,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
-  } = useSurveysPageStore();
+  const { selectedPageView, selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveysPageStore();
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
@@ -86,19 +81,11 @@ const SurveyEditor = () => {
     form.setValue('expires', undefined);
     form.setValue('isAnonymous', false);
     form.setValue('canSubmitMultipleAnswers', false);
-  }
+  };
 
   const saveSurvey = async () => {
-    const {
-      surveyname,
-      survey,
-      participants,
-      saveNo,
-      created,
-      expires,
-      isAnonymous,
-      canSubmitMultipleAnswers
-    } = form.getValues();
+    const { surveyname, survey, participants, saveNo, created, expires, isAnonymous, canSubmitMultipleAnswers } =
+      form.getValues();
 
     const updatedSurvey = await commitSurvey(
       surveyname,
@@ -115,18 +102,23 @@ const SurveyEditor = () => {
     form.setValue('survey', updatedSurvey?.survey || survey);
     form.setValue('participants', updatedSurvey?.participants || participants);
     form.setValue('saveNo', updatedSurvey?.saveNo || saveNo);
-    form.setValue('created',updatedSurvey?.created || created);
+    form.setValue('created', updatedSurvey?.created || created);
     form.setValue('expires', updatedSurvey?.expires || expires);
     form.setValue('isAnonymous', updatedSurvey?.isAnonymous || isAnonymous);
     form.setValue('canSubmitMultipleAnswers', updatedSurvey?.canSubmitMultipleAnswers || canSubmitMultipleAnswers);
-  }
+  };
 
   if (isSaving) return <div>Loading...</div>;
 
   return (
     <>
       <ScrollArea className="overflow-y-auto overflow-x-hidden">
-        <Editor form={form} survey={selectedSurvey?.survey} saveNumber={selectedSurvey?.saveNo || 0} error={error}/>
+        <Editor
+          form={form}
+          survey={selectedSurvey?.survey}
+          saveNumber={selectedSurvey?.saveNo || 0}
+          error={error}
+        />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
             {t('survey.error')}: {error.message}
@@ -140,28 +132,24 @@ const SurveyEditor = () => {
             text={t(SurveyButtonProps.Save.title)}
             onClick={saveSurvey}
           />
-          {
-            selectedPageView === PageView.SURVEY_EDITOR ? (
-              <>
-                <FloatingActionButton
-                  icon={SurveyButtonProps.Options.icon}
-                  text={t(SurveyButtonProps.Options.title)}
-                  onClick={openPropagateSurveyDialog}
-                />
-              </>
-            ) : null
-          }
-          {
-            selectedPageView === PageView.SURVEY_CREATOR ? (
-              <>
-                <FloatingActionButton
-                  icon={SurveyButtonProps.Propagate.icon}
-                  text={t(SurveyButtonProps.Propagate.title)}
-                  onClick={openPropagateSurveyDialog}
-                />
-              </>
-            ) : null
-          }
+          {selectedPageView === PageView.SURVEY_EDITOR ? (
+            <>
+              <FloatingActionButton
+                icon={SurveyButtonProps.Options.icon}
+                text={t(SurveyButtonProps.Options.title)}
+                onClick={openPropagateSurveyDialog}
+              />
+            </>
+          ) : null}
+          {selectedPageView === PageView.SURVEY_CREATOR ? (
+            <>
+              <FloatingActionButton
+                icon={SurveyButtonProps.Propagate.icon}
+                text={t(SurveyButtonProps.Propagate.title)}
+                onClick={openPropagateSurveyDialog}
+              />
+            </>
+          ) : null}
           <FloatingActionButton
             icon={SurveyButtonProps.New.icon}
             text={t(SurveyButtonProps.New.title)}

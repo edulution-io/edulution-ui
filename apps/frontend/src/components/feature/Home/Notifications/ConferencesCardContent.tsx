@@ -27,11 +27,9 @@ const ConferencesCardContent = (props: ConferencesCardContentProps) => {
         />
       </h4>
       <div className="mt-4 flex flex-col justify-between gap-6">
-        {
-          conferences.map((conference) => (
-            <>{JSON.stringify(conference, null, 2)}</>
-          ))
-        }
+        {conferences.map((conference) => (
+          <>{JSON.stringify(conference, null, 2)}</>
+        ))}
       </div>
     </CardContent>
   );

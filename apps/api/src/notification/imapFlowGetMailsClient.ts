@@ -15,8 +15,8 @@ export default class ImapFlowGetMailsClient {
 
   private checkImapConnection = async (username: string, host: string, port: number): Promise<boolean> => {
     this.client = new ImapFlow({
-      host: host,
-      port: port,
+      host,
+      port,
       secure: true,
       auth: {
         user: username,
@@ -31,8 +31,8 @@ export default class ImapFlowGetMailsClient {
     }
     lock1.release();
     this.client = new ImapFlow({
-      host: host,
-      port: port,
+      host,
+      port,
       secure: true,
       auth: {
         user: username,
@@ -48,7 +48,7 @@ export default class ImapFlowGetMailsClient {
     lock2.release();
     this.client = undefined;
     return false;
-  }
+  };
 
   private initializeConnection = async (username: string): Promise<void> => {
     let success = false;
@@ -72,7 +72,7 @@ export default class ImapFlowGetMailsClient {
       console.log('Connection successful', 'mail.sgm-verwaltung.de', 143);
       return;
     }
-  }
+  };
 
   constructor(username: string) {
     this.initializeConnection(username);
@@ -119,7 +119,7 @@ export default class ImapFlowGetMailsClient {
 
       // list subjects for all messages
       // uid value is always included in FETCH response, envelope strings are in unicode.
-      const mails = await this.client?.fetch('1:*', { envelope: true });
+      const mails = this.client?.fetch('1:*', { envelope: true });
       for await (const msg of mails || []) {
         console.log(`${msg.uid}: ${msg.envelope.subject}`);
         messages.push(msg);

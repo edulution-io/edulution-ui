@@ -16,12 +16,7 @@ interface EditorProps {
 }
 
 const Editor = (props: EditorProps) => {
-  const {
-    form,
-    saveNumber,
-    survey,
-    error,
-  } = props;
+  const { form, saveNumber, survey, error } = props;
 
   const creatorOptions = {
     isAutoSave: true,
@@ -36,7 +31,7 @@ const Editor = (props: EditorProps) => {
   const creator = new SurveyCreator(creatorOptions);
 
   creator.saveNo = saveNumber;
-  if(survey) {
+  if (survey) {
     creator.text = survey;
   }
 
@@ -44,7 +39,7 @@ const Editor = (props: EditorProps) => {
     form.setValue('survey', JSON.stringify(creator.JSON));
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
-  }
+  };
 
   localization.currentLocale = 'de';
   return (

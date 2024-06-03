@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../users/user.schema';
 import { Conference, ConferenceSchema } from '../conferences/conference.schema';
-import SurveySchema, { Survey } from './../surveys/types/survey.schema';
+import SurveySchema, { Survey } from '../surveys/types/survey.schema';
 import NotificationController from './notification.controller';
 import NotificationService from './notification.service';
 

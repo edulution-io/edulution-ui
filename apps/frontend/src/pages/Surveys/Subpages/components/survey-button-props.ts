@@ -1,13 +1,14 @@
 import {
-  AiOutlineDeliveredProcedure, /* AiOutlineDownSquare, */
-  AiOutlinePlusSquare, AiOutlineSave,
-  AiOutlineUpSquare
+  AiOutlineDeliveredProcedure /* AiOutlineDownSquare, */,
+  AiOutlinePlusSquare,
+  AiOutlineSave,
+  AiOutlineUpSquare,
 } from 'react-icons/ai';
 import { BsGear } from 'react-icons/bs';
 import { FiDelete, FiEdit } from 'react-icons/fi';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 
-const SurveyButtonProps = ({
+const SurveyButtonProps = {
   All: {
     icon: AiOutlinePlusSquare,
     title: 'survey.allSurveys',
@@ -52,6 +53,6 @@ const SurveyButtonProps = ({
     icon: AiOutlineSave,
     title: 'save',
   },
-})
+};
 
 export default SurveyButtonProps;

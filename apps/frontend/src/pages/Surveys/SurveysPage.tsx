@@ -8,9 +8,7 @@ import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor.tsx';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 
 const SurveysPage = () => {
-  const {
-    selectedPageView,
-  } = useSurveysPageStore();
+  const { selectedPageView } = useSurveysPageStore();
 
   switch (selectedPageView) {
     case PageView.OPEN_SURVEYS:

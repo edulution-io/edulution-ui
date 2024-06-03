@@ -10,7 +10,7 @@ import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participat
 import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from "@/pages/Surveys/Subpages/components/survey-button-props.ts";
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
 
 const OpenSurveysPage = () => {
   const {

@@ -73,7 +73,7 @@ const SurveyTable = (props: SurveyTableProps) => {
                   <TableCell className="text-white">{srv?.pages?.length || 0}</TableCell>
                 </TableRow>
               );
-              }
+            }
           })}
         </TableBody>
       </Table>
