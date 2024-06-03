@@ -24,6 +24,7 @@ import * as fs from 'fs';
 import * as pathNode from 'path';
 import syncRequest from 'sync-request';
 import * as jwt from 'jsonwebtoken';
+import * as process from 'node:process';
 
 @Controller('filemanager')
 class FilemanagerController {
@@ -169,7 +170,14 @@ class FilemanagerController {
       }
 
       const encodedFilename = encodeURIComponent(filename);
-      const downloadLink = (process.env.EDUI_DOWNLOAD_DIR as string) + encodedFilename;
+      const dev = (process.env.EDUI_DEV as string) === 'dev';
+      let downloadLink: string;
+
+      if (dev) {
+        downloadLink = (process.env.EDUI_DOWNLOAD_DIR_DEV as string) + encodedFilename;
+      } else {
+        downloadLink = (process.env.EDUI_DOWNLOAD_DIR as string) + encodedFilename;
+      }
       res.status(200).json({ downloadLink });
     } catch (error) {
       console.error('Error in downloadFile controller:', error);
@@ -192,6 +200,7 @@ class FilemanagerController {
     @Param('eduToken') eduToken: string,
   ) {
     const callbackData = req.body;
+    console.log(callbackData);
     if (!callbackData || !callbackData.token) {
       return res.status(HttpStatus.BAD_REQUEST).send({ error: 1, message: 'Token is missing.' });
     }
@@ -204,9 +213,12 @@ class FilemanagerController {
     }
 
     const updateFile = async (response: Response, body: any) => {
+      console.log('Body:', body);
+
       try {
         if (body.status === 4 || body.status === 2) {
           const file = syncRequest('GET', body.url);
+          console.log('File:', filename);
           const filePath = pathNode.join(__dirname, `../public/downloads/${filename}`);
           fs.mkdirSync(pathNode.dirname(filePath), { recursive: true });
           fs.writeFileSync(filePath, file.getBody());

@@ -191,6 +191,8 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
         const projectInfoMap = await fetchAndFilterData(projects, 'classmanagement', userInfo, false);
         const printersInfoMap = await fetchAndFilterData(printers, 'classmanagement', userInfo, false);
 
+        console.log('classInfoMap', classInfoMap);
+
         set((state) => ({
           allSchoolClasses: {
             ...state.allSchoolClasses,

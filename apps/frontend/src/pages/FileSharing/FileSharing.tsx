@@ -59,9 +59,9 @@ const FileSharingPage = () => {
   useEffect(() => {
     if (isVisible) {
       if (fileOperationSuccessful) {
-        toast.success(fileOperationMessage || t('operations.success'));
+        toast.success(fileOperationMessage || t('fileOperationSuccessful'));
       } else {
-        toast.error(fileOperationMessage || t('operations.failure'));
+        toast.error(fileOperationMessage || t('unknownErrorOccurred'));
       }
     }
   }, [isVisible, fileOperationSuccessful, fileOperationMessage, t]);

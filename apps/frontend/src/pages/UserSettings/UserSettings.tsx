@@ -20,7 +20,7 @@ const UserSettings: React.FC = () => {
     }
   };
 
-  return <div>{renderComponent()}</div>;
+  return <div className="ml-5">{renderComponent()}</div>;
 };
 
 export default UserSettings;

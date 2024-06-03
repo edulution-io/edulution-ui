@@ -36,7 +36,7 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
     case 'pptx':
       return { id: 'pptxEditor', key: 'pptx' + Math.random() * 100, documentType: 'slide' };
     case 'pdf':
-      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'pdf' };
+      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'word' };
     default:
       return { id: 'docxEditor', key: 'word' + Math.random() * 100, documentType: 'word' };
   }
@@ -45,25 +45,35 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
 const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview }) => {
   const [token, setToken] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [callbackURLLocation, setCallbackURLLocation] = useState<string | null>(null);
   const { user } = useAuth();
   const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
     id: 'docxEditor',
     key: 'word' + Math.random(),
     documentType: 'word',
   });
+  console.log('user', user?.access_token);
   const { previewFile, appendEditorFile } = useFileEditorStore();
   const { getOnlyOfficeJwtToken, downloadFile } = useFileManagerStore();
   useEffect(() => {
     const fileType = getFileType(file.filename);
     const editorConfig = findDocumentsEditorType(fileType);
+    console.log(editorConfig);
     setEditorType(editorConfig);
 
     const fetchFileUrlAndToken = async () => {
       try {
         const rawUrl = await downloadFile(file.filename);
-        const formattedUrl = rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001');
+        const isDev = (import.meta.env.VITE_ENV as string) === 'dev';
+        console.log('rawUrl', rawUrl);
+        console.log('isDev', isDev);
+        const formattedUrl = isDev
+          ? rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001')
+          : rawUrl;
+        const callbackBaseUrl = isDev ? 'http://host.docker.internal:3001' : window.location.origin;
 
-        import.meta.env.VITE_ENV === 'dev' ? setFileUrl(formattedUrl) : setFileUrl(rawUrl);
+        setFileUrl(formattedUrl);
+        setCallbackURLLocation(callbackBaseUrl);
 
         const config = {
           document: {
@@ -77,7 +87,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: `${window.location.origin}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+            callbackUrl: `${callbackBaseUrl}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
             mode,
             customization: {
               anonymous: {
@@ -133,7 +143,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL as string}
+          documentServerUrl="http://localhost:80/"
           config={{
             document: {
               fileType: getFileType(file.filename),
@@ -144,7 +154,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: `${window.location.origin}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+              callbackUrl: `${callbackURLLocation}edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
               mode,
               customization: {
                 anonymous: {

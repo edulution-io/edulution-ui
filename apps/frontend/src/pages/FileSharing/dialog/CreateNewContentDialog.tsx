@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContentType } from '@/datatypes/filesystem';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
@@ -37,13 +37,13 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
 
     switch (fileEnding) {
       case '.pptx':
-        blob = await generatePPTX(user);
+        blob = await generatePPTX(user.username);
         break;
       case '.xlsx':
-        blob = generateXLSX(user);
+        blob = generateXLSX(user.username);
         break;
       case '.docx':
-        blob = await generateDOCX(user);
+        blob = await generateDOCX(user.username);
         break;
       default:
         break;
@@ -51,6 +51,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
 
     if (blob) {
       const file = new File([blob], filename);
+
       setIsDialogOpen(false);
       try {
         const resp = await uploadFile(file, currentPath || '/');
@@ -76,10 +77,20 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
         const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
         await setFileOperationSuccessful(false, errorMessage);
       } finally {
+        setFileName('');
+        setDirectoryName('');
         setIsDialogOpen(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (!isDialogOpen) {
+      setFileName('');
+      setDirectoryName('');
+      setSelectedFileEnding('.txt');
+    }
+  }, [isDialogOpen]);
 
   const handleFileEndingChange = (fileEnding: string) => {
     setSelectedFileEnding(fileEnding);
@@ -99,7 +110,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
       onSubmit={onSubmit}
       isDisabled={isFormInvalid}
       isOpen={isDialogOpen}
-      onOpenChange={setIsDialogOpen}
+      onOpenChange={(isOpen) => setIsDialogOpen(isOpen)}
       fileEndings={['.txt', '.docx', '.xlsx', '.pptx']}
       showFileEndingsDropdown={contentType === ContentType.file}
       onFileEndingChange={handleFileEndingChange}

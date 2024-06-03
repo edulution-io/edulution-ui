@@ -63,3 +63,4 @@ export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg'
 export { default as AppConfigIcon } from '@/assets/icons/appConfigIcon.svg';
 export { default as FAQIcon } from '@/assets/icons/FAQ.svg';
 export { default as SecurityIcon } from '@/assets/icons/security.svg';
+export { default as ExternalIntegration } from '@/assets/icons/externalIntegration.svg';

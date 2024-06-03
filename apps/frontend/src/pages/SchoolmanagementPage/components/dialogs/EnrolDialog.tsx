@@ -112,43 +112,49 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             {showPrintersSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Devices</h3>
-                {printers.map((admin, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between rounded border p-2"
-                  >
-                    <p>{admin.name}</p>
-                    <p>{admin.role}</p>
-                  </div>
-                ))}
+                <div className="grid grid-cols-2 gap-4">
+                  {printers.map((printer, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border p-2"
+                    >
+                      <p>{printer.name}</p>
+                      <p>{printer.role}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {showAdminsSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Gruppenadministratoren</h3>
-                {admins.map((admin, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between rounded border p-2"
-                  >
-                    <p>{admin.name}</p>
-                    <p>{admin.role}</p>
-                  </div>
-                ))}
+                <div className="grid grid-cols-2 gap-4">
+                  {admins.map((admin, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border p-2"
+                    >
+                      <p>{admin.name}</p>
+                      <p>{admin.role}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {showMembersSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Gruppenmitglieder</h3>
-                {members.map((member, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between rounded border p-2"
-                  >
-                    <p>{member.name}</p>
-                    <p>{member.role}</p>
-                  </div>
-                ))}
+                <div className="grid grid-cols-2 gap-4">
+                  {members.map((member, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border p-2"
+                    >
+                      <p>{member.name}</p>
+                      <p>{member.role}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

@@ -44,7 +44,7 @@ const EditFile = () => {
 
   return (
     <div
-      className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14"
+      className=" absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="fixed left-1/2 top-0 z-10 flex -translate-x-1/2 transform items-center space-x-4">

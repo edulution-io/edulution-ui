@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { t } from 'i18next';
 import { Button } from '@/components/shared/Button.tsx';
+import Input from '@/components/shared/Input.tsx';
 
 interface PasswordChangeFormInputs {
   currentPassword: string;
@@ -36,7 +37,7 @@ const PasswordChangeForm: FC = () => {
           >
             {t('changePassword.currentPasswordRequired')}
           </label>
-          <input
+          <Input
             id="currentPassword"
             type="password"
             {...register('currentPassword', { required: t('changePassword.currentPasswordRequired') })}
@@ -53,7 +54,7 @@ const PasswordChangeForm: FC = () => {
           >
             {t('changePassword.newPassword')}
           </label>
-          <input
+          <Input
             id="newPassword"
             type="password"
             {...register('newPassword', {
@@ -73,7 +74,7 @@ const PasswordChangeForm: FC = () => {
           >
             {t('changePassword.confirmPassword')}
           </label>
-          <input
+          <Input
             id="confirmPassword"
             type="password"
             {...register('confirmPassword', {

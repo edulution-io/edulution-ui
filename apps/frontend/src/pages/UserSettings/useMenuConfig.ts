@@ -1,4 +1,4 @@
-import { AppConfigIcon, FAQIcon, SecurityIcon, UserIcon } from '@/assets/icons';
+import { ExternalIntegration, FAQIcon, SecurityIcon, UserIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { useSearchParams } from 'react-router-dom';
 
@@ -24,8 +24,8 @@ const useUserSettingsMenuConfig = () => {
       },
       {
         id: 'ExternalIntegration',
-        label: 'usersettings.ExternalIntegration',
-        icon: AppConfigIcon,
+        label: 'usersettings.externalIntegration',
+        icon: ExternalIntegration,
         action: () => setSearchParams({ section: 'ExternalIntegration' }),
       },
     ],
