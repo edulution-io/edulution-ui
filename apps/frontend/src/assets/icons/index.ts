@@ -59,3 +59,5 @@ export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as EnrolIcon } from '@/assets/icons/enrol.svg';
 export { default as FirstPasswordIcon } from '@/assets/icons/first-Password.svg';
 export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg';
+export { default as FAQIcon } from '@/assets/icons/faqIcon.svg';
+export { default as AppConfigIcon } from '@/assets/icons/appConfigIcon.svg';

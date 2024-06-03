@@ -10,6 +10,7 @@ import Attendee from '@/pages/ConferencePage/dto/attendee';
 import useUserStore from '@/store/userStore';
 import Group from '@/pages/ConferencePage/dto/group';
 import { toast } from 'sonner';
+import CircleLoader from '@/components/ui/CircleLoader.tsx';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,7 +24,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
     useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <CircleLoader className={'mx-auto'} />;
 
   const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });

@@ -58,7 +58,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
     const editorConfig = findDocumentsEditorType(fileType);
     setEditorType(editorConfig);
 
-    const dev = false;
+    const dev = true;
 
     const fetchFileUrlAndToken = async () => {
       try {
@@ -122,7 +122,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
   }, [file, getOnlyOfficeJwtToken, previewFile, mode]);
 
   return (
-    <div className={`relative ${isPreview ? 'h-[80vh]' : 'h-[100vh]'}`}>
+    <div className={`relative ${isPreview ? 'h-[75vh]' : 'h-[100vh]'}`}>
       {isPreview && (
         <PreviewMenuBar
           file={file}
@@ -135,7 +135,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL as string}
+          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL_DEV as string}
           config={{
             document: {
               fileType: getFileType(file.filename),

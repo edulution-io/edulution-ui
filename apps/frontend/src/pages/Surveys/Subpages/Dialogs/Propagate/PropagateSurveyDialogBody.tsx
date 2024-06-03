@@ -6,9 +6,8 @@ import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
-// import Checkbox from '@/components/ui/Checkbox';
-// import DatePicker from '@/components/shared/DatePicker';
-import { Form } from '@/components/ui/Form';
+// import Checkbox from '@/Components/ui/Checkbox';
+// import DatePicker from '@/Components/shared/DatePicker';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import Group from '@/pages/ConferencePage/dto/group';
 import { toast } from 'sonner';
@@ -81,7 +80,7 @@ const PropagateSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   // const onCanSubmitMultipleAnswersChange = async (value: boolean) => {
   //   form.setValue('isAnonymous', value)
   // }
-    
+
   return (
     <>
       {/* TODO: Activate the following fields (they do not update soberly)! */}

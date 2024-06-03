@@ -5,7 +5,7 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILER DATENZUGRIFF",
+      "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
@@ -227,10 +227,21 @@
       "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
     }
   },
+
+  "externIntegrationsetup": {
+    "title": "EXTERNE ANBINDUNG",
+    "AIChatSetUp": "AI Chat Einrichten",
+    "ChatSetUp": "Chat Einrichten",
+    "MailSetUp": "Mail Einrichten"
+  },
+
+
   "usersettings": {
     "title": "BENUTZER",
     "sidebar": "Einstellungen",
     "security": "Sicherheit",
+    "faq": "FAQ",
+    "externalIntegration": "Externe Anbindung",
     "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
     "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
   },
@@ -471,7 +482,7 @@
     "printer": "Drucker",
     "class": "Klassen",
     "projects": "Projekte",
-    "project": "Projekt anlegen",
+    "project": "Projekte",
     "availableGroups": "Alle verfügbaren Gruppen in der {{schoolname}} Schule",
     "noDataAvailable": "Keine Daten verfügbar",
     "myClasses": "Meine Klassen",
@@ -529,11 +540,12 @@
   "changePassword": {
     "title": "Passwort ändern",
     "newPassword": "Neues Passwort",
-    "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
+    "currentPasswordRequired": "Aktuelles Passwort",
     "newPasswordRequired": "Neues Passwort ist erforderlich.",
     "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein.",
     "confirmPassword": "Passwort bestätigen",
     "confirmPasswordRequired": "Passwortbestätigung ist erforderlich",
-    "passwordsDoNotMatch": "Passwörter stimmen nicht überein"
+    "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+     "changePassword": "Passwort ändern"
   }
 }

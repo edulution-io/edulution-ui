@@ -152,8 +152,12 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
       fetchGroupsData: async () => {
         try {
           const response = await eduApi.get<GroupInfo[]>('/classmanagement/groups');
+
+          console.log(response.data);
           const groups = response.data;
           const schoolData = transformGroupsToSchools(groups);
+
+          console.log(schoolData);
 
           set((state) => ({
             groupsData: {
@@ -189,6 +193,7 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
       },
 
       fetchAndStoreAllUserProjectsClassesAndPrinters: async (classes, projects, printers, userInfo) => {
+        console.log('Fetching all user projects, classes and printers', classes, projects, printers, userInfo);
         const classInfoMap = await fetchAndFilterData(classes, 'classmanagement', userInfo, false);
         const projectInfoMap = await fetchAndFilterData(projects, 'classmanagement', userInfo, false);
         const printersInfoMap = await fetchAndFilterData(printers, 'classmanagement', userInfo, false);
@@ -211,6 +216,7 @@ const useSchoolManagementStore = create<SchoolclassInfoStore>(
             ...printersInfoMap,
           },
         }));
+        console.log('Fetched all user projects, classes and printers');
       },
 
       searchAttendees: async (searchParam) => {

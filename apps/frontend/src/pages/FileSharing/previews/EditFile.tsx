@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { t } from 'i18next';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore.ts';
@@ -11,11 +11,11 @@ const EditFile = () => {
   const [searchParams] = useSearchParams();
   const { editableFiles, removeEditorFile, showEditor, setShowEditor } = useFileEditorStore();
   const [fileType, setFileType] = useState<string>('');
-
+  const navigate = useNavigate();
   const navigateBack = () => {
     const url = new URL(window.location.href);
     url.searchParams.delete('editFile');
-    window.location.href = url.toString();
+    navigate(url);
   };
 
   const removeItemFromEditMenu = (file: string) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardContent, Card } from '@/components/shared/Card';
+import { Card, CardContent } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
 import userStore from '@/store/userStore';
 
@@ -8,7 +8,7 @@ const Groups = () => {
   const { t } = useTranslation();
   return (
     <Card
-      variant="organisation"
+      variant="security"
       className="h-full"
     >
       <CardContent>

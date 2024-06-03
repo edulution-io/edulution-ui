@@ -36,12 +36,12 @@
 
 .bg-global {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/background.jpg');
+  background-image: url('assets/background.jpg');
 }
 
 iframe {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/background.jpg');
+  background-image: url('assets/background.jpg');
 }
 
 .svc-creator__banner {

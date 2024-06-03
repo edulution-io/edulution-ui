@@ -1,17 +1,17 @@
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH.tsx';
 import React from 'react';
 import { t } from 'i18next';
-import FilemanagerIntroduction from '@/pages/FAQ/sections/userSection/FilemanagerIntroduction.tsx';
-import ClassManagementIntroduction from '@/pages/FAQ/sections/userSection/ClassManagementIntroduction.tsx';
-import ConferencesIntroduction from '@/pages/FAQ/sections/userSection/ConferencesIntroduction.tsx';
-import AiIntroduction from '@/pages/FAQ/sections/userSection/AiIntroduction.tsx';
-import PullsIntroduction from '@/pages/FAQ/sections/userSection/PullsIntroduction.tsx';
-import LearnManagementIntroduction from '@/pages/FAQ/sections/userSection/LearnManagementIntroduction.tsx';
-import WhiteboardIntroduction from '@/pages/FAQ/sections/userSection/WhiteboardIntroduction.tsx';
-import VDIIntroduction from '@/pages/FAQ/sections/userSection/VDIIntroduction.tsx';
-import EmailIntroduction from '@/pages/FAQ/sections/userSection/EmailIntroduction.tsx';
+import FilemanagerIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/FilemanagerIntroduction.tsx';
+import ClassManagementIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/ClassManagementIntroduction.tsx';
+import AiIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/AiIntroduction.tsx';
+import ConferencesIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/ConferencesIntroduction.tsx';
+import EmailIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/EmailIntroduction.tsx';
+import LearnManagementIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/LearnManagementIntroduction.tsx';
+import PullsIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/PullsIntroduction.tsx';
+import VDIIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/VDIIntroduction.tsx';
+import WhiteboardIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/WhiteboardIntroduction.tsx';
 
-const FAQPage = () => {
+const FAQComponent = () => {
   const faqItems = [
     {
       value: 'filemangerIntroduction',
@@ -45,7 +45,7 @@ const FAQPage = () => {
   ];
 
   return (
-    <div className="p-5 lg:px-20">
+    <div>
       <h1 className="mb-1 text-lg">{t('faq.title')}</h1>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <AccordionSH type="multiple">
@@ -66,4 +66,4 @@ const FAQPage = () => {
   );
 };
 
-export default FAQPage;
+export default FAQComponent;

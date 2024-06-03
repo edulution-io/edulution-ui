@@ -102,12 +102,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciGreenToBlue',
     options: ['url'],
   },
-  {
-    id: APPS.FAQ,
-    icon: ForumsIcon,
-    color: 'bg-ciGreenToBlue',
-    options: ['url'],
-  },
   { id: APPS.WLAN, icon: WlanIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   {
     id: APPS.MOBILE_DEVICES,

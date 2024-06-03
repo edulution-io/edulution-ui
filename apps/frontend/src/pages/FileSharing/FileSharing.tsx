@@ -71,10 +71,10 @@ const FileSharingPage = () => {
   }, [previewFile]);
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="flex h-full w-full flex-col">
       <div>{isVisible && <Toaster />}</div>
       {!editableFile ? (
-        <div className="flex-1 overflow-auto">
+        <div className="flex flex-1 flex-col overflow-hidden">
           <div className="flex w-full justify-between pb-3 pt-3">
             <TooltipProvider>
               <div className="flex flex-col ">
@@ -91,15 +91,15 @@ const FileSharingPage = () => {
               </div>
             </TooltipProvider>
           </div>
-          <div className="flex max-h-[70vh]">
-            <div className={`w-full ${previewFile ? 'w-1/2' : ''}`}>
+          <div className="flex flex-1 overflow-hidden">
+            <div className={`w-full ${previewFile ? 'w-1/2' : ''} h-full overflow-y-auto`}>
               <DataTable
                 columns={Columns}
                 data={files}
               />
             </div>
             {previewFile && showEditor && (
-              <div className="w-1/2">
+              <div className="h-full w-1/2">
                 <Previews
                   type={'desktop'}
                   file={previewFile}

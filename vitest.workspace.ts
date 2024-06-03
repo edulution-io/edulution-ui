@@ -1,1 +1,1 @@
-export default ['**/*/vite.config.ts', '**/*/vitest.config.ts'];
+export default ['**/*/vite.useMenuConfig.ts', '**/*/vitest.useMenuConfig.ts'];

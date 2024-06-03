@@ -1,7 +1,7 @@
 const ClassManagementIntroduction = () => {
   return (
-    <div className="p-5">
-      <p className="mb-3">Class Management Introduction</p>
+    <div className="mb-4">
+      <h2 className="text-xl font-semibold">Class Management Introduction</h2>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui in dolor mollis elementum. Nulla
         facilisi. Sed sit amet nisi nec lacus ultricies gravida. Sed auctor scelerisque orci, ac varius ipsum. Nullam

@@ -15,7 +15,7 @@ interface AddConferenceDialogBodyProps {
   form: UseFormReturn<any>;
 }
 
-const AddConferenceDialogBody = ({ form }: AddConferenceDialogBodyProps) => {
+const AddStudentsDialogBody = ({ form }: AddConferenceDialogBodyProps) => {
   const { setValue, getValues, watch } = form;
   const { user } = useUserStore();
   const { t } = useTranslation();
@@ -83,4 +83,4 @@ const AddConferenceDialogBody = ({ form }: AddConferenceDialogBodyProps) => {
   );
 };
 
-export default AddConferenceDialogBody;
+export default AddStudentsDialogBody;

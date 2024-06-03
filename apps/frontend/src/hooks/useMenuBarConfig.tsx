@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-import USERSETTINGS_MENUBAR_CONFIG from '@/pages/UserSettings/config';
 import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
@@ -11,7 +10,7 @@ import { getFromPathName } from '@/utils/common';
 import useSchoolManagementPageMenu from '@/pages/SchoolmanagementPage/useSchoolManagementPageMenu';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
-import useFAQPageMenu from '@/pages/FAQ/useFAQPageMenu.ts';
+import useUserSettingsMenuConfig from '@/pages/UserSettings/useMenuConfig.ts';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -23,7 +22,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
-  const FAQ_MENUBAR_CONFIG = useFAQPageMenu();
+  const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -52,9 +51,6 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
-      }
-      case APPS.FAQ: {
-        return FAQ_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

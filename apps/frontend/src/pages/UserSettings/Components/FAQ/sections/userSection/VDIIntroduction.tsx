@@ -1,7 +1,7 @@
 const VDIIntroduction = () => {
   return (
-    <div>
-      <h2>VDI Introduction</h2>
+    <div className="mb-4">
+      <h2 className="text-xl font-semibold">VDI Introduction</h2>
       <p>
         VDI stands for Virtual Desktop Infrastructure. It is a technology that allows users to access a desktop
         operating system and applications from a remote location. VDI is typically used by organizations to provide

@@ -17,6 +17,7 @@ import SetPermissionsToStudentsDialog from '@/pages/SchoolmanagementPage/compone
 import CollectFilesDialog from '@/pages/SchoolmanagementPage/components/dialogs/CollectFilesDialog.tsx';
 import ShareFilesDialog from '@/pages/SchoolmanagementPage/components/dialogs/ShareFilesDialog.tsx';
 import ShowCollectedFilesDialog from '@/pages/SchoolmanagementPage/components/dialogs/ShowCollectedFilesDialog.tsx';
+import { useNavigate } from 'react-router-dom';
 
 interface ManageContentPageProps {
   contentKey: string;
@@ -38,6 +39,8 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
   const [wifiState, setWifiState] = useState(false);
   const [internetState, setInternetState] = useState(false);
   const [printerState, setPrinterState] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     let fullKey: string | undefined;
@@ -73,7 +76,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
   const removeContentParamAndNavigate = () => {
     const url = new URL(window.location.href);
     url.searchParams.delete(contentType);
-    window.location.href = url.toString();
+    navigate(url);
   };
 
   const handleSelectProfile = (member: MemberInfo) => {
@@ -143,7 +146,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
                 key={member.id}
                 id={member.id}
                 name={`${member.firstName} ${member.lastName}`}
-                username={member.firstName}
+                username={member.username}
                 isAddCard={false}
                 isSelected={selectedProfiles.includes(member)}
                 onSelect={() => handleSelectProfile(member)}

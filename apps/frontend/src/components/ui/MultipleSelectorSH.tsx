@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable react/no-unknown-property, react/no-unstable-nested-components, @typescript-eslint/no-shadow, react/button-has-type, @typescript-eslint/no-unused-expressions, react/jsx-no-useless-fragment */
+/* eslint-disable react/no-unknown-property, react/no-unstable-nested-Components, @typescript-eslint/no-shadow, react/button-has-type, @typescript-eslint/no-unused-expressions, react/jsx-no-useless-fragment */
 
 import * as React from 'react';
 import { forwardRef, useEffect } from 'react';
