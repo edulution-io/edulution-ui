@@ -167,7 +167,7 @@ class SurveysController {
 
     const { surveyname, answer, canSubmitMultipleAnswers = true } = body;
 
-    await this.surveyService.addAnonymousAnswer(surveyname, answer, username);
+    await this.surveyService.addAnonymousAnswer(surveyname, answer /* , username */ );
 
     if (!canSubmitMultipleAnswers) {
       await this.usersSurveysService.moveSurveyFromOpenToAnsweredSurveys(username, surveyname, answer);
