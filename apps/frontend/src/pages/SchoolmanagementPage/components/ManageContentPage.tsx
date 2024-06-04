@@ -133,7 +133,10 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         <h2 className="ml-2">{contentKey}</h2>
       </div>
       <div className="flex-1 overflow-hidden p-4">
-        <ScrollArea className="max-h-[70vh] w-full overflow-auto">
+        <ScrollArea
+          className="w-full overflow-auto"
+          style={{ maxHeight: 'calc(100vh - 250px)' }}
+        >
           <div className="flex flex-wrap gap-4">
             <ComputerMonitoringDialog
               isOpen={isVideoModalOpen}
@@ -150,20 +153,23 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
               schoolClass={contentKey}
               handleOpenChange={setIsDialogOpen}
             />
-            {membersOfOpenGroup.map((member, count) => (
-              <ProfileCard
-                key={member.email}
-                id={member.id}
-                memberId={member.id}
-                name={`${member.firstName} ${member.lastName}`}
-                username={member.username}
-                isAddCard={false}
-                isSelected={selectedProfiles.includes(member)}
-                onSelect={() => handleSelectProfile(member)}
-                videoUrl={count % 2 === 0 ? linuxRecLow : windowsRecLow}
-                count={count}
-              />
-            ))}
+            {membersOfOpenGroup
+              .concat(membersOfOpenGroup) // TODO: REMOVE!!!
+              .concat(membersOfOpenGroup)
+              .map((member, count) => (
+                <ProfileCard
+                  key={member.email}
+                  id={member.id}
+                  memberId={member.id}
+                  name={`${member.firstName} ${member.lastName}`}
+                  username={member.username}
+                  isAddCard={false}
+                  isSelected={selectedProfiles.includes(member)}
+                  onSelect={() => handleSelectProfile(member)}
+                  videoUrl={count % 2 === 0 ? linuxRecLow : windowsRecLow}
+                  count={count}
+                />
+              ))}
             <ProfileCard
               isAddCard
               onSelect={() => setIsDialogOpen(true)}

@@ -64,7 +64,10 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[75vh] overflow-auto">
+        <ScrollArea
+          className="overflow-auto"
+          style={{ maxHeight: 'calc(100vh - 210px)' }}
+        >
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
