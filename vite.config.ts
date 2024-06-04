@@ -67,12 +67,13 @@ export default defineConfig({
         },
       },
       '/guacamole': {
-        target: 'https://ui.schulung.multi.schule/guacamole',
+        rewrite: (path) => path.replace(/^\/guacamole/, ''),
+        target: 'https://ui.demo.multi.schule/guacamole',
         changeOrigin: true,
         secure: false,
         ws: true,
         headers: {
-          Origin: 'https://ui.schulung.multi.schule',
+          Origin: 'https://ui.demo.multi.schule',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',

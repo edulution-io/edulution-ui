@@ -190,7 +190,10 @@
     "error": {
       "title": "Verbindungsfehler",
       "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
-    }
+    },
+    "win10": "Windows 10",
+    "clients": "Clients verfügbar",
+    "client": "Client verfügbar"
   },
   "wlan": {
     "title": "WLAN",
@@ -242,7 +245,6 @@
     "ChatSetUp": "Chat Einrichten",
     "MailSetUp": "Mail Einrichten"
   },
-
 
   "usersettings": {
     "title": "BENUTZER",
@@ -299,7 +301,8 @@
     "groups": "Gruppen",
     "clearSelection": "Auswahl löschen",
     "close": "Schließen",
-    "rename": "Umbenennen"
+    "rename": "Umbenennen",
+    "start": "Starten"
   },
   "form": {
     "path": "Link",
@@ -359,7 +362,7 @@
     "scanQRCode": "QR-Code scannen"
   },
 
-  "createContent":{
+  "createContent": {
     "submit": "Erstellen"
   },
 
@@ -452,7 +455,7 @@
     "mail_alias": "Mail Alias",
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen",
-     "FAQ": "FAQ"
+    "FAQ": "FAQ"
   },
   "groupsPage": {
     "classes": "Klassen"
@@ -510,10 +513,10 @@
     "addUser": "Benutzer hinzufügen",
     "noUsersInGroup": "Momentan befinden sich keine Benutzer in {{name}}. Füge jetzt einen hinzu.",
     "examMode": "Prüfungsmodus",
-    "cancelStartExamMode" : "Abbrechen",
+    "cancelStartExamMode": "Abbrechen",
     "startExamMode": "Start",
     "examModeDescription": "Im Prüfungsmodus können die Schüler nur auf die Anwendungen zugreifen, die von der Lehrkraft genehmigt wurden.",
-     "wifiSettingsSelectedUserMessage": "WI-FI für die ausgewählten Benutzer einstellen",
+    "wifiSettingsSelectedUserMessage": "WI-FI für die ausgewählten Benutzer einstellen",
     "internetSettingsSelectedUserMessage": "Internet für die ausgewählten Benutzer einstellen",
     "printerSettingsSelectedUserMessage": "Drucker für die ausgewählten Benutzer einstellen",
     "wifiSettingsMessage": "Wlan für alle Benutzer einschalten",
@@ -558,6 +561,6 @@
     "confirmPassword": "Passwort bestätigen",
     "confirmPasswordRequired": "Passwortbestätigung ist erforderlich",
     "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
-     "changePassword": "Passwort ändern"
+    "changePassword": "Passwort ändern"
   }
 }

@@ -198,7 +198,10 @@
     "error": {
       "title": "Connection error",
       "description": "Please check your network connection and try again."
-    }
+    },
+    "win10": "Windows 10",
+    "clients": "Clients available",
+    "client": "Client available"
   },
   "wlan": {
     "title": "WLAN",
@@ -297,7 +300,9 @@
     "revert": "Revert",
     "groups": "Groups",
     "clearSelection": "Clear selection",
-    "rename": "Rename"
+    "rename": "Rename",
+    "close": "Schließen",
+    "start": "Starten"
   },
   "form": {
     "path": "Path",
@@ -449,10 +454,9 @@
     "FAQ": "FAQ"
   },
 
-  "createContent":{
+  "createContent": {
     "submit": "Submit"
   },
-
 
   "groupsPage": {
     "classes": "Classes"
@@ -492,7 +496,7 @@
     "addUser": "Add user",
     "noUsersInGroup": "Currently, there are no users in {{name}}. Add one now.",
     "examMode": "Exam mode",
-    "cancelStartExamMode" : "Cancel",
+    "cancelStartExamMode": "Cancel",
     "startExamMode": "Start",
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -520,7 +524,6 @@
     "copyProject": "Copy Project {{name}}",
     "renameSession": "Rename Session {{name}}",
     "renameProject": "Rename Project {{name}}"
-
   },
   "fileEditingPage": {
     "fileNotFound": "File not found",
