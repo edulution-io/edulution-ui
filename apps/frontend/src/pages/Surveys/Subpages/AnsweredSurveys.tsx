@@ -5,18 +5,14 @@ import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
-import useShowSurveyAnswerDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
+import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
+import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 // import useShowSurveyResultsTableDialogStore
 //   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
-import ShowSurveyResultsTableDialog
-  from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
 
 const AnsweredSurveysPage = () => {
   const {
