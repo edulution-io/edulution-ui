@@ -51,7 +51,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
       fullKey =
         Object.keys(schoolclasses).find((key) => key.endsWith(`/${contentKey}`)) ||
         Object.keys(schoolclasses).find((key) => key.includes(contentKey));
-      if (fullKey) members = schoolclasses[fullKey];
+      if (fullKey) members = schoolclasses[fullKey] as MemberInfo[];
     } else if (contentType === 'session') {
       const sessions = availableSessions.find((session: SessionInfoState) => session.name === contentKey);
       if (sessions) {
@@ -68,7 +68,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
       fullKey =
         Object.keys(projects).find((key) => key.endsWith(`/${contentKey}`)) ||
         Object.keys(projects).find((key) => key.includes(contentKey));
-      if (fullKey) members = projects[fullKey];
+      if (fullKey) members = projects[fullKey] as MemberInfo[];
     }
 
     setMembersOfOpenGroup(members || []);

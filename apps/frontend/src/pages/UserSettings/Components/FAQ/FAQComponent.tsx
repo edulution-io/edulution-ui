@@ -11,6 +11,8 @@ import PullsIntroduction from '@/pages/UserSettings/Components/FAQ/sections/user
 import VDIIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/VDIIntroduction';
 import WhiteboardIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/WhiteboardIntroduction';
 import SurveyIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/SurveyIntroduction.tsx';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import { FAQIcon } from '@/assets/icons';
 
 const FAQComponent = () => {
   const faqItems = [
@@ -48,14 +50,19 @@ const FAQComponent = () => {
   ];
 
   return (
-    <div>
-      <h1 className="mb-1 pt-4 text-lg">{t('faq.title')}</h1>
-      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-0 h-screen">
+      <NativeAppHeader
+        title={t('faq.title')}
+        description={t('faq.description')}
+        iconSrc={FAQIcon}
+      />
+      <div className="p-4">
         <AccordionSH type="multiple">
           {faqItems.map(({ value, title, Component }) => (
             <AccordionItem
               key={value}
               value={value}
+              className={'mb-4'}
             >
               <AccordionTrigger className="w-full text-xl font-bold">{title}</AccordionTrigger>
               <AccordionContent>

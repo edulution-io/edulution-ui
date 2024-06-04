@@ -4,6 +4,8 @@ import React from 'react';
 import AIChatSetup from '@/pages/UserSettings/Components/ExternalIntegration/sections/AIChatSetup.tsx';
 import MailSetup from '@/pages/UserSettings/Components/ExternalIntegration/sections/MailSetup.tsx';
 import ChatSetup from '@/pages/UserSettings/Components/ExternalIntegration/sections/ChatSetup.tsx';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import { ExternalIntegration } from '@/assets/icons';
 
 const ExternalIntegrationComponent = () => {
   const faqItems = [
@@ -25,14 +27,19 @@ const ExternalIntegrationComponent = () => {
   ];
 
   return (
-    <div>
-      <h1 className="mb-1 pt-4 text-lg">{t('externIntegrationsetup.title')}</h1>
-      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-0 h-screen">
+      <NativeAppHeader
+        title={t('externIntegrationsetup.title')}
+        description={t('externIntegrationsetup.description')}
+        iconSrc={ExternalIntegration}
+      />
+      <div className="p-4">
         <AccordionSH type="multiple">
           {faqItems.map(({ value, title, Component }) => (
             <AccordionItem
               key={value}
               value={value}
+              className={'mt-6'}
             >
               <AccordionTrigger className="w-full text-xl font-bold">{title}</AccordionTrigger>
               <AccordionContent>
