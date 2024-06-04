@@ -22,7 +22,7 @@ class SurveysController {
   @Get()
   async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto, @GetUsername() username: string) {
     const { search, surveyname } = params;
-    const { surveynames, participants/*, isAnonymous*/ } = body;
+    const { surveynames, participants /*, isAnonymous*/ } = body;
     if (search) {
       switch (search) {
         case UserSurveySearchTypes.OPEN:
@@ -115,10 +115,7 @@ class SurveysController {
   }
 
   @Post()
-  async createOrUpdate(
-    @Body() body: CreateSurveyDto,
-    @GetUsername() username: string
-  ) {
+  async createOrUpdate(@Body() body: CreateSurveyDto, @GetUsername() username: string) {
     try {
       const { participants } = body;
 
@@ -141,7 +138,7 @@ class SurveysController {
         throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
       }
 
-      const {surveyname} = newSurvey;
+      const { surveyname } = newSurvey;
       await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
       await this.usersSurveysService.populateSurvey(participantList, surveyname);
 
@@ -160,14 +157,10 @@ class SurveysController {
   }
 
   @Patch()
-  async manageUsersSurveys(
-    @Body() body: PushAnswerDto,
-    @GetUsername() username: string,
-  ) {
-
+  async manageUsersSurveys(@Body() body: PushAnswerDto, @GetUsername() username: string) {
     const { surveyname, answer, canSubmitMultipleAnswers = true } = body;
 
-    await this.surveyService.addAnonymousAnswer(surveyname, answer /* , username */ );
+    await this.surveyService.addAnonymousAnswer(surveyname, answer /* , username */);
 
     if (!canSubmitMultipleAnswers) {
       await this.usersSurveysService.moveSurveyFromOpenToAnsweredSurveys(username, surveyname, answer);
