@@ -100,7 +100,8 @@ class UsersSurveysService {
 
       const usersCreatedSurveys = createdSurveys.filter((survey) => survey !== surveyName) || [];
       const usersOpenSurveys = openSurveys.filter((survey) => survey !== surveyName) || [];
-      const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
+      const usersAnsweredSurveys =
+        answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
 
       const newUser: UpdateUserDto = {
         usersSurveys: {
