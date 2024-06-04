@@ -6,8 +6,8 @@ import ProfileCard from '@/pages/SchoolmanagementPage/components/profiles/Profil
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingButtonsBarClassManagement from '@/pages/SchoolmanagementPage/components/FloatingButtonsBarClassManagement';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
-import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
-import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
+import linuxRecLow from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec_low.mp4';
+import windowsRecLow from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec_low.mp4';
 import ComputerMonitoringDialog from '@/pages/SchoolmanagementPage/components/dialogs/ComputerMonitoringDialog.tsx';
 import useSchoolManagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
 import AddStudentsDialog from '@/pages/SchoolmanagementPage/components/dialogs/AddStudentsDialog.tsx';
@@ -160,7 +160,8 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
                 isAddCard={false}
                 isSelected={selectedProfiles.includes(member)}
                 onSelect={() => handleSelectProfile(member)}
-                videoUrl={count % 2 === 0 ? linuxRec : windowsRec}
+                videoUrl={count % 2 === 0 ? linuxRecLow : windowsRecLow}
+                count={count}
               />
             ))}
             <ProfileCard

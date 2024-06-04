@@ -103,6 +103,7 @@
     "react-dropzone": "^14.2.3",
     "react-file-icon": "^1.4.0",
     "react-hook-form": "^7.51.1",
+    "react-hooks-visible": "^1.1.1",
     "react-i18next": "^14.0.3",
     "react-icons": "^5.0.1",
     "react-image": "^4.1.0",
