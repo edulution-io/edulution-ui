@@ -25,9 +25,36 @@
       href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+      <style>
+        .loader:empty {
+          background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iRWJlbmVfMSIgZGF0YS1uYW1lPSJFYmVuZSAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgMjE2LjU0IDIyOC40MSI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogdXJsKCNVbmJlbmFubnRlcl9WZXJsYXVmXzExKTsKICAgICAgICBzdHJva2Utd2lkdGg6IDBweDsKICAgICAgfQogICAgPC9zdHlsZT4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iVW5iZW5hbm50ZXJfVmVybGF1Zl8xMSIgZGF0YS1uYW1lPSJVbmJlbmFubnRlciBWZXJsYXVmIDExIiB4MT0iNDkuNDQiIHkxPSIxNzQuNDMiIHgyPSIxNzQuNzEiIHkyPSI0NC4yNiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM4ZmMwNDYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTA4NGMwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xNDIuNzMsMTYzLjAxYy0xLjI5LjA1LTIuNTguMDktMy44NS4wOS0yNC4zNywwLTQ2LjY1LTguOTEtNTcuMDUtMjguMjMsNS45NC44OSwxMS44OSwxLjE5LDE3LjgzLDEuMTksNDEuOSwwLDc5LjY0LTE3LjUzLDc5LjY0LTUyLjg5LDAtMjkuNDItMjUuODUtNTEuNy02My4yOS01MS43LTQ1LjE3LDAtNzguNzQsMzIuMzktNzguNzQsODEuNDIsMCw1Ni41NCw0NS4yNCw4My41OSw5Ni4zOSw4NC4wN2w5LjA5LTMzLjk0Wk0xMTQuMjEsNjQuNDVjMTQuNTYsMCwyNy4zNCw4LjYyLDI3LjM0LDIwLjIxLDAsMTYuMzQtMjQuMzcsMjMuNDctNDkuMzMsMjMuNDctNS42NSwwLTEwLjk5LS4zLTE2LjM0LTEuMTkuODktMjkuNzEsMjAuNS00Mi40OSwzOC4zMy00Mi40OVoiLz4KPC9zdmc+");
+          position: absolute;
+          top: calc(50% - 4em);
+          left: calc(50% - 4em);
+          width: 5em;
+          height: 5em;
+          animation: spin 25s infinite ease-in;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+            animation-timing-function: ease-in;
+          }
+          100% {
+            transform: rotate(30000deg);
+            animation-timing-function: ease-in;
+          }
+        }
+
+        body {
+          background-color: black;
+          font-family: Lato;
+        }
+      </style>
   </head>
-  <body>
-    <div id="root"></div>
+  <body class="bg-global">
+    <div id="root" class="loader"></div>
     <script
       type="module"
       src="./src/main.tsx"
