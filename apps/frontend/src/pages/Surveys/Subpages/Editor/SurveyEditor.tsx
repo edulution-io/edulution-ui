@@ -14,14 +14,13 @@ import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/Pr
 
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
-import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 
 const SurveyEditor = () => {
   // const { user } = useUserStore();
-  const { selectedPageView, selectedSurvey } = useSurveysPageStore();
+  const { selectedSurvey } = useSurveysPageStore();
   const { commitSurvey, isSaving, error } = useEditorStore();
-  const { openPropagateSurveyDialog } = usePropagateSurveyDialogStore();
+  const { openPropagateSurveyDialog, closePropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
   const [editorSurveyText, setEditorSurveyText] = React.useState<string | undefined>(JSON.stringify(selectedSurvey?.survey));
 
@@ -69,17 +68,6 @@ const SurveyEditor = () => {
     defaultValues: initialFormValues,
   });
 
-  const createNew = () => {
-    form.setValue('surveyname', createSurveyName());
-    form.setValue('survey', undefined);
-    form.setValue('participants', []);
-    form.setValue('saveNo', 0);
-    form.setValue('created', new Date());
-    form.setValue('expires', undefined);
-    form.setValue('isAnonymous', false);
-    form.setValue('canSubmitMultipleAnswers', false);
-  };
-
   const saveSurvey = async () => {
     const {
       surveyname,
@@ -104,6 +92,7 @@ const SurveyEditor = () => {
         canSubmitMultipleAnswers,
       );
       setEditorSurveyText(JSON.stringify(updatedSurvey!.survey));
+      closePropagateSurveyDialog();
     } catch (error) {
       setEditorSurveyText(survey!);
       console.error(error);
@@ -136,13 +125,6 @@ const SurveyEditor = () => {
             text={t(SurveyButtonProps.Save.title)}
             onClick={openPropagateSurveyDialog}
           />
-          {selectedPageView === PageView.CREATED_SURVEYS ? (
-            <FloatingActionButton
-              icon={SurveyButtonProps.Abort.icon}
-              text={t(SurveyButtonProps.Abort.title)}
-              onClick={createNew}
-            />
-          ) : null}
         </div>
       </TooltipProvider>
       <PropagateSurveyDialog

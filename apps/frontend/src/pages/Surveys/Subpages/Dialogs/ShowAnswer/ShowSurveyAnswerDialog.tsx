@@ -50,7 +50,7 @@ const ShowSurveyAnswerDialog = (props: ShowSurveyAnswerDialogProps) => {
         />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            {t('survey.error')}: {error.message}
+            {'Survey Error'}: {error.message}
           </div>
         ) : null}
       </ScrollArea>

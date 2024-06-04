@@ -107,9 +107,9 @@
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "openSurveys": "Offen",
-    "createdSurveys": "Eigene",
-    "answeredSurveys": "Beantwortet"
+    "openSurveys": "Offene Umfragen",
+    "createdSurveys": "Eigene Umfragen",
+    "answeredSurveys": "Schon beantwortet"
   },
   "survey": {
     "title": "UMFRAGEN",
@@ -126,6 +126,10 @@
     "load": "Lade",
     "answer": "Abgabe",
     "result": "Resultat",
+    "resultVisualization": "Resultat (Panel)",
+    "resultingVisualization": "Die Abgaben der Teilnehmer dargestellt in verschiedenen Panels",
+    "resultTable": "Resultat (Tabelle)",
+    "resultingTable": "Die Abgaben der Teilnehmer dargestellt in einer Tabelle",
     "resulting": "Ihre hochgeladene Abgabe",
     "create": "Neue erstellen",
     "delete": "löschen",

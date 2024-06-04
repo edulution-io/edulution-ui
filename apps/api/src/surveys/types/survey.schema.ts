@@ -14,6 +14,9 @@ export class Survey {
   @Prop({ type: Array<string>, required: true })
   participants: string[];
 
+  // @Prop({ type: Array<string>, required: false })
+  // participated?: string[];
+
   @Prop({ type: Array<string>, required: false })
   anonymousAnswers: string[];
 

@@ -6,15 +6,17 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useShowSurveyResultsDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
+import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 import useShowSurveyResultsTableDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
+import ShowSurveyResultsTableDialog
+  from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
 
 const AnsweredSurveysPage = () => {
   const {
@@ -57,14 +59,14 @@ const AnsweredSurveysPage = () => {
                 onClick={openSurveyAnswerDialog}
               />
               <FloatingActionButton
-                icon={SurveyButtonProps.Results.icon}
-                text={t(SurveyButtonProps.Results.title)}
-                onClick={openSurveyResultsTableDialog}
+                icon={SurveyButtonProps.ResultingPanel.icon}
+                text={t(SurveyButtonProps.ResultingPanel.title)}
+                onClick={openSurveyResultsDialog}
               />
               <FloatingActionButton
-                icon={SurveyButtonProps.Results.icon}
-                text={t(SurveyButtonProps.Results.title)}
-                onClick={openSurveyResultsDialog}
+                icon={SurveyButtonProps.ResultingTable.icon}
+                text={t(SurveyButtonProps.ResultingTable.title)}
+                onClick={openSurveyResultsTableDialog}
               />
             </>
           ) : null}
@@ -76,6 +78,7 @@ const AnsweredSurveysPage = () => {
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
+      <ShowSurveyResultsTableDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>
   );

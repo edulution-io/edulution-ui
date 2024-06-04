@@ -4,7 +4,6 @@ import eduApi from '@/api/eduApi';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SURVEY_ENDPOINT from '@/pages/Surveys/Subpages/components/survey-endpoint.ts';
 import UsersSurveysTypes from '@/pages/Surveys/Subpages/components/types/users-surveys-table-type';
-import { SurveyAnswer } from '@/pages/Surveys/Subpages/components/types/survey-answer';
 
 interface ShowSurveyResultsTableDialogStore {
   isOpenSurveyResultsTableDialog: boolean;
@@ -17,8 +16,8 @@ interface ShowSurveyResultsTableDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
 
-  answers: SurveyAnswer[]; // JSON[];
-  getAllSurveyAnswers: (surveyname: string, participants: Attendee[]) => Promise<SurveyAnswer[] | undefined>;
+  answers: string[];
+  getAllSurveyAnswers: (surveyname: string, participants: Attendee[]) => Promise<string[] | undefined>;
 }
 
 const initialState: Partial<ShowSurveyResultsTableDialogStore> = {
@@ -36,12 +35,11 @@ const useShowSurveyResultsTableDialogStore = create<ShowSurveyResultsTableDialog
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
-  getAllSurveyAnswers: async (surveyName: string, participants: Attendee[]): Promise<SurveyAnswer[] | undefined> => {
+  getAllSurveyAnswers: async (surveyName: string, participants: Attendee[]): Promise<string[] | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<SurveyAnswer[]>(SURVEY_ENDPOINT, {
-        params: { search: UsersSurveysTypes.ANSWER, surveyname: surveyName },
-        data: { participants: participants, isAnonymous: false },
+      const response = await eduApi.get<string[]>(SURVEY_ENDPOINT, {
+        params: { search: UsersSurveysTypes.ANSWERS, surveyname: surveyName, participants: participants, isAnonymous: false },
       });
       const answers = response.data;
       set({ answers, isLoading: false });

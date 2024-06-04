@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Model } from 'survey-core';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
-import { SurveyAnswer } from '@/pages/Surveys/Subpages/components/types/survey-answer';
+import 'tabulator-tables/dist/css/tabulator.min.css';
+import 'survey-analytics/survey.analytics.tabulator.min.css';
 
 interface SurveyResultsTableProps {
   surveyFormula: string;
-  answers: SurveyAnswer[];
+  answers: JSON[];
 }
 
 const SurveyResultsTable = (props: SurveyResultsTableProps) => {
@@ -28,6 +29,16 @@ const SurveyResultsTable = (props: SurveyResultsTableProps) => {
     );
     setSurveyDataTable(surveyDataTable);
   }
+
+  useEffect(() => {
+    surveyDataTable?.render("surveyDataTable");
+    const component = document.getElementById('surveyDataTable');
+    if (component) {
+      return () => {
+        component.innerHTML = '';
+      };
+    }
+  }, [surveyDataTable]);
 
   return (
     <div id="surveyDataTable" />

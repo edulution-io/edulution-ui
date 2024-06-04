@@ -1,6 +1,5 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import 'survey-creator-core/i18n/german';
@@ -15,6 +14,7 @@ interface EditorProps {
   error: Error | null;
 }
 
+localization.currentLocale = 'de';
 const Editor = (props: EditorProps) => {
   const {
     form,
@@ -30,8 +30,6 @@ const Editor = (props: EditorProps) => {
     showJSONEditorTab: false,
     maxNestedPanels: 0,
   };
-
-  const { t } = useTranslation();
 
   const creator = new SurveyCreator(creatorOptions);
 
@@ -58,7 +56,7 @@ const Editor = (props: EditorProps) => {
       />
       {error ? (
         <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-          {t('conferences.error')}: {error.message}
+          {'Survey-Error'}: {error.message}
         </div>
       ) : null}
     </>

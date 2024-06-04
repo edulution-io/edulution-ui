@@ -107,9 +107,9 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
-    "openSurveys": "Offen",
-    "createdSurveys": "Own",
-    "answeredSurveys": "Beantwortet"
+    "openSurveys": "Open surveys",
+    "createdSurveys": "Owned surveys",
+    "answeredSurveys": "Already Answered"
   },
   "survey": {
     "title": "SURVEYS",
@@ -126,6 +126,10 @@
     "load": "Load",
     "answer": "Your answer",
     "result": "Result",
+    "resultVisualization": "Results (Panel)",
+    "resultingVisualization": "The collected answers of a survey visualized in panels",
+    "resultTable": "Results (Table)",
+    "resultingTable": "The collected answers of a survey presented in a table",
     "resulting": "Your commited answer",
     "create": "Create new",
     "delete": "Delete",

@@ -38,24 +38,22 @@ const ShowSurveyResultsTableDialog = (props: ShowSurveyResultsTableDialogProps) 
 
   }, [survey, isOpenSurveyResultsTableDialog]);
 
-  if (!survey) {
-    return null;
-  }
-
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
 
     if (!survey?.survey) return <div>{t('survey.noFormula')}</div>;
 
+    if (!answers || answers.length == 0) return <div>{t('survey.noAnswer')}</div>;
+
     return (
       <ScrollArea>
         <SurveyResultsTable
           surveyFormula={survey.survey}
-          answers={answers}
+          answers={answers.map((answer) => JSON.parse(answer))}
         />
         {error ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            {t('survey.error')}: {error.message}
+            {'Survey Error'}: {error.message}
           </div>
         ) : null}
       </ScrollArea>
@@ -67,7 +65,7 @@ const ShowSurveyResultsTableDialog = (props: ShowSurveyResultsTableDialogProps) 
       isOpen={isOpenSurveyResultsTableDialog}
       trigger={trigger}
       handleOpenChange={isOpenSurveyResultsTableDialog ? closeSurveyResultsTableDialog : openSurveyResultsTableDialog}
-      title={t('survey.resulting')}
+      title={t('survey.resultingTable')}
       body={getDialogBody()}
       // desktopContentClassName="min-h-[75%] max-w-[85%]"
     />

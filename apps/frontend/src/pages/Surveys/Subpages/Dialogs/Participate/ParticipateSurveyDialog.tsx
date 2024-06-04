@@ -53,10 +53,10 @@ const ParticipateSurveyDialog = (props: ParticipateSurveyDialogProps) => {
       throw new Error('Invalid form data');
     }
 
-    await commitAnswer(survey.surveyname, answer, options);
+    commitAnswer(survey.surveyname, answer, options);
 
-    await updateOpenSurveys();
-    await updateAnsweredSurveys();
+    updateOpenSurveys();
+    updateAnsweredSurveys();
 
     closeParticipateSurveyDialog();
   };
