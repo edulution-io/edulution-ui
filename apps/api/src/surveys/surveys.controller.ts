@@ -158,7 +158,7 @@ class SurveysController {
 
   @Patch()
   async manageUsersSurveys(@Body() body: PushAnswerDto, @GetUsername() username: string) {
-    const { surveyname, answer, canSubmitMultipleAnswers = true } = body;
+    const { surveyname, answer, canSubmitMultipleAnswers = false } = body;
 
     await this.surveyService.addAnonymousAnswer(surveyname, answer /* , username */);
 
