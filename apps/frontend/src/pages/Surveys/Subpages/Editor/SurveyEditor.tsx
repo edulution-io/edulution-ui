@@ -7,7 +7,6 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import { createSurveyName } from '@/pages/Surveys/Subpages/components/create-survey-name';
 import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
@@ -15,10 +14,14 @@ import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/Pr
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import {Survey} from "@/pages/Surveys/Subpages/components/types/survey.ts";
 
-const SurveyEditor = () => {
-  // const { user } = useUserStore();
-  const { selectedSurvey } = useSurveysPageStore();
+interface SurveyEditorProps {
+  selectedSurvey?: Survey;
+}
+
+const SurveyEditor = (props: SurveyEditorProps) => {
+  const { selectedSurvey } = props;
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog, closePropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
@@ -29,7 +32,7 @@ const SurveyEditor = () => {
   const initialFormValues: EditorFormData = {
     surveyname: selectedSurvey?.surveyname || createSurveyName(),
     survey: selectedSurvey?.survey || undefined,
-    participants: selectedSurvey?.participants || [],
+    participants: [],
     saveNo: selectedSurvey?.saveNo || 0,
     created: selectedSurvey?.created || new Date(),
     expires: selectedSurvey?.expires || undefined,
@@ -37,6 +40,18 @@ const SurveyEditor = () => {
     canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
     invitedGroups: [],
   };
+
+  const emptyFormValues: EditorFormData = {
+    surveyname: createSurveyName(),
+    survey: undefined,
+    participants: [],
+    saveNo: 0,
+    created: new Date(),
+    expires: undefined,
+    isAnonymous: false,
+    canSubmitMultipleAnswers: false,
+    invitedGroups: [],
+  }
 
   const formSchema = z.object({
     surveyname: z.string(),
@@ -67,6 +82,11 @@ const SurveyEditor = () => {
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
   });
+
+  const resetSurvey = () => {
+    form.reset(emptyFormValues);
+    setEditorSurveyText('');
+  }
 
   const saveSurvey = async () => {
     const {
@@ -124,6 +144,11 @@ const SurveyEditor = () => {
             icon={SurveyButtonProps.Save.icon}
             text={t(SurveyButtonProps.Save.title)}
             onClick={openPropagateSurveyDialog}
+          />
+          <FloatingActionButton
+            icon={SurveyButtonProps.Abort.icon}
+            text={t(SurveyButtonProps.Abort.title)}
+            onClick={resetSurvey}
           />
         </div>
       </TooltipProvider>

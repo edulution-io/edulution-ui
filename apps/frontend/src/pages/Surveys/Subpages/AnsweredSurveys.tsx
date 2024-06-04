@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -11,10 +10,22 @@ import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participat
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 // import useShowSurveyResultsTableDialogStore
 //   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
+// import ShowSurveyResultsTableDialog
+//   from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
 
-const AnsweredSurveysPage = () => {
+interface AnsweredSurveysPageProps {
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
+  answeredSurveys: Survey[];
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+  isFetchingAnsweredSurveys: boolean;
+}
+
+const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
   const {
     selectedSurvey,
     setSelectedSurvey,
@@ -22,7 +33,8 @@ const AnsweredSurveysPage = () => {
     updateOpenSurveys,
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
-  } = useSurveysPageStore();
+  } = props;
+
   // const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
   const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();

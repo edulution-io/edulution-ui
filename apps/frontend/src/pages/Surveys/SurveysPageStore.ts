@@ -15,8 +15,7 @@ interface SurveysPageStore {
   setPageViewSurveysManagement: () => void;
 
   selectedSurvey: Survey | undefined;
-  resetSelectedSurvey: () => void;
-  setSelectedSurvey: (survey: Survey) => void;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
 
   setSurveyActionCreate: () => void;
   setSurveyActionAnswer: () => void;
@@ -83,8 +82,7 @@ const useSurveysPageStore = create<SurveysPageStore>((set) => ({
   setPageViewSurveyCreator: () => set({ selectedSurvey: undefined, selectedPageView: PageView.SURVEY_CREATOR }),
   setPageViewSurveysManagement: () => set({ selectedPageView: PageView.MANAGE_SURVEYS }),
 
-  resetSelectedSurvey: () => set({ selectedSurvey: undefined }),
-  setSelectedSurvey: (survey: Survey) => set({ selectedSurvey: survey }),
+  setSelectedSurvey: (survey: Survey | undefined) => set({ selectedSurvey: survey }),
 
   updateOpenSurveys: async (): Promise<Survey[]> => {
     set({ errorFetchingOpenSurveys: null, isFetchingOpenSurveys: true });
