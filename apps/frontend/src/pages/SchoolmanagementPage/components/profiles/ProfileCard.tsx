@@ -1,13 +1,13 @@
 import React, { useCallback, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
+import { useVisible } from 'react-hooks-visible';
 import QuotaBar from '@/pages/SchoolmanagementPage/components/profiles/QuotaBar';
 import { FaUserPlus } from 'react-icons/fa';
 import { Button } from '@/components/shared/Button';
 import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
 import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
 import StudentsPermissionBar from './StudentsPermissionBar';
-import useSchoolmanagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
-import { useVisible } from 'react-hooks-visible';
+import useSchoolmanagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore';
 
 interface ProfileCardProps {
   id?: string;
