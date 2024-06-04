@@ -2,13 +2,16 @@ const AIChatSetup = () => {
   return (
     <div className="mb-4">
       <p className="p-4">
-        Artificial intelligence (AI) is the simulation of human intelligence processes by machines, especially computer
-        systems. These processes include learning (the acquisition of information and rules for using the information),
-        reasoning (using rules to reach approximate or definite conclusions) and self-correction. Particular
-        applications of AI include expert systems, speech recognition and machine vision.
+        Künstliche Intelligenz (KI) ist die Simulation menschlicher Intelligenzprozesse durch Maschinen, insbesondere
+        Computer Systeme. Zu diesen Prozessen gehören das Lernen (der Erwerb von Informationen und Regeln für die
+        Nutzung dieser Informationen), Schlussfolgerungen (Anwendung von Regeln, um zu annähernden oder definitiven
+        Schlussfolgerungen zu gelangen) und Selbstkorrektur. Besondere Anwendungen der KI sind Expertensysteme,
+        Spracherkennung und maschinelles Sehen. Übersetzt mit DeepL.com (kostenlose Version)
       </p>
       <h3 className="pt-4">Ollama Setup</h3>
-      <p className="p-4">Copy the following script and run it in your terminal to install Ollama on Linux:</p>
+      <p className="p-4">
+        Kopieren Sie das folgende Skript und führen Sie es in Ihrem Terminal aus, um Ollama unter Linux zu installieren:
+      </p>
       <pre>
         <code>{`#!/bin/sh
 # This script installs Ollama on Linux.
@@ -37,51 +40,58 @@ require() {
 }`}</code>
       </pre>
 
-      <h3 className="pt-4">Installation with Default Configuration</h3>
-      <p className="p-4">If Ollama is on your computer, use this command:</p>
+      <h3 className="pt-4">Installation mit Standardkonfiguration</h3>
+      <p className="p-4">Wenn Ollama auf Ihrem Computer installiert ist, verwenden Sie diesen Befehl:</p>
       <pre>
         <code>
           {`docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main`}
         </code>
       </pre>
 
-      <p className="p-4">If Ollama is on a Different Server, use this command:</p>
-      <p className="p-4">To connect to Ollama on another server, change the OLLAMA_BASE_URL to the server's URL:</p>
+      <p className="p-4">Wenn sich Ollama auf einem anderen Server befindet, verwenden Sie diesen Befehl:</p>
+      <p className="p-4">
+        Um sich mit Ollama auf einem anderen Server zu verbinden, ändern Sie die OLLAMA_BASE_URL in die URL des Servers:
+      </p>
       <pre>
         <code>
           {`docker run -d -p 3000:8080 -e OLLAMA_BASE_URL=https://example.com -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main`}
         </code>
       </pre>
 
-      <p className="p-4">To run Open WebUI with Nvidia GPU support, use this command:</p>
+      <p className="p-4">Um Open WebUI mit Nvidia GPU-Unterstützung auszuführen, verwenden Sie diesen Befehl:</p>
       <pre>
         <code>
           {`docker run -d -p 3000:8080 --gpus all --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:cuda`}
         </code>
       </pre>
 
-      <h3 className="pt-4">Installation for OpenAI API Usage Only</h3>
-      <p className="p-4">If you're only using OpenAI API, use this command:</p>
+      <h3 className="pt-4">Installation nur für OpenAI API-Nutzung</h3>
+      <p className="p-4">Wenn Sie nur die OpenAI API verwenden, benutzen Sie diesen Befehl:</p>
       <pre>
         <code>
           {`docker run -d -p 3000:8080 -e OPENAI_API_KEY=your_secret_key -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main`}
         </code>
       </pre>
 
-      <h3 className="pt-4">Installing Open WebUI with Bundled Ollama Support</h3>
+      <h3 className="pt-4">Installation von Open WebUI mit gebündelter Ollama-Unterstützung</h3>
       <p className="p-4">
-        This installation method uses a single container image that bundles Open WebUI with Ollama, allowing for a
-        streamlined setup via a single command. Choose the appropriate command based on your hardware setup:
+        Bei dieser Installationsmethode wird ein einziges Container-Image verwendet, das Open WebUI mit Ollama bündelt
+        und so eine rationelle Einrichtung über einen einzigen Befehl. Wählen Sie den passenden Befehl für Ihre
+        Hardware-Einrichtung:
       </p>
 
-      <p className="p-4">With GPU Support: Utilize GPU resources by running the following command:</p>
+      <p className="p-4">
+        Mit GPU-Unterstützung: Nutzen Sie die GPU-Ressourcen, indem Sie den folgenden Befehl ausführen:
+      </p>
       <pre>
         <code>
           {`docker run -d -p 3000:8080 --gpus=all -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama`}
         </code>
       </pre>
 
-      <p className="p-4">For CPU Only: If you're not using a GPU, use this command instead:</p>
+      <p className="p-4">
+        Nur für CPU: Wenn Sie keinen Grafikprozessor verwenden, benutzen Sie stattdessen diesen Befehl:
+      </p>
       <pre>
         <code>
           {`docker run -d -p 3000:8080 -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama`}
@@ -89,13 +99,13 @@ require() {
       </pre>
 
       <p className="p-4">
-        Both commands facilitate a built-in, hassle-free installation of both Open WebUI and Ollama, ensuring that you
-        can get everything up and running swiftly.
+        Beide Befehle ermöglichen eine integrierte, mühelose Installation von Open WebUI und Ollama, so dass Sie alles
+        schnell zum Laufen bringen können.
       </p>
 
       <p className="p-4">
-        After installation, you can access Open WebUI at <a href="http://localhost:3000">http://localhost:3000</a>.
-        Enjoy! 😄
+        Nach der Installation können Sie Open WebUI unter <a href="http://localhost:3000">http://localhost:3000</a>{' '}
+        aufrufen. Viel Spaß! 😄
       </p>
     </div>
   );

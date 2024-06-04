@@ -1,24 +1,26 @@
 const AiIntroduction = () => {
   return (
     <div className="mb-4">
-      <h2 className="text-xl font-semibold">What is AI?</h2>
+      <h2 className="text-xl font-semibold">Was ist AI?</h2>
       <p>
-        Artificial intelligence (AI) is the simulation of human intelligence processes by machines, especially computer
-        systems. These processes include learning (the acquisition of information and rules for using the information),
-        reasoning (using rules to reach approximate or definite conclusions) and self-correction. Particular
-        applications of AI include expert systems, speech recognition and machine vision.
+        Künstliche Intelligenz (KI) ist die Simulation menschlicher Intelligenzprozesse durch Maschinen, insbesondere
+        Computer Systeme. Zu diesen Prozessen gehören das Lernen (der Erwerb von Informationen und Regeln für die
+        Nutzung dieser Informationen), Schlussfolgerungen (Anwendung von Regeln, um zu annähernden oder definitiven
+        Schlussfolgerungen zu gelangen) und Selbstkorrektur. Besondere Anwendungen der KI sind Expertensysteme,
+        Spracherkennung und maschinelles Sehen.
       </p>
-      <h2 className="text-xl font-semibold">What is Machine Learning?</h2>
+      <h2 className="text-xl font-semibold">Was ist maschinelles Lernen??</h2>
       <p>
-        Machine learning is an application of artificial intelligence (AI) that provides systems the ability to
-        automatically learn and improve from experience without being explicitly programmed. Machine learning focuses on
-        the development of computer programs that can access data and use it learn for themselves.
+        Maschinelles Lernen ist eine Anwendung der künstlichen Intelligenz (KI), die Systemen die Fähigkeit verleiht
+        automatisch zu lernen und sich durch Erfahrung zu verbessern, ohne ausdrücklich programmiert zu werden.
+        Maschinelles Lernen konzentriert sich auf die Entwicklung von Computerprogrammen, die auf Daten zugreifen und
+        diese nutzen können, um für sich selbst zu lernen.
       </p>
-      <h2 className="text-xl font-semibold">What is Deep Learning?</h2>
+      <h2 className="text-xl font-semibold">Was ist Deep Learning??</h2>
       <p>
-        Deep learning is a subset of machine learning in artificial intelligence (AI) that has networks capable of
-        learning unsupervised from data that is unstructured or unlabeled. Also known as deep neural learning or deep
-        neural network.
+        Deep Learning ist ein Teilbereich des maschinellen Lernens in der künstlichen Intelligenz (KI), der über
+        Netzwerke verfügt, die in der Lage sind die in der Lage sind, unüberwacht aus unstrukturierten oder nicht
+        beschrifteten Daten zu lernen. Auch bekannt als tiefes neuronales Lernen oder tiefes neuronales Netzwerk.
       </p>
     </div>
   );

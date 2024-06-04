@@ -79,6 +79,7 @@ const VDIFrame = () => {
       GUAC_DATA_SOURCE: dataSource,
       GUAC_WIDTH: screenWidth - 56,
       GUAC_HEIGHT: screenHeight,
+      GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
       GUAC_AUDIO: ['audio/L8', 'audio/L16'],
       GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
@@ -102,6 +103,14 @@ const VDIFrame = () => {
     mouse.onmouseup = guac.sendMouseState.bind(guac);
     // @ts-expect-error due to readability
     mouse.onmousemove = guac.sendMouseState.bind(guac);
+
+    const touch = new Guacamole.Mouse.Touchscreen(guac.getDisplay().getElement());
+    // @ts-expect-error due to readability
+    touch.onmousedown = guac.sendTouchState.bind(guac);
+    // @ts-expect-error due to readability
+    touch.onmouseup = guac.sendTouchState.bind(guac);
+    // @ts-expect-error due to readability
+    touch.onmousemove = guac.sendTouchState.bind(guac);
 
     const keyboard = new Guacamole.Keyboard(document);
     keyboard.onkeydown = (keysym) => guac.sendKeyEvent(1, keysym);

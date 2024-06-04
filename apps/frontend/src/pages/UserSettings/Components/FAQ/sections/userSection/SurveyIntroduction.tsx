@@ -1,11 +1,11 @@
 const SurveyIntroduction = () => {
   return (
     <div className="mb-4">
-      <h2 className="text-xl font-semibold">Survey Introduction</h2>
       <p className="faq-section-description">
-        The Survey app allows you to create and share surveys with your students.
-        The Creation of surveys is easy and intuitive, and you can customize the questions and answers to suit your needs.
-        That way you can create a polls to get feedback or opinions, quizzes to test your students, or any other type of survey.
+        Mit der Umfrage-App können Sie Umfragen erstellen und mit Ihren Schülern teilen. Die Erstellung von Umfragen ist
+        einfach und intuitiv, und Sie können die Fragen und Antworten an Ihre Bedürfnisse anpassen. Auf diese Weise
+        können Sie Umfragen erstellen um Feedback oder Meinungen einzuholen, Quizfragen, um Ihre Schüler zu testen, oder
+        jede andere Art von Umfrage.
       </p>
     </div>
   );

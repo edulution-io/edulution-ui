@@ -1,10 +1,14 @@
 const FilemanagerIntroduction = () => {
   return (
     <div className="mb-4">
-      <h2 className="text-xl font-semibold">Filemanager</h2>
       <p className="mt-2">
-        The Filemanager is a tool that allows you to manage your files and folders. You can upload, download, delete,
-        and move files and folders. You can also create new folders and files, and rename existing ones.
+        Ein Filemanager ist ein Programm, das Benutzern dabei hilft, alle Dateien auf ihrem Computer zu verwalten. Mit
+        einem Dateimanager können Sie Dateien anzeigen, bearbeiten, kopieren und löschen. Außerdem ermöglicht er das
+        Erstellen neuer Ordner und Dateien sowie das Umbenennen von vorhandenen Dateien. In der Regel zeigt der
+        Dateimanager die Datei- und Ordnerhierarchie an und bietet Funktionen zum Erstellen, Kopieren, Verschieben,
+        Umbenennen und Löschen von Ordnern sowie zum Kopieren, Verschieben, Umbenennen und Löschen von Dateien. Wenn Sie
+        also Ihre Dateien organisieren oder auf Ihrem Computer verwalten möchten, ist ein Dateimanager ein
+        unverzichtbares Werkzeug! 📂👍
       </p>
     </div>
   );

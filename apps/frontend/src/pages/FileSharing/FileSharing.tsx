@@ -144,7 +144,7 @@ const FileSharingPage = () => {
                 </>
               )}
               {selectedItems.length > 0 && (
-                <div className="flex flex-row space-x-24">
+                <div className="flex flex-row space-x-2">
                   <MoveItemDialog
                     trigger={
                       <FloatingActionButton

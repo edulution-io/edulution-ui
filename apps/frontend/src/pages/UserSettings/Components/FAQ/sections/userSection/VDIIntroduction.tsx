@@ -1,27 +1,25 @@
 const VDIIntroduction = () => {
   return (
     <div className="mb-4">
-      <h2 className="text-xl font-semibold">VDI Introduction</h2>
       <p>
-        VDI stands for Virtual Desktop Infrastructure. It is a technology that allows users to access a desktop
-        operating system and applications from a remote location. VDI is typically used by organizations to provide
-        employees with access to their work desktops from anywhere, at any time, using any device.
+        VDI steht für Virtual Desktop Infrastructure. Es handelt sich um eine Technologie, die es den Nutzern
+        ermöglicht, auf ein Desktop Betriebssystem und Anwendungen von einem entfernten Standort aus zugreifen können.
+        VDI wird in der Regel von Unternehmen eingesetzt, um den Mitarbeitern den Zugriff auf ihre Arbeitsdesktops von
+        jedem Ort, zu jeder Zeit und mit jedem Gerät zu ermöglichen.
       </p>
       <p>
-        VDI works by hosting desktop operating systems and applications on a centralized server or cloud environment.
-        Users can then access their virtual desktops using a client application on their device, such as a laptop,
-        tablet, or smartphone. The client application connects to the VDI server, which streams the desktop environment
-        to the user's device over the internet.
+        Bei VDI werden Desktop-Betriebssysteme und Anwendungen auf einem zentralen Server oder in einer Cloud-Umgebung
+        gehostet. Die Benutzer können dann über eine Client-Anwendung auf ihrem Gerät, z. B. einem Laptop, Tablet oder
+        Smartphone, auf ihre virtuellen Desktops zugreifen, Tablet oder Smartphone. Die Client-Anwendung stellt eine
+        Verbindung mit dem VDI-Server her, der die Desktop-Umgebung über das Internet auf das Gerät des Benutzers
+        streamt.
       </p>
       <p>
-        VDI offers several benefits, including improved security, centralized management, and increased flexibility for
-        users. It allows organizations to provide employees with secure access to their work desktops from anywhere,
-        without the need for a physical desktop computer. VDI is also useful for remote work, as it allows employees to
-        access their work desktops from home or other locations.
-      </p>
-      <p>
-        In this section, we will cover the basics of VDI, including how it works, its benefits, and how to get started
-        with VDI.
+        VDI bietet eine Reihe von Vorteilen, darunter verbesserte Sicherheit, zentralisierte Verwaltung und mehr
+        Flexibilität für Benutzer. Sie ermöglicht es Unternehmen, ihren Mitarbeitern einen sicheren Zugang zu ihren
+        Arbeits-Desktops von überall aus zu ermöglichen, ohne dass ein physischer Desktop-Computer erforderlich ist. VDI
+        ist auch für die Arbeit an entfernten Standorten nützlich, da es den Mitarbeitern ermöglicht von zu Hause oder
+        von anderen Standorten aus auf ihre Arbeits-Desktops zugreifen können.
       </p>
     </div>
   );
