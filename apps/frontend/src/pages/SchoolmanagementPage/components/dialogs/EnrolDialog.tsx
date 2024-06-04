@@ -81,10 +81,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <ScrollArea className="max-h-[80vh] min-w-[50vh] overflow-auto">
-        <DialogContentSH
-          variant={'large'}
-          className="text-black"
-        >
+        <DialogContentSH className="text-black">
           <DialogTitleSH>{title}</DialogTitleSH>
           <div className="min-w-[50vh]  p-4">
             {showPropertiesSection && properties.length > 0 && (
