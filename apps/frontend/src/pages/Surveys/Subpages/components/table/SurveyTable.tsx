@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { useTranslation } from 'react-i18next';
+import Checkbox from '@/components/ui/Checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
@@ -8,14 +9,83 @@ import SurveyTableHeaders from '@/pages/Surveys/Subpages/components/table/survey
 interface SurveyTableProps {
   title: string;
   surveys: Survey[];
-  setSelectedSurvey: (survey: Survey) => void;
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
   isLoading: boolean;
 }
 
 const SurveyTable = (props: SurveyTableProps) => {
-  const { title, surveys, setSelectedSurvey, isLoading } = props;
+  const { title, surveys, selectedSurvey, setSelectedSurvey, isLoading } = props;
 
   const { t } = useTranslation();
+
+  const surveyRows = useMemo(() => (
+    surveys.map((survey: Survey) => {
+      const isSelectedSurvey = selectedSurvey?.surveyname === survey.surveyname;
+      if (!survey.survey) {
+        return null;
+      }
+      try {
+        const srv = JSON.parse(survey.survey);
+        return (
+          <TableRow
+            key={`survey_row_-_${survey.surveyname}`}
+            className="cursor-pointer"
+            onClick={() => {
+              setSelectedSurvey(survey);
+            }}
+          >
+            <TableCell>
+              <Checkbox
+                checked={isSelectedSurvey}
+                aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
+              />
+            </TableCell>
+            <TableCell className="text-white">{srv?.title || t('not-available')}</TableCell>
+            <TableCell className="text-white">
+              {survey?.created ? survey?.created.toString() : t('not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.expires ? survey?.expires.toString() : t('not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.participated?.length ? `${ survey.participated.length }/` : ''}
+              {survey?.participants?.length || 0}
+            </TableCell>
+          </TableRow>
+        );
+      } catch (e) {
+        const srv = JSON.parse(JSON.stringify(survey.survey));
+        return (
+          <TableRow
+            key={`survey_row_-_${survey.surveyname}`}
+            className="cursor-pointer"
+            onClick={() => {
+              setSelectedSurvey(survey);
+            }}
+          >
+            <TableCell>
+              <Checkbox
+                checked={isSelectedSurvey}
+                aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
+              />
+            </TableCell>
+            <TableCell className="text-white">{srv?.title || t('not-available')}</TableCell>
+            <TableCell className="text-white">
+              {survey?.created ? survey?.created.toString() : t('not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.expires ? survey?.expires.toString() : t('not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.participated?.length ? `${ survey.participated.length }/` : '0/'}
+              {survey?.participants?.length || 0}
+            </TableCell>
+          </TableRow>
+        );
+      }
+    }
+  )), [surveys, selectedSurvey]);
 
   if (isLoading) {
     return <LoadingIndicator isOpen={isLoading} />;
@@ -27,57 +97,14 @@ const SurveyTable = (props: SurveyTableProps) => {
       <Table>
         <TableHeader>
           <TableRow className="text-white">
-            {SurveyTableHeaders.map((header) => (
-              <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
-            ))}
+            <TableHead key={`tableHead-checkbox`} className="w-20px">{ }</TableHead>
+              {SurveyTableHeaders.map((header) => (
+                <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
+              ))}
           </TableRow>
         </TableHeader>
         <TableBody className="container">
-          {surveys.map((survey: Survey) => {
-            if (!survey.survey) {
-              return null;
-            }
-            try {
-              const srv = JSON.parse(survey.survey);
-              return (
-                <TableRow
-                  key={`survey_row_-_${survey.surveyname}`}
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setSelectedSurvey(survey);
-                  }}
-                >
-                  <TableCell className="text-white">{srv?.title || 'undefined'}</TableCell>
-                  <TableCell className="text-white">
-                    {survey?.created ? survey?.created.toString() : 'not-available'}
-                  </TableCell>
-                  <TableCell className="text-white">
-                    {/*{survey?.participated?.length ? `${ survey.participated.length }/` : ''}*/}
-                    {survey?.participants?.length || 0}
-                  </TableCell>
-                  <TableCell className="text-white">{srv?.pages?.length || 0}</TableCell>
-                </TableRow>
-              );
-            } catch (e) {
-              const srv = JSON.parse(JSON.stringify(survey.survey));
-              return (
-                <TableRow
-                  key={`survey_row_-_${survey.surveyname}`}
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setSelectedSurvey(survey);
-                  }}
-                >
-                  <TableCell className="text-white">{srv?.title || 'undefined'}</TableCell>
-                  <TableCell className="text-white">
-                    {survey?.created ? survey?.created.toString() : 'not-available'}
-                  </TableCell>
-                  <TableCell className="text-white">{survey?.participants?.length || 0}</TableCell>
-                  <TableCell className="text-white">{srv?.pages?.length || 0}</TableCell>
-                </TableRow>
-              );
-              }
-          })}
+          {surveyRows}
         </TableBody>
       </Table>
     </div>

@@ -6,8 +6,8 @@ import ProfileCard from '@/pages/SchoolmanagementPage/components/profiles/Profil
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingButtonsBarClassManagement from '@/pages/SchoolmanagementPage/components/FloatingButtonsBarClassManagement';
 import { SessionInfoState } from '@/datatypes/sessionInfo';
-import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
-import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
+import linuxRecLow from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec_low.mp4';
+import windowsRecLow from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec_low.mp4';
 import ComputerMonitoringDialog from '@/pages/SchoolmanagementPage/components/dialogs/ComputerMonitoringDialog.tsx';
 import useSchoolManagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
 import AddStudentsDialog from '@/pages/SchoolmanagementPage/components/dialogs/AddStudentsDialog.tsx';
@@ -133,7 +133,10 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         <h2 className="ml-2">{contentKey}</h2>
       </div>
       <div className="flex-1 overflow-hidden p-4">
-        <ScrollArea className="max-h-[70vh] w-full overflow-auto">
+        <ScrollArea
+          className="w-full overflow-auto"
+          style={{ maxHeight: 'calc(100vh - 250px)' }}
+        >
           <div className="flex flex-wrap gap-4">
             <ComputerMonitoringDialog
               isOpen={isVideoModalOpen}
@@ -150,19 +153,23 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
               schoolClass={contentKey}
               handleOpenChange={setIsDialogOpen}
             />
-            {membersOfOpenGroup.map((member, count) => (
-              <ProfileCard
-                key={member.email}
-                id={member.id}
-                memberId={member.id}
-                name={`${member.firstName} ${member.lastName}`}
-                username={member.username}
-                isAddCard={false}
-                isSelected={selectedProfiles.includes(member)}
-                onSelect={() => handleSelectProfile(member)}
-                videoUrl={count % 2 === 0 ? linuxRec : windowsRec}
-              />
-            ))}
+            {membersOfOpenGroup
+              .concat(membersOfOpenGroup) // TODO: REMOVE!!!
+              .concat(membersOfOpenGroup)
+              .map((member, count) => (
+                <ProfileCard
+                  key={member.email}
+                  id={member.id}
+                  memberId={member.id}
+                  name={`${member.firstName} ${member.lastName}`}
+                  username={member.username}
+                  isAddCard={false}
+                  isSelected={selectedProfiles.includes(member)}
+                  onSelect={() => handleSelectProfile(member)}
+                  videoUrl={count % 2 === 0 ? linuxRecLow : windowsRecLow}
+                  count={count}
+                />
+              ))}
             <ProfileCard
               isAddCard
               onSelect={() => setIsDialogOpen(true)}

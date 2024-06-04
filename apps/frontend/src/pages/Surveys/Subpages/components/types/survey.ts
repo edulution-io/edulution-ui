@@ -9,6 +9,7 @@ export interface Survey {
   surveyname: string;
   survey: string;
   participants: Attendee[];
+  participated: string[];
   saveNo: number;
   created?: Date;
   expires?: Date;

@@ -6,8 +6,12 @@ import MailSetup from '@/pages/UserSettings/Components/ExternalIntegration/secti
 import ChatSetup from '@/pages/UserSettings/Components/ExternalIntegration/sections/ChatSetup.tsx';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { ExternalIntegration } from '@/assets/icons';
+import cn from '@/lib/utils';
+import { useMediaQuery } from 'usehooks-ts';
 
 const ExternalIntegrationComponent = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   const faqItems = [
     {
       value: 'filemangerIntroduction',
@@ -27,7 +31,7 @@ const ExternalIntegrationComponent = () => {
   ];
 
   return (
-    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-3 h-screen">
+    <div className={cn('absolute bottom-[32px] right-[57px] top-3 h-screen', isMobile ? 'left-4' : 'left-[256px]')}>
       <NativeAppHeader
         title={t('externIntegrationsetup.title')}
         description={t('externIntegrationsetup.description')}

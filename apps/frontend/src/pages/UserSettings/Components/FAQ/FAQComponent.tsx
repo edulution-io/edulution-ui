@@ -12,8 +12,12 @@ import WhiteboardIntroduction from '@/pages/UserSettings/Components/FAQ/sections
 import SurveyIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/SurveyIntroduction.tsx';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { FAQIcon } from '@/assets/icons';
+import { useMediaQuery } from 'usehooks-ts';
+import cn from '@/lib/utils';
 
 const FAQComponent = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   const faqItems = [
     {
       value: 'filemangerIntroduction',
@@ -48,7 +52,7 @@ const FAQComponent = () => {
   ];
 
   return (
-    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-3 h-screen">
+    <div className={cn('absolute bottom-[32px] right-[57px] top-3 h-screen', isMobile ? 'left-4' : 'left-[256px]')}>
       <NativeAppHeader
         title={t('faq.title')}
         description={t('faq.description')}

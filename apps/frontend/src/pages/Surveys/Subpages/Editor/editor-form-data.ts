@@ -6,6 +6,7 @@ interface EditorFormData {
   survey: string | undefined;
   saveNo: number | undefined;
   participants: Attendee[];
+  participated: string[];
   created?: Date;
   expires?: Date;
   isAnonymous?: boolean;
