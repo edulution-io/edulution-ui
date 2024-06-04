@@ -15,6 +15,9 @@ export class Survey {
   participants: string[];
 
   @Prop({ type: Array<string>, required: false })
+  participated?: string[];
+
+  @Prop({ type: Array<string>, required: false })
   anonymousAnswers: string[];
 
   @Prop({ required: false })
@@ -24,7 +27,7 @@ export class Survey {
   created: string;
 
   @Prop({ required: false })
-  expires: string;
+  expires?: string;
 
   @Prop({ required: false })
   isAnonymous: boolean;

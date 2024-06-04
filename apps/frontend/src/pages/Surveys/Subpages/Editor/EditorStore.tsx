@@ -7,6 +7,10 @@ import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 import SURVEY_ENDPOINT from '@/pages/Surveys/Subpages/components/survey-endpoint.ts';
 
 interface EditorStore {
+  isOpenPropagateSurveyDialog: boolean;
+  openPropagateSurveyDialog: () => void;
+  closePropagateSurveyDialog: () => void;
+
   Name: string;
   Formula: string;
   setCreatorText: (creatorText: string) => void;
@@ -36,6 +40,7 @@ interface EditorStore {
 }
 
 const initialState: Partial<EditorStore> = {
+  isOpenPropagateSurveyDialog: false,
   Name: '',
   Formula: '',
   saveNo: undefined,
@@ -48,6 +53,8 @@ const initialState: Partial<EditorStore> = {
 
 const useEditorStore = create<EditorStore>((set) => ({
   ...(initialState as EditorStore),
+  openPropagateSurveyDialog: () => set({ isOpenPropagateSurveyDialog: true }),
+  closePropagateSurveyDialog: () => set({ isOpenPropagateSurveyDialog: false }),
   setIsSaving: (isSaving: boolean) => set({ isSaving }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),

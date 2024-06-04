@@ -9,7 +9,7 @@ import { SessionInfoState } from '@/datatypes/sessionInfo';
 import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
 import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
 import ComputerMonitoringDialog from '@/pages/SchoolmanagementPage/components/dialogs/ComputerMonitoringDialog.tsx';
-import useSchoolmanagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
+import useSchoolManagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
 import AddStudentsDialog from '@/pages/SchoolmanagementPage/components/dialogs/AddStudentsDialog.tsx';
 import { t } from 'i18next';
 import StartExamModeDialog from '@/pages/SchoolmanagementPage/components/dialogs/StartExamModeDialog.tsx';
@@ -26,19 +26,20 @@ interface ManageContentPageProps {
 
 const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, contentType }) => {
   const { schoolclasses, projects, availableSessions } = useSchoolManagementStore();
-  const [currentMembers, setCurrentMembers] = useState<MemberInfo[]>([]);
+  const { setMembersOfOpenGroup, membersOfOpenGroup, setPermissionsForUser, setPermissionsForAllUsers } =
+    useSchoolManagementComponentStore();
   const [selectedProfiles, setSelectedProfiles] = useState<MemberInfo[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { isVideoModalOpen, videoModalUrl, videoModalUsername, setIsVideoModalOpen, resetVideoModal } =
-    useSchoolmanagementComponentStore();
+    useSchoolManagementComponentStore();
 
   const [shareState, setShareState] = useState(false);
   const [collectState, setCollectState] = useState(false);
   const [showFilesState, setShowFilesState] = useState(false);
   const [examState, setExamState] = useState(false);
-  const [wifiState, setWifiState] = useState(false);
-  const [internetState, setInternetState] = useState(false);
-  const [printerState, setPrinterState] = useState(false);
+  const [showWifiState, setShowWifiState] = useState(false);
+  const [showInternetState, setShowInternetState] = useState(false);
+  const [showPrinterState, setShowPrinterState] = useState(false);
 
   const navigate = useNavigate();
 
@@ -70,8 +71,8 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
       if (fullKey) members = projects[fullKey];
     }
 
-    setCurrentMembers(members || []);
-  }, []);
+    setMembersOfOpenGroup(members || []);
+  }, [contentKey, contentType, schoolclasses, projects, availableSessions, setMembersOfOpenGroup]);
 
   const removeContentParamAndNavigate = () => {
     const url = new URL(window.location.href);
@@ -87,7 +88,17 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
     );
   };
 
-  if (!currentMembers.length) {
+  const handleSetPermissionsForSelectedUsers = (permissions: Partial<MemberInfo>) => {
+    selectedProfiles.forEach((member) => setPermissionsForUser(member.id, permissions));
+    setSelectedProfiles([]);
+  };
+
+  const handleSetPermissionsForAllUsers = (permissions: Partial<MemberInfo>) => {
+    setPermissionsForAllUsers(permissions);
+    setSelectedProfiles([]);
+  };
+
+  if (!membersOfOpenGroup.length) {
     return (
       <div>
         <div className="flex flex-row items-center p-4">
@@ -141,10 +152,11 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
               schoolClass={contentKey}
               handleOpenChange={setIsDialogOpen}
             />
-            {currentMembers.map((member, count) => (
+            {membersOfOpenGroup.map((member, count) => (
               <ProfileCard
-                key={member.id}
+                key={member.email}
                 id={member.id}
+                memberId={member.id}
                 name={`${member.firstName} ${member.lastName}`}
                 username={member.username}
                 isAddCard={false}
@@ -165,9 +177,9 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         setCollectState={() => setCollectState(!collectState)}
         setShowFilesState={() => setShowFilesState(!showFilesState)}
         setExamState={() => setExamState(!examState)}
-        setWifiState={() => setWifiState(!wifiState)}
-        setInternetState={() => setInternetState(!internetState)}
-        setPrinterState={() => setPrinterState(!printerState)}
+        setWifiState={() => setShowWifiState(!showWifiState)}
+        setInternetState={() => setShowInternetState(!showInternetState)}
+        setPrinterState={() => setShowPrinterState(!showPrinterState)}
       />
       <StartExamModeDialog
         open={examState}
@@ -176,11 +188,18 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
       />
 
       <SetPermissionsToStudentsDialog
-        open={wifiState}
-        onClose={() => setWifiState(false)}
+        open={showWifiState}
+        onClose={() => {
+          setShowWifiState(false);
+          selectedProfiles.length > 0
+            ? handleSetPermissionsForSelectedUsers({ isWifiOn: false })
+            : handleSetPermissionsForAllUsers({ isWifiOn: false });
+        }}
         onConfirm={() => {
-          setWifiState(false);
-          selectedProfiles.splice(0, selectedProfiles.length);
+          setShowWifiState(false);
+          selectedProfiles.length > 0
+            ? handleSetPermissionsForSelectedUsers({ isWifiOn: true })
+            : handleSetPermissionsForAllUsers({ isWifiOn: true });
         }}
         title={t('schoolManagement.wifiSettings')}
         message={
@@ -192,11 +211,18 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         members={selectedProfiles}
       />
       <SetPermissionsToStudentsDialog
-        open={internetState}
-        onClose={() => setInternetState(false)}
+        open={showInternetState}
+        onClose={() => {
+          setShowInternetState(false);
+          selectedProfiles.length > 0
+            ? handleSetPermissionsForSelectedUsers({ isInternetOn: false })
+            : handleSetPermissionsForAllUsers({ isInternetOn: false });
+        }}
         onConfirm={() => {
-          setInternetState(false);
-          selectedProfiles.splice(0, selectedProfiles.length);
+          setShowInternetState(false);
+          selectedProfiles.length > 0
+            ? handleSetPermissionsForSelectedUsers({ isInternetOn: true })
+            : handleSetPermissionsForAllUsers({ isInternetOn: true });
         }}
         title={t('schoolManagement.internetSettings')}
         message={
@@ -208,10 +234,18 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
         members={selectedProfiles}
       />
       <SetPermissionsToStudentsDialog
-        open={printerState}
-        onClose={() => setPrinterState(false)}
+        open={showPrinterState}
+        onClose={() => {
+          setShowPrinterState(false);
+          selectedProfiles.length > 0
+            ? handleSetPermissionsForSelectedUsers({ printerAccess: false })
+            : handleSetPermissionsForAllUsers({ printerAccess: false });
+        }}
         onConfirm={() => {
-          setPrinterState(false);
+          setShowPrinterState(false);
+          selectedProfiles.length > 0
+            ? handleSetPermissionsForSelectedUsers({ printerAccess: true })
+            : handleSetPermissionsForAllUsers({ printerAccess: true });
           selectedProfiles.splice(0, selectedProfiles.length);
         }}
         title={t('schoolManagement.printerSettings')}

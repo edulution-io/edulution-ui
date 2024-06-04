@@ -15,6 +15,7 @@ interface ProfileCardProps {
   isSelected?: boolean;
   onSelect?: () => void;
   videoUrl?: string;
+  memberId?: string;
   setStudentsDialogOpen?: (isOpen: boolean) => void;
 }
 
@@ -26,13 +27,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   isSelected,
   onSelect,
   setStudentsDialogOpen,
+  memberId,
 }) => {
-  const globalQuota = Math.floor(Math.random() * (1500 - 10 + 1)) + 10;
-  const userQuota = Math.floor(Math.random() * (1500 - 10 + 1)) + 10;
   const { setIsVideoModalOpen, setVideoModalUsername, setVideoModalUrl } = useSchoolmanagementComponentStore();
   return (
     <div
-      className={`w-80 overflow-hidden rounded-lg border ${isSelected ? 'border-blue-500' : 'border-gray-300'} cursor-pointer p-4 font-sans shadow-lg`}
+      className={`w-80 overflow-hidden rounded-xl border ${isSelected ? 'border-blue-500' : 'border-gray-300'} cursor-pointer p-4 font-sans shadow-lg`}
       onClick={onSelect}
     >
       {isAddCard ? (
@@ -82,13 +82,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             <div className="flex flex-row">
               <div className="ml-4 flex flex-col justify-center">
                 <QuotaBar
-                  schoolQuota={globalQuota}
-                  userQuota={userQuota}
+                  schoolQuota={33}
+                  userQuota={46}
                 />
               </div>
             </div>
           </div>
-          <StudentsPermissionBar />
+          <StudentsPermissionBar memberId={memberId || ''} />
         </>
       )}
     </div>

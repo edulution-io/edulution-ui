@@ -8,7 +8,7 @@ const useUserSettingsMenuConfig = () => {
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntryProps = {
     title: 'usersettings.title',
     icon: UserIcon,
-    color: 'hover:bg-ciLightBlue',
+    color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
         id: 'security',

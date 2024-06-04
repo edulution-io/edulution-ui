@@ -16,8 +16,8 @@ interface ShowSurveyResultsDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
 
-  answers: JSON[];
-  getAllSurveyAnswers: (surveyname: string, participants: Attendee[]) => Promise<JSON[] | undefined>;
+  answers: string[];
+  getAllSurveyAnswers: (surveyname: string, participants: Attendee[]) => Promise<string[] | undefined>;
 }
 
 const initialState: Partial<ShowSurveyResultsDialogStore> = {
@@ -35,12 +35,11 @@ const useShowSurveyResultsDialogStore = create<ShowSurveyResultsDialogStore>((se
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
-  getAllSurveyAnswers: async (surveyName: string, participants: Attendee[]): Promise<JSON[] | undefined> => {
+  getAllSurveyAnswers: async (surveyName: string, participants: Attendee[]): Promise<string[] | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<JSON[]>(SURVEY_ENDPOINT, {
-        params: { search: UsersSurveysTypes.ANSWER, surveyname: surveyName },
-        data: { participants: participants, isAnonymous: false },
+      const response = await eduApi.get<string[]>(SURVEY_ENDPOINT, {
+        params: { search: UsersSurveysTypes.ANSWERS, surveyname: surveyName, participants: participants, isAnonymous: false },
       });
       const answers = response.data;
       set({ answers, isLoading: false });

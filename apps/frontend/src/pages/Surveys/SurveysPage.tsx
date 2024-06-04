@@ -1,4 +1,6 @@
 import React from 'react';
+import cn from '@/lib/utils';
+import { APPS } from '@/datatypes/types';
 import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view';
 import AnsweredSurveysPage from '@/pages/Surveys/Subpages/AnsweredSurveys';
 import CreatedSurveysPage from '@/pages/Surveys/Subpages/CreatedSurveys';
@@ -7,8 +9,6 @@ import SurveyManagement from '@/pages/Surveys/Subpages/SurveyManagement';
 import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useFrameStore from '@/routes/IframeStore';
-import { APPS } from '@/datatypes/types';
-import cn from '@/lib/utils';
 
 const SurveysPage = () => {
   const { selectedPageView } = useSurveysPageStore();

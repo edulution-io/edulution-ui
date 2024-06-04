@@ -5,6 +5,7 @@ import {
 } from 'react-icons/ai';
 import { BsGear } from 'react-icons/bs';
 import { FiDelete, FiEdit } from 'react-icons/fi';
+import { HiOutlineInboxIn } from "react-icons/hi";
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 
 const SurveyButtonProps = ({
@@ -47,6 +48,14 @@ const SurveyButtonProps = ({
   Results: {
     icon: HiOutlineArrowDownOnSquareStack, // AiOutlineDownSquare,
     title: 'survey.result',
+  },
+  ResultingTable: {
+    icon: HiOutlineInboxIn, // AiOutlineDownSquare,
+    title: 'survey.resultTable',
+  },
+  ResultingPanel: {
+    icon: HiOutlineArrowDownOnSquareStack, // AiOutlineDownSquare,
+    title: 'survey.resultVisualization',
   },
   Save: {
     icon: AiOutlineSave,

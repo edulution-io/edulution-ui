@@ -6,7 +6,7 @@ import PasswordChangeForm from '@/pages/UserSettings/Components/Security/compone
 
 const SecurityComponent: React.FC = () => {
   return (
-    <div>
+    <div className="pt-4">
       <PasswordChangeForm />
       <Separator className="my-1 bg-ciLightGrey" />
       <MfaUserSettings />

@@ -14,14 +14,15 @@ import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/Pr
 
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
-import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 
 const SurveyEditor = () => {
   // const { user } = useUserStore();
-  const { selectedPageView, selectedSurvey } = useSurveysPageStore();
+  const { selectedSurvey } = useSurveysPageStore();
   const { commitSurvey, isSaving, error } = useEditorStore();
-  const { openPropagateSurveyDialog } = usePropagateSurveyDialogStore();
+  const { openPropagateSurveyDialog, closePropagateSurveyDialog } = usePropagateSurveyDialogStore();
+
+  const [editorSurveyText, setEditorSurveyText] = React.useState<string | undefined>(JSON.stringify(selectedSurvey?.survey));
 
   const { t } = useTranslation();
 
@@ -67,22 +68,8 @@ const SurveyEditor = () => {
     defaultValues: initialFormValues,
   });
 
-  const createNew = () => {
-    form.setValue('surveyname', createSurveyName());
-    form.setValue('survey', undefined);
-    form.setValue('participants', []);
-    form.setValue('saveNo', 0);
-    form.setValue('created', new Date());
-    form.setValue('expires', undefined);
-    form.setValue('isAnonymous', false);
-    form.setValue('canSubmitMultipleAnswers', false);
-  };
-
   const saveSurvey = async () => {
-    const { surveyname, survey, participants, saveNo, created, expires, isAnonymous, canSubmitMultipleAnswers } =
-      form.getValues();
-
-    const updatedSurvey = await commitSurvey(
+    const {
       surveyname,
       survey,
       participants,
@@ -90,18 +77,27 @@ const SurveyEditor = () => {
       created,
       expires,
       isAnonymous,
-      canSubmitMultipleAnswers,
-    );
+      canSubmitMultipleAnswers
+    } = form.getValues();
 
-    form.setValue('surveyname', updatedSurvey?.surveyname || surveyname);
-    form.setValue('survey', updatedSurvey?.survey || survey);
-    form.setValue('participants', updatedSurvey?.participants || participants);
-    form.setValue('saveNo', updatedSurvey?.saveNo || saveNo);
-    form.setValue('created', updatedSurvey?.created || created);
-    form.setValue('expires', updatedSurvey?.expires || expires);
-    form.setValue('isAnonymous', updatedSurvey?.isAnonymous || isAnonymous);
-    form.setValue('canSubmitMultipleAnswers', updatedSurvey?.canSubmitMultipleAnswers || canSubmitMultipleAnswers);
-  };
+    try {
+      const updatedSurvey = await commitSurvey(
+        surveyname,
+        survey,
+        participants,
+        saveNo,
+        created,
+        expires,
+        isAnonymous,
+        canSubmitMultipleAnswers,
+      );
+      setEditorSurveyText(JSON.stringify(updatedSurvey!.survey));
+      closePropagateSurveyDialog();
+    } catch (error) {
+      setEditorSurveyText(survey!);
+      console.error(error);
+    }
+  }
 
   if (isSaving) return <div>Loading...</div>;
 
@@ -111,10 +107,9 @@ const SurveyEditor = () => {
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
           <Editor
             form={form}
-            survey={selectedSurvey?.survey}
+            survey={editorSurveyText} //selectedSurvey?.survey}
             saveNumber={selectedSurvey?.saveNo || 0}
-            error={error}
-          />
+            error={error}/>
           {error ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {error.message}
@@ -130,13 +125,6 @@ const SurveyEditor = () => {
             text={t(SurveyButtonProps.Save.title)}
             onClick={openPropagateSurveyDialog}
           />
-          {selectedPageView === PageView.CREATED_SURVEYS ? (
-            <FloatingActionButton
-              icon={SurveyButtonProps.Abort.icon}
-              text={t(SurveyButtonProps.Abort.title)}
-              onClick={createNew}
-            />
-          ) : null}
         </div>
       </TooltipProvider>
       <PropagateSurveyDialog

@@ -1,7 +1,7 @@
 {
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
-  "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
+  "heading": "Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
@@ -107,9 +107,9 @@
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "openSurveys": "Offen",
-    "createdSurveys": "Eigene",
-    "answeredSurveys": "Beantwortet"
+    "openSurveys": "Offene Umfragen",
+    "createdSurveys": "Eigene Umfragen",
+    "answeredSurveys": "Schon beantwortet"
   },
   "survey": {
     "title": "UMFRAGEN",
@@ -126,11 +126,15 @@
     "load": "Lade",
     "answer": "Abgabe",
     "result": "Resultat",
+    "resultVisualization": "Resultat (Panel)",
+    "resultingVisualization": "Die Abgaben der Teilnehmer dargestellt in verschiedenen Panels",
+    "resultTable": "Resultat (Tabelle)",
+    "resultingTable": "Die Abgaben der Teilnehmer dargestellt in einer Tabelle",
     "resulting": "Ihre hochgeladene Abgabe",
     "create": "Neue erstellen",
     "delete": "löschen",
     "edit": "Bearbeiten",
-    "editing": "Umfrage erstellen oder bearbeiten",
+    "editing": "Teilnehmer hinzufügen",
     "manage": "Management",
     "isAnonymous": "Die Teilnahme an der Umfrage ist Anonym",
     "canSubmitMultipleAnswers": "Mehrfache Abgaben sind erlaubt",
@@ -412,6 +416,7 @@
     "close": "Schließen"
   },
   "tooltip": {
+    "edit": "Editieren",
     "upload": "Hochladen",
     "create": {
       "file": "Datei erstellen",
@@ -466,9 +471,10 @@
     "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
     "emailIntroductionTitle": "Muss ich mir extra eine Mailadresse anlegen?",
     "learnManagementIntroductionTitle": "Was kann ich im Lernmanagement machen?",
-    "pollsIntroductionTitle": "Wie nutzte ich die Abstimmungen?",
+    "pullsIntroductionTitle": "Wie pulls erstellt und genutz werden um Programn Änderungen zu erbitten?",
     "vdiIntroductionTitle": "Wie nutze ich den virtuellen Desktop?",
-    "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?"
+    "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?",
+    "surveysIntroductionTitle": "Wie nutzte ich das Umfragen-Tool?"
   },
   "schoolManagement": {
     "title": "Klassenzimmer",
@@ -496,7 +502,9 @@
     "myGroups": "Meine Gruppen",
     "myProjects": "Meine Projekte",
     "initialPasswordHint": "Sie können das Passwort einer Klasse direkt über das Symbol drucken oder mehrere Klassen auswählen, um alle gleichzeitig auszudrucken.",
-    "downloadInitPassword": "Erst-Passwörter herunterladen",
+    "downloadInitPasswordAsText": "Erst-Passwörter .txt",
+    "downloadInitPasswordAsCSV": "Erst-Passwörter .csv",
+    "downloadInitPasswordAsPDF": "Erst-Passwörter .pdf",
     "projectPage": "Hier können Sie ein neues Projekt anlegen sowie Ihre aktuellen Projekte sehen.",
     "createProject": "Projekt anlegen",
     "newProject": "Neues Projekt",
@@ -538,10 +546,10 @@
     "fileNotFound": "Datei nicht gefunden",
     "closeFile": "Datei schließen",
     "goBack": "Zurück",
-    "closeFullScreen": "Vollbild schließen",
-    "maximize": "Vollbild öffnen",
+    "closeFullScreen": "Editor schließen",
+    "maximize": "Editieren",
     "minimize": "Minimieren",
-    "close": "Vollbild schließen"
+    "close": "Editor schließen"
   },
 
   "changePassword": {

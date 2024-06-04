@@ -7,7 +7,7 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore';
 import useFrameStore from '@/routes/IframeStore';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
-import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';

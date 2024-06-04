@@ -107,9 +107,9 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
-    "openSurveys": "Offen",
-    "createdSurveys": "Own",
-    "answeredSurveys": "Beantwortet"
+    "openSurveys": "Open surveys",
+    "createdSurveys": "Owned surveys",
+    "answeredSurveys": "Already Answered"
   },
   "survey": {
     "title": "SURVEYS",
@@ -126,11 +126,15 @@
     "load": "Load",
     "answer": "Your answer",
     "result": "Result",
+    "resultVisualization": "Results (Panel)",
+    "resultingVisualization": "The collected answers of a survey visualized in panels",
+    "resultTable": "Results (Table)",
+    "resultingTable": "The collected answers of a survey presented in a table",
     "resulting": "Your commited answer",
     "create": "Create new",
     "delete": "Delete",
     "edit": "Edit",
-    "editing": "Edit survey",
+    "editing": "Add participants",
     "isAnonymous": "Participating at the survey is anonymous",
     "canSubmitMultipleAnswers": "Participating multiple times is allowed",
     "editor": {
@@ -408,6 +412,7 @@
     "close": "Close"
   },
   "tooltip": {
+    "edit": "Edit",
     "upload": "Upload",
     "create": {
       "file": "Create file",
@@ -481,7 +486,9 @@
     "myProjects": "My Projects",
     "initialPasswordHint": "You can print the password of a class directly via the icon or select several classes to print them all at the same time.",
     "projectPage": "Here you can create a new project. You can also see all projects that have already been created.",
-    "downloadInitPassword": "Download initial password",
+    "downloadInitPasswordAsText": "Init Password .txt",
+    "downloadInitPasswordAsCSV": "Init Password .csv",
+    "downloadInitPasswordAsPDF": "Init Password .pdf",
     "createProject": "Create Project",
     "newProject": "New Project",
     "createGroup": "Create Group",
@@ -522,9 +529,9 @@
     "fileNotFound": "File not found",
     "closeFile": "Close file",
     "goBack": "Go back",
-    "maximize": "Open full screen",
+    "maximize": "Open Editor",
     "minimize": "minimalize",
-    "close": "Close full screen"
+    "close": "Close Editor"
   },
   "faq": {
     "title": "FAQ",
@@ -536,9 +543,10 @@
     "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
     "emailIntroductionTitle": "Do I have to create an extra email address?",
     "learnManagementIntroductionTitle": "What can I do in learning management?",
-    "pollsIntroductionTitle": "How do I use the polls?",
+    "pullsIntroductionTitle": "How do I use pulls?",
     "vdiIntroductionTitle": "How do I use the virtual desktop?",
-    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?"
+    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?",
+    "surveysIntroductionTitle": "How do I use the survey tool?"
   },
   "changePassword": {
     "title": "Change Password",

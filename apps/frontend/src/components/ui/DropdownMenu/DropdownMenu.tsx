@@ -8,6 +8,7 @@ import styles from './dropdownmenu.module.scss';
 export type DropdownOptions = {
   id: string;
   name: string;
+  icon?: JSX.Element; // Add this property
 };
 
 interface DropdownProps {
@@ -75,7 +76,10 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
             onClickCapture={() => selectOption(option)}
             className={clsx(styles.option, { [styles.selected]: t(option.name) === selectedVal })}
           >
-            {t(option.name)}
+            <div className="flex flex-row items-center">
+              <span className={styles.icon}>{option.icon}</span> {/* Display the icon */}
+              {t(option.name)}
+            </div>
           </div>
         ))}
       </div>
