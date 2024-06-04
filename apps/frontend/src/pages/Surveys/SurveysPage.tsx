@@ -9,6 +9,7 @@ import SurveyManagement from '@/pages/Surveys/Subpages/SurveyManagement';
 import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useFrameStore from '@/routes/IframeStore';
+import { useMediaQuery } from 'usehooks-ts';
 
 const SurveysPage = () => {
   const {
@@ -31,66 +32,78 @@ const SurveysPage = () => {
     setPageViewSurveyEditor,
 
     deleteSurvey,
-
   } = useSurveysPageStore();
   const { activeFrame } = useFrameStore();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
-  const getStyle = () => (activeFrame === APPS.SURVEYS ? 'block' : 'hidden');
+  const isFrameVisible = () => (activeFrame === APPS.SURVEYS ? 'block' : 'hidden');
 
   const getSurveyComponent = () => {
     switch (selectedPageView) {
       case PageView.OPEN_SURVEYS:
-        return <OpenSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          openSurveys={openSurveys}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          isFetchingOpenSurveys={isFetchingOpenSurveys}
-        />;
+        return (
+          <OpenSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            openSurveys={openSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingOpenSurveys={isFetchingOpenSurveys}
+          />
+        );
       case PageView.CREATED_SURVEYS:
-        return <CreatedSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          createdSurveys={createdSurveys}
-          updateCreatedSurveys={updateCreatedSurveys}
-          isFetchingCreatedSurveys={isFetchingCreatedSurveys}
-          setPageViewSurveyEditor={setPageViewSurveyEditor}
-          deleteSurvey={deleteSurvey}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-        />;
+        return (
+          <CreatedSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            createdSurveys={createdSurveys}
+            updateCreatedSurveys={updateCreatedSurveys}
+            isFetchingCreatedSurveys={isFetchingCreatedSurveys}
+            setPageViewSurveyEditor={setPageViewSurveyEditor}
+            deleteSurvey={deleteSurvey}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+          />
+        );
       case PageView.ANSWERED_SURVEYS:
-        return <AnsweredSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          answeredSurveys={answeredSurveys}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          isFetchingAnsweredSurveys={isFetchingAnsweredSurveys}
-        />;
+        return (
+          <AnsweredSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            answeredSurveys={answeredSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingAnsweredSurveys={isFetchingAnsweredSurveys}
+          />
+        );
       case PageView.SURVEY_CREATOR:
         return <SurveyEditor />;
       case PageView.SURVEY_EDITOR:
-        return <SurveyEditor
-          selectedSurvey={selectedSurvey}
-        />;
+        return <SurveyEditor selectedSurvey={selectedSurvey} />;
       case PageView.MANAGE_SURVEYS:
         return <SurveyManagement />;
       default:
-        return <OpenSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          openSurveys={openSurveys}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          isFetchingOpenSurveys={isFetchingOpenSurveys}
-        />;
+        return (
+          <OpenSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            openSurveys={openSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingOpenSurveys={isFetchingOpenSurveys}
+          />
+        );
     }
   };
 
   return (
-    <div className={cn('absolute bottom-[32px] left-[256px] right-[57px] top-0 h-screen', getStyle())}>
+    <div
+      className={cn(
+        'absolute bottom-[32px] right-[57px] top-0 h-screen',
+        isFrameVisible(),
+        isMobile ? 'left-4' : 'left-[256px]',
+      )}
+    >
       {getSurveyComponent()}
     </div>
   );
