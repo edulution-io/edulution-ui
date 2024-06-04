@@ -1,0 +1,20 @@
+
+.sa-commercial {
+  visibility: hidden;
+  height: 0px;
+}
+
+.sa-table__entries-label,
+.sa-table__entries-label--right {
+  color: rgb(155, 155, 155) !important;
+}
+
+.sa-table select {
+  color: rgb(0, 0, 0) !important;
+}
+
+.surveyDashboardContainer {
+  overflow-x: auto;
+  overflow-y: auto;
+  width: 100%;
+}

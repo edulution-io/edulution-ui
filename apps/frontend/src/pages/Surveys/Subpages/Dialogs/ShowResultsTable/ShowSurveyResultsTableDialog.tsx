@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
-import useShowSurveyResultsTableDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
-import SurveyResultsTable from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/SurveyResultsTable.tsx";
-import LoadingIndicator from "@/components/shared/LoadingIndicator.tsx";
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import SurveyTableVisualization
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/SurveyTableVisualization';
+import useShowSurveyResultsTableDialogStore
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
 
 interface ShowSurveyResultsTableDialogProps {
   survey: Survey;
@@ -46,8 +48,8 @@ const ShowSurveyResultsTableDialog = (props: ShowSurveyResultsTableDialogProps) 
     if (!answers || answers.length == 0) return <div>{t('survey.noAnswer')}</div>;
 
     return (
-      <ScrollArea>
-        <SurveyResultsTable
+      <ScrollArea className="overflow-y-auto overflow-x-auto">
+        <SurveyTableVisualization
           surveyFormula={survey.survey}
           answers={answers.map((answer) => JSON.parse(answer))}
         />
@@ -65,9 +67,9 @@ const ShowSurveyResultsTableDialog = (props: ShowSurveyResultsTableDialogProps) 
       isOpen={isOpenSurveyResultsTableDialog}
       trigger={trigger}
       handleOpenChange={isOpenSurveyResultsTableDialog ? closeSurveyResultsTableDialog : openSurveyResultsTableDialog}
-      title={t('survey.resultingTable')}
+      title={t('survey.resultingVisualization')}
       body={getDialogBody()}
-      // desktopContentClassName="min-h-[75%] max-w-[85%]"
+      desktopContentClassName="max-h-[75vh] max-w-[85%]"
     />
   );
 };

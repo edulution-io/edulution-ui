@@ -25,3 +25,15 @@
 .sa-visualizer__content {
   overflow: visible !important;
 }
+
+.sa-commercial {
+  visibility: hidden;
+  height: 0px;
+}
+
+.svc-notifier {
+  position: absolute;
+  bottom: -10px;
+  left: -10px;
+  /*transform: translate(-20px, 20px);*/
+}

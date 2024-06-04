@@ -11,10 +11,10 @@ import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
-// import useShowSurveyResultsTableDialogStore
-//   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
-// import ShowSurveyResultsTableDialog
-//   from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
+import useShowSurveyResultsTableDialogStore
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
+import ShowSurveyResultsTableDialog
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog';
 
 interface AnsweredSurveysPageProps {
   selectedSurvey: Survey | undefined;
@@ -35,7 +35,7 @@ const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
     isFetchingAnsweredSurveys,
   } = props;
 
-  // const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
+  const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
   const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
@@ -71,11 +71,11 @@ const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
                 text={t(SurveyButtonProps.ResultingPanel.title)}
                 onClick={openSurveyResultsDialog}
               />
-              {/* <FloatingActionButton */}
-              {/*   icon={SurveyButtonProps.ResultingTable.icon} */}
-              {/*   text={t(SurveyButtonProps.ResultingTable.title)} */}
-              {/*   onClick={openSurveyResultsTableDialog} */}
-              {/* /> */}
+              <FloatingActionButton
+                icon={SurveyButtonProps.ResultingTable.icon}
+                text={t(SurveyButtonProps.ResultingTable.title)}
+                onClick={openSurveyResultsTableDialog}
+              />
             </>
           ) : null}
         </div>
@@ -86,7 +86,7 @@ const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
-      {/* <ShowSurveyResultsTableDialog survey={selectedSurvey!} /> */}
+      <ShowSurveyResultsTableDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>
   );

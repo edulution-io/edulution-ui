@@ -29,8 +29,8 @@ const initialState: Partial<ShowSurveyResultsTableDialogStore> = {
 
 const useShowSurveyResultsTableDialogStore = create<ShowSurveyResultsTableDialogStore>((set) => ({
   ...(initialState as ShowSurveyResultsTableDialogStore),
-  openSurveyResultsDialog: () => set({ isOpenSurveyResultsTableDialog: true }),
-  closeSurveyResultsDialog: () => set({ isOpenSurveyResultsTableDialog: false }),
+  openSurveyResultsTableDialog: () => set({ isOpenSurveyResultsTableDialog: true }),
+  closeSurveyResultsTableDialog: () => set({ isOpenSurveyResultsTableDialog: false }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
