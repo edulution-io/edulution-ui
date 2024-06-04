@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import QuotaBar from '@/pages/SchoolmanagementPage/components/profiles/QuotaBar';
 import { FaUserPlus } from 'react-icons/fa';
 import { Button } from '@/components/shared/Button';
 import linuxRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/linuxRec.mp4';
+import windowsRec from 'apps/frontend/src/pages/SchoolmanagementPage/mockVyron/windowsRec.mp4';
 import StudentsPermissionBar from './StudentsPermissionBar';
 import useSchoolmanagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
+import { useVisible } from 'react-hooks-visible';
 
 interface ProfileCardProps {
   id?: string;
@@ -17,6 +19,7 @@ interface ProfileCardProps {
   videoUrl?: string;
   memberId?: string;
   setStudentsDialogOpen?: (isOpen: boolean) => void;
+  count?: number;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -28,8 +31,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onSelect,
   setStudentsDialogOpen,
   memberId,
+  count = 0,
 }) => {
   const { setIsVideoModalOpen, setVideoModalUsername, setVideoModalUrl } = useSchoolmanagementComponentStore();
+  const [playerContainerRef, isPlayerVisible] = useVisible<HTMLDivElement>();
+  const playerRef = useRef<any>();
+  const [isReady, setIsReady] = useState(false);
+
+  const getRandom = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const onReady = useCallback(() => {
+    const seconds = getRandom(0, count % 2 === 0 ? 17 : 36);
+    if (!isReady) {
+      if (playerRef.current) {
+        playerRef.current?.seekTo(seconds, 'seconds');
+      }
+      setIsReady(true);
+    }
+  }, [isReady]);
 
   return (
     <div
@@ -55,24 +76,27 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <div className="flex">
             <div className="flex w-1/2 items-center justify-center bg-transparent">
               <div
+                ref={playerContainerRef}
                 className="relative w-full"
                 style={{ paddingBottom: '56.25%' }}
                 role="button"
                 onClick={(e) => {
-                  setVideoModalUrl(videoUrl || linuxRec);
+                  setVideoModalUrl(count % 2 === 0 ? linuxRec : windowsRec); // TODO: Should be `videoUrl`
                   setVideoModalUsername(name || '');
                   setIsVideoModalOpen(true);
                   e.stopPropagation();
                 }}
               >
                 <ReactPlayer
+                  onReady={onReady}
+                  ref={playerRef}
                   url={videoUrl || linuxRec}
                   config={{
                     file: {
                       forceVideo: true,
                     },
                   }}
-                  playing
+                  playing={isPlayerVisible > 0.66}
                   loop
                   className="absolute left-0 top-0 h-full w-full"
                   width="100%"
