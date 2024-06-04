@@ -32,6 +32,9 @@ const SurveyVisualization = (props: SurveyVisualizationProps) => {
       defaultChartType: 'bar',
       showToolbar: false,
     };
+    if (!surveyQuestions) {
+      return;
+    }
     const surveyVizPanel = new VisualizationPanel(surveyQuestions, answers, surveyVizPanelOptions);
     surveyVizPanel.locale = 'de';
     setVizPanel(surveyVizPanel);

@@ -52,7 +52,7 @@ const SurveyTable = (props: SurveyTableProps) => {
                     {survey?.created ? survey?.created.toString() : 'not-available'}
                   </TableCell>
                   <TableCell className="text-white">
-                    {survey?.participated?.length ? `${ survey.participated.length }/` : ''}
+                    {/*{survey?.participated?.length ? `${ survey.participated.length }/` : ''}*/}
                     {survey?.participants?.length || 0}
                   </TableCell>
                   <TableCell className="text-white">{srv?.pages?.length || 0}</TableCell>
