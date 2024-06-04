@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import QuotaBar from '@/pages/SchoolmanagementPage/components/profiles/QuotaBar';
 import { FaUserPlus } from 'react-icons/fa';
@@ -17,6 +17,7 @@ interface ProfileCardProps {
   videoUrl?: string;
   memberId?: string;
   setStudentsDialogOpen?: (isOpen: boolean) => void;
+  count?: number;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -28,8 +29,25 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onSelect,
   setStudentsDialogOpen,
   memberId,
+  count,
 }) => {
   const { setIsVideoModalOpen, setVideoModalUsername, setVideoModalUrl } = useSchoolmanagementComponentStore();
+  const playerRef = useRef<any>();
+  const [isReady, setIsReady] = useState(false);
+
+  const getRandom = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const onReady = useCallback(() => {
+    if (!isReady) {
+      if (playerRef.current) {
+        playerRef?.current?.seekTo(getRandom(0, count === 0 ? 17 : 36), 'seconds');
+      }
+      setIsReady(true);
+    }
+  }, [isReady]);
+
   return (
     <div
       className={`w-80 overflow-hidden rounded-xl border ${isSelected ? 'border-blue-500' : 'border-gray-300'} cursor-pointer p-4 font-sans shadow-lg`}
@@ -65,6 +83,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 }}
               >
                 <ReactPlayer
+                  onReady={onReady}
+                  ref={playerRef}
                   url={videoUrl || linuxRec}
                   config={{
                     file: {
