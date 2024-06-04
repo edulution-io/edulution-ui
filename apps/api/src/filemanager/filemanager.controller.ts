@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   Post,
   Put,
@@ -191,19 +192,21 @@ class FilemanagerController {
   }
 
   @Public()
-  @Post('callback/:path(*)/:filename/:eduToken')
+  @Post('callback')
   async handleCallback(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('path') path: string,
-    @Param('filename') filename: string,
-    @Param('eduToken') eduToken: string,
+    @Query('path') path: string,
+    @Query('filename') filename: string,
+    @Query('eduToken') eduToken: string,
   ) {
     const callbackData = req.body;
-    console.log(callbackData);
-    if (!callbackData || !callbackData.token) {
-      return res.status(HttpStatus.BAD_REQUEST).send({ error: 1, message: 'Token is missing.' });
-    }
+
+    Logger.log(path);
+    Logger.log(filename);
+    Logger.log(eduToken);
+    Logger.log(callbackData);
+
     const secret = process.env.EDUI_ONLYOFFICE_SECRET as string;
     try {
       jwt.verify(callbackData.token, secret);
