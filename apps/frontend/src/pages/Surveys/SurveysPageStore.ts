@@ -153,7 +153,7 @@ const useSurveysPageStore = create<SurveysPageStore>((set) => ({
   deleteSurvey: async (surveyName: string): Promise<void> => {
     set({ errorOnDeleting: null, isDeleting: true });
     try {
-      const response = await eduApi.delete(SURVEY_ENDPOINT, { data: { surveyname: surveyName } });
+      const response = await eduApi.delete(SURVEY_ENDPOINT, { params: { surveyname: surveyName } });
       set({ isDeleting: false });
       return response.data;
     } catch (error) {

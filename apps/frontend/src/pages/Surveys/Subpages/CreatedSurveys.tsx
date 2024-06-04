@@ -6,13 +6,13 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 // import useShowSurveyResultsDialogStore
-//   from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
+import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
 
 const CreatedSurveysPage = () => {
@@ -55,26 +55,25 @@ const CreatedSurveysPage = () => {
           {selectedSurvey ? (
             <>
               <FloatingActionButton
-                icon={SurveyButtonProps.Participate.icon}
-                text={t(SurveyButtonProps.Participate.title)}
-                onClick={openParticipateSurveyDialog}
-              />
-              <FloatingActionButton
                 icon={SurveyButtonProps.Edit.icon}
                 text={t(SurveyButtonProps.Edit.title)}
                 onClick={setPageViewSurveyEditor}
+              />
+              <FloatingActionButton
+                icon={SurveyButtonProps.Participate.icon}
+                text={t(SurveyButtonProps.Participate.title)}
+                onClick={openParticipateSurveyDialog}
               />
               <FloatingActionButton
                 icon={SurveyButtonProps.Answer.icon}
                 text={t(SurveyButtonProps.Answer.title)}
                 onClick={openSurveyAnswerDialog}
               />
-              {/* TODO: FIX This view somehow it got broken (data.forEach is not a function) */}
-              {/*<FloatingActionButton*/}
-              {/*  icon={SurveyButtonProps.Results.icon}*/}
-              {/*  text={t(SurveyButtonProps.Results.title)}*/}
-              {/*  onClick={openSurveyResultsDialog}*/}
-              {/*/>*/}
+              {/* <FloatingActionButton */}
+              {/*   icon={SurveyButtonProps.ResultingPanel.icon} */}
+              {/*   text={t(SurveyButtonProps.ResultingPanel.title)} */}
+              {/*   onClick={openSurveyResultsDialog} */}
+              {/* /> */}
               <FloatingActionButton
                 icon={SurveyButtonProps.Delete.icon}
                 text={t(SurveyButtonProps.Delete.title)}

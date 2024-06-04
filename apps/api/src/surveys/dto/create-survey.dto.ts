@@ -5,6 +5,8 @@ class CreateSurveyDto {
 
   participants: Attendee[];
 
+  // participated?: string[];
+
   survey: string;
 
   anonymousAnswers?: string[];
