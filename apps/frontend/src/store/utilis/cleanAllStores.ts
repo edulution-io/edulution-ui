@@ -11,8 +11,10 @@ import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/Sh
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
-import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore.ts';
+import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore';
 import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
+import useShowSurveyResultsTableDialogStore
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
@@ -30,6 +32,7 @@ const cleanAllStores = () => {
   useParticipateSurveyDialogStore.getState().reset();
   useShowSurveyAnswerDialogStore.getState().reset();
   useShowSurveyResultsDialogStore.getState().reset();
+  useShowSurveyResultsTableDialogStore.getState().reset();
   useSchoolManagementStore.getState().reset();
 };
 

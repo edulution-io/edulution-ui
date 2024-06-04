@@ -41,15 +41,17 @@ const SurveyTable = (props: SurveyTableProps) => {
                 aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
               />
             </TableCell>
-            <TableCell className="text-white">{srv?.title || 'undefined'}</TableCell>
+            <TableCell className="text-white">{srv?.title || t('not-available')}</TableCell>
             <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : 'not-available'}
+              {survey?.created ? survey?.created.toString() : t('not-available')}
             </TableCell>
             <TableCell className="text-white">
-              {/* {survey?.participated?.length ? `${ survey.participated.length }/` : ''} */}
+              {survey?.expires ? survey?.expires.toString() : t('not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.participated?.length ? `${ survey.participated.length }/` : ''}
               {survey?.participants?.length || 0}
             </TableCell>
-            <TableCell className="text-white">{srv?.pages?.length || 0}</TableCell>
           </TableRow>
         );
       } catch (e) {
@@ -68,12 +70,17 @@ const SurveyTable = (props: SurveyTableProps) => {
                 aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
               />
             </TableCell>
-            <TableCell className="text-white">{srv?.title || 'undefined'}</TableCell>
+            <TableCell className="text-white">{srv?.title || t('not-available')}</TableCell>
             <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : 'not-available'}
+              {survey?.created ? survey?.created.toString() : t('not-available')}
             </TableCell>
-            <TableCell className="text-white">{survey?.participants?.length || 0}</TableCell>
-            <TableCell className="text-white">{srv?.pages?.length || 0}</TableCell>
+            <TableCell className="text-white">
+              {survey?.expires ? survey?.expires.toString() : t('not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.participated?.length ? `${ survey.participated.length }/` : '0/'}
+              {survey?.participants?.length || 0}
+            </TableCell>
           </TableRow>
         );
       }
@@ -90,11 +97,10 @@ const SurveyTable = (props: SurveyTableProps) => {
       <Table>
         <TableHeader>
           <TableRow className="text-white">
-            <TableHead key={`tableHead-checkbox`} className="w-20px">
-            </TableHead>
-            {SurveyTableHeaders.map((header) => (
-              <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
-            ))}
+            <TableHead key={`tableHead-checkbox`} className="w-20px">{ }</TableHead>
+              {SurveyTableHeaders.map((header) => (
+                <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
+              ))}
           </TableRow>
         </TableHeader>
         <TableBody className="container">

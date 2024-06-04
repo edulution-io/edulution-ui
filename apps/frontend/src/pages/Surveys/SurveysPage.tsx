@@ -40,52 +40,70 @@ const SurveysPage = () => {
   const getSurveyComponent = () => {
     switch (selectedPageView) {
       case PageView.OPEN_SURVEYS:
-        return <OpenSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          openSurveys={openSurveys}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          isFetchingOpenSurveys={isFetchingOpenSurveys}
-        />;
+        return (
+          <OpenSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            openSurveys={openSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingOpenSurveys={isFetchingOpenSurveys}
+          />
+        );
       case PageView.CREATED_SURVEYS:
-        return <CreatedSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          createdSurveys={createdSurveys}
-          updateCreatedSurveys={updateCreatedSurveys}
-          isFetchingCreatedSurveys={isFetchingCreatedSurveys}
-          setPageViewSurveyEditor={setPageViewSurveyEditor}
-          deleteSurvey={deleteSurvey}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-        />;
+        return (
+          <CreatedSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            createdSurveys={createdSurveys}
+            updateCreatedSurveys={updateCreatedSurveys}
+            isFetchingCreatedSurveys={isFetchingCreatedSurveys}
+            setPageViewSurveyEditor={setPageViewSurveyEditor}
+            deleteSurvey={deleteSurvey}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+          />
+        );
       case PageView.ANSWERED_SURVEYS:
-        return <AnsweredSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          answeredSurveys={answeredSurveys}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          isFetchingAnsweredSurveys={isFetchingAnsweredSurveys}
-        />;
+        return (
+          <AnsweredSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            answeredSurveys={answeredSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingAnsweredSurveys={isFetchingAnsweredSurveys}
+          />
+        );
       case PageView.SURVEY_CREATOR:
-        return <SurveyEditor />;
+        return (
+          <SurveyEditor
+            updateCreatedSurveys={updateCreatedSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+          />
+        );
       case PageView.SURVEY_EDITOR:
-        return <SurveyEditor
-          selectedSurvey={selectedSurvey}
-        />;
+        return (
+          <SurveyEditor
+            selectedSurvey={selectedSurvey}
+            updateCreatedSurveys={updateCreatedSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+          />
+        );
       case PageView.MANAGE_SURVEYS:
         return <SurveyManagement />;
       default:
-        return <OpenSurveysPage
-          selectedSurvey={selectedSurvey}
-          setSelectedSurvey={setSelectedSurvey}
-          openSurveys={openSurveys}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          isFetchingOpenSurveys={isFetchingOpenSurveys}
-        />;
+        return (
+          <OpenSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            openSurveys={openSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingOpenSurveys={isFetchingOpenSurveys}
+          />
+        );
     }
   };
 

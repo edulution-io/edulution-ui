@@ -17,6 +17,7 @@ interface EditorStore {
   saveNo: number | undefined;
   setSaveNumber: (saveNo: number) => void;
   participants: Attendee[];
+  participated: string[];
   created: Date | undefined;
   expires: Date | undefined;
 
@@ -26,6 +27,7 @@ interface EditorStore {
     surveyname: string,
     survey?: string,
     participants?: Attendee[],
+    participated?: string[],
     saveNo?: number,
     created?: Date,
     expires?: Date,
@@ -36,6 +38,10 @@ interface EditorStore {
   setIsSaving: (isLoading: boolean) => void;
   isSaving: boolean;
   error: AxiosError | null;
+
+  questionAdded: boolean;
+  setQuestionAdded: (questionAdded: boolean) => void;
+
   reset: () => void;
 }
 
@@ -45,10 +51,13 @@ const initialState: Partial<EditorStore> = {
   Formula: '',
   saveNo: undefined,
   participants: [],
+  participated: [],
   created: undefined,
   expires: undefined,
   isSaving: false,
   error: null,
+
+  questionAdded: false,
 };
 
 const useEditorStore = create<EditorStore>((set) => ({
@@ -57,12 +66,16 @@ const useEditorStore = create<EditorStore>((set) => ({
   closePropagateSurveyDialog: () => set({ isOpenPropagateSurveyDialog: false }),
   setIsSaving: (isSaving: boolean) => set({ isSaving }),
   setError: (error: AxiosError) => set({ error }),
+
+  setQuestionAdded: (questionAdded: boolean) => set({ questionAdded }),
+
   reset: () => set(initialState),
 
   commitSurvey: async (
     surveyname: string,
     survey?: string,
     participants?: Attendee[],
+    participated?: string[],
     saveNo?: number,
     created?: Date,
     expires?: Date,
@@ -75,6 +88,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         surveyname,
         survey,
         participants,
+        participated,
         saveNo,
         created,
         expires,

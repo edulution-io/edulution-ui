@@ -16,6 +16,8 @@ import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 import useShowSurveyResultsTableDialogStore
   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
+import ShowSurveyResultsTableDialog
+  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog';
 
 interface CreatedSurveysPageProps {
   selectedSurvey: Survey | undefined;
@@ -98,11 +100,11 @@ const CreatedSurveysPage = (props: CreatedSurveysPageProps) => {
               <FloatingActionButton
                 icon={SurveyButtonProps.Delete.icon}
                 text={t(SurveyButtonProps.Delete.title)}
-                onClick={async () => {
-                  await deleteSurvey(selectedSurvey?.surveyname!);
-                  await updateOpenSurveys();
-                  await updateCreatedSurveys();
-                  await updateAnsweredSurveys();
+                onClick={() => {
+                  deleteSurvey(selectedSurvey?.surveyname!);
+                  updateOpenSurveys();
+                  updateCreatedSurveys();
+                  updateAnsweredSurveys();
                 }}
               />
             </>
@@ -116,6 +118,7 @@ const CreatedSurveysPage = (props: CreatedSurveysPageProps) => {
       />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
+      <ShowSurveyResultsTableDialog survey={selectedSurvey!} />
     </>
   );
 };

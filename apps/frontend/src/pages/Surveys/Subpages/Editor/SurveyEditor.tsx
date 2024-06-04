@@ -10,7 +10,6 @@ import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import { createSurveyName } from '@/pages/Surveys/Subpages/components/create-survey-name';
 import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
-
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
@@ -18,10 +17,13 @@ import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 
 interface SurveyEditorProps {
   selectedSurvey?: Survey;
+  updateCreatedSurveys: () => void;
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
 }
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { selectedSurvey } = props;
+  const { selectedSurvey, updateCreatedSurveys, updateAnsweredSurveys, updateOpenSurveys } = props;
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog, closePropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
@@ -33,6 +35,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     surveyname: selectedSurvey?.surveyname || createSurveyName(),
     survey: selectedSurvey?.survey || undefined,
     participants: [],
+    participated: [],
     saveNo: selectedSurvey?.saveNo || 0,
     created: selectedSurvey?.created || new Date(),
     expires: selectedSurvey?.expires || undefined,
@@ -45,6 +48,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     surveyname: createSurveyName(),
     survey: undefined,
     participants: [],
+    participated: [],
     saveNo: 0,
     created: new Date(),
     expires: undefined,
@@ -93,6 +97,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       surveyname,
       survey,
       participants,
+      participated,
       saveNo,
       created,
       expires,
@@ -105,6 +110,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
         surveyname,
         survey,
         participants,
+        participated,
         saveNo,
         created,
         expires,
@@ -112,7 +118,12 @@ const SurveyEditor = (props: SurveyEditorProps) => {
         canSubmitMultipleAnswers,
       );
       setEditorSurveyText(JSON.stringify(updatedSurvey!.survey));
+
       closePropagateSurveyDialog();
+      updateCreatedSurveys();
+      updateOpenSurveys();
+      updateAnsweredSurveys();
+
     } catch (error) {
       setEditorSurveyText(survey!);
       console.error(error);
@@ -127,9 +138,10 @@ const SurveyEditor = (props: SurveyEditorProps) => {
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
           <Editor
             form={form}
-            survey={editorSurveyText} //selectedSurvey?.survey}
+            survey={editorSurveyText}
             saveNumber={selectedSurvey?.saveNo || 0}
-            error={error}/>
+            error={error}
+          />
           {error ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {error.message}

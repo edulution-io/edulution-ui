@@ -41,11 +41,22 @@ const ShowSurveyResultsTableDialog = (props: ShowSurveyResultsTableDialogProps) 
   }, [survey, isOpenSurveyResultsTableDialog]);
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading) return <LoadingIndicator isOpen={isLoading}/>;
 
-    if (!survey?.survey) return <div>{t('survey.noFormula')}</div>;
-
-    if (!answers || answers.length == 0) return <div>{t('survey.noAnswer')}</div>;
+    if (!survey?.survey) {
+      return (
+        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+          <div>{t('survey.noFormula')}</div>
+        </div>
+      );
+    }
+    if (!answers || answers.length == 0) {
+      return (
+        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+          <div>{t('survey.noAnswer')}</div>
+        </div>
+      );
+    }
 
     return (
       <ScrollArea className="overflow-y-auto overflow-x-auto">

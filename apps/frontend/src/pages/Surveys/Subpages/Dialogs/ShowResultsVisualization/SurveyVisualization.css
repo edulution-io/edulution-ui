@@ -33,7 +33,7 @@
 
 .svc-notifier {
   position: absolute;
-  bottom: -10px;
-  left: -10px;
+  bottom: 0;
+  left: 0;
   /*transform: translate(-20px, 20px);*/
 }

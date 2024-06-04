@@ -6,7 +6,6 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
-import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
@@ -20,7 +19,6 @@ interface AnsweredSurveysPageProps {
   selectedSurvey: Survey | undefined;
   setSelectedSurvey: (survey: Survey | undefined) => void;
   answeredSurveys: Survey[];
-  updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
   isFetchingAnsweredSurveys: boolean;
 }
@@ -30,7 +28,6 @@ const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
     selectedSurvey,
     setSelectedSurvey,
     answeredSurveys,
-    updateOpenSurveys,
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
   } = props;
@@ -81,11 +78,6 @@ const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
           ) : null}
         </div>
       </TooltipProvider>
-      <ParticipateSurveyDialog
-        survey={selectedSurvey!}
-        updateOpenSurveys={updateOpenSurveys}
-        updateAnsweredSurveys={updateAnsweredSurveys}
-      />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsTableDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />

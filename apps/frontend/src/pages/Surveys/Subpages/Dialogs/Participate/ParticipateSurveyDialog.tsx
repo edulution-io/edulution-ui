@@ -59,6 +59,7 @@ const ParticipateSurveyDialog = (props: ParticipateSurveyDialogProps) => {
     updateAnsweredSurveys();
 
     closeParticipateSurveyDialog();
+    form.reset(initialFormValues);
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);

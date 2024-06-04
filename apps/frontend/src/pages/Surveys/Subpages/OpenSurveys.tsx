@@ -20,7 +20,6 @@ interface OpenSurveysPageProps {
   updateAnsweredSurveys: () => void;
 }
 
-
 const OpenSurveysPage = (props: OpenSurveysPageProps) => {
   const {
     setSelectedSurvey,

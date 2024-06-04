@@ -150,23 +150,18 @@ class SurveysController {
   }
 
   @Delete()
-  remove(@Body() deleteSurveyDto: DeleteSurveyDto) {
+  remove(@Query() deleteSurveyDto: DeleteSurveyDto) {
     const surveyName = deleteSurveyDto.surveyname;
-    // this.usersSurveysService.onRemoveSurvey(surveyName);
-    return this.surveyService.removeSurvey(surveyName);
+    const deleted = this.surveyService.removeSurvey(surveyName);
+    this.usersSurveysService.onRemoveSurvey(surveyName);
+    return deleted;
   }
 
   @Patch()
   async manageUsersSurveys(@Body() body: PushAnswerDto, @GetUsername() username: string) {
-    const { surveyname, answer, canSubmitMultipleAnswers = false } = body;
+    const { surveyname, answer, canSubmitMultipleAnswers } = body;
 
-    await this.surveyService.addAnonymousAnswer(surveyname, answer /* , username */);
-
-    if (!canSubmitMultipleAnswers) {
-      await this.usersSurveysService.moveSurveyFromOpenToAnsweredSurveys(username, surveyname, answer);
-    } else {
-      await this.usersSurveysService.addToAnsweredSurveys(username, surveyname);
-    }
+    await this.surveyService.addAnonymousAnswer(surveyname, answer, username);
 
     return await this.usersSurveysService.addAnswer(username, surveyname, answer, canSubmitMultipleAnswers);
   }
