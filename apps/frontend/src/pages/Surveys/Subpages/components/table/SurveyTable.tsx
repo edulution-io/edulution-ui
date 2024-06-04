@@ -78,7 +78,7 @@ const SurveyTable = (props: SurveyTableProps) => {
         );
       }
     }
-  )), [surveys]);
+  )), [surveys, selectedSurvey]);
 
   if (isLoading) {
     return <LoadingIndicator isOpen={isLoading} />;
