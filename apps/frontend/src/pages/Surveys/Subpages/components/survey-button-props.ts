@@ -1,10 +1,11 @@
 import {
-  AiOutlineDeliveredProcedure, AiOutlineCloseSquare, /* AiOutlineDownSquare, */
-  AiOutlinePlusSquare, AiOutlineSave,
-  AiOutlineUpSquare
+  AiOutlineDeliveredProcedure,
+  AiOutlinePlusSquare,
+  AiOutlineSave,
+  AiOutlineUpSquare,
 } from 'react-icons/ai';
 import { BsGear } from 'react-icons/bs';
-import { FiDelete, FiEdit } from 'react-icons/fi';
+import { FiDelete, FiEdit, FiFilePlus } from 'react-icons/fi';
 import { HiOutlineInboxIn } from "react-icons/hi";
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 
@@ -30,8 +31,8 @@ const SurveyButtonProps = ({
     title: 'survey.edit',
   },
   Abort: {
-    icon: AiOutlineCloseSquare,
-    title: 'abort',
+    icon: FiFilePlus,
+    title: 'survey.editor.abort',
   },
   Options: {
     icon: BsGear,

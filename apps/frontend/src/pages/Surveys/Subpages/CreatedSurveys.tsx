@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 // import useShowSurveyResultsDialogStore
 //   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
@@ -14,20 +13,33 @@ import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participat
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 
-const CreatedSurveysPage = () => {
+interface CreatedSurveysPageProps {
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
+  createdSurveys: Survey[];
+  updateCreatedSurveys: () => void;
+  isFetchingCreatedSurveys: boolean;
+  setPageViewSurveyEditor: () => void;
+  deleteSurvey: (surveyname: string) => void;
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+}
+
+const CreatedSurveysPage = (props: CreatedSurveysPageProps) => {
   const {
+    selectedSurvey,
     setSelectedSurvey,
     createdSurveys,
     updateCreatedSurveys,
     isFetchingCreatedSurveys,
     setPageViewSurveyEditor,
-    selectedSurvey,
     deleteSurvey,
     updateOpenSurveys,
     updateAnsweredSurveys,
-    updateAllSurveys,
-  } = useSurveysPageStore();
+  } = props;
+
   const { openParticipateSurveyDialog } = useParticipateSurveyDialogStore();
   // const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
@@ -82,7 +94,6 @@ const CreatedSurveysPage = () => {
                   await updateOpenSurveys();
                   await updateCreatedSurveys();
                   await updateAnsweredSurveys();
-                  await updateAllSurveys();
                 }}
               />
             </>

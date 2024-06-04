@@ -62,12 +62,12 @@ const SurveyManagement = () => {
                 <FloatingActionButton
                   icon={SurveyButtonProps.Delete.icon}
                   text={t(SurveyButtonProps.Delete.title)}
-                  onClick={() => {
-                    deleteSurvey(selectedSurvey?.surveyname!);
-                    updateOpenSurveys();
-                    updateCreatedSurveys();
-                    updateAnsweredSurveys();
-                    updateAllSurveys();
+                  onClick={async () => {
+                    await deleteSurvey(selectedSurvey?.surveyname!);
+                    await updateOpenSurveys();
+                    await updateCreatedSurveys();
+                    await updateAnsweredSurveys();
+                    await updateAllSurveys();
                   }}
                 />
               </>

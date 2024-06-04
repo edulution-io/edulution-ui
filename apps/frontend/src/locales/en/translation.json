@@ -138,7 +138,8 @@
     "isAnonymous": "Participating at the survey is anonymous",
     "canSubmitMultipleAnswers": "Participating multiple times is allowed",
     "editor": {
-      "title": "Survey Editor"
+      "title": "Survey Editor",
+      "abort": "New (blank)"
     },
     "manage": "Manage",
     "page": {

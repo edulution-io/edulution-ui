@@ -139,7 +139,8 @@
     "isAnonymous": "Die Teilnahme an der Umfrage ist Anonym",
     "canSubmitMultipleAnswers": "Mehrfache Abgaben sind erlaubt",
     "editor": {
-      "title": "Umfrage-Editor"
+      "title": "Umfrage-Editor",
+      "abort": "Neu (leer)"
     },
     "page": {
       "page": "Seite",
