@@ -61,6 +61,7 @@ const CreatedSurveysPage = (props: CreatedSurveysPageProps) => {
         <SurveyTable
           title={t('survey.createdSurveys')}
           surveys={createdSurveys}
+          selectedSurvey={selectedSurvey}
           setSelectedSurvey={setSelectedSurvey}
           isLoading={isFetchingCreatedSurveys}
         />

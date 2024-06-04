@@ -14,7 +14,7 @@ import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/Pr
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
-import {Survey} from "@/pages/Surveys/Subpages/components/types/survey.ts";
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 
 interface SurveyEditorProps {
   selectedSurvey?: Survey;

@@ -48,6 +48,7 @@ const OpenSurveysPage = (props: OpenSurveysPageProps) => {
         <SurveyTable
           title={t('survey.openSurveys')}
           surveys={openSurveys}
+          selectedSurvey={selectedSurvey}
           setSelectedSurvey={setSelectedSurvey}
           isLoading={isFetchingOpenSurveys}
         />

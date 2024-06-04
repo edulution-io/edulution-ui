@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import Checkbox from '@/components/ui/Checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
@@ -8,12 +9,13 @@ import SurveyTableHeaders from '@/pages/Surveys/Subpages/components/table/survey
 interface SurveyTableProps {
   title: string;
   surveys: Survey[];
-  setSelectedSurvey: (survey: Survey) => void;
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
   isLoading: boolean;
 }
 
 const SurveyTable = (props: SurveyTableProps) => {
-  const { title, surveys, setSelectedSurvey, isLoading } = props;
+  const { title, surveys, selectedSurvey, setSelectedSurvey, isLoading } = props;
 
   const { t } = useTranslation();
 
@@ -27,6 +29,8 @@ const SurveyTable = (props: SurveyTableProps) => {
       <Table>
         <TableHeader>
           <TableRow className="text-white">
+            <TableHead key={`tableHead-checkbox`} className="w-20px">
+            </TableHead>
             {SurveyTableHeaders.map((header) => (
               <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
             ))}
@@ -34,6 +38,7 @@ const SurveyTable = (props: SurveyTableProps) => {
         </TableHeader>
         <TableBody className="container">
           {surveys.map((survey: Survey) => {
+            const isSelectedSurvey = selectedSurvey?.surveyname === survey.surveyname;
             if (!survey.survey) {
               return null;
             }
@@ -47,6 +52,12 @@ const SurveyTable = (props: SurveyTableProps) => {
                     setSelectedSurvey(survey);
                   }}
                 >
+                  <TableCell>
+                    <Checkbox
+                      checked={isSelectedSurvey}
+                      aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
+                    />
+                  </TableCell>
                   <TableCell className="text-white">{srv?.title || 'undefined'}</TableCell>
                   <TableCell className="text-white">
                     {survey?.created ? survey?.created.toString() : 'not-available'}
@@ -68,6 +79,12 @@ const SurveyTable = (props: SurveyTableProps) => {
                     setSelectedSurvey(survey);
                   }}
                 >
+                  <TableCell>
+                    <Checkbox
+                      checked={isSelectedSurvey}
+                      aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
+                    />
+                  </TableCell>
                   <TableCell className="text-white">{srv?.title || 'undefined'}</TableCell>
                   <TableCell className="text-white">
                     {survey?.created ? survey?.created.toString() : 'not-available'}

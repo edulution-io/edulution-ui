@@ -53,6 +53,7 @@ const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
         <SurveyTable
           title={t('survey.answeredSurveys')}
           surveys={answeredSurveys}
+          selectedSurvey={selectedSurvey}
           setSelectedSurvey={setSelectedSurvey}
           isLoading={isFetchingAnsweredSurveys}
         />
