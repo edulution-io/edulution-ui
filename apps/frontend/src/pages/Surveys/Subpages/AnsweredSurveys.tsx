@@ -13,8 +13,8 @@ import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participat
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
-import useShowSurveyResultsTableDialogStore
-  from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
+// import useShowSurveyResultsTableDialogStore
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
 import ShowSurveyResultsTableDialog
   from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
 
@@ -27,7 +27,7 @@ const AnsweredSurveysPage = () => {
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
   } = useSurveysPageStore();
-  const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
+  // const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
   const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
@@ -63,11 +63,11 @@ const AnsweredSurveysPage = () => {
                 text={t(SurveyButtonProps.ResultingPanel.title)}
                 onClick={openSurveyResultsDialog}
               />
-              <FloatingActionButton
-                icon={SurveyButtonProps.ResultingTable.icon}
-                text={t(SurveyButtonProps.ResultingTable.title)}
-                onClick={openSurveyResultsTableDialog}
-              />
+              {/* <FloatingActionButton */}
+              {/*   icon={SurveyButtonProps.ResultingTable.icon} */}
+              {/*   text={t(SurveyButtonProps.ResultingTable.title)} */}
+              {/*   onClick={openSurveyResultsTableDialog} */}
+              {/* /> */}
             </>
           ) : null}
         </div>
@@ -78,7 +78,7 @@ const AnsweredSurveysPage = () => {
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
-      <ShowSurveyResultsTableDialog survey={selectedSurvey!} />
+      {/* <ShowSurveyResultsTableDialog survey={selectedSurvey!} /> */}
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>
   );
