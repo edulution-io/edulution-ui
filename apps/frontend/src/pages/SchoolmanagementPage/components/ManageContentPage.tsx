@@ -161,7 +161,6 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
                 isSelected={selectedProfiles.includes(member)}
                 onSelect={() => handleSelectProfile(member)}
                 videoUrl={count % 2 === 0 ? linuxRec : windowsRec}
-                count={count}
               />
             ))}
             <ProfileCard
