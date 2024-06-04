@@ -1,5 +1,5 @@
 import React from 'react';
-import {UseFormReturn} from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
@@ -16,23 +16,15 @@ interface PropagateSurveyDialogProps {
 }
 
 const PropagateSurveyDialog = (props: PropagateSurveyDialogProps) => {
-  const {
-    trigger,
-    form,
-    propagateSurvey,
-    isSaving,
-  } = props;
-  const {
-    isOpenPropagateSurveyDialog,
-    openPropagateSurveyDialog,
-    closePropagateSurveyDialog,
-  } = usePropagateSurveyDialogStore();
+  const { trigger, form, propagateSurvey, isSaving } = props;
+  const { isOpenPropagateSurveyDialog, openPropagateSurveyDialog, closePropagateSurveyDialog } =
+    usePropagateSurveyDialogStore();
 
   const { t } = useTranslation();
 
   const getDialogBody = () => {
     if (isSaving) return <LoadingIndicator isOpen={isSaving} />;
-    return (<PropagateSurveyDialogBody form={form} />);
+    return <PropagateSurveyDialogBody form={form} />;
   };
 
   const getFooter = () => (
@@ -58,7 +50,7 @@ const PropagateSurveyDialog = (props: PropagateSurveyDialogProps) => {
       title={t('survey.editing')}
       body={getDialogBody()}
       footer={getFooter()}
-      desktopContentClassName="max-w-[50%]"
+      desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"
     />
   );
 };
