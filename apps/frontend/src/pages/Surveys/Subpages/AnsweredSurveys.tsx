@@ -13,11 +13,8 @@ import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 // import useShowSurveyResultsTableDialogStore
 //   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
-<<<<<<< HEAD
 // import ShowSurveyResultsTableDialog
 //   from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
-=======
->>>>>>> 7365a2be82a4634452363cb6c0802ac0127a2c54
 
 interface AnsweredSurveysPageProps {
   selectedSurvey: Survey | undefined;
