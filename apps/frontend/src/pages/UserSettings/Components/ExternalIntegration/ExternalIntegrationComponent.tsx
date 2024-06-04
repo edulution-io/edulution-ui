@@ -27,7 +27,7 @@ const ExternalIntegrationComponent = () => {
   ];
 
   return (
-    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-0 h-screen">
+    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-3 h-screen">
       <NativeAppHeader
         title={t('externIntegrationsetup.title')}
         description={t('externIntegrationsetup.description')}

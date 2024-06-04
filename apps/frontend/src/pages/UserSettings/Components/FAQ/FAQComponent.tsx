@@ -7,7 +7,6 @@ import AiIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSec
 import ConferencesIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/ConferencesIntroduction';
 import EmailIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/EmailIntroduction';
 import LearnManagementIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/LearnManagementIntroduction';
-import PullsIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/PullsIntroduction';
 import VDIIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/VDIIntroduction';
 import WhiteboardIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/WhiteboardIntroduction';
 import SurveyIntroduction from '@/pages/UserSettings/Components/FAQ/sections/userSection/SurveyIntroduction.tsx';
@@ -38,7 +37,6 @@ const FAQComponent = () => {
       title: t('faq.learnManagementIntroductionTitle'),
       Component: LearnManagementIntroduction,
     },
-    { value: 'pullsIntroduction', title: t('faq.pullsIntroductionTitle'), Component: PullsIntroduction },
     { value: 'vdiIntroduction', title: t('faq.vdiIntroductionTitle'), Component: VDIIntroduction },
     {
       value: 'whiteboardIntroduction',
@@ -50,7 +48,7 @@ const FAQComponent = () => {
   ];
 
   return (
-    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-0 h-screen">
+    <div className="absolute bottom-[32px] left-[256px] right-[57px] top-3 h-screen">
       <NativeAppHeader
         title={t('faq.title')}
         description={t('faq.description')}

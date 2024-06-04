@@ -1,11 +1,13 @@
 const LearnManagementIntroduction = () => {
   return (
     <div className="mb-4">
-      <h2 className="text-xl font-semibold">Learn Management Introduction</h2>
       <p className="faq-section-description">
-        Learn Management is a platform that allows you to create, share, and manage learning content. You can create
-        courses, quizzes, and assignments, and share them with your students. You can also track your students' progress
-        and performance, and provide feedback and support.
+        Ein Lern-Management-System (LMS) bildet Lehr- und Lernprozesse ab, verwaltet Lernmaterialien und Nutzerdaten.
+        Ziel ist es, die Bereitstellung von Lerninhalten zu vereinfachen und gegebenenfalls zu automatisieren. In einem
+        LMS können Lehrer Kurse, Quizze und Aufgaben erstellen und mit ihren Schülern teilen. Außerdem ermöglicht es die
+        Überwachung des Fortschritts und der Leistung der Schüler sowie das Bereitstellen von Feedback und
+        Unterstützung1. Wenn Sie weitere Informationen zur Lernmanagement-Funktion unserer Schulwebseite wünschen, stehe
+        ich Ihnen gerne zur Verfügung! 📚👩‍🏫
       </p>
     </div>
   );

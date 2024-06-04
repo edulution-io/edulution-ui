@@ -1,7 +1,7 @@
 const MailSetup = () => {
   return (
     <div className="mb-4">
-      <p>Configure your mail settings here.</p>
+      <p>Konfigurieren Sie hier Ihre E-Mail-Einstellungen.</p>
       <h2 className="mb-4 mt-4 text-2xl font-semibold">Netzint Maildocker Mailserver für Linuxmuster</h2>
 
       <p className="p-4">Anhand der Demo Umgebung:</p>
