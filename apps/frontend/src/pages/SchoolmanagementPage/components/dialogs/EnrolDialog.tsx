@@ -81,7 +81,10 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <ScrollArea className="max-h-[80vh] min-w-[50vh] overflow-auto">
-        <DialogContentSH className="text-black">
+        <DialogContentSH
+          variant={'large'}
+          className="text-black"
+        >
           <DialogTitleSH>{title}</DialogTitleSH>
           <div className="min-w-[50vh]  p-4">
             {showPropertiesSection && properties.length > 0 && (
@@ -134,8 +137,11 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
                       key={index}
                       className="flex items-center justify-between rounded border p-2"
                     >
-                      <p>{admin.name}</p>
-                      <p>{admin.role}</p>
+                      <div className="flex gap-4">
+                        <p>{admin.name}</p>
+                        <p>{admin.role}</p>
+                        <p>7a</p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -150,8 +156,11 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
                       key={index}
                       className="flex items-center justify-between rounded border p-2"
                     >
-                      <p>{member.name}</p>
-                      <p>{member.role}</p>
+                      <div className="flex gap-4">
+                        <p>{member.name}</p>
+                        <p>{member.role}</p>
+                        <p>7a</p>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -47,6 +47,9 @@ export interface MemberInfo {
   disableableCredentialTypes: string[];
   requiredActions: string[];
   notBefore: number;
+  isWifiOn: boolean;
+  isInternetOn: boolean;
+  printerAccess: boolean;
   access: {
     manageGroupMembership: boolean;
     view: boolean;

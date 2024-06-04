@@ -165,16 +165,19 @@ const FileSharingPage = () => {
                   />
 
                   {selectedItems.length < 2 && (
-                    <FloatingActionButton
-                      icon={MdOutlineFileDownload}
-                      text={t('tooltip.download')}
-                      onClick={async () => {
-                        const downloadUrl =
-                          (await convertDownloadLinkToBlob((await downloadFile(selectedItems[0].filename)) || '')) ||
-                          '';
-                        triggerFileDownload(downloadUrl);
-                      }}
-                    />
+                    <>
+                      {' '}
+                      <FloatingActionButton
+                        icon={MdOutlineFileDownload}
+                        text={t('tooltip.download')}
+                        onClick={async () => {
+                          const downloadUrl =
+                            (await convertDownloadLinkToBlob((await downloadFile(selectedItems[0].filename)) || '')) ||
+                            '';
+                          triggerFileDownload(downloadUrl);
+                        }}
+                      />
+                    </>
                   )}
                 </div>
               )}

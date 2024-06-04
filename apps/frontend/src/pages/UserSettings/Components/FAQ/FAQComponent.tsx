@@ -46,7 +46,7 @@ const FAQComponent = () => {
 
   return (
     <div>
-      <h1 className="mb-1 text-lg">{t('faq.title')}</h1>
+      <h1 className="mb-1 pt-4 text-lg">{t('faq.title')}</h1>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <AccordionSH type="multiple">
           {faqItems.map(({ value, title, Component }) => (

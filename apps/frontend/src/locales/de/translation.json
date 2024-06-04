@@ -1,7 +1,7 @@
 {
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
-  "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
+  "heading": "Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
@@ -409,6 +409,7 @@
     "close": "Schließen"
   },
   "tooltip": {
+    "edit": "Editieren",
     "upload": "Hochladen",
     "create": {
       "file": "Datei erstellen",
@@ -493,7 +494,9 @@
     "myGroups": "Meine Gruppen",
     "myProjects": "Meine Projekte",
     "initialPasswordHint": "Sie können das Passwort einer Klasse direkt über das Symbol drucken oder mehrere Klassen auswählen, um alle gleichzeitig auszudrucken.",
-    "downloadInitPassword": "Erst-Passwörter herunterladen",
+    "downloadInitPasswordAsText": "Erst-Passwörter .txt",
+    "downloadInitPasswordAsCSV": "Erst-Passwörter .csv",
+    "downloadInitPasswordAsPDF": "Erst-Passwörter .pdf",
     "projectPage": "Hier können Sie ein neues Projekt anlegen sowie Ihre aktuellen Projekte sehen.",
     "createProject": "Projekt anlegen",
     "newProject": "Neues Projekt",
@@ -535,10 +538,10 @@
     "fileNotFound": "Datei nicht gefunden",
     "closeFile": "Datei schließen",
     "goBack": "Zurück",
-    "closeFullScreen": "Vollbild schließen",
-    "maximize": "Vollbild öffnen",
+    "closeFullScreen": "Editor schließen",
+    "maximize": "Editieren",
     "minimize": "Minimieren",
-    "close": "Vollbild schließen"
+    "close": "Editor schließen"
   },
 
   "changePassword": {

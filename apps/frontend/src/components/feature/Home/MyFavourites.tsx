@@ -25,16 +25,16 @@ const MyFavourites = () => {
           {emailNotifications.map((notification) => (
             <div
               key={notification.id}
-              className="flex items-center justify-between rounded bg-white p-4 shadow"
+              className="flex items-center justify-between rounded bg-gray-700 p-4 shadow"
             >
               <div className="w-1/3">
-                <p className="text-sm font-medium text-gray-700">{notification.subject}</p>
+                <p className="text-sm font-medium text-white">{notification.subject}</p>
               </div>
               <div className="w-1/3">
-                <p className="text-sm text-gray-500">{notification.sender}</p>
+                <p className="text-sm text-white">{notification.sender}</p>
               </div>
               <div className="w-1/3 text-right">
-                <p className="text-sm text-gray-400">{notification.date}</p>
+                <p className="text-sm text-white">{notification.date}</p>
               </div>
             </div>
           ))}

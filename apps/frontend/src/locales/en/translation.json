@@ -403,6 +403,7 @@
     "close": "Close"
   },
   "tooltip": {
+    "edit": "Edit",
     "upload": "Upload",
     "create": {
       "file": "Create file",
@@ -477,7 +478,9 @@
     "myProjects": "My Projects",
     "initialPasswordHint": "You can print the password of a class directly via the icon or select several classes to print them all at the same time.",
     "projectPage": "Here you can create a new project. You can also see all projects that have already been created.",
-    "downloadInitPassword": "Download initial password",
+    "downloadInitPasswordAsText": "Init Password .txt",
+    "downloadInitPasswordAsCSV": "Init Password .csv",
+    "downloadInitPasswordAsPDF": "Init Password .pdf",
     "createProject": "Create Project",
     "newProject": "New Project",
     "createGroup": "Create Group",
@@ -519,9 +522,9 @@
     "fileNotFound": "File not found",
     "closeFile": "Close file",
     "goBack": "Go back",
-    "maximize": "Open full screen",
+    "maximize": "Open Editor",
     "minimize": "minimalize",
-    "close": "Close full screen"
+    "close": "Close Editor"
   },
   "faq": {
     "title": "FAQ",

@@ -1,43 +1,46 @@
+import React from 'react';
 import { FaWifi } from 'react-icons/fa';
+import { MemberInfo } from '@/datatypes/schoolclassInfo.ts';
+import useSchoolManagementComponentStore from '@/pages/SchoolmanagementPage/store/schoolManagementComponentStore.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { FiPrinter } from 'react-icons/fi';
-import React, { useState } from 'react';
 
-const StudentsPermissionBar = () => {
-  const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
+const StudentsPermissionBar = ({ memberId }: { memberId: string }) => {
+  const { getPermissionForUser, setPermissionsForUser } = useSchoolManagementComponentStore();
+  const member = getPermissionForUser(memberId);
 
-  const handleButtonClick = (button: string) => {
-    setSelectedButtons((prevState) =>
-      prevState.includes(button) ? prevState.filter((item) => item !== button) : [...prevState, button],
-    );
+  if (!member) return null;
+
+  const handleButtonClick = (attribute: keyof MemberInfo) => {
+    setPermissionsForUser(memberId, { [attribute]: !member[attribute] });
   };
 
   return (
     <div className="mt-4 flex justify-around">
       <div className="flex cursor-pointer flex-col items-center">
         <FaWifi
-          className={selectedButtons.includes('wifi') ? 'text-green-500' : 'text-red-500'}
+          className={member.isWifiOn ? 'text-green-500' : 'text-red-500'}
           onClick={(e) => {
             e.preventDefault();
-            handleButtonClick('wifi');
+            handleButtonClick('isWifiOn');
           }}
         />
       </div>
       <div className="flex cursor-pointer flex-col items-center">
         <AiOutlineGlobal
-          className={selectedButtons.includes('global') ? 'text-green-500' : 'text-red-500'}
+          className={member.isInternetOn ? 'text-green-500' : 'text-red-500'}
           onClick={(e) => {
             e.preventDefault();
-            handleButtonClick('global');
+            handleButtonClick('isInternetOn');
           }}
         />
       </div>
       <div className="flex cursor-pointer flex-col items-center">
         <FiPrinter
-          className={selectedButtons.includes('printer') ? 'text-green-500' : 'text-red-500'}
+          className={member.printerAccess ? 'text-green-500' : 'text-red-500'}
           onClick={(e) => {
-            handleButtonClick('printer');
             e.preventDefault();
+            handleButtonClick('printerAccess');
           }}
         />
       </div>
