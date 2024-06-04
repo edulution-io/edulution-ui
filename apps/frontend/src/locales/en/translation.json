@@ -241,9 +241,15 @@
 
   "externIntegrationsetup": {
     "title": "external Integration",
+    "description": "Installationsanweisungen für die Anbindung externer Dienste",
     "AIChatSetUp": "AI Chat Setup",
     "ChatSetUp": "Chat Setup",
     "MailSetUp": "Mail Setup"
+  },
+
+  "security": {
+    "title": "Security",
+    "description": "Configure here the security settings of your account"
   },
 
   "usersettings": {
