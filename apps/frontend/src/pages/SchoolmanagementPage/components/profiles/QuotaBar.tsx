@@ -2,11 +2,10 @@ import React, { FC } from 'react';
 import ProgressSH from '@/components/ui/ProgessSH';
 
 interface QuotaBarProps {
-  username: string;
-  schoolQuota: number;
+  username?: string;
 }
 
-const QuotaBar: FC<QuotaBarProps> = ({ username, schoolQuota }) => {
+const QuotaBar: FC<QuotaBarProps> = ({ username = 'username' }) => {
   const totalQuota = 2500; // Total allowed quota in MiB
 
   const userQuota =
