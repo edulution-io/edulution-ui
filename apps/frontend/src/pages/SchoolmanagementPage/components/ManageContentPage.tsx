@@ -30,7 +30,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
     useSchoolManagementComponentStore();
   const [selectedProfiles, setSelectedProfiles] = useState<MemberInfo[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { isVideoModalOpen, videoModalUrl, videoModalUsername, setIsVideoModalOpen, resetVideoModal } =
+  const { isVideoModalOpen, videoModalUrl, videoModalUsername, setIsVideoModalOpen } =
     useSchoolManagementComponentStore();
 
   const [shareState, setShareState] = useState(false);
@@ -141,9 +141,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
               username={videoModalUsername}
               videoUrl={videoModalUrl}
               onOpenChange={(isOpen) => {
-                if (!isOpen) {
-                  resetVideoModal();
-                }
+                setIsVideoModalOpen(isOpen);
               }}
             />
 
@@ -163,6 +161,7 @@ const ManageContentPage: React.FC<ManageContentPageProps> = ({ contentKey, conte
                 isSelected={selectedProfiles.includes(member)}
                 onSelect={() => handleSelectProfile(member)}
                 videoUrl={count % 2 === 0 ? linuxRec : windowsRec}
+                count={count}
               />
             ))}
             <ProfileCard

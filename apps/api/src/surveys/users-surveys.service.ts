@@ -68,7 +68,6 @@ class UsersSurveysService {
   }
 
   async addToCreatedSurveys(username: string, surveyname: string): Promise<User | null> {
-
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');

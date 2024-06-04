@@ -287,7 +287,7 @@ const Sidebar = () => {
 
       <div
         ref={sidebarIconsRef}
-        style={{ overflowY: !isDesktop ? 'scroll' : 'clip' }}
+        style={{ transform: `translateY(-${translate}px)`, overflowY: !isDesktop ? 'scroll' : 'clip' }}
         onWheel={() => handleWheel}
         onTouchStart={() => handleTouchStart}
         onTouchMove={() => handleTouchMove}
