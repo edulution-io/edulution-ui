@@ -82,6 +82,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             <div className="flex flex-row">
               <div className="ml-4 flex flex-col justify-center">
                 <QuotaBar
+                  username={username}
                   schoolQuota={33}
                   userQuota={46}
                 />
