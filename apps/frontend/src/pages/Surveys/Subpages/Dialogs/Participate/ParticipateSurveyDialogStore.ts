@@ -15,7 +15,7 @@ interface ParticipateSurveyDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
 
-  commitAnswer: (surveyName: string, answer: string, options?: CompleteEvent) => void;
+  commitAnswer: (surveyName: string, answer: string, options?: CompleteEvent) => Promise<string>;
 }
 
 const initialState: Partial<ParticipateSurveyDialogStore> = {

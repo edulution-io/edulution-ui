@@ -87,79 +87,34 @@ class UsersSurveysService {
     return updatedUser;
   }
 
-  // async onRemoveSurvey(surveyName: string): Promise<void> {
-  //   const existingUsers = await this.userModel.find<User>().exec();
-  //
-  //   const promises = existingUsers.map(async (user) => {
-  //     const {
-  //       createdSurveys = [],
-  //       openSurveys = [],
-  //       answeredSurveys = [],
-  //       ...remainingUserSurveys
-  //     } = user.usersSurveys;
-  //
-  //     const usersCreatedSurveys = createdSurveys.filter((survey) => survey !== surveyName) || [];
-  //     const usersOpenSurveys = openSurveys.filter((survey) => survey !== surveyName) || [];
-  //     const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
-  //
-  //     const newUser: UpdateUserDto = {
-  //       usersSurveys: {
-  //         ...remainingUserSurveys,
-  //         createdSurveys: [...usersCreatedSurveys],
-  //         openSurveys: [...usersOpenSurveys],
-  //         answeredSurveys: [...usersAnsweredSurveys],
-  //       },
-  //     };
-  //
-  //     return await this.updateUser(user.username, newUser);
-  //   });
-  //
-  //   await Promise.all(promises);
-  // }
+  async onRemoveSurvey(surveyName: string): Promise<void> {
+    const existingUsers = await this.userModel.find<User>().exec();
 
-  async addToAnsweredSurveys(userName: string, surveyName: string, answer?: string): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
-    if (!existingUser) {
-      throw new Error('User not found');
-    }
-    const usersAnsweredSurveys = existingUser.usersSurveys?.answeredSurveys || [];
-    usersAnsweredSurveys.push({ surveyname: surveyName, answer });
+    const promises = existingUsers.map(async (user) => {
+      const {
+        createdSurveys = [],
+        openSurveys = [],
+        answeredSurveys = [],
+        ...remainingUserSurveys
+      } = user.usersSurveys;
 
-    const newUser: UpdateUserDto = existingUser;
-    newUser.usersSurveys = {
-      openSurveys: existingUser.usersSurveys.openSurveys,
-      createdSurveys: existingUser.usersSurveys.createdSurveys,
-      answeredSurveys: usersAnsweredSurveys,
-    };
+      const usersCreatedSurveys = createdSurveys.filter((survey) => survey !== surveyName) || [];
+      const usersOpenSurveys = openSurveys.filter((survey) => survey !== surveyName) || [];
+      const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
 
-    const updatedUser = await this.updateUser(userName, newUser);
-    return updatedUser;
-  }
+      const newUser: UpdateUserDto = {
+        usersSurveys: {
+          ...remainingUserSurveys,
+          createdSurveys: [...usersCreatedSurveys],
+          openSurveys: [...usersOpenSurveys],
+          answeredSurveys: [...usersAnsweredSurveys],
+        },
+      };
 
-  async moveSurveyFromOpenToAnsweredSurveys(
-    userName: string,
-    surveyName: string,
-    answer?: string,
-  ): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: userName }).exec();
-    if (!existingUser) {
-      throw new Error('User not found');
-    }
+      return await this.updateUser(user.username, newUser);
+    });
 
-    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys.filter((survey) => survey != surveyName) || [];
-
-    const usersAnsweredSurveys = existingUser.usersSurveys?.answeredSurveys || [];
-    usersAnsweredSurveys.push({ surveyname: surveyName, answer });
-
-    const newUser: UpdateUserDto = existingUser;
-    newUser.usersSurveys = {
-      openSurveys: usersOpenSurveys,
-      createdSurveys: existingUser.usersSurveys.createdSurveys,
-      answeredSurveys: usersAnsweredSurveys,
-    };
-
-    const updatedUser = await this.updateUser(userName, newUser);
-    return updatedUser;
+    await Promise.all(promises);
   }
 
   async addAnswer(
@@ -186,9 +141,7 @@ class UsersSurveysService {
       answeredSurveys: usersAnsweredSurveys,
     };
 
-    const updatedUser = await this.updateUser(username, newUser);
-
-    return updatedUser;
+    return await this.updateUser(username, newUser);
   }
 
   async getAnswer(username: string, surveyName: string): Promise<string | undefined> {

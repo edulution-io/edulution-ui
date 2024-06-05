@@ -45,7 +45,6 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
 const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview }) => {
   const [token, setToken] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [callbackURLLocation, setCallbackURLLocation] = useState<string | null>(null);
   const [documentServerURL, setDocumentServerURL] = useState<string>('');
   const { user } = useAuth();
   const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
@@ -70,7 +69,10 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         const formattedUrl = isDev
           ? rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001')
           : rawUrl;
-        const callbackBaseUrl = isDev ? 'http://host.docker.internal:3001' : 'https://ui.schulung.multi.schule/';
+        const callbackBaseUrl = isDev
+          ? `${import.meta.env.VITE_ONLYOFFICE_DEV}?path=${encodeURIComponent(file.filename)}&filename=${encodeURIComponent(file.basename)}&eduToken=${encodeURIComponent(user?.access_token || 'notfound')}`
+          : `${import.meta.env.VITE_ONLYOFFICE_PROD}?path=${encodeURIComponent(file.filename)}&filename=${encodeURIComponent(file.basename)}&eduToken=${encodeURIComponent(user?.access_token || 'notfound')}`;
+
         console.log(`({
                   file, getOnlyOfficeJwtToken, previewFile, mode, rawUrl, isDev, callbackBaseUrl
                 }) ${JSON.stringify(
@@ -92,7 +94,8 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         setDocumentServerURL(documentSerURL);
         console.log(callbackBaseUrl);
         setFileUrl(formattedUrl);
-        setCallbackURLLocation(callbackBaseUrl);
+
+        console.log(`CallbackURL`, `CallbackURL${callbackBaseUrl}`);
 
         const config = {
           document: {
@@ -106,7 +109,9 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: `${callbackBaseUrl}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+            callbackUrl: isDev
+              ? `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_DEV}?path=${encodeURIComponent(file.filename)}&filename=${encodeURIComponent(file.basename)}&eduToken=${encodeURIComponent(user?.access_token || 'notfound')}`
+              : `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_PROD}?path=${encodeURIComponent(file.filename)}&filename=${encodeURIComponent(file.basename)}&eduToken=${encodeURIComponent(user?.access_token || 'notfound')}`,
             mode,
             customization: {
               anonymous: {
@@ -173,7 +178,10 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: `${callbackURLLocation}edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+              callbackUrl:
+                (import.meta.env.VITE_ENV as string) === 'dev'
+                  ? `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_DEV}?path=${encodeURIComponent(file.filename)}&filename=${encodeURIComponent(file.basename)}&eduToken=${encodeURIComponent(user?.access_token || 'notfound')}`
+                  : `${import.meta.env.VITE_ONLYOFFICE_CALLBACK_PROD}?path=${encodeURIComponent(file.filename)}&filename=${encodeURIComponent(file.basename)}&eduToken=${encodeURIComponent(user?.access_token || 'notfound')}`,
               mode,
               customization: {
                 anonymous: {

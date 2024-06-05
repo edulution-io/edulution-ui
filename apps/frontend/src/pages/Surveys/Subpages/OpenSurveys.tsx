@@ -4,12 +4,12 @@ import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
 import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
-import { Survey } from '@/pages/Surveys/Subpages/components/types/survey.ts';
 
 interface OpenSurveysPageProps {
   selectedSurvey: Survey | undefined;
@@ -46,6 +46,7 @@ const OpenSurveysPage = (props: OpenSurveysPageProps) => {
         <SurveyTable
           title={t('survey.openSurveys')}
           surveys={openSurveys}
+          selectedSurvey={selectedSurvey}
           setSelectedSurvey={setSelectedSurvey}
           isLoading={isFetchingOpenSurveys}
         />

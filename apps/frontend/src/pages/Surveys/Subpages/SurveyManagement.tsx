@@ -40,6 +40,7 @@ const SurveyManagement = () => {
         <SurveyTable
           title={t('survey.allSurveys')}
           surveys={allSurveys}
+          selectedSurvey={selectedSurvey}
           setSelectedSurvey={setSelectedSurvey}
           isLoading={isFetchingAllSurveys}
         />

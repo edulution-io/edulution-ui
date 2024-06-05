@@ -41,23 +41,26 @@ class SurveyService {
     return newSurvey;
   }
 
-  async addAnonymousAnswer(surveyName: string, answer: string /* , username: string */): Promise<Survey | undefined> {
+  async addAnonymousAnswer(surveyName: string, answer: string, username: string): Promise<Survey | undefined> {
     const existingSurvey = await this.surveyModel.findOne<Survey>({ surveyname: surveyName }).exec();
     if (!existingSurvey) {
       throw new Error('Survey not found');
     }
 
-    // const participated = existingSurvey.participated || [];
-    // participated.push(username);
+    let participated = existingSurvey.participated || [];
+    if (existingSurvey.participants.includes(username)) {
+      participated = existingSurvey.participated ? existingSurvey.participated.filter((user) => user !== username) : [];
+      participated.push(username);
+    }
 
     const answers = existingSurvey.anonymousAnswers || [];
     answers.push(answer);
 
-    const updateSurvey = await this.surveyModel
-      .findOneAndUpdate<Survey>({ surveyname: surveyName }, { anonymousAnswers: answers /* , participated */ })
+    const updatedSurvey = await this.surveyModel
+      .findOneAndUpdate<Survey>({ surveyname: surveyName }, { anonymousAnswers: answers, participated })
       .exec();
-    if (updateSurvey != null) {
-      return updateSurvey;
+    if (updatedSurvey != null) {
+      return updatedSurvey;
     }
   }
 

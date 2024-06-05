@@ -2,21 +2,28 @@ import React, { FC } from 'react';
 import ProgressSH from '@/components/ui/ProgessSH';
 
 interface QuotaBarProps {
-  schoolQuota: number;
-  userQuota: number;
+  username?: string;
 }
 
-const QuotaBar: FC<QuotaBarProps> = ({ schoolQuota, userQuota }) => {
-  const totalQuota = 1500; // Total allowed quota in MiB
+const QuotaBar: FC<QuotaBarProps> = ({ username = 'username' }) => {
+  const totalQuota = 2500; // Total allowed quota in MiB
+
+  const userQuota =
+    Math.round(
+      username
+        .split('')
+        .map((char) => char.charCodeAt(0))
+        .reduce((current, previous) => previous + current) * 12,
+    ) / 10;
 
   const userQuotaPercentage = (userQuota / totalQuota) * 100;
-  const schoolQuotaPercentage = (schoolQuota / totalQuota) * 100;
+  const schoolQuotaPercentage = ((userQuota * 3) / (totalQuota * 4)) * 100;
 
   return (
     <div className="text-sm text-gray-300">
       <p className="pb-2 text-xs">Speicherplatz:</p>
       <p className="pb-2 text-xs">
-        Agy: {userQuota} / {totalQuota} MiB
+        {userQuota} / {totalQuota} MiB
       </p>
       <div className="mb-2 h-0.5 w-full rounded-full bg-gray-200">
         <ProgressSH
@@ -24,8 +31,9 @@ const QuotaBar: FC<QuotaBarProps> = ({ schoolQuota, userQuota }) => {
           className="h-0.5"
         />
       </div>
+      <p className="pb-2 text-xs">Global:</p>
       <p className="pb-2 text-xs">
-        global: {schoolQuota} / {totalQuota} MiB
+        {Math.round(userQuota * 3)} / {totalQuota * 4} MiB
       </p>
       <div className="h-0.5 w-full rounded-full bg-gray-200">
         <ProgressSH

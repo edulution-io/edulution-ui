@@ -10,31 +10,32 @@ import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import { createSurveyName } from '@/pages/Surveys/Subpages/components/create-survey-name';
 import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
-
 import Editor from '@/pages/Surveys/Subpages/Editor/Editor';
 import EditorFormData from '@/pages/Surveys/Subpages/Editor/editor-form-data';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
-import { Survey } from '@/pages/Surveys/Subpages/components/types/survey.ts';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 
 interface SurveyEditorProps {
   selectedSurvey?: Survey;
+  updateCreatedSurveys: () => void;
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
 }
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { selectedSurvey } = props;
+  const { selectedSurvey, updateCreatedSurveys, updateAnsweredSurveys, updateOpenSurveys } = props;
   const { commitSurvey, isSaving, error } = useEditorStore();
   const { openPropagateSurveyDialog, closePropagateSurveyDialog } = usePropagateSurveyDialogStore();
 
-  const [editorSurveyText, setEditorSurveyText] = React.useState<string | undefined>(
-    JSON.stringify(selectedSurvey?.survey),
-  );
+  const [editorSurveyText, setEditorSurveyText] = React.useState<string | undefined>(JSON.stringify(selectedSurvey?.survey));
 
   const { t } = useTranslation();
 
   const initialFormValues: EditorFormData = {
     surveyname: selectedSurvey?.surveyname || createSurveyName(),
     survey: selectedSurvey?.survey || undefined,
-    participants: selectedSurvey?.participants || [],
+    participants: [],
+    participated: [],
     saveNo: selectedSurvey?.saveNo || 0,
     created: selectedSurvey?.created || new Date(),
     expires: selectedSurvey?.expires || undefined,
@@ -47,13 +48,14 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     surveyname: createSurveyName(),
     survey: undefined,
     participants: [],
+    participated: [],
     saveNo: 0,
     created: new Date(),
     expires: undefined,
     isAnonymous: false,
     canSubmitMultipleAnswers: false,
     invitedGroups: [],
-  };
+  }
 
   const formSchema = z.object({
     surveyname: z.string(),
@@ -88,17 +90,27 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   const resetSurvey = () => {
     form.reset(emptyFormValues);
     setEditorSurveyText('');
-  };
+  }
 
   const saveSurvey = async () => {
-    const { surveyname, survey, participants, saveNo, created, expires, isAnonymous, canSubmitMultipleAnswers } =
-      form.getValues();
+    const {
+      surveyname,
+      survey,
+      participants,
+      participated,
+      saveNo,
+      created,
+      expires,
+      isAnonymous,
+      canSubmitMultipleAnswers
+    } = form.getValues();
 
     try {
       const updatedSurvey = await commitSurvey(
         surveyname,
         survey,
         participants,
+        participated,
         saveNo,
         created,
         expires,
@@ -106,14 +118,17 @@ const SurveyEditor = (props: SurveyEditorProps) => {
         canSubmitMultipleAnswers,
       );
       setEditorSurveyText(JSON.stringify(updatedSurvey!.survey));
-      form.setValue('participants', updatedSurvey!.participants);
+
       closePropagateSurveyDialog();
+      updateCreatedSurveys();
+      updateOpenSurveys();
+      updateAnsweredSurveys();
+
     } catch (error) {
       setEditorSurveyText(survey!);
-      form.setValue('participants', participants);
       console.error(error);
     }
-  };
+  }
 
   if (isSaving) return <div>Loading...</div>;
 
