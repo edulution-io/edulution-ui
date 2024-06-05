@@ -5,8 +5,13 @@ import { useMediaQuery } from 'usehooks-ts';
 import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { useAuth } from 'react-oidc-context';
 import useUserStore from '@/store/userStore';
-import Avatar from '../../shared/Avatar';
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSH, DropdownMenuTrigger } from '../DropdownMenuSH';
+import Avatar from '@/components/shared/Avatar';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSH,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenuSH';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();

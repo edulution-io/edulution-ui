@@ -1,30 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import { getFromPathName } from '@/utils/common';
 import { useTranslation } from 'react-i18next';
-
-type SidebarMenuItem = {
-  title: string;
-  link: string;
-  icon: string;
-  color: string;
-};
+import useUserStore from '@/store/userStore';
+import { SidebarMenuItem } from './sidebar';
 
 interface SidebarItemProps {
-  userRole: string;
   menuItem: SidebarMenuItem;
-  isDesktop: boolean;
-  pathname: string;
+  isDesktop?: boolean;
   translate: number;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop, pathname, translate }) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop = true, translate }) => {
   const { t } = useTranslation();
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
+  const { pathname } = useLocation();
+  const { userInfo } = useUserStore();
+
+  const userRole = userInfo?.ldapGroups?.role ?? '';
 
   const rootPathName = `/${getFromPathName(pathname, 1)}`;
 
