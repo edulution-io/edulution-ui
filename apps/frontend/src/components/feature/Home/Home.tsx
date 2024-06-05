@@ -34,7 +34,6 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            {/*<MyFavourites />*/}
             <NotificationWidget />
           </div>
         </div>

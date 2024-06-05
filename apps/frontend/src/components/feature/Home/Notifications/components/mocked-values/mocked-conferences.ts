@@ -2,7 +2,7 @@ import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const mockedConferences: Conference[] = [
   {
-    name: 'Meeting',
+    name: 'Meeting 001',
     meetingID: '006654',
     creator: {
       label: 'agy-netzint-teacher',
@@ -36,7 +36,7 @@ const mockedConferences: Conference[] = [
     joinedAttendees: [],
   },
   {
-    name: 'Meeting',
+    name: 'Meeting 002',
     meetingID: '008944',
     creator: {
       label: 'agy-netzint1',

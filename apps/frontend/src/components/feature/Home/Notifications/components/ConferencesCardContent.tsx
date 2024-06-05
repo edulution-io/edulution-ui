@@ -2,8 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConferencesIcon } from '@/assets/icons';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
-import { CardContent } from '@/components/shared/Card';
 import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import ConferencesList from '@/components/feature/Home/Notifications/components/ConferencesList';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/Collapsible';
 
 interface ConferencesCardContentProps {
   conferences: Conference[];
@@ -14,24 +15,22 @@ const ConferencesCardContent = (props: ConferencesCardContentProps) => {
   const { t } = useTranslation();
 
   return (
-    <CardContent>
-      <h4
-        color="white"
-        className="font-bold"
-      >
-        <p>{t('conference.sidebar')}</p>
+    <Collapsible
+      defaultOpen={true}
+    >
+      <CollapsibleTrigger className="text-xl font-bold flex">
         <img
           src={ConferencesIcon}
-          alt="conference"
+          alt="conference-notification"
           width={BUTTONS_ICON_WIDTH}
+          className="mr-4"
         />
-      </h4>
-      <div className="mt-4 flex flex-col justify-between gap-6">
-        {conferences.map((conference) => (
-          <>{JSON.stringify(conference, null, 2)}</>
-        ))}
-      </div>
-    </CardContent>
+        {t('conferences.sidebar')}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <ConferencesList items={conferences} className="mt-2 mb-6" />
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
 

@@ -1,43 +1,47 @@
 import React, { useEffect } from 'react';
-import { Card } from '@/components/shared/Card';
+import { useTranslation } from 'react-i18next';
+import { Card, CardContent } from '@/components/shared/Card';
 import useNotificationStore from '@/components/feature/Home/Notifications/NotificationWidgetStore';
-import ConferencesCardContent from '@/components/feature/Home/Notifications/ConferencesCardContent';
-import MailCardContent from '@/components/feature/Home/Notifications/MailCardContent';
-import SurveysCardContent from '@/components/feature/Home/Notifications/SurveysCardContent';
+import ConferencesCardContent from '@/components/feature/Home/Notifications/components/ConferencesCardContent';
+import MailCardContent from '@/components/feature/Home/Notifications/components/MailCardContent';
+import SurveysCardContent from '@/components/feature/Home/Notifications/components/SurveysCardContent';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
 const NotificationWidget = () => {
-  const { lastUpdated, setLastUpdated, conferences, getConferences, openSurveys, getOpenSurveys, mails, fetchMails } =
+  const { /* lastUpdated, setLastUpdated, */ conferences, getConferences, openSurveys, getOpenSurveys, mails, fetchMails } =
     useNotificationStore();
-  const currentTime = new Date().getTime();
-  const timeElapsed = lastUpdated ? currentTime - lastUpdated : 0;
-  const shouldUpdate = !lastUpdated || timeElapsed > 3000;
+  // const currentTime = new Date().getTime();
+  // const timeElapsed = lastUpdated ? currentTime - lastUpdated : 0;
+  // const shouldUpdate = !lastUpdated || timeElapsed > 3000;
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetch = async () => {
-      const promises = [];
-      if (shouldUpdate || !conferences || conferences.length === 0) {
-        promises.push(await getConferences());
-      }
-      if (shouldUpdate || !openSurveys || openSurveys.length === 0) {
-        promises.push(await getOpenSurveys());
-      }
-      if (shouldUpdate || !mails || mails.length === 0) {
-        promises.push(await fetchMails());
-      }
-      await Promise.all(promises);
-      setLastUpdated(currentTime);
+      await getConferences();
+      await getOpenSurveys();
+      await fetchMails();
     };
     fetch();
-  }, [shouldUpdate, conferences, openSurveys, mails]);
+  }, []);
 
   return (
     <Card
       variant="collaboration"
-      className="min-h-[100%]"
+      className="min-h-[100%] overflow-auto"
+      style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
-      <ConferencesCardContent conferences={conferences} />
-      <SurveysCardContent surveys={openSurveys} />
-      <MailCardContent mails={mails} />
+      <CardContent>
+        <div className="flex flex-col gap-3">
+          <h4 className="font-bold">{t('accountData.account_info')}</h4>
+
+          <ScrollArea>
+            <ConferencesCardContent conferences={conferences} />
+            <SurveysCardContent surveys={openSurveys} />
+            <MailCardContent mails={mails} />
+          </ScrollArea>
+        </div>
+      </CardContent>
     </Card>
   );
 };

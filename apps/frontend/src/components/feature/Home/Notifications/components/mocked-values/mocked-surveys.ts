@@ -25,6 +25,7 @@ const mockedSurveys: Survey[] = [
       ],
       showQuestionNumbers: 'off',
     }),
+
     participants: [
       {
         label: 'agy-netzint-teacher',
@@ -47,11 +48,13 @@ const mockedSurveys: Survey[] = [
         username: 'agy-netzint2',
       },
     ],
+    participated: [],
     saveNo: 5,
     created: new Date(),
+    expires: undefined,
     isAnonymous: true,
     canSubmitMultipleAnswers: true,
-  },
+  } as Survey,
   {
     surveyname: '20240603115865168',
     survey: JSON.stringify({
@@ -147,11 +150,13 @@ const mockedSurveys: Survey[] = [
         username: 'agy-netzint2',
       },
     ],
+    participated: [],
     saveNo: 15,
     created: new Date(),
+    expires: new Date('2024-09-11T12:00:00'),
     isAnonymous: true,
     canSubmitMultipleAnswers: true,
-  },
+  } as Survey,
 ];
 
 export default mockedSurveys;

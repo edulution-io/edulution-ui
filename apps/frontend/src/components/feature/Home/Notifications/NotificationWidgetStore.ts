@@ -1,15 +1,12 @@
 import { create } from 'zustand';
-import eduApi from '@/api/eduApi';
-import SURVEY_ENDPOINT from '@/pages/Surveys/Subpages/components/survey-endpoint';
-import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
-import handleApiError from '@/utils/handleApiError';
+// import eduApi from '@/api/eduApi';
 import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import mockedConferences from '@/components/feature/Home/Notifications/components/mocked-values/mocked-conferences.ts';
+import Mail from '@/components/feature/Home/Notifications/components/types/mail.ts';
+import mockedMails from '@/components/feature/Home/Notifications/components/mocked-values/mocked-mails.ts';
 import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
-import UsersSurveysTypes from '@/pages/Surveys/Subpages/components/types/users-surveys-table-type';
-import mockedSurveys from '@/components/feature/Home/Notifications/mocked-surveys';
-import mockedConferences from '@/components/feature/Home/Notifications/mocked-conferences';
-import mockedMails from '@/components/feature/Home/Notifications/mocked-mails';
-import Mail from '@/components/feature/Home/Notifications/mail';
+import mockedSurveys from '@/components/feature/Home/Notifications/components/mocked-values/mocked-surveys.ts';
+// import NOTIFICATION_ENDPOINT from "@/components/feature/Home/Notifications/components/types/notification-endpoint.ts";
 
 interface NotificationStore {
   lastUpdated: number | undefined;
@@ -25,10 +22,10 @@ interface NotificationStore {
   errorFetchingOpenSurveys: Error | null;
   getOpenSurveys: () => Promise<Survey[]>;
 
-  mails: JSON[] | Mail[];
+  mails: Mail[];
   isFetchingMails: boolean;
   errorFetchingMails: Error | null;
-  fetchMails: () => Promise<JSON[] | Mail[]>;
+  fetchMails: () => Promise<Mail[]>;
 
   reset: () => void;
 }
@@ -54,43 +51,48 @@ const useNotificationStore = create<NotificationStore>((set) => ({
   setLastUpdated: (lastUpdated: number | undefined) => set({ lastUpdated }),
 
   getConferences: async (): Promise<Conference[]> => {
-    set({ isLoadingConferences: true, errorLoadingConferences: null });
-    try {
-      const response = await eduApi.get<Conference[]>(apiEndpoint);
-      const conferences = response.data;
-      set({ conferences, isLoadingConferences: false });
-      return conferences;
-    } catch (error) {
-      set({ errorLoadingConferences: error, isLoadingConferences: false });
-      handleApiError(error, set);
-      return mockedConferences;
-    }
+    // set({ isLoadingConferences: true, errorLoadingConferences: null });
+    // try {
+    //   const response = await eduApi.get<Conference[]>(NOTIFICATION_ENDPOINT + 'conferenences/');
+    //   const conferences = response.data;
+    //   set({ conferences: conferences || mockedConferences, isLoadingConferences: false });
+    //   return conferences;
+    // } catch (error) {
+    //   set({ errorLoadingConferences: error, isLoadingConferences: false });
+    //   return mockedConferences;
+    // }
+    set ({ conferences: mockedConferences });
+    return mockedConferences;
   },
 
   getOpenSurveys: async (): Promise<Survey[]> => {
-    set({ errorFetchingOpenSurveys: null, isFetchingOpenSurveys: true });
-    try {
-      const response = await eduApi.get<Survey[]>(SURVEY_ENDPOINT, { params: { search: UsersSurveysTypes.OPEN } });
-      const surveys = response.data;
-      set({ openSurveys: surveys, isFetchingOpenSurveys: false });
-      return surveys;
-    } catch (error) {
-      set({ errorFetchingOpenSurveys: error, isFetchingOpenSurveys: false });
-      return mockedSurveys;
-    }
+    // set({ isFetchingOpenSurveys: true, errorFetchingOpenSurveys: null });
+    // try {
+    //   const response = await eduApi.get<Survey[]>(NOTIFICATION_ENDPOINT + 'surveys/');
+    //   const surveys = response.data;
+    //   set({ openSurveys: surveys || mockedSurveys, isFetchingOpenSurveys: false });
+    //   return surveys;
+    // } catch (error) {
+    //   set({ errorFetchingOpenSurveys: error, isFetchingOpenSurveys: false });
+    //   return mockedSurveys;
+    // }
+    set ({ openSurveys: mockedSurveys });
+    return mockedSurveys;
   },
 
-  fetchMails: async (): Promise<JSON[] | Mail[]> => {
-    set({ errorFetchingMails: null, isFetchingMails: true });
-    try {
-      const response = await eduApi.get<JSON[]>(SURVEY_ENDPOINT);
-      const mails = response.data;
-      set({ mails: mails, isFetchingMails: false });
-      return mails;
-    } catch (error) {
-      set({ errorFetchingMails: error, isFetchingMails: false });
-      return mockedMails;
-    }
+  fetchMails: async (): Promise<Mail[]> => {
+    // set({ errorFetchingMails: null, isFetchingMails: true });
+    // try {
+    //   const response = await eduApi.get<Mail[]>(NOTIFICATION_ENDPOINT + 'mails/');
+    //   const mails = response.data;
+    //   set({ mails: mails || mockedMails, isFetchingMails: false });
+    //   return mails;
+    // } catch (error) {
+    //   set({ errorFetchingMails: error, isFetchingMails: false });
+    //   return mockedMails;
+    // }
+    set ({ mails: mockedMails });
+    return mockedMails;
   },
 
   reset: () => set(initialState),
