@@ -116,14 +116,14 @@ const Sidebar: React.FC = () => {
       event.preventDefault();
       if (!startY) return;
 
-      const deltaY = event.touches[0].clientY - startY;
+      const deltaY = startY - event.touches[0].clientY;
 
       setTranslate((prevTranslate) => {
         if (sidebarIconsRef.current == null) {
           return prevTranslate;
         }
-        if (isDownButtonVisible && deltaY > 0) return prevTranslate + 6;
-        if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 6;
+        if (isUpButtonVisible && deltaY > 0 && translate > 0) return prevTranslate - 6;
+        if (isDownButtonVisible && deltaY < 0) return prevTranslate + 6;
         return prevTranslate;
       });
     },
