@@ -33,7 +33,7 @@ const NotificationWidget = () => {
     >
       <CardContent>
         <div className="flex flex-col gap-3">
-          <h4 className="font-bold">{t('notification')}</h4>
+          <h4 className="font-bold">{t('important')}</h4>
 
           <ScrollArea>
             <ConferencesCardContent conferences={conferences} />
