@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/shared/Button';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import { MobileLogoIcon, SettingsIcon } from '@/assets/icons';
 
@@ -10,32 +10,27 @@ import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
-import { useAuth } from 'react-oidc-context';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
-import Avatar from '../shared/Avatar';
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSH, DropdownMenuTrigger } from './DropdownMenuSH';
+import UserMenuButton from './UserMenuButton';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
   const [translate, setTranslate] = useState(0);
   const [isUpButtonVisible, setIsUpButtonVisible] = useState(false);
   const [isDownButtonVisible, setIsDownButtonVisible] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarIconsRef = useRef<HTMLDivElement>(null);
   const [isOpen, toggle] = useToggle();
-  const navigate = useNavigate();
 
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
-  const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { logout, userInfo } = useUserStore();
+  const { userInfo } = useUserStore();
 
   const userRole = userInfo?.ldapGroups?.role ?? '';
 
@@ -127,8 +122,8 @@ const Sidebar = () => {
         if (sidebarIconsRef.current == null) {
           return prevTranslate;
         }
-        if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
-        if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
+        if (isDownButtonVisible && deltaY > 0) return prevTranslate + 6;
+        if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 6;
         return prevTranslate;
       });
     },
@@ -240,40 +235,6 @@ const Sidebar = () => {
     </div>
   );
 
-  const handleLogout = async () => {
-    auth.removeUser().catch(console.error);
-    await logout();
-    cleanAllStores();
-  };
-
-  const userMenu = () => (
-    <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
-      <DropdownMenuSH>
-        <DropdownMenuTrigger className="flex items-center gap-1">
-          <Avatar />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="start"
-          className="z-50 bg-white text-black"
-        >
-          <DropdownMenuItem onClick={() => navigate('user')}>{t('usersettings.sidebar')}</DropdownMenuItem>
-
-          <DropdownMenuItem onClick={() => handleLogout()}>{t('common.logout')}</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenuSH>
-    </div>
-  );
-
-  const userButton = () => (
-    <div
-      key="logout"
-      className={`group flex items-center justify-end ${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black' : 'border-b-2 border-ciLightGrey'}`}
-    >
-      <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
-      {userMenu()}
-    </div>
-  );
-
   const renderListItem = () => (
     <div className="fixed right-0 z-10 h-screen border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none">
       {!isDesktop && isOpen ? (
@@ -303,10 +264,10 @@ const Sidebar = () => {
             translate={translate}
           />
         ))}
-        {!isDesktop ? userButton() : null}
+        {!isDesktop ? <UserMenuButton /> : null}
       </div>
       {isDownButtonVisible ? downButton() : null}
-      {isDesktop ? userButton() : null}
+      {isDesktop ? <UserMenuButton /> : null}
     </div>
   );
 

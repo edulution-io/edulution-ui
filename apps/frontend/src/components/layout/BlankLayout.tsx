@@ -4,7 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import useUserStore from '@/store/userStore';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '../ui/Sidebar';
+import { Sidebar } from '@/components';
 
 const BlankLayout: React.FC<PropsWithChildren> = () => {
   const { pathname } = useLocation();

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import Sidebar from '@/components/ui/Sidebar';
+import { Sidebar } from '@/components';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
 import useUserStore from '@/store/userStore';
 import useFrameStore from '@/routes/IframeStore';

@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { Sidebar } from '@/components';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '@/components/ui/Sidebar';
 import MenuBar from '@/components/shared/MenuBar';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 

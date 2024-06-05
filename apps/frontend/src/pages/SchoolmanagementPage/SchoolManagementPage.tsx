@@ -24,7 +24,6 @@ const SchoolManagementPage = () => {
   }, []);
 
   const renderPage = () => {
-    console.log(page);
     switch (page) {
       case 'enrol':
         return <EnrolPage />;

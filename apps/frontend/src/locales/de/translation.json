@@ -281,6 +281,7 @@
   "program": "Programme",
   "share": "Share",
   "students": "Schüler",
+  "user": "Benutzer",
   "login": {
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Eingeloggt bleiben",
@@ -301,7 +302,7 @@
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
-    "logout": "Logout",
+    "logout": "Abmelden",
     "save": "Speichern",
     "successful": "Erfolgreich",
     "failed": "Fehlgeschlagen",
