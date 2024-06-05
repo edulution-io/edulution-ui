@@ -46,6 +46,7 @@ const useParticipateSurveyDialogStore = create<ParticipateSurveyDialogStore>((se
       // Display the "Success" message (pass a string value to display a custom message)
       options?.showSaveSuccess();
 
+      set({ isAnswering: false });
       return response.data;
     } catch (error) {
       // Display the "Error" message (pass a string value to display a custom message)
