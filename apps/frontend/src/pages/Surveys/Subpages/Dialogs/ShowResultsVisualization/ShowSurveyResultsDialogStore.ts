@@ -39,7 +39,12 @@ const useShowSurveyResultsDialogStore = create<ShowSurveyResultsDialogStore>((se
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<string[]>(SURVEY_ENDPOINT, {
-        params: { search: UsersSurveysTypes.ANSWERS, surveyname: surveyName, participants: participants, isAnonymous: false },
+        params: {
+          search: UsersSurveysTypes.ANSWERS,
+          surveyname: surveyName,
+          participants: participants,
+          isAnonymous: false,
+        },
       });
       const answers = response.data;
       set({ answers, isLoading: false });

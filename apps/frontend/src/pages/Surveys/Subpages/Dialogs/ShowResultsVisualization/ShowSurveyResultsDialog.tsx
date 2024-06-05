@@ -29,13 +29,12 @@ const ShowSurveyResultsDialog = (props: ShowSurveyResultsDialogProps) => {
   useEffect(() => {
     const fetchAnswers = async () => {
       await getAllSurveyAnswers(survey?.surveyname, survey?.participants);
-    }
+    };
 
     if (!survey) return;
     if (!isOpenSurveyResultsDialog) return;
 
     fetchAnswers();
-
   }, [survey, isOpenSurveyResultsDialog]);
 
   const getDialogBody = () => {

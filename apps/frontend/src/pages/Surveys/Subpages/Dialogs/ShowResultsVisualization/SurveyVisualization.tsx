@@ -40,7 +40,6 @@ const SurveyVisualization = (props: SurveyVisualizationProps) => {
     setVizPanel(surveyVizPanel);
   }, [survey, answers]);
 
-
   useEffect(() => {
     vizPanel?.render('surveyVizPanel');
     const component = document.getElementById('surveyVizPanel');
@@ -54,7 +53,7 @@ const SurveyVisualization = (props: SurveyVisualizationProps) => {
 
   return (
     <div className="max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4 text-white">
-      <div id="surveyVizPanel"/>
+      <div id="surveyVizPanel" />
     </div>
   );
 };

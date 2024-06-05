@@ -25,65 +25,52 @@ const SurveyTable = (props: SurveyTableProps) => {
       if (!survey.survey) {
         return null;
       }
+
+      let surveyObj;
       try {
-        const srv = JSON.parse(survey.survey);
-        return (
-          <TableRow
-            key={`survey_row_-_${survey.surveyname}`}
-            className="cursor-pointer"
-            onClick={() => {
-              setSelectedSurvey(survey);
-            }}
-          >
-            <TableCell>
-              <Checkbox
-                checked={isSelectedSurvey}
-                aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-              />
-            </TableCell>
-            <TableCell className="text-white">{srv?.title || t('not-available')}</TableCell>
-            <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : t('not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.expires ? survey?.expires.toString() : t('not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.participated?.length ? `${ survey.participated.length }/` : ''}
-              {survey?.participants?.length || 0}
-            </TableCell>
-          </TableRow>
-        );
+        surveyObj = JSON.parse(survey.survey);
+        if (!surveyObj.elements && !surveyObj.pages[0].elements) {
+          surveyObj = undefined;
+          throw new Error('not able to parse the surveys string object');
+        }
       } catch (e) {
-        const srv = JSON.parse(JSON.stringify(survey.survey));
-        return (
-          <TableRow
-            key={`survey_row_-_${survey.surveyname}`}
-            className="cursor-pointer"
-            onClick={() => {
-              setSelectedSurvey(survey);
-            }}
-          >
-            <TableCell>
-              <Checkbox
-                checked={isSelectedSurvey}
-                aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-              />
-            </TableCell>
-            <TableCell className="text-white">{srv?.title || t('not-available')}</TableCell>
-            <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : t('not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.expires ? survey?.expires.toString() : t('not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.participated?.length ? `${ survey.participated.length }/` : '0/'}
-              {survey?.participants?.length || 0}
-            </TableCell>
-          </TableRow>
-        );
+        surveyObj = JSON.parse(JSON.stringify(survey.survey));
+        if (!surveyObj.elements && !surveyObj.pages[0].elements) {
+          surveyObj = undefined;
+        }
       }
+
+      if (!surveyObj) {
+        return <>{t('survey.noFormula')}</>;
+      }
+
+      return (
+        <TableRow
+          key={`survey_row_-_${survey.surveyname}`}
+          className="cursor-pointer"
+          onClick={() => {
+            setSelectedSurvey(survey);
+          }}
+        >
+          <TableCell>
+            <Checkbox
+              checked={isSelectedSurvey}
+              aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
+            />
+          </TableCell>
+          <TableCell className="text-white">{surveyObj?.title || t('not-available')}</TableCell>
+          <TableCell className="text-white">
+            {survey?.created ? survey?.created.toString() : t('not-available')}
+          </TableCell>
+          <TableCell className="text-white">
+            {survey?.expires ? survey?.expires.toString() : t('not-available')}
+          </TableCell>
+          <TableCell className="text-white">
+            {survey?.participated?.length ? `${ survey.participated.length }/` : ''}
+            {survey?.participants?.length || 0}
+          </TableCell>
+        </TableRow>
+      );
     }
   )), [surveys, selectedSurvey]);
 

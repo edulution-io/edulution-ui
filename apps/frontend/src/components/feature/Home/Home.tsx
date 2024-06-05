@@ -1,10 +1,11 @@
 import React from 'react';
 
-import MyFavourites from './MyFavourites';
+// import MyFavourites from './MyFavourites';
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
+import NotificationWidget from '@/components/feature/Home/Notifications/NotificationWidget';
 
 const Home: React.FC = () => {
   return (
@@ -33,7 +34,7 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            <MyFavourites />
+            <NotificationWidget />
           </div>
         </div>
       </div>
