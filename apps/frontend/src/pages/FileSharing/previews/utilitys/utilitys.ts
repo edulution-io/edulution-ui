@@ -30,6 +30,9 @@ export const determinePreviewType = (file: DirectoryFile): string => {
     case 'mp3':
     case 'mp4':
       return 'media';
+
+    case 'drawio':
+      return 'diagram';
     default:
       return 'unknown';
   }

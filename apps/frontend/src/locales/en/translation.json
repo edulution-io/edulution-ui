@@ -370,7 +370,20 @@
     "spreadsheet": "Table",
     "presentation": "Presentation"
   },
+  "filetypes": {
+    "drawIoFile": "Draw.io-File",
+    "textFile": "Textfile",
+    "documentFile": "Document",
+    "spreadsheetFile": "Tabel",
+    "presentationFile": "Presentation"
+  },
+
   "fileCreateNewContent": {
+    "drawiofile": "New Draw.io-File",
+    "textfile": "New Textfile",
+    "documentfile": "New Document",
+    "spreadsheetfile": "New Tabel",
+    "presentationfile": "New Presentation",
     "fileNamePlaceholder": "Enter file name",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",

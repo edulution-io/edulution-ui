@@ -379,9 +379,21 @@
   "createContent": {
     "submit": "Erstellen"
   },
+  "filetype": {
+    "drawIoFile": "Draw.io-Datei",
+    "textFile": "Textdatei",
+    "documentFile": "Dokument",
+    "spreadsheetFile": "Tabelle",
+    "presentationFile": "Präsentation"
+  },
 
   "fileCreateNewContent": {
-    "fileDialogTitle": "Erstelle eine neue Datei",
+    "drawiofile": "Neue Draw.io-Datei",
+    "textfile": "Neue Textdatei",
+    "documentfile": "Neues Dokument",
+    "spreadsheetfile": "Neue Tabelle",
+    "presentationfile": "Neue Präsentation",
+    "fileDialogTitle": "Erstelle ein/ne neue/s {{name}}",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
     "fileNamePlaceholder": "Dateiname eingeben",

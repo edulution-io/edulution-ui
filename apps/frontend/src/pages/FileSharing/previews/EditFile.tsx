@@ -36,12 +36,11 @@ const EditFile = () => {
   }, [editableFile]);
 
   const containerStyles =
-    fileType === 'image'
+    fileType === 'image' || fileType === 'diagram'
       ? 'h-screen w-screen flex items-center justify-center bg-cover bg-center pt-8'
       : fileType === 'media'
         ? 'absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14 pt-8'
         : 'absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14 pt-8';
-
   return (
     <div
       className=" absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14"

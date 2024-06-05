@@ -5,23 +5,44 @@ import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationFor
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
 import useFileManagerStore from '@/pages/FileSharing/fileManagerStore';
 import CreateContentDialog from '@/components/ui/Dialog/CreateContentDialog';
-import { generateDOCX, generatePPTX, generateXLSX } from '@/pages/FileSharing/utilities/fileManagerUtilits.ts';
+import {
+  generateDOCX,
+  generateDrawIo,
+  generatePPTX,
+  generateXLSX,
+} from '@/pages/FileSharing/utilities/fileManagerUtilits.ts';
 import useUserStore from '@/store/userStore.ts';
 
 interface CreateNewContentDialogProps {
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
+  isOpen?: boolean;
   contentType: ContentType;
+  setIsOpen?: (isOpen: boolean) => void;
+  fileType?: string;
+  fileTypeName?: string;
 }
 
-const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
+const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({
+  trigger,
+  contentType,
+  isOpen: externalIsOpen,
+  setIsOpen: setExternalIsOpen,
+  fileType,
+  fileTypeName,
+}) => {
   const { t } = useTranslation();
   const { user } = useUserStore();
   const [fileName, setFileName] = useState('');
   const [directoryName, setDirectoryName] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [fileEnding, setSelectedFileEnding] = useState('.txt');
-  const { handleWebDavAction, setFileOperationSuccessful, createNewFile, createNewFolder, currentPath, uploadFile } =
+  const [isOpen, setIsOpen] = useState(false);
+  const { handleWebDavAction, setFileOperationSuccessful, createNewFolder, currentPath, uploadFile } =
     useFileManagerStore();
+
+  useEffect(() => {
+    if (externalIsOpen !== undefined) {
+      setIsOpen(externalIsOpen);
+    }
+  }, [externalIsOpen]);
 
   const onSubmit = async () => {
     const name = contentType === ContentType.file ? fileName : directoryName;
@@ -30,76 +51,71 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     let blob: Blob | null = null;
     let filename = '';
     if (contentType === ContentType.file) {
-      filename = `${name}${fileEnding}`;
+      filename = `${name}${fileType}`;
     } else {
       filename = `${name}`;
     }
 
-    switch (fileEnding) {
-      case '.pptx':
-        blob = await generatePPTX(user);
-        break;
-      case '.xlsx':
-        blob = generateXLSX(user);
-        break;
-      case '.docx':
-        blob = await generateDOCX(user);
-        break;
-      default:
-        break;
-    }
+    try {
+      if (contentType === ContentType.file) {
+        switch (fileType) {
+          case '.pptx':
+            blob = await generatePPTX(user);
+            break;
+          case '.xlsx':
+            blob = generateXLSX(user);
+            break;
+          case '.docx':
+            blob = await generateDOCX(user);
+            break;
+          case '.drawio':
+            blob = generateDrawIo();
+            break;
+          default:
+            break;
+        }
 
-    if (blob) {
-      const file = new File([blob], filename);
-
-      setIsDialogOpen(false);
-      try {
-        const resp = await uploadFile(file, currentPath || '/');
+        if (blob) {
+          const file = new File([blob], filename);
+          const resp = await uploadFile(file, currentPath || '/');
+          if (resp.success) {
+            await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
+          } else {
+            await setFileOperationSuccessful(false, t('fileCreateNewContent.unknownErrorOccurred'));
+          }
+        }
+      } else {
+        const resp = await handleWebDavAction(() => createNewFolder(filename, currentPath));
         if (resp.success) {
           await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
         } else {
           await setFileOperationSuccessful(false, t('fileCreateNewContent.unknownErrorOccurred'));
         }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        await setFileOperationSuccessful(false, errorMessage);
       }
-    } else {
-      try {
-        const action = contentType === ContentType.file ? createNewFile : createNewFolder;
-        const resp = await handleWebDavAction(() => action(filename, currentPath));
-        if (resp.success) {
-          await setFileOperationSuccessful(true, t('fileCreateNewContent.fileOperationSuccessful'));
-        } else {
-          await setFileOperationSuccessful(false, t('fileCreateNewContent.unknownErrorOccurred'));
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
-        await setFileOperationSuccessful(false, errorMessage);
-      } finally {
-        setFileName('');
-        setDirectoryName('');
-        setIsDialogOpen(false);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : t('fileCreateNewContent.unknownErrorOccurred');
+      await setFileOperationSuccessful(false, errorMessage);
+    } finally {
+      setFileName('');
+      setDirectoryName('');
+      setIsOpen(false);
+      if (setExternalIsOpen) {
+        setExternalIsOpen(false);
       }
     }
   };
 
   useEffect(() => {
-    if (!isDialogOpen) {
+    if (!isOpen) {
       setFileName('');
       setDirectoryName('');
-      setSelectedFileEnding('.txt');
     }
-  }, [isDialogOpen]);
-
-  const handleFileEndingChange = (fileEnding: string) => {
-    setSelectedFileEnding(fileEnding);
-  };
+  }, [isOpen]);
 
   const isFormInvalid = contentType === ContentType.file ? fileName.length === 0 : directoryName.length === 0;
   const formTitle =
     contentType === ContentType.file
-      ? t('fileCreateNewContent.fileDialogTitle')
+      ? t('fileCreateNewContent.fileDialogTitle', { name: fileTypeName })
       : t('fileCreateNewContent.directoryDialogTitle');
   const FormComponent = contentType === ContentType.file ? FileCreationForm : DirectoryCreationForm;
 
@@ -109,11 +125,8 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
       title={formTitle}
       onSubmit={onSubmit}
       isDisabled={isFormInvalid}
-      isOpen={isDialogOpen}
-      onOpenChange={(isOpen) => setIsDialogOpen(isOpen)}
-      fileEndings={['.txt', '.docx', '.xlsx', '.pptx']}
-      showFileEndingsDropdown={contentType === ContentType.file}
-      onFileEndingChange={handleFileEndingChange}
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
     >
       <FormComponent
         fileName={fileName}

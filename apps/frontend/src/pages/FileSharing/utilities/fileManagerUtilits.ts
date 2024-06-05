@@ -103,6 +103,22 @@ export const generateXLSX = (username: string) => {
   return XLSX.write(wb, { bookType: 'xlsx', type: 'file' });
 };
 
+export const generateDrawIo = (): Blob => {
+  const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" modified="${new Date().toISOString()}" agent="${navigator.userAgent}" etag="GFtPynQl7oe-penzhr5P" version="22.0.2" type="device">
+  <diagram name="Page-1" id="dxSViGRiAMGmWSK-u8d6">
+    <mxGraphModel dx="794" dy="825" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+
+  return new Blob([xmlContent], { type: 'application/xml' });
+};
+
 export const generateDOCX = (username: string) => {
   const doc = new Document({
     sections: [

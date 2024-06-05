@@ -6,6 +6,7 @@ import GraphicPreview from '@/pages/FileSharing/previews/graphics/GraphicPreview
 import { t } from 'i18next';
 import { determinePreviewType } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
 import MediaPreview from '@/pages/FileSharing/previews/media/MediaPreview.tsx';
+import DiagramPreview from '@/pages/FileSharing/previews/diagrams/DiagramPreview.tsx';
 
 interface PreviewsProps {
   file: DirectoryFile;
@@ -40,6 +41,14 @@ const Previews: FC<PreviewsProps> = ({ file, onClose, isPreview, type, mode }) =
     case 'media':
       return (
         <MediaPreview
+          file={file}
+          onClose={onClose}
+          isPreview={isPreview}
+        />
+      );
+    case 'diagram':
+      return (
+        <DiagramPreview
           file={file}
           onClose={onClose}
           isPreview={isPreview}

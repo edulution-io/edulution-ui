@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import {
+  MdDriveFileRenameOutline,
   MdOutlineDeleteOutline,
   MdOutlineDriveFileMove,
   MdOutlineFileDownload,
@@ -29,6 +30,8 @@ import EditFile from '@/pages/FileSharing/previews/EditFile.tsx';
 import { convertDownloadLinkToBlob } from '@/pages/FileSharing/previews/utilitys/utilitys.ts';
 import { triggerFileDownload } from '@/pages/FileSharing/utilities/fileManagerUtilits.ts';
 import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
+import ChooseNewFileType from '@/pages/FileSharing/dialog/ChooseNewFileType.tsx';
+import RenameItemDialog from '@/pages/FileSharing/dialog/RenameItemDialog.tsx';
 
 const FileSharingPage = () => {
   const {
@@ -115,7 +118,7 @@ const FileSharingPage = () => {
             <TooltipProvider>
               {selectedItems.length === 0 && (
                 <>
-                  <CreateNewContentDialog
+                  <ChooseNewFileType
                     trigger={
                       <FloatingActionButton
                         icon={MdOutlineNoteAdd}
@@ -176,6 +179,15 @@ const FileSharingPage = () => {
                             '';
                           triggerFileDownload(downloadUrl);
                         }}
+                      />
+                      <RenameItemDialog
+                        trigger={
+                          <FloatingActionButton
+                            icon={MdDriveFileRenameOutline}
+                            text={t('tooltip.rename')}
+                          />
+                        }
+                        item={selectedItems[0]}
                       />
                     </>
                   )}
