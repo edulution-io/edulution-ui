@@ -4,11 +4,12 @@ import { CacheModule } from '@nestjs/cache-manager';
 import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
+import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 
 @Module({
   imports: [
     CacheModule.register({
-      ttl: 10,
+      ttl: DEFAULT_CACHE_TTL_MS,
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],

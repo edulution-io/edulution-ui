@@ -131,7 +131,7 @@ const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
-  const { loginUser } = useUserQuery();
+  const { user: registeredUser } = useUserQuery();
   const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
 
   useEffect(() => {
@@ -139,7 +139,7 @@ const AppRouter = () => {
       const { profile } = auth.user;
 
       // Send here the user password for Webdav to the API
-      loginUser(profile)
+      registeredUser(profile)
         .then(() => setIsLoggedInInEduApi(true))
         .catch((e) => console.error(e));
     }

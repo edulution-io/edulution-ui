@@ -25,7 +25,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     useConferenceDetailsDialogStore();
 
   const initialFormValues: FormData = {
-    name: selectedConference?.name || 'asd',
+    name: selectedConference?.name || '',
     password: selectedConference?.password || '',
     invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user) || [],
   };
