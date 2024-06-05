@@ -1,28 +1,41 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
+import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
+// import useShowSurveyResultsTableDialogStore
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialogStore';
+// import ShowSurveyResultsTableDialog
+//   from "@/pages/Surveys/Subpages/Dialogs/ShowResultsTable/ShowSurveyResultsTableDialog.tsx";
 
-const AnsweredSurveysPage = () => {
+interface AnsweredSurveysPageProps {
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
+  answeredSurveys: Survey[];
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+  isFetchingAnsweredSurveys: boolean;
+}
+
+const AnsweredSurveysPage = (props: AnsweredSurveysPageProps) => {
   const {
     selectedSurvey,
     setSelectedSurvey,
     answeredSurveys,
-    setPageViewSurveyCreator,
     updateOpenSurveys,
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
-  } = useSurveysPageStore();
+  } = props;
+
+  // const { openSurveyResultsTableDialog } = useShowSurveyResultsTableDialogStore();
   const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
@@ -46,11 +59,6 @@ const AnsweredSurveysPage = () => {
       </ScrollArea>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={SurveyButtonProps.Create.icon}
-            text={t(SurveyButtonProps.Create.title)}
-            onClick={setPageViewSurveyCreator}
-          />
           {selectedSurvey ? (
             <>
               <FloatingActionButton
@@ -59,10 +67,15 @@ const AnsweredSurveysPage = () => {
                 onClick={openSurveyAnswerDialog}
               />
               <FloatingActionButton
-                icon={SurveyButtonProps.Results.icon}
-                text={t(SurveyButtonProps.Results.title)}
+                icon={SurveyButtonProps.ResultingPanel.icon}
+                text={t(SurveyButtonProps.ResultingPanel.title)}
                 onClick={openSurveyResultsDialog}
               />
+              {/*<FloatingActionButton */}
+              {/*  icon={SurveyButtonProps.ResultingTable.icon} */}
+              {/*  text={t(SurveyButtonProps.ResultingTable.title)} */}
+              {/*  onClick={openSurveyResultsTableDialog} */}
+              {/*/> */}
             </>
           ) : null}
         </div>
@@ -72,8 +85,8 @@ const AnsweredSurveysPage = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
+      {/*<ShowSurveyResultsTableDialog survey={selectedSurvey!} />*/}
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>
   );

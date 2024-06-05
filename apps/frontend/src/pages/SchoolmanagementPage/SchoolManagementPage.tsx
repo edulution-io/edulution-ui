@@ -24,10 +24,12 @@ const SchoolManagementPage = () => {
   }, []);
 
   const renderPage = () => {
+    console.log(page);
     switch (page) {
       case 'enrol':
         return <EnrolPage />;
       case 'lesson':
+      case null:
         return <LessonPage />;
       case 'passwords':
         return <PasswordsPage />;

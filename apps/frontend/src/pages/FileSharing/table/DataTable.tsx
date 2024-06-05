@@ -64,7 +64,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[80vh] overflow-auto">
+        <ScrollArea className="max-h-[75vh] overflow-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

@@ -1,5 +1,9 @@
 import { IconType } from 'react-file-icon';
 import { translateKey } from '@/utils/common';
+import PptxGenJS from 'pptxgenjs';
+import * as XLSX from 'xlsx';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { saveAs } from 'file-saver';
 
 interface ContentFileTypes {
   [extension: string]: IconType | undefined;
@@ -83,6 +87,39 @@ export const triggerFileDownload = (downloadUrl: string) => {
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
+};
+
+export const generatePPTX = async (username: string): Promise<Blob> => {
+  const pptx = new PptxGenJS();
+  const slide = pptx.addSlide();
+  slide.addText(`Created by: ${username}`, { x: 1, y: 1, fontSize: 18, color: '363636' });
+
+  return (await pptx.write()) as Blob;
+};
+export const generateXLSX = (username: string) => {
+  const ws = XLSX.utils.aoa_to_sheet([['Created by', username]]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  return XLSX.write(wb, { bookType: 'xlsx', type: 'file' });
+};
+
+export const generateDOCX = (username: string) => {
+  const doc = new Document({
+    sections: [
+      {
+        children: [
+          new Paragraph({
+            children: [new TextRun(`Created by: ${username}`)],
+          }),
+        ],
+      },
+    ],
+  });
+  return Packer.toBlob(doc);
+};
+
+export const saveFile = async (blob: Blob, filename: string) => {
+  saveAs(blob, filename);
 };
 
 export default {

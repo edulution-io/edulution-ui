@@ -60,6 +60,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,10 +80,13 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <ScrollArea className="max-h-[80vh] overflow-auto">
-        <DialogContentSH className="text-black">
+      <ScrollArea className="max-h-[80vh] min-w-[50vh] overflow-auto">
+        <DialogContentSH
+          variant={'large'}
+          className="text-black"
+        >
           <DialogTitleSH>{title}</DialogTitleSH>
-          <div className="p-4">
+          <div className="min-w-[50vh]  p-4">
             {showPropertiesSection && properties.length > 0 && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Eigenschaften</h3>
@@ -111,43 +115,55 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             {showPrintersSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Devices</h3>
-                {printers.map((admin, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between rounded border p-2"
-                  >
-                    <p>{admin.name}</p>
-                    <p>{admin.role}</p>
-                  </div>
-                ))}
+                <div className="flex flex-wrap gap-4">
+                  {printers.map((printer, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border p-2"
+                    >
+                      <p>{printer.name}</p>
+                      <p>{printer.role}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {showAdminsSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Gruppenadministratoren</h3>
-                {admins.map((admin, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between rounded border p-2"
-                  >
-                    <p>{admin.name}</p>
-                    <p>{admin.role}</p>
-                  </div>
-                ))}
+                <div className="flex flex-wrap gap-4">
+                  {admins.map((admin, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border p-2"
+                    >
+                      <div className="flex gap-4">
+                        <p>{admin.name}</p>
+                        <p>{admin.role}</p>
+                        <p>7a</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {showMembersSection && (
               <div className="mb-4">
                 <h3 className="mb-2 text-lg font-semibold">Gruppenmitglieder</h3>
-                {members.map((member, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between rounded border p-2"
-                  >
-                    <p>{member.name}</p>
-                    <p>{member.role}</p>
-                  </div>
-                ))}
+                <div className="flex flex-wrap gap-4">
+                  {members.map((member, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border p-2"
+                    >
+                      <div className="flex gap-4">
+                        <p>{member.name}</p>
+                        <p>{member.role}</p>
+                        <p>7a</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -155,7 +171,7 @@ const EnrolDialog: FC<GeneralDialogProps> = ({
             <AccordionSH type="multiple">
               <AccordionItem value="addUser">
                 <AccordionTrigger className="w-full text-xl font-bold">Nutzer hinzufügen</AccordionTrigger>
-                <AccordionContent className="h-[20vh]">
+                <AccordionContent className="h-[20vh] overflow-auto">
                   <AddStudentsDialogBody form={form} />
                 </AccordionContent>
               </AccordionItem>

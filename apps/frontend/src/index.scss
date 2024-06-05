@@ -19,6 +19,10 @@
   }
 }
 
+body {
+  background-color: black;
+}
+
 .alert-enter {
   animation: slideInFromRight 0.5s forwards;
 }
@@ -36,10 +40,27 @@
 
 .bg-global {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/background.jpg');
+  background-image: url('assets/background.jpg');
 }
 
 iframe {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/background.jpg');
+  background-image: url('assets/background.jpg');
+}
+
+.svc-creator__banner {
+  display: none;
+}
+
+pre {
+  background-color: #474747;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #c3bbbb;
+  margin-left: 15px;
+  overflow-x: scroll;
+}
+
+.overflow-wrap-word {
+  overflow-wrap: break-word;
 }

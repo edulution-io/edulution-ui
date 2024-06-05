@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import ReactPlayer from 'react-player';
 import QuotaBar from '@/pages/SchoolmanagementPage/components/profiles/QuotaBar';
@@ -16,6 +15,7 @@ interface ProfileCardProps {
   isSelected?: boolean;
   onSelect?: () => void;
   videoUrl?: string;
+  memberId?: string;
   setStudentsDialogOpen?: (isOpen: boolean) => void;
 }
 
@@ -27,11 +27,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   isSelected,
   onSelect,
   setStudentsDialogOpen,
+  memberId,
 }) => {
   const { setIsVideoModalOpen, setVideoModalUsername, setVideoModalUrl } = useSchoolmanagementComponentStore();
   return (
     <div
-      className={`w-80 overflow-hidden rounded-lg border ${isSelected ? 'border-blue-500' : 'border-gray-300'} cursor-pointer p-4 font-sans shadow-lg`}
+      className={`w-80 overflow-hidden rounded-xl border ${isSelected ? 'border-blue-500' : 'border-gray-300'} cursor-pointer p-4 font-sans shadow-lg`}
       onClick={onSelect}
     >
       {isAddCard ? (
@@ -80,11 +81,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
             <div className="flex flex-row">
               <div className="ml-4 flex flex-col justify-center">
-                <QuotaBar />
+                <QuotaBar
+                  schoolQuota={33}
+                  userQuota={46}
+                />
               </div>
             </div>
           </div>
-          <StudentsPermissionBar />
+          <StudentsPermissionBar memberId={memberId || ''} />
         </>
       )}
     </div>

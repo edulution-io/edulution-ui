@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import useUserStore from '@/store/userStore';
-import useIframeStore from '@/routes/IframeStore';
+import useFrameStore from '@/routes/IframeStore';
 import { useMediaQuery } from 'usehooks-ts';
 
 interface NativeIframeLayoutProps {
@@ -16,10 +16,10 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const { appConfig } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
-  const { loadedIframes, activeIframe } = useIframeStore();
+  const { loadedFrames, activeFrame } = useFrameStore();
 
   const getStyle = () =>
-    activeIframe === appName
+    activeFrame === appName
       ? // Fix 56px width calculated value: NIEDUUI-162
         { display: 'block', width: isMobile ? '100%' : 'calc(100% - 56px)' }
       : { display: 'none' };
@@ -67,7 +67,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen"
       height="100%"
-      src={loadedIframes.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
+      src={loadedFrames.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
       style={getStyle()}
     />
   );

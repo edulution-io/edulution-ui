@@ -66,6 +66,7 @@ const useFileSharingMenuConfig = () => {
         id: mountPoint.basename,
         label: isHomePoint ? 'home' : mountPoint.basename,
         icon: findCorrespondingMountPointIcon(mountPoint),
+        color: 'hover:bg-ciGreenToBlue',
         action: () => {
           try {
             let newPath = mountPoint.filename.replace('/webdav', '');
@@ -93,9 +94,8 @@ const useFileSharingMenuConfig = () => {
     menuItems,
     title: 'filesharing.title',
     icon: FileSharingIcon,
-    color: 'hover:bg-ciDarkBlue',
+    color: 'hover:bg-ciGreenToBlue',
   });
-
   return fileSharingMenuConfig();
 };
 

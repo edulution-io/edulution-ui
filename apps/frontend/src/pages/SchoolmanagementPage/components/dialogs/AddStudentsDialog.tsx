@@ -31,6 +31,7 @@ const AddStudentsDialog = ({ trigger, isOpen, handleOpenChange, schoolClass }: A
         }),
       ),
     ),
+    invitedGroups: z.array(z.object({})),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

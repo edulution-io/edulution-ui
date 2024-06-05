@@ -18,14 +18,14 @@ const PreviewMenuBar: FC<OnlyOfficePreviewMenuBarProps> = ({ previewFile, append
     <div className="flex w-full justify-end space-x-2">
       <button
         type="button"
-        className="mr-1 rounded bg-yellow-500 px-4 text-white hover:bg-blue-700 "
+        className="hover:bg-grey-700 mr-1 rounded bg-white px-4 text-white "
         onClick={onClose}
       >
-        <IoMdArrowForward className="inline" />
+        <IoMdArrowForward className="inline text-black" />
       </button>
       <button
         type="button"
-        className="rounded bg-blue-500 px-4 text-white hover:bg-red-700"
+        className="hover:bg-grey-700 rounded bg-white px-4 text-white"
         onClick={() => {
           if (previewFile != null) {
             appendEditorFile(previewFile);
@@ -39,7 +39,7 @@ const PreviewMenuBar: FC<OnlyOfficePreviewMenuBarProps> = ({ previewFile, append
           }
         }}
       >
-        <MdFullscreen className="inline" />
+        <MdFullscreen className="inline text-black" />
       </button>
     </div>
   );

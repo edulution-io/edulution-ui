@@ -52,7 +52,7 @@ const AccountInformation = () => {
             variant="btn-collaboration"
             className="mt-4"
             size="sm"
-            onClick={() => navigate('/faq')}
+            onClick={() => navigate('/user?section=faq')}
           >
             {t('accountData.FAQ')}
           </Button>

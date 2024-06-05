@@ -6,7 +6,7 @@ import { GroupInfo } from '../types/groups';
 
 @Injectable()
 class ClassManagementService {
-  private keycloakBaseUrl = process.env.KEYCLOAK_API;
+  private keycloakBaseUrl = process.env.KEYCLOAK_API as string;
 
   async fetchClassesInfo(token: string, groupPath: string): Promise<GroupInfo> {
     const config = {
@@ -61,6 +61,7 @@ class ClassManagementService {
 
     try {
       const response = await axios.request<DetailedUserInfo>(config);
+
       return response.data;
     } catch (e) {
       Logger.error(e, UsersService.name);
@@ -68,16 +69,18 @@ class ClassManagementService {
     }
   }
 
-  public async fetchAllGroups(token: string): Promise<GroupInfo[]> {
+  public async fetchAllGroups(token: string, searchKeyWord?: string): Promise<GroupInfo[]> {
+    if (searchKeyWord === undefined) searchKeyWord = '';
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `${this.keycloakBaseUrl}groups?search=`,
+      url: `${this.keycloakBaseUrl}groups?search=${searchKeyWord}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`,
       },
     };
+    Logger.log(config, 'config');
 
     try {
       Logger.log('Sending request to fetch all groups', 'UsersService');

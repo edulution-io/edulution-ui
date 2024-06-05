@@ -1,27 +1,35 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
+import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey.ts';
 
-const OpenSurveysPage = () => {
+interface OpenSurveysPageProps {
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
+  openSurveys: Survey[];
+  isFetchingOpenSurveys: boolean;
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+}
+
+const OpenSurveysPage = (props: OpenSurveysPageProps) => {
   const {
     setSelectedSurvey,
     openSurveys,
     updateOpenSurveys,
     updateAnsweredSurveys,
     isFetchingOpenSurveys,
-    setPageViewSurveyCreator,
     selectedSurvey,
-  } = useSurveysPageStore();
+  } = props;
+
   const { openParticipateSurveyDialog } = useParticipateSurveyDialogStore();
 
   const { t } = useTranslation();
@@ -43,12 +51,7 @@ const OpenSurveysPage = () => {
         />
       </ScrollArea>
       <TooltipProvider>
-        <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={SurveyButtonProps.Create.icon}
-            text={t(SurveyButtonProps.Create.title)}
-            onClick={setPageViewSurveyCreator}
-          />
+        <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           {selectedSurvey ? (
             <FloatingActionButton
               icon={SurveyButtonProps.Participate.icon}
@@ -63,7 +66,6 @@ const OpenSurveysPage = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>

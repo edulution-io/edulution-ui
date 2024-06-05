@@ -3,7 +3,7 @@ import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from '
 
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import IframePlaceholder from '@/components/layout/Embedded/IframePlaceholder';
+import FramePlaceholder from '@/components/layout/Embedded/FramePlaceholder';
 
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
@@ -11,15 +11,11 @@ import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import SurveysPage from '@/pages/Surveys/SurveysPage';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
-import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
-import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
-import Whiteboard from '@/pages/Whiteboard/Whiteboard';
-import FAQPage from '@/pages/FAQ/FAQPage';
+import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -30,13 +26,15 @@ const pageSwitch = (page: string) => {
     case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
     case APPS.WHITEBOARD:
-      return <Whiteboard />;
+      return <FramePlaceholder />;
     case APPS.MAIL:
-      return <IframePlaceholder />;
+      return <FramePlaceholder />;
     case APPS.SURVEYS:
-      return <SurveysPage />;
+      return <FramePlaceholder />;
     case APPS.DESKTOP_DEPLOYMENT:
-      return <DesktopDeploymentPage />;
+      return <FramePlaceholder />;
+    case APPS.LINUXMUSTER:
+      return <FramePlaceholder />;
 
     default: {
       return (
@@ -47,6 +45,20 @@ const pageSwitch = (page: string) => {
       );
     }
   }
+};
+
+const shouldRenderEmbeddedRoute = (item: AppConfig, userRole: string) => {
+  const { appType, name } = item;
+
+  if (appType !== AppIntegrationType.EMBEDDED) {
+    return false;
+  }
+
+  if (name === 'ticketsystem') {
+    return userRole === 'globaladministrator';
+  }
+
+  return true;
 };
 
 const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole: string) =>
@@ -78,10 +90,6 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole
             <Route
               path="user"
               element={<UserSettings />}
-            />
-            <Route
-              path="faq"
-              element={<FAQPage />}
             />
 
             {userRole !== 'student' && (
@@ -140,11 +148,11 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[], userRole
 
           <Route>
             {appConfig.map((item) =>
-              item.appType === AppIntegrationType.EMBEDDED ? (
+              shouldRenderEmbeddedRoute(item, userRole) ? (
                 <Route
                   key={item.name}
                   path={item.name}
-                  element={<IframePlaceholder />}
+                  element={<FramePlaceholder />}
                 />
               ) : null,
             )}

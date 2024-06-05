@@ -11,6 +11,11 @@ export class ClassManagementController {
     return this.classManagementService.fetchAllGroups(token);
   }
 
+  @Get('groups/:searchString')
+  async searchGroups(@GetTokenDecorator() token: string, @Param('searchString') searchString: string) {
+    return this.classManagementService.fetchAllGroups(token, searchString);
+  }
+
   @Get('*')
   async getClassMembersWithDetails(@GetTokenDecorator() token: string, @Param() params: string) {
     const className = params[0] || '';

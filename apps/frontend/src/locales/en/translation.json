@@ -5,7 +5,7 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILE DATA ACCESS",
+      "title": "Mobile Data Access",
       "manual": "Manual",
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
@@ -27,8 +27,9 @@
   },
   "conferences": {
     "title": "CONFERENCES",
+    "description": "The video conferencing tool combines shared audio and video signals from participants and supports presentations with advanced whiteboard functions - such as pointing, zooming and drawing..",
     "sidebar": "Conferences",
-    "create": "Create new conference",
+    "create": "Create conference",
     "creator": "Creator",
     "delete": "Delete",
     "deleteConferences": "Delete {count}} conferences",
@@ -95,7 +96,9 @@
   "DATE": "Date",
   "Date": "Date",
   "days": "Days",
-  "new": "New",
+  "expires": "Deadline",
+  "abort": "Abort",
+  "options": "Options",
   "ParticipantCount": "Participant count",
   "PageCount": "PageCount",
   "RATING": "Rating",
@@ -104,9 +107,9 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
-    "openSurveys": "Offen",
-    "createdSurveys": "Erstellt",
-    "answeredSurveys": "Beantwortet"
+    "openSurveys": "Open surveys",
+    "createdSurveys": "Owned surveys",
+    "answeredSurveys": "Already Answered"
   },
   "survey": {
     "title": "SURVEYS",
@@ -123,13 +126,20 @@
     "load": "Load",
     "answer": "Your answer",
     "result": "Result",
+    "resultVisualization": "Results (Panel)",
+    "resultingVisualization": "The collected answers of a survey visualized in panels",
+    "resultTable": "Results (Table)",
+    "resultingTable": "The collected answers of a survey presented in a table",
     "resulting": "Your commited answer",
-    "create": "Create",
+    "create": "Create new",
     "delete": "Delete",
     "edit": "Edit",
-    "editing": "Edit survey",
+    "editing": "Add participants",
+    "isAnonymous": "Participating at the survey is anonymous",
+    "canSubmitMultipleAnswers": "Participating multiple times is allowed",
     "editor": {
-      "title": "Survey Editor"
+      "title": "Survey Editor",
+      "abort": "New (blank)"
     },
     "manage": "Manage",
     "page": {
@@ -163,6 +173,10 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
   },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"
@@ -185,7 +199,10 @@
     "error": {
       "title": "Connection error",
       "description": "Please check your network connection and try again."
-    }
+    },
+    "win10": "Windows 10",
+    "clients": "Clients available",
+    "client": "Client available"
   },
   "wlan": {
     "title": "WLAN",
@@ -222,10 +239,26 @@
       "create": { "success": "App created", "failed": "App creation failed" }
     }
   },
+
+  "externIntegrationsetup": {
+    "title": "external Integration",
+    "description": "Installationsanweisungen für die Anbindung externer Dienste",
+    "AIChatSetUp": "AI Chat Setup",
+    "ChatSetUp": "Chat Setup",
+    "MailSetUp": "Mail Setup"
+  },
+
+  "security": {
+    "title": "Security",
+    "description": "Configure here the security settings of your account"
+  },
+
   "usersettings": {
     "title": "USER",
-    "sidebar": "Einstellungen",
+    "sidebar": "Settings",
     "security": "Security",
+    "faq": "FAQ",
+    "externalIntegration": "External Integration",
     "config": { "mfa": "Setup Two-Factor-Authentication" },
     "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
   },
@@ -272,7 +305,11 @@
     "overview": "Overview",
     "create": "Create",
     "revert": "Revert",
-    "rename": "Rename"
+    "groups": "Groups",
+    "clearSelection": "Clear selection",
+    "rename": "Rename",
+    "close": "Schließen",
+    "start": "Starten"
   },
   "form": {
     "path": "Path",
@@ -313,7 +350,8 @@
   "search": {
     "type-to-search": "Type to search",
     "loading": "Loading",
-    "no-results": "No results"
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -381,6 +419,7 @@
     "close": "Close"
   },
   "tooltip": {
+    "edit": "Edit",
     "upload": "Upload",
     "create": {
       "file": "Create file",
@@ -422,10 +461,9 @@
     "FAQ": "FAQ"
   },
 
-  "createContent":{
+  "createContent": {
     "submit": "Submit"
   },
-
 
   "groupsPage": {
     "classes": "Classes"
@@ -455,7 +493,9 @@
     "myProjects": "My Projects",
     "initialPasswordHint": "You can print the password of a class directly via the icon or select several classes to print them all at the same time.",
     "projectPage": "Here you can create a new project. You can also see all projects that have already been created.",
-    "downloadInitPassword": "Download initial password",
+    "downloadInitPasswordAsText": "Init Password .txt",
+    "downloadInitPasswordAsCSV": "Init Password .csv",
+    "downloadInitPasswordAsPDF": "Init Password .pdf",
     "createProject": "Create Project",
     "newProject": "New Project",
     "createGroup": "Create Group",
@@ -463,7 +503,7 @@
     "addUser": "Add user",
     "noUsersInGroup": "Currently, there are no users in {{name}}. Add one now.",
     "examMode": "Exam mode",
-    "cancelStartExamMode" : "Cancel",
+    "cancelStartExamMode": "Cancel",
     "startExamMode": "Start",
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -491,15 +531,14 @@
     "copyProject": "Copy Project {{name}}",
     "renameSession": "Rename Session {{name}}",
     "renameProject": "Rename Project {{name}}"
-
   },
   "fileEditingPage": {
     "fileNotFound": "File not found",
     "closeFile": "Close file",
     "goBack": "Go back",
-    "maximize": "Open full screen",
+    "maximize": "Open Editor",
     "minimize": "minimalize",
-    "close": "Close full screen"
+    "close": "Close Editor"
   },
   "faq": {
     "title": "FAQ",
@@ -511,18 +550,19 @@
     "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
     "emailIntroductionTitle": "Do I have to create an extra email address?",
     "learnManagementIntroductionTitle": "What can I do in learning management?",
-    "pollsIntroductionTitle": "How do I use the polls?",
     "vdiIntroductionTitle": "How do I use the virtual desktop?",
-    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?"
+    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?",
+    "surveysIntroductionTitle": "How do I use the survey tool?"
   },
   "changePassword": {
     "title": "Change Password",
     "newPassword": "New Password",
-    "currentPasswordRequired": "Current password is required.",
+    "currentPasswordRequired": "Current password",
     "newPasswordRequired": "New password is required.",
     "passwordLength": "Password must be at least 8 characters long.",
     "confirmPassword": "Confirm Password",
     "confirmPasswordRequired": "Confirm password is required.",
-    "passwordsDoNotMatch": "Passwords do not match."
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "changePassword": "Change Password"
   }
 }

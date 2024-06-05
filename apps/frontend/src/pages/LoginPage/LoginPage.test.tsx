@@ -41,7 +41,7 @@ describe('LoginPage', () => {
     expect(submitButton, 'When LoginPage is open the submitButton should be defined').toBeTruthy();
   });
 
-  it('2 should be able to change the values for the input of the input components', async () => {
+  it('2 should be able to change the values for the input of the input Components', async () => {
     const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');

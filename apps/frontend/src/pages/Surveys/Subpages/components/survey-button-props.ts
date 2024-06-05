@@ -1,11 +1,7 @@
-import {
-  AiOutlineDeliveredProcedure /* AiOutlineDownSquare, */,
-  AiOutlinePlusSquare,
-  AiOutlineSave,
-  AiOutlineUpSquare,
-} from 'react-icons/ai';
+import { AiOutlineDeliveredProcedure, AiOutlinePlusSquare, AiOutlineSave, AiOutlineUpSquare } from 'react-icons/ai';
 import { BsGear } from 'react-icons/bs';
-import { FiDelete, FiEdit } from 'react-icons/fi';
+import { FiDelete, FiEdit, FiFilePlus } from 'react-icons/fi';
+import { HiOutlineInboxIn } from 'react-icons/hi';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 
 const SurveyButtonProps = {
@@ -29,13 +25,13 @@ const SurveyButtonProps = {
     icon: FiEdit,
     title: 'survey.edit',
   },
-  New: {
-    icon: AiOutlinePlusSquare,
-    title: 'new',
+  Abort: {
+    icon: FiFilePlus,
+    title: 'survey.editor.abort',
   },
   Options: {
     icon: BsGear,
-    title: 'survey.options',
+    title: 'options',
   },
   Participate: {
     icon: AiOutlineUpSquare,
@@ -48,6 +44,14 @@ const SurveyButtonProps = {
   Results: {
     icon: HiOutlineArrowDownOnSquareStack, // AiOutlineDownSquare,
     title: 'survey.result',
+  },
+  ResultingTable: {
+    icon: HiOutlineInboxIn, // AiOutlineDownSquare,
+    title: 'survey.resultTable',
+  },
+  ResultingPanel: {
+    icon: HiOutlineArrowDownOnSquareStack, // AiOutlineDownSquare,
+    title: 'survey.resultVisualization',
   },
   Save: {
     icon: AiOutlineSave,

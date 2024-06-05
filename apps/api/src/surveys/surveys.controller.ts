@@ -11,7 +11,6 @@ import CreateSurveyDto from './dto/create-survey.dto';
 import FindSurveyDto from './dto/find-survey.dto';
 import PushAnswerDto from './dto/push-answer.dto';
 import { GetUsername } from '../common/decorators/getUser.decorator';
-import { User } from '../users/user.schema';
 
 @Controller('surveys')
 class SurveysController {
@@ -22,7 +21,8 @@ class SurveysController {
 
   @Get()
   async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto, @GetUsername() username: string) {
-    const { search, surveyname, surveynames } = params;
+    const { search, surveyname } = params;
+    const { surveynames, participants /*, isAnonymous*/ } = body;
     if (search) {
       switch (search) {
         case UserSurveySearchTypes.OPEN:
@@ -31,27 +31,26 @@ class SurveysController {
         case UserSurveySearchTypes.CREATED:
           return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyNames(username));
 
+        case UserSurveySearchTypes.ANSWERS:
+          if (!surveyname) {
+            throw new Error('Survey name is required for this search type');
+          }
+          try {
+            const survey = await this.surveyService.findSurvey(surveyname);
+            if (!survey) {
+              throw new Error('Survey not found');
+            }
+            return survey.anonymousAnswers;
+          } catch (error) {
+            Logger.error(error);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return error;
+          }
+
         case UserSurveySearchTypes.ANSWER:
           if (!surveyname) {
             throw new Error('Survey name is required for this search type');
           }
-
-          const { participants, isAnonymous } = body;
-          if (isAnonymous) {
-            try {
-              const survey = await this.surveyService.findSurvey(surveyname);
-              if (!survey) {
-                throw new Error('Survey not found');
-              }
-
-              return survey.anonymousAnswers;
-            } catch (error) {
-              Logger.error(error);
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return error;
-            }
-          }
-
           if (participants && participants.length > 1) {
             try {
               const answers: string[] = [];
@@ -62,8 +61,6 @@ class SurveysController {
                 }
               });
               await Promise.all(promises);
-
-              Logger.log(answers);
 
               if (!answers) {
                 throw new Error('Survey answers not found');
@@ -120,14 +117,30 @@ class SurveysController {
   @Post()
   async createOrUpdate(@Body() body: CreateSurveyDto, @GetUsername() username: string) {
     try {
-      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(body);
+      const { participants } = body;
+
+      const participantList = participants.map((participant) => participant.username);
+
+      const createSurveyDto: Survey = {
+        ...body,
+        survey: JSON.parse(body.survey),
+        participants: participantList,
+        anonymousAnswers: body.anonymousAnswers ? body.anonymousAnswers : [],
+        saveNo: body.saveNo ? body.saveNo.toString() : '0',
+        created: body.created ? body.created.toString() : new Date().toString(),
+        expires: body.expires ? body.expires.toString() : undefined,
+        isAnonymous: body.isAnonymous ? body.isAnonymous : false,
+        canSubmitMultipleAnswers: body.canSubmitMultipleAnswers ? body.canSubmitMultipleAnswers : false,
+      };
+
+      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(createSurveyDto);
       if (newSurvey == null) {
         throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
       }
 
-      const { surveyname, participants } = newSurvey;
+      const { surveyname } = newSurvey;
       await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
-      await this.usersSurveysService.populateSurvey(participants, surveyname);
+      await this.usersSurveysService.populateSurvey(participantList, surveyname);
 
       return newSurvey;
     } catch (error) {
@@ -144,25 +157,15 @@ class SurveysController {
   }
 
   @Patch()
-  async manageUsersSurveys(
-    @Body() body: PushAnswerDto,
-    @Query() pushAnswerDto: PushAnswerDto,
-    @GetUsername() username: string,
-  ) {
-    const { surveyname, answer } = pushAnswerDto;
+  async manageUsersSurveys(@Body() body: PushAnswerDto, @GetUsername() username: string) {
+    const { surveyname, answer, canSubmitMultipleAnswers = false } = body;
 
-    const { isAnonymous, canSubmitMultipleAnswers } = body;
+    await this.surveyService.addAnonymousAnswer(surveyname, answer /* , username */);
 
-    if (isAnonymous) {
-      await this.surveyService.addAnonymousAnswer(surveyname, answer);
-
-      let user: User | null = null;
-      if (!canSubmitMultipleAnswers) {
-        user = await this.usersSurveysService.moveSurveyFromOpenToAnsweredSurveys(username, surveyname, answer);
-      } else {
-        user = await this.usersSurveysService.addToAnsweredSurveys(username, surveyname);
-      }
-      return user;
+    if (!canSubmitMultipleAnswers) {
+      await this.usersSurveysService.moveSurveyFromOpenToAnsweredSurveys(username, surveyname, answer);
+    } else {
+      await this.usersSurveysService.addToAnsweredSurveys(username, surveyname);
     }
 
     return await this.usersSurveysService.addAnswer(username, surveyname, answer, canSubmitMultipleAnswers);

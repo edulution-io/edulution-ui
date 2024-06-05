@@ -3,33 +3,44 @@ import { useTranslation } from 'react-i18next';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
-import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+// import useShowSurveyResultsDialogStore
+//   from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import SurveyTable from '@/pages/Surveys/Subpages/components/table/SurveyTable';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
-import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
+import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
+import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props';
+import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
 
-const CreatedSurveysPage = () => {
+interface CreatedSurveysPageProps {
+  selectedSurvey: Survey | undefined;
+  setSelectedSurvey: (survey: Survey | undefined) => void;
+  createdSurveys: Survey[];
+  updateCreatedSurveys: () => void;
+  isFetchingCreatedSurveys: boolean;
+  setPageViewSurveyEditor: () => void;
+  deleteSurvey: (surveyname: string) => void;
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+}
+
+const CreatedSurveysPage = (props: CreatedSurveysPageProps) => {
   const {
+    selectedSurvey,
     setSelectedSurvey,
     createdSurveys,
     updateCreatedSurveys,
     isFetchingCreatedSurveys,
-    setPageViewSurveyCreator,
     setPageViewSurveyEditor,
-    selectedSurvey,
     deleteSurvey,
     updateOpenSurveys,
     updateAnsweredSurveys,
-    updateAllSurveys,
-  } = useSurveysPageStore();
+  } = props;
+
   const { openParticipateSurveyDialog } = useParticipateSurveyDialogStore();
-  const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
+  // const { openSurveyResultsDialog } = useShowSurveyResultsDialogStore();
   const { openSurveyAnswerDialog } = useShowSurveyAnswerDialogStore();
 
   const { t } = useTranslation();
@@ -52,33 +63,28 @@ const CreatedSurveysPage = () => {
       </ScrollArea>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={SurveyButtonProps.Create.icon}
-            text={t(SurveyButtonProps.Create.title)}
-            onClick={setPageViewSurveyCreator}
-          />
           {selectedSurvey ? (
             <>
-              <FloatingActionButton
-                icon={SurveyButtonProps.Participate.icon}
-                text={t(SurveyButtonProps.Participate.title)}
-                onClick={openParticipateSurveyDialog}
-              />
               <FloatingActionButton
                 icon={SurveyButtonProps.Edit.icon}
                 text={t(SurveyButtonProps.Edit.title)}
                 onClick={setPageViewSurveyEditor}
               />
               <FloatingActionButton
+                icon={SurveyButtonProps.Participate.icon}
+                text={t(SurveyButtonProps.Participate.title)}
+                onClick={openParticipateSurveyDialog}
+              />
+              <FloatingActionButton
                 icon={SurveyButtonProps.Answer.icon}
                 text={t(SurveyButtonProps.Answer.title)}
                 onClick={openSurveyAnswerDialog}
               />
-              <FloatingActionButton
-                icon={SurveyButtonProps.Results.icon}
-                text={t(SurveyButtonProps.Results.title)}
-                onClick={openSurveyResultsDialog}
-              />
+              {/* <FloatingActionButton */}
+              {/*   icon={SurveyButtonProps.ResultingPanel.icon} */}
+              {/*   text={t(SurveyButtonProps.ResultingPanel.title)} */}
+              {/*   onClick={openSurveyResultsDialog} */}
+              {/* /> */}
               <FloatingActionButton
                 icon={SurveyButtonProps.Delete.icon}
                 text={t(SurveyButtonProps.Delete.title)}
@@ -87,7 +93,6 @@ const CreatedSurveysPage = () => {
                   await updateOpenSurveys();
                   await updateCreatedSurveys();
                   await updateAnsweredSurveys();
-                  await updateAllSurveys();
                 }}
               />
             </>
@@ -99,7 +104,6 @@ const CreatedSurveysPage = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>

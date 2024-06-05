@@ -36,7 +36,7 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
     case 'pptx':
       return { id: 'pptxEditor', key: 'pptx' + Math.random() * 100, documentType: 'slide' };
     case 'pdf':
-      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'pdf' };
+      return { id: 'pdfEditor', key: 'pdf' + Math.random() * 100, documentType: 'word' };
     default:
       return { id: 'docxEditor', key: 'word' + Math.random() * 100, documentType: 'word' };
   }
@@ -45,27 +45,54 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
 const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview }) => {
   const [token, setToken] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [callbackURLLocation, setCallbackURLLocation] = useState<string | null>(null);
+  const [documentServerURL, setDocumentServerURL] = useState<string>('');
   const { user } = useAuth();
   const [editorType, setEditorType] = useState<OnlyOfficeConfig>({
     id: 'docxEditor',
     key: 'word' + Math.random(),
     documentType: 'word',
   });
+
   const { previewFile, appendEditorFile } = useFileEditorStore();
   const { getOnlyOfficeJwtToken, downloadFile } = useFileManagerStore();
   useEffect(() => {
     const fileType = getFileType(file.filename);
     const editorConfig = findDocumentsEditorType(fileType);
+    console.log(editorConfig);
     setEditorType(editorConfig);
-
-    const dev = false;
 
     const fetchFileUrlAndToken = async () => {
       try {
         const rawUrl = await downloadFile(file.filename);
-        const formattedUrl = rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001');
+        const isDev = (import.meta.env.VITE_ENV as string) === 'dev';
 
-        dev ? setFileUrl(formattedUrl) : setFileUrl(rawUrl);
+        const formattedUrl = isDev
+          ? rawUrl.replace('http://localhost:3001', 'http://host.docker.internal:3001')
+          : rawUrl;
+        const callbackBaseUrl = isDev ? 'http://host.docker.internal:3001' : 'https://ui.schulung.multi.schule/';
+        console.log(`({
+                  file, getOnlyOfficeJwtToken, previewFile, mode, rawUrl, isDev, callbackBaseUrl
+                }) ${JSON.stringify(
+                  {
+                    file,
+                    getOnlyOfficeJwtToken,
+                    previewFile,
+                    mode,
+                    rawUrl,
+                    isDev,
+                    callbackBaseUrl,
+                  },
+                  null,
+                  2,
+                )}`);
+
+        const documentSerURL = isDev ? 'http://localhost:80' : (import.meta.env.VITE_ONLYOFFICE_URL as string);
+
+        setDocumentServerURL(documentSerURL);
+        console.log(callbackBaseUrl);
+        setFileUrl(formattedUrl);
+        setCallbackURLLocation(callbackBaseUrl);
 
         const config = {
           document: {
@@ -73,13 +100,13 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
             type,
             key: editorConfig.key,
             title: file.basename,
-            url: dev ? formattedUrl : rawUrl,
+            url: import.meta.env.VITE_ENV === 'dev' ? formattedUrl : rawUrl,
             height: '100%',
             width: '100%',
           },
           documentType: editorConfig.documentType,
           editorConfig: {
-            callbackUrl: `${window.location.origin}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+            callbackUrl: `${callbackBaseUrl}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
             mode,
             customization: {
               anonymous: {
@@ -122,7 +149,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
   }, [file, getOnlyOfficeJwtToken, previewFile, mode]);
 
   return (
-    <div className={`relative ${isPreview ? 'h-[80vh]' : 'h-[100vh]'}`}>
+    <div className={`relative ${isPreview ? 'h-[75vh]' : 'h-[100vh]'}`}>
       {isPreview && (
         <PreviewMenuBar
           file={file}
@@ -135,18 +162,18 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ file, mode, type, onClose, isPreview 
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}
-          documentServerUrl={import.meta.env.VITE_ONLYOFFICE_URL as string}
+          documentServerUrl={documentServerURL}
           config={{
             document: {
               fileType: getFileType(file.filename),
               key: editorType.key,
               title: file.basename,
-              url: fileUrl || '152',
+              url: fileUrl || '',
             },
             documentType: editorType.documentType,
             token,
             editorConfig: {
-              callbackUrl: `${window.location.origin}/edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
+              callbackUrl: `${callbackURLLocation}edu-api/filemanager/callback/${file.filename}/${file.basename}/${user?.access_token}`,
               mode,
               customization: {
                 anonymous: {

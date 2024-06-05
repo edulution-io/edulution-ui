@@ -5,17 +5,19 @@ import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConfere
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore';
-import useIframeStore from '@/routes/IframeStore';
+import useFrameStore from '@/routes/IframeStore';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
-import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialogStore';
+import useShowSurveyResultsDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialogStore';
 import useShowSurveyAnswerDialogStore from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialogStore';
 import usePropagateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialogStore';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore.ts';
+import useEditorStore from '@/pages/Surveys/Subpages/Editor/EditorStore';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();
-  useIframeStore.getState().reset();
+  useFrameStore.getState().reset();
+  useEditorStore.getState().reset();
   useLmnUserStore.getState().reset();
   useConferenceStore.getState().reset();
   useFileManagerStore.getState().reset();

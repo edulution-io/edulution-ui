@@ -59,9 +59,9 @@ const FileSharingPage = () => {
   useEffect(() => {
     if (isVisible) {
       if (fileOperationSuccessful) {
-        toast.success(fileOperationMessage || t('operations.success'));
+        toast.success(fileOperationMessage || t('fileOperationSuccessful'));
       } else {
-        toast.error(fileOperationMessage || t('operations.failure'));
+        toast.error(fileOperationMessage || t('unknownErrorOccurred'));
       }
     }
   }, [isVisible, fileOperationSuccessful, fileOperationMessage, t]);
@@ -71,10 +71,10 @@ const FileSharingPage = () => {
   }, [previewFile]);
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="flex h-full w-full flex-col">
       <div>{isVisible && <Toaster />}</div>
       {!editableFile ? (
-        <div className="flex-1 overflow-auto">
+        <div className="flex flex-1 flex-col overflow-hidden">
           <div className="flex w-full justify-between pb-3 pt-3">
             <TooltipProvider>
               <div className="flex flex-col ">
@@ -91,15 +91,15 @@ const FileSharingPage = () => {
               </div>
             </TooltipProvider>
           </div>
-          <div className="flex max-h-[70vh]">
-            <div className={`w-full ${previewFile ? 'w-1/2' : ''}`}>
+          <div className="flex flex-1 overflow-hidden">
+            <div className={`w-full ${previewFile ? 'w-1/2' : ''} h-full overflow-y-auto`}>
               <DataTable
                 columns={Columns}
                 data={files}
               />
             </div>
             {previewFile && showEditor && (
-              <div className="w-1/2">
+              <div className="h-full w-1/2">
                 <Previews
                   type={'desktop'}
                   file={previewFile}
@@ -144,7 +144,7 @@ const FileSharingPage = () => {
                 </>
               )}
               {selectedItems.length > 0 && (
-                <div className="flex flex-row space-x-24">
+                <div className="flex flex-row space-x-2">
                   <MoveItemDialog
                     trigger={
                       <FloatingActionButton
@@ -165,16 +165,19 @@ const FileSharingPage = () => {
                   />
 
                   {selectedItems.length < 2 && (
-                    <FloatingActionButton
-                      icon={MdOutlineFileDownload}
-                      text={t('tooltip.download')}
-                      onClick={async () => {
-                        const downloadUrl =
-                          (await convertDownloadLinkToBlob((await downloadFile(selectedItems[0].filename)) || '')) ||
-                          '';
-                        triggerFileDownload(downloadUrl);
-                      }}
-                    />
+                    <>
+                      {' '}
+                      <FloatingActionButton
+                        icon={MdOutlineFileDownload}
+                        text={t('tooltip.download')}
+                        onClick={async () => {
+                          const downloadUrl =
+                            (await convertDownloadLinkToBlob((await downloadFile(selectedItems[0].filename)) || '')) ||
+                            '';
+                          triggerFileDownload(downloadUrl);
+                        }}
+                      />
+                    </>
                   )}
                 </div>
               )}

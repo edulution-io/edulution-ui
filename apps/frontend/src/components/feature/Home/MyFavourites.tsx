@@ -1,19 +1,17 @@
 import React from 'react';
-import { CardContent, Card } from '@/components/shared/Card';
-import { Button } from '@/components/shared/Button';
-import Printer from '@/assets/icons/edulution/Drucker.svg';
-import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
-import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
-import { FirewallIcon } from '@/assets/icons';
-import { useTranslation } from 'react-i18next';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
+import { Card, CardContent } from '@/components/shared/Card';
 
 const MyFavourites = () => {
-  const { t } = useTranslation();
+  const emailNotifications = [
+    { id: 4, subject: 'Ferienbeginn', sender: 'Schulleitung', date: '06.04.' },
+    { id: 3, subject: 'Mensa Speiseplan', sender: 'Mensa', date: '06.03.' },
+    { id: 2, subject: 'Vertretungsplan KW 22', sender: 'Schulverwaltung', date: '06.02.' },
+    { id: 1, subject: 'Klassenarbeit 8a', sender: 'John Doe', date: '06.01.' },
+  ];
 
   return (
     <Card
-      variant="collaboration"
+      variant="security"
       className="min-h-[100%]"
     >
       <CardContent>
@@ -21,41 +19,25 @@ const MyFavourites = () => {
           color="white"
           className="font-bold"
         >
-          MEINE FAVORITEN
+          Meine Benachrichtigungen
         </h4>
-        <div className="mt-4 flex flex-col justify-between gap-6">
-          <Button variant="btn-collaboration">
-            <p>{t('filesharing.sidebar')}</p>
-            <img
-              src={FileSharing}
-              alt="Filesharing"
-              width={BUTTONS_ICON_WIDTH}
-            />
-          </Button>
-          <Button variant="btn-organisation">
-            <p>{t('roombooking.sidebar')}</p>
-            <img
-              src={RoomBooking}
-              alt="Raumbuchung"
-              width={BUTTONS_ICON_WIDTH}
-            />
-          </Button>
-          <Button variant="btn-infrastructure">
-            <p>{t('printer.sidebar')}</p>
-            <img
-              src={Printer}
-              alt="Drucker"
-              width={BUTTONS_ICON_WIDTH}
-            />
-          </Button>
-          <Button variant="btn-security">
-            <p>{t('firewall.sidebar')}</p>
-            <img
-              src={FirewallIcon}
-              alt="Firewall"
-              width={BUTTONS_ICON_WIDTH}
-            />
-          </Button>
+        <div className="mt-4 space-y-4">
+          {emailNotifications.map((notification) => (
+            <div
+              key={notification.id}
+              className="flex items-center justify-between rounded bg-gray-700 p-4 shadow"
+            >
+              <div className="overflow-wrap-word w-2/5">
+                <p className="text-sm font-medium text-white">{notification.subject}</p>
+              </div>
+              <div className="overflow-wrap-word w-2/5">
+                <p className="text-sm text-white">{notification.sender}</p>
+              </div>
+              <div className="overflow-wrap-word w-1/5 text-right">
+                <p className="text-sm text-white">{notification.date}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>

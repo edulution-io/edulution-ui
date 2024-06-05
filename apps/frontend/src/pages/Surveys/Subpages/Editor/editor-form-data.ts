@@ -1,4 +1,5 @@
 import Attendee from '@/pages/ConferencePage/dto/attendee';
+import Group from '@/pages/ConferencePage/dto/group';
 
 interface EditorFormData {
   surveyname: string;
@@ -9,6 +10,7 @@ interface EditorFormData {
   expires?: Date;
   isAnonymous?: boolean;
   canSubmitMultipleAnswers?: boolean;
+  invitedGroups: Group[];
 }
 
 export default EditorFormData;

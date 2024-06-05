@@ -7,9 +7,8 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useParticipateSurveyDialogStore from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import ParticipateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Participate/ParticipateSurveyDialog';
-import PropagateSurveyDialog from '@/pages/Surveys/Subpages/Dialogs/Propagate/PropagateSurveyDialog';
 import ShowSurveyAnswerDialog from '@/pages/Surveys/Subpages/Dialogs/ShowAnswer/ShowSurveyAnswerDialog';
-import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResults/ShowSurveyResultsDialog';
+import ShowSurveyResultsDialog from '@/pages/Surveys/Subpages/Dialogs/ShowResultsVisualization/ShowSurveyResultsDialog';
 import SurveyButtonProps from '@/pages/Surveys/Subpages/components/survey-button-props.ts';
 
 const SurveyManagement = () => {
@@ -19,7 +18,6 @@ const SurveyManagement = () => {
     selectedSurvey,
     isFetchingAllSurveys,
     setPageViewSurveyEditor,
-    setPageViewSurveyCreator,
     deleteSurvey,
     updateAllSurveys,
     updateOpenSurveys,
@@ -49,11 +47,6 @@ const SurveyManagement = () => {
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <>
-            <FloatingActionButton
-              icon={SurveyButtonProps.Create.icon}
-              text={t(SurveyButtonProps.Create.title)}
-              onClick={setPageViewSurveyCreator}
-            />
             {selectedSurvey ? (
               <>
                 <FloatingActionButton
@@ -69,12 +62,12 @@ const SurveyManagement = () => {
                 <FloatingActionButton
                   icon={SurveyButtonProps.Delete.icon}
                   text={t(SurveyButtonProps.Delete.title)}
-                  onClick={() => {
-                    deleteSurvey(selectedSurvey?.surveyname!);
-                    updateOpenSurveys();
-                    updateCreatedSurveys();
-                    updateAnsweredSurveys();
-                    updateAllSurveys();
+                  onClick={async () => {
+                    await deleteSurvey(selectedSurvey?.surveyname!);
+                    await updateOpenSurveys();
+                    await updateCreatedSurveys();
+                    await updateAnsweredSurveys();
+                    await updateAllSurveys();
                   }}
                 />
               </>
@@ -87,7 +80,6 @@ const SurveyManagement = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />
-      <PropagateSurveyDialog survey={selectedSurvey!} />
       <ShowSurveyAnswerDialog survey={selectedSurvey!} />
       <ShowSurveyResultsDialog survey={selectedSurvey!} />
     </>

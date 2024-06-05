@@ -4,9 +4,9 @@ import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolM
 import { Button } from '@/components/shared/Button';
 import { transformClasses } from '@/pages/SchoolmanagementPage/utilis/utilitys';
 import { t } from 'i18next';
-import { FaKey } from 'react-icons/fa';
 import { translateKey } from '@/utils/common';
 import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
+import { BsFiletypeCsv, BsFiletypePdf, BsFiletypeTxt } from 'react-icons/bs';
 
 const PasswordsPage: React.FC = () => {
   const { fetchInitialPasswords, schoolclasses } = useSchoolManagementStore();
@@ -123,8 +123,18 @@ const PasswordsPage: React.FC = () => {
       {selectedClasses.length > 0 && (
         <div className="fixed bottom-8 flex flex-row space-x-8 bg-opacity-90">
           <FloatingActionButton
-            icon={FaKey}
-            text={translateKey('schoolManagement.downloadInitPassword')}
+            icon={BsFiletypeTxt}
+            text={translateKey('schoolManagement.downloadInitPasswordAsText')}
+            onClick={handleDownloadAllSelected}
+          />
+          <FloatingActionButton
+            icon={BsFiletypeCsv}
+            text={translateKey('schoolManagement.downloadInitPasswordAsCSV')}
+            onClick={handleDownloadAllSelected}
+          />
+          <FloatingActionButton
+            icon={BsFiletypePdf}
+            text={translateKey('schoolManagement.downloadInitPasswordAsPDF')}
             onClick={handleDownloadAllSelected}
           />
         </div>

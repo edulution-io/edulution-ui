@@ -1,11 +1,9 @@
 import {
-  // AnsweredSurveysPageIcon,
-  // CreatedSurveysPageIcon,
-  // ManageSurveysPageIcon,
+  UserIcon,
+  PlusIcon,
+  AnsweredSurveysPageIcon,
   OpenSurveysPageIcon,
-  SurveyCreatorPageIcon,
-  SurveyCreatorPageIconNew,
-  SurveyIcon,
+  // SurveyIcon,
   SurveyPageMenuIcon,
 } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types.ts';
@@ -40,19 +38,19 @@ const useSurveysPageMenu = () => {
       {
         id: 'overview-answered-surveys',
         label: 'surveys.answeredSurveys',
-        icon: SurveyIcon,
+        icon: AnsweredSurveysPageIcon,
         action: () => setPageViewAnsweredSurveys(),
       },
       {
         id: 'overview-created-surveys',
         label: 'surveys.createdSurveys',
-        icon: SurveyCreatorPageIcon,
+        icon: UserIcon,
         action: () => setPageViewCreatedSurveys(),
       },
       {
         id: 'survey-editor-view',
         label: 'survey.create',
-        icon: SurveyCreatorPageIconNew,
+        icon: PlusIcon,
         action: () => setPageViewSurveyCreator(),
       },
     ],

@@ -55,7 +55,7 @@ const DialogContentSH = React.forwardRef<React.ElementRef<typeof DialogPrimitive
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border bg-white p-6 shadow-lg duration-200',
+          'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl border bg-white p-6 shadow-lg duration-200',
           contentVariants[variant],
           className,
         )}

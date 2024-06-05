@@ -28,7 +28,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop
 
   const rootPathName = `/${getFromPathName(pathname, 1)}`;
 
-  if (userRole !== 'globaladministrator' && menuItem.title === t('settings.sidebar')) return null;
+  if (
+    (userRole !== 'globaladministrator' && menuItem.title === t('settings.sidebar')) ||
+    (userRole !== 'globaladministrator' && menuItem.title === t('ticketsystem.sidebar'))
+  )
+    return null;
   if (userRole === 'student' && menuItem.title === t('schoolmanagement.sidebar')) return null;
 
   useEffect(() => {
@@ -46,7 +50,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop
     >
       <NavLink
         to={menuItem.link}
-        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        className={`z-1 group relative flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
         <p className="md:hidden">{menuItem.title}</p>
         <img
@@ -57,7 +61,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ userRole, menuItem, isDesktop
         />
         {isInView ? (
           <div
-            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px]  ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
             <p className="whitespace-nowrap font-bold">{menuItem.title}</p>
             <img

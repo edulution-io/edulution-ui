@@ -49,14 +49,22 @@ class UsersSurveysService {
     const usersOpenSurveys = existingUser.usersSurveys?.openSurveys || [];
     usersOpenSurveys.push(surveyname);
 
-    const newUser: UpdateUserDto = {
-      usersSurveys: {
-        ...existingUser.usersSurveys,
-        openSurveys: [...usersOpenSurveys],
-      },
+    const newUser: UpdateUserDto = existingUser;
+    newUser.usersSurveys = {
+      openSurveys: usersOpenSurveys,
+      createdSurveys: existingUser.usersSurveys.createdSurveys,
+      answeredSurveys: existingUser.usersSurveys.answeredSurveys,
     };
 
     await this.updateUser(username, newUser);
+  }
+
+  async populateSurvey(participants: string[], surveyName: string): Promise<void> {
+    const promises: Promise<void>[] = [];
+    participants.forEach((username) => {
+      promises.push(this.addToOpenSurveys(username, surveyName));
+    });
+    await Promise.all(promises);
   }
 
   async addToCreatedSurveys(username: string, surveyname: string): Promise<User | null> {
@@ -68,23 +76,15 @@ class UsersSurveysService {
     const usersCreatedSurveys = existingUser.usersSurveys?.createdSurveys || [];
     usersCreatedSurveys.push(surveyname);
 
-    const newUser: UpdateUserDto = {
-      usersSurveys: {
-        ...existingUser.usersSurveys,
-        createdSurveys: [...usersCreatedSurveys],
-      },
+    const newUser: UpdateUserDto = existingUser;
+    newUser.usersSurveys = {
+      openSurveys: existingUser.usersSurveys.openSurveys,
+      createdSurveys: usersCreatedSurveys,
+      answeredSurveys: existingUser.usersSurveys.answeredSurveys,
     };
 
     const updatedUser = await this.updateUser(username, newUser);
     return updatedUser;
-  }
-
-  async populateSurvey(participants: string[], surveyName: string): Promise<void> {
-    const promises: Promise<void>[] = [];
-    participants.forEach((username: string) => {
-      promises.push(this.addToOpenSurveys(username, surveyName));
-    });
-    await Promise.all(promises);
   }
 
   // async onRemoveSurvey(surveyName: string): Promise<void> {
@@ -125,11 +125,11 @@ class UsersSurveysService {
     const usersAnsweredSurveys = existingUser.usersSurveys?.answeredSurveys || [];
     usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
-    const newUser: UpdateUserDto = {
-      usersSurveys: {
-        ...existingUser.usersSurveys,
-        answeredSurveys: [...usersAnsweredSurveys],
-      },
+    const newUser: UpdateUserDto = existingUser;
+    newUser.usersSurveys = {
+      openSurveys: existingUser.usersSurveys.openSurveys,
+      createdSurveys: existingUser.usersSurveys.createdSurveys,
+      answeredSurveys: usersAnsweredSurveys,
     };
 
     const updatedUser = await this.updateUser(userName, newUser);
@@ -151,12 +151,11 @@ class UsersSurveysService {
     const usersAnsweredSurveys = existingUser.usersSurveys?.answeredSurveys || [];
     usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
-    const newUser: UpdateUserDto = {
-      usersSurveys: {
-        ...existingUser.usersSurveys,
-        openSurveys: [...usersOpenSurveys],
-        answeredSurveys: [...usersAnsweredSurveys],
-      },
+    const newUser: UpdateUserDto = existingUser;
+    newUser.usersSurveys = {
+      openSurveys: usersOpenSurveys,
+      createdSurveys: existingUser.usersSurveys.createdSurveys,
+      answeredSurveys: usersAnsweredSurveys,
     };
 
     const updatedUser = await this.updateUser(userName, newUser);
@@ -180,12 +179,11 @@ class UsersSurveysService {
       existingUser.usersSurveys?.answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyname !== surveyName) || [];
     usersAnsweredSurveys.push({ surveyname: surveyName, answer });
 
-    const newUser: UpdateUserDto = {
-      usersSurveys: {
-        ...existingUser.usersSurveys,
-        openSurveys: canSubmitMultipleAnswers ? existingUser.usersSurveys.openSurveys : [...usersOpenSurveys],
-        answeredSurveys: [...usersAnsweredSurveys],
-      },
+    const newUser: UpdateUserDto = existingUser;
+    newUser.usersSurveys = {
+      openSurveys: canSubmitMultipleAnswers ? existingUser.usersSurveys.openSurveys : usersOpenSurveys,
+      createdSurveys: existingUser.usersSurveys.createdSurveys,
+      answeredSurveys: usersAnsweredSurveys,
     };
 
     const updatedUser = await this.updateUser(username, newUser);

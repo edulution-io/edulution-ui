@@ -7,6 +7,9 @@ import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
+import Group from '@/pages/ConferencePage/dto/group';
+import { GroupInfo } from '@/pages/SchoolmanagementPage/utilis/groups';
+import { LDAPUser } from '@/pages/SchoolmanagementPage/store/ldapUser';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -20,7 +23,9 @@ interface CreateConferenceDialogStore {
   createConference: (conference: CreateConferenceDto) => Promise<void>;
   createdConference: Conference | null;
   searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
-  searchAttendeesResult: Attendee[];
+  searchGroups: (searchQuery: string) => Promise<Group[]>;
+  getGroupMembers: (groupId: string) => Promise<Attendee[]>;
+  isGetGroupMembersLoading: boolean;
 }
 
 const initialState: Partial<CreateConferenceDialogStore> = {
@@ -28,7 +33,7 @@ const initialState: Partial<CreateConferenceDialogStore> = {
   isLoading: false,
   error: null,
   createdConference: null,
-  searchAttendeesResult: [],
+  isGetGroupMembersLoading: false,
 };
 
 const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set) => ({
@@ -64,10 +69,54 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
         label: `${d.firstName} ${d.lastName} (${d.username})`,
       }));
 
-      set({ searchAttendeesResult });
       return searchAttendeesResult;
     } catch (error) {
       handleApiError(error, set);
+      return [];
+    }
+  },
+
+  searchGroups: async (searchParam) => {
+    set({ error: null });
+    try {
+      const response = await eduApi.get<GroupInfo[]>(`/classmanagement/groups/${searchParam}`);
+
+      if (!Array.isArray(response.data)) {
+        return [];
+      }
+
+      const result: Group[] = response.data.map((d) => ({
+        ...d,
+        value: d.id,
+        label: d.name,
+      }));
+
+      return result;
+    } catch (error) {
+      handleApiError(error, set);
+      return [];
+    }
+  },
+
+  getGroupMembers: async (groupId) => {
+    set({ isGetGroupMembersLoading: true, error: null });
+    try {
+      const response = await eduApi.get<LDAPUser[]>(`/classmanagement/${groupId}`);
+
+      if (!Array.isArray(response.data)) {
+        return [];
+      }
+
+      const result = response.data?.map((d) => ({
+        ...d,
+        value: d.username,
+        label: `${d.firstName} ${d.lastName} (${d.username})`,
+      }));
+
+      set({ isGetGroupMembersLoading: false });
+      return result;
+    } catch (error) {
+      handleApiError(error, set, { errorName: 'error', isLoadingName: 'isGetGroupMembersLoading' });
       return [];
     }
   },

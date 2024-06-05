@@ -3,7 +3,7 @@ import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH.tsx';
 import { t } from 'i18next';
 import { MemberInfo } from '@/datatypes/schoolclassInfo.ts';
 
-interface SetPremissionsToStudentsDialogProps {
+interface SetPermissionsToStudentsDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -23,7 +23,7 @@ const getDialogBody = (message: string, members: MemberInfo[]) => {
             key={member.id}
             className="flex justify-between"
           >
-            <p>{member.firstName + member.lastName}</p>
+            <p>{member.firstName + ' ' + member.lastName}</p>
           </div>
         ))}
       </div>
@@ -50,7 +50,7 @@ const getFooter = (onClose: () => void, onConfirm: () => void, confirmText: stri
   );
 };
 
-const SetPremissionsToStudentsDialog: React.FC<SetPremissionsToStudentsDialogProps> = ({
+const SetPermissionsToStudentsDialog: React.FC<SetPermissionsToStudentsDialogProps> = ({
   open,
   onClose,
   onConfirm,
@@ -59,15 +59,22 @@ const SetPremissionsToStudentsDialog: React.FC<SetPremissionsToStudentsDialogPro
   confirmText,
   members,
 }) => {
+  const handleClose = () => {
+    onClose();
+  };
+  const handleConfirm = () => {
+    onConfirm();
+  };
+
   return (
     <AdaptiveDialogSH
       isOpen={open}
       handleOpenChange={onClose}
       title={title}
       body={getDialogBody(message, members)}
-      footer={getFooter(onClose, onConfirm, confirmText)}
+      footer={getFooter(handleClose, handleConfirm, confirmText)}
     />
   );
 };
 
-export default SetPremissionsToStudentsDialog;
+export default SetPermissionsToStudentsDialog;

@@ -1,30 +1,104 @@
 import React from 'react';
+import cn from '@/lib/utils';
+import { APPS } from '@/datatypes/types';
 import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view';
 import AnsweredSurveysPage from '@/pages/Surveys/Subpages/AnsweredSurveys';
 import CreatedSurveysPage from '@/pages/Surveys/Subpages/CreatedSurveys';
 import OpenSurveysPage from '@/pages/Surveys/Subpages/OpenSurveys';
 import SurveyManagement from '@/pages/Surveys/Subpages/SurveyManagement';
-import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor.tsx';
+import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor';
 import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
+import useFrameStore from '@/routes/IframeStore';
 
 const SurveysPage = () => {
-  const { selectedPageView } = useSurveysPageStore();
+  const {
+    selectedPageView,
+    selectedSurvey,
+    setSelectedSurvey,
 
-  switch (selectedPageView) {
-    case PageView.OPEN_SURVEYS:
-      return <OpenSurveysPage />;
-    case PageView.CREATED_SURVEYS:
-      return <CreatedSurveysPage />;
-    case PageView.ANSWERED_SURVEYS:
-      return <AnsweredSurveysPage />;
-    case PageView.SURVEY_CREATOR:
-    case PageView.SURVEY_EDITOR:
-      return <SurveyEditor />;
-    case PageView.MANAGE_SURVEYS:
-      return <SurveyManagement />;
-    default:
-      return <OpenSurveysPage />;
-  }
+    openSurveys,
+    updateOpenSurveys,
+    isFetchingOpenSurveys,
+
+    answeredSurveys,
+    updateAnsweredSurveys,
+    isFetchingAnsweredSurveys,
+
+    createdSurveys,
+    updateCreatedSurveys,
+    isFetchingCreatedSurveys,
+
+    setPageViewSurveyEditor,
+
+    deleteSurvey,
+  } = useSurveysPageStore();
+  const { activeFrame } = useFrameStore();
+
+  const getStyle = () => (activeFrame === APPS.SURVEYS ? 'block' : 'hidden');
+
+  const getSurveyComponent = () => {
+    switch (selectedPageView) {
+      case PageView.OPEN_SURVEYS:
+        return (
+          <OpenSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            openSurveys={openSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingOpenSurveys={isFetchingOpenSurveys}
+          />
+        );
+      case PageView.CREATED_SURVEYS:
+        return (
+          <CreatedSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            createdSurveys={createdSurveys}
+            updateCreatedSurveys={updateCreatedSurveys}
+            isFetchingCreatedSurveys={isFetchingCreatedSurveys}
+            setPageViewSurveyEditor={setPageViewSurveyEditor}
+            deleteSurvey={deleteSurvey}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+          />
+        );
+      case PageView.ANSWERED_SURVEYS:
+        return (
+          <AnsweredSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            answeredSurveys={answeredSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingAnsweredSurveys={isFetchingAnsweredSurveys}
+          />
+        );
+      case PageView.SURVEY_CREATOR:
+        return <SurveyEditor />;
+      case PageView.SURVEY_EDITOR:
+        return <SurveyEditor selectedSurvey={selectedSurvey} />;
+      case PageView.MANAGE_SURVEYS:
+        return <SurveyManagement />;
+      default:
+        return (
+          <OpenSurveysPage
+            selectedSurvey={selectedSurvey}
+            setSelectedSurvey={setSelectedSurvey}
+            openSurveys={openSurveys}
+            updateOpenSurveys={updateOpenSurveys}
+            updateAnsweredSurveys={updateAnsweredSurveys}
+            isFetchingOpenSurveys={isFetchingOpenSurveys}
+          />
+        );
+    }
+  };
+
+  return (
+    <div className={cn('absolute bottom-[32px] left-[256px] right-[57px] top-0 h-screen', getStyle())}>
+      {getSurveyComponent()}
+    </div>
+  );
 };
 
 export default SurveysPage;

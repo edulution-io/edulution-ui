@@ -6,7 +6,7 @@ import { CardContent } from '@/components/shared/Card';
 import Mail from '@/components/feature/Home/Notifications/mail';
 
 interface MailCardContentProps {
-  mails: JSON[] | Mail[]
+  mails: JSON[] | Mail[];
 }
 
 const MailCardContent = (props: MailCardContentProps) => {
