@@ -1,5 +1,5 @@
-import { create, StateCreator } from 'zustand';
-import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import {create, StateCreator} from 'zustand';
+import {createJSONStorage, persist, PersistOptions} from 'zustand/middleware';
 
 type UserStore = {
   user: string;
@@ -33,7 +33,7 @@ const useUserStore = create<UserStore>(
     }),
     {
       name: 'user-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );

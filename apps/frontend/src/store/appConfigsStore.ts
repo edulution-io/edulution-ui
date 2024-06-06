@@ -1,6 +1,6 @@
-import { AppConfig, AppIntegrationType } from '@/datatypes/types';
-import { create, StateCreator } from 'zustand';
-import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import {AppConfig, AppIntegrationType} from '@/datatypes/types';
+import {create, StateCreator} from 'zustand';
+import {createJSONStorage, persist, PersistOptions} from 'zustand/middleware';
 
 type AppConfigsStore = {
   appConfig: AppConfig[];
@@ -22,7 +22,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
     }),
     {
       name: 'appConfig-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );
