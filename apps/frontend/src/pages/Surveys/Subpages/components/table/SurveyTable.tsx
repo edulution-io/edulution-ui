@@ -96,7 +96,7 @@ const SurveyTable = (props: SurveyTableProps) => {
           ) : (
             <TableRow>
               <TableCell
-                colSpan={SurveyTableHeaders.length}
+                colSpan={SurveyTableHeaders.length + 1}
                 className="h-24 text-center text-white"
               >
                 {t('table.noDataAvailable')}
