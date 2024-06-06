@@ -1,3 +1,3 @@
-const SurveyTableHeaders: string[] = ['Title', 'creationDate', 'expirationDate', 'participated'];
+const SurveyTableHeaders: string[] = ['Title', 'survey.creationDate', 'survey.expirationDate', 'participated'];
 
 export default SurveyTableHeaders;

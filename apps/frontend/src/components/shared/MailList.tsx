@@ -34,7 +34,7 @@ export function MailList({ items, className }: MailListProps) {
           <button
             key={item.id}
             className={cn(
-              'w-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+              'w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
             )}
           >
             <div className="flex w-full flex-col gap-1">

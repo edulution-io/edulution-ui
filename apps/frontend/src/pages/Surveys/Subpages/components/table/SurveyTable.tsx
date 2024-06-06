@@ -91,7 +91,18 @@ const SurveyTable = (props: SurveyTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody className="container">
-          {surveyRows}
+          {surveys.length && surveys.length > 0 ? (
+            surveyRows
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={SurveyTableHeaders.length}
+                className="h-24 text-center text-white"
+              >
+                {t('table.noDataAvailable')}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
