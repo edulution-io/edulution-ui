@@ -1,5 +1,5 @@
-import {create, StateCreator} from 'zustand';
-import {createJSONStorage, persist, PersistOptions} from 'zustand/middleware';
+import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type UserStore = {
   user: string;

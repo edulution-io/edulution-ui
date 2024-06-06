@@ -1,6 +1,6 @@
-import {AppConfig, AppIntegrationType} from '@/datatypes/types';
-import {create, StateCreator} from 'zustand';
-import {createJSONStorage, persist, PersistOptions} from 'zustand/middleware';
+import { AppConfig, AppIntegrationType } from '@/datatypes/types';
+import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type AppConfigsStore = {
   appConfig: AppConfig[];
