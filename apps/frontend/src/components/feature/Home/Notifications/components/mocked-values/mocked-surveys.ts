@@ -4,7 +4,7 @@ const mockedSurveys: Survey[] = [
   {
     surveyname: '20240603115865168',
     survey: JSON.stringify({
-      title: 'NPS Survey Question',
+      title: 'Klassenarbeit',
       pages: [
         {
           name: 'page1',
@@ -56,9 +56,9 @@ const mockedSurveys: Survey[] = [
     canSubmitMultipleAnswers: true,
   } as Survey,
   {
-    surveyname: '20240603115865168',
+    surveyname: '20240606115865168',
     survey: JSON.stringify({
-      title: 'NPS Survey Question',
+      title: 'Grillfest',
       completedHtml: '<h3>Thank you for your feedback</h3>',
       completedHtmlOnCondition: [
         {

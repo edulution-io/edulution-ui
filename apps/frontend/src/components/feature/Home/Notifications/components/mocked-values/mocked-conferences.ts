@@ -2,33 +2,33 @@ import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const mockedConferences: Conference[] = [
   {
-    name: 'Meeting 001',
+    name: 'Lernhilfe',
     meetingID: '006654',
     creator: {
-      label: 'agy-netzint-teacher',
-      value: 'agy-netzint-teacher',
-      username: 'agy-netzint-teacher',
+      label: '',
+      value: 'Yuki Grün',
+      username: 'yukigrun',
     },
     password: undefined,
-    isRunning: true,
+    isRunning: false,
     invitedAttendees: [
       {
-        label: 'agy-netzint-teacher',
+        label: 'Lea Lopez',
         value: 'agy-netzint-teacher',
         username: 'agy-netzint-teacher',
       },
       {
-        label: 'agy-netzint-student',
+        label: 'Mia Kim',
         value: 'agy-netzint-student',
         username: 'agy-netzint-student',
       },
       {
-        label: 'agy-netzint1',
+        label: 'Emma Williams',
         value: 'agy-netzint1',
         username: 'agy-netzint1',
       },
       {
-        label: 'agy-netzint2',
+        label: 'Julia King',
         value: 'agy-netzint2',
         username: 'agy-netzint2',
       },
@@ -36,7 +36,7 @@ const mockedConferences: Conference[] = [
     joinedAttendees: [],
   },
   {
-    name: 'Meeting 002',
+    name: 'Besprechung Klassenfahrt',
     meetingID: '008944',
     creator: {
       label: 'agy-netzint1',
@@ -47,9 +47,9 @@ const mockedConferences: Conference[] = [
     isRunning: true,
     invitedAttendees: [
       {
-        label: 'agy-netzint-teacher',
-        value: 'agy-netzint-teacher',
-        username: 'agy-netzint-teacher',
+        label: 'Emma Williams',
+        value: 'willemm',
+        username: 'willemm',
       },
       {
         label: 'agy-netzint-student',
@@ -69,12 +69,12 @@ const mockedConferences: Conference[] = [
     ],
     joinedAttendees: [
       {
-        label: 'agy-netzint1',
-        value: 'agy-netzint1',
+        label: 'Emma Williams',
+        value: 'Emma',
         username: 'agy-netzint1',
       },
       {
-        label: 'agy-netzint2',
+        label: 'Leon Li',
         value: 'agy-netzint2',
         username: 'agy-netzint2',
       },
