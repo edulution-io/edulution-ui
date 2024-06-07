@@ -2,9 +2,9 @@ import { create } from 'zustand';
 import { AxiosRequestConfig } from 'axios';
 import UserLmnInfo from '@/datatypes/userInfo';
 import axiosInstanceLmn from '@/api/axiosInstanceLmn';
-import userStore from './userStore';
+import userStore from './userStoreOLD';
 
-interface UserLmnInfoStore {
+interface LmnApiStoreOLD {
   userData: UserLmnInfo | null;
   loading: boolean;
   error: Error | null;
@@ -13,13 +13,13 @@ interface UserLmnInfoStore {
   reset: () => void;
 }
 
-const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUserData' | 'reset'> = {
+const initialState: Omit<LmnApiStoreOLD, 'getToken' | 'getUserData' | 'reset'> = {
   userData: null,
   loading: false,
   error: null,
 };
 
-const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
+const useLmnUserStoreOLD = create<LmnApiStoreOLD>((set) => ({
   ...initialState,
   getToken: async (username: string, password: string) => {
     set({ loading: true });
@@ -68,4 +68,4 @@ const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
   reset: () => set({ ...initialState }),
 }));
 
-export default useLmnUserStore;
+export default useLmnUserStoreOLD;

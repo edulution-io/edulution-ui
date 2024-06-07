@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import useFileManagerStore from '@/store/fileManagerStore';
+import { useEffect, useState } from 'react';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import {
@@ -35,7 +35,7 @@ const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { fetchMountPoints, fetchFiles } = useFileManagerStore();
+  const { fetchMountPoints, fetchFiles } = useFileManagerStoreOLD();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   function constructFilePath(mountPoint: DirectoryFile, username: string) {

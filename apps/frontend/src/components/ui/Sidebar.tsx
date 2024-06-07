@@ -12,8 +12,8 @@ import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'useh
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
+import useUserStoreOLD from '@/store/userStoreOLD';
 import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
@@ -32,7 +32,7 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
+  const { setIsAuthenticated } = useUserStoreOLD();
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({

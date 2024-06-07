@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import useUserStore from '@/store/userStore';
+import useUserStoreOLD from '@/store/userStoreOLD';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 interface ConferenceDetailsDialogProps {
@@ -19,7 +19,7 @@ interface ConferenceDetailsDialogProps {
 
 const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
-  const { user } = useUserStore();
+  const { user } = useUserStoreOLD();
   const { getConferences } = useConferenceStore();
   const { isLoading, error, selectedConference, setSelectedConference, updateConference } =
     useConferenceDetailsDialogStore();

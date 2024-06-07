@@ -7,7 +7,7 @@ import FormField from '@/components/shared/FormField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
-import useUserStore from '@/store/userStore';
+import useUserStoreOLD from '@/store/userStoreOLD';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +16,7 @@ interface CreateConferenceDialogBodyProps {
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
   const { setValue, getValues } = form;
-  const { user } = useUserStore();
+  const { user } = useUserStoreOLD();
   const { isLoading, searchAttendees } = useCreateConferenceDialogStore();
   const { t } = useTranslation();
 

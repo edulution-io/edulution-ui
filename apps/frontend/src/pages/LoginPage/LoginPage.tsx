@@ -12,16 +12,16 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useUserStore from '@/store/userStore';
-import useLmnUserStore from '@/store/lmnApiStore';
+import useUserStoreOLD from '@/store/userStoreOLD';
+import useLmnUserStoreOLD from '@/store/lmnApiStoreOLD';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated, setToken } = useUserStore();
+  const { setUser, setWebdavKey, setIsAuthenticated, setToken } = useUserStoreOLD();
 
   const { isLoading } = auth;
-  const { getToken } = useLmnUserStore((state) => ({
+  const { getToken } = useLmnUserStoreOLD((state) => ({
     getToken: state.getToken,
   }));
 

@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
@@ -25,7 +25,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
   const [currentPath, setCurrentPath] = useState('');
-  const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStore();
+  const { setFileOperationSuccessful, fetchDirectory } = useFileManagerStoreOLD();
   useEffect(() => {
     if (isOpen) {
       fetchDirectory(currentPath)

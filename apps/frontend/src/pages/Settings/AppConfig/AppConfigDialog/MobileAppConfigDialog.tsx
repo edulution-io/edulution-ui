@@ -5,7 +5,7 @@ import { DropdownMenu } from '@/components';
 import { toast } from 'sonner';
 import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import { SettingsDialogProps } from '@/pages/Settings/AppConfig/AppConfigDialog/settingTypes';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
