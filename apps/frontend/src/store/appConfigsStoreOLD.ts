@@ -4,7 +4,7 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-type AppConfigsStore = {
+type AppConfigsStoreOLD = {
   appConfig: AppConfig[];
   isLoading: boolean;
   error: Error | null;
@@ -14,13 +14,13 @@ type AppConfigsStore = {
 };
 
 type PersistedAppConfigsStore = (
-  appConfig: StateCreator<AppConfigsStore>,
-  options: PersistOptions<AppConfigsStore>,
-) => StateCreator<AppConfigsStore>;
+  appConfig: StateCreator<AppConfigsStoreOLD>,
+  options: PersistOptions<AppConfigsStoreOLD>,
+) => StateCreator<AppConfigsStoreOLD>;
 
 const EDU_API_CONFIG_ENDPOINT = 'appconfig';
 
-const useAppConfigsStore = create<AppConfigsStore>(
+const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
       appConfig: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
@@ -65,4 +65,4 @@ const useAppConfigsStore = create<AppConfigsStore>(
   ),
 );
 
-export default useAppConfigsStore;
+export default useAppConfigsStoreOLD;

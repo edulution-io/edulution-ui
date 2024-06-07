@@ -1,6 +1,6 @@
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import { findAppConfigByName } from '@/utils/common';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -8,7 +8,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 const useSettingsMenuConfig = () => {
   const navigate = useNavigate();
   const [, setSearchParams] = useSearchParams();
-  const { appConfig } = useAppConfigsStore();
+  const { appConfig } = useAppConfigsStoreOLD();
 
   const SETTINGS_CONFIG: MenuBarEntryProps = {
     title: 'settings.title',

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import Sidebar from '@/components/ui/Sidebar';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
-import useUserStore from '@/store/userStore';
+import useUserStore from '@/store/userStoreOLD';
 
 interface IframeLayoutProps {
   scriptOnStartUp?: string;
@@ -13,7 +13,7 @@ interface IframeLayoutProps {
 const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop }) => {
   const { pathname } = useLocation();
   const rootPathName = getFromPathName(pathname, 1);
-  const { appConfig } = useAppConfigsStore();
+  const { appConfig } = useAppConfigsStoreOLD();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
 

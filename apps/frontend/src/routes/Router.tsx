@@ -14,8 +14,8 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
+import useUserStoreOLD from '@/store/userStoreOLD';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import MailPage from '@/pages/Mail/MailPage';
@@ -134,16 +134,15 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated } = useUserStore();
-  const { loginUser } = useUserQuery();
-  const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
+  const { user: registeredUser } = useUserQuery();
+  const { isAuthenticated, setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStoreOLD();
 
   useEffect(() => {
     if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
       const { profile } = auth.user;
 
       // Send here the user password for Webdav to the API
-      loginUser(profile)
+      registeredUser(profile)
         .then(() => setIsLoggedInInEduApi(true))
         .catch((e) => console.error(e));
     }

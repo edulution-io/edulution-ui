@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Input from '@/components/shared/Input';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { validateFileName } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 const FileCreationForm = () => {
   const [localFileName, setLocalFileName] = useState('');
-  const setFileName = useFileManagerStore((state) => state.setFileName);
+  const setFileName = useFileManagerStoreOLD((state) => state.setFileName);
   const [error, setError] = useState('');
 
   const handleValidateFileName = (name: string) => {

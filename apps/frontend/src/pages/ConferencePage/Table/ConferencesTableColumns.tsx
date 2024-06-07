@@ -8,7 +8,7 @@ import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import useUserStore from '@/store/userStore';
+import useUserStoreOLD from '@/store/userStoreOLD';
 import { TFunction } from 'i18next';
 
 function getRowAction(
@@ -58,7 +58,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const { user } = useUserStore();
+      const { user } = useUserStoreOLD();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const onClick = async () => {
         if (row.original.isRunning) {
@@ -88,7 +88,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
-      const { user } = useUserStore();
+      const { user } = useUserStoreOLD();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
@@ -117,7 +117,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
       const iconSize = 16;
-      const { user } = useUserStore();
+      const { user } = useUserStoreOLD();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
@@ -158,7 +158,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
-      const { user } = useUserStore();
+      const { user } = useUserStoreOLD();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
@@ -204,7 +204,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
       const { t } = useTranslation();
-      const { user } = useUserStore();
+      const { user } = useUserStoreOLD();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
       const isUserTheCreator = user === creator?.username;

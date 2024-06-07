@@ -2,16 +2,16 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
-import LoginUserDto from './dto/login-user.dto';
+import RegisterUserDto from './dto/register-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('login')
-  login(@Body() loginUserDto: LoginUserDto) {
-    return this.usersService.login(loginUserDto);
+  @Post('register')
+  register(@Body() userDto: RegisterUserDto) {
+    return this.usersService.register(userDto);
   }
 
   @Post()

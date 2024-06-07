@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import React, { ReactNode, useState } from 'react';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     setFileOperationSuccessful,
     fetchFiles,
     handleWebDavAction,
-  } = useFileManagerStore();
+  } = useFileManagerStoreOLD();
 
   const createFile = async (path: string): Promise<void> => {
     await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
