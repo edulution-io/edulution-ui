@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
+import useUserStore from '@/store/userStoreOLD';
 import createRouter from '@/routes/CreateRouter';
 
 interface AppRouterProps {}

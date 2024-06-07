@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import { findAppConfigByName } from '@/utils/common';
-import useUserStore from '@/store/userStore';
+import useUserStore from '@/store/userStoreOLD';
 import useIframeStore from '@/routes/IframeStore';
 import { useMediaQuery } from 'usehooks-ts';
 

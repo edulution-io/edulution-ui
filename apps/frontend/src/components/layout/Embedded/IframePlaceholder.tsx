@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import Sidebar from '@/components/ui/Sidebar';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
-import useUserStore from '@/store/userStore';
+import useUserStore from '@/store/userStoreOLD';
 import useIframeStore from '@/routes/IframeStore';
 
 const IframePlaceholder: React.FC = () => {

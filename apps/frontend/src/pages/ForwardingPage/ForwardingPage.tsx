@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import { toast, Toaster } from 'sonner';
 
 const ForwardingPage: React.FC = () => {
@@ -14,7 +14,7 @@ const ForwardingPage: React.FC = () => {
   const [isForwarding, setIsForwaring] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
 
-  const { appConfig } = useAppConfigsStore();
+  const { appConfig } = useAppConfigsStoreOLD();
 
   const rootPathName = getFromPathName(pathname, 1);
 

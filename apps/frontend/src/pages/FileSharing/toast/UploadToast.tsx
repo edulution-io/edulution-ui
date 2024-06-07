@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { toast, Toaster } from 'sonner';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import Progress from '@/components/ui/Progress';
 
 const UploadToast = () => {
-  const fileUploadProgresses = useFileManagerStore((state) => state.uploadProgresses);
+  const fileUploadProgresses = useFileManagerStoreOLD((state) => state.uploadProgresses);
 
   useEffect(() => {
     Object.entries(fileUploadProgresses).forEach(([fileName, progress]) => {

@@ -10,8 +10,9 @@ import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
+import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {

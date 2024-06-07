@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { CardContent, Card } from '@/components/shared/Card';
+import { Card, CardContent } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
-import useLmnUserStore from '@/store/lmnApiStore';
+import useLmnUserStoreOLD from '@/store/lmnApiStoreOLD';
 import { waitForToken } from '@/api/common';
 
 const Groups = () => {
-  const { userData, getUserData } = useLmnUserStore((state) => ({
+  const { userData, getUserData } = useLmnUserStoreOLD((state) => ({
     getUserData: state.getUserData,
     userData: state.userData,
   }));

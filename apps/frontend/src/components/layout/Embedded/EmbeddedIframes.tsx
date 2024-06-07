@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppIntegrationType } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import useIframeStore from '@/routes/IframeStore';
 import { useMediaQuery } from 'usehooks-ts';
 

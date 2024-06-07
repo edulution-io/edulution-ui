@@ -27,7 +27,7 @@ class ConferencesService {
   async loadConfig() {
     const appConfig = await this.appConfigService.getAppConfigByName('conferences');
     if (!appConfig?.options.url || !appConfig.options.apiKey) {
-      throw new HttpException('App is not properly configured', HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException('App is not properly configured', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     this.BBB_API_URL = appConfig.options.url;
     this.BBB_SECRET = appConfig.options.apiKey;
@@ -51,8 +51,7 @@ class ConferencesService {
       isMeetingStarted: false,
     };
 
-    const createdConference = await this.conferenceModel.create(newConference);
-    return createdConference;
+    return this.conferenceModel.create(newConference);
   }
 
   async toggleConferenceIsRunning(meetingID: string, username: string) {
@@ -64,13 +63,13 @@ class ConferencesService {
     }
 
     if (conference.isRunning) {
-      await this.stopConference(conference, username);
+      await this.stopConference(conference);
     } else {
-      await this.startConference(conference, username);
+      await this.startConference(conference);
     }
   }
 
-  private async startConference(conference: Conference, username: string) {
+  private async startConference(conference: Conference) {
     await this.loadConfig();
 
     try {
@@ -82,14 +81,14 @@ class ConferencesService {
       const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
       ConferencesService.handleBBBApiError(result);
 
-      await this.update({ ...conference, isRunning: true }, username);
+      await this.update({ ...conference, isRunning: true });
     } catch (e) {
       Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
     }
   }
 
-  private async stopConference(conference: Conference, username: string) {
+  private async stopConference(conference: Conference) {
     await this.loadConfig();
 
     try {
@@ -101,20 +100,20 @@ class ConferencesService {
       const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
       ConferencesService.handleBBBApiError(result);
 
-      await this.update({ ...conference, isRunning: false }, username);
+      await this.update({ ...conference, isRunning: false });
     } catch (e) {
       Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
     }
   }
 
-  private async isCurrentUserTheCreator(
+  public async isCurrentUserTheCreator(
     meetingID: string,
     username: string,
   ): Promise<{ conference: Conference; isCreator: boolean }> {
     const conference = await this.findOne(meetingID);
     if (!conference) {
-      throw new HttpException(`No meeting with ID ${meetingID} found`, HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(`No meeting with ID ${meetingID} found`, HttpStatus.NOT_FOUND);
     }
     return { conference, isCreator: conference.creator.username === username };
   }
@@ -134,16 +133,15 @@ class ConferencesService {
       const fullName = `${givenName} ${familyName}`;
       const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
       const checksum = this.createChecksum('join', query);
-      const url = `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
 
-      return url;
+      return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
       Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.METHOD_NOT_ALLOWED);
     }
   }
 
-  async findAll(username: string): Promise<Conference[]> {
+  async findUsersConferences(username: string): Promise<Conference[]> {
     await this.loadConfig();
 
     const usersConferences = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
@@ -159,17 +157,16 @@ class ConferencesService {
         const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
         ConferencesService.handleBBBApiError(result);
 
-        await this.update({ ...conferenceObject, isRunning: true }, username);
+        await this.update({ ...conferenceObject, isRunning: true });
         return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
       } catch (_) {
         const updatedConference = { ...conferenceObject, isRunning: false };
-        await this.update(updatedConference, username);
+        await this.update(updatedConference);
         return updatedConference;
       }
     });
 
-    const updatedConferences = await Promise.all(promises);
-    return updatedConferences;
+    return Promise.all(promises);
   }
 
   async findOne(meetingID: string): Promise<Conference | null> {
@@ -177,13 +174,12 @@ class ConferencesService {
     return this.conferenceModel.findOne<Conference>({ meetingID }).exec();
   }
 
-  async update(conference: Conference, username: string): Promise<Conference | null> {
+  async update(conference: Conference): Promise<Conference | null> {
     await this.loadConfig();
     return this.conferenceModel
       .findOneAndUpdate<Conference>(
         {
           meetingID: conference.meetingID,
-          'creator.username': username,
         },
         conference,
         {
@@ -233,26 +229,23 @@ class ConferencesService {
 
   static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
     const { attendees } = bbbMeetingDto.response;
-    let joinedAttendees: Attendee[] = [];
-    if (attendees?.attendee) {
-      if (!Array.isArray(attendees.attendee)) {
-        joinedAttendees = [
-          {
-            lastName: attendees.attendee.role,
-            firstName: attendees.attendee.fullName,
-            username: attendees.attendee.userID,
-          },
-        ];
-      } else {
-        joinedAttendees = attendees.attendee.map((a) => ({
-          lastName: a.role,
-          firstName: a.fullName,
-          username: a.userID,
-        }));
-      }
+    if (!attendees?.attendee) {
+      return [];
     }
-
-    return joinedAttendees;
+    if (!Array.isArray(attendees.attendee)) {
+      return [
+        {
+          lastName: attendees.attendee.role,
+          firstName: attendees.attendee.fullName,
+          username: attendees.attendee.userID,
+        },
+      ];
+    }
+    return attendees.attendee.map((a) => ({
+      lastName: a.role,
+      firstName: a.fullName,
+      username: a.userID,
+    }));
   }
 }
 

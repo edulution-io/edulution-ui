@@ -1,5 +1,5 @@
 import React from 'react';
-import useUserStore from '@/store/userStore';
+import useUserStore from '@/store/userStoreOLD';
 import { useEncryption } from '@/hooks/mutations';
 import NativeIframeLayout from '@/components/layout/Native/NativeIframeLayout';
 import { APPS } from '@/datatypes/types';

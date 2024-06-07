@@ -21,25 +21,26 @@ class ConferencesController {
 
   @Get()
   findAll(@GetCurrentUsername() username: string) {
-    return this.conferencesService.findAll(username);
+    return this.conferencesService.findUsersConferences(username);
   }
 
   @Patch()
   async update(@Body() conference: Conference, @GetCurrentUsername() username: string) {
-    await this.conferencesService.update(conference, username);
-    return this.conferencesService.findAll(username);
+    await this.conferencesService.isCurrentUserTheCreator(conference.meetingID, username);
+    await this.conferencesService.update(conference);
+    return this.conferencesService.findUsersConferences(username);
   }
 
   @Put()
   async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUsername() username: string) {
     await this.conferencesService.toggleConferenceIsRunning(conference.meetingID, username);
-    return this.conferencesService.findAll(username);
+    return this.conferencesService.findUsersConferences(username);
   }
 
   @Delete()
   async remove(@Body() meetingIDs: string[], @GetCurrentUsername() username: string) {
     await this.conferencesService.remove(meetingIDs, username);
-    return this.conferencesService.findAll(username);
+    return this.conferencesService.findUsersConferences(username);
   }
 }
 

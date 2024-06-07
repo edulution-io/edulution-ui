@@ -12,7 +12,7 @@ import { Button } from '@/components/shared/Button';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
 import { AppIntegrationType } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import { findAppConfigByName } from '@/utils/common';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -28,7 +28,7 @@ const AppConfigPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const isMobileView = useIsMobileView();
-  const { appConfig, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfig, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStoreOLD();
   const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';

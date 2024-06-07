@@ -3,7 +3,7 @@ import AppRouter from '@/routes/AppRouter';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
-import useUserStore from '@/store/userStore';
+import useUserStore from '@/store/userStoreOLD';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 import EmbeddedIframes from '@/components/layout/Embedded/EmbeddedIframes';

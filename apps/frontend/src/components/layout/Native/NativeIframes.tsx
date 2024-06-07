@@ -1,5 +1,5 @@
 import React from 'react';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import nativeIframeAppsList from '@/components/layout/Native/nativeIframeAppsList';
 import MailPage from '@/pages/Mail/MailPage';
