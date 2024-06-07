@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'usehooks-ts';
@@ -14,12 +14,12 @@ interface UploadItemDialogProps {
 
 const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const currentPath = useFileManagerStore((state) => state.currentPath);
+  const currentPath = useFileManagerStoreOLD((state) => state.currentPath);
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
-  const setProgress = useFileManagerStore((state) => state.setUploadProgress);
-  const resetProgress = useFileManagerStore((state) => state.resetProgress);
+  const setFileOperationSuccessful = useFileManagerStoreOLD((state) => state.setFileOperationSuccessful);
+  const setProgress = useFileManagerStoreOLD((state) => state.setUploadProgress);
+  const resetProgress = useFileManagerStoreOLD((state) => state.resetProgress);
 
   const { t } = useTranslation();
 

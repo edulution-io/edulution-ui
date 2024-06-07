@@ -14,10 +14,10 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
-import useUserStore from '@/store/userStore';
+import useUserStoreOLD from '@/store/userStoreOLD';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -131,7 +131,7 @@ const AppRouter = () => {
   const auth = useAuth();
   const { appConfig, setAppConfig } = useAppConfigsStore();
   const { getAppConfigs } = useAppConfigQuery();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useUserStoreOLD();
 
   useEffect(() => {
     if (auth.isAuthenticated) {

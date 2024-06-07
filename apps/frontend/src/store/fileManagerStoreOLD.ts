@@ -5,7 +5,7 @@ import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 
 type WebDavActionResult = { success: boolean; message: string; status: number } | { success: boolean };
 
-type FileManagerStore = {
+type FileManagerStoreOLD = {
   files: DirectoryFile[];
   isLoading: boolean;
   isVisible: boolean;
@@ -37,7 +37,7 @@ type FileManagerStore = {
 };
 
 const initialState: Omit<
-  FileManagerStore,
+  FileManagerStoreOLD,
   | 'setUploadProgress'
   | 'resetProgress'
   | 'setSelectedRows'
@@ -69,7 +69,7 @@ const initialState: Omit<
   selectedRows: {},
 };
 
-const useFileManagerStore = create<FileManagerStore>((set, get) => ({
+const useFileManagerStoreOLD = create<FileManagerStoreOLD>((set, get) => ({
   ...initialState,
   setCurrentPath: (path: string) => {
     set({ currentPath: path });
@@ -175,4 +175,4 @@ const useFileManagerStore = create<FileManagerStore>((set, get) => ({
   reset: () => set({ ...initialState }),
 }));
 
-export default useFileManagerStore;
+export default useFileManagerStoreOLD;

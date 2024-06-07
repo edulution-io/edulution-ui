@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +16,10 @@ interface DeleteDialogProps {
 }
 
 const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) => {
-  const selectedItems: DirectoryFile[] = useFileManagerStore((state) => state.selectedItems);
-  const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStore((state) => state.setSelectedItems);
-  const setRowSelection = useFileManagerStore((state) => state.setSelectedRows);
-  const setFileOperationSuccessful = useFileManagerStore((state) => state.setFileOperationSuccessful);
+  const selectedItems: DirectoryFile[] = useFileManagerStoreOLD((state) => state.selectedItems);
+  const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStoreOLD((state) => state.setSelectedItems);
+  const setRowSelection = useFileManagerStoreOLD((state) => state.setSelectedRows);
+  const setFileOperationSuccessful = useFileManagerStoreOLD((state) => state.setFileOperationSuccessful);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();

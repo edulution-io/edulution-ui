@@ -1,21 +1,21 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/shared/Button';
-import { useLocation, NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
-import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
+import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
+import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
-import cleanStoreData from '@/store/utilis/cleanStoreData';
+import useAppConfigsStore from '@/store/appConfigsStoreOLD';
+import useUserStoreOLD from '@/store/userStoreOLD';
+import cleanStoreData from '@/store/utilis/cleanStoreDataOLD';
 import StoreTypes from '@/store/utilis/storeTypes';
 import SidebarItem from './SidebarItem';
 
@@ -33,7 +33,7 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
+  const { setIsAuthenticated } = useUserStoreOLD();
 
   const sidebarItems = [
     ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({

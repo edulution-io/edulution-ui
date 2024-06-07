@@ -4,7 +4,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import {
@@ -25,7 +25,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [isNameValid, setIsNameValid] = useState(false);
   const [localFileName, setLocalFileName] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
+  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStoreOLD();
   const { t } = useTranslation();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);

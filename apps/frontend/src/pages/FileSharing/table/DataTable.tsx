@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
@@ -22,14 +22,14 @@ interface DataTableProps<TData, TValue> {
 
 const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const setSelectedItems = useFileManagerStore((state) => state.setSelectedItems);
+  const setSelectedItems = useFileManagerStoreOLD((state) => state.setSelectedItems);
   const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
-        ? updaterOrValue(useFileManagerStore.getState().selectedRows)
+        ? updaterOrValue(useFileManagerStoreOLD.getState().selectedRows)
         : updaterOrValue;
-    useFileManagerStore.getState().setSelectedRows(newValue);
+    useFileManagerStoreOLD.getState().setSelectedRows(newValue);
   };
 
   const table = useReactTable({
@@ -41,7 +41,7 @@ const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValu
     onRowSelectionChange: handleRowSelectionChange,
     state: {
       sorting,
-      rowSelection: useFileManagerStore((state) => state.selectedRows),
+      rowSelection: useFileManagerStoreOLD((state) => state.selectedRows),
     },
   });
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMediaQuery } from 'usehooks-ts';
@@ -18,7 +18,7 @@ import { AppIntegrationType } from '@/datatypes/types';
 import MobileSettingsDialog from '@/pages/Settings/SettingsDialog/MobileSettingsDialog';
 import { SettingsDialogProps } from '@/pages/Settings/SettingsDialog/settingTypes';
 import DesktopSettingsDialog from '@/pages/Settings/SettingsDialog/DesktopSettingsDialog';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
 
@@ -29,7 +29,7 @@ const SettingsPage: React.FC = () => {
   const mode = searchParams.get('mode');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { updateAppConfig, deleteAppConfigEntry } = useAppConfigQuery();
-  const { appConfig, setAppConfig } = useAppConfigsStore();
+  const { appConfig, setAppConfig } = useAppConfigsStoreOLD();
   const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
