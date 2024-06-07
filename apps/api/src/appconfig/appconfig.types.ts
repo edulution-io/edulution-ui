@@ -3,10 +3,15 @@ export enum AppIntegrationType {
   FORWARDED = 'forwarded',
   EMBEDDED = 'embedded',
 }
-
 export type AppConfig = {
   name: string;
-  linkPath: string;
   icon: string;
   appType: AppIntegrationType;
+  options: AppConfigOptions;
+};
+
+export type AppConfigOptionType = 'url' | 'apiKey';
+
+export type AppConfigOptions = {
+  [T in AppConfigOptionType]?: string;
 };

@@ -1,14 +1,17 @@
 {
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
-  "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
+  "heading": "Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILER DATENZUGRIFF",
+      "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
     }
+  },
+  "auth": {
+    "totp": { "invalid": "Ungültiger Token", "setup": { "success": "TOTP-Authentifizierung erfolgreich gesetzt" } }
   },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
@@ -24,7 +27,36 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
-    "sidebar": "Konferenzen"
+    "description": "Das Videokonferenz Tool verbindet freigegebene Audio- und Videosignale der Teilnehmer und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen – wie Zeiger, Zoomen und Zeichnen.",
+    "sidebar": "Konferenzen",
+    "create": "Konferenz erstellen",
+    "creator": "Ersteller",
+    "delete": "Löschen",
+    "deleteConferences": "{{count}} Konferenzen löschen",
+    "editConference": "Konferenz bearbeiten",
+    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "name": "Name der Konferenz",
+    "conference": "Konferenz",
+    "password": "Passwort",
+    "attendees": "Teilnehmer",
+    "invitedAttendees": "Eingeladen",
+    "joinedAttendees": "Beigetreten",
+    "privacyStatus": "Zutritt",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "cancel": "Abbrechen",
+    "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
+    "password_required": "Kein Passwort eingegeben",
+    "error": "Fehler",
+    "action": "Aktion",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "join": "Beitreten",
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "close": "Konferenz schließen"
   },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
@@ -52,8 +84,98 @@
     "sidebar": "Schulinformation"
   },
   "schoolmanagement": {
-    "title": "SCHULVERWALTUNG",
-    "sidebar": "Schulverwaltung"
+    "title": "KLASSENZIMMER",
+    "sidebar": "Klassenzimmer"
+  },
+  "aichat": {
+    "title": "KI CHAT",
+    "sidebar": "KI Chat"
+  },
+  "important": "Aktuelles",
+  "Title": "Titel",
+  "add": "Hinzufügen",
+  "DATE": "Datum",
+  "Date": "Datum",
+  "days": "Tage",
+  "expires": "Abgabe Datum",
+  "abort": "Abbrechen",
+  "not-available": "Nicht verfügbar",
+  "options": "Optionen",
+  "ParticipantCount": "Teilnehmeranzahl",
+  "participated": "Teilgenommen",
+  "PageCount": "Seitenanzahl",
+  "RATING": "Bewertung",
+  "save": "Speichern",
+  "TEXT": "Text",
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "openSurveys": "Offene Umfragen",
+    "createdSurveys": "Eigene Umfragen",
+    "answeredSurveys": "Schon beantwortet"
+  },
+  "survey": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "date": "Datum",
+    "creationDate": "Erstelldatum",
+    "expirationDate": "Stichtag",
+    "description": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
+    "participate": "Teilnehmen",
+    "participation": "Teilnahme an der Umfrage",
+    "participants": "Teilnehmer",
+    "propagate": "Verbreiten",
+    "openSurveys": "An diesen Umfragen hast du noch nicht teil genommen",
+    "createdSurveys": "Selbst erstellte Umfragen",
+    "answeredSurveys": "Umfragen an denen teilgenommen wurde",
+    "allSurveys": "Umfragen Manager",
+    "load": "Lade",
+    "noFormula": "Formel für das Erstellen der Umfrage nicht gefunden",
+    "noAnswer": "Der Umfrage wurde noch keine Antwort hinzugefügt",
+    "answer": "Abgabe",
+    "result": "Resultat",
+    "resultVisualization": "Resultat (Panel)",
+    "resultingVisualization": "Die Abgaben der Teilnehmer dargestellt in verschiedenen Panels",
+    "resultTable": "Resultat (Tabelle)",
+    "resultingTable": "Die Abgaben der Teilnehmer dargestellt in einer Tabelle",
+    "resulting": "Ihre hochgeladene Abgabe",
+    "create": "Neue erstellen",
+    "delete": "löschen",
+    "edit": "Bearbeiten",
+    "editing": "Teilnehmer hinzufügen",
+    "manage": "Management",
+    "isAnonymous": "Die Teilnahme an der Umfrage ist Anonym",
+    "canSubmitMultipleAnswers": "Mehrfache Abgaben sind erlaubt",
+    "editor": {
+      "title": "Umfrage-Editor",
+      "abort": "Neu (leer)"
+    },
+    "page": {
+      "page": "Seite",
+      "title": "Fügen Sie der Seite einen Titel hinzu",
+      "description": "Fügen Sie der Seite eine Beschreibung hinzu (optional)",
+      "remove": "Entferne die Seite",
+      "add": "Füge eine neue Seite hinzu"
+    },
+    "panel": {
+      "panel": "Panel",
+      "remove": "Entferne das Panel",
+      "add": "Füge ein neues Panel hinzu"
+    },
+    "question": {
+      "question": "Frage",
+      "type": "Wählen Sie den Typ der Frage/Antwort-Möglichkeit",
+      "title": "Fügen Sie der Frage einen Titel hinzu",
+      "text": "Definieren Sie hier die Frage die Sie stellen möchten",
+      "choices": "Fügen Sie Antwortmöglichkeiten hinzu",
+      "addChoice": "Option hinzufügen",
+      "removeChoice": "Option entfernen",
+      "mostUnlikely": "nicht zutreffend/wahrscheinlich",
+      "mostLikely": "zutreffend/sehr wahrscheinlich",
+      "description": "Fügen Sie der Frage eine Beschreibung hinzu (optional)",
+      "remove": "Entferne Frage",
+      "add": "Füge Frage hinzu"
+    }
   },
   "printer": {
     "title": "DRUCKER",
@@ -68,8 +190,19 @@
     "sidebar": "Standortverbindung"
   },
   "desktopdeployment": {
-    "title": "DESKTOP-BEREITSTELLUNG",
-    "sidebar": "Desktop-Bereitstellung"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
+    "sidebar": "Desktop",
+    "connect": "Verbinden",
+    "close": "Verbindung schließen",
+    "error": {
+      "title": "Verbindungsfehler",
+      "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
+    },
+    "win10": "Windows 10",
+    "clients": "Clients verfügbar",
+    "client": "Client verfügbar"
   },
   "wlan": {
     "title": "WLAN",
@@ -78,6 +211,14 @@
   "mobiledevices": {
     "title": "MOBILE ENDGERÄTE",
     "sidebar": "Mobile Endgeräte"
+  },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "virtualization": {
     "title": "VIRTUALISATION",
@@ -106,6 +247,29 @@
       "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
     }
   },
+
+  "externIntegrationsetup": {
+    "title": "EXTERNE ANBINDUNG",
+    "description": "Installationsanweisungen für die Anbindung externer Dienste",
+    "AIChatSetUp": "AI Chat Einrichten",
+    "ChatSetUp": "Chat Einrichten",
+    "MailSetUp": "Mail Einrichten"
+  },
+
+  "security": {
+    "title": "Sicherheit",
+    "description": "Konfigurieren Sie hier die Sicherheitseinstellungen des Accounts"
+  },
+
+  "usersettings": {
+    "title": "BENUTZER",
+    "sidebar": "Einstellungen",
+    "security": "Sicherheit",
+    "faq": "FAQ",
+    "externalIntegration": "Externe Anbindung",
+    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
+    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+  },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
@@ -120,7 +284,20 @@
   "students": "Schüler",
   "login": {
     "forgot_password": "Passwort vergessen?",
-    "remember_me": "Merken"
+    "remember_me": "Eingeloggt bleiben",
+    "username": {
+      "too_long": "Benutzername zu lang",
+      "required": "Bitte Benutzername eingeben."
+    },
+    "password": {
+      "too_long": "Passwort zu lang",
+      "required": "Bitte Passwort eingeben."
+    },
+    "totp": {
+      "invalid": "Ungültiger Code! Bitte versuche es erneut.",
+      "back": "Zurück",
+      "description": "Bitte hier den 2-Faktor-Code aus der Authenticator-App eingeben."
+    }
   },
   "common": {
     "add": "Hinzufügen",
@@ -132,7 +309,15 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "overview": "Übersicht",
+    "create": "Erstellen",
+    "revert": "Zurücksetzen",
+    "groups": "Gruppen",
+    "clearSelection": "Auswahl löschen",
+    "close": "Schließen",
+    "rename": "Umbenennen",
+    "start": "Starten"
   },
   "form": {
     "path": "Link",
@@ -141,7 +326,11 @@
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
-    "saved": "Konfiguration gespeichert!"
+    "saved": "Konfiguration gespeichert!",
+    "url": "URL",
+    "urlDescription": "Bitte eine URL zur Applikation eintragen",
+    "apiKey": "API Schlüssel",
+    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -167,18 +356,48 @@
   "loadingIndicator": {
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
   },
+  "search": {
+    "type-to-search": "Tippen um zu suchen",
+    "loading": "Lade",
+    "no-results": "Keine Ergebnisse",
+    "usersAdded": "{{ count }} hinzugefügt"
+  },
   "fileCategory": {
     "folder": "Ordner",
     "document": "Dokument",
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "spreadsheet": "Tabelle",
+    "presentation": "Präsentation"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "QR-Code scannen"
+  },
+
+  "createContent": {
+    "submit": "Erstellen"
+  },
+  "filetype": {
+    "drawIoFile": "Draw.io-Datei",
+    "textFile": "Textdatei",
+    "documentFile": "Dokument",
+    "spreadsheetFile": "Tabelle",
+    "presentationFile": "Präsentation"
+  },
+
   "fileCreateNewContent": {
-    "fileDialogTitle": "Erstelle eine neue Datei",
+    "drawiofile": "Neue Draw.io-Datei",
+    "textfile": "Neue Textdatei",
+    "documentfile": "Neues Dokument",
+    "spreadsheetfile": "Neue Tabelle",
+    "presentationfile": "Neue Präsentation",
+    "fileDialogTitle": "Erstelle ein/ne neue/s {{name}}",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
+    "fileNamePlaceholder": "Dateiname eingeben",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
@@ -224,6 +443,7 @@
     "close": "Schließen"
   },
   "tooltip": {
+    "edit": "Editieren",
     "upload": "Hochladen",
     "create": {
       "file": "Datei erstellen",
@@ -261,10 +481,113 @@
     "my_information": "Meine Informationen",
     "mail_alias": "Mail Alias",
     "change_my_data": "Daten ändern",
-    "school_classes": "Schulklassen"
+    "school_classes": "Schulklassen",
+    "FAQ": "FAQ"
   },
-
   "groupsPage": {
     "classes": "Klassen"
+  },
+
+  "faq": {
+    "title": "FAQ",
+    "sidebar": "FAQ",
+    "description": "Hier finden Sie Antworten auf häufig gestellte Fragen.",
+    "filemangerIntroductionTitle": "Wie nutze ich den Dateimanager?",
+    "classManagementIntroductionTitle": "Für was nutze ich die Klassenverwaltung?",
+    "aiChatIntroductionTitle": "Was nutzt mir ein AI Chat?",
+    "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
+    "emailIntroductionTitle": "Muss ich mir extra eine Mailadresse anlegen?",
+    "learnManagementIntroductionTitle": "Was kann ich im Lernmanagement machen?",
+    "pullsIntroductionTitle": "Wie pulls erstellt und genutz werden um Programn Änderungen zu erbitten?",
+    "vdiIntroductionTitle": "Wie nutze ich den virtuellen Desktop?",
+    "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?",
+    "surveysIntroductionTitle": "Wie nutzte ich das Umfragen-Tool?"
+  },
+  "schoolManagement": {
+    "title": "Klassenzimmer",
+    "description": "Hier können Sie Ihre Klassen verwalten.",
+    "confirm": "Bestätigen",
+    "cancel": "Abbrechen",
+    "lesson": "Unterricht",
+    "enrol": "Einschreiben",
+    "passwords": "Erst-Passwörter",
+    "addStudent": "Schüler hinzufügen",
+    "addGroup": "Gruppe hinzufügen",
+    "share": "Austeilen",
+    "collect": "Einsammeln",
+    "showCollectedFiles": "Dateien zeigen",
+    "exam": "Prüfung",
+    "wifi": "WLAN",
+    "internet": "Internet",
+    "printer": "Drucker",
+    "class": "Klassen",
+    "projects": "Projekte",
+    "project": "Projekte",
+    "availableGroups": "Alle verfügbaren Gruppen in der {{schoolname}} Schule",
+    "noDataAvailable": "Keine Daten verfügbar",
+    "myClasses": "Meine Klassen",
+    "myGroups": "Meine Gruppen",
+    "myProjects": "Meine Projekte",
+    "initialPasswordHint": "Sie können das Passwort einer Klasse direkt über das Symbol drucken oder mehrere Klassen auswählen, um alle gleichzeitig auszudrucken.",
+    "downloadInitPasswordAsText": "Erst-Passwörter .txt",
+    "downloadInitPasswordAsCSV": "Erst-Passwörter .csv",
+    "downloadInitPasswordAsPDF": "Erst-Passwörter .pdf",
+    "projectPage": "Hier können Sie ein neues Projekt anlegen sowie Ihre aktuellen Projekte sehen.",
+    "createProject": "Projekt anlegen",
+    "newProject": "Neues Projekt",
+    "createGroup": "Gruppe anlegen",
+    "newGroup": "Neue Gruppe",
+    "addUser": "Benutzer hinzufügen",
+    "noUsersInGroup": "Momentan befinden sich keine Benutzer in {{name}}. Füge jetzt einen hinzu.",
+    "examMode": "Prüfungsmodus",
+    "cancelStartExamMode": "Abbrechen",
+    "startExamMode": "Start",
+    "examModeDescription": "Im Prüfungsmodus können die Schüler nur auf die Anwendungen zugreifen, die von der Lehrkraft genehmigt wurden.",
+    "wifiSettingsSelectedUserMessage": "WI-FI für die ausgewählten Benutzer einstellen",
+    "internetSettingsSelectedUserMessage": "Internet für die ausgewählten Benutzer einstellen",
+    "printerSettingsSelectedUserMessage": "Drucker für die ausgewählten Benutzer einstellen",
+    "wifiSettingsMessage": "Wlan für alle Benutzer einschalten",
+    "internetSettingsMessage": "Internet für alle Benutzer einschalten",
+    "printerSettingsMessage": "Drucker für alle Benutzer freigeben",
+    "wifiSettings": "WLAN Einstellungen",
+    "internetSettings": "Internet Einstellungen",
+    "printerSettings": "Drucker Einstellungen",
+    "turnOn": "Einschalten",
+    "turnOff": "Ausschalten",
+    "collectFiles": "Dateien einsammeln",
+    "collectFilesSelectedUserMessage": "Sammeln Sie Dateien von den ausgewählten Benutzern. Die gesammelten Dateien werden in dem vom Benutzer angegebenen Ordner angezeigt.",
+    "collectFilesFromAllUsersMessage": "Dateien von allen Benutzern sammeln. Die gesammelten Dateien befinden sich im Ordner _collect.",
+    "shareFilesSelectedUserMessage": "Dateien für ausgewählte Benutzer freigeben. Legen Sie die Datei im Ordner des ausgewählten Benutzers ab.",
+    "shareFilesWithAllUsersMessage": "Geben Sie Dateien für alle Benutzer frei. Legen Sie die Datei in den _share-Ordner aller Benutzer.",
+    "shareFiles": "Dateien austeilen",
+    "showCollectedFilesMessage": "Zeigen Sie die gesammelten Dateien von den Benutzern an. Diese befinden sich in dem _collect-Ordner des Benutzers.",
+    "allRight": "Alles klar",
+    "copySession": "Gruppe {{name}} kopieren",
+    "copyProject": "Projekt {{name}} kopieren",
+    "renameSession": "Gruppe {{name}} umbenennen",
+    "renameProject": "Projekt {{name}} umbenennen",
+    "deleteSession": "Gruppe {{name}} löschen",
+    "deleteProject": "Projekt {{name}} löschen"
+  },
+  "fileEditingPage": {
+    "fileNotFound": "Datei nicht gefunden",
+    "closeFile": "Datei schließen",
+    "goBack": "Zurück",
+    "closeFullScreen": "Editor schließen",
+    "maximize": "Editieren",
+    "minimize": "Minimieren",
+    "close": "Editor schließen"
+  },
+
+  "changePassword": {
+    "title": "Passwort ändern",
+    "newPassword": "Neues Passwort",
+    "currentPasswordRequired": "Aktuelles Passwort",
+    "newPasswordRequired": "Neues Passwort ist erforderlich.",
+    "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+    "confirmPassword": "Passwort bestätigen",
+    "confirmPasswordRequired": "Passwortbestätigung ist erforderlich",
+    "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+    "changePassword": "Passwort ändern"
   }
 }

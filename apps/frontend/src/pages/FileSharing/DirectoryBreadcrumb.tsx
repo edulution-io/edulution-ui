@@ -15,6 +15,7 @@ import {
   DropdownMenuSH,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
+import userStore from '@/store/userStore';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -27,7 +28,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const isMobile = useMediaQuery('(max-width: 768px)');
   const displaySegments = isMobile ? 1 : 4;
   const { t } = useTranslation();
-
+  const { userInfo } = userStore();
   const filteredSegment = segments.filter((item) => item !== 'teachers');
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
@@ -39,10 +40,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
       <p className="mr-2 text-white">{t('currentDirectory')}</p>
       <BreadcrumbList>
         <BreadcrumbItem key="home">
-          <BreadcrumbLink
-            href="#"
-            onClick={() => onNavigate(`/teachers/${sessionStorage.getItem('user')}/`)}
-          >
+          <BreadcrumbLink onClick={() => onNavigate(`/${userInfo?.ldapGroups?.role}s/${userInfo.preferred_username}`)}>
             {t('home')}
           </BreadcrumbLink>
         </BreadcrumbItem>

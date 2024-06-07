@@ -5,6 +5,7 @@
   background-image: url('@/assets/background.jpg');
   background-clip: padding-box;
   border: solid $border transparent;
+  background-position: center;
 
   &:before {
     content: '';

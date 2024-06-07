@@ -1,0 +1,11 @@
+/* Special file for shadcn*/
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "paths": {
+      "components": ["./apps/frontend/src/components"],
+      "utils": ["./apps/frontend/src/utils"]
+    }
+  }
+}

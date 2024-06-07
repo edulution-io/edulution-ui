@@ -5,10 +5,13 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILE DATA ACCESS",
+      "title": "Mobile Data Access",
       "manual": "Manual",
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
     }
+  },
+  "auth": {
+    "totp": { "invalid": "Invalid token", "setup": { "success": "TOTP setup successful" } }
   },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
@@ -24,7 +27,36 @@
   },
   "conferences": {
     "title": "CONFERENCES",
-    "sidebar": "Conferences"
+    "description": "The video conferencing tool combines shared audio and video signals from participants and supports presentations with advanced whiteboard functions - such as pointing, zooming and drawing..",
+    "sidebar": "Conferences",
+    "create": "Create conference",
+    "creator": "Creator",
+    "delete": "Delete",
+    "deleteConferences": "Delete {count}} conferences",
+    "editConference": "Edit conference",
+    "confirmDelete": "Should these conferences really be deleted?",
+    "name": "Name of conference",
+    "conference": "Conference",
+    "password": "Password",
+    "attendees": "Teilnehmer",
+    "invitedAttendees": "Invited",
+    "joinedAttendees": "Joined",
+    "privacyStatus": "Access",
+    "public": "Public",
+    "private": "Private",
+    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "cancel": "Cancel",
+    "min_3_chars": "Minimum 3 characters",
+    "max_30_chars": "Maximum 30 characters",
+    "password_required": "No Password entered",
+    "error": "Error",
+    "action": "Action",
+    "start": "Start",
+    "stop": "Stop",
+    "join": "Join",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close conference"
   },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
@@ -52,8 +84,106 @@
     "sidebar": "School Information"
   },
   "schoolmanagement": {
-    "title": "SCHOOL MANAGEMENT",
-    "sidebar": "School Management"
+    "title": "CLASS ROOM",
+    "sidebar": "Class Room"
+  },
+  "aichat": {
+    "title": "AI CHAT",
+    "sidebar": "AI Chat"
+  },
+  "important": "Current affairs",
+  "Title": "Title",
+  "add": "Add",
+  "DATE": "Date",
+  "Date": "Date",
+  "days": "Days",
+  "expires": "Deadline",
+  "abort": "Abort",
+  "not-available": "Not available",
+  "options": "Options",
+  "ParticipantCount": "Participant count",
+  "participated": "Participated",
+  "PageCount": "PageCount",
+  "RATING": "Rating",
+  "save": "Save",
+  "TEXT": "Text",
+  "surveys": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
+    "openSurveys": "Open surveys",
+    "createdSurveys": "Owned surveys",
+    "answeredSurveys": "Already Answered"
+  },
+  "survey": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
+    "date": "Date",
+    "creationDate": "Creation date",
+    "expirationDate": "Closing date",
+    "description": "Create forms for exercise sheets or other more sophisticated surveys",
+    "participate": "Participate",
+    "participation": "Survey participation",
+    "participants": "Participant",
+    "propagate": "Propagate",
+    "openSurveys": "Surveys that you have not answered jet",
+    "createdSurveys": "Surveys that you created",
+    "answeredSurveys": "Surveys that you have answered already",
+    "allSurveys": "Surveys management",
+    "load": "Load",
+    "noFormula": "The formula to create the survey is not given",
+    "noAnswer": "No answer was provided to the survey, yet",
+    "answer": "Your answer",
+    "result": "Result",
+    "resultVisualization": "Results (Panel)",
+    "resultingVisualization": "The collected answers of a survey visualized in panels",
+    "resultTable": "Results (Table)",
+    "resultingTable": "The collected answers of a survey presented in a table",
+    "resulting": "Your commited answer",
+    "create": "Create new",
+    "delete": "Delete",
+    "edit": "Edit",
+    "editing": "Add participants",
+    "isAnonymous": "Participating at the survey is anonymous",
+    "canSubmitMultipleAnswers": "Participating multiple times is allowed",
+    "editor": {
+      "title": "Survey Editor",
+      "abort": "New (blank)"
+    },
+    "manage": "Manage",
+    "page": {
+      "page": "Page",
+      "title": "Add a title to the page",
+      "description": "Add a text for the description of the page",
+      "remove": "Remove page",
+      "add": "Add page"
+    },
+    "panel": {
+      "panel": "Panel",
+      "remove": "Remove panel",
+      "add": "Add new panel"
+    },
+    "question": {
+      "question": "Question",
+      "type": "Select a type for the question/answer",
+      "title": "Add a title to the question/answer",
+      "text": "Add here the question (text body) for the question/answer",
+      "choices": "add a new select option for the question/answer",
+      "addChoice": "new option",
+      "removeChoice": "remove option",
+      "mostUnlikely": "Most unlikely",
+      "mostLikely": "Most likely",
+      "description": "Add a text for the description of the question/answer",
+      "remove": "Remove question",
+      "add": "Add question"
+    }
+  },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "printer": {
     "title": "PRINTER",
@@ -68,8 +198,19 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    },
+    "win10": "Windows 10",
+    "clients": "Clients available",
+    "client": "Client available"
   },
   "wlan": {
     "title": "WLAN",
@@ -106,6 +247,29 @@
       "create": { "success": "App created", "failed": "App creation failed" }
     }
   },
+
+  "externIntegrationsetup": {
+    "title": "external Integration",
+    "description": "Installationsanweisungen für die Anbindung externer Dienste",
+    "AIChatSetUp": "AI Chat Setup",
+    "ChatSetUp": "Chat Setup",
+    "MailSetUp": "Mail Setup"
+  },
+
+  "security": {
+    "title": "Security",
+    "description": "Configure here the security settings of your account"
+  },
+
+  "usersettings": {
+    "title": "USER",
+    "sidebar": "Settings",
+    "security": "Security",
+    "faq": "FAQ",
+    "externalIntegration": "External Integration",
+    "config": { "mfa": "Setup Two-Factor-Authentication" },
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
+  },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
     "description": "The application opens in a new window. No further authorization is required.",
@@ -120,7 +284,20 @@
   "students": "Students",
   "login": {
     "forgot_password": "Forgot password?",
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "username": {
+      "too_long": "Username too long",
+      "required": "Please enter a username."
+    },
+    "password": {
+      "too_long": "Passwort too long",
+      "required": "Please enter your password."
+    },
+    "totp": {
+      "invalid": "Invalid code! Please try again.",
+      "back": "Back",
+      "description": "Please enter the 2-Factor-Code from your Authenticator App."
+    }
   },
   "common": {
     "add": "Add",
@@ -132,7 +309,15 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "overview": "Overview",
+    "create": "Create",
+    "revert": "Revert",
+    "groups": "Groups",
+    "clearSelection": "Clear selection",
+    "rename": "Rename",
+    "close": "Schließen",
+    "start": "Starten"
   },
   "form": {
     "path": "Path",
@@ -141,7 +326,11 @@
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
-    "saved": "Configuration saved!"
+    "saved": "Configuration saved!",
+    "url": "URL",
+    "urlDescription": "Please insert an URL to the application",
+    "apiKey": "API Key",
+    "apiKeyDescription": "The API Key will be used for authentication"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
@@ -166,15 +355,37 @@
   "loadingIndicator": {
     "message": "Please wait while we process your request..."
   },
+  "search": {
+    "type-to-search": "Type to search",
+    "loading": "Loading",
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
+  },
   "fileCategory": {
     "folder": "Folder",
     "document": "Document",
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "spreadsheet": "Table",
+    "presentation": "Presentation"
   },
+  "filetypes": {
+    "drawIoFile": "Draw.io-File",
+    "textFile": "Textfile",
+    "documentFile": "Document",
+    "spreadsheetFile": "Tabel",
+    "presentationFile": "Presentation"
+  },
+
   "fileCreateNewContent": {
+    "drawiofile": "New Draw.io-File",
+    "textfile": "New Textfile",
+    "documentfile": "New Document",
+    "spreadsheetfile": "New Tabel",
+    "presentationfile": "New Presentation",
+    "fileNamePlaceholder": "Enter file name",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
@@ -182,6 +393,11 @@
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred"
   },
+
+  "filesharingMobile": {
+    "scanQRCode": "Scan Qr-Code"
+  },
+
   "fileRenameContent": {
     "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",
@@ -224,6 +440,7 @@
     "close": "Close"
   },
   "tooltip": {
+    "edit": "Edit",
     "upload": "Upload",
     "create": {
       "file": "Create file",
@@ -261,10 +478,112 @@
     "my_information": "My Information",
     "mail_alias": "Mail-Alias",
     "change_my_data": "Change my data",
-    "school_classes": "School Classes"
+    "school_classes": "School Classes",
+    "FAQ": "FAQ"
+  },
+
+  "createContent": {
+    "submit": "Submit"
   },
 
   "groupsPage": {
     "classes": "Classes"
+  },
+  "schoolManagement": {
+    "title": "Class Room",
+    "description": "Here you can manage your classes and groups.",
+    "lesson": "Lesson",
+    "enrol": "Enrol",
+    "passwords": "Initial-Passwords",
+    "addStudent": "Add Student",
+    "addGroup": "Add Group",
+    "share": "Austeilen",
+    "collect": "Einsammeln",
+    "showCollectedFiles": "Dateien zeigen",
+    "exam": "Prüfung",
+    "wifi": "WLAN",
+    "internet": "Internet",
+    "printer": "Drucker",
+    "class": "Classes",
+    "project": "Neues Projekt",
+    "projects": "Projects",
+    "availableGroups": "Alle available Groups at {{schoolname}} School",
+    "noDataAvailable": "No data available",
+    "myClasses": "My Classes",
+    "myGroups": "My Groups",
+    "myProjects": "My Projects",
+    "initialPasswordHint": "You can print the password of a class directly via the icon or select several classes to print them all at the same time.",
+    "projectPage": "Here you can create a new project. You can also see all projects that have already been created.",
+    "downloadInitPasswordAsText": "Init Password .txt",
+    "downloadInitPasswordAsCSV": "Init Password .csv",
+    "downloadInitPasswordAsPDF": "Init Password .pdf",
+    "createProject": "Create Project",
+    "newProject": "New Project",
+    "createGroup": "Create Group",
+    "newGroup": "New Group",
+    "addUser": "Add user",
+    "noUsersInGroup": "Currently, there are no users in {{name}}. Add one now.",
+    "examMode": "Exam mode",
+    "cancelStartExamMode": "Cancel",
+    "startExamMode": "Start",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "examModeDescription": "In exam mode, the students can only access the applications that are allowed by the teacher.",
+    "wifiSettingsSelectedUserMessage": "Set the printer WI-FI for the selected users",
+    "internetSettingsSelectedUserMessage": "Set the internet settings for the selected users",
+    "printerSettingsSelectedUserMessage": "Set the printer settings for the selected users",
+    "wifiSettingsMessage": "Set WI-FI for all users",
+    "internetSettingsMessage": "Set internet for all users",
+    "printerSettingsMessage": "Set printer for all users",
+    "wifiSettings": "WI-FI Settings",
+    "internetSettings": "Internet Settings",
+    "printerSettings": "Printer Settings",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off",
+    "collectFiles": "Collect Files",
+    "collectFilesSelectedUserMessage": "Collect files from the selected users. The collected files will be displayed in the user specified folder.",
+    "collectFilesFromAllUsersMessage": "Collect files from all users. The collected files are located in the _collect folder.",
+    "shareFilesSelectedUserMessage": "Share files with selected users. Place the file in the selected user's folder.",
+    "shareFilesWithAllUsersMessage": "Share files with all users. Place the file in the _share folder of all users.",
+    "shareFiles": "Share Files",
+    "showCollectedFilesMessage": "Display the collected files from the users. These are located in the _collect folder of the user.",
+    "allRight": "All Right",
+    "copySession": "Copy Session {{name}}",
+    "copyProject": "Copy Project {{name}}",
+    "renameSession": "Rename Session {{name}}",
+    "renameProject": "Rename Project {{name}}"
+  },
+  "fileEditingPage": {
+    "fileNotFound": "File not found",
+    "closeFile": "Close file",
+    "goBack": "Go back",
+    "maximize": "Open Editor",
+    "minimize": "minimalize",
+    "close": "Close Editor"
+  },
+  "faq": {
+    "title": "FAQ",
+    "sidebar": "FAQ",
+    "description": "Here you can find answers to frequently asked questions.",
+    "filemangerIntroductionTitle": "How to use the File Manager",
+    "classManagementIntroductionTitle": "What is the class management?",
+    "aiChatIntroductionTitle": "How to use the AI Chat?",
+    "conferenceIntroductionTitle": "Wie verwalte ich meine Konferenzen?",
+    "emailIntroductionTitle": "Do I have to create an extra email address?",
+    "learnManagementIntroductionTitle": "What can I do in learning management?",
+    "vdiIntroductionTitle": "How do I use the virtual desktop?",
+    "whiteboardIntroductionTitle": "Are the whiteboard drawings saved?",
+    "surveysIntroductionTitle": "How do I use the survey tool?"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "newPassword": "New Password",
+    "currentPasswordRequired": "Current password",
+    "newPasswordRequired": "New password is required.",
+    "passwordLength": "Password must be at least 8 characters long.",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordRequired": "Confirm password is required.",
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "changePassword": "Change Password"
   }
 }

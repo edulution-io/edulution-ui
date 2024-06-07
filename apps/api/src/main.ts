@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -18,7 +18,9 @@ async function bootstrap() {
   app.set('trust proxy', true);
 
   app.use(helmet());
-  app.useGlobalGuards(new AuthenticationGuard(new JwtService()));
+
+  const reflector = new Reflector();
+  app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('edulution-api')

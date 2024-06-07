@@ -5,15 +5,16 @@ import { useOnClickOutside } from 'usehooks-ts';
 
 import styles from './dropdownmenu.module.scss';
 
-type DropdownOptions = {
+export type DropdownOptions = {
   id: string;
   name: string;
+  icon?: JSX.Element; // Add this property
 };
 
 interface DropdownProps {
   options: DropdownOptions[];
   selectedVal: string;
-  handleChange: (value: string) => void;
+  handleChange: (value: DropdownOptions) => void;
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange }) => {
@@ -31,7 +32,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
 
   const selectOption = (option: DropdownOptions) => {
     setQuery(() => '');
-    handleChange(option.name);
+    handleChange(option);
     setIsOpen((prevVal) => !prevVal);
   };
 
@@ -61,7 +62,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
             name="searchTerm"
             onChange={(e) => {
               setQuery(e.target.value);
-              handleChange('');
+              handleChange({} as DropdownOptions);
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
           />
@@ -75,7 +76,10 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
             onClickCapture={() => selectOption(option)}
             className={clsx(styles.option, { [styles.selected]: t(option.name) === selectedVal })}
           >
-            {t(option.name)}
+            <div className="flex flex-row items-center">
+              <span className={styles.icon}>{option.icon}</span> {/* Display the icon */}
+              {t(option.name)}
+            </div>
           </div>
         ))}
       </div>

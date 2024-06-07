@@ -1,23 +1,24 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/shared/Button';
-import { useLocation, NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 
-import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
+import { MobileLogoIcon, SettingsIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
-import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
+import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
+import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/userStore';
-import cleanStoreData from '@/store/utilis/cleanStoreData';
-import StoreTypes from '@/store/utilis/storeTypes';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
+import Avatar from '../shared/Avatar';
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSH, DropdownMenuTrigger } from './DropdownMenuSH';
 
 const Sidebar = () => {
   const [translate, setTranslate] = useState(0);
@@ -26,6 +27,7 @@ const Sidebar = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarIconsRef = useRef<HTMLDivElement>(null);
   const [isOpen, toggle] = useToggle();
+  const navigate = useNavigate();
 
   const { t } = useTranslation();
   const { pathname } = useLocation();
@@ -33,14 +35,16 @@ const Sidebar = () => {
   const size = useWindowSize();
   const auth = useAuth();
   const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
+  const { logout, userInfo } = useUserStore();
+
+  const userRole = userInfo?.ldapGroups?.role ?? '';
 
   const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
+    ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
-      color: item.color,
+      color: 'bg-ciGreenToBlue',
     })),
     {
       title: t('settings.sidebar'),
@@ -156,7 +160,7 @@ const Sidebar = () => {
     <Button
       variant="btn-outline"
       size="sm"
-      className="rounded-xl border-[3px]"
+      className="rounded-xl border-[3px] bg-black"
       onClick={toggle}
     >
       {t('menu')}
@@ -167,7 +171,7 @@ const Sidebar = () => {
     <div key="home">
       <NavLink
         to="/"
-        className={`group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-black md:block md:px-2 ${pathname === '/' ? 'bg-black' : ''}`}
+        className={`group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-black hover:opacity-50 md:block md:px-2 ${pathname === '/' ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
@@ -175,7 +179,7 @@ const Sidebar = () => {
           width={SIDEBAR_ICON_WIDTH}
           alt=""
         />
-        <div
+        {/* <div
           className={`absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
         >
           <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
@@ -184,7 +188,7 @@ const Sidebar = () => {
             width={SIDEBAR_ICON_WIDTH}
             alt=""
           />
-        </div>
+        </div> */}
       </NavLink>
     </div>
   );
@@ -236,44 +240,42 @@ const Sidebar = () => {
     </div>
   );
 
-  const logoutButton = () => (
+  const handleLogout = async () => {
+    auth.removeUser().catch(console.error);
+    await logout();
+    cleanAllStores();
+  };
+
+  const userMenu = () => (
+    <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
+      <DropdownMenuSH>
+        <DropdownMenuTrigger className="flex items-center gap-1">
+          <Avatar />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          className="z-50 bg-white text-black"
+        >
+          <DropdownMenuItem onClick={() => navigate('user')}>{t('usersettings.sidebar')}</DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => handleLogout()}>{t('common.logout')}</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenuSH>
+    </div>
+  );
+
+  const userButton = () => (
     <div
       key="logout"
-      className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black ' : 'border-b-2 border-ciLightGrey'}`}
+      className={`group flex items-center justify-end ${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black' : 'border-b-2 border-ciLightGrey'}`}
     >
-      <NavLink
-        onClick={() => {
-          auth.removeUser().catch(console.error);
-          setIsAuthenticated(false);
-          cleanStoreData(StoreTypes.LMN_USER_STORE);
-          sessionStorage.clear();
-        }}
-        to="/"
-        className={`group flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 md:block md:px-2  ${pathname === '/logout' ? 'bg-black' : ''}`}
-      >
-        <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
-        <img
-          src={UserIcon}
-          width={SIDEBAR_ICON_WIDTH}
-          className="relative z-0 "
-          alt=""
-        />
-        {isDesktop ? (
-          <div className="absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-            <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
-            <img
-              src={UserIcon}
-              width={SIDEBAR_ICON_WIDTH}
-              alt=""
-            />
-          </div>
-        ) : null}
-      </NavLink>
+      <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
+      {userMenu()}
     </div>
   );
 
   const renderListItem = () => (
-    <div className="fixed right-0 h-screen bg-black bg-opacity-90 md:bg-none">
+    <div className="fixed right-0 z-10 h-screen border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none">
       {!isDesktop && isOpen ? (
         <>
           <div className="relative right-0 top-0 z-[98] h-[100px] bg-black" />
@@ -293,6 +295,7 @@ const Sidebar = () => {
       >
         {sidebarItems.map((item) => (
           <SidebarItem
+            userRole={userRole}
             key={item.link}
             menuItem={item}
             isDesktop={isDesktop}
@@ -300,22 +303,22 @@ const Sidebar = () => {
             translate={translate}
           />
         ))}
-        {!isDesktop ? logoutButton() : null}
+        {!isDesktop ? userButton() : null}
       </div>
       {isDownButtonVisible ? downButton() : null}
-      {isDesktop ? logoutButton() : null}
+      {isDesktop ? userButton() : null}
     </div>
   );
 
   if (!isDesktop) {
     return (
       <>
-        {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
+        {!isOpen ? <div className="fixed right-0 top-0 z-20 pr-4 pt-4">{menuButton()}</div> : null}
         <div
           ref={sidebarRef}
           className={`${sidebarClasses}`}
         >
-          <div className="bg-black">{isOpen && renderListItem()}</div>
+          <div className="">{isOpen && renderListItem()}</div>
         </div>
       </>
     );

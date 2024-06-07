@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Input as SHInput } from '@/components/ui/Input';
 import { cva, type VariantProps } from 'class-variance-authority';
+import InputSH from '@/components/ui/InputSH';
 import { EyeDarkIcon, EyeDarkSlashIcon } from '@/assets/icons';
 
 import cn from '@/lib/utils';
@@ -9,7 +9,7 @@ const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
       default:
-        'placeholder:color:ciLightGrey placeholder:text-p placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-gray-500 focus:outline-none',
+        'placeholder:color:ciLightGrey placeholder:text-p placeholder:text-p focus:border-gray-600 bg-white focus:placeholder-gray-500 focus:outline-none',
       login:
         'block w-full border-2 border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-gray-500 focus:outline-none',
     },
@@ -23,7 +23,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
 
   return (
     <div className="relative">
-      <SHInput
+      <InputSH
         type={showPassword ? 'text' : type}
         className={cn(originInputVariants({ variant, className }))}
         ref={ref}

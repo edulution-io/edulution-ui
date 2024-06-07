@@ -41,9 +41,12 @@ describe('AppConfigService', () => {
       const appConfigs = [
         {
           name: 'Test',
-          linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
       model.insertMany?.mockResolvedValue(appConfigs);
@@ -57,9 +60,12 @@ describe('AppConfigService', () => {
       const appConfigs = [
         {
           name: 'Test',
-          linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
       model.bulkWrite?.mockResolvedValue({ modifiedCount: 1 });
@@ -73,9 +79,9 @@ describe('AppConfigService', () => {
       const expectedConfigs = [
         {
           name: 'Test',
-          linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {},
         },
       ];
       model.find?.mockReturnValue(expectedConfigs);

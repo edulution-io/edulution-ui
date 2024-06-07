@@ -1,5 +1,9 @@
 import { IconType } from 'react-file-icon';
 import { translateKey } from '@/utils/common';
+import PptxGenJS from 'pptxgenjs';
+import * as XLSX from 'xlsx';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { saveAs } from 'file-saver';
 
 interface ContentFileTypes {
   [extension: string]: IconType | undefined;
@@ -76,8 +80,65 @@ export function getElapsedTime(dateParam: Date): string {
   return date.toLocaleDateString();
 }
 
+export const triggerFileDownload = (downloadUrl: string) => {
+  const anchor = document.createElement('a');
+  anchor.href = downloadUrl;
+  anchor.download = '';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+};
+
+export const generatePPTX = async (username: string): Promise<Blob> => {
+  const pptx = new PptxGenJS();
+  const slide = pptx.addSlide();
+  slide.addText(`Created by: ${username}`, { x: 1, y: 1, fontSize: 18, color: '363636' });
+
+  return (await pptx.write()) as Blob;
+};
+export const generateXLSX = (username: string) => {
+  const ws = XLSX.utils.aoa_to_sheet([['Created by', username]]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  return XLSX.write(wb, { bookType: 'xlsx', type: 'file' });
+};
+
+export const generateDrawIo = (): Blob => {
+  const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" modified="${new Date().toISOString()}" agent="${navigator.userAgent}" etag="GFtPynQl7oe-penzhr5P" version="22.0.2" type="device">
+  <diagram name="Page-1" id="dxSViGRiAMGmWSK-u8d6">
+    <mxGraphModel dx="794" dy="825" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+
+  return new Blob([xmlContent], { type: 'application/xml' });
+};
+
+export const generateDOCX = (username: string) => {
+  const doc = new Document({
+    sections: [
+      {
+        children: [
+          new Paragraph({
+            children: [new TextRun(`Created by: ${username}`)],
+          }),
+        ],
+      },
+    ],
+  });
+  return Packer.toBlob(doc);
+};
+
+export const saveFile = async (blob: Blob, filename: string) => {
+  saveAs(blob, filename);
+};
+
 export default {
   parseDate,
-  getFileCategorie,
-  getElapsedTime,
+  triggerFileDownload,
 };

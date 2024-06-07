@@ -1,35 +1,24 @@
-import React, { useEffect } from 'react';
-import useLmnUserStore from '@/store/lmnApiStore';
-import { waitForToken } from '@/api/common';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import userStore from '@/store/userStore';
+import PasswordChangeDialog from '@/components/feature/Home/Dialogs/PasswordChangeDialog.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const AccountInformation = () => {
-  const { userData, getUserData } = useLmnUserStore((state) => ({
-    getUserData: state.getUserData,
-    userData: state.userData,
-  }));
-
-  useEffect(() => {
-    if (!userData) {
-      const getUserDataQuery = async () => {
-        await waitForToken();
-        getUserData().catch(console.error);
-      };
-      getUserDataQuery().catch(console.error);
-    }
-  }, [userData]);
-
+  const { userInfo } = userStore();
   const { t } = useTranslation();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const userInfoFields = [
-    { label: t('accountData.name'), value: userData ? userData.displayName : '...' },
+    { label: t('accountData.name'), value: userInfo ? userInfo?.name : '...' },
     {
       label: t('accountData.email'),
-      value: userData ? userData?.mail && userData?.mail.length > 0 && userData.mail.at(0) : '...',
+      value: userInfo ? userInfo.email : '...',
     },
-    { label: t('accountData.school'), value: userData ? userData.school : '...' },
-    { label: t('accountData.role'), value: userData ? userData.sophomorixRole : '...' },
+    { label: t('accountData.school'), value: userInfo ? userInfo?.ldapGroups?.school : '...' },
+    { label: t('accountData.role'), value: userInfo ? userInfo?.ldapGroups?.role : '...' },
   ];
 
   return (
@@ -55,30 +44,24 @@ const AccountInformation = () => {
             variant="btn-collaboration"
             className="mt-4"
             size="sm"
+            onClick={() => setIsDialogOpen(true)}
           >
             {t('accountData.change_password')}
           </Button>
-        </div>
-
-        <div className="mt-6">
-          <h4 className="font-bold">{t('accountData.my_information')}</h4>
-          {userData?.mail && userData?.mail.length > 1 && (
-            <>
-              <p>{t('accountData.mail_alias')}</p>
-              {userData?.mail.slice(1).map((mail) => (
-                <div key={mail}>
-                  <p>{mail}</p>
-                </div>
-              ))}
-            </>
-          )}
           <Button
             variant="btn-collaboration"
             className="mt-4"
             size="sm"
+            onClick={() => navigate('/user?section=faq')}
           >
-            {t('accountData.change_my_data')}
+            {t('accountData.FAQ')}
           </Button>
+
+          <PasswordChangeDialog
+            isOpen={isDialogOpen}
+            setIsOpen={setIsDialogOpen}
+            onOpenChange={setIsDialogOpen}
+          />
         </div>
       </CardContent>
     </Card>

@@ -6,19 +6,22 @@ import fileIconColors from '@/theme/fileIconColor';
 
 interface FileIconComponentProps {
   filename: string;
+  size?: number; // Optional size prop
 }
 
-const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename }) => {
+const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size }) => {
   const fileType = getFileCategorie(filename);
-
   const labelColor = fileIconColors[fileType] || fileIconColors.default;
+  const extension = getFileNameFromPath(filename).split('.').pop() || '';
 
   return (
-    <FileIcon
-      extension={getFileNameFromPath(filename).split('.').pop() || ''}
-      type={fileType !== undefined ? fileType : 'document'}
-      labelColor={labelColor}
-    />
+    <div style={{ width: size, height: size }}>
+      <FileIcon
+        extension={extension}
+        type={fileType !== undefined ? fileType : 'document'}
+        labelColor={labelColor}
+      />
+    </div>
   );
 };
 
