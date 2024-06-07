@@ -8,6 +8,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import { SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
+import useSidebarStore from './sidebarStore';
 
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ const Sidebar: React.FC = () => {
   const [isUpButtonVisible, setIsUpButtonVisible] = useState(false);
   const [isDownButtonVisible, setIsDownButtonVisible] = useState(false);
   const [startY, setStartY] = useState<number | null>(null);
+  const { isMobileSidebarOpen } = useSidebarStore();
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
@@ -58,7 +60,7 @@ const Sidebar: React.FC = () => {
     (event: TouchEvent) => {
       setStartY(event.touches[0].clientY);
     },
-    [isDownButtonVisible, isUpButtonVisible, translate, startY],
+    [isMobileSidebarOpen, isDownButtonVisible, isUpButtonVisible, translate, startY],
   );
 
   const handleTouchMove = useCallback(
@@ -77,12 +79,12 @@ const Sidebar: React.FC = () => {
         return prevTranslate;
       });
     },
-    [isDownButtonVisible, isUpButtonVisible, startY, translate],
+    [isMobileSidebarOpen, isDownButtonVisible, isUpButtonVisible, startY, translate],
   );
 
   const handleTouchEnd = useCallback(() => {
     setStartY(null);
-  }, [isDownButtonVisible, isUpButtonVisible, translate, startY]);
+  }, [isMobileSidebarOpen, isDownButtonVisible, isUpButtonVisible, translate, startY]);
 
   const handleUpButtonClick = () => {
     setTranslate((prevTranslate) => {
@@ -112,12 +114,14 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     setIsUpButtonVisible(translate > 0);
 
-    if (sidebarIconsRef.current == null) return;
-
+    if (sidebarIconsRef.current === null) {
+      setIsDownButtonVisible(true);
+      return;
+    }
     const rect = sidebarIconsRef.current.getBoundingClientRect();
 
     setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
-  }, [size, translate, sidebarItems]);
+  }, [size, translate, sidebarItems, isDownButtonVisible, sidebarIconsRef]);
 
   useEffect(() => {
     const container = sidebarIconsRef.current;
@@ -160,6 +164,7 @@ const Sidebar: React.FC = () => {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    setIsDownButtonVisible,
   };
 
   return isDesktop ? (

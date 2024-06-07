@@ -32,17 +32,19 @@ const UserMenuButton: React.FC = () => {
 
   return (
     <div
-      key="logout"
+      key="usermenu"
       className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black' : 'border-b-2 '}`}
     >
       <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
         <DropdownMenuSH>
           <DropdownMenuTrigger className="group flex items-center gap-4">
-            <p className="text-md font-bold md:hidden">{t('user')}</p>
+            <p className="text-md font-bold md:hidden">
+              {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
+            </p>
             <Avatar />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            align="start"
+            align="center"
             className="z-50"
           >
             <DropdownMenuItem onClick={handleUserSettingsClick}>{t('usersettings.sidebar')} </DropdownMenuItem>
