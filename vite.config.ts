@@ -18,31 +18,31 @@ export default defineConfig({
     proxy: {
       '/auth': {
         rewrite: (path) => path.replace(/^\/auth/, ''),
-        target: 'https://auth.schulung.multi.schule/auth',
+        target: 'https://auth.demo.multi.schule/auth',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://ui.schulung.multi.schule',
+          Origin: 'https://ui.demo.multi.schule',
           'X-Forwarded-For': 'client-ip-address',
           'X-Forwarded-Proto': 'https',
-          'X-Forwarded-Host': 'auth.schulung.multi.schule',
+          'X-Forwarded-Host': 'auth.demo.multi.schule',
         },
       },
       '/webdav': {
-        target: 'https://server.schulung.multi.schule',
+        target: 'https://server.demo.multi.schule',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.schulung.multi.schule',
+          Origin: 'https://server.demo.multi.schule',
         },
       },
       '/api': {
         rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.schulung.multi.schule:8001',
+        target: 'https://server.demo.multi.schule:8001',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.schulung.multi.schule:8001',
+          Origin: 'https://server.demo.multi.schule:8001',
         },
       },
       '/edu-api': {
@@ -50,7 +50,7 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
         headers: {
-          Origin: 'https://ui.schulung.multi.schule',
+          Origin: 'https://ui.demo.multi.schule',
         },
       },
       '/SOGo': {

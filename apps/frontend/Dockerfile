@@ -10,5 +10,5 @@ RUN apk update && \
      -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx-selfsigned.key \
      -out /etc/nginx/ssl/nginx-selfsigned.crt;
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.prod.conf /etc/nginx/nginx.conf
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

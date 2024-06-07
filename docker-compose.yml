@@ -12,6 +12,8 @@ services:
       VITE_AUTH_CLIENT_ID: <CLIENT_ID>
       VITE_AUTH_REALM: <REALM>
       VITE_ONLYOFFICE_URL: <ONLYOFFICE_URL>
+      VITE_ONLYOFFICE_CALLBACK_PROD: 'https://<URL>/edu-api/filemanager/callback/'
+      VITE_ENV: 'prod'
 
   edu-api:
     container_name: edulution-api
