@@ -13,6 +13,7 @@
     "build:api": "nx build api",
     "build:all": "nx run-many --target=build --projects=frontend,api",
     "lint": "nx run-many --target=lint --projects=frontend,api",
+    "lint:fix": "nx run-many --target=lint --projects=frontend,api --fix",
     "preview": "nx preview frontend",
     "prepare": "husky install",
     "check-circular-deps": "madge --circular --ts-config ./tsconfig.base.json apps/*",

@@ -60,10 +60,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       const response = await eduApi.put<Conference[]>(apiEndpoint, { meetingID });
       set({ conferences: response.data, toggleConferenceRunningStateIsLoading: false });
     } catch (error) {
-      handleApiError(error, set, {
-        errorName: 'toggleConferenceRunningStateError',
-        isLoadingName: 'toggleConferenceRunningStateIsLoading',
-      });
+      handleApiError(error, set, 'toggleConferenceRunningStateError', 'toggleConferenceRunningStateIsLoading');
     }
   },
   reset: () => set(initialValues),

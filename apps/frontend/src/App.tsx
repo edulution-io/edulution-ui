@@ -6,11 +6,15 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStoreOLD';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import useLmnApiStore from '@/store/lmnApiStore';
+import lmnApi from '@/api/lmnApi';
 
 const App = () => {
   const { lang } = useLanguage();
   const { token } = useUserStore();
+  const { lmnApiToken } = useLmnApiStore();
 
+  lmnApi.defaults.headers.common['x-api-key'] = lmnApiToken;
   eduApi.defaults.headers.Authorization = `Bearer ${token}`;
 
   useEffect(() => {
