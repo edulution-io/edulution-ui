@@ -5,7 +5,7 @@ import {
   MdOutlineFileDownload,
   MdOutlineNoteAdd,
 } from 'react-icons/md';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { IconContext } from 'react-icons';
@@ -37,7 +37,7 @@ const FileSharingPage = () => {
     fetchFiles,
     files,
     currentPath,
-  } = useFileManagerStore();
+  } = useFileManagerStoreOLD();
   const { t } = useTranslation();
 
   useEffect(() => {

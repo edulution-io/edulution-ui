@@ -2,17 +2,17 @@ import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-type AppConfigsStore = {
+type AppConfigsStoreOLD = {
   appConfig: AppConfig[];
   setAppConfig: (appConfig: AppConfig[]) => void;
 };
 
 type PersistedAppConfigsStore = (
-  appConfig: StateCreator<AppConfigsStore>,
-  options: PersistOptions<AppConfigsStore>,
-) => StateCreator<AppConfigsStore>;
+  appConfig: StateCreator<AppConfigsStoreOLD>,
+  options: PersistOptions<AppConfigsStoreOLD>,
+) => StateCreator<AppConfigsStoreOLD>;
 
-const useAppConfigsStore = create<AppConfigsStore>(
+const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
   (persist as PersistedAppConfigsStore)(
     (set) => ({
       appConfig: [{ name: '', linkPath: '', icon: '', appType: AppIntegrationType.NATIVE }],
@@ -27,4 +27,4 @@ const useAppConfigsStore = create<AppConfigsStore>(
   ),
 );
 
-export default useAppConfigsStore;
+export default useAppConfigsStoreOLD;
