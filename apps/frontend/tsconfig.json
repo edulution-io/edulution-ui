@@ -5,5 +5,5 @@
     "declaration": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["postcss.config.mjs", "vite.config.ts"]
+  "exclude": ["postcss.config.js", "vite.config.ts"]
 }
