@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
-import path from 'path';
+import { resolve } from 'path';
 
 export default defineConfig({
   test: {
@@ -20,12 +20,12 @@ export default defineConfig({
   },
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/frontend',
-  // resolve: {
-  //   alias: {
-  //     '@': path.resolve(__dirname, './apps/frontend/src'),
-  //     '@libs': path.resolve(__dirname, '../../libs'),
-  //   },
-  // },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '@libs': resolve(__dirname, '../../libs/src'),
+    },
+  },
   server: {
     port: 5173,
     host: 'localhost',

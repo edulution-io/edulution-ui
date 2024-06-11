@@ -1,4 +1,6 @@
-import { AppConfigDto, AppIntegrationType } from '@/datatypes/types';
+// import { AppIntegrationType } from '@/datatypes/types';
+import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types/appconfig.d';
+
 import { create, StateCreator } from 'zustand';
 import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
 

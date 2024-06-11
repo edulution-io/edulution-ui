@@ -39,7 +39,10 @@
       "path": "./apps/frontend/tsconfig.json"
     },
     {
-      "path": "./packages/api/tsconfig.json"
+      "path": "./apps/api/tsconfig.json"
+    },
+    {
+      "path": "./libs/tsconfig.json"
     }
   ]
 }

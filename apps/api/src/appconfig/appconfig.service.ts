@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AppConfigDto } from '@libs/appconfig/types/appconfig';
 import { AppConfig } from './appconfig.schema';
-import { AppConfigDto } from './appconfig.types';
 import LoggerEnum from '../types/logger';
 
 @Injectable()
