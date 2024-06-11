@@ -41,7 +41,6 @@
     "vitest.workspace.ts",
     "jest.preset.cjs",
     "jest.config.ts",
-    "webpack.config.cjs",
     "dist/apps/*",
     "scripts/*"
   ],
