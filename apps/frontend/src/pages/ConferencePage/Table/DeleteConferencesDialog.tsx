@@ -1,24 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 
 interface DeleteConferencesDialogProps {
   trigger?: React.ReactNode;
-  conferences: Conference[];
 }
 
-const DeleteConferencesDialog = ({ trigger, conferences }: DeleteConferencesDialogProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { isLoading, error, reset, deleteConferences } = useConferenceStore();
+const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
+  const { selectedRows } = useConferenceStore();
+  const {
+    isLoading,
+    error,
+    reset,
+    deleteConferences,
+    conferences,
+    isDeleteConferencesDialogOpen,
+    setIsDeleteConferencesDialogOpen,
+  } = useConferenceStore();
   const { t } = useTranslation();
 
+  const selectedConferenceIds = Object.keys(selectedRows);
+  const selectedConferences = conferences.filter((c) => selectedConferenceIds.includes(c.meetingID));
+
   const onSubmit = async () => {
-    await deleteConferences(conferences);
-    setIsOpen(false);
+    await deleteConferences(selectedConferences);
+    setIsDeleteConferencesDialogOpen(false);
   };
 
   const getDialogBody = () => {
@@ -33,7 +42,7 @@ const DeleteConferencesDialog = ({ trigger, conferences }: DeleteConferencesDial
         ) : (
           <>
             {t('conferences.confirmDelete')}
-            {conferences.map((c) => (
+            {selectedConferences.map((c) => (
               <div
                 className="mt-2"
                 key={c.meetingID}
@@ -73,10 +82,10 @@ const DeleteConferencesDialog = ({ trigger, conferences }: DeleteConferencesDial
 
   return (
     <AdaptiveDialog
-      isOpen={isOpen}
+      isOpen={isDeleteConferencesDialogOpen}
       trigger={trigger}
-      handleOpenChange={isOpen ? () => setIsOpen(false) : () => setIsOpen(true)}
-      title={t('conferences.deleteConferences', { count: conferences.length })}
+      handleOpenChange={() => setIsDeleteConferencesDialogOpen(!isDeleteConferencesDialogOpen)}
+      title={t('conferences.deleteConferences', { count: selectedConferences.length })}
       body={getDialogBody()}
       footer={getFooter()}
     />

@@ -24,8 +24,9 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
+    "description": "Das Videokonferenz Tool verbindet freigegebene Audio- und Videosignale der Teilnehmer und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen – wie Zeiger, Zoomen und Zeichnen.",
     "sidebar": "Konferenzen",
-    "create": "Neue Konferenz erstellen",
+    "create": "Konferenz erstellen",
     "creator": "Ersteller",
     "delete": "Löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",

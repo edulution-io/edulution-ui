@@ -24,8 +24,9 @@
   },
   "conferences": {
     "title": "CONFERENCES",
+    "description": "The video conferencing tool combines shared audio and video signals from participants and supports presentations with advanced whiteboard functions - such as pointing, zooming and drawing.",
     "sidebar": "Conferences",
-    "create": "Create new conference",
+    "create": "Create conference",
     "creator": "Creator",
     "delete": "Delete",
     "deleteConferences": "Delete {count}} conferences",
