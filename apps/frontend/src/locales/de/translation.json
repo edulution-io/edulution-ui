@@ -91,92 +91,6 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
-  "important": "Aktuelles",
-  "Title": "Titel",
-  "add": "Hinzufügen",
-  "DATE": "Datum",
-  "Date": "Datum",
-  "days": "Tage",
-  "expires": "Abgabe Datum",
-  "abort": "Abbrechen",
-  "not-available": "Nicht verfügbar",
-  "options": "Optionen",
-  "ParticipantCount": "Teilnehmeranzahl",
-  "participated": "Teilgenommen",
-  "PageCount": "Seitenanzahl",
-  "RATING": "Bewertung",
-  "save": "Speichern",
-  "TEXT": "Text",
-  "surveys": {
-    "title": "UMFRAGEN",
-    "sidebar": "Umfragen",
-    "openSurveys": "Offene Umfragen",
-    "createdSurveys": "Eigene Umfragen",
-    "answeredSurveys": "Schon beantwortet"
-  },
-  "survey": {
-    "title": "UMFRAGEN",
-    "sidebar": "Umfragen",
-    "date": "Datum",
-    "creationDate": "Erstelldatum",
-    "expirationDate": "Stichtag",
-    "description": "Hier können Sie formulare für Übungzettel oder andere ausgefeiltere Umfragen erstellen",
-    "participate": "Teilnehmen",
-    "participation": "Teilnahme an der Umfrage",
-    "participants": "Teilnehmer",
-    "propagate": "Verbreiten",
-    "openSurveys": "An diesen Umfragen hast du noch nicht teil genommen",
-    "createdSurveys": "Selbst erstellte Umfragen",
-    "answeredSurveys": "Umfragen an denen teilgenommen wurde",
-    "allSurveys": "Umfragen Manager",
-    "load": "Lade",
-    "noFormula": "Formel für das Erstellen der Umfrage nicht gefunden",
-    "noAnswer": "Der Umfrage wurde noch keine Antwort hinzugefügt",
-    "answer": "Abgabe",
-    "result": "Resultat",
-    "resultVisualization": "Resultat (Panel)",
-    "resultingVisualization": "Die Abgaben der Teilnehmer dargestellt in verschiedenen Panels",
-    "resultTable": "Resultat (Tabelle)",
-    "resultingTable": "Die Abgaben der Teilnehmer dargestellt in einer Tabelle",
-    "resulting": "Ihre hochgeladene Abgabe",
-    "create": "Neue erstellen",
-    "delete": "löschen",
-    "edit": "Bearbeiten",
-    "editing": "Teilnehmer hinzufügen",
-    "manage": "Management",
-    "isAnonymous": "Die Teilnahme an der Umfrage ist Anonym",
-    "canSubmitMultipleAnswers": "Mehrfache Abgaben sind erlaubt",
-    "editor": {
-      "title": "Umfrage-Editor",
-      "abort": "Neu (leer)"
-    },
-    "page": {
-      "page": "Seite",
-      "title": "Fügen Sie der Seite einen Titel hinzu",
-      "description": "Fügen Sie der Seite eine Beschreibung hinzu (optional)",
-      "remove": "Entferne die Seite",
-      "add": "Füge eine neue Seite hinzu"
-    },
-    "panel": {
-      "panel": "Panel",
-      "remove": "Entferne das Panel",
-      "add": "Füge ein neues Panel hinzu"
-    },
-    "question": {
-      "question": "Frage",
-      "type": "Wählen Sie den Typ der Frage/Antwort-Möglichkeit",
-      "title": "Fügen Sie der Frage einen Titel hinzu",
-      "text": "Definieren Sie hier die Frage die Sie stellen möchten",
-      "choices": "Fügen Sie Antwortmöglichkeiten hinzu",
-      "addChoice": "Option hinzufügen",
-      "removeChoice": "Option entfernen",
-      "mostUnlikely": "nicht zutreffend/wahrscheinlich",
-      "mostLikely": "zutreffend/sehr wahrscheinlich",
-      "description": "Fügen Sie der Frage eine Beschreibung hinzu (optional)",
-      "remove": "Entferne Frage",
-      "add": "Füge Frage hinzu"
-    }
-  },
   "printer": {
     "title": "DRUCKER",
     "sidebar": "Drucker"
@@ -301,9 +215,11 @@
   },
   "common": {
     "add": "Hinzufügen",
+    "edit": "Bearbeiten",
     "reload": "Neu laden",
     "logout": "Logout",
     "save": "Speichern",
+    "delete": "Löschen",
     "successful": "Erfolgreich",
     "failed": "Fehlgeschlagen",
     "login": "Anmelden",
@@ -317,7 +233,11 @@
     "clearSelection": "Auswahl löschen",
     "close": "Schließen",
     "rename": "Umbenennen",
-    "start": "Starten"
+    "start": "Starten",
+    "abort": "Abbrechen",
+    "date": "Datum",
+    "time": "Zeit",
+    "participate": "Teilnehmen"
   },
   "form": {
     "path": "Link",
@@ -568,6 +488,38 @@
     "renameProject": "Projekt {{name}} umbenennen",
     "deleteSession": "Gruppe {{name}} löschen",
     "deleteProject": "Projekt {{name}} löschen"
+  },
+  "survey": {
+    "creationDate": "Erstellungsdatum",
+    "expirationDate": "Deadline",
+    "editor": {
+      "new": "Neue Umfrage erstellen",
+      "abort": "Änderungen verwerfen"
+    }
+  },
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "description": "Hier können Sie eigene Umfragen erstellen und verwalten oder an den Umfragen anderer teilnehmen.",
+    "view": {
+      "management": "Umfragen verwalten",
+      "open": "Offene Umfragen",
+      "created": "Eigene Umfragen",
+      "answered": "Schon beantwortet",
+      "editor": "Neue erstellen"
+    },
+    "actions": {
+      "showResultsChart": "Resultat (Schaubild)",
+      "showResultsTable": "Resultat (Tabelle)",
+      "showCommittedAnswers": "Verfügbare Abgaben"
+    },
+    "saveDialog": {
+      "title": "Speichern und nutzern zuweisen",
+      "expires": "Deadline",
+      "flags": "Einstellungen",
+      "isAnonymous": "Soll die Umfrage anonym sein?",
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme des Benutzers bleibt der status auf offen?"
+    }
   },
   "fileEditingPage": {
     "fileNotFound": "Datei nicht gefunden",

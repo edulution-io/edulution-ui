@@ -1,21 +1,23 @@
-import { Attendee } from '../../conferences/dto/attendee';
+import { Attendee } from '../../conferences/dto/attendee.ts';
 
 class CreateSurveyDto {
-  surveyname: string;
+  id: number;
+
+  formula: JSON;
 
   participants: Attendee[];
 
   participated?: string[];
 
-  survey: string;
-
-  anonymousAnswers?: string[];
+  publicAnswers?: JSON[];
 
   saveNo?: number;
 
   created?: Date;
 
-  expires?: Date;
+  expirationDate?: Date;
+
+  expirationTime?: string;
 
   isAnonymous?: boolean;
 

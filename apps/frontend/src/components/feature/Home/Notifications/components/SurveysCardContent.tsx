@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SurveyPageIcon } from '@/assets/icons';
+import { SurveysSidebarIcon } from '@/assets/icons';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
-import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
+import { Survey } from '@/pages/Surveys/types/survey';
 import SurveysList from '@/components/feature/Home/Notifications/components/SurveysList';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/Collapsible';
 
@@ -20,7 +20,7 @@ const SurveysCardContent = (props: SurveysCardContentProps) => {
     >
       <CollapsibleTrigger className="text-xl font-bold flex">
         <img
-          src={SurveyPageIcon}
+          src={SurveysSidebarIcon}
           alt="survey-notification"
           width={BUTTONS_ICON_WIDTH}
           className="mr-4"

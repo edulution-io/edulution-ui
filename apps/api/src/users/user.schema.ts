@@ -32,11 +32,11 @@ export class User {
 
   @Prop({ type: SchemaFactory.createForClass(UsersSurveys) })
   usersSurveys: {
-    openSurveys: string[];
-    createdSurveys: string[];
+    openSurveys: number[];
+    createdSurveys: number[];
     answeredSurveys: {
-      surveyname: string;
-      answer?: string;
+      surveyId: number;
+      answer?: JSON;
     }[];
   };
 }

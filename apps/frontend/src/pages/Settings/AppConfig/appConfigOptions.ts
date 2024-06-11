@@ -19,7 +19,7 @@ import {
   RoomBookingIcon,
   SchoolInformationIcon,
   SchoolManagementIcon,
-  SurveyPageIcon,
+  SurveysSidebarIcon,
   TicketSystemIcon,
   VirtualizationIcon,
   WhiteBoardIcon,
@@ -51,7 +51,8 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey'],
   },
-  { id: APPS.SURVEYS, icon: SurveyPageIcon, color: 'bg-ciDarkBlue' },
+  { id: APPS.SURVEYS, icon: SurveysSidebarIcon, color: 'bg-ciDarkBlue' },
+  { id: APPS.NEW_SURVEYS, icon: SurveysSidebarIcon, color: 'bg-ciDarkBlue' },
   {
     id: APPS.KNOWLEDGE_BASE,
     icon: KnowledgeBaseIcon,

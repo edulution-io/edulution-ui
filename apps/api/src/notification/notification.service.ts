@@ -18,7 +18,7 @@ class NotificationService {
     await ImapClient.getMails();
   }
 
-  async getOpenSurveys(username: string): Promise<string[]> {
+  async getOpenSurveys(username: string): Promise<number[]> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw new Error('User not found');

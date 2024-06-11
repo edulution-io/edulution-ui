@@ -1,5 +1,5 @@
 class DeleteSurveyDto {
-  surveyname: string;
+  surveyId: number;
 }
 
 export default DeleteSurveyDto;

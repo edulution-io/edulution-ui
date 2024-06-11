@@ -1,16 +1,16 @@
-// import { Model } from 'survey-core';
 import { Body, Controller, Delete, Get, Logger, Post, Query, Patch } from '@nestjs/common';
 import SurveyService from './survey.service';
-import DeleteSurveyDto from './dto/delete-survey.dto';
-
-import UsersSurveysService from './users-surveys.service';
-import UserSurveySearchTypes from './types/user-survey-search-types-enum';
-import { Survey } from './types/survey.schema';
-import { SurveyAnswer } from './types/users-surveys.schema';
 import CreateSurveyDto from './dto/create-survey.dto';
 import FindSurveyDto from './dto/find-survey.dto';
 import PushAnswerDto from './dto/push-answer.dto';
+import DeleteSurveyDto from './dto/delete-survey.dto';
+
+import UserSurveySearchTypes from './types/user-survey-search-types-enum';
+
+import UsersSurveysService from './users-surveys.service';
+
 import { GetUsername } from '../common/decorators/getUser.decorator';
+import { Survey } from './types/survey.schema';
 
 @Controller('surveys')
 class SurveysController {
@@ -21,26 +21,29 @@ class SurveysController {
 
   @Get()
   async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto, @GetUsername() username: string) {
-    const { search, surveyname } = params;
-    const { surveynames, participants /*, isAnonymous*/ } = body;
+    const { search, surveyId } = params;
+    const { surveyIds, participants } = body;
+
+    const id = surveyId ? parseInt(surveyId) : undefined;
+
     if (search) {
       switch (search) {
         case UserSurveySearchTypes.OPEN:
-          return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyNames(username));
+          return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
 
         case UserSurveySearchTypes.CREATED:
-          return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyNames(username));
+          return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyIds(username));
 
         case UserSurveySearchTypes.ANSWERS:
-          if (!surveyname) {
-            throw new Error('Survey name is required for this search type');
+          if (!id) {
+            throw new Error('The surveyId is required for this search type');
           }
           try {
-            const survey = await this.surveyService.findSurvey(surveyname);
+            const survey = await this.surveyService.findSurvey(id);
             if (!survey) {
               throw new Error('Survey not found');
             }
-            return survey.anonymousAnswers;
+            return survey.publicAnswers;
           } catch (error) {
             Logger.error(error);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -48,14 +51,14 @@ class SurveysController {
           }
 
         case UserSurveySearchTypes.ANSWER:
-          if (!surveyname) {
-            throw new Error('Survey name is required for this search type');
+          if (!id) {
+            throw new Error('The surveyId is required for this search type');
           }
           if (participants && participants.length > 1) {
             try {
-              const answers: string[] = [];
+              const answers: JSON[] = [];
               const promises: Promise<void>[] = participants.map(async (participant: string) => {
-                const answer = await this.usersSurveysService.getAnswer(participant, surveyname);
+                const answer = await this.usersSurveysService.getCommitedAnswer(participant, id);
                 if (!!answer) {
                   answers.push(answer);
                 }
@@ -73,7 +76,7 @@ class SurveysController {
             }
           }
           try {
-            const answer = await this.usersSurveysService.getAnswer(username, surveyname);
+            const answer = await this.usersSurveysService.getCommitedAnswer(username, id);
             if (!answer) {
               throw new Error('Survey answer not found');
             }
@@ -86,9 +89,8 @@ class SurveysController {
 
         case UserSurveySearchTypes.ANSWERED:
           return this.usersSurveysService
-            .getAnswers(username)
-            .then((response) => response.map((surveyAnswer: SurveyAnswer) => surveyAnswer.surveyname))
-            .then((surveyNames) => this.surveyService.findSurveys(surveyNames))
+            .getAnsweredSurveyIds(username)
+            .then((surveyIds: number[]) => this.surveyService.findSurveys(surveyIds))
             .catch((e) => {
               Logger.error(e);
               return [];
@@ -101,13 +103,13 @@ class SurveysController {
     }
 
     // only fetching a specific survey
-    if (surveyname) {
-      return this.surveyService.findSurvey(surveyname);
+    if (id) {
+      return this.surveyService.findSurvey(id);
     }
 
     // fetching multiple specific surveys
-    if (surveynames) {
-      return this.surveyService.findSurveys(surveynames);
+    if (surveyIds) {
+      return this.surveyService.findSurveys(surveyIds);
     }
 
     // fetch all surveys
@@ -119,18 +121,17 @@ class SurveysController {
     try {
       const { participants } = body;
 
-      const participantList = participants.map((participant) => participant.username);
-
       const createSurveyDto: Survey = {
         ...body,
-        survey: JSON.parse(body.survey),
-        participants: participantList,
-        anonymousAnswers: body.anonymousAnswers ? body.anonymousAnswers : [],
+        formula: body.formula,
+        participants: participants,
+        publicAnswers: body.publicAnswers ? body.publicAnswers : [],
         saveNo: body.saveNo ? body.saveNo.toString() : '0',
         created: body.created ? body.created.toString() : new Date().toString(),
-        expires: body.expires ? body.expires.toString() : undefined,
-        isAnonymous: body.isAnonymous ? body.isAnonymous : false,
-        canSubmitMultipleAnswers: body.canSubmitMultipleAnswers ? body.canSubmitMultipleAnswers : false,
+        expirationDate: body.expirationDate?.toString(),
+        expirationTime: body.expirationTime?.toString(),
+        isAnonymous: !!body.isAnonymous,
+        canSubmitMultipleAnswers: !!body.canSubmitMultipleAnswers,
       };
 
       const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(createSurveyDto);
@@ -138,20 +139,20 @@ class SurveysController {
         throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
       }
 
-      const { surveyname } = newSurvey;
-      await this.usersSurveysService.addToCreatedSurveys(username, surveyname);
-      await this.usersSurveysService.populateSurvey(participantList, surveyname);
+      const { id } = newSurvey;
+      await this.usersSurveysService.addToCreatedSurveys(username, id);
+      await this.usersSurveysService.populateSurvey(participants, id);
 
       return newSurvey;
     } catch (error) {
-      Logger.error(error);
+      Logger.error(`Survey Error (Create/Update): ${error.message}`);
       return error;
     }
   }
 
   @Delete()
   remove(@Query() deleteSurveyDto: DeleteSurveyDto) {
-    const surveyName = deleteSurveyDto.surveyname;
+    const surveyName = deleteSurveyDto.surveyId;
     const deleted = this.surveyService.removeSurvey(surveyName);
     this.usersSurveysService.onRemoveSurvey(surveyName);
     return deleted;
@@ -159,11 +160,17 @@ class SurveysController {
 
   @Patch()
   async manageUsersSurveys(@Body() body: PushAnswerDto, @GetUsername() username: string) {
-    const { surveyname, answer, canSubmitMultipleAnswers } = body;
+    const {surveyId, answer, canSubmitMultipleAnswers} = body;
 
-    await this.surveyService.addAnonymousAnswer(surveyname, answer, username);
+    try {
+      // This function does also check if the user is a participant ant has not already submitted an answer
+      await this.surveyService.addAnonymousAnswer(surveyId, answer, username);
 
-    return await this.usersSurveysService.addAnswer(username, surveyname, answer, canSubmitMultipleAnswers);
+      return await this.usersSurveysService.addAnswer(username, surveyId, answer, canSubmitMultipleAnswers);
+    } catch (error) {
+      Logger.error(`Survey Error (Adding Answer): ${error.message}`);
+      return error;
+    }
   }
 }
 

@@ -1,24 +1,25 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Attendee } from '../../conferences/dto/attendee.ts';
 
 export type SurveyDocument = Survey & Document;
 
 @Schema()
 export class Survey {
   @Prop({ required: true })
-  surveyname: string;
+  id: number;
 
   @Prop({ type: JSON, required: true })
-  survey: JSON;
+  formula: JSON;
 
-  @Prop({ type: Array<string>, required: true })
-  participants: string[];
+  @Prop({ required: true })
+  participants: Attendee[];
 
   @Prop({ type: Array<string>, required: false })
   participated?: string[];
 
-  @Prop({ type: Array<string>, required: false })
-  anonymousAnswers: string[];
+  @Prop({ type: Array<JSON>, required: false })
+  publicAnswers: JSON[];
 
   @Prop({ required: false })
   saveNo: string;
@@ -27,7 +28,10 @@ export class Survey {
   created: string;
 
   @Prop({ required: false })
-  expires?: string;
+  expirationDate?: string;
+
+  @Prop({ required: false })
+  expirationTime?: string;
 
   @Prop({ required: false })
   isAnonymous: boolean;
