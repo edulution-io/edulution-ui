@@ -10,7 +10,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./apps/frontend/src/*"],
-      "libs": ["libs/src/index.ts"]
+      "@libs/*": ["./libs/src/*"]
     },
     "allowImportingTsExtensions": true,
     "module": "ESNext",

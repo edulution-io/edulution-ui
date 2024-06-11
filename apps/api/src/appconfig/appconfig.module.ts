@@ -5,7 +5,7 @@ import AppConfigService from './appconfig.service';
 import { AppConfig, AppConfigSchema } from './appconfig.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema, collection: 'apps' }])],
+  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
   controllers: [AppConfigController],
   providers: [AppConfigService],
 })

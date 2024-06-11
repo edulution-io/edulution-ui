@@ -1,2 +1,2 @@
 export * from './lib/libs';
-export * from './appconfig/appconfig';
+export * from './appconfig/types/appconfig';
