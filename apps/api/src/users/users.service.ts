@@ -56,8 +56,9 @@ class UsersService {
     return this.userModel.findOneAndUpdate<User>({ username }, updateUserDto, { new: true }).exec();
   }
 
-  async remove(username: string): Promise<any> {
-    return this.userModel.deleteOne({ username }).exec();
+  async remove(username: string): Promise<boolean> {
+    const result = await this.userModel.deleteOne({ username }).exec();
+    return result.deletedCount > 0;
   }
 
   async findAllCachedUsers(token: string): Promise<LDAPUser[]> {

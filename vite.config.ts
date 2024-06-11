@@ -44,7 +44,7 @@ export default defineConfig({
       },
       '/edu-api': {
         rewrite: (path) => path.replace(/^\/edu-api/, ''),
-        target: 'http://localhost:3000/edu-api',
+        target: 'http://localhost:3001/edu-api',
         changeOrigin: false,
         secure: false,
         headers: {
