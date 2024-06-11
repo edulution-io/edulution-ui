@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "baseUrl": ".",

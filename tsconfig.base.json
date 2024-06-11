@@ -9,11 +9,11 @@
     "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./apps/frontend/src/*"]
+      "@/*": ["./apps/frontend/src/*"],
+      "libs": ["libs/src/index.ts"]
     },
     "allowImportingTsExtensions": true,
     "module": "ESNext",
-    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "noEmit": true,
     "jsx": "preserve",
