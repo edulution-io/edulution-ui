@@ -23,10 +23,25 @@ const mockCreator: Attendee = {
 };
 
 const mockJWTUser: JWTUser = {
+  exp: 0,
+  iat: 0,
+  jti: '',
+  iss: '',
+  sub: '',
+  typ: '',
+  azp: '',
+  session_state: '',
+  resource_access: {},
+  scope: '',
+  sid: '',
+  email_verified: false,
+  name: '',
   preferred_username: 'username',
   given_name: 'firstName',
   family_name: 'lastName',
-} as JWTUser;
+  email: '',
+  ldapGroups: [],
+};
 
 const mockConferenceDocument: ConferenceDocument = {
   name: mockConference.name,
