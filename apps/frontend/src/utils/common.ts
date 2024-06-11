@@ -1,4 +1,4 @@
-import { AppConfig } from '@/datatypes/types';
+import { AppConfigDto } from '@/datatypes/types';
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';
 
@@ -11,7 +11,7 @@ export const decryptPassword = ({ data, key }: { data: string; key: string }) =>
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 
-export const findAppConfigByName: (appConfig: AppConfig[], entryName: string) => AppConfig | undefined = (
+export const findAppConfigByName: (appConfig: AppConfigDto[], entryName: string) => AppConfigDto | undefined = (
   appConfig,
   entryName,
 ) => appConfig.find(({ name }) => name === entryName);

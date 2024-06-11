@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { AppIntegrationType } from './appconfig.types';
 
 @Schema({ timestamps: true, strict: true })
-class AppConfig extends Document {
+export class AppConfig extends Document {
   @Prop({ required: true })
   name: string;
 
@@ -17,6 +17,4 @@ class AppConfig extends Document {
   appType: string;
 }
 
-const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
-
-export default AppConfigSchema;
+export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);

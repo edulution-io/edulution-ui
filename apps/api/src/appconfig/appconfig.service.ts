@@ -1,15 +1,15 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
-import { AppConfig } from './appconfig.types';
+import { AppConfig } from './appconfig.schema';
+import { AppConfigDto } from './appconfig.types';
 import LoggerEnum from '../types/logger';
 
 @Injectable()
 class AppConfigService {
-  constructor(@InjectModel('AppConfig') private readonly appConfigModel: Model<AppConfig>) {}
+  constructor(@InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfigDto>) {}
 
-  async insertConfig(appConfigDto: AppConfig[]) {
+  async insertConfig(appConfigDto: AppConfigDto[]) {
     try {
       await this.appConfigModel.insertMany(appConfigDto);
       Logger.log(`Wrote appConfig to mongoDB`, LoggerEnum.EDULUTIONAPI);
@@ -19,7 +19,7 @@ class AppConfigService {
     }
   }
 
-  async updateConfig(appConfigDto: AppConfig[]) {
+  async updateConfig(appConfigDto: AppConfigDto[]) {
     try {
       const bulkOperations = appConfigDto.map((appConfig) => ({
         updateOne: {
@@ -37,7 +37,7 @@ class AppConfigService {
     }
   }
 
-  async getAppConfigs(): Promise<AppConfig[]> {
+  async getAppConfigs(): Promise<AppConfigDto[]> {
     try {
       const appConfig = await this.appConfigModel.find();
       Logger.log('Get settings appConfig from mongoDB', LoggerEnum.EDULUTIONAPI);
