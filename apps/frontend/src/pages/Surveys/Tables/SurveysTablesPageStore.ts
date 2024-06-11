@@ -5,7 +5,7 @@ import { Survey } from '@/pages/Surveys/types/survey';
 import SURVEY_ENDPOINT from '@/pages/Surveys/types/surveys-endpoint';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import { PageView } from '@/pages/Surveys/types/page-view';
-import UserSurveySearchTypes from "@/pages/Surveys/types/user-survey-search-types";
+import UserSurveySearchTypes from '@/pages/Surveys/types/user-survey-search-types';
 
 interface SurveysTablesPageStore {
   selectedPageView: PageView;
@@ -262,7 +262,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       set({ errorLoadingResult: error, result: undefined, isLoadingResult: false });
     }
   },
-
 }));
 
 export default useSurveyTablesPageStore;

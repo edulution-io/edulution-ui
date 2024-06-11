@@ -23,7 +23,6 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SCHOOLMANAGEMENT_MENUBAR_CONFIG = useSchoolManagementPageMenu();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
-  const NEW_SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
 
@@ -48,9 +47,6 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.SURVEYS: {
         return SURVEYS_MENUBAR_CONFIG;
-      }
-      case APPS.NEW_SURVEYS: {
-        return NEW_SURVEYS_MENUBAR_CONFIG;
       }
       case APPS.MAIL: {
         return MAIL_MENUBAR_CONFIG;

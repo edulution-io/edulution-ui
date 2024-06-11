@@ -1,22 +1,22 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-// import SurveysManagement from '@/pages/Surveys/Tables/SurveysManagement.tsx';
-import OpenSurveys from '@/pages/Surveys/Tables/OpenSurveys.tsx';
-import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys.tsx';
-import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys.tsx';
-import SurveyEditorPage from "@/pages/Surveys/Editor/SurveyEditorPage.tsx";
+// import SurveysManagement from '@/pages/Surveys/Tables/SurveysManagement';
+import OpenSurveys from '@/pages/Surveys/Tables/OpenSurveys';
+import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys';
+import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys';
+import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 
 const SurveysPage = () => {
   const { t } = useTranslation();
-  const [searchParams /* , setSearchParams */ ] = useSearchParams();
+  const [searchParams  , setSearchParams  ] = useSearchParams();
   const page = searchParams.get('page');
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const onClickEdit = () => {
-    navigate('/surveys/?page=editor');
-    // setSearchParams({ page: 'editor' });
+    // navigate('/surveys/?page=editor');
+    setSearchParams({ page: 'editor' });
   }
 
   const renderPage = () => {

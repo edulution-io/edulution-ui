@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AiOutlineUpSquare } from 'react-icons/ai';
 import { FiDelete, FiEdit } from 'react-icons/fi';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
-import FloatingActionButton from '@/components/ui/FloatingActionButton.tsx';
-import { ScrollArea } from '@/components/ui/ScrollArea.tsx';
-import { TooltipProvider } from '@/components/ui/Tooltip.tsx';
-import { Survey } from '@/pages/Surveys/types/survey.ts';
-import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable.tsx';
-import {AiOutlineUpSquare} from "react-icons/ai";
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import { Survey } from '@/pages/Surveys/types/survey';
+import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 
 interface SurveysTablePageProps {
   title: string;

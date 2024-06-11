@@ -36,8 +36,6 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
 
   const { t } = useTranslation();
 
-  console.log('ResultVisualizationDialog -> result: ', JSON.stringify(result, null, 2));
-
   useEffect(() => {
     const fetchAnswers = async () => {
       await getSurveyResult(survey?.id, survey?.participants);

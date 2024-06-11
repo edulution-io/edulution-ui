@@ -1,6 +1,6 @@
+import { Survey } from '@/pages/Surveys/types/survey';
 import SurveyEditorForm from '@/pages/Surveys/Editor/components/survey-editor-form';
 import { createSurveyId } from '@/pages/Surveys/Editor/components/create-survey-id';
-import { Survey } from '@/pages/Surveys/types/survey.ts';
 
 const EMPTY_JSON = JSON.parse('{}');
 

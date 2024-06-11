@@ -38,8 +38,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
 
   const { t } = useTranslation();
 
-  console.log('ResultTableDialog -> result: ', JSON.stringify(result, null, 2));
-
   useEffect(() => {
     const fetchAnswers = async () => {
       await getSurveyResult(survey?.id, survey?.participants);

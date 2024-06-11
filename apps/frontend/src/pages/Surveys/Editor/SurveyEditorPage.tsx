@@ -1,6 +1,6 @@
 import React from 'react';
+import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm.tsx';
 
 const SurveyEditorPage = () => {
     const {

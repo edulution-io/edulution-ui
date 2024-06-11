@@ -4,9 +4,9 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageSt
 import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { PageView } from '@/pages/Surveys/types/page-view';
-import ParticipateDialog from "@/pages/Surveys/Tables/dialogs/ParticipateDialog";
-import ResultTableDialog from "@/pages/Surveys/Tables/dialogs/ResultTableDialog";
-import ResultVisualizationDialog from "@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog";
+import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
+import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
+import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 
 const OpenSurveys = () => {
   const {

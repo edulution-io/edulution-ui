@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import { useTranslation } from 'react-i18next';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore.ts';
-import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage.tsx';
-import LoadingIndicator from "@/components/shared/LoadingIndicator.tsx";
-import { PageView } from "@/pages/Surveys/types/page-view.ts";
-import CommitedAnswersDialog from "@/pages/Surveys/Tables/dialogs/CommitedAnswersDialog";
-import ResultTableDialog from "@/pages/Surveys/Tables/dialogs/ResultTableDialog";
-import ResultVisualizationDialog from "@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog";
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import { PageView } from '@/pages/Surveys/types/page-view';
+import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
+import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
+import CommitedAnswersDialog from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialog';
 
 const AnsweredSurveys = () => {
   const {

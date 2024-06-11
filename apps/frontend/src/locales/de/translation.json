@@ -423,6 +423,11 @@
     "whiteboardIntroductionTitle": "Werden die Darstellungen gespeichert?",
     "surveysIntroductionTitle": "Wie nutzte ich das Umfragen-Tool?"
   },
+
+  "notifications": {
+    "title": "Benachrichtigungen"
+  },
+
   "schoolManagement": {
     "title": "Klassenzimmer",
     "description": "Hier können Sie Ihre Klassen verwalten.",
@@ -493,8 +498,8 @@
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Deadline",
     "editor": {
-      "new": "Neue Umfrage erstellen",
-      "abort": "Änderungen verwerfen"
+      "new": "Neue (Leer)",
+      "abort": "Alle Änderungen verwerfen"
     }
   },
   "surveys": {

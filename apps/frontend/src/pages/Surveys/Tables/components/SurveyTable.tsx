@@ -1,9 +1,8 @@
 import React, {useMemo} from 'react';
 import { useTranslation } from 'react-i18next';
-
-import Checkbox from '@/components/ui/Checkbox.tsx';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table.tsx';
-import { Survey } from '@/pages/Surveys/types/survey.ts';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import Checkbox from '@/components/ui/Checkbox';
+import { Survey } from '@/pages/Surveys/types/survey';
 
 interface SurveyTableProps {
   title: string;

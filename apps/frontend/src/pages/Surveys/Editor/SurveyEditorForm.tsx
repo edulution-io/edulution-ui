@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { toast } from 'sonner';
+import { z } from 'zod';
 import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { AiOutlineSave } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -102,17 +102,24 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     }
   }
 
+  // useMemo to not update the SurveyEditor component when changing values in dialog
+  const getSurveyEditor = useMemo(() => {
+    return (
+      <SurveyEditor
+        form={form}
+        formula={formula}
+        saveNumber={saveNo}
+        error={errorCommiting}
+      />
+    );
+  }, [formula, saveNo]);
+
   if (isCommiting) return <LoadingIndicator isOpen={isCommiting} />;
   return (
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          <SurveyEditor
-            form={form}
-            formula={formula}
-            saveNumber={saveNo}
-            error={errorCommiting}
-          />
+          { getSurveyEditor }
           {errorCommiting ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {errorCommiting.message}

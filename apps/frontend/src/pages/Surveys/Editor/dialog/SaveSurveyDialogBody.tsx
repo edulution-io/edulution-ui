@@ -2,16 +2,16 @@ import React from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
+import cn from '@/lib/utils';
+import useUserStore from '@/store/userStore';
 import Checkbox from '@/components/ui/Checkbox';
+import Input from '@/components/shared/Input';
 import DatePicker from '@/components/shared/DatePicker';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
-import useUserStore from '@/store/userStore';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import Group from '@/pages/ConferencePage/dto/group';
-import cn from "@/lib/utils";
-import Input from "@/components/shared/Input";
 
 interface EditSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +81,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
       <p className={cn('text-m font-bold', 'text-black')}>{t('survey.expirationDate')}</p>
       <div className="text-black flex items-center">
         {t('common.date')}
-        {// TODO: WHEN IN DEV BRANCH Create shared DatePicker and pass classnames to it
+        {// TODO: WHEN IN DEV BRANCH Create shared DatePicker and pass classnames to it to remove this div
         }
         <div className="ml-2">
           <DatePicker
