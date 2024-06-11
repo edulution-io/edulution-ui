@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react-swc';
-import path from 'path';
+import * as path from 'path';
 import { defineConfig } from 'vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
@@ -43,12 +43,37 @@ export default defineConfig({
         },
       },
       '/edu-api': {
-        rewrite: (path) => path.replace(/^\/edu-api/, ''),
-        target: 'http://localhost:3000/edu-api',
+        target: 'http://localhost:3001',
         changeOrigin: false,
         secure: false,
         headers: {
           Origin: 'https://ui.schulung.multi.schule',
+        },
+      },
+      '/SOGo': {
+        target: 'https://localhost:5555/',
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          Origin: 'http://localhost:5173/',
+          'X-Frame-Options': 'ALLOWALL',
+          Host: 'localhost',
+          'X-Forwarded-For': 'client-ip-address',
+          'X-Forwarded-Proto': 'https',
+          'X-Forwarded-Host': 'localhost',
+        },
+      },
+      '/guacamole': {
+        rewrite: (path) => path.replace(/^\/guacamole/, ''),
+        target: 'https://ui.demo.multi.schule/guacamole',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        headers: {
+          Origin: 'https://ui.demo.multi.schule',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
       },
       //TODO docs
