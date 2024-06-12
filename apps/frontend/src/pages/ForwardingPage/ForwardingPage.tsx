@@ -22,7 +22,7 @@ const ForwardingPage: React.FC = () => {
     if (isForwarding) {
       setIsForwaring(false);
       const navigateToExternalPage = () => {
-        const externalLink = findAppConfigByName(appConfig, rootPathName)?.linkPath as string;
+        const externalLink = findAppConfigByName(appConfig, rootPathName)?.options.url;
         if (externalLink) {
           setShowIsForwarding(true);
           return window.open(externalLink, '_blank');

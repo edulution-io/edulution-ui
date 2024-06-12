@@ -3,10 +3,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 
 import AppConfigModule from '../appconfig/appconfig.module';
+import UsersModule from '../users/users.module';
+import ConferencesModule from '../conferences/conferences.module';
 
 @Module({
   imports: [
     AppConfigModule,
+    UsersModule,
+    ConferencesModule,
     JwtModule.register({
       global: true,
     }),

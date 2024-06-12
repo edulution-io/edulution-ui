@@ -10,8 +10,8 @@ import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import { useMediaQuery } from 'usehooks-ts';
 import { ArrowRightIcon } from 'lucide-react';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface MoveItemDialogProps {
   trigger: ReactNode;
@@ -21,7 +21,7 @@ interface MoveItemDialogProps {
 const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const [directorys, setDirectorys] = useState<DirectoryFile[]>([]);
   const [selectedRow, setSelectedRow] = useState<DirectoryFile>();
   const [currentPath, setCurrentPath] = useState('');
@@ -89,7 +89,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       style={{
         backgroundColor: selectedRow?.filename === row.filename ? 'bg-ciDarkBlue bg-opacity-30' : 'bg-transparent',
         cursor: 'pointer',
-        color: isMobile ? 'white' : 'black',
+        color: isMobileView ? 'white' : 'black',
       }}
     >
       <TableCell>
@@ -108,7 +108,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className={`${isMobile ? 'text-white' : 'text-black'}`}>
+            <TableHead className={`${isMobileView ? 'text-white' : 'text-black'}`}>
               {t('moveItemDialog.folderName')}
             </TableHead>
           </TableRow>
@@ -121,7 +121,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
   const renderMoveToSection = () => (
     <>
       {selectedRow && (
-        <p className={`${isMobile ? 'text-white' : 'text-black'}`}>
+        <p className={`${isMobileView ? 'text-white' : 'text-black'}`}>
           {t('moveItemDialog.selectedItem')}: {selectedRow.filename}
         </p>
       )}
@@ -143,7 +143,7 @@ const MoveItemDialog: FC<MoveItemDialogProps> = ({ trigger, item }) => {
     </>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     <Sheet
       open={isOpen}
       onOpenChange={handleOpenChange}

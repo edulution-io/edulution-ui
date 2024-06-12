@@ -6,14 +6,14 @@ import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import { DropZone, FileWithPreview } from '@/pages/FileSharing/utilities/DropZone';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface UploadItemDialogProps {
   trigger: React.ReactNode;
 }
 
 const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const currentPath = useFileManagerStoreOLD((state) => state.currentPath);
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -75,7 +75,7 @@ const UploadItemDialog: React.FC<UploadItemDialogProps> = ({ trigger }) => {
     </>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     <Sheet
       open={isOpen}
       onOpenChange={handleOpenChange}

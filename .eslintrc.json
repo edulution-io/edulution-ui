@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "node": true,
     "browser": true,
@@ -37,14 +38,10 @@
     }
   },
   "ignorePatterns": [
-    "vite.config.ts",
-    "prettier.config.cjs",
+    "prettier.config.js",
     "vitest.workspace.ts",
-    "tailwind.config.ts",
     "jest.preset.cjs",
     "jest.config.ts",
-    "postcss.config.mjs",
-    "webpack.config.cjs",
     "dist/apps/*",
     "scripts/*"
   ],
@@ -57,6 +54,7 @@
     "react/jsx-props-no-spreading": "off",
     // TypeScript cares abput prop-types
     "react/prop-types": "off",
+    "react/require-default-props": "off",
     // Issue with react-hook-form -> https://github.com/orgs/react-hook-form/discussions/8622
     "@typescript-eslint/no-misused-promises": [
       "error",

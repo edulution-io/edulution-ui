@@ -7,8 +7,8 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import { DirectoryFile } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import { useMediaQuery } from 'usehooks-ts';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface DeleteDialogProps {
   trigger: ReactNode;
@@ -20,7 +20,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
   const setSelectedItems: (items: DirectoryFile[]) => void = useFileManagerStoreOLD((state) => state.setSelectedItems);
   const setRowSelection = useFileManagerStoreOLD((state) => state.setSelectedRows);
   const setFileOperationSuccessful = useFileManagerStoreOLD((state) => state.setFileOperationSuccessful);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const deleteItems = async () => {
@@ -48,13 +48,13 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
 
   const contentToDelete = (
     <div>
-      <ScrollArea className={`min-h-[200px] ${isMobile ? 'opacity-65' : 'bg-white'}`}>
-        <strong className={`${isMobile ? 'text-white' : 'text-black'}`}>
+      <ScrollArea className={`min-h-[200px] ${isMobileView ? 'opacity-65' : 'bg-white'}`}>
+        <strong className={`${isMobileView ? 'text-white' : 'text-black'}`}>
           {t('deleteDialog.actionCannotBeUndone')}
         </strong>
         {(selectedItems.length > 0 ? selectedItems : file).map((item) => (
           <div
-            className={`${isMobile ? 'text-white' : 'text-black'} pt-3`}
+            className={`${isMobileView ? 'text-white' : 'text-black'} pt-3`}
             key={item.etag}
           >
             {item.filename}
@@ -64,7 +64,7 @@ const DeleteItemAlert: React.FC<DeleteDialogProps> = ({ trigger, file = [] }) =>
     </div>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     <Sheet
       open={isOpen}
       onOpenChange={setIsOpen}
