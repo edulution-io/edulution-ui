@@ -5,9 +5,22 @@ type UserStoreOLD = {
   user: string;
   webdavKey: string;
   isAuthenticated: boolean;
+  isLoggedInInEduApi: boolean;
+  setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   setUser: (user: string) => void;
+  token: string;
+  setToken: (token: string) => void;
   setWebdavKey: (webdavKey: string) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
+  reset: () => void;
+};
+
+const initialState = {
+  user: '',
+  webdavKey: '',
+  isAuthenticated: false,
+  isLoggedInInEduApi: false,
+  token: '',
 };
 
 type PersistedUserStore = (
@@ -30,6 +43,13 @@ const useUserStoreOLD = create<UserStoreOLD>(
       setIsAuthenticated: (isAuthenticated: boolean) => {
         set({ isAuthenticated });
       },
+      isLoggedInInEduApi: false,
+      setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => {
+        set({ isLoggedInInEduApi });
+      },
+      token: '',
+      setToken: (token) => set({ token }),
+      reset: () => set(initialState),
     }),
     {
       name: 'user-storage',

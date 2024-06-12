@@ -8,7 +8,7 @@ import { ContentType } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
-import { useMediaQuery } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface CreateNewContentDialogProps {
   trigger: ReactNode;
@@ -18,7 +18,7 @@ interface CreateNewContentDialogProps {
 const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const {
     fileName,
     setFileName,
@@ -150,7 +150,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     </DialogHeader>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     mobileContent
   ) : (
     <Dialog

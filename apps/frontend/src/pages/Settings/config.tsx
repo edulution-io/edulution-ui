@@ -1,9 +1,9 @@
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import { findAppConfigByName } from '@/utils/common';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
 const useSettingsMenuConfig = () => {
   const navigate = useNavigate();
@@ -27,14 +27,12 @@ const useSettingsMenuConfig = () => {
   const settingsMenuConfig = (): MenuBarEntryProps => ({
     ...SETTINGS_CONFIG,
     menuItems: [
-      ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id) !== undefined).map(
-        (item) => ({
-          id: item.id,
-          label: `${item.id}.sidebar`,
-          icon: item.icon,
-          action: () => navigate(`/settings/${item.id}`),
-        }),
-      ),
+      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id) !== undefined).map((item) => ({
+        id: item.id,
+        label: `${item.id}.sidebar`,
+        icon: item.icon,
+        action: () => navigate(`/settings/${item.id}`),
+      })),
       ...SETTINGS_CONFIG.menuItems.map((item) => ({
         ...item,
         action: () => setSearchParams({ mode: 'add' }),
