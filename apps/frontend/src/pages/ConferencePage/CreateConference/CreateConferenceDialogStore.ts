@@ -46,6 +46,8 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
       set({ createdConference: response.data, isLoading: false, isCreateConferenceDialogOpen: false });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 
