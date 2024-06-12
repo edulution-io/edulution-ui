@@ -5,6 +5,10 @@
     "composite": true,
     "declaration": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["postcss.config.js", "vite.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../../libs/**/*.ts"
+  ],
+  "exclude": ["postcss.config.js"]
 }
