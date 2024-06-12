@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
-import { getFromPathName, findAppConfigByName } from '@/utils/common';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import { Toaster, toast } from 'sonner';
+import { findAppConfigByName, getFromPathName } from '@/utils/common';
+import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
+import { toast, Toaster } from 'sonner';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ const ForwardingPage: React.FC = () => {
   const [isForwarding, setIsForwaring] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
 
-  const { appConfig } = useAppConfigsStore();
+  const { appConfig } = useAppConfigsStoreOLD();
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -22,7 +22,7 @@ const ForwardingPage: React.FC = () => {
     if (isForwarding) {
       setIsForwaring(false);
       const navigateToExternalPage = () => {
-        const externalLink = findAppConfigByName(appConfig, rootPathName)?.linkPath as string;
+        const externalLink = findAppConfigByName(appConfig, rootPathName)?.options.url;
         if (externalLink) {
           setShowIsForwarding(true);
           return window.open(externalLink, '_blank');

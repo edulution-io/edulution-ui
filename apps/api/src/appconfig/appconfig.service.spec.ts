@@ -42,9 +42,9 @@ describe('AppConfigService', () => {
       const appConfigs = [
         {
           name: 'Test',
-          linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {},
         },
       ];
       model.insertMany?.mockResolvedValue(appConfigs);
@@ -58,9 +58,9 @@ describe('AppConfigService', () => {
       const appConfigs = [
         {
           name: 'Test',
-          linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {},
         },
       ];
       model.bulkWrite?.mockResolvedValue({ modifiedCount: 1 });
@@ -74,9 +74,9 @@ describe('AppConfigService', () => {
       const expectedConfigs = [
         {
           name: 'Test',
-          linkPath: 'test/path',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
+          options: {},
         },
       ];
       model.find?.mockReturnValue(expectedConfigs);
