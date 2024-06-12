@@ -4,7 +4,7 @@ export enum AppIntegrationType {
   EMBEDDED = 'embedded',
 }
 
-export type AppConfig = {
+export type AppConfigDto = {
   name: string;
   linkPath: string;
   icon: string;
