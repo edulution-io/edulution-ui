@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Logger, Post, Query, Patch } from '@nestjs/common';
-import SurveyService from './survey.service';
+import SurveysService from './surveys.service';
 import CreateSurveyDto from './dto/create-survey.dto';
 import FindSurveyDto from './dto/find-survey.dto';
 import PushAnswerDto from './dto/push-answer.dto';
@@ -15,7 +15,7 @@ import { Survey } from './types/survey.schema';
 @Controller('surveys')
 class SurveysController {
   constructor(
-    private readonly surveyService: SurveyService,
+    private readonly surveyService: SurveysService,
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
@@ -23,8 +23,6 @@ class SurveysController {
   async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto, @GetUsername() username: string) {
     const { search, surveyId } = params;
     const { surveyIds, participants } = body;
-
-    const id = surveyId ? parseInt(surveyId) : undefined;
 
     if (search) {
       switch (search) {
@@ -35,11 +33,11 @@ class SurveysController {
           return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyIds(username));
 
         case UserSurveySearchTypes.ANSWERS:
-          if (!id) {
+          if (!surveyId) {
             throw new Error('The surveyId is required for this search type');
           }
           try {
-            const survey = await this.surveyService.findSurvey(id);
+            const survey = await this.surveyService.findSurvey(surveyId);
             if (!survey) {
               throw new Error('Survey not found');
             }
@@ -51,14 +49,14 @@ class SurveysController {
           }
 
         case UserSurveySearchTypes.ANSWER:
-          if (!id) {
+          if (!surveyId) {
             throw new Error('The surveyId is required for this search type');
           }
           if (participants && participants.length > 1) {
             try {
               const answers: JSON[] = [];
               const promises: Promise<void>[] = participants.map(async (participant: string) => {
-                const answer = await this.usersSurveysService.getCommitedAnswer(participant, id);
+                const answer = await this.usersSurveysService.getCommitedAnswer(participant, surveyId);
                 if (!!answer) {
                   answers.push(answer);
                 }
@@ -76,7 +74,7 @@ class SurveysController {
             }
           }
           try {
-            const answer = await this.usersSurveysService.getCommitedAnswer(username, id);
+            const answer = await this.usersSurveysService.getCommitedAnswer(username, surveyId);
             if (!answer) {
               throw new Error('Survey answer not found');
             }
@@ -103,8 +101,8 @@ class SurveysController {
     }
 
     // only fetching a specific survey
-    if (id) {
-      return this.surveyService.findSurvey(id);
+    if (surveyId) {
+      return this.surveyService.findSurvey(surveyId);
     }
 
     // fetching multiple specific surveys
@@ -125,10 +123,10 @@ class SurveysController {
         ...body,
         formula: body.formula,
         participants: participants,
-        publicAnswers: body.publicAnswers ? body.publicAnswers : [],
-        saveNo: body.saveNo ? body.saveNo.toString() : '0',
-        created: body.created ? body.created.toString() : new Date().toString(),
-        expirationDate: body.expirationDate?.toString(),
+        publicAnswers: body.publicAnswers || [],
+        saveNo: body.saveNo || 0,
+        created: body.created || new Date(),
+        expirationDate: body.expirationDate,
         expirationTime: body.expirationTime?.toString(),
         isAnonymous: !!body.isAnonymous,
         canSubmitMultipleAnswers: !!body.canSubmitMultipleAnswers,
@@ -164,7 +162,7 @@ class SurveysController {
 
     try {
       // This function does also check if the user is a participant ant has not already submitted an answer
-      await this.surveyService.addAnonymousAnswer(surveyId, answer, username);
+      await this.surveyService.addPublicAnswer(surveyId, answer, username);
 
       return await this.usersSurveysService.addAnswer(username, surveyId, answer, canSubmitMultipleAnswers);
     } catch (error) {

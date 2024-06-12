@@ -30,11 +30,11 @@ export class User {
   @Prop()
   isTotpSet?: boolean;
 
-  @Prop({ type: SchemaFactory.createForClass(UsersSurveys) })
-  usersSurveys: {
-    openSurveys: number[];
-    createdSurveys: number[];
-    answeredSurveys: {
+  @Prop({ type: SchemaFactory.createForClass(UsersSurveys), required: false })
+  usersSurveys?: {
+    openSurveys?: number[];
+    createdSurveys?: number[];
+    answeredSurveys?: {
       surveyId: number;
       answer?: JSON;
     }[];

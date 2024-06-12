@@ -1,7 +1,7 @@
 import UserSurveySearchTypes from '../types/user-survey-search-types-enum.ts';
 
 class FindSurveyDto {
-  surveyId?: string;
+  surveyId?: number;
 
   surveyIds?: number[];
 

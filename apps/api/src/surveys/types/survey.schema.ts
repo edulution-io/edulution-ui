@@ -19,25 +19,25 @@ export class Survey {
   participated?: string[];
 
   @Prop({ type: Array<JSON>, required: false })
-  publicAnswers: JSON[];
+  publicAnswers?: JSON[];
 
   @Prop({ required: false })
-  saveNo: string;
+  saveNo?: number;
 
-  @Prop({ required: false })
-  created: string;
+  @Prop({ type: Date, required: false })
+  created?: Date;
 
-  @Prop({ required: false })
-  expirationDate?: string;
+  @Prop({ type: Date, required: false })
+  expirationDate?: Date;
 
   @Prop({ required: false })
   expirationTime?: string;
 
   @Prop({ required: false })
-  isAnonymous: boolean;
+  isAnonymous?: boolean;
 
   @Prop({ required: false })
-  canSubmitMultipleAnswers: boolean;
+  canSubmitMultipleAnswers?: boolean;
 }
 
 const SurveySchema = SchemaFactory.createForClass(Survey);

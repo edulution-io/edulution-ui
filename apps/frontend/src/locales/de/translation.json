@@ -237,7 +237,8 @@
     "abort": "Abbrechen",
     "date": "Datum",
     "time": "Zeit",
-    "participate": "Teilnehmen"
+    "participate": "Teilnehmen",
+    "not-available": "'Nicht verfügbar'"
   },
   "form": {
     "path": "Link",

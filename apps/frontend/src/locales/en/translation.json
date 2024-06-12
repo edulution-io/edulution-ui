@@ -237,7 +237,8 @@
     "abort": "Abort",
     "date": "Date",
     "time": "Time",
-    "participate": "Participate"
+    "participate": "Participate",
+    "not-available": "'Not available'"
   },
   "form": {
     "path": "Path",

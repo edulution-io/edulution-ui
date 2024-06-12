@@ -46,12 +46,12 @@ const SurveyTable = (props: SurveyTableProps) => {
               aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
             />
           </TableCell>
-          <TableCell className="text-white">{surveyObj?.title || t('not-available')}</TableCell>
+          <TableCell className="text-white">{surveyObj?.title || t('common.not-available')}</TableCell>
           <TableCell className="text-white">
-            {survey?.created ? survey?.created.toString() : t('not-available')}
+            {survey?.created ? survey?.created.toString() : t('common.not-available')}
           </TableCell>
           <TableCell className="text-white">
-            {survey?.expirationDate ? survey?.expirationDate.toString() : t('not-available')}
+            {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
           </TableCell>
           <TableCell className="text-white">
             {survey?.participated?.length ? `${ survey.participated.length }/` : ''}

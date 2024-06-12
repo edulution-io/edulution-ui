@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../users/user.schema';
 import { Attendee } from '../conferences/dto/attendee';
@@ -57,8 +57,8 @@ class UsersSurveysService {
     const newUser: UpdateUserDto = existingUser;
     newUser.usersSurveys = {
       openSurveys: usersOpenSurveys,
-      createdSurveys: existingUser.usersSurveys.createdSurveys,
-      answeredSurveys: existingUser.usersSurveys.answeredSurveys,
+      createdSurveys: existingUser.usersSurveys?.createdSurveys,
+      answeredSurveys: existingUser.usersSurveys?.answeredSurveys,
     };
 
     await this.updateUser(participant, newUser);
@@ -83,9 +83,9 @@ class UsersSurveysService {
 
     const newUser: UpdateUserDto = existingUser;
     newUser.usersSurveys = {
-      openSurveys: existingUser.usersSurveys.openSurveys,
+      openSurveys: existingUser.usersSurveys?.openSurveys,
       createdSurveys: usersCreatedSurveys,
-      answeredSurveys: existingUser.usersSurveys.answeredSurveys,
+      answeredSurveys: existingUser.usersSurveys?.answeredSurveys,
     };
 
     const updatedUser = await this.updateUser(username, newUser);
@@ -101,22 +101,46 @@ class UsersSurveysService {
         openSurveys = [],
         answeredSurveys = [],
         ...remainingUserSurveys
-      } = user.usersSurveys;
+      } = user.usersSurveys || {};
 
-      const usersCreatedSurveys = createdSurveys.filter((survey) => survey !== surveyId) || [];
-      const usersOpenSurveys = openSurveys.filter((survey) => survey !== surveyId) || [];
-      const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyId !== surveyId) || [];
+      let shouldUpdateUser = false;
 
-      const newUser: UpdateUserDto = {
-        usersSurveys: {
-          ...remainingUserSurveys,
-          createdSurveys: [...usersCreatedSurveys],
-          openSurveys: [...usersOpenSurveys],
-          answeredSurveys: [...usersAnsweredSurveys],
-        },
-      };
+      const usersCreatedSurveys = createdSurveys.filter((survey: number) => {
+        if (survey !== surveyId) {
+          return survey;
+        } else {
+          shouldUpdateUser = true;
+        }
+      }) || [];
 
-      return await this.updateUser(user.username, newUser);
+      const usersOpenSurveys = openSurveys.filter((survey: number) => {
+        if (survey !== surveyId) {
+          return survey;
+        } else {
+          shouldUpdateUser = true;
+        }
+      }) || [];
+
+      const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer: SurveyAnswer) => {
+        if (surveyAnswer.surveyId !== surveyId) {
+          return surveyAnswer;
+        } else {
+          shouldUpdateUser = true;
+        }
+      }) || [];
+
+      if (shouldUpdateUser) {
+        const newUser: UpdateUserDto = {
+          usersSurveys: {
+            ...remainingUserSurveys,
+            createdSurveys: [...usersCreatedSurveys],
+            openSurveys: [...usersOpenSurveys],
+            answeredSurveys: [...usersAnsweredSurveys],
+          },
+        };
+
+        return await this.updateUser(user.username, newUser);
+      }
     });
 
     await Promise.all(promises);
@@ -133,16 +157,16 @@ class UsersSurveysService {
       throw UserNotFoundError;
     }
 
-    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys.filter((survey) => survey !== surveyId) || [];
+    const usersOpenSurveys = existingUser.usersSurveys?.openSurveys?.filter((survey) => survey !== surveyId) || [];
 
     const usersAnsweredSurveys =
-      existingUser.usersSurveys?.answeredSurveys.filter((surveyAnswer) => surveyAnswer.surveyId !== surveyId) || [];
+      existingUser.usersSurveys?.answeredSurveys?.filter((surveyAnswer) => surveyAnswer.surveyId !== surveyId) || [];
     usersAnsweredSurveys.push({ surveyId, answer });
 
     const newUser: UpdateUserDto = existingUser;
     newUser.usersSurveys = {
-      openSurveys: canSubmitMultipleAnswers ? existingUser.usersSurveys.openSurveys : usersOpenSurveys,
-      createdSurveys: existingUser.usersSurveys.createdSurveys,
+      openSurveys: canSubmitMultipleAnswers ? existingUser.usersSurveys?.openSurveys : usersOpenSurveys,
+      createdSurveys: existingUser.usersSurveys?.createdSurveys,
       answeredSurveys: usersAnsweredSurveys,
     };
 
@@ -155,18 +179,13 @@ class UsersSurveysService {
       throw UserNotFoundError;
     }
 
-    Logger.log(`existingUser: ${JSON.stringify(existingUser, null, 2)}`);
-
     const answeredSurvey =
-      existingUser.usersSurveys?.answeredSurveys.find((answer: SurveyAnswer) => {
-        Logger.log(`answer.surveyId: ${answer.surveyId} (${typeof(answer.surveyId)}) === surveyId: ${surveyId} (${typeof(surveyId)})`)
+      existingUser.usersSurveys?.answeredSurveys?.find((answer: SurveyAnswer) => {
         if (answer.surveyId === surveyId) {
           return answer.answer;
         }
         return undefined;
       });
-
-    Logger.log(`answeredSurvey: ${JSON.stringify(answeredSurvey, null, 2)}`);
 
     return answeredSurvey?.answer;
   }
