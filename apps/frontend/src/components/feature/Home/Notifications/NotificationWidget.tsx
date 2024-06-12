@@ -6,10 +6,15 @@ import ConferencesCardContent from '@/components/feature/Home/Notifications/comp
 import MailCardContent from '@/components/feature/Home/Notifications/components/MailCardContent';
 import SurveysCardContent from '@/components/feature/Home/Notifications/components/SurveysCardContent';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import useConferenceStore from "@/pages/ConferencePage/ConferencesStore";
+import useSurveyTablesPageStore from "@/pages/Surveys/Tables/SurveysTablesPageStore";
 
 const NotificationWidget = () => {
-  const { /* lastUpdated, setLastUpdated, */ conferences, getConferences, openSurveys, getOpenSurveys, mails, fetchMails } =
-    useNotificationStore();
+  const { /* lastUpdated, setLastUpdated, */ mails, fetchMails } = useNotificationStore();
+
+  const {conferences, getConferences} = useConferenceStore();
+
+  const {openSurveys, updateOpenSurveys } = useSurveyTablesPageStore();
   // const currentTime = new Date().getTime();
   // const timeElapsed = lastUpdated ? currentTime - lastUpdated : 0;
   // const shouldUpdate = !lastUpdated || timeElapsed > 3000;
@@ -19,7 +24,7 @@ const NotificationWidget = () => {
   useEffect(() => {
     const fetch = async () => {
       await getConferences();
-      await getOpenSurveys();
+      await updateOpenSurveys();
       await fetchMails();
     };
     fetch();

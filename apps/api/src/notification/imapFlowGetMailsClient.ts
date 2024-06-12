@@ -1,4 +1,5 @@
 import { FetchMessageObject, ImapFlow } from 'imapflow';
+import { Logger } from '@nestjs/common';
 
 enum ImapFlowState {
   CONNECTING = 'connecting',
@@ -54,22 +55,22 @@ export default class ImapFlowGetMailsClient {
     let success = false;
     success = await this.checkImapConnection(username, 'mail.schulung.multi.schule', 993);
     if (success) {
-      console.log('Connection successful', 'mail.schulung.multi.schule', 993);
+      Logger.log('Connection successful', 'mail.schulung.multi.schule', 993);
       return;
     }
     success = await this.checkImapConnection(username, 'mail.schulung.multi.schule', 143);
     if (success) {
-      console.log('Connection successful', 'mail.schulung.multi.schule', 143);
+      Logger.log('Connection successful', 'mail.schulung.multi.schule', 143);
       return;
     }
     success = await this.checkImapConnection(username, 'dovecat', 993);
     if (success) {
-      console.log('Connection successful', 'dovecat', 993);
+      Logger.log('Connection successful', 'dovecat', 993);
       return;
     }
     success = await this.checkImapConnection(username, 'mail.sgm-verwaltung.de', 143);
     if (success) {
-      console.log('Connection successful', 'mail.sgm-verwaltung.de', 143);
+      Logger.log('Connection successful', 'mail.sgm-verwaltung.de', 143);
       return;
     }
   };
@@ -80,29 +81,29 @@ export default class ImapFlowGetMailsClient {
 
   public connect = async (): Promise<void> => {
     if (this.state !== ImapFlowState.CLOSED) {
-      console.log('Already connected to IMAP');
+      Logger.log('Already connected to IMAP');
       return;
     }
 
-    console.log('connecting to IMAP ...');
+    Logger.log('connecting to IMAP ...');
     this.state = ImapFlowState.CONNECTING;
     try {
       await this.client?.connect();
       this.state = ImapFlowState.CONNECTED;
-      console.log('connected to IMAP');
+      Logger.log('connected to IMAP');
     } catch (err) {
-      console.error('Error connecting to IMAP', err);
+      Logger.error('Error connecting to IMAP', err);
       this.state = ImapFlowState.CLOSED;
     }
   };
 
   public getMails = async (): Promise<FetchMessageObject[]> => {
     if (this.state !== ImapFlowState.READY && this.state !== ImapFlowState.CONNECTED) {
-      console.log('Not ready to fetch emails');
+      Logger.log('Not ready to fetch emails');
       return Promise.reject(new Error('Not ready to fetch emails'));
     }
 
-    console.log('opening/locking inbox...');
+    Logger.log('opening/locking inbox...');
     // Select and lock a mailbox. Throws if mailbox does not exist
     const lock = await this.client?.getMailboxLock('INBOX');
     const messages: FetchMessageObject[] = [];
@@ -115,13 +116,13 @@ export default class ImapFlowGetMailsClient {
         typeof this.client?.mailbox === 'boolean' ? `${this.client?.mailbox}` : `${this.client?.mailbox.exists}`,
         { source: true },
       );
-      console.log(message?.source.toString());
+      Logger.log(message?.source.toString());
 
       // list subjects for all messages
       // uid value is always included in FETCH response, envelope strings are in unicode.
       const mails = this.client?.fetch('1:*', { envelope: true });
       for await (const msg of mails || []) {
-        console.log(`${msg.uid}: ${msg.envelope.subject}`);
+        Logger.log(`${msg.uid}: ${msg.envelope.subject}`);
         messages.push(msg);
       }
 
@@ -137,7 +138,7 @@ export default class ImapFlowGetMailsClient {
 
       return messages;
     } catch (err) {
-      console.error(err);
+      Logger.error(err);
 
       // log out and close connection
       await this.client?.logout();
