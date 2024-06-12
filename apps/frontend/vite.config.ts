@@ -33,40 +33,40 @@ export default defineConfig({
     proxy: {
       '/auth': {
         rewrite: (path) => path.replace(/^\/auth/, ''),
-        target: 'https://auth.demo.multi.schule/auth',
+        target: 'https://auth.schulung.multi.schule/auth',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://ui.demo.multi.schule',
+          Origin: 'https://ui.schulung.multi.schule',
           'X-Forwarded-For': 'client-ip-address',
           'X-Forwarded-Proto': 'https',
-          'X-Forwarded-Host': 'auth.demo.multi.schule',
+          'X-Forwarded-Host': 'auth.schulung.multi.schule',
         },
       },
       '/webdav': {
-        target: 'https://server.demo.multi.schule',
+        target: 'https://server.schulung.multi.schule',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule',
+          Origin: 'https://server.schulung.multi.schule',
         },
       },
       '/api': {
         rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.demo.multi.schule:8001',
+        target: 'https://server.schulung.multi.schule:8001',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule:8001',
+          Origin: 'https://server.schulung.multi.schule:8001',
         },
       },
       '/edu-api': {
         rewrite: (path) => path.replace(/^\/edu-api/, ''),
-        target: 'http://localhost:3000/edu-api',
+        target: 'http://localhost:3001/edu-api',
         changeOrigin: false,
         secure: false,
         headers: {
-          Origin: 'https://ui.demo.multi.schule',
+          Origin: 'https://ui.schulung.multi.schule',
         },
       },
       //TODO docs
