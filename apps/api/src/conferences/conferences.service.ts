@@ -25,17 +25,20 @@ class ConferencesService {
   ) {}
 
   async loadConfig() {
+    if (this.BBB_API_URL && this.BBB_SECRET) {
+      return;
+    }
+
     const appConfig = await this.appConfigService.getAppConfigByName('conferences');
     if (!appConfig?.options.url || !appConfig.options.apiKey) {
       throw new HttpException('App is not properly configured', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     this.BBB_API_URL = appConfig.options.url;
     this.BBB_SECRET = appConfig.options.apiKey;
   }
 
   async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference> {
-    await this.loadConfig();
-
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -55,8 +58,6 @@ class ConferencesService {
   }
 
   async toggleConferenceIsRunning(meetingID: string, username: string) {
-    await this.loadConfig();
-
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
       throw new HttpException('You are not the creator!', HttpStatus.UNAUTHORIZED);
@@ -70,11 +71,9 @@ class ConferencesService {
   }
 
   private async startConference(conference: Conference) {
-    await this.loadConfig();
-
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('create', query);
+      const checksum = await this.createChecksum('create', query);
       const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
 
       const response = await axios.get<string>(url);
@@ -89,11 +88,9 @@ class ConferencesService {
   }
 
   private async stopConference(conference: Conference) {
-    await this.loadConfig();
-
     try {
       const query = `meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('end', query);
+      const checksum = await this.createChecksum('end', query);
       const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
 
       const response = await axios.get<string>(url);
@@ -119,8 +116,6 @@ class ConferencesService {
   }
 
   async join(meetingID: string, user: JWTUser): Promise<string> {
-    await this.loadConfig();
-
     try {
       const { preferred_username: username, given_name: givenName, family_name: familyName } = user;
 
@@ -132,7 +127,7 @@ class ConferencesService {
 
       const fullName = `${givenName} ${familyName}`;
       const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
-      const checksum = this.createChecksum('join', query);
+      const checksum = await this.createChecksum('join', query);
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
@@ -141,15 +136,11 @@ class ConferencesService {
     }
   }
 
-  async findUsersConferences(username: string): Promise<Conference[]> {
-    await this.loadConfig();
-
-    const usersConferences = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
-
-    const promises = usersConferences.map(async (conference) => {
-      const conferenceObject = conference.toObject();
+  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
+    const promises = conferencesToBeSynced.map(async (conference) => {
+      const conferenceObject = conference.toObject() as ConferenceDocument;
       const query = `meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('getMeetingInfo', query);
+      const checksum = await this.createChecksum('getMeetingInfo', query);
       const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
 
       try {
@@ -169,13 +160,16 @@ class ConferencesService {
     return Promise.all(promises);
   }
 
+  async findAllConferencesTheUserHasAccessTo(username: string): Promise<Conference[]> {
+    const conferencesToBeSynced = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
+    return this.syncConferencesWithBBB(conferencesToBeSynced);
+  }
+
   async findOne(meetingID: string): Promise<Conference | null> {
-    await this.loadConfig();
     return this.conferenceModel.findOne<Conference>({ meetingID }).exec();
   }
 
   async update(conference: Conference): Promise<Conference | null> {
-    await this.loadConfig();
     return this.conferenceModel
       .findOneAndUpdate<Conference>(
         {
@@ -190,7 +184,6 @@ class ConferencesService {
   }
 
   async remove(meetingIDs: string[], username: string): Promise<boolean> {
-    await this.loadConfig();
     const result = await this.conferenceModel
       .deleteMany({
         meetingID: { $in: meetingIDs },
@@ -207,7 +200,8 @@ class ConferencesService {
     }
   }
 
-  createChecksum(method = '', query = '') {
+  async createChecksum(method = '', query = '') {
+    await this.loadConfig();
     const string = method + query + this.BBB_SECRET;
 
     return crypto.createHash('sha1').update(string).digest('hex');
