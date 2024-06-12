@@ -14,7 +14,7 @@ import { SettingsPage } from '@/pages/Settings';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { APPS, AppIntegrationType, AppConfigDto } from '@/datatypes/types';
+import { APPS, AppIntegrationType, AppConfig } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useAppConfigQuery from '@/api/useAppConfigQuery';
 import useUserStore from '@/store/userStore';
@@ -40,7 +40,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
+const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (

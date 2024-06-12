@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Logger, Put, Delete, Param } from '@nestjs/common';
 
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AppConfigDto } from '@libs/appconfig/types/appconfig';
+import { AppConfig } from './appconfig.types';
 import AppConfigService from './appconfig.service';
 import LoggerEnum from '../types/logger';
 
@@ -11,12 +11,12 @@ class AppConfigController {
   constructor(private readonly appConfigService: AppConfigService) {}
 
   @Post()
-  createConfig(@Body() appConfigDto: AppConfigDto[]) {
+  createConfig(@Body() appConfigDto: AppConfig[]) {
     this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
   }
 
   @Put()
-  updateConfig(@Body() appConfigDto: AppConfigDto[]) {
+  updateConfig(@Body() appConfigDto: AppConfig[]) {
     this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.log(e, LoggerEnum.MONGODB));
   }
 

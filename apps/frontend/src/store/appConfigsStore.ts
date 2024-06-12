@@ -1,10 +1,10 @@
-import { AppConfigDto, AppIntegrationType } from '@libs/index';
+import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type AppConfigsStore = {
-  appConfig: AppConfigDto[];
-  setAppConfig: (appConfig: AppConfigDto[]) => void;
+  appConfig: AppConfig[];
+  setAppConfig: (appConfig: AppConfig[]) => void;
 };
 
 type PersistedAppConfigsStore = (
@@ -16,7 +16,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set) => ({
       appConfig: [{ name: '', linkPath: '', icon: '', appType: AppIntegrationType.NATIVE }],
-      setAppConfig: (appConfig: AppConfigDto[]) => {
+      setAppConfig: (appConfig: AppConfig[]) => {
         set({ appConfig });
       },
     }),
