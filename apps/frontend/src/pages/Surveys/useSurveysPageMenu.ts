@@ -1,62 +1,64 @@
+import { useSearchParams } from 'react-router-dom';
+import { MenuBarEntryProps } from '@/datatypes/types';
 import {
   UserIcon,
   PlusIcon,
-  AnsweredSurveysPageIcon,
-  OpenSurveysPageIcon,
-  // SurveyIcon,
-  SurveyPageMenuIcon,
+  SurveysViewAnsweredIcon,
+  SurveysViewOpenIcon,
+  SurveysSidebarIcon,
+  // SurveysViewManagementIcon,
 } from '@/assets/icons';
-import { MenuBarEntryProps } from '@/datatypes/types.ts';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore.ts';
 
 const useSurveysPageMenu = () => {
-  const {
-    setPageViewOpenSurveys,
-    setPageViewAnsweredSurveys,
-    setPageViewCreatedSurveys,
-    setPageViewSurveyCreator,
-    // setPageViewSurveysManagement,
-  } = useSurveysPageStore();
+  const [, setSearchParams] = useSearchParams();
 
   const menuBar = (): MenuBarEntryProps => ({
     title: 'surveys.title',
-    icon: SurveyPageMenuIcon,
+    icon: SurveysSidebarIcon,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [
       // {
-      //   id: 'surveys-management',
-      //   label: 'survey.manage',
-      //   icon: SurveyIcon || ManageSurveysPageIcon,
-      //   action: () => setPageViewSurveysManagement(),
+      //     id: 'manage-surveys',
+      //     label: 'surveys.view.management',
+      //     icon: SurveysViewManagementIcon,
+      //     action: () => {
+      //         setSearchParams({ page: 'management' });
+      //     },
       // },
       {
         id: 'overview-open-surveys',
-        label: 'surveys.openSurveys',
-        icon: OpenSurveysPageIcon,
-        action: () => setPageViewOpenSurveys(),
+        label: 'surveys.view.open',
+        icon: SurveysViewOpenIcon,
+        action: () => {
+          setSearchParams({ page: 'open' });
+        },
       },
       {
         id: 'overview-answered-surveys',
-        label: 'surveys.answeredSurveys',
-        icon: AnsweredSurveysPageIcon,
-        action: () => setPageViewAnsweredSurveys(),
+        label: 'surveys.view.answered',
+        icon: SurveysViewAnsweredIcon,
+        action: () => {
+          setSearchParams({ page: 'answered' });
+        },
       },
       {
         id: 'overview-created-surveys',
-        label: 'surveys.createdSurveys',
+        label: 'surveys.view.created',
         icon: UserIcon,
-        action: () => setPageViewCreatedSurveys(),
+        action: () => {
+          setSearchParams({ page: 'created' });
+        },
       },
       {
         id: 'survey-editor-view',
-        label: 'survey.create',
+        label: 'surveys.view.editor',
         icon: PlusIcon,
-        action: () => setPageViewSurveyCreator(),
+        action: () => {
+          setSearchParams({ page: 'editor' });
+        },
       },
     ],
   });
-
   return menuBar();
 };
-
 export default useSurveysPageMenu;

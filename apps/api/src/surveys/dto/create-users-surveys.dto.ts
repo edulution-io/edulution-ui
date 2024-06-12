@@ -1,9 +1,7 @@
 import { Survey } from '../types/survey.schema';
-import { SurveyAnswer } from '../types/users-surveys.schema';
+import { SurveyAnswer } from '../types/survey-answer';
 
 class CreateUsersSurveysDto {
-  username: string;
-
   openSurveys: string[];
 
   createdSurveys: Survey[];

@@ -15,4 +15,4 @@ import NotificationService from './notification.service';
   controllers: [NotificationController],
   providers: [NotificationService],
 })
-export default class SurveysModule {}
+export default class NotificationModule {}

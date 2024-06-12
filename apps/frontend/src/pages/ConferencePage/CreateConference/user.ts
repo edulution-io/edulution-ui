@@ -12,10 +12,10 @@ export class User {
   roles?: string[];
 
   userSurveys: {
-    openSurveys: string[];
-    createdSurveys: string[];
+    openSurveys: number[];
+    createdSurveys: number[];
     answeredSurveys: {
-      surveyname: string;
+      surveyId: number;
       answer: JSON;
     }[];
   };

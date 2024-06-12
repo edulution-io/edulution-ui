@@ -4,7 +4,7 @@ import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import mockedConferences from '@/components/feature/Home/Notifications/components/mocked-values/mocked-conferences.ts';
 import Mail from '@/components/feature/Home/Notifications/components/types/mail.ts';
 import mockedMails from '@/components/feature/Home/Notifications/components/mocked-values/mocked-mails.ts';
-import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
+import { Survey } from '@/pages/Surveys/types/survey';
 import mockedSurveys from '@/components/feature/Home/Notifications/components/mocked-values/mocked-surveys.ts';
 // import NOTIFICATION_ENDPOINT from "@/components/feature/Home/Notifications/components/types/notification-endpoint.ts";
 

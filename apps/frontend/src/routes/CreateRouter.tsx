@@ -16,6 +16,7 @@ import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
+import SurveysPage from "@/pages/Surveys/SurveysPage.tsx";
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -30,7 +31,7 @@ const pageSwitch = (page: string) => {
     case APPS.MAIL:
       return <FramePlaceholder />;
     case APPS.SURVEYS:
-      return <FramePlaceholder />;
+      return <SurveysPage />;
     case APPS.DESKTOP_DEPLOYMENT:
       return <FramePlaceholder />;
     case APPS.LINUXMUSTER:

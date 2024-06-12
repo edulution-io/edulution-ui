@@ -1,7 +1,7 @@
 class PushAnswerDto {
-  surveyname: string;
+  surveyId: number;
 
-  answer: string;
+  answer: JSON;
 
   isAnonymous?: boolean;
 

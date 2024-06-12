@@ -1,126 +1,50 @@
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
-import cn from '@/lib/utils';
-import { APPS } from '@/datatypes/types';
-import { PageView } from '@/pages/Surveys/Subpages/components/types/page-view';
-import AnsweredSurveysPage from '@/pages/Surveys/Subpages/AnsweredSurveys';
-import CreatedSurveysPage from '@/pages/Surveys/Subpages/CreatedSurveys';
-import OpenSurveysPage from '@/pages/Surveys/Subpages/OpenSurveys';
-import SurveyManagement from '@/pages/Surveys/Subpages/SurveyManagement';
-import SurveyEditor from '@/pages/Surveys/Subpages/Editor/SurveyEditor';
-import useSurveysPageStore from '@/pages/Surveys/SurveysPageStore';
-import useFrameStore from '@/routes/IframeStore';
+import { useSearchParams } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+// import SurveysManagement from '@/pages/Surveys/Tables/SurveysManagement';
+import OpenSurveys from '@/pages/Surveys/Tables/OpenSurveys';
+import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys';
+import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys';
+import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 
 const SurveysPage = () => {
-  const {
-    selectedPageView,
-    selectedSurvey,
-    setSelectedSurvey,
+  const { t } = useTranslation();
+  const [searchParams  , setSearchParams  ] = useSearchParams();
+  const page = searchParams.get('page');
 
-    openSurveys,
-    updateOpenSurveys,
-    isFetchingOpenSurveys,
+  // const navigate = useNavigate();
+  const onClickEdit = () => {
+    // navigate('/surveys/?page=editor');
+    setSearchParams({ page: 'editor' });
+  }
 
-    answeredSurveys,
-    updateAnsweredSurveys,
-    isFetchingAnsweredSurveys,
-
-    createdSurveys,
-    updateCreatedSurveys,
-    isFetchingCreatedSurveys,
-
-    setPageViewSurveyEditor,
-
-    deleteSurvey,
-  } = useSurveysPageStore();
-
-  const { activeFrame } = useFrameStore();
-
-  const isMobile = useMediaQuery('(max-width: 768px)');
-
-  const isFrameVisible = () => (activeFrame === APPS.SURVEYS ? 'block' : 'hidden');
-
-  const getSurveyComponent = () => {
-    switch (selectedPageView) {
-      case PageView.OPEN_SURVEYS:
-        return (
-          <OpenSurveysPage
-            selectedSurvey={selectedSurvey}
-            setSelectedSurvey={setSelectedSurvey}
-            openSurveys={openSurveys}
-            updateOpenSurveys={updateOpenSurveys}
-            updateAnsweredSurveys={updateAnsweredSurveys}
-            isFetchingOpenSurveys={isFetchingOpenSurveys}
-          />
-        );
-      case PageView.CREATED_SURVEYS:
-        return (
-          <CreatedSurveysPage
-            selectedSurvey={selectedSurvey}
-            setSelectedSurvey={setSelectedSurvey}
-            createdSurveys={createdSurveys}
-            updateCreatedSurveys={updateCreatedSurveys}
-            isFetchingCreatedSurveys={isFetchingCreatedSurveys}
-            setPageViewSurveyEditor={setPageViewSurveyEditor}
-            deleteSurvey={deleteSurvey}
-            updateOpenSurveys={updateOpenSurveys}
-            updateAnsweredSurveys={updateAnsweredSurveys}
-          />
-        );
-      case PageView.ANSWERED_SURVEYS:
-        return (
-          <AnsweredSurveysPage
-            selectedSurvey={selectedSurvey}
-            setSelectedSurvey={setSelectedSurvey}
-            answeredSurveys={answeredSurveys}
-            updateAnsweredSurveys={updateAnsweredSurveys}
-            isFetchingAnsweredSurveys={isFetchingAnsweredSurveys}
-          />
-        );
-      case PageView.SURVEY_CREATOR:
-        return (
-          <SurveyEditor
-            updateCreatedSurveys={updateCreatedSurveys}
-            updateOpenSurveys={updateOpenSurveys}
-            updateAnsweredSurveys={updateAnsweredSurveys}
-          />
-        );
-      case PageView.SURVEY_EDITOR:
-        return (
-          <SurveyEditor
-            selectedSurvey={selectedSurvey}
-            updateCreatedSurveys={updateCreatedSurveys}
-            updateOpenSurveys={updateOpenSurveys}
-            updateAnsweredSurveys={updateAnsweredSurveys}
-          />
-        );
-      case PageView.MANAGE_SURVEYS:
-        return <SurveyManagement />;
+  const renderPage = () => {
+    switch (page) {
+      // case 'management':
+      //   return <SurveysManagement/>
+      case 'open':
+        return <OpenSurveys />
+      case 'answered':
+        return <AnsweredSurveys />
+      case 'created':
+        return <CreatedSurveys edit={onClickEdit} />
+      case 'editor':
+        return <SurveyEditorPage />
       default:
         return (
-          <OpenSurveysPage
-            selectedSurvey={selectedSurvey}
-            setSelectedSurvey={setSelectedSurvey}
-            openSurveys={openSurveys}
-            updateOpenSurveys={updateOpenSurveys}
-            updateAnsweredSurveys={updateAnsweredSurveys}
-            isFetchingOpenSurveys={isFetchingOpenSurveys}
-          />
+          <div className="flex flex-col justify-between">
+            <p>{page}</p>
+            <h2>{t('surveys.title')}</h2>
+            <div className="pt-5 sm:pt-0">
+              <p className="pb-4">{t('surveys.description')}</p>
+            </div>
+          </div>
         );
     }
   };
 
-  return (
-    <div
-      className={cn(
-        'absolute bottom-[32px] right-[57px] top-0 h-screen',
-        isFrameVisible(),
-        isMobile ? 'left-4' : 'left-[256px]',
-      )}
-    >
-      {getSurveyComponent()}
-    </div>
-  );
+  return renderPage();
 };
 
 export default SurveysPage;

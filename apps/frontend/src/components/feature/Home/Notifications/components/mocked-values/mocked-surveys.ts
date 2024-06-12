@@ -1,9 +1,9 @@
-import { Survey } from '@/pages/Surveys/Subpages/components/types/survey';
+import { Survey } from '@/pages/Surveys/types/survey';
 
 const mockedSurveys: Survey[] = [
   {
-    surveyname: '20240603115865168',
-    survey: JSON.stringify({
+    id: 20240603115865168,
+    formula: JSON.parse(JSON.stringify({
       title: 'Klassenarbeit',
       pages: [
         {
@@ -24,8 +24,8 @@ const mockedSurveys: Survey[] = [
         },
       ],
       showQuestionNumbers: 'off',
-    }),
-
+    })),
+    publicAnswers: [],
     participants: [
       {
         label: 'agy-netzint-teacher',
@@ -51,13 +51,17 @@ const mockedSurveys: Survey[] = [
     participated: [],
     saveNo: 5,
     created: new Date(),
-    expires: undefined,
+    expirationDate: undefined,
     isAnonymous: true,
+
+    canShowResultsTable: true,
+    canShowResultsChart: true,
+
     canSubmitMultipleAnswers: true,
   } as Survey,
   {
-    surveyname: '20240606115865168',
-    survey: JSON.stringify({
+    id: 20240606115865168,
+    formula: JSON.parse(JSON.stringify({
       title: 'Grillfest',
       completedHtml: '<h3>Thank you for your feedback</h3>',
       completedHtmlOnCondition: [
@@ -127,7 +131,8 @@ const mockedSurveys: Survey[] = [
         },
       ],
       showQuestionNumbers: 'off',
-    }),
+    })),
+    publicAnswers: [],
     participants: [
       {
         label: 'agy-netzint-teacher',
@@ -153,8 +158,12 @@ const mockedSurveys: Survey[] = [
     participated: [],
     saveNo: 15,
     created: new Date(),
-    expires: new Date('2024-09-11T12:00:00'),
+    expirationDate: new Date('2024-09-11T12:00:00'),
     isAnonymous: true,
+
+    canShowResultsTable: true,
+    canShowResultsChart: true,
+
     canSubmitMultipleAnswers: true,
   } as Survey,
 ];

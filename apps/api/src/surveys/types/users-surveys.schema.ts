@@ -1,20 +1,16 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-export type SurveyAnswer = {
-  surveyname: string;
-  answer?: string;
-};
+import { SurveyAnswer } from './survey-answer';
 
 export type UsersSurveysDocument = UsersSurveys & Document;
 
 @Schema()
 export class UsersSurveys {
   @Prop()
-  openSurveys: string[];
+  openSurveys: number[];
 
   @Prop()
-  createdSurveys: string[];
+  createdSurveys: number[];
 
   @Prop()
   answeredSurveys: SurveyAnswer[];
