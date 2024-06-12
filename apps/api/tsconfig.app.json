@@ -10,6 +10,9 @@
     "composite": true,
     "declaration": true
   },
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "./webpack.config.cjs"],
-  "include": ["./**/*"]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+  "include": [
+    "./**/*",
+    "../../libs/**/*"
+  ]
 }

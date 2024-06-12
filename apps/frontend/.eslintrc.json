@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "jest.config.ts", "vite.config.ts", "postcss.config.mjs"],
+  "ignorePatterns": ["!**/*", "jest.config.ts", "vite.config.ts", "postcss.config.js", "tailwind.config.ts"],
   "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
