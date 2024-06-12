@@ -1,6 +1,6 @@
 {
   "extends": ["../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "vite.config.ts"],
+  "ignorePatterns": ["!**/*", "vite.config.mts"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
