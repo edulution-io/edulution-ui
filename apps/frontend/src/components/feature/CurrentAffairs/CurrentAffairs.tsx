@@ -36,7 +36,10 @@ const CurrentAffairs = () => {
     }
   }, [shouldUpdate]);
 
-  const filteredConferences = useMemo(() => conferences.filter((conference: Conference) => conference.isRunning), [conferences]);
+  const filteredConferences = useMemo(
+    () => conferences.filter((conference: Conference) => conference.isRunning),
+    [conferences],
+  );
 
   return (
     <Card

@@ -45,6 +45,6 @@ const ConferencesList = (props: ConferencesListProps) => {
       </div>
     </ScrollArea>
   );
-}
+};
 
 export default ConferencesList;
