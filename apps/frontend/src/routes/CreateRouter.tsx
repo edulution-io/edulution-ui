@@ -16,7 +16,7 @@ import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
-import SurveysPage from "@/pages/Surveys/SurveysPage.tsx";
+import SurveysPage from '@/pages/Surveys/SurveysPage.tsx';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {

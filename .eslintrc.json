@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "node": true,
     "browser": true,
@@ -37,14 +38,10 @@
     }
   },
   "ignorePatterns": [
-    "vite.config.ts",
-    "prettier.config.cjs",
+    "prettier.config.js",
     "vitest.workspace.ts",
-    "tailwind.config.ts",
     "jest.preset.cjs",
     "jest.config.ts",
-    "postcss.config.mjs",
-    "webpack.config.cjs",
     "dist/apps/*",
     "scripts/*"
   ],
