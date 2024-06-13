@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import Mail from '@/components/feature/Home/Notifications/components/types/mail.ts';
+import Mail from '@/lib/Dashboard/Notifications/Mail';
 import mockedMails from '@/components/feature/Home/Notifications/components/mocked-values/mocked-mails.ts';
 import NOTIFICATION_ENDPOINT from "@/components/feature/Home/Notifications/components/types/notification-endpoint.ts";
 

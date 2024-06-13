@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import Mail from '@/lib/Dashboard/Notifications/mail';
 import MailIcon from '@/assets/icons/edulution/Mail.svg';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
-import Mail from '@/components/feature/Home/Notifications/components/types/mail';
 import { MailList } from '@/components/shared/MailList';
+import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/Collapsible';
 
 interface MailCardContentProps {

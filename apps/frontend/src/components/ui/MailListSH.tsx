@@ -2,9 +2,9 @@ import { ComponentProps } from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 import cn from '@/lib/utils';
+import Mail from '@/lib/Dashboard/Notifications/mail';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import Mail from '@/components/feature/Home/Notifications/components/types/mail';
 
 function getBadgeVariantFromLabel(
   label: string

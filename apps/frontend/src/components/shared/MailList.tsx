@@ -1,8 +1,8 @@
 import React, { ComponentProps } from 'react';
 import cn from '@/lib/utils';
+import Mail from '@/lib/Dashboard/Notifications/mail';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import Mail from '@/components/feature/Home/Notifications/components/types/mail.ts';
 
 function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
   if (['work'].includes(label.toLowerCase())) {

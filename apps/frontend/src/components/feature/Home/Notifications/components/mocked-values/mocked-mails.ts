@@ -1,4 +1,4 @@
-import Mail from '@/components/feature/Home/Notifications/components/types/mail';
+import Mail from '@/lib/Dashboard/Notifications/mail';
 
 const mockedMails: Mail[] = [
   {
