@@ -18,31 +18,31 @@ export default defineConfig({
     proxy: {
       '/auth': {
         rewrite: (path) => path.replace(/^\/auth/, ''),
-        target: 'https://auth.demo.multi.schule/auth',
+        target: 'https://auth.schulung.multi.schule/auth',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://ui.demo.multi.schule',
+          Origin: 'https://ui.schulung.multi.schule',
           'X-Forwarded-For': 'client-ip-address',
           'X-Forwarded-Proto': 'https',
-          'X-Forwarded-Host': 'auth.demo.multi.schule',
+          'X-Forwarded-Host': 'auth.schulung.multi.schule',
         },
       },
       '/webdav': {
-        target: 'https://server.demo.multi.schule',
+        target: 'https://server.schulung.multi.schule',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule',
+          Origin: 'https://server.schulung.multi.schule',
         },
       },
       '/api': {
         rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.demo.multi.schule:8001',
+        target: 'https://server.schulung.multi.schule:8001',
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.demo.multi.schule:8001',
+          Origin: 'https://server.schulung.multi.schule:8001',
         },
       },
       '/edu-api': {
@@ -50,7 +50,7 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
         headers: {
-          Origin: 'https://ui.demo.multi.schule',
+          Origin: 'https://ui.schulung.multi.schule',
         },
       },
       '/SOGo': {
@@ -68,12 +68,12 @@ export default defineConfig({
       },
       '/guacamole': {
         rewrite: (path) => path.replace(/^\/guacamole/, ''),
-        target: 'https://ui.demo.multi.schule/guacamole',
+        target: 'https://ui.schulung.multi.schule/guacamole',
         changeOrigin: true,
         secure: false,
         ws: true,
         headers: {
-          Origin: 'https://ui.demo.multi.schule',
+          Origin: 'https://ui.schulung.multi.schule',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',

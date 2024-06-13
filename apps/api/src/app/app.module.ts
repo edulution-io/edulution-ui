@@ -11,7 +11,7 @@ import ConferencesModule from '../conferences/conferences.module';
 import FilemanagerModule from '../filemanager/filemanager.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
 import SurveyModule from '../surveys/surveys.module';
-import MailsModule from '../notification/mails.module';
+import MailsModule from '../mails/mails.module';
 
 @Module({
   imports: [
