@@ -1,17 +1,14 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
-import useLmnUserStoreOLD from '@/store/lmnApiStoreOLD';
 import { waitForToken } from '@/api/common';
+import useLmnApiStore from '@/store/lmnApiStore';
 
 const Groups = () => {
-  const { userData, getUserData } = useLmnUserStoreOLD((state) => ({
-    getUserData: state.getUserData,
-    userData: state.userData,
-  }));
+  const { user, getUserData } = useLmnApiStore();
 
   useEffect(() => {
-    if (!userData) {
+    if (!user) {
       const getUserGroupDataQuery = async () => {
         await waitForToken();
         getUserData().catch(console.error);
@@ -19,7 +16,7 @@ const Groups = () => {
 
       getUserGroupDataQuery().catch(console.error);
     }
-  }, [userData]);
+  }, [user]);
   const { t } = useTranslation();
   return (
     <Card
@@ -29,7 +26,7 @@ const Groups = () => {
       <CardContent>
         <div className="flex flex-col gap-1">
           <h4 className="text-md font-bold">{t('groupsPage.classes')}</h4>
-          {userData?.schoolclasses.map((group) => (
+          {user?.schoolclasses.map((group) => (
             <div
               key={group}
               className="flex flex-col"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import Sidebar from '@/components/ui/Sidebar';
 import backgroundImage from '@/assets/background.jpg';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
@@ -9,7 +9,7 @@ import { findAppConfigByName, getFromPathName } from '@/utils/common';
 const IframeLayout: React.FC = () => {
   const { pathname } = useLocation();
   const rootPathName = getFromPathName(pathname, 1);
-  const { appConfig } = useAppConfigsStoreOLD();
+  const { appConfigs } = useAppConfigsStore();
 
   return (
     <div
@@ -20,7 +20,7 @@ const IframeLayout: React.FC = () => {
         <iframe
           className="h-screen w-full pr-[58px]"
           title={pathname}
-          src={findAppConfigByName(appConfig, rootPathName)?.options.url}
+          src={findAppConfigByName(appConfigs, rootPathName)?.options.url}
         />
       </div>
       <Sidebar />
