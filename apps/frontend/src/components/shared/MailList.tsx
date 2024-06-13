@@ -1,6 +1,6 @@
 import React, { ComponentProps } from 'react';
 import cn from '@/lib/utils';
-import Mail from '@/lib/Dashboard/Notifications/mail';
+import Mail from '@/lib/src/notification/types/mail';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 

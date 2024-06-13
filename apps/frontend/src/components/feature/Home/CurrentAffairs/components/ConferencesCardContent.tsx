@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ConferencesIcon } from '@/assets/icons';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import Conference from '@/pages/ConferencePage/dto/conference.dto';
-import ConferencesList from '@/components/feature/Home/Notifications/components/ConferencesList';
+import ConferencesList from '@/components/feature/Home/CurrentAffairs/components/ConferencesList';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/Collapsible';
 
 interface ConferencesCardContentProps {

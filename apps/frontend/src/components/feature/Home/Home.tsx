@@ -5,7 +5,7 @@ import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
-import NotificationWidget from '@/components/feature/Home/Notifications/NotificationWidget';
+import CurrentAffairsWidget from '@/components/feature/Home/CurrentAffairs/CurrentAffairsWidget';
 
 const Home: React.FC = () => {
   return (
@@ -34,7 +34,7 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            <NotificationWidget />
+            <CurrentAffairsWidget />
           </div>
         </div>
       </div>

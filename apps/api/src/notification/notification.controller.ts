@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { GetUsername } from '../common/decorators/getUser.decorator';
-import ImapFlowGetMailsClient from "./imapFlowGetMailsClient";
+import ImapFlowGetMailsClient from './imapFlowGetMailsClient';
 
-@Controller('notifications')
+@Controller('mails')
 class NotificationController {
   @Get()
   async update(@GetUsername() username: string) {

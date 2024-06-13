@@ -1,17 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Mail from '@/lib/Dashboard/Notifications/mail';
-import MailIcon from '@/assets/icons/edulution/Mail.svg';
-import { MailList } from '@/components/shared/MailList';
+import { SurveysSidebarIcon } from '@/assets/icons';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
+import { Survey } from '@/pages/Surveys/types/survey';
+import SurveysList from '@/components/feature/Home/CurrentAffairs/components/SurveysList';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/Collapsible';
 
-interface MailCardContentProps {
-  mails: Mail[];
+interface SurveysCardContentProps {
+  surveys: Survey[];
 }
 
-const MailCardContent = (props: MailCardContentProps) => {
-  const { mails } = props;
+const SurveysCardContent = (props: SurveysCardContentProps) => {
+  const { surveys } = props;
   const { t } = useTranslation();
 
   return (
@@ -20,18 +20,18 @@ const MailCardContent = (props: MailCardContentProps) => {
     >
       <CollapsibleTrigger className="text-xl font-bold flex">
         <img
-          src={MailIcon}
-          alt="mail-notification"
+          src={SurveysSidebarIcon}
+          alt="survey-notification"
           width={BUTTONS_ICON_WIDTH}
           className="mr-4"
         />
-        {t('mail.sidebar')}
+        {t('survey.sidebar')}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <MailList items={mails} className="mt-2 mb-6" />
+        <SurveysList items={surveys} className="mt-2 mb-6"/>
       </CollapsibleContent>
     </Collapsible>
   );
 };
 
-export default MailCardContent;
+export default SurveysCardContent;
