@@ -24,12 +24,6 @@ const CurrentAffairs = () => {
   const { openSurveys, updateOpenSurveys } = useSurveyTablesPageStore();
   const { mails, fetchMails } = useMailStore();
 
-  useEffect(() => {
-    if (shouldUpdate) {
-      cyclicUpdate();
-    }
-  }, [shouldUpdate]);
-
   const cyclicUpdate = useCallback(async () => {
     const fetch = async () => {
       start();
@@ -46,6 +40,12 @@ const CurrentAffairs = () => {
       await fetch();
     }
   }, []);
+
+  useEffect(() => {
+    if (shouldUpdate) {
+      cyclicUpdate();
+    }
+  }, [shouldUpdate]);
 
   const filteredConferences = useMemo(() => {
     return conferences.filter((conference: Conference) => conference.isRunning)
@@ -75,7 +75,11 @@ const CurrentAffairs = () => {
                 {t('conferences.sidebar')}
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <ConferencesList items={filteredConferences} className="mt-2 mb-6" />
+                {filteredConferences.length > 0 ? (
+                  <ConferencesList items={filteredConferences} className="mt-2 mb-6"/>
+                ) : (
+                  <div className="text-center mt-2 mb-6">{t('current-affairs.noConferences')}</div>
+                )}
               </CollapsibleContent>
             </Collapsible>
 
@@ -92,7 +96,11 @@ const CurrentAffairs = () => {
                 {t('surveys.sidebar')}
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <SurveysList items={openSurveys} className="mt-2 mb-6"/>
+                {openSurveys.length > 0 ? (
+                  <SurveysList items={openSurveys} className="mt-2 mb-6"/>
+                ) : (
+                  <div className="text-center mt-2 mb-6">{t('current-affairs.noSurveys')}</div>
+                )}
               </CollapsibleContent>
             </Collapsible>
 
@@ -109,7 +117,11 @@ const CurrentAffairs = () => {
                 {t('mail.sidebar')}
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <MailList items={mails} className="mt-2 mb-6" />
+                {mails.length > 0 ? (
+                  <MailList items={mails} className="mt-2 mb-6" />
+                ) : (
+                  <div className="text-center mt-2 mb-6">{t('current-affairs.noMails')}</div>
+                )}
               </CollapsibleContent>
             </Collapsible>
           </ScrollArea>
