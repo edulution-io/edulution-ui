@@ -1,6 +1,6 @@
 import React, { ComponentProps } from 'react';
 import cn from '@/lib/utils';
-import Mail from '@/lib/src/notification/types/mail';
+import Mail from '../../../../../libs/src/notification/types/mail';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
@@ -25,7 +25,7 @@ export function MailList({ items, className }: MailListProps) {
   return (
     <ScrollArea
       className={cn(
-        'max-h-[470px] overflow-y-scroll',
+        'max-h-[470px] overflow-y-auto',
         className,
       )}
     >

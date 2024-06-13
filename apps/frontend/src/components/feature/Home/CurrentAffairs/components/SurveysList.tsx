@@ -56,7 +56,7 @@ export function SurveysList({ items, className }: SurveysListProps) {
   return (
     <ScrollArea
       className={cn(
-        'max-h-[470px] overflow-y-scroll',
+        'max-h-[470px] overflow-y-auto',
         className,
       )}
     >

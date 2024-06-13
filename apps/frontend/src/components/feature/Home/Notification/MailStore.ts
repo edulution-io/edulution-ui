@@ -1,8 +1,18 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import Mail from '@/lib/src/notification/types/mail';
-import mockedMails from '@/components/feature/Home/CurrentAffairs/components/mocked-values/mocked-mails';
+import { Mail } from '@libs/src/notification/types/';
 import MAIL_ENDPOINT from '@/components/feature/Home/Notification/mail-endpoint';
+
+interface Mail {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  text: string;
+  date: string;
+  read: boolean;
+  labels: string[];
+}
 
 interface MailStore {
   mails: Mail[];
@@ -24,13 +34,13 @@ const useMailStore = create<MailStore>((set) => ({
   fetchMails: async (): Promise<Mail[]> => {
     set({ errorFetchingMails: null, isFetchingMails: true });
     try {
-      const response = await eduApi.get<Mail[]>(MAIL_ENDPOINT + 'mails/');
+      const response = await eduApi.get<Mail[]>(MAIL_ENDPOINT);
       const mails = response.data;
-      set({ mails: mails || mockedMails, isFetchingMails: false });
+      set({ mails: mails, isFetchingMails: false });
       return mails;
     } catch (error) {
-      set({ errorFetchingMails: error, isFetchingMails: false });
-      return mockedMails;
+      set({ mails: [], errorFetchingMails: error, isFetchingMails: false });
+      return [];
     }
   },
   reset: () => set(initialState),
