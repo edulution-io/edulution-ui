@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/shared/Card';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/Collapsible';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-// eslint-disable-next-line import/no-named-as-default
 import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import useCurrentAffairsStore from '@/components/feature/CurrentAffairs/CurrentAffairsStore';
 import ConferencesList from '@/components/feature/CurrentAffairs/components/ConferencesList';

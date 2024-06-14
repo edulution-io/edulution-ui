@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 interface DeleteConferencesDialogProps {
   trigger?: React.ReactNode;

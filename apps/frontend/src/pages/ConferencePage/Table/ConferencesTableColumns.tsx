@@ -3,7 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { LockClosedIcon, LockOpen1Icon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { useTranslation } from 'react-i18next';

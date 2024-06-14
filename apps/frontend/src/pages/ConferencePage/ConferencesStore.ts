@@ -3,7 +3,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;

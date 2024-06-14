@@ -2,7 +2,6 @@ import React from 'react';
 import cn from '@/lib/utils';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-// eslint-disable-next-line import/no-named-as-default
 import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 
