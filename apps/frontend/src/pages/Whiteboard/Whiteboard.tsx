@@ -12,7 +12,7 @@ const Whiteboard = () => {
   return (
     <div className={cn('absolute inset-y-0 left-0 ml-0 mr-14 w-screen justify-center pr-14', getStyle())}>
       <div className="h-full w-full flex-grow">
-        <Excalidraw theme={'dark'} />
+        <Excalidraw theme="dark" />
       </div>
     </div>
   );
