@@ -12,10 +12,13 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import { Survey } from '@/pages/Surveys/types/survey';
-import SurveyEditorForm from '@/pages/Surveys/Editor/components/survey-editor-form';
+import ISurveyEditorForm from '@/pages/Surveys/Editor/components/survey-editor-form';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import { getEmptyFormValues, getInitialFormValues } from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
+import {
+  getEmptyFormValues,
+  getInitialFormValues,
+} from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
 
 interface SurveyEditorFormProps {
   selectedSurvey?: Survey;
@@ -26,13 +29,20 @@ interface SurveyEditorFormProps {
 
 const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { selectedSurvey, updateCreatedSurveys, updateAnsweredSurveys, updateOpenSurveys } = props;
-  const { isOpenSaveSurveyDialog, openSaveSurveyDialog, closeSaveSurveyDialog, commitSurvey, isCommiting, errorCommiting } = useSurveyEditorFormStore();
+  const {
+    isOpenSaveSurveyDialog,
+    openSaveSurveyDialog,
+    closeSaveSurveyDialog,
+    commitSurvey,
+    isCommiting,
+    errorCommiting,
+  } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
 
-  const initialFormValues: SurveyEditorForm = getInitialFormValues(selectedSurvey);
+  const initialFormValues: ISurveyEditorForm = getInitialFormValues(selectedSurvey);
 
-  const emptyFormValues: SurveyEditorForm = getEmptyFormValues();
+  const emptyFormValues: ISurveyEditorForm = getEmptyFormValues();
 
   const formSchema = z.object({
     id: z.number(),
@@ -59,7 +69,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     invitedGroups: z.array(z.object({})),
   });
 
-  const form = useForm<SurveyEditorForm>({
+  const form = useForm<ISurveyEditorForm>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
@@ -75,7 +85,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     expirationDate,
     expirationTime,
     isAnonymous,
-    canSubmitMultipleAnswers
+    canSubmitMultipleAnswers,
   } = form.getValues();
 
   const saveSurvey = async () => {
@@ -100,7 +110,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     } catch (error) {
       toast.error(error);
     }
-  }
+  };
 
   // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(() => {
@@ -119,7 +129,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          { getSurveyEditor }
+          {getSurveyEditor}
           {errorCommiting ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {errorCommiting.message}

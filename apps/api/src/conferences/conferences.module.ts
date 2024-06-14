@@ -4,7 +4,7 @@ import ConferencesService from './conferences.service';
 import { Conference, ConferenceSchema } from './conference.schema';
 import ConferencesController from './conferences.controller';
 import AppConfigService from '../appconfig/appconfig.service';
-import AppConfigSchema, { AppConfig } from '../appconfig/appconfig.schema';
+import { AppConfigSchema, AppConfig } from '../appconfig/appconfig.schema';
 
 @Module({
   imports: [

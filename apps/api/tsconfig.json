@@ -6,11 +6,6 @@
     "allowImportingTsExtensions": true,
     "allowJs": true
   },
-  "typeRoots": [
-    "./node_modules/@types",
-    "./src/@types"
-  ],
-  "include": [
-    "./**/*"
-  ]
+  "typeRoots": ["./node_modules/@types", "./src/@types"],
+  "include": ["./**/*"]
 }

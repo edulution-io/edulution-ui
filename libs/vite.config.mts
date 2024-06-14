@@ -1,5 +1,4 @@
-import { defineConfig } from 'vite';
-
+import { defineConfig } from 'vitest/config';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
@@ -7,11 +6,6 @@ export default defineConfig({
   cacheDir: '../node_modules/.vite/libs',
 
   plugins: [nxViteTsPaths()],
-
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
 
   test: {
     globals: true,
