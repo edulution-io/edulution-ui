@@ -1,4 +1,4 @@
-interface Mail {
+export interface Mail {
   id: string;
   name: string;
   email: string;
@@ -8,5 +8,3 @@ interface Mail {
   read: boolean;
   labels: string[];
 }
-
-export default Mail;
