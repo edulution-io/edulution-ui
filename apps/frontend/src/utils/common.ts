@@ -1,4 +1,4 @@
-import { AppConfigDto } from '@/datatypes/types';
+import { AppConfig } from '@/datatypes/types';
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';
 
