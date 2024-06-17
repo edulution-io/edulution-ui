@@ -1,35 +1,32 @@
 import React, { useEffect } from 'react';
-import useLmnUserStoreOLD from '@/store/lmnApiStoreOLD';
 import { waitForToken } from '@/api/common';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import useLmnApiStore from '@/store/lmnApiStore';
 
 const AccountInformation = () => {
-  const { userData, getUserData } = useLmnUserStoreOLD((state) => ({
-    getUserData: state.getUserData,
-    userData: state.userData,
-  }));
+  const { user, getUserData } = useLmnApiStore();
 
   useEffect(() => {
-    if (!userData) {
+    if (!user) {
       const getUserDataQuery = async () => {
         await waitForToken();
         getUserData().catch(console.error);
       };
       getUserDataQuery().catch(console.error);
     }
-  }, [userData]);
+  }, [user]);
 
   const { t } = useTranslation();
   const userInfoFields = [
-    { label: t('accountData.name'), value: userData ? userData.displayName : '...' },
+    { label: t('accountData.name'), value: user?.displayName || '...' },
     {
       label: t('accountData.email'),
-      value: userData ? userData?.mail && userData?.mail.length > 0 && userData.mail.at(0) : '...',
+      value: (user?.mail && user.mail.length > 0 && user.mail.at(0)) || '...',
     },
-    { label: t('accountData.school'), value: userData ? userData.school : '...' },
-    { label: t('accountData.role'), value: userData ? userData.sophomorixRole : '...' },
+    { label: t('accountData.school'), value: user?.school || '...' },
+    { label: t('accountData.role'), value: user?.sophomorixRole || '...' },
   ];
 
   return (
@@ -62,10 +59,10 @@ const AccountInformation = () => {
 
         <div className="mt-6">
           <h4 className="font-bold">{t('accountData.my_information')}</h4>
-          {userData?.mail && userData?.mail.length > 1 && (
+          {user?.mail && user?.mail.length > 1 && (
             <>
               <p>{t('accountData.mail_alias')}</p>
-              {userData?.mail.slice(1).map((mail) => (
+              {user?.mail.slice(1).map((mail) => (
                 <div key={mail}>
                   <p>{mail}</p>
                 </div>

@@ -92,6 +92,5 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
-    emptyOutDir: true,
   },
 });

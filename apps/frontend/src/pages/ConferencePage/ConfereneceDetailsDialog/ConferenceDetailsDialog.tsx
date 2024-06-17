@@ -10,8 +10,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import useUserStoreOLD from '@/store/userStoreOLD';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -19,7 +19,7 @@ interface ConferenceDetailsDialogProps {
 
 const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
-  const { user } = useUserStoreOLD();
+  const { username } = useUserStore();
   const { getConferences } = useConferenceStore();
   const { isLoading, error, selectedConference, setSelectedConference, updateConference } =
     useConferenceDetailsDialogStore();
@@ -27,7 +27,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const initialFormValues: FormData = {
     name: selectedConference?.name || '',
     password: selectedConference?.password || '',
-    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user) || [],
+    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== username) || [],
   };
 
   const formSchema = z.object({
@@ -61,7 +61,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: [...form.getValues('invitedAttendees'), { username: user } as Attendee],
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as Attendee],
       meetingID: selectedConference?.meetingID,
     };
 

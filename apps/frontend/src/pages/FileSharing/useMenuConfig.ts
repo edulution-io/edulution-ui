@@ -47,7 +47,7 @@ const useFileSharingMenuConfig = () => {
   useEffect(() => {
     const fetchAndPrepareMenuItems = async () => {
       try {
-        const userStorageString: string | null = sessionStorage.getItem('user-storage');
+        const userStorageString: string | null = localStorage.getItem('user-storage');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
         const { user } = userStorage.state;

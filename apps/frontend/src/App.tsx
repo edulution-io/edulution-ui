@@ -3,15 +3,20 @@ import Router from '@/routes/Router';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
-import useUserStore from '@/store/userStoreOLD';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import useLmnApiStore from '@/store/lmnApiStore';
+import lmnApi from '@/api/lmnApi';
+import useUserStore from '@/store/UserStore/UserStore';
+import Toaster from '@/components/ui/Sonner';
 
 const App = () => {
   const { lang } = useLanguage();
-  const { token } = useUserStore();
+  const { eduApiToken } = useUserStore();
+  const { lmnApiToken } = useLmnApiStore();
 
-  eduApi.defaults.headers.Authorization = `Bearer ${token}`;
+  lmnApi.defaults.headers.common['x-api-key'] = lmnApiToken;
+  eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
     i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
@@ -30,6 +35,7 @@ const App = () => {
     <AuthProvider {...oidcConfig}>
       <BBBFrame />
       <Router />
+      <Toaster />
     </AuthProvider>
   );
 };
