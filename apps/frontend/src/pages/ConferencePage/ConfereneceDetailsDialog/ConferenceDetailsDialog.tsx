@@ -2,7 +2,7 @@ import React from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 import { useTranslation } from 'react-i18next';
 import FormData from '@/pages/ConferencePage/CreateConference/form';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 import useUserStore from '@/store/UserStore/UserStore';
 
 interface ConferenceDetailsDialogProps {
@@ -101,7 +101,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   );
 
   return (
-    <AdaptiveDialog
+    <AdaptiveDialogSH
       isOpen
       trigger={trigger}
       handleOpenChange={() => setSelectedConference(null)}

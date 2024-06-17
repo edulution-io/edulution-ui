@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import { Survey } from '@libs/survey/types/survey';
-import Attendee from '@libs/users-attendees/types/attendee';
-import SURVEY_ENDPOINT from '@libs/survey/surveys-endpoint';
+import Survey from '@libs/survey/types/survey';
+import Attendee from '@libs/conferences/types/attendee';
+import SURVEYS_ENDPOINT from '@libs/survey/utils/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -78,7 +78,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   ): Promise<Survey | undefined> => {
     set({ isCommiting: true, errorCommiting: null });
     try {
-      const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, {
+      const response = await eduApi.post<Survey>(SURVEYS_ENDPOINT, {
         id,
         formula,
         participants,

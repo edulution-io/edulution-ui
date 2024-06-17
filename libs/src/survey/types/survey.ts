@@ -1,6 +1,6 @@
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 
-export interface Survey {
+interface Survey {
   id: number;
   formula: JSON;
   publicAnswers: JSON[];
@@ -17,3 +17,5 @@ export interface Survey {
 
   canSubmitMultipleAnswers?: boolean;
 }
+
+export default Survey;

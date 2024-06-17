@@ -1,4 +1,5 @@
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
+import Group from '@libs/conferences/types/group';
 
 interface SurveyEditorFormData {
   id: number;
@@ -15,6 +16,8 @@ interface SurveyEditorFormData {
   canShowResultsChart?: boolean;
 
   canSubmitMultipleAnswers?: boolean;
+
+  invitedGroups: Group[];
 }
 
 export default SurveyEditorFormData;

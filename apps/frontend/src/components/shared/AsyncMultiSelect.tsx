@@ -3,6 +3,7 @@ import MultipleSelectorSH, { MultipleSelectorOptionSH } from '@/components/ui/Mu
 import { useTranslation } from 'react-i18next';
 
 export interface AsyncMultiSelectProps<T> {
+  options?: T[];
   value?: T[];
   placeholder: string;
   delay?: number;
@@ -11,6 +12,7 @@ export interface AsyncMultiSelectProps<T> {
 }
 
 const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
+  options,
   value,
   placeholder,
   delay = 700,
@@ -26,6 +28,7 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
 
   return (
     <MultipleSelectorSH
+      options={options}
       value={value}
       placeholder={placeholder}
       loadingIndicator={loadingIndicator}

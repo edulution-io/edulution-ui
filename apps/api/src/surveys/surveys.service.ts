@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 import { Survey, SurveyDocument } from './types/survey.schema';
 
 @Injectable()
@@ -47,30 +47,29 @@ class SurveysService {
     return newSurvey;
   }
 
-  async addPublicAnswer(id: number, answer: JSON, username?: string): Promise<Survey | undefined> {
+  async addPublicAnswer(id: number, answer: JSON, username: string): Promise<Survey | undefined> {
     const existingSurvey = await this.surveyModel.findOne<Survey>({ id }).exec();
     if (!existingSurvey) {
       throw new Error('Survey not found');
     }
 
     const participants = existingSurvey.participants || [];
-    const participated = existingSurvey.participated || [];
-    if (username) {
-      const isParticipant = participants.find((user: Attendee) =>
-        user.username && username ? user.username === username : false,
-      );
-      if (!isParticipant) {
-        throw new Error('User is no participant of the survey');
-      }
-      const hasAlreadyParticipated = participated.find((user: string) => user === username);
-      if (hasAlreadyParticipated) {
-        throw new Error('User has already participated in the survey');
-      }
-      participated.push(username);
+    const isParticipant = participants.find((user: Attendee) =>
+      user.username && username ? user.username === username : false,
+    );
+    if (!isParticipant) {
+      throw new Error('User is no participant of the survey');
     }
 
+    const participated = existingSurvey.participated || [];
+    const hasAlreadyParticipated = participated.find((user: string) => user === username);
+    if (hasAlreadyParticipated) {
+      throw new Error('User has already participated in the survey');
+    }
     const answers = existingSurvey.publicAnswers || [];
     answers.push(answer);
+
+    participated.push(username);
 
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<Survey>({ id }, { publicAnswers: answers, participated })

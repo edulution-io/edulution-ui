@@ -84,8 +84,11 @@
     "sidebar": "Schulverwaltung"
   },
   "survey": {
+    "creationDate": "Erstellungsdatum",
+    "expirationDate": "Deadline",
     "editor": {
-      "new": "Neu (leer)"
+      "new": "Neu (Leer)",
+      "abort": "Alle Änderungen verwerfen"
     }
   },
   "surveys": {
@@ -93,7 +96,23 @@
     "sidebar": "Umfragen",
     "description": "Hier können Sie eigene Umfragen erstellen und verwalten oder an den Umfragen anderer teilnehmen.",
     "view": {
+      "management": "Umfragen verwalten",
+      "open": "Offene Umfragen",
+      "created": "Eigene Umfragen",
+      "answered": "Schon beantwortet",
       "editor": "Neue erstellen"
+    },
+    "actions": {
+      "showResultsChart": "Resultat (Schaubild)",
+      "showResultsTable": "Resultat (Tabelle)",
+      "showCommittedAnswers": "Verfügbare Abgaben"
+    },
+    "saveDialog": {
+      "title": "Speichern und nutzern zuweisen",
+      "expires": "Deadline",
+      "flags": "Einstellungen",
+      "isAnonymous": "Soll die Umfrage anonym sein?",
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme des Benutzers bleibt der status auf offen?"
     }
   },
   "printer": {
@@ -175,7 +194,11 @@
     "password": "Passwort",
     "loading": "Laden...",
     "overview": "Übersicht",
-    "create": "Erstellen"
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "participate": "Teilnehmen",
+    "not-available": "'Nicht verfügbar'"
   },
   "form": {
     "path": "Link",

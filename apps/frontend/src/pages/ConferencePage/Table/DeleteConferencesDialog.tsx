@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -72,7 +72,7 @@ const DeleteConferencesDialog = ({ trigger, conferences }: DeleteConferencesDial
     );
 
   return (
-    <AdaptiveDialog
+    <AdaptiveDialogSH
       isOpen={isOpen}
       trigger={trigger}
       handleOpenChange={isOpen ? () => setIsOpen(false) : () => setIsOpen(true)}

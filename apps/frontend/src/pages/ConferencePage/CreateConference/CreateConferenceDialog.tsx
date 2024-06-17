@@ -1,5 +1,5 @@
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
@@ -105,7 +105,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   );
 
   return (
-    <AdaptiveDialog
+    <AdaptiveDialogSH
       isOpen={isCreateConferenceDialogOpen}
       trigger={trigger}
       handleOpenChange={isCreateConferenceDialogOpen ? closeCreateConferenceDialog : openCreateConferenceDialog}

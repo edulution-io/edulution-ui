@@ -1,25 +1,29 @@
 import React, { useMemo } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
-import { FiFilePlus } from 'react-icons/fi';
+import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Button } from '@/components/shared/Button';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import getEmptyFormValues from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
+import { getEmptyFormValues, getInitialFormValues } from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
+import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import FloatingActionButton from "@/components/shared/FloatingActionButton";
 
 const SurveyEditorForm = () => {
-  const { commitSurvey, isCommiting, errorCommiting } = useSurveyEditorFormStore();
+  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys, updateCreatedSurveys } = useSurveyTablesPageStore();
+  const { isOpenSaveSurveyDialog, openSaveSurveyDialog, closeSaveSurveyDialog, commitSurvey, isCommiting, errorCommiting } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
+
+  const initialFormValues: SurveyEditorFormData = useMemo(() => getInitialFormValues(selectedSurvey), [selectedSurvey]);
 
   const emptyFormValues: SurveyEditorFormData = getEmptyFormValues();
 
@@ -51,7 +55,7 @@ const SurveyEditorForm = () => {
   const form = useForm<SurveyEditorFormData>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
-    defaultValues: emptyFormValues,
+    defaultValues: selectedSurvey ? initialFormValues : emptyFormValues,
   });
 
   const {
@@ -81,6 +85,11 @@ const SurveyEditorForm = () => {
         isAnonymous,
         canSubmitMultipleAnswers,
       );
+
+      closeSaveSurveyDialog();
+      await updateCreatedSurveys();
+      await updateOpenSurveys();
+      await updateAnsweredSurveys();
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       toast.error(<div>{error.message}</div>);
@@ -100,8 +109,6 @@ const SurveyEditorForm = () => {
     [formula, saveNo],
   );
 
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
-
   if (isCommiting) return <LoadingIndicator isOpen={isCommiting} />;
   return (
     <>
@@ -117,34 +124,31 @@ const SurveyEditorForm = () => {
       </div>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <div className="flex flex-col items-center justify-center space-x-2">
-            <Button
-              type="button"
-              variant="btn-hexagon"
-              className="bottom-10 space-x-8 bg-opacity-90 p-4"
-              onClick={() => saveSurvey()}
-            >
-              <IconContext.Provider value={iconContextValue}>
-                <AiOutlineSave />
-              </IconContext.Provider>
-            </Button>
-            <p className="justify-center text-center text-white">{t('common.save')}</p>
-          </div>
-          <div className="flex flex-col items-center justify-center space-x-2">
-            <Button
-              type="button"
-              variant="btn-hexagon"
-              className="bottom-10 space-x-8 bg-opacity-90 p-4"
-              onClick={() => form.reset(emptyFormValues)}
-            >
-              <IconContext.Provider value={iconContextValue}>
-                <FiFilePlus />
-              </IconContext.Provider>
-            </Button>
-            <p className="justify-center text-center text-white">{t('survey.editor.new')}</p>
-          </div>
+          <FloatingActionButton
+            icon={AiOutlineSave}
+            text={t('common.save')}
+            onClick={openSaveSurveyDialog}
+          />
+          <FloatingActionButton
+            icon={FiFilePlus}
+            text={t('survey.editor.new')}
+            onClick={() => form.reset(emptyFormValues)}
+          />
+          <FloatingActionButton
+            icon={FiFileMinus}
+            text={t('survey.editor.abort')}
+            onClick={() => form.reset(initialFormValues)}
+          />
         </div>
       </TooltipProvider>
+      <SaveSurveyDialog
+        form={form}
+        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+        openSaveSurveyDialog={openSaveSurveyDialog}
+        closeSaveSurveyDialog={closeSaveSurveyDialog}
+        commitSurvey={saveSurvey}
+        isCommitting={isCommiting}
+      />
     </>
   );
 };

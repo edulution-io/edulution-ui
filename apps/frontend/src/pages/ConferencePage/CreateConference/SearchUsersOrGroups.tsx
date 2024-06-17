@@ -2,15 +2,16 @@ import React from 'react';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 
 interface SearchUsersOrGroupsProps {
   value: Attendee[];
   onChange: (options: MultipleSelectorOptionSH[]) => void;
   onSearch: (value: string) => Promise<Attendee[]>;
+  options?: Attendee[];
 }
 
-const SearchUsersOrGroups = ({ value, onChange, onSearch }: SearchUsersOrGroupsProps) => {
+const SearchUsersOrGroups = ({ options, value, onChange, onSearch }: SearchUsersOrGroupsProps) => {
   const { t } = useTranslation();
 
   return (
@@ -21,6 +22,7 @@ const SearchUsersOrGroups = ({ value, onChange, onSearch }: SearchUsersOrGroupsP
         onSearch={onSearch}
         onChange={onChange}
         placeholder={t('search.type-to-search')}
+        options={options}
       />
     </div>
   );
