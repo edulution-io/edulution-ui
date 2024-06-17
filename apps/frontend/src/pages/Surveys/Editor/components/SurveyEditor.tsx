@@ -51,9 +51,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
         }}
       />
       {error ? (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-          Survey-Error: {error.message}
-        </div>
+        <div className="rounded-xl bg-red-400 py-3 text-center text-black">Survey-Error: {error.message}</div>
       ) : null}
     </>
   );

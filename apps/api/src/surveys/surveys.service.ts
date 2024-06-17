@@ -22,7 +22,7 @@ class SurveysService {
 
   async removeSurvey(surveyId: number): Promise<void> {
     try {
-      await this.surveyModel.deleteOne({id: surveyId}).exec();
+      await this.surveyModel.deleteOne({ id: surveyId }).exec();
     } catch (error) {
       console.error(error);
       throw new Error('Not able to delete survey');
@@ -56,7 +56,9 @@ class SurveysService {
     const participants = existingSurvey.participants || [];
     const participated = existingSurvey.participated || [];
     if (username) {
-      const isParticipant = participants.find((user: Attendee) => user.username && username ? user.username === username : false);
+      const isParticipant = participants.find((user: Attendee) =>
+        user.username && username ? user.username === username : false,
+      );
       if (!isParticipant) {
         throw new Error('User is no participant of the survey');
       }
@@ -69,7 +71,6 @@ class SurveysService {
 
     const answers = existingSurvey.publicAnswers || [];
     answers.push(answer);
-
 
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<Survey>({ id }, { publicAnswers: answers, participated })

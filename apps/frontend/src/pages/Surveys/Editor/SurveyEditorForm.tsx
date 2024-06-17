@@ -64,7 +64,7 @@ const SurveyEditorForm = () => {
     expirationDate,
     expirationTime,
     isAnonymous,
-    canSubmitMultipleAnswers
+    canSubmitMultipleAnswers,
   } = form.getValues();
 
   const saveSurvey = async () => {
@@ -85,44 +85,47 @@ const SurveyEditorForm = () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       toast.error(<div>{error.message}</div>);
     }
-  }
+  };
 
   // useMemo to not update the SurveyEditor component when changing values in dialog
-  const getSurveyEditor = useMemo(() => (
-    <SurveyEditor
-      form={form}
-      formula={formula}
-      saveNumber={saveNo}
-      error={errorCommiting}
-    />
-  ), [formula, saveNo]);
+  const getSurveyEditor = useMemo(
+    () => (
+      <SurveyEditor
+        form={form}
+        formula={formula}
+        saveNumber={saveNo}
+        error={errorCommiting}
+      />
+    ),
+    [formula, saveNo],
+  );
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   if (isCommiting) return <LoadingIndicator isOpen={isCommiting} />;
   return (
     <>
-    <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-      <ScrollArea className="overflow-y-auto overflow-x-hidden">
-        {getSurveyEditor}
-        {errorCommiting ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            {t('survey.error')}: {errorCommiting.message}
-          </div>
-        ) : null}
-      </ScrollArea>
-    </div>
+      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+        <ScrollArea className="overflow-y-auto overflow-x-hidden">
+          {getSurveyEditor}
+          {errorCommiting ? (
+            <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+              {t('survey.error')}: {errorCommiting.message}
+            </div>
+          ) : null}
+        </ScrollArea>
+      </div>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <div className="flex flex-col items-center justify-center space-x-2">
             <Button
               type="button"
               variant="btn-hexagon"
-              className="bottom-10 space-x- bg-opacity-90 p-4"
+              className="space-x-8 bottom-10 bg-opacity-90 p-4"
               onClick={() => saveSurvey()}
             >
               <IconContext.Provider value={iconContextValue}>
-                <AiOutlineSave/>
+                <AiOutlineSave />
               </IconContext.Provider>
             </Button>
             <p className="justify-center text-center text-white">{t('common.save')}</p>
@@ -135,7 +138,7 @@ const SurveyEditorForm = () => {
               onClick={() => form.reset(emptyFormValues)}
             >
               <IconContext.Provider value={iconContextValue}>
-                <FiFilePlus/>
+                <FiFilePlus />
               </IconContext.Provider>
             </Button>
             <p className="justify-center text-center text-white">{t('survey.editor.new')}</p>

@@ -9,9 +9,7 @@ import { Survey } from './types/survey.schema';
 
 @Controller('surveys')
 class SurveysController {
-  constructor(
-    private readonly surveyService: SurveysService,
-  ) {}
+  constructor(private readonly surveyService: SurveysService) {}
 
   @Get()
   async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto) {
