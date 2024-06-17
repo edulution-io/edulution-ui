@@ -17,6 +17,4 @@ export class AppConfig extends Document {
   options: AppConfigOptions;
 }
 
-const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
-
-export default AppConfigSchema;
+export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
