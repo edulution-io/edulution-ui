@@ -1,8 +1,8 @@
 import React from 'react';
-import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import nativeIframeAppsList from '@/components/layout/Native/nativeIframeAppsList';
 import MailPage from '@/pages/Mail/MailPage';
+import useAppConfigsStore from '@/store/appConfigsStore';
 
 const isNativeIframe = (appConfig: AppConfig) => {
   const { appType, name } = appConfig;
@@ -11,7 +11,7 @@ const isNativeIframe = (appConfig: AppConfig) => {
 };
 
 const NativeFrames = () => {
-  const { appConfig: appConfigs } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
 
   return appConfigs
     .filter((appConfig) => isNativeIframe(appConfig))

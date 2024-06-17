@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import Sidebar from '@/components/ui/Sidebar';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
-import useUserStore from '@/store/userStoreOLD';
 import useIframeStore from '@/routes/IframeStore';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const IframePlaceholder: React.FC = () => {
   const { pathname } = useLocation();
   const rootPathName = getFromPathName(pathname, 1);
-  const { appConfig } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
   const { setFrameLoaded, setActiveIframe } = useIframeStore();
 
   useEffect(() => {
     if (isAuthenticated) {
-      const appName = findAppConfigByName(appConfig, rootPathName)?.name;
+      const appName = findAppConfigByName(appConfigs, rootPathName)?.name;
       if (appName) {
         setFrameLoaded(appName);
         setActiveIframe(appName);

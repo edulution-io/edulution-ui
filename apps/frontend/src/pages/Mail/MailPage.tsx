@@ -1,11 +1,11 @@
 import React from 'react';
-import useUserStore from '@/store/userStoreOLD';
 import { useEncryption } from '@/hooks/mutations';
 import NativeIframeLayout from '@/components/layout/Native/NativeIframeLayout';
 import { APPS } from '@/datatypes/types';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const MailPage: React.FC = () => {
-  const { user, webdavKey } = useUserStore();
+  const { username, webdavKey } = useUserStore();
 
   const decryptedPassword = useEncryption({
     mode: 'decrypt',
@@ -22,7 +22,7 @@ const MailPage: React.FC = () => {
       console.info('usernameField', usernameField);
       console.info('passwordField', passwordField);
       if (usernameField && passwordField) {
-        usernameField.value = '${user}';
+        usernameField.value = '${username}';
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
 
         passwordField.value = '${decryptedPassword}';

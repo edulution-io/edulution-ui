@@ -1,12 +1,12 @@
 import React from 'react';
 import { AppIntegrationType } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import useIframeStore from '@/routes/IframeStore';
 import { useMediaQuery } from 'usehooks-ts';
+import useAppConfigsStore from '@/store/appConfigsStore';
 
 const EmbeddedIframes = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { appConfig: appConfigs } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
   const { loadedIframes, activeIframe } = useIframeStore();
 
   const getStyle = (appName: string) =>

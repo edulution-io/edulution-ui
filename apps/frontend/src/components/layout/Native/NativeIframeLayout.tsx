@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import { findAppConfigByName } from '@/utils/common';
-import useUserStore from '@/store/userStoreOLD';
 import useIframeStore from '@/routes/IframeStore';
 import { useMediaQuery } from 'usehooks-ts';
+import useAppConfigsStore from '@/store/appConfigsStore';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
@@ -13,7 +13,7 @@ interface NativeIframeLayoutProps {
 
 const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop, appName }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { appConfig } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
   const { loadedIframes, activeIframe } = useIframeStore();
@@ -58,7 +58,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
     }
   }, [isPreparingLogout, scriptOnStop]);
 
-  const currentAppConfig = findAppConfigByName(appConfig, appName);
+  const currentAppConfig = findAppConfigByName(appConfigs, appName);
   if (!currentAppConfig) return null;
 
   return (
