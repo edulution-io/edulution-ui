@@ -1,7 +1,7 @@
-import * as SurveyTheme from 'survey-core/themes';
 import { ITheme } from 'survey-core';
+import { FlatDark } from 'survey-core/themes/typings/flat-dark';
 
-export const defaultSurveyTheme = SurveyTheme.FlatDark;
+export const defaultSurveyTheme: ITheme = FlatDark;
 
 export const darkSurveyTheme: ITheme = {
   backgroundImageFit: 'cover',
@@ -128,6 +128,7 @@ export const darkSurveyTheme: ITheme = {
     '--sjs-font-headertitle-weight': '800',
   },
   headerView: 'advanced',
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 } as ITheme;
 
 export const lightSurveyTheme: ITheme = {

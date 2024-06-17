@@ -97,7 +97,7 @@ class SurveysController {
     const { surveyId, answer } = body;
 
     try {
-      // This function does also check if the user is a participant ant has not already submitted an answer
+      // This function does also check if the user is a participant and has not already submitted an answer
       return await this.surveyService.addPublicAnswer(surveyId, answer);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

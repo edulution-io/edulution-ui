@@ -121,7 +121,7 @@ const SurveyEditorForm = () => {
             <Button
               type="button"
               variant="btn-hexagon"
-              className="space-x-8 bottom-10 bg-opacity-90 p-4"
+              className="bottom-10 space-x-8 bg-opacity-90 p-4"
               onClick={() => saveSurvey()}
             >
               <IconContext.Provider value={iconContextValue}>
