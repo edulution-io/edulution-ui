@@ -24,6 +24,7 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
 
   const selectedConferenceIds = Object.keys(selectedRows);
   const selectedConferences = conferences.filter((c) => selectedConferenceIds.includes(c.meetingID));
+  const isMultiDelete = selectedConferences.length > 1;
 
   const onSubmit = async () => {
     await deleteConferences(selectedConferences);
@@ -41,7 +42,7 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
           </>
         ) : (
           <>
-            {t('conferences.confirmDelete')}
+            {t(isMultiDelete ? 'conferences.confirmMultiDelete' : 'conferences.confirmSingleDelete')}
             {selectedConferences.map((c) => (
               <div
                 className="mt-2"
@@ -85,7 +86,9 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
       isOpen={isDeleteConferencesDialogOpen}
       trigger={trigger}
       handleOpenChange={() => setIsDeleteConferencesDialogOpen(!isDeleteConferencesDialogOpen)}
-      title={t('conferences.deleteConferences', { count: selectedConferences.length })}
+      title={t(isMultiDelete ? 'conferences.deleteConferences' : 'conferences.deleteConference', {
+        count: selectedConferences.length,
+      })}
       body={getDialogBody()}
       footer={getFooter()}
     />

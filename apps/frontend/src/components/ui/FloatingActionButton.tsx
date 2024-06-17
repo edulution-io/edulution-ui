@@ -23,7 +23,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ icon: Icon,
           <Icon />
         </IconContext.Provider>
       </Button>
-      <p className="justify-center text-center text-white">{text}</p>
+      <p className="justify-center text-center">{text}</p>
     </div>
   );
 };
