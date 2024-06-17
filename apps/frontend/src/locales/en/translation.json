@@ -58,7 +58,12 @@
     "maximize": "Maximize",
     "close": "Close conference"
   },
-  "current-affairs": "Current affairs",
+  "current-affairs": {
+    "title": "Current affairs",
+    "noConferences": "No running conferences were found",
+    "noSurveys": "No surveys were found, which you could participate in",
+    "noMails": "No new unread mails were found, in your mailbox"
+  },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"

@@ -58,7 +58,12 @@
     "maximize": "Maximieren",
     "close": "Konferenz schließen"
   },
-  "current-affairs": "Aktuelles",
+  "current-affairs": {
+    "title": "Aktuelles",
+    "noConferences": "Es wurden keine laufenden Konferenzen gefunden",
+    "noSurveys": "Es wurden keine Umfragen gefunden an denen Sie noch nicht teilgenommen haben",
+    "noMails": "Es befinden sich keine neuen ungelesenen Mails in Ihrem Postfach"
+  },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
     "sidebar": "Wissensdatenbank"

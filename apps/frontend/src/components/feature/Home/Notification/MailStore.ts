@@ -1,18 +1,7 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import { Mail } from '@libs/src/notification/types/';
 import MAIL_ENDPOINT from '@/components/feature/Home/Notification/mail-endpoint';
-
-interface Mail {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  text: string;
-  date: string;
-  read: boolean;
-  labels: string[];
-}
+import Mail from '@/components/feature/Home/Notification/mail';
 
 interface MailStore {
   mails: Mail[];
