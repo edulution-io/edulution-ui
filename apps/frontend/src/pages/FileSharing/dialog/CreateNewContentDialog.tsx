@@ -2,13 +2,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import React, { ReactNode, useState } from 'react';
 import DirectoryCreationForm from '@/pages/FileSharing/form/DirectoryCreationForm';
 import FileCreationForm from '@/pages/FileSharing/form/FileCreationForm';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType } from '@/datatypes/filesystem';
 import { useTranslation } from 'react-i18next';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
 import { Button } from '@/components/shared/Button';
-import { useMediaQuery } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface CreateNewContentDialogProps {
   trigger: ReactNode;
@@ -18,7 +18,7 @@ interface CreateNewContentDialogProps {
 const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger, contentType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const {
     fileName,
     setFileName,
@@ -28,7 +28,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     setFileOperationSuccessful,
     fetchFiles,
     handleWebDavAction,
-  } = useFileManagerStore();
+  } = useFileManagerStoreOLD();
 
   const createFile = async (path: string): Promise<void> => {
     await handleWebDavAction(() => WebDavFunctions.createFile(`${currentPath}/${path}`))
@@ -150,7 +150,7 @@ const CreateNewContentDialog: React.FC<CreateNewContentDialogProps> = ({ trigger
     </DialogHeader>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     mobileContent
   ) : (
     <Dialog

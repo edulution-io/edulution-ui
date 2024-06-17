@@ -1,4 +1,5 @@
 import { DirectoryFile } from '@/datatypes/filesystem';
+import { AppConfigOptions } from '@/datatypes/appConfigOptions';
 
 export enum AppIntegrationType {
   NATIVE = 'native',
@@ -8,9 +9,9 @@ export enum AppIntegrationType {
 
 export type AppConfig = {
   name: string;
-  linkPath: string;
   icon: string;
   appType: AppIntegrationType;
+  options: AppConfigOptions;
 };
 
 export interface MenuItem {
@@ -24,6 +25,7 @@ export interface MenuItem {
 export interface MenuBarEntryProps {
   menuItems: MenuItem[];
   title: string;
+  disabled?: boolean;
   icon: string;
   color: string;
 }

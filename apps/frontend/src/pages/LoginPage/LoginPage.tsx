@@ -7,23 +7,21 @@ import { useTranslation } from 'react-i18next';
 import { useEncryption } from '@/hooks/mutations';
 
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useUserStore from '@/store/userStore';
-import useLmnUserStore from '@/store/lmnApiStore';
+import useUserStore from '@/store/UserStore/UserStore';
+import useLmnApiStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated } = useUserStore();
+  const { setUsername, setWebdavKey, setIsAuthenticated, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
-  const { getToken } = useLmnUserStore((state) => ({
-    getToken: state.getToken,
-  }));
+  const { setLmnApiToken } = useLmnApiStore();
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -43,7 +41,7 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
-      const username = form.getValues('username') as string;
+      const username = (form.getValues('username') as string).trim();
       const password = form.getValues('password') as string;
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
@@ -53,26 +51,27 @@ const LoginPage: React.FC = () => {
       if (requestUser) {
         const encryptedPassword = useEncryption({
           mode: 'encrypt',
-          data: form.getValues('password') as string,
+          data: password,
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
 
-        setUser(form.getValues('username') as string);
+        setUsername(username);
+        setEduApiToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
 
         createWebdavClient();
-        await getToken(username, password);
+        await setLmnApiToken(username, password);
       }
+
+      return null;
     } catch (e) {
-      /* empty */
-    } finally {
-      /* empty */
+      return null;
     }
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
-    <FormField
+    <FormFieldSH
       control={form.control}
       name={fieldName}
       defaultValue=""

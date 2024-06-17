@@ -4,7 +4,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import useFileManagerStore from '@/store/fileManagerStore';
+import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
 import WebDavFunctions from '@/webdavclient/WebDavFileManager';
 import { ContentType, DirectoryFile } from '@/datatypes/filesystem';
 import {
@@ -13,7 +13,7 @@ import {
   validateFileName,
 } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface RenameContentDialogProps {
   trigger: ReactNode;
@@ -24,8 +24,8 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isNameValid, setIsNameValid] = useState(false);
   const [localFileName, setLocalFileName] = useState('');
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStore();
+  const isMobileView = useIsMobileView();
+  const { setFileOperationSuccessful, handleWebDavAction } = useFileManagerStoreOLD();
   const { t } = useTranslation();
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -123,7 +123,7 @@ const RenameItemDialog: FC<RenameContentDialogProps> = ({ trigger, item }) => {
     </DialogContent>
   );
 
-  return isMobile ? (
+  return isMobileView ? (
     mobileContent
   ) : (
     <Dialog

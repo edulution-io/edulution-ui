@@ -8,13 +8,13 @@ import {
 } from '@/components/ui/Breadcrumb';
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'usehooks-ts';
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSH,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -24,8 +24,8 @@ interface DirectoryBreadcrumbProps {
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate, style }) => {
   const segments = path.split('/').filter(Boolean);
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const displaySegments = isMobile ? 1 : 4;
+  const isMobileView = useIsMobileView();
+  const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
 
   const filteredSegment = segments.filter((item) => item !== 'teachers');

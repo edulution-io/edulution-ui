@@ -1,22 +1,21 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/shared/Button';
-import { useLocation, NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
 
 import { IconContext } from 'react-icons';
-import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
+import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useOnClickOutside, useWindowSize, useToggle } from 'usehooks-ts';
-import { SETTINGS_APPSELECT_OPTIONS } from '@/constants/settings';
+import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
-import cleanStoreData from '@/store/utilis/cleanStoreData';
-import StoreTypes from '@/store/utilis/storeTypes';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
+import useUserStore from '@/store/UserStore/UserStore';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -32,11 +31,11 @@ const Sidebar = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const size = useWindowSize();
   const auth = useAuth();
-  const { appConfig } = useAppConfigsStore();
-  const { setIsAuthenticated } = useUserStore();
+  const { appConfigs } = useAppConfigsStore();
+  const { logout } = useUserStore();
 
   const sidebarItems = [
-    ...SETTINGS_APPSELECT_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id)).map((item) => ({
+    ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
@@ -222,8 +221,7 @@ const Sidebar = () => {
               return prevTranslate;
             }
 
-            const newTranslate = prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
-            return newTranslate;
+            return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
           });
         }}
       >
@@ -236,18 +234,19 @@ const Sidebar = () => {
     </div>
   );
 
+  const handleLogout = async () => {
+    auth.removeUser().catch(console.error);
+    await logout();
+    cleanAllStores();
+  };
+
   const logoutButton = () => (
     <div
       key="logout"
       className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black ' : 'border-b-2 border-ciLightGrey'}`}
     >
       <NavLink
-        onClick={() => {
-          auth.removeUser().catch(console.error);
-          setIsAuthenticated(false);
-          cleanStoreData(StoreTypes.LMN_USER_STORE);
-          sessionStorage.clear();
-        }}
+        onClick={handleLogout}
         to="/"
         className={`group flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 md:block md:px-2  ${pathname === '/logout' ? 'bg-black' : ''}`}
       >
