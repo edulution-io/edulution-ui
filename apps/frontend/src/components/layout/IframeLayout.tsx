@@ -4,6 +4,7 @@ import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
 import Sidebar from '@/components/ui/Sidebar';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
 import useUserStore from '@/store/userStoreOLD';
+import { toast } from 'sonner';
 
 interface IframeLayoutProps {
   scriptOnStartUp?: string;
@@ -29,7 +30,14 @@ const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnSt
         setTimeout(attemptInject, 100);
       }
     };
-    attemptInject();
+    try {
+      attemptInject();
+    } catch (e) {
+      console.error(e);
+      if (e instanceof DOMException) {
+        toast.error(`${e.name}: ${e.message}`);
+      }
+    }
   };
 
   useEffect(() => {

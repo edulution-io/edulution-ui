@@ -14,12 +14,9 @@ const SOGoIFrame: React.FC = () => {
 
   const loginScript = `
     function fillAndSubmitLoginForm() {
-      console.info('fillAndSubmitLoginForm');
       const usernameField = document.getElementById('input_1');
       const passwordField = document.getElementById('passwordField');
 
-      console.info('usernameField', usernameField);
-      console.info('passwordField', passwordField);
       if (usernameField && passwordField) {
         usernameField.value = '${user}';
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
@@ -46,7 +43,6 @@ const SOGoIFrame: React.FC = () => {
 
   const logoutScript = `
     const logoutButton = document.querySelector('a[aria-label="Beenden"]');
-    console.info('logoutButton', logoutButton);
     if (logoutButton) {
       logoutButton.click();
     }

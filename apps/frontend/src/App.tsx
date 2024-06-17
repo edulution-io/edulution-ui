@@ -6,6 +6,7 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import useUserStore from '@/store/userStoreOLD';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import Toaster from '@/components/ui/Sonner';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -30,6 +31,7 @@ const App = () => {
     <AuthProvider {...oidcConfig}>
       <BBBFrame />
       <Router />
+      <Toaster />
     </AuthProvider>
   );
 };
