@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 import useUserStore from '@/store/UserStore/UserStore';
 
 interface ConferenceDetailsDialogProps {

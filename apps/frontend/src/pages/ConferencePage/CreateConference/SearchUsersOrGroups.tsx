@@ -2,7 +2,7 @@ import React from 'react';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 
 interface SearchUsersOrGroupsProps {
   value: Attendee[];

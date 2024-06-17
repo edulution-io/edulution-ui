@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 import { Survey, SurveyDocument } from './types/survey.schema';
 
 @Injectable()

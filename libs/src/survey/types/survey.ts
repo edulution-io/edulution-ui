@@ -1,4 +1,4 @@
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 
 export interface Survey {
   id: number;

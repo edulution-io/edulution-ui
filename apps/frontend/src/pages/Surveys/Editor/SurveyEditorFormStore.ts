@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import { Survey } from '@libs/survey/types/survey';
-import Attendee from '@libs/users-attendees/types/attendee';
+import Attendee from '@libs/conferences/types/attendee';
 import SURVEY_ENDPOINT from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
