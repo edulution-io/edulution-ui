@@ -1,10 +1,10 @@
 import React from 'react';
 import IframeLayout from '@/components/layout/IframeLayout';
-import useUserStore from '@/store/userStoreOLD';
 import { useEncryption } from '@/hooks/mutations';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const SOGoIFrame: React.FC = () => {
-  const { user, webdavKey } = useUserStore();
+  const { username, webdavKey } = useUserStore();
 
   const decryptedPassword = useEncryption({
     mode: 'decrypt',
@@ -18,7 +18,7 @@ const SOGoIFrame: React.FC = () => {
       const passwordField = document.getElementById('passwordField');
 
       if (usernameField && passwordField) {
-        usernameField.value = '${user}';
+        usernameField.value = '${username}';
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
 
         passwordField.value = '${decryptedPassword}';

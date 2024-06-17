@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import Sidebar from '@/components/ui/Sidebar';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
-import useUserStore from '@/store/userStoreOLD';
 import { toast } from 'sonner';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface IframeLayoutProps {
   scriptOnStartUp?: string;
@@ -14,7 +14,7 @@ interface IframeLayoutProps {
 const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop }) => {
   const { pathname } = useLocation();
   const rootPathName = getFromPathName(pathname, 1);
-  const { appConfig } = useAppConfigsStoreOLD();
+  const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
 
@@ -62,7 +62,7 @@ const IframeLayout: React.FC<IframeLayoutProps> = ({ scriptOnStartUp, scriptOnSt
           ref={iframeRef}
           className="h-screen w-full pr-[58px]"
           title={pathname}
-          src={findAppConfigByName(appConfig, rootPathName)?.options.url}
+          src={findAppConfigByName(appConfigs, rootPathName)?.options.url}
         />
       </div>
       <Sidebar />
