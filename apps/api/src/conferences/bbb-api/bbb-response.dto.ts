@@ -1,3 +1,5 @@
+// This DTO is based on a third-party object definition from the BBB (BigBlueButton) API.
+// Any modifications should be carefully reviewed to ensure compatibility with the source.
 import BbbAttendeeDto from './bbb-attendee.dto';
 
 export default class BbbResponseDto {

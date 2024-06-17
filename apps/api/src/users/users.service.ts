@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -7,8 +7,9 @@ import axios from 'axios';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
-import LoginUserDto from './dto/login-user.dto';
+import RegisterUserDto from './dto/register-user.dto';
 import { LDAPUser } from '../types/ldapUser';
+import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 
 const { KEYCLOAK_API } = process.env;
 
@@ -19,19 +20,19 @@ class UsersService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async login(loginUserDto: LoginUserDto): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: loginUserDto.preferred_username }).exec();
+  async register(userDto: RegisterUserDto): Promise<User | null> {
+    const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
 
     let newUser;
     if (!existingUser) {
       newUser = await this.create({
-        email: loginUserDto.email,
-        username: loginUserDto.preferred_username,
-        roles: loginUserDto.ldapGroups,
+        email: userDto.email,
+        username: userDto.preferred_username,
+        roles: userDto.ldapGroups,
       });
     } else {
-      newUser = await this.update(loginUserDto.preferred_username, {
-        roles: loginUserDto.ldapGroups,
+      newUser = await this.update(userDto.preferred_username, {
+        roles: userDto.ldapGroups,
       });
     }
 
@@ -67,7 +68,7 @@ class UsersService {
 
     const fetchedUsers = await UsersService.fetchUsersFromExternalApi(token);
 
-    await this.cacheManager.set('allUsers', fetchedUsers, 300000);
+    await this.cacheManager.set('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     return fetchedUsers;
   }
 
@@ -101,7 +102,7 @@ class UsersService {
       return response.data;
     } catch (e) {
       Logger.error(e, UsersService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw e;
     }
   }
 }

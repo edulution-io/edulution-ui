@@ -9,7 +9,7 @@ import { DirectoryFile } from '../datatypes/filesystem';
 type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
 
 export const createWebdavClient = () => {
-  const userStorageString: string | null = sessionStorage.getItem('user-storage');
+  const userStorageString: string | null = localStorage.getItem('user-storage');
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const userStorage: UserDataConfig = JSON.parse(userStorageString as string);

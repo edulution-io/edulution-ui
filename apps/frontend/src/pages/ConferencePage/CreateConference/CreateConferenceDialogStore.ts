@@ -5,8 +5,8 @@ import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
-import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
+import { EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -46,13 +46,15 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
       set({ createdConference: response.data, isLoading: false, isCreateConferenceDialogOpen: false });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 
   searchAttendees: async (searchParam) => {
     set({ error: null });
     try {
-      const response = await eduApi.get<Attendee[]>(`${USERS_SEARCH_EDU_API_ENDPOINT}${searchParam}`);
+      const response = await eduApi.get<Attendee[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
 
       if (!Array.isArray(response.data)) {
         return [];

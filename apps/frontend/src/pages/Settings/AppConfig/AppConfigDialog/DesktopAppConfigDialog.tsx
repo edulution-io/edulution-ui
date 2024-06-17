@@ -21,7 +21,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
-  const { appConfig, updateAppConfig } = useAppConfigsStore();
+  const { appConfigs, updateAppConfig } = useAppConfigsStore();
 
   useOnClickOutside(dialogRef, () => setSearchParams(new URLSearchParams('')));
   return (
@@ -69,7 +69,7 @@ const DesktopSettingsDialog: React.FC<SettingsDialogProps> = ({
                     appType: AppIntegrationType.FORWARDED,
                     options: {},
                   };
-                  const updatedConfig = [...appConfig, newConfig];
+                  const updatedConfig = [...appConfigs, newConfig];
 
                   updateAppConfig(updatedConfig)
                     .then(() =>

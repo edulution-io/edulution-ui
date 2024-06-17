@@ -8,7 +8,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 const useSettingsMenuConfig = () => {
   const navigate = useNavigate();
   const [, setSearchParams] = useSearchParams();
-  const { appConfig } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const SETTINGS_CONFIG: MenuBarEntryProps = {
     title: 'settings.title',
@@ -27,12 +27,14 @@ const useSettingsMenuConfig = () => {
   const settingsMenuConfig = (): MenuBarEntryProps => ({
     ...SETTINGS_CONFIG,
     menuItems: [
-      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfig, option.id) !== undefined).map((item) => ({
-        id: item.id,
-        label: `${item.id}.sidebar`,
-        icon: item.icon,
-        action: () => navigate(`/settings/${item.id}`),
-      })),
+      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
+        (item) => ({
+          id: item.id,
+          label: `${item.id}.sidebar`,
+          icon: item.icon,
+          action: () => navigate(`/settings/${item.id}`),
+        }),
+      ),
       ...SETTINGS_CONFIG.menuItems.map((item) => ({
         ...item,
         action: () => setSearchParams({ mode: 'add' }),

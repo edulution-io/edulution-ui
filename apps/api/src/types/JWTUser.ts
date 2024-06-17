@@ -1,3 +1,5 @@
+// This DTO is based on a third-party object definition from Keycloak API.
+// Any modifications should be carefully reviewed to ensure compatibility with the source.
 type JWTUser = {
   exp: number;
   iat: number;

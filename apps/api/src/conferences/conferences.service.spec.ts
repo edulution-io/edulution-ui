@@ -92,7 +92,7 @@ describe(ConferencesService.name, () => {
 
   describe('findAll', () => {
     it('should return an array of conferences', async () => {
-      const result = await service.findAll(mockCreator.username);
+      const result = await service.findAllConferencesTheUserHasAccessTo(mockCreator.username);
       expect(result[0].creator).toEqual(mockCreator);
       expect(model.find).toHaveBeenCalled();
     });
@@ -109,7 +109,7 @@ describe(ConferencesService.name, () => {
   describe('update', () => {
     it('should update a conference', async () => {
       const mock = new Conference(mockConference, mockCreator);
-      const result = await service.update(mock, mockCreator.username);
+      const result = await service.update(mock);
       expect(result?.creator).toEqual(mockCreator);
       expect(model.findOneAndUpdate).toHaveBeenCalled();
     });

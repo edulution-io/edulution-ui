@@ -17,7 +17,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   setSearchParams,
 }) => {
   const { t } = useTranslation();
-  const { appConfig, updateAppConfig } = useAppConfigsStore();
+  const { appConfigs, updateAppConfig } = useAppConfigsStore();
 
   return (
     <Sheet
@@ -56,7 +56,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
                   appType: AppIntegrationType.FORWARDED,
                   options: {},
                 };
-                const updatedConfig = [...appConfig, newConfig];
+                const updatedConfig = [...appConfigs, newConfig];
 
                 updateAppConfig(updatedConfig)
                   .then(() =>

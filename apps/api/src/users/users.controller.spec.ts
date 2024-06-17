@@ -4,6 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
+import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 
 const mockUserModel = {
   insertMany: jest.fn(),
@@ -20,7 +21,7 @@ describe('UsersController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         CacheModule.register({
-          ttl: 10,
+          ttl: DEFAULT_CACHE_TTL_MS,
         }),
       ],
       controllers: [UsersController],

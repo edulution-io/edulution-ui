@@ -7,7 +7,8 @@ import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
-import LoginUserDto from './dto/login-user.dto';
+import RegisterUserDto from './dto/register-user.dto';
+import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 
 const mockUser = {
   email: 'test@example.com',
@@ -40,7 +41,7 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         CacheModule.register({
-          ttl: 10,
+          ttl: DEFAULT_CACHE_TTL_MS,
         }),
       ],
       providers: [
@@ -60,21 +61,21 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('login', () => {
+  describe('register', () => {
     it('should create a new user if not existing', async () => {
-      const loginDto = new LoginUserDto();
+      const userDto = new RegisterUserDto();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       jest.spyOn(model, 'findOne').mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(null),
       } as unknown as Query<any, any>);
-      await service.login(loginDto);
+      await service.register(userDto);
 
       expect(model.findOne).toHaveBeenCalled();
-      expect(model.create).toHaveBeenCalledWith(loginDto);
+      expect(model.create).toHaveBeenCalledWith(userDto);
     });
 
     it('should update existing user', async () => {
-      await service.login(new LoginUserDto());
+      await service.register(new RegisterUserDto());
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalled();
     });

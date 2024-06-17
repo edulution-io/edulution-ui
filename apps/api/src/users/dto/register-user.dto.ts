@@ -1,4 +1,4 @@
-class LoginUserDto {
+class RegisterUserDto {
   preferred_username: string;
 
   email: string;
@@ -6,4 +6,4 @@ class LoginUserDto {
   ldapGroups: string[];
 }
 
-export default LoginUserDto;
+export default RegisterUserDto;

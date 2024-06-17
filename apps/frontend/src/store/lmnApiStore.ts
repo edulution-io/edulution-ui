@@ -1,71 +1,75 @@
-import { create } from 'zustand';
-import { AxiosRequestConfig } from 'axios';
+import { create, StateCreator } from 'zustand';
 import UserLmnInfo from '@/datatypes/userInfo';
-import axiosInstanceLmn from '@/api/axiosInstanceLmn';
-import userStore from './userStore';
+import lmnApi from '@/api/lmnApi';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import handleApiError from '@/utils/handleApiError';
+import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
+import userStore from '@/store/UserStore/UserStore';
 
-interface UserLmnInfoStore {
-  userData: UserLmnInfo | null;
-  loading: boolean;
+interface LmnApiStore {
+  lmnApiToken: string;
+  user: UserLmnInfo | null;
+  isLoading: boolean;
   error: Error | null;
-  getToken: (username: string, password: string) => Promise<void>;
+  setLmnApiToken: (username: string, password: string) => Promise<void>;
   getUserData: () => Promise<void>;
   reset: () => void;
 }
 
-const initialState: Omit<UserLmnInfoStore, 'getToken' | 'getUserData' | 'reset'> = {
-  userData: null,
-  loading: false,
+const initialState = {
+  lmnApiToken: '',
+  user: null,
+  isLoading: false,
   error: null,
 };
 
-const useLmnUserStore = create<UserLmnInfoStore>((set) => ({
-  ...initialState,
-  getToken: async (username: string, password: string) => {
-    set({ loading: true });
-    const encodedCredentials = btoa(`${username}:${password}`);
-    const config: AxiosRequestConfig = {
-      url: '/api/v1/auth/',
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
+type PersistedUserLmnInfoStore = (
+  userData: StateCreator<LmnApiStore>,
+  options: PersistOptions<Partial<LmnApiStore>>,
+) => StateCreator<LmnApiStore>;
+
+const useLmnApiStore = create<LmnApiStore>(
+  (persist as PersistedUserLmnInfoStore)(
+    (set) => ({
+      ...initialState,
+
+      setLmnApiToken: async (username, password): Promise<void> => {
+        set({ isLoading: true });
+
+        try {
+          lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
+          const response = await lmnApi.get<string>('/auth/');
+          set({ isLoading: false, error: null, lmnApiToken: response.data });
+        } catch (error) {
+          handleApiError(error, set);
+        }
       },
-    };
 
-    try {
-      const response = await axiosInstanceLmn(config);
-      const token = response.data as string;
-      sessionStorage.setItem('lmnApiToken', token);
-      set({ loading: false, error: null });
-    } catch (error) {
-      set({ error: error as Error, loading: false });
-    }
-  },
-  getUserData: async () => {
-    set({ loading: true });
-    const token = sessionStorage.getItem('lmnApiToken');
-    if (!token) {
-      set({ error: new Error('No API token found'), loading: false });
-      return;
-    }
-    const config: AxiosRequestConfig = {
-      url: `/api/v1/users/${userStore.getState().user}`,
-      method: 'GET',
-      headers: { 'X-Api-Key': token },
-    };
+      getUserData: async () => {
+        set({ isLoading: true });
+        try {
+          const response = await lmnApi.get<UserLmnInfo>(`${EDU_API_USERS_ENDPOINT}/${userStore.getState().username}`);
+          set({
+            user: response.data,
+            isLoading: false,
+            error: null,
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        }
+      },
 
-    try {
-      const response = await axiosInstanceLmn(config);
-      set({
-        userData: response.data as UserLmnInfo,
-        loading: false,
-        error: null,
-      });
-    } catch (error) {
-      set({ error: error as Error, loading: false });
-    }
-  },
-  reset: () => set({ ...initialState }),
-}));
+      reset: () => set(initialState),
+    }),
+    {
+      name: 'lmn-user-storage',
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        lmnApiToken: state.lmnApiToken,
+        user: state.user,
+      }),
+    },
+  ),
+);
 
-export default useLmnUserStore;
+export default useLmnApiStore;

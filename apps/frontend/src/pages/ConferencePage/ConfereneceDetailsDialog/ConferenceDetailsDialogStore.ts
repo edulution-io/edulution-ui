@@ -43,6 +43,8 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
       set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
   setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url, isJoinedConferenceMinimized: false }),
@@ -55,6 +57,8 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
       set({ isLoading: false, selectedConference: null });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

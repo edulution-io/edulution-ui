@@ -9,11 +9,11 @@
     "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./apps/frontend/src/*"]
+      "@/*": ["./apps/frontend/src/*"],
+      "@libs/*": ["./libs/src/*"]
     },
     "allowImportingTsExtensions": true,
     "module": "ESNext",
-    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "noEmit": true,
     "jsx": "preserve",
@@ -39,7 +39,10 @@
       "path": "./apps/frontend/tsconfig.json"
     },
     {
-      "path": "./packages/api/tsconfig.json"
+      "path": "./apps/api/tsconfig.json"
+    },
+    {
+      "path": "./libs/tsconfig.json"
     }
   ]
 }

@@ -15,9 +15,10 @@ import { useAuth } from 'react-oidc-context';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import useUserStore from '@/store/userStore';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import useUserStore from '@/store/UserStore/UserStore';
+import MailPage from '@/pages/Mail/MailPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -28,6 +29,9 @@ const pageSwitch = (page: string) => {
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.MAIL: {
+      return <MailPage />;
     }
     default: {
       return (
@@ -129,17 +133,16 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { appConfig, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated } = useUserStore();
-  const { loginUser } = useUserQuery();
-  const { setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
+  const { appConfigs, getAppConfigs } = useAppConfigsStore();
+  const { user: registeredUser } = useUserQuery();
+  const { isAuthenticated, setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
 
   useEffect(() => {
     if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
       const { profile } = auth.user;
 
       // Send here the user password for Webdav to the API
-      loginUser(profile)
+      registeredUser(profile)
         .then(() => setIsLoggedInInEduApi(true))
         .catch((e) => console.error(e));
     }
@@ -149,7 +152,7 @@ const AppRouter = () => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          await getAppConfigs(true);
+          await getAppConfigs();
         } catch (e) {
           console.error('Error fetching data:', e);
         }
@@ -172,6 +175,6 @@ const AppRouter = () => {
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(isAuthenticated, appConfig)} />;
+  return <RouterProvider router={router(isAuthenticated, appConfigs)} />;
 };
 export default AppRouter;
