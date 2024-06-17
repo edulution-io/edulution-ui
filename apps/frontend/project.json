@@ -7,11 +7,12 @@
     "build": {
       "executor": "@nx/vite:build",
       "defaultConfiguration": "production",
+      "cache": true,
 
       "options": {
         "outputPath": "./dist/apps/frontend",
-        "configFile": "./vite.config.ts",
-        "postcssConfig": "./postcss.config.mjs"
+        "configFile": "./apps/frontend/vite.config.ts",
+        "postcssConfig": "./postcss.config.js"
       }
     },
     "serve": {

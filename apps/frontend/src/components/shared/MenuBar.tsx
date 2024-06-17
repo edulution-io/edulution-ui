@@ -21,6 +21,10 @@ const MenuBar: React.FC = () => {
 
   useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
 
+  if (menuBarEntries.disabled) {
+    return null;
+  }
+
   const renderMenuBarContent = () => (
     <div
       className="max-w-[300px]"
