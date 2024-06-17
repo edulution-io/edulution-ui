@@ -16,15 +16,15 @@ interface AdaptiveDialogProps {
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
-    isOpen,
-    handleOpenChange,
-    title,
-    trigger,
-    body,
-    footer,
-    mobileContentClassName,
-    desktopContentClassName,
-  }) => {
+  isOpen,
+  handleOpenChange,
+  title,
+  trigger,
+  body,
+  footer,
+  mobileContentClassName,
+  desktopContentClassName,
+}) => {
   const isMobileView = useIsMobileView();
 
   return isMobileView ? (

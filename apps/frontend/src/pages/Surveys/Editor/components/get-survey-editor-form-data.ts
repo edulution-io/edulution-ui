@@ -1,7 +1,7 @@
 import Survey from '@libs/survey/types/survey';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import createSurveyId from '@libs/survey/utils/create-survey-id';
-import {EMPTY_JSON} from "@libs/survey/utils/empty-json";
+import { EMPTY_JSON } from '@libs/survey/utils/empty-json';
 
 export const getInitialFormValues = (selectedSurvey?: Survey): SurveyEditorFormData => ({
   id: selectedSurvey?.id || createSurveyId(),

@@ -9,7 +9,7 @@ interface FloatingActionButtonProps {
 }
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ icon: Icon, text, onClick }) => {
-  const contextProvider = useMemo(() => ({className: 'h-8 w-8 m-5'}), []);
+  const contextProvider = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   return (
     <div className="flex flex-col items-center justify-center space-x-2">
@@ -20,12 +20,12 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ icon: Icon,
         onClick={onClick}
       >
         <IconContext.Provider value={contextProvider}>
-          <Icon/>
+          <Icon />
         </IconContext.Provider>
       </Button>
       <p className="justify-center text-center text-white">{text}</p>
     </div>
   );
-}
+};
 
 export default FloatingActionButton;

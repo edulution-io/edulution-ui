@@ -12,14 +12,24 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import { getEmptyFormValues, getInitialFormValues } from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
+import {
+  getEmptyFormValues,
+  getInitialFormValues,
+} from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import FloatingActionButton from "@/components/shared/FloatingActionButton";
+import FloatingActionButton from '@/components/shared/FloatingActionButton';
 
 const SurveyEditorForm = () => {
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys, updateCreatedSurveys } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, openSaveSurveyDialog, closeSaveSurveyDialog, commitSurvey, isCommiting, errorCommiting } = useSurveyEditorFormStore();
+  const {
+    isOpenSaveSurveyDialog,
+    openSaveSurveyDialog,
+    closeSaveSurveyDialog,
+    commitSurvey,
+    isCommiting,
+    errorCommiting,
+  } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
 

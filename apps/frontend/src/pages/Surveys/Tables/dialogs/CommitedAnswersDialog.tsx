@@ -36,7 +36,7 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
     isLoadingAnswer,
     errorLoadingAnswer,
 
-    trigger
+    trigger,
   } = props;
   const { t } = useTranslation();
 

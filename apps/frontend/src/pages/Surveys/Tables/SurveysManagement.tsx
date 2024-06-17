@@ -13,7 +13,7 @@ interface SurveysManagementProps {
   edit: () => void;
 }
 
-const SurveysManagement = ({edit}: SurveysManagementProps) => {
+const SurveysManagement = ({ edit }: SurveysManagementProps) => {
   const {
     selectedPageView,
     updateSelectedPageView,
@@ -88,13 +88,10 @@ const SurveysManagement = ({edit}: SurveysManagementProps) => {
         selectedSurvey={selectedSurvey}
         surveys={allSurveys}
         selectSurvey={selectSurvey}
-
         canDelete
         deleteSurvey={deleteSurvey}
-
         canEdit
         editSurvey={edit}
-
         canParticipate
         openParticipateSurveyDialog={openParticipateSurveyDialog}
         canShowCommitedAnswers

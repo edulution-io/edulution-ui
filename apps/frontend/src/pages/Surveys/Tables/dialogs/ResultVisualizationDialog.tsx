@@ -80,7 +80,11 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
     <AdaptiveDialog
       isOpen={isOpenPublicResultsVisualisationDialog}
       trigger={trigger}
-      handleOpenChange={isOpenPublicResultsVisualisationDialog ? closePublicResultsVisualisationDialog : openPublicResultsVisualisationDialog}
+      handleOpenChange={
+        isOpenPublicResultsVisualisationDialog
+          ? closePublicResultsVisualisationDialog
+          : openPublicResultsVisualisationDialog
+      }
       title={t('survey.resultingVisualization')}
       body={getDialogBody()}
       // desktopContentClassName="min-h-[75%] max-w-[85%]"

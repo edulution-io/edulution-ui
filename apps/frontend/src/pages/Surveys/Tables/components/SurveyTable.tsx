@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Survey from '@libs/survey/types/survey';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
@@ -18,8 +18,9 @@ const SurveyTable = (props: SurveyTableProps) => {
 
   const { t } = useTranslation();
 
-  const surveyRows = useMemo(() => (
-    surveys.map((survey: Survey) => {
+  const surveyRows = useMemo(
+    () =>
+      surveys.map((survey: Survey) => {
         const isSelectedSurvey = selectedSurvey?.id === survey.id;
         if (!survey.formula) {
           return null;
@@ -56,13 +57,14 @@ const SurveyTable = (props: SurveyTableProps) => {
               {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
             </TableCell>
             <TableCell className="text-white">
-              {survey?.participated?.length ? `${ survey.participated.length }/` : ''}
+              {survey?.participated?.length ? `${survey.participated.length}/` : ''}
               {survey?.participants?.length || 0}
             </TableCell>
           </TableRow>
         );
-      }
-    )), [surveys, selectedSurvey]);
+      }),
+    [surveys, selectedSurvey],
+  );
 
   return (
     <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
@@ -70,7 +72,10 @@ const SurveyTable = (props: SurveyTableProps) => {
       <Table>
         <TableHeader>
           <TableRow className="text-white">
-            <TableHead key="tableHead-checkbox" className="w-20px" />
+            <TableHead
+              key="tableHead-checkbox"
+              className="w-20px"
+            />
             {SURVEY_TABLE_HEADERS.map((header) => (
               <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
             ))}

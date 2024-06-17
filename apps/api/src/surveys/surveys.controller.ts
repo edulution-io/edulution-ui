@@ -19,7 +19,7 @@ class SurveysController {
   @Get()
   async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto, @GetCurrentUsername() username: string) {
     const { search, surveyId } = params;
-    const { surveyIds, participants  } = body;
+    const { surveyIds, participants } = body;
 
     if (search) {
       switch (search) {
@@ -91,7 +91,6 @@ class SurveysController {
               return [];
             });
 
-
         case UserSurveySearchTypes.ALL:
         default:
           return this.surveyService.findAllSurveys();
@@ -157,7 +156,7 @@ class SurveysController {
 
   @Patch()
   async manageUsersSurveys(@Body() body: PushAnswerDto, @GetCurrentUsername() username: string) {
-    const {surveyId, answer, canSubmitMultipleAnswers} = body;
+    const { surveyId, answer, canSubmitMultipleAnswers } = body;
 
     try {
       // This function does also check if the user is a participant and has not already submitted an answer

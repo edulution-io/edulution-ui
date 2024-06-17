@@ -10,27 +10,27 @@ import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm';
 
 const SurveysPage = () => {
   const { t } = useTranslation();
-  const [searchParams  , setSearchParams  ] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get('page');
 
   // const navigate = useNavigate();
   const onClickEdit = () => {
     // navigate('/surveys/?page=editor');
     setSearchParams({ page: 'editor' });
-  }
+  };
 
   const renderPage = () => {
     switch (page) {
       // case 'management':
       //   return <SurveysManagement/>
       case 'open':
-        return <OpenSurveys />
+        return <OpenSurveys />;
       case 'answered':
-        return <AnsweredSurveys />
+        return <AnsweredSurveys />;
       case 'created':
-        return <CreatedSurveys edit={onClickEdit} />
+        return <CreatedSurveys edit={onClickEdit} />;
       case 'editor':
-        return <SurveyEditorForm />
+        return <SurveyEditorForm />;
       default:
         return (
           <div className="flex flex-col justify-between">

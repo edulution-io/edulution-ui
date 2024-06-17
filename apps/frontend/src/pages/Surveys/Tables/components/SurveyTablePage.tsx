@@ -64,7 +64,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     openPublicResultsVisualisationDialog = () => {},
   } = props;
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const editButton = useMemo(() => {
     if (selectedSurvey && canEdit) {
@@ -98,7 +98,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
   }, [selectedSurvey, canDelete]);
 
   const resultsChartButton = useMemo(() => {
-    if ( selectedSurvey /* ?.canShowResultsChart */ &&  canShowResults) {
+    if (selectedSurvey /* ?.canShowResultsChart */ && canShowResults) {
       return (
         <FloatingActionButton
           icon={HiOutlineArrowDownOnSquareStack}
@@ -111,7 +111,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
   }, [selectedSurvey, canShowResults]);
 
   const resultsTableButton = useMemo(() => {
-    if ( selectedSurvey /* ?.canShowResultsTable */ &&  canShowResults) {
+    if (selectedSurvey /* ?.canShowResultsTable */ && canShowResults) {
       return (
         <FloatingActionButton
           icon={HiOutlineArrowDownOnSquareStack}

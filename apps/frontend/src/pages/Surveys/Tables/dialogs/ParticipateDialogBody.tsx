@@ -23,7 +23,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
 
   // TODO: NIEDUUI-211: Add the functionality to stop answering and to continue with that later
 
-  surveyModel.onComplete.add(async (sender, options)=> {
+  surveyModel.onComplete.add(async (sender, options) => {
     form.setValue('answer', sender.data);
     form.setValue('options', options);
     await handleFormSubmit();

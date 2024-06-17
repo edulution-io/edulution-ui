@@ -1,4 +1,4 @@
-import Survey from "@libs/survey/types/survey";
+import Survey from '@libs/survey/types/survey';
 import SurveyAnswer from '@libs/survey/types/survey-answer';
 
 class CreateUsersSurveysDto {
