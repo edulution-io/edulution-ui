@@ -12,18 +12,16 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
-import useUserStoreOLD from '@/store/userStoreOLD';
-import useLmnUserStoreOLD from '@/store/lmnApiStoreOLD';
+import useUserStore from '@/store/UserStore/UserStore';
+import useLmnApiStore from '@/store/lmnApiStore';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUser, setWebdavKey, setIsAuthenticated, setToken } = useUserStoreOLD();
+  const { setUsername, setWebdavKey, setIsAuthenticated, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
-  const { getToken } = useLmnUserStoreOLD((state) => ({
-    getToken: state.getToken,
-  }));
+  const { setLmnApiToken } = useLmnApiStore();
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -57,13 +55,13 @@ const LoginPage: React.FC = () => {
           key: `${import.meta.env.VITE_WEBDAV_KEY}`,
         });
 
-        setUser(username);
-        setToken(requestUser.access_token);
+        setUsername(username);
+        setEduApiToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
         setIsAuthenticated(true);
 
         createWebdavClient();
-        await getToken(username, password);
+        await setLmnApiToken(username, password);
       }
 
       return null;

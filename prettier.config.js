@@ -39,4 +39,5 @@ module.exports = {
     },
   ],
   plugins: ['prettier-plugin-tailwindcss'],
+  tailwindConfig: 'apps/frontend/tailwind.config.ts',
 };

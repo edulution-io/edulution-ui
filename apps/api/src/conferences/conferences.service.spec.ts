@@ -107,7 +107,7 @@ describe(ConferencesService.name, () => {
 
   describe('findAll', () => {
     it('should return an array of conferences', async () => {
-      const result = await service.findUsersConferences(mockCreator.username);
+      const result = await service.findAllConferencesTheUserHasAccessTo(mockCreator.username);
       expect(result[0].creator).toEqual(mockCreator);
       expect(model.find).toHaveBeenCalled();
     });

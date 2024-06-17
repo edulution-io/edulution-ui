@@ -16,7 +16,7 @@ type AppConfigsStore = {
 
 type PersistedAppConfigsStore = (
   appConfig: StateCreator<AppConfigsStore>,
-  options: PersistOptions<AppConfigsStore>,
+  options: PersistOptions<Partial<AppConfigsStore>>,
 ) => StateCreator<AppConfigsStore>;
 
 const useAppConfigsStore = create<AppConfigsStore>(
@@ -60,6 +60,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
     {
       name: 'appConfig-storage',
       storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({ appConfigs: state.appConfigs }),
     },
   ),
 );

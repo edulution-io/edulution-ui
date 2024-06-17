@@ -27,7 +27,7 @@ const mockUsersService = {
   searchUsersByName: jest.fn(),
 };
 
-describe('UsersController', () => {
+describe(UsersController.name, () => {
   let controller: UsersController;
   let service: UsersService;
 
