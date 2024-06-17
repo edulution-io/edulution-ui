@@ -39,3 +39,5 @@ export { default as BackupIcon } from '@/assets/icons/edulution/Backup.svg';
 export { default as TrashIcon } from '@/assets/icons/trash.png';
 export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
+export { default as SurveysMenuIcon } from '@/assets/icons/third-party/survey-menu.svg';
+export { default as SurveysSidebarIcon } from '@/assets/icons/third-party/survey-sidebar.svg';

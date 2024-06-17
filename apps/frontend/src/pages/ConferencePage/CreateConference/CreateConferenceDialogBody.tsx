@@ -6,7 +6,7 @@ import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
+import Attendee from '@libs/users-attendees/types/attendee';
 import useUserStoreOLD from '@/store/userStoreOLD';
 
 interface CreateConferenceDialogBodyProps {

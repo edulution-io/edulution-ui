@@ -9,6 +9,7 @@ import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import { ConferencePage } from '@/pages/ConferencePage';
+import SurveysPage from '@/pages/Surveys/SurveysPage';
 import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
@@ -23,12 +24,12 @@ const pageSwitch = (page: string) => {
   switch (page as APPS) {
     case APPS.CONFERENCES:
       return <ConferencePage />;
-    case APPS.FILE_SHARING: {
+    case APPS.FILE_SHARING:
       return <FileSharing />;
-    }
-    case APPS.ROOM_BOOKING: {
+    case APPS.SURVEYS:
+      return <SurveysPage />;
+    case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
-    }
     default: {
       return (
         <Navigate

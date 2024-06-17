@@ -83,6 +83,19 @@
     "title": "SCHULVERWALTUNG",
     "sidebar": "Schulverwaltung"
   },
+  "survey": {
+    "editor": {
+      "new": "Neu (leer)"
+    }
+  },
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "description": "Hier können Sie eigene Umfragen erstellen und verwalten oder an den Umfragen anderer teilnehmen.",
+    "view": {
+      "editor": "Neue erstellen"
+    }
+  },
   "printer": {
     "title": "DRUCKER",
     "sidebar": "Drucker"

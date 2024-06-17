@@ -1,4 +1,4 @@
-import Attendee from '@/pages/ConferencePage/dto/attendee';
+import Attendee from '@libs/users-attendees/types/attendee';
 
 interface FormData {
   name: string;

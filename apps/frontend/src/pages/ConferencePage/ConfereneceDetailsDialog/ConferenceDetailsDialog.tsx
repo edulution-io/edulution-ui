@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import useUserStoreOLD from '@/store/userStoreOLD';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
+import Attendee from '@libs/users-attendees/types/attendee';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;

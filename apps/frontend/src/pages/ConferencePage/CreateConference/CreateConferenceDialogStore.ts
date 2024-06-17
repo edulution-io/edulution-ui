@@ -6,7 +6,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 import { USERS_SEARCH_EDU_API_ENDPOINT } from '@/api/useUserQuery';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
+import Attendee from '@libs/users-attendees/types/attendee';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;

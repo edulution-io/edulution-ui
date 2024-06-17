@@ -83,6 +83,19 @@
     "title": "SCHOOL MANAGEMENT",
     "sidebar": "School Management"
   },
+  "survey": {
+    "editor": {
+      "new": "New (blank)"
+    }
+  },
+  "surveys": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
+    "description": "Here you can create and manage surveys or to participate on surveys of the others",
+    "view": {
+      "editor": "Create new"
+    }
+  },
   "printer": {
     "title": "PRINTER",
     "sidebar": "Printe"

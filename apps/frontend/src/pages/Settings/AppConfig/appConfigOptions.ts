@@ -17,6 +17,7 @@ import {
   RoomBookingIcon,
   SchoolInformationIcon,
   SchoolManagementIcon,
+  SurveysMenuIcon,
   TicketSystemIcon,
   VirtualizationIcon,
   WlanIcon,
@@ -43,6 +44,12 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.CONFERENCES,
     icon: ConferencesIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'apiKey'],
+  },
+  {
+    id: APPS.SURVEYS,
+    icon: SurveysMenuIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey'],
   },
