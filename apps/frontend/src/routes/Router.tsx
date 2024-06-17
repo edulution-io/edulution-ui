@@ -15,10 +15,11 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStoreOLD';
-import useUserStoreOLD from '@/store/userStoreOLD';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import useUserStore from '@/store/UserStore/UserStore';
+import MailPage from '@/pages/Mail/MailPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -30,6 +31,8 @@ const pageSwitch = (page: string) => {
       return <SurveysPage />;
     case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
+    case APPS.MAIL:
+      return <MailPage />;
     default: {
       return (
         <Navigate
@@ -130,9 +133,9 @@ const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
 
 const AppRouter = () => {
   const auth = useAuth();
-  const { appConfig, getAppConfigs } = useAppConfigsStore();
+  const { appConfigs, getAppConfigs } = useAppConfigsStore();
   const { user: registeredUser } = useUserQuery();
-  const { isAuthenticated, setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStoreOLD();
+  const { isAuthenticated, setIsLoggedInInEduApi, isLoggedInInEduApi } = useUserStore();
 
   useEffect(() => {
     if (auth.user && auth.isAuthenticated && !isLoggedInInEduApi) {
@@ -149,7 +152,7 @@ const AppRouter = () => {
     if (auth.isAuthenticated) {
       const fetchData = async () => {
         try {
-          await getAppConfigs(true);
+          await getAppConfigs();
         } catch (e) {
           console.error('Error fetching data:', e);
         }
@@ -172,6 +175,6 @@ const AppRouter = () => {
     }
   }, [auth.events, auth.isAuthenticated]);
 
-  return <RouterProvider router={router(isAuthenticated, appConfig)} />;
+  return <RouterProvider router={router(isAuthenticated, appConfigs)} />;
 };
 export default AppRouter;

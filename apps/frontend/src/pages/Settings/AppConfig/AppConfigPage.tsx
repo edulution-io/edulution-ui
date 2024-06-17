@@ -12,7 +12,7 @@ import { Button } from '@/components/shared/Button';
 import { TrashIcon } from '@/assets/icons';
 import Toaster from '@/components/ui/Sonner';
 import { AppIntegrationType } from '@/datatypes/types';
-import useAppConfigsStoreOLD from '@/store/appConfigsStoreOLD';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -28,7 +28,7 @@ const AppConfigPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const isMobileView = useIsMobileView();
-  const { appConfig, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStoreOLD();
+  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const [option, setOption] = useState('');
 
   const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
@@ -56,7 +56,7 @@ const AppConfigPage: React.FC = () => {
   const areSettingsVisible = settingLocation !== '';
 
   const updateSettings = () => {
-    const currentConfig = findAppConfigByName(appConfig, settingLocation);
+    const currentConfig = findAppConfigByName(appConfigs, settingLocation);
     if (!currentConfig) {
       return;
     }
@@ -73,7 +73,7 @@ const AppConfigPage: React.FC = () => {
     if (areSettingsVisible) {
       updateSettings();
     }
-  }, [areSettingsVisible, settingLocation, appConfig, setValue]);
+  }, [areSettingsVisible, settingLocation, appConfigs, setValue]);
 
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
@@ -91,7 +91,7 @@ const AppConfigPage: React.FC = () => {
             }, {} as AppConfigOptions) || {},
         };
 
-        const updatedConfig = appConfig.map((entry) => {
+        const updatedConfig = appConfigs.map((entry) => {
           if (entry.name === settingLocation) {
             return newConfig;
           }
@@ -140,7 +140,7 @@ const AppConfigPage: React.FC = () => {
                       <AppConfigTypeSelect
                         control={control}
                         settingLocation={settingLocation}
-                        appConfig={appConfig}
+                        appConfig={appConfigs}
                       />
                     </div>
                     <div className="absolute right-20 sm:pr-10 md:right-20">
@@ -165,14 +165,14 @@ const AppConfigPage: React.FC = () => {
   };
 
   const filteredAppOptions = () => {
-    const existingOptions = appConfig.map((item) => item.name);
+    const existingOptions = appConfigs.map((item) => item.name);
     const filteredOptions = APP_CONFIG_OPTIONS.filter((item) => !existingOptions.includes(item.id));
 
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
   };
 
   const handleDeleteSettingsItem = () => {
-    const deleteOptionName = appConfig.filter((item) => item.name === settingLocation)[0].name;
+    const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
     deleteAppConfigEntry(deleteOptionName)
       .then(() => {
         toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {

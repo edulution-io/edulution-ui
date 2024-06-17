@@ -28,14 +28,18 @@
     animation-delay: 4.5s;
 }
 
-
-iframe {
-  background-image: url("./assets/background.jpg");
-  filter: brightness(1.5);
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
+}
+
+.bg-global {
+  @apply bg-cover bg-center bg-no-repeat;
+  background-image: url('./assets/background.jpg');
+}
+
+iframe {
+  background-image: url("./assets/background.jpg");
+  filter: brightness(1.5);
 }

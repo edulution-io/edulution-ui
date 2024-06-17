@@ -3,51 +3,46 @@ import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import EDU_API_CONFIG_ENDPOINT from '@/api/endpoints/appconfig';
 
-type AppConfigsStoreOLD = {
-  appConfig: AppConfig[];
+type AppConfigsStore = {
+  appConfigs: AppConfig[];
   isLoading: boolean;
   error: Error | null;
-  getAppConfigs: (setIsLoading: boolean) => Promise<void>;
-  updateAppConfig: (appConfig: AppConfig[]) => Promise<void>;
+  getAppConfigs: () => Promise<void>;
+  updateAppConfig: (appConfigs: AppConfig[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
 };
 
 type PersistedAppConfigsStore = (
-  appConfig: StateCreator<AppConfigsStoreOLD>,
-  options: PersistOptions<AppConfigsStoreOLD>,
-) => StateCreator<AppConfigsStoreOLD>;
+  appConfig: StateCreator<AppConfigsStore>,
+  options: PersistOptions<Partial<AppConfigsStore>>,
+) => StateCreator<AppConfigsStore>;
 
-const EDU_API_CONFIG_ENDPOINT = 'appconfig';
-
-const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
+const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
-      appConfig: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
+      appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
       isLoading: false,
       error: null,
 
-      getAppConfigs: async (setIsLoading = true) => {
-        set({ isLoading: setIsLoading, error: null });
+      getAppConfigs: async () => {
+        set({ isLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfig[]>(EDU_API_CONFIG_ENDPOINT);
-          set({ appConfig: response.data, isLoading: false });
+          set({ appConfigs: response.data, isLoading: false });
         } catch (e) {
           handleApiError(e, set);
-        } finally {
-          set({ isLoading: false });
         }
       },
 
-      updateAppConfig: async (appConfig) => {
-        set({ appConfig, isLoading: true });
+      updateAppConfig: async (appConfigs) => {
+        set({ appConfigs, isLoading: true });
         try {
-          await eduApi.put(EDU_API_CONFIG_ENDPOINT, appConfig);
+          await eduApi.put(EDU_API_CONFIG_ENDPOINT, appConfigs);
           set({ isLoading: false });
         } catch (e) {
           handleApiError(e, set);
-        } finally {
-          set({ isLoading: false });
         }
       },
 
@@ -55,20 +50,19 @@ const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
         set({ isLoading: true });
         try {
           await eduApi.delete(`${EDU_API_CONFIG_ENDPOINT}/${name}`);
-          const newAppConfig = get().appConfig.filter((item) => item.name !== name);
-          set({ appConfig: newAppConfig, isLoading: false });
+          const newAppConfigs = get().appConfigs.filter((item) => item.name !== name);
+          set({ appConfigs: newAppConfigs, isLoading: false });
         } catch (e) {
           handleApiError(e, set);
-        } finally {
-          set({ isLoading: false });
         }
       },
     }),
     {
       name: 'appConfig-storage',
       storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({ appConfigs: state.appConfigs }),
     },
   ),
 );
 
-export default useAppConfigsStoreOLD;
+export default useAppConfigsStore;
