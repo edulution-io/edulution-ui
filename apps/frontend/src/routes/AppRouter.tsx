@@ -5,9 +5,7 @@ import createRouter from '@/routes/CreateRouter';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 
-interface AppRouterProps {}
-
-const AppRouter: React.FC<AppRouterProps> = () => {
+const AppRouter: React.FC = () => {
   const auth = useAuth();
   const { appConfigs, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated, setIsLoggedInInEduApi } = useUserStore();

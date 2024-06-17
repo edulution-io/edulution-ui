@@ -11,7 +11,7 @@ const ConferencePage: React.FC = () => {
   const { selectedConference } = useConferenceDetailsDialogStore();
 
   return (
-    <div className="p-5 lg:px-20">
+    <div className="p-5 lg:pr-20">
       <h1 className="mb-1 text-lg">{t('conferences.title')}</h1>
 
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">

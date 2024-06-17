@@ -2,7 +2,7 @@ import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import IframePlaceholder from '@/components/layout/Embedded/IframePlaceholder';
+import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import HomePage from '@/pages/Home/HomePage';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
@@ -23,7 +23,7 @@ const pageSwitch = (page: string) => {
     case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
     case APPS.MAIL:
-      return <IframePlaceholder />;
+      return <FramePlaceholder />;
     default:
       return (
         <Navigate
@@ -111,7 +111,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
                 <Route
                   key={item.name}
                   path={item.name}
-                  element={<IframePlaceholder />}
+                  element={<FramePlaceholder />}
                 />
               ) : null,
             )}
