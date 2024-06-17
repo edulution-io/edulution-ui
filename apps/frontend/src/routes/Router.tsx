@@ -18,6 +18,7 @@ import useAppConfigsStore from '@/store/appConfigsStoreOLD';
 import useUserStoreOLD from '@/store/userStoreOLD';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import MailPage from '@/pages/Mail/MailPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -28,6 +29,9 @@ const pageSwitch = (page: string) => {
     }
     case APPS.ROOM_BOOKING: {
       return <RoomBookingPage />;
+    }
+    case APPS.MAIL: {
+      return <MailPage />;
     }
     default: {
       return (
