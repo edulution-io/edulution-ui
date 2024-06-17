@@ -20,7 +20,7 @@ const mockConferencesModel = {
 const mockConferencesService = {
   create: jest.fn(),
   join: jest.fn(),
-  findUsersConferences: jest.fn(),
+  findAllConferencesTheUserHasAccessTo: jest.fn(),
   isCurrentUserTheCreator: jest.fn(),
   update: jest.fn(),
   toggleConferenceIsRunning: jest.fn(),
@@ -48,7 +48,7 @@ const jwtUser: JWTUser = {
   ldapGroups: [],
 };
 
-describe('ConferencesController', () => {
+describe(ConferencesController.name, () => {
   let controller: ConferencesController;
   let service: ConferencesService;
 
@@ -101,10 +101,10 @@ describe('ConferencesController', () => {
   });
 
   describe('findAll', () => {
-    it('should call findUsersConferences method of conferencesService with correct arguments', async () => {
+    it('should call findAllConferencesTheUserHasAccessTo method of conferencesService with correct arguments', async () => {
       const username = 'testuser';
       await controller.findAll(username);
-      expect(service.findUsersConferences).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
     });
   });
 
@@ -123,7 +123,7 @@ describe('ConferencesController', () => {
       await controller.update(conference, username);
       expect(service.isCurrentUserTheCreator).toHaveBeenCalledWith(conference.meetingID, username);
       expect(service.update).toHaveBeenCalledWith(conference);
-      expect(service.findUsersConferences).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
     });
   });
 
@@ -133,7 +133,7 @@ describe('ConferencesController', () => {
       const username = 'testuser';
       await controller.toggleIsRunning(conference, username);
       expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(conference.meetingID, username);
-      expect(service.findUsersConferences).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
     });
   });
 
@@ -143,7 +143,7 @@ describe('ConferencesController', () => {
       const username = 'testuser';
       await controller.remove(meetingIDs, username);
       expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
-      expect(service.findUsersConferences).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
     });
   });
 });

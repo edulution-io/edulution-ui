@@ -3,6 +3,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import axios from 'axios';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
@@ -135,6 +136,76 @@ describe(ConferencesService.name, () => {
       const result = await service.remove(['1'], mockCreator.username);
       expect(result).toBeTruthy();
       expect(model.deleteMany).toHaveBeenCalled();
+    });
+  });
+
+  describe('toggleConferenceIsRunning', () => {
+    it('should toggle the conference running status', async () => {
+      jest.spyOn(service, 'isCurrentUserTheCreator').mockResolvedValue({
+        conference: mockConferenceDocument,
+        isCreator: true,
+      });
+      jest.spyOn(service, 'stopConference').mockResolvedValue(undefined);
+      jest.spyOn(service, 'startConference').mockResolvedValue(undefined);
+
+      mockConferenceDocument.isRunning = false;
+      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
+      expect(service.startConference).toHaveBeenCalled();
+
+      mockConferenceDocument.isRunning = true;
+      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
+      expect(service.stopConference).toHaveBeenCalled();
+    });
+  });
+
+  describe('join', () => {
+    it('should return a join URL', async () => {
+      jest.spyOn(service, 'isCurrentUserTheCreator').mockResolvedValue({
+        conference: mockConferenceDocument,
+        isCreator: true,
+      });
+      const result = await service.join('mockMeetingId', mockJWTUser);
+      expect(result).toContain('join?');
+    });
+  });
+
+  describe('isCurrentUserTheCreator', () => {
+    it('should verify if the current user is the creator', async () => {
+      const result = await service.isCurrentUserTheCreator('mockMeetingId', mockCreator.username);
+      expect(result.isCreator).toBe(true);
+      expect(result.conference.creator).toEqual(mockCreator);
+    });
+  });
+
+  describe('startConference', () => {
+    it('should start a conference and update its status', async () => {
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: '<response><returncode>SUCCESS</returncode></response>',
+      });
+      jest.spyOn(ConferencesService, 'parseXml').mockResolvedValue({
+        response: { returncode: 'SUCCESS' },
+      });
+      jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
+
+      await service.startConference(mockConferenceDocument);
+      expect(axios.get).toHaveBeenCalled();
+      expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
+    });
+  });
+
+  describe('stopConference', () => {
+    it('should stop a conference and update its status', async () => {
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: '<response><returncode>SUCCESS</returncode></response>',
+      });
+      jest.spyOn(ConferencesService, 'parseXml').mockResolvedValue({
+        response: { returncode: 'SUCCESS' },
+      });
+      jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
+
+      await service.stopConference(mockConferenceDocument);
+      expect(axios.get).toHaveBeenCalled();
+      expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
     });
   });
 });
