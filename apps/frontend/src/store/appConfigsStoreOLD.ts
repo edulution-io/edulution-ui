@@ -34,6 +34,8 @@ const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
           set({ appConfig: response.data, isLoading: false });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
@@ -44,6 +46,8 @@ const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
           set({ isLoading: false });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
@@ -55,6 +59,8 @@ const useAppConfigsStoreOLD = create<AppConfigsStoreOLD>(
           set({ appConfig: newAppConfig, isLoading: false });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),
