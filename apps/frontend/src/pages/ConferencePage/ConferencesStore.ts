@@ -11,7 +11,7 @@ interface ConferencesStore {
   conferences: Conference[];
   isLoading: boolean;
   error: Error | null;
-  getConferences: (setIsLoading?: boolean) => Promise<void>;
+  getConferences: (isLoading?: boolean) => Promise<void>;
   deleteConferences: (conferences: Conference[]) => Promise<void>;
   toggleConferenceRunningState: (conferenceID: string) => Promise<void>;
   toggleConferenceRunningStateIsLoading: boolean;
@@ -33,13 +33,15 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
-  getConferences: async (setIsLoading = true) => {
-    set({ isLoading: setIsLoading, error: null });
+  getConferences: async (isLoading = true) => {
+    set({ isLoading, error: null });
     try {
       const response = await eduApi.get<Conference[]>(apiEndpoint);
       set({ conferences: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 
@@ -52,6 +54,8 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       set({ conferences: response.data, isLoading: false, selectedRows: {} });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
   toggleConferenceRunningState: async (meetingID) => {
@@ -60,7 +64,9 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       const response = await eduApi.put<Conference[]>(apiEndpoint, { meetingID });
       set({ conferences: response.data, toggleConferenceRunningStateIsLoading: false });
     } catch (error) {
-      handleApiError(error, set, 'toggleConferenceRunningStateError', 'toggleConferenceRunningStateIsLoading');
+      handleApiError(error, set, 'toggleConferenceRunningStateError');
+    } finally {
+      set({ toggleConferenceRunningStateIsLoading: false });
     }
   },
   reset: () => set(initialValues),
