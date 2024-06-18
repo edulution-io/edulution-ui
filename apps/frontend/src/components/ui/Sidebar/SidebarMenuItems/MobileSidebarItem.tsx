@@ -5,7 +5,7 @@ import { getFromPathName } from '@/utils/common';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import useSidebarStore from '../sidebarStore';
 
-const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
+const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { pathname } = useLocation();
   const { toggleMobileSidebar } = useSidebarStore();
 
@@ -33,4 +33,4 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   );
 };
 
-export default SidebarItem;
+export default MobileSidebarItem;
