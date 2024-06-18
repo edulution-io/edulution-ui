@@ -6,17 +6,16 @@ import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
-type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
+type UserDataConfig = { state: { username: string; webdavKey: string; isAuthenticated: boolean } };
 
 export const createWebdavClient = () => {
   const userStorageString: string | null = localStorage.getItem('user-storage');
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-  const { user, webdavKey } = userStorage.state;
+  const userStorage = JSON.parse(userStorageString as string) as UserDataConfig;
+  const { username, webdavKey } = userStorage.state;
 
   return createClient(`${window.location.origin}/webdav`, {
-    username: user,
+    username,
     password: decryptPassword({
       data: webdavKey,
       key: `${import.meta.env.VITE_WEBDAV_KEY}`,
@@ -197,15 +196,15 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', client.getFileUploadLink(remotePath), true);
 
-    const userStorageString: string | null = sessionStorage.getItem('user-storage');
+    const userStorageString: string | null = localStorage.getItem('user-storage');
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-    const { user, webdavKey } = userStorage.state;
+    const { username, webdavKey } = userStorage.state;
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${user}:${decryptPassword({ data: webdavKey, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
+      `Basic ${btoa(`${username}:${decryptPassword({ data: webdavKey, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 
