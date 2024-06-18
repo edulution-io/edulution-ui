@@ -16,7 +16,7 @@ import useAppConfigsStore from '@/store/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import cleanAllStores from '@/store/utilis/cleanAllStores';
 import useUserStore from '@/store/UserStore/UserStore';
-import SidebarItem from './SidebarItem';
+import SidebarItem from './SidebarMenuItems/SidebarItem';
 
 const Sidebar = () => {
   const [translate, setTranslate] = useState(0);

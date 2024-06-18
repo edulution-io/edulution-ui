@@ -3,22 +3,9 @@ import { NavLink } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import { getFromPathName } from '@/utils/common';
+import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 
-type SidebarMenuItem = {
-  title: string;
-  link: string;
-  icon: string;
-  color: string;
-};
-
-interface SidebarItemProps {
-  menuItem: SidebarMenuItem;
-  isDesktop: boolean;
-  pathname: string;
-  translate: number;
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname, translate }) => {
+const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, pathname, translate }) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();

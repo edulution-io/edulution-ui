@@ -1,0 +1,40 @@
+import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
+import { getFromPathName } from '@/utils/common';
+import { SidebarMenuItem } from '@libs/ui/types/sidebar';
+import useSidebarStore from '../sidebarStore';
+
+type SidebarItemProps = {
+  menuItem: SidebarMenuItem;
+};
+
+const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem }) => {
+  const { pathname } = useLocation();
+  const { toggleMobileSidebar } = useSidebarStore();
+
+  const rootPathName = `/${getFromPathName(pathname, 1)}`;
+
+  return (
+    <div
+      key={menuItem.title}
+      className="relative"
+    >
+      <NavLink
+        to={menuItem.link}
+        onClick={toggleMobileSidebar}
+        className={`group relative flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+      >
+        <p className="md:hidden">{menuItem.title}</p>
+        <img
+          src={menuItem.icon}
+          width={SIDEBAR_ICON_WIDTH}
+          className="relative"
+          alt=""
+        />
+      </NavLink>
+    </div>
+  );
+};
+
+export default SidebarItem;

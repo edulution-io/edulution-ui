@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '@/components/ui/Sidebar';
+import { Sidebar } from '@/components';
 import MenuBar from '@/components/shared/MenuBar';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 

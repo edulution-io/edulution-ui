@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
-import Sidebar from '../ui/Sidebar';
+import { Sidebar } from '@/components';
 
 const BlankLayout: React.FC<PropsWithChildren> = () => {
   const auth = useAuth();
