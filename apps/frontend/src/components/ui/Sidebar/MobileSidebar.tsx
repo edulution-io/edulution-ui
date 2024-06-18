@@ -1,4 +1,4 @@
-import React, { MutableRefObject, forwardRef, useRef } from 'react';
+import React, { MutableRefObject, forwardRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import {
@@ -27,11 +27,10 @@ const MobileSidebar = forwardRef<HTMLDivElement, SidebarProps>(
     },
     ref,
   ) => {
-    const sidebarRef = useRef<HTMLDivElement>(null);
     const sidebarIconsRef = ref as MutableRefObject<HTMLDivElement>;
     const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
 
-    useOnClickOutside(sidebarRef, isMobileSidebarOpen ? toggleMobileSidebar : () => {});
+    useOnClickOutside(sidebarIconsRef, isMobileSidebarOpen ? toggleMobileSidebar : () => {});
 
     const renderMobileSidebar = () => (
       <div className="fixed right-0 h-screen border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none">
