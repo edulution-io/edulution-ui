@@ -25,6 +25,7 @@ export interface MenuItem {
 export interface MenuBarEntryProps {
   menuItems: MenuItem[];
   title: string;
+  disabled?: boolean;
   icon: string;
   color: string;
 }

@@ -5,7 +5,7 @@ import { DropdownMenu } from '@/components';
 import { toast } from 'sonner';
 import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import { useTranslation } from 'react-i18next';
-import useAppConfigsStore from '@/store/appConfigsStoreOLD';
+import useAppConfigsStore from '@/store/appConfigsStore';
 import { SettingsDialogProps } from '@/pages/Settings/AppConfig/AppConfigDialog/settingTypes';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
@@ -17,7 +17,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
   setSearchParams,
 }) => {
   const { t } = useTranslation();
-  const { appConfig, updateAppConfig } = useAppConfigsStore();
+  const { appConfigs, updateAppConfig } = useAppConfigsStore();
 
   return (
     <Sheet
@@ -56,7 +56,7 @@ const MobileSettingsDialog: React.FC<SettingsDialogProps> = ({
                   appType: AppIntegrationType.FORWARDED,
                   options: {},
                 };
-                const updatedConfig = [...appConfig, newConfig];
+                const updatedConfig = [...appConfigs, newConfig];
 
                 updateAppConfig(updatedConfig)
                   .then(() =>

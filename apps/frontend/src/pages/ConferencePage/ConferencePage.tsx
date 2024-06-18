@@ -5,14 +5,21 @@ import ConferencesTable from '@/pages/ConferencePage/Table/ConferencesTable';
 import FloatingButtonsBar from '@/pages/ConferencePage/Table/FloatingButtonsBar';
 import ConferenceDetailsDialog from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialog';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import { ConferencesIcon } from '@/assets/icons';
+import DeleteConferencesDialog from '@/pages/ConferencePage/Table/DeleteConferencesDialog';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
   const { selectedConference } = useConferenceDetailsDialogStore();
 
   return (
-    <>
-      <h1 className="mb-1 text-lg">{t('conferences.title')}</h1>
+    <div className="p-5 lg:px-20">
+      <NativeAppHeader
+        title={t('conferences.title')}
+        description={t('conferences.description')}
+        iconSrc={ConferencesIcon}
+      />
 
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ConferencesTable />
@@ -20,8 +27,9 @@ const ConferencePage: React.FC = () => {
 
       <FloatingButtonsBar />
       <CreateConferenceDialog />
+      <DeleteConferencesDialog />
       {selectedConference ? <ConferenceDetailsDialog /> : null}
-    </>
+    </div>
   );
 };
 

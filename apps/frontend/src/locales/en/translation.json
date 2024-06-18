@@ -24,13 +24,16 @@
   },
   "conferences": {
     "title": "CONFERENCES",
+    "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
-    "create": "Create new conference",
+    "create": "Create conference",
     "creator": "Creator",
     "delete": "Delete",
+    "deleteConference": "Delete conference",
     "deleteConferences": "Delete {count}} conferences",
     "editConference": "Edit conference",
-    "confirmDelete": "Should these conferences really be deleted?",
+    "confirmSingleDelete": "Should this conference really be deleted?",
+    "confirmMultiDelete": "Should these conferences really be deleted?",
     "name": "Name of conference",
     "conference": "Conference",
     "password": "Password",
@@ -130,12 +133,24 @@
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
-    "addApp": { "title": "Add app", "description": "Please select an app:" },
+    "addApp": {
+      "title": "Add app",
+      "description": "Please select an app:"
+    },
     "description": "Here you can make all settings.",
     "appconfig": {
-      "update": { "success": "Appliste saved successfully", "failed": "Update failed" },
-      "delete": { "success": "App removed", "failed": "App deletion failed" },
-      "create": { "success": "App created", "failed": "App creation failed" }
+      "update": {
+        "success": "Appliste saved successfully",
+        "failed": "Update failed"
+      },
+      "delete": {
+        "success": "App removed",
+        "failed": "App deletion failed"
+      },
+      "create": {
+        "success": "App created",
+        "failed": "App creation failed"
+      }
     }
   },
   "forwardingpage": {
@@ -166,7 +181,8 @@
     "password": "Password",
     "loading": "Loading...",
     "overview": "Overview",
-    "create": "Create"
+    "create": "Create",
+    "icon": "Icon"
   },
   "form": {
     "path": "Path",
