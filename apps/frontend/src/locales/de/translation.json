@@ -126,6 +126,10 @@
     "title": "BACKUP",
     "sidebar": "Backup"
   },
+  "aichat": {
+    "title": "KI CHAT",
+    "sidebar": "KI Chat"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
