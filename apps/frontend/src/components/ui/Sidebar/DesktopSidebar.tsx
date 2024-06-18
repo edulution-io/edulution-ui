@@ -39,7 +39,6 @@ const DesktopSidebar = forwardRef<HTMLDivElement, SidebarProps>(
               menuItem={item}
               translate={translate}
               isDesktop
-              pathname=""
             />
           ))}
         </div>

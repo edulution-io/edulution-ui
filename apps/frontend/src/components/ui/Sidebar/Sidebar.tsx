@@ -1,45 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button } from '@/components/shared/Button';
-import { NavLink, useLocation } from 'react-router-dom';
-
-import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
-
-import { IconContext } from 'react-icons';
-import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
-
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
-import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
-import { useAuth } from 'react-oidc-context';
+import { useMediaQuery, useWindowSize } from 'usehooks-ts';
+import { SettingsIcon } from '@/assets/icons';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
-import useUserStore from '@/store/UserStore/UserStore';
-import SidebarItem from './SidebarMenuItems/SidebarItem';
+import { SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+import DesktopSidebar from './DesktopSidebar';
+import MobileSidebar from './MobileSidebar';
+import useSidebarStore from './sidebarStore';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
+  const { t } = useTranslation();
+  const { appConfigs } = useAppConfigsStore();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const sidebarIconsRef = useRef<HTMLDivElement>(null);
+  const size = useWindowSize();
   const [translate, setTranslate] = useState(0);
   const [isUpButtonVisible, setIsUpButtonVisible] = useState(false);
   const [isDownButtonVisible, setIsDownButtonVisible] = useState(false);
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const sidebarIconsRef = useRef<HTMLDivElement>(null);
-  const [isOpen, toggle] = useToggle();
-
-  const { t } = useTranslation();
-  const { pathname } = useLocation();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
-  const size = useWindowSize();
-  const auth = useAuth();
-  const { appConfigs } = useAppConfigsStore();
-  const { logout } = useUserStore();
+  const [startY, setStartY] = useState<number | null>(null);
+  const { isMobileSidebarOpen } = useSidebarStore();
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,
-      color: item.color,
+      color: 'bg-ciGreenToBlue',
     })),
     {
       title: t('settings.sidebar'),
@@ -48,27 +36,6 @@ const Sidebar = () => {
       color: 'bg-ciGreenToBlue',
     },
   ];
-
-  useOnClickOutside(sidebarRef, isOpen ? toggle : () => {});
-
-  const sidebarClasses = `fixed top-0 right-0 z-40 h-full w-64 transform transition-transform duration-300 ease-in-out ${
-    isOpen ? 'translate-x-0' : 'translate-x-full'
-  }`;
-
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
-
-  useEffect(() => {
-    setTranslate(0);
-  }, [size]);
-
-  useEffect(() => {
-    setIsUpButtonVisible(translate > 0);
-
-    if (sidebarIconsRef.current == null) return;
-
-    const rect = sidebarIconsRef.current.getBoundingClientRect();
-    setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
-  }, [size, translate, sidebarItems]);
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
@@ -89,6 +56,73 @@ const Sidebar = () => {
     [isDownButtonVisible, isUpButtonVisible, translate],
   );
 
+  const handleTouchStart = useCallback(
+    (event: TouchEvent) => {
+      setStartY(event.touches[0].clientY);
+    },
+    [isMobileSidebarOpen, isDownButtonVisible, isUpButtonVisible, translate, startY],
+  );
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent) => {
+      event.preventDefault();
+      if (!startY) return;
+
+      const deltaY = startY - event.touches[0].clientY;
+
+      setTranslate((prevTranslate) => {
+        if (sidebarIconsRef.current == null) {
+          return prevTranslate;
+        }
+        if (isUpButtonVisible && deltaY > 0 && translate > 0) return prevTranslate - 53 / 3;
+        if (isDownButtonVisible && deltaY < 0) return prevTranslate + 53 / 3;
+        return prevTranslate;
+      });
+    },
+    [isMobileSidebarOpen, isDownButtonVisible, isUpButtonVisible, startY, translate],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setStartY(null);
+  }, [isMobileSidebarOpen, isDownButtonVisible, isUpButtonVisible, translate, startY]);
+
+  const handleUpButtonClick = () => {
+    setTranslate((prevTranslate) => {
+      const newTranslate = prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
+      if (newTranslate <= 0) return 0;
+      return newTranslate;
+    });
+  };
+
+  const handleDownButtonClick = () => {
+    setTranslate((prevTranslate) => {
+      if (sidebarIconsRef.current == null) {
+        return prevTranslate;
+      }
+
+      const newTranslate = prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
+      return newTranslate;
+    });
+  };
+
+  useEffect(() => {
+    if (!isUpButtonVisible) {
+      setTranslate(0);
+    }
+  }, [size, isUpButtonVisible]);
+
+  useEffect(() => {
+    setIsUpButtonVisible(translate > 0);
+
+    if (sidebarIconsRef.current === null) {
+      setIsDownButtonVisible(true);
+      return;
+    }
+    const rect = sidebarIconsRef.current.getBoundingClientRect();
+
+    setIsDownButtonVisible(rect.bottom > window.innerHeight - 58);
+  }, [size, translate, sidebarItems, isDownButtonVisible, sidebarIconsRef]);
+
   useEffect(() => {
     const container = sidebarIconsRef.current;
     if (container) {
@@ -101,38 +135,6 @@ const Sidebar = () => {
       }
     };
   }, [handleWheel]);
-
-  const [startY, setStartY] = useState<number | null>(null);
-
-  const handleTouchStart = useCallback(
-    (event: TouchEvent) => {
-      setStartY(event.touches[0].clientY);
-    },
-    [isDownButtonVisible, isUpButtonVisible, translate, startY],
-  );
-
-  const handleTouchMove = useCallback(
-    (event: TouchEvent) => {
-      event.preventDefault();
-      if (!startY) return;
-
-      const deltaY = event.touches[0].clientY - startY;
-
-      setTranslate((prevTranslate) => {
-        if (sidebarIconsRef.current == null) {
-          return prevTranslate;
-        }
-        if (isDownButtonVisible && deltaY > 0) return prevTranslate + 3;
-        if (isUpButtonVisible && deltaY < 0 && translate > 0) return prevTranslate - 3;
-        return prevTranslate;
-      });
-    },
-    [isDownButtonVisible, isUpButtonVisible, startY, translate],
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    setStartY(null);
-  }, [isDownButtonVisible, isUpButtonVisible, translate, startY]);
 
   useEffect(() => {
     const container = sidebarIconsRef.current;
@@ -151,175 +153,31 @@ const Sidebar = () => {
     };
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  const menuButton = () => (
-    <Button
-      variant="btn-outline"
-      size="sm"
-      className="rounded-xl border-[3px]"
-      onClick={toggle}
-    >
-      {t('menu')}
-    </Button>
-  );
-
-  const homeButton = () => (
-    <div key="home">
-      <NavLink
-        to="/"
-        className={`group relative right-0 top-0 z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-black md:block md:px-2 ${pathname === '/' ? 'bg-black' : ''}`}
-      >
-        <p className="text-md font-bold md:hidden">{t('home')}</p>
-        <img
-          src={MobileLogoIcon}
-          width={SIDEBAR_ICON_WIDTH}
-          alt=""
-        />
-        <div
-          className={`absolute left-full top-0 z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
-        >
-          <p className="text-md whitespace-nowrap font-bold">{t('home')}</p>
-          <img
-            src={MobileLogoIcon}
-            width={SIDEBAR_ICON_WIDTH}
-            alt=""
-          />
-        </div>
-      </NavLink>
-    </div>
-  );
-
-  const upButton = () => (
-    <div key="up">
-      <button
-        type="button"
-        className={`relative right-0 z-[50] w-full cursor-pointer border-b-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? '' : 'top-0 h-[58px] border-t-2'}`}
-        onClick={() => {
-          setTranslate((prevTranslate) => {
-            const newTranslate = prevTranslate - SIDEBAR_TRANSLATE_AMOUNT;
-            if (newTranslate <= 0) return 0;
-            return newTranslate;
-          });
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          <IconContext.Provider value={iconContextValue}>
-            <MdArrowDropUp />
-          </IconContext.Provider>
-        </div>
-      </button>
-    </div>
-  );
-
-  const downButton = () => (
-    <div key="down">
-      <button
-        type="button"
-        className={`absolute right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2 ${isDesktop ? 'bottom-[58px]' : 'bottom-0 h-[58px] border-t-0'}`}
-        onClick={() => {
-          setTranslate((prevTranslate) => {
-            if (sidebarIconsRef.current == null) {
-              return prevTranslate;
-            }
-
-            return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
-          });
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          <IconContext.Provider value={iconContextValue}>
-            <MdArrowDropDown />
-          </IconContext.Provider>
-        </div>
-      </button>
-    </div>
-  );
-
-  const handleLogout = async () => {
-    auth.removeUser().catch(console.error);
-    await logout();
-    cleanAllStores();
+  const sidebarProps = {
+    translate,
+    isUpButtonVisible,
+    isDownButtonVisible,
+    sidebarItems,
+    handleUpButtonClick,
+    handleDownButtonClick,
+    handleWheel,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    setIsDownButtonVisible,
   };
 
-  const logoutButton = () => (
-    <div
-      key="logout"
-      className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black ' : 'border-b-2 border-ciLightGrey'}`}
-    >
-      <NavLink
-        onClick={handleLogout}
-        to="/"
-        className={`group flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 md:block md:px-2  ${pathname === '/logout' ? 'bg-black' : ''}`}
-      >
-        <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
-        <img
-          src={UserIcon}
-          width={SIDEBAR_ICON_WIDTH}
-          className="relative z-0 "
-          alt=""
-        />
-        {isDesktop ? (
-          <div className="absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-            <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
-            <img
-              src={UserIcon}
-              width={SIDEBAR_ICON_WIDTH}
-              alt=""
-            />
-          </div>
-        ) : null}
-      </NavLink>
-    </div>
+  return isDesktop ? (
+    <DesktopSidebar
+      ref={sidebarIconsRef}
+      {...sidebarProps}
+    />
+  ) : (
+    <MobileSidebar
+      ref={sidebarIconsRef}
+      {...sidebarProps}
+    />
   );
-
-  const renderListItem = () => (
-    <div className="fixed right-0 h-screen bg-black bg-opacity-90 md:bg-none">
-      {!isDesktop && isOpen ? (
-        <>
-          <div className="relative right-0 top-0 z-[98] h-[100px] bg-black" />
-          <div className="fixed right-0 top-0 z-[99] pr-4 pt-4">{menuButton()}</div>
-        </>
-      ) : null}
-      {homeButton()}
-      {isUpButtonVisible ? upButton() : null}
-
-      <div
-        ref={sidebarIconsRef}
-        style={{ transform: `translateY(-${translate}px)`, overflowY: !isDesktop ? 'scroll' : 'clip' }}
-        onWheel={() => handleWheel}
-        onTouchStart={() => handleTouchStart}
-        onTouchMove={() => handleTouchMove}
-        onTouchEnd={() => handleTouchEnd}
-      >
-        {sidebarItems.map((item) => (
-          <SidebarItem
-            key={item.link}
-            menuItem={item}
-            isDesktop={isDesktop}
-            pathname={pathname}
-            translate={translate}
-          />
-        ))}
-        {!isDesktop ? logoutButton() : null}
-      </div>
-      {isDownButtonVisible ? downButton() : null}
-      {isDesktop ? logoutButton() : null}
-    </div>
-  );
-
-  if (!isDesktop) {
-    return (
-      <>
-        {!isOpen ? <div className="fixed right-0 top-0 pr-4 pt-4">{menuButton()}</div> : null}
-        <div
-          ref={sidebarRef}
-          className={`${sidebarClasses}`}
-        >
-          <div className="bg-black">{isOpen && renderListItem()}</div>
-        </div>
-      </>
-    );
-  }
-  return renderListItem();
 };
 
 export default Sidebar;

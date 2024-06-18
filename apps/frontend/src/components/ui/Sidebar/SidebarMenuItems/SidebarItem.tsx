@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import { getFromPathName } from '@/utils/common';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 
-const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, pathname, translate }) => {
+const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
+  const { pathname } = useLocation();
 
   const rootPathName = `/${getFromPathName(pathname, 1)}`;
 
@@ -34,7 +35,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, path
           src={menuItem.icon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative z-0"
-          alt=""
+          alt={`${menuItem.title}-icon`}
         />
         {isInView ? (
           <div
@@ -44,7 +45,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, path
             <img
               src={menuItem.icon}
               width={SIDEBAR_ICON_WIDTH}
-              alt=""
+              alt={`${menuItem.title}-icon`}
             />
           </div>
         ) : null}

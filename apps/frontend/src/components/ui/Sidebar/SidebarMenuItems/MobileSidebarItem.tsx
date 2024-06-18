@@ -2,14 +2,10 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
 import { getFromPathName } from '@/utils/common';
-import { SidebarMenuItem } from '@libs/ui/types/sidebar';
+import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import useSidebarStore from '../sidebarStore';
 
-type SidebarItemProps = {
-  menuItem: SidebarMenuItem;
-};
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem }) => {
+const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { pathname } = useLocation();
   const { toggleMobileSidebar } = useSidebarStore();
 
@@ -30,7 +26,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem }) => {
           src={menuItem.icon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative"
-          alt=""
+          alt={`${menuItem.title}-icon`}
         />
       </NavLink>
     </div>
