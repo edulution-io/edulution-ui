@@ -1,9 +1,9 @@
-name: Bump version on merge
+name: Bump version on merge dev
 
 on:
   push:
     branches:
-      - dev
+      - NIEDUUI-105-Set-fixed-version-numbers
 
 jobs:
   bump-version:
@@ -12,31 +12,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
-        with:
-          ref: dev
 
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
           node-version: 18.x
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Bump version
-        run: |
-          node -e "
-          const fs = require('fs');
-          const path = require('path');
-          const filePath = path.join(__dirname, 'package.json');
-          const packageJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-          const versionParts = packageJson.version.split('.').map(Number);
-          versionParts[2] += 1; // Patch-Version erhöhen, anpassen auf major oder minor bei Bedarf
-          packageJson.version = versionParts.join('.');
-          fs.writeFileSync(filePath, JSON.stringify(packageJson, null, 2) + '\n', 'utf8');
-          console.log(`Version bumped to ${packageJson.version}`);
-          "
+        run: npm version patch
 
       - name: Commit and push changes
         env:
@@ -45,5 +28,5 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add package.json
-          git commit --no-verify -m "Bump version to $(cat package.json | jq -r .version)"
-          git push origin dev
+          git commit --no-verify -m "Bump version to $(jq -r .version package.json)"
+          git push origin NIEDUUI-105-Set-fixed-version-numbers

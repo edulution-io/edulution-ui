@@ -6,7 +6,7 @@ on:
       - v*.*.*
   workflow_dispatch:
 
-# TODO: Remove github secrets when handled by backend NIEDUUI-143
+# TODO: Remove github secrets and env when handled by backend NIEDUUI-143
 env:
   VITE_WEBDAV_KEY: ${{ secrets.WEBDAV_KEY }}
   VITE_AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}

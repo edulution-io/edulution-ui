@@ -1,7 +1,5 @@
 name: CI API
 
-# TODO: NIEDUUI-103 create CI
-
 on:
   push:
     tags:
