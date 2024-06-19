@@ -38,7 +38,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - run: echo Use docker tags ${{ needs.prepare.outputs.docker_tags }}
+      - run: echo Use docker tags ${{ needs.prepare.outputs.docker-tags }}
 
       # checkout the repository content to github runner
       - name: Checkout
@@ -83,7 +83,7 @@ jobs:
         with:
           build-args: |
             buildId=${{ github.sha }}
-            version=${{ needs.prepare.outputs.docker_tags }}
+            version=${{ needs.prepare.outputs.docker-tags }}
           context: .
           file: apps/frontend/Dockerfile
           push: true
