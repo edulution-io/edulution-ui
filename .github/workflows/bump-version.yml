@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
+        with:
+          ref: NIEDUUI-105-Set-fixed-version-numbers
 
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
