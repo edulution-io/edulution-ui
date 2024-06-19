@@ -6,13 +6,6 @@ services:
       - '80:80'
       - '443:443'
     restart: always
-    environment:
-      VITE_WEBDAV_KEY: <WEBDAV_KEY>
-      VITE_AUTH_CLIENT_SECRET: <CLIENT_SECRET>
-      VITE_AUTH_CLIENT_ID: <CLIENT_ID>
-      VITE_AUTH_REALM: <REALM>
-
-      EDU_API_URL: http://edulution-api:3000
 
   edu-api:
     container_name: edulution-api
