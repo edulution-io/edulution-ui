@@ -8,6 +8,10 @@ import PushAnswerDto from './dto/push-answer.dto';
 import DeleteSurveyDto from './dto/delete-survey.dto';
 import { Survey } from './types/survey.schema';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import RequiresSurveyIdError from './errors/requires-survey-id-error';
+import SurveyNotFoundError from './errors/survey-not-found-error';
+import SurveyAnswerNotFoundError from './errors/survey-answer-not-found-error';
+import NeitherFoundNorCreatedSurveyError from './errors/neither-found-nor-created-survey-error';
 
 @Controller('surveys')
 class SurveysController {
@@ -31,23 +35,23 @@ class SurveysController {
 
         case UserSurveySearchTypes.ANSWERS:
           if (!surveyId) {
-            throw new Error('The surveyId is required for this search type');
+            throw RequiresSurveyIdError;
           }
           try {
             const survey = await this.surveyService.findSurvey(surveyId);
             if (!survey) {
-              throw new Error('Survey not found');
+              throw SurveyNotFoundError;
             }
             return survey.publicAnswers;
           } catch (error) {
-            Logger.error(error);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return error;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            Logger.error(`Survey: Find survey answer error (1): ${error.message}`);
+            return error as Error;
           }
 
         case UserSurveySearchTypes.ANSWER:
           if (!surveyId) {
-            throw new Error('The surveyId is required for this search type');
+            throw RequiresSurveyIdError;
           }
           if (participants && participants.length > 1) {
             try {
@@ -61,25 +65,25 @@ class SurveysController {
               await Promise.all(promises);
 
               if (!answers) {
-                throw new Error('Survey answers not found');
+                throw SurveyAnswerNotFoundError;
               }
               return answers;
             } catch (error) {
-              Logger.error(error);
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return error;
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              Logger.error(`Survey: Find survey answer error (2): ${error.message}`);
+              return error as Error;
             }
           }
           try {
             const answer = await this.usersSurveysService.getCommitedAnswer(username, surveyId);
             if (!answer) {
-              throw new Error('Survey answer not found');
+              throw SurveyAnswerNotFoundError;
             }
             return answer;
           } catch (error) {
-            Logger.error(error);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return error;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            Logger.error(`Survey: Find survey answer error (3): ${error.message}`);
+            return error as Error;
           }
 
         case UserSurveySearchTypes.ANSWERED:
@@ -87,7 +91,8 @@ class SurveysController {
             .getAnsweredSurveyIds(username)
             .then((resultingSurveyIds: number[]) => this.surveyService.findSurveys(resultingSurveyIds))
             .catch((e: Error) => {
-              Logger.error(e);
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              Logger.error(`Survey: Find answered survey error: ${e.message}`);
               return [];
             });
 
@@ -131,7 +136,7 @@ class SurveysController {
 
       const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(createSurveyDto);
       if (newSurvey == null) {
-        throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
+        throw NeitherFoundNorCreatedSurveyError;
       }
 
       const { id } = newSurvey;
@@ -141,7 +146,7 @@ class SurveysController {
       return newSurvey;
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      Logger.error(`Survey Error (Create/Update): ${error.message}`);
+      Logger.error(`Survey: Create or update error: ${error.message}`);
       return error as Error;
     }
   }
@@ -165,7 +170,7 @@ class SurveysController {
       return await this.usersSurveysService.addAnswer(username, surveyId, answer, canSubmitMultipleAnswers);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      Logger.error(`Survey Error (Adding Answer): ${error.message}`);
+      Logger.error(`Survey: Manage user surveys error: ${error.message}`);
       return error as Error;
     }
   }

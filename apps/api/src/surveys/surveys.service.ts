@@ -3,6 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import Attendee from '@libs/conferences/types/attendee';
 import { Survey, SurveyDocument } from './types/survey.schema';
+import NotAbleToDeleteError from './errors/not-able-to-delete-error';
+import SurveyNotFoundError from './errors/survey-not-found-error';
+import UserIsNoParticipantError from './errors/user-is-no-participant-error';
+import UserHasAlreadyParticipatedError from './errors/user-has-already-participated-error';
 
 @Injectable()
 class SurveysService {
@@ -25,7 +29,7 @@ class SurveysService {
       await this.surveyModel.deleteOne({ id: surveyId }).exec();
     } catch (error) {
       console.error(error);
-      throw new Error('Not able to delete survey');
+      throw NotAbleToDeleteError;
     }
   }
 
@@ -50,7 +54,7 @@ class SurveysService {
   async addPublicAnswer(id: number, answer: JSON, username: string): Promise<Survey | undefined> {
     const existingSurvey = await this.surveyModel.findOne<Survey>({ id }).exec();
     if (!existingSurvey) {
-      throw new Error('Survey not found');
+      throw SurveyNotFoundError;
     }
 
     const participants = existingSurvey.participants || [];
@@ -58,13 +62,13 @@ class SurveysService {
       user.username && username ? user.username === username : false,
     );
     if (!isParticipant) {
-      throw new Error('User is no participant of the survey');
+      throw UserIsNoParticipantError;
     }
 
     const participated = existingSurvey.participated || [];
     const hasAlreadyParticipated = participated.find((user: string) => user === username);
     if (hasAlreadyParticipated) {
-      throw new Error('User has already participated in the survey');
+      throw UserHasAlreadyParticipatedError;
     }
     const answers = existingSurvey.publicAnswers || [];
     answers.push(answer);

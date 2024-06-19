@@ -6,6 +6,7 @@ import SurveyAnswer from '@libs/survey/types/survey-answer';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
 import UserNotFoundError from './errors/user-not-found-error';
+import UserDidNotUpdateError from './errors/user-did-not-update-error';
 
 @Injectable()
 class UsersSurveysService {
@@ -17,7 +18,7 @@ class UsersSurveysService {
       .findOneAndUpdate<User>({ username: name }, updateUserDto, { new: true })
       .exec();
     if (!newUser) {
-      throw new Error('User did not update');
+      throw UserDidNotUpdateError;
     }
     return newUser;
   }
