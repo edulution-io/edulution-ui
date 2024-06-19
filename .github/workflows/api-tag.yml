@@ -25,7 +25,7 @@ jobs:
           then
             docker_tags+=",$docker_registry_path:latest"
           fi
-          echo "::set-output name=docker_tags::$docker_tags"
+          echo "{docker_tags}={$docker_tags}" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-22.04
