@@ -3,7 +3,7 @@ name: Bump version on merge dev
 on:
   push:
     branches:
-      - NIEDUUI-105-Set-fixed-version-numbers
+      - dev
 
 jobs:
   bump-version:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
         with:
-          ref: NIEDUUI-105-Set-fixed-version-numbers
+          ref: dev
 
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
@@ -32,4 +32,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push origin NIEDUUI-105-Set-fixed-version-numbers
+          git push origin dev
