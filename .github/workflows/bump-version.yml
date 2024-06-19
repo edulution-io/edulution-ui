@@ -32,6 +32,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add package.json
-          git commit --no-verify -m "Bump version to $(jq -r .version package.json)"
           git push origin NIEDUUI-105-Set-fixed-version-numbers
