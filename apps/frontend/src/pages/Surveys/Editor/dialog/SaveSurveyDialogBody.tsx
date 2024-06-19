@@ -39,6 +39,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
     return result.filter((r) => r.username !== user?.preferred_username);
   };
 
+  // TODO: NIEDUUI-282 - Activate group search and selection
   // const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
   //   const selectedGroups = getValues('invitedGroups') as Group[];
   //
@@ -82,6 +83,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         value={participantsValue}
         onSearch={onAttendeesSearch}
         onChange={handleAttendeesChange}
+        // TODO: NIEDUUI-282 - Activate group search and selection
         // groups={watch('invitedGroups')}
         // onGroupSearch={searchGroups}
         // onGroupsChange={handleGroupsChange}
