@@ -30,7 +30,7 @@ jobs:
           then
             docker_tags+=",$docker_registry_path:latest"
           fi
-          echo "{docker_tags}={$docker_tags}" >> $DOCKER_TAGS
+          echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-22.04
@@ -38,7 +38,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - run: echo Use docker tags ${{ needs.prepare.outputs.docker-tags }}
+      - run: echo Use docker tags ${{ needs.prepare.outputs.docker_tags }}
 
       # checkout the repository content to github runner
       - name: Checkout
@@ -83,7 +83,7 @@ jobs:
         with:
           build-args: |
             buildId=${{ github.sha }}
-            version=$DOCKER_TAGS
+            version=${{ needs.prepare.outputs.docker_tags }}
           context: .
           file: apps/frontend/Dockerfile
           push: true
