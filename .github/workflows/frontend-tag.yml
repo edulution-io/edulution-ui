@@ -30,7 +30,7 @@ jobs:
           then
             docker_tags+=",$docker_registry_path:latest"
           fi
-          echo "{docker_tags}={$docker_tags}" >> $GITHUB_OUTPUT
+          echo "{docker_tags}={$docker_tags}" >> $DOCKER_TAGS
 
   build:
     runs-on: ubuntu-22.04
@@ -83,7 +83,7 @@ jobs:
         with:
           build-args: |
             buildId=${{ github.sha }}
-            version=${{ needs.prepare.outputs.docker-tags }}
+            version=$DOCKER_TAGS
           context: .
           file: apps/frontend/Dockerfile
           push: true
