@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import ConferencesService from './conferences.service';
 import CreateConferenceDto from './dto/create-conference.dto';
+import mockedConferences from './dto/mockedConferences';
 import { Conference } from './conference.schema';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';
@@ -21,7 +22,11 @@ class ConferencesController {
 
   @Get()
   findAll(@GetCurrentUsername() username: string) {
-    return this.conferencesService.findAllConferencesTheUserHasAccessTo(username);
+    try {
+      return this.conferencesService.findAllConferencesTheUserHasAccessTo(username);
+    } catch (e) {
+      return mockedConferences;
+    }
   }
 
   @Patch()
