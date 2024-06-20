@@ -57,13 +57,13 @@
     "maximize": "Maximize",
     "close": "Leave conference"
   },
-  "current-affairs": {
-    "title": "Current affairs",
-    "noConferences": "No running conferences were found"
-  },
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"
+  },
+  "feed": {
+    "title": "Current affairs",
+    "noConferences": "No running conferences were found"
   },
   "filesharing": {
     "title": "FILE SHARING",

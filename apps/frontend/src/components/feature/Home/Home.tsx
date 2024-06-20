@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
-import CurrentAffairs from '@/components/feature/CurrentAffairs/CurrentAffairs';
+import Feed from '@/components/feature/Feed/Feed';
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
@@ -48,7 +48,7 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            <CurrentAffairs />
+            <Feed />
           </div>
         </div>
       </div>

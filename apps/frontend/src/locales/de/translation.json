@@ -57,13 +57,13 @@
     "maximize": "Maximieren",
     "close": "Konferenz verlassen"
   },
-  "current-affairs": {
-    "title": "Aktuelles",
-    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
-  },
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
     "sidebar": "Wissensdatenbank"
+  },
+  "feed": {
+    "title": "Aktuelles",
+    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
   },
   "filesharing": {
     "title": "FILESHARING",
