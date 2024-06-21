@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 import cn from '@/lib/utils';
 
-const AccordionSH = AccordionPrimitive.Root;
+const Accordion = AccordionPrimitive.Root;
 
 const AccordionItem = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Item>,
@@ -52,4 +52,4 @@ const AccordionContent = React.forwardRef<
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-export { AccordionSH, AccordionItem, AccordionTrigger, AccordionContent };
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
