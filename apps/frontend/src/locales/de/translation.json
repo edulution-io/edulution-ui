@@ -5,9 +5,10 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILER DATENZUGRIFF",
+      "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
-      "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
+      "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert.",
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code scannen."
     }
   },
   "ticketsystem": {
