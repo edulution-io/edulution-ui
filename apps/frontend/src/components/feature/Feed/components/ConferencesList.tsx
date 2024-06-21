@@ -22,17 +22,21 @@ const ConferencesList = (props: ConferencesListProps) => {
     const badges = [];
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i++) {
-      const name = item.joinedAttendees[i].label
-        || `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}`
-        || item.joinedAttendees[i].username;
+      const name =
+        item.joinedAttendees[i].label ||
+        `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}` ||
+        item.joinedAttendees[i].username;
       badges.push(
-        <BadgeSH className="max-w-[100px] hover:bg-ciLightBlue" key={`feed-conferences-${item.name}-badge-${name}`}>
-          <div className="text-xs text-ellipsis overflow-hidden">{name}</div>
-        </BadgeSH>
+        <BadgeSH
+          className="max-w-[100px] hover:bg-ciLightBlue"
+          key={`feed-conferences-${item.name}-badge-${name}`}
+        >
+          <div className="overflow-hidden text-ellipsis text-xs">{name}</div>
+        </BadgeSH>,
       );
     }
     return badges;
-  }
+  };
 
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
@@ -41,23 +45,26 @@ const ConferencesList = (props: ConferencesListProps) => {
           <Button
             key={`feed-conference-${item.meetingID}`}
             variant="btn-outline"
-            className="w-full h-fit-content"
+            className="h-fit-content w-full"
             onClick={() => joinConference(item.meetingID)}
           >
             <div className="w-full">
-              <div className="flex justify-between font-semibold gap-2 mb-1">
+              <div className="mb-1 flex justify-between gap-2 font-semibold">
                 {`${item.name}`}
-                {item.isRunning && <span className="flex h-2 w-2 rounded-full bg-ciRed" /> }
+                {item.isRunning && <span className="flex h-2 w-2 rounded-full bg-ciRed" />}
               </div>
               <div className="flex gap-2">
-                { item.joinedAttendees.length > 0
-                  ? ( <div className="flex items-center gap-2 rounded">{ getFirstXBadges(item) }</div> )
-                  : null }
-                { item.joinedAttendees.length > NUMBER_OF_BADGES_TO_SHOW
-                  ? ( <BadgeSH key={`feed-conferences-${item.name}-badge-remaining-attendees`} className="text-xs hover:bg-ciLightBlue">
+                {item.joinedAttendees.length > 0 ? (
+                  <div className="flex items-center gap-2 rounded">{getFirstXBadges(item)}</div>
+                ) : null}
+                {item.joinedAttendees.length > NUMBER_OF_BADGES_TO_SHOW ? (
+                  <BadgeSH
+                    key={`feed-conferences-${item.name}-badge-remaining-attendees`}
+                    className="text-xs hover:bg-ciLightBlue"
+                  >
                     +{item.joinedAttendees.length - NUMBER_OF_BADGES_TO_SHOW}
-                  </BadgeSH>)
-                  : null }
+                  </BadgeSH>
+                ) : null}
               </div>
             </div>
           </Button>
