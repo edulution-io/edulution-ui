@@ -5,7 +5,7 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILE DATA ACCESS",
+      "title": "Mobile File Access",
       "manual": "Manual",
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works.",
       "scanAccessInfo": "To transfer the access data, please scan the following QR code.",
