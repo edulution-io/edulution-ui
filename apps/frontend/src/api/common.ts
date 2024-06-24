@@ -1,8 +1,12 @@
-export const waitForToken = () =>
+type UserDataConfig = { state: { lmnApiToken: string } };
+
+const waitForToken = () =>
   new Promise<void>((resolve) => {
     const checkToken = () => {
-      const token = sessionStorage.getItem('lmnApiToken');
-      if (token) {
+      const lmnUserStorageString = sessionStorage.getItem('lmn-user-storage') as string;
+      const lmnUserStorage = JSON.parse(lmnUserStorageString) as UserDataConfig;
+      const { lmnApiToken } = lmnUserStorage.state;
+      if (lmnApiToken) {
         resolve();
       } else {
         setTimeout(checkToken, 100, 3);

@@ -37,6 +37,4 @@ if (missingNestedInEN.length > 0 || missingNestedInDE.length > 0) {
     console.error(`Missing nested keys in DE translation: ${missingNestedInDE.join(', ')}`);
   }
   process.exit(1);
-} else {
-  console.log('All keys and nested keys match.');
 }

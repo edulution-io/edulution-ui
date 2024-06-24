@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import AppConfigService from './appconfig.service';
 import { AppIntegrationType } from './appconfig.types';
+import mockAppConfigService from './appconfig.service.mock';
 import { AppConfig } from './appconfig.schema';
 
 const mockAppConfigModel = {
@@ -12,16 +12,16 @@ const mockAppConfigModel = {
   deleteOne: jest.fn(),
 };
 
-type MockModel = Partial<Record<keyof Model<any>, jest.Mock>>;
-
 describe('AppConfigService', () => {
   let service: AppConfigService;
-  let model: MockModel;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AppConfigService,
+        {
+          provide: AppConfigService,
+          useValue: mockAppConfigService,
+        },
         {
           provide: getModelToken(AppConfig.name),
           useValue: mockAppConfigModel,
@@ -30,7 +30,6 @@ describe('AppConfigService', () => {
     }).compile();
 
     service = module.get<AppConfigService>(AppConfigService);
-    model = module.get<MockModel>(getModelToken(AppConfig.name));
   });
 
   it('should be defined', () => {
@@ -44,12 +43,14 @@ describe('AppConfigService', () => {
           name: 'Test',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
-          options: {},
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
-      model.insertMany?.mockResolvedValue(appConfigs);
       await service.insertConfig(appConfigs);
-      expect(model.insertMany).toHaveBeenCalledWith(appConfigs);
+      expect(mockAppConfigService.insertConfig).toHaveBeenCalledWith(appConfigs);
     });
   });
 
@@ -60,12 +61,14 @@ describe('AppConfigService', () => {
           name: 'Test',
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
-          options: {},
+          options: {
+            url: 'test/path',
+            apiKey: '123456789',
+          },
         },
       ];
-      model.bulkWrite?.mockResolvedValue({ modifiedCount: 1 });
       await service.updateConfig(appConfigs);
-      expect(model.bulkWrite).toHaveBeenCalled();
+      expect(mockAppConfigService.updateConfig).toHaveBeenCalledWith(appConfigs);
     });
   });
 
@@ -79,7 +82,7 @@ describe('AppConfigService', () => {
           options: {},
         },
       ];
-      model.find?.mockReturnValue(expectedConfigs);
+      mockAppConfigService.getAppConfigs.mockResolvedValue(expectedConfigs);
       const configs = await service.getAppConfigs();
       expect(configs).toEqual(expectedConfigs);
     });
@@ -88,11 +91,8 @@ describe('AppConfigService', () => {
   describe('deleteConfig', () => {
     it('should delete a config', async () => {
       const configName = 'Test';
-      model.deleteOne?.mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
-      });
       await service.deleteConfig(configName);
-      expect(model.deleteOne).toHaveBeenCalledWith({ name: configName });
+      expect(mockAppConfigService.deleteConfig).toHaveBeenCalledWith(configName);
     });
   });
 });

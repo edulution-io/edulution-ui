@@ -24,6 +24,47 @@ class ConferencesService {
     private readonly appConfigService: AppConfigService,
   ) {}
 
+  static handleBBBApiError(result: { response: { returncode: string } }) {
+    if (result.response.returncode !== 'SUCCESS') {
+      throw new Error('BBB API did not return SUCCESS returncode');
+    }
+  }
+
+  static parseXml<T>(xml: string): Promise<T> {
+    return new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(result as T);
+        }
+      });
+    });
+  }
+
+  static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
+    const { attendees } = bbbMeetingDto.response;
+    if (!attendees?.attendee) {
+      return [];
+    }
+    if (!Array.isArray(attendees.attendee)) {
+      return [
+        {
+          lastName: attendees.attendee.role,
+          firstName: attendees.attendee.fullName,
+          username: attendees.attendee.userID,
+        },
+      ];
+    }
+    return attendees.attendee.map((a) => ({
+      lastName: a.role,
+      firstName: a.fullName,
+      username: a.userID,
+    }));
+  }
+
   async loadConfig() {
     if (this.BBB_API_URL && this.BBB_SECRET) {
       return;
@@ -70,7 +111,7 @@ class ConferencesService {
     }
   }
 
-  private async startConference(conference: Conference) {
+  async startConference(conference: Conference) {
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('create', query);
@@ -87,7 +128,7 @@ class ConferencesService {
     }
   }
 
-  private async stopConference(conference: Conference) {
+  async stopConference(conference: Conference) {
     try {
       const query = `meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('end', query);
@@ -136,30 +177,6 @@ class ConferencesService {
     }
   }
 
-  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
-    const promises = conferencesToBeSynced.map(async (conference) => {
-      const conferenceObject = conference.toObject() as ConferenceDocument;
-      const query = `meetingID=${conference.meetingID}`;
-      const checksum = await this.createChecksum('getMeetingInfo', query);
-      const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
-
-      try {
-        const response = await axios.get<string>(url);
-        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-        ConferencesService.handleBBBApiError(result);
-
-        await this.update({ ...conferenceObject, isRunning: true });
-        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
-      } catch (_) {
-        const updatedConference = { ...conferenceObject, isRunning: false };
-        await this.update(updatedConference);
-        return updatedConference;
-      }
-    });
-
-    return Promise.all(promises);
-  }
-
   async findAllConferencesTheUserHasAccessTo(username: string): Promise<Conference[]> {
     const conferencesToBeSynced = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
     return this.syncConferencesWithBBB(conferencesToBeSynced);
@@ -194,12 +211,6 @@ class ConferencesService {
     return result.deletedCount > 0;
   }
 
-  static handleBBBApiError(result: { response: { returncode: string } }) {
-    if (result.response.returncode !== 'SUCCESS') {
-      throw new Error('BBB API did not return SUCCESS returncode');
-    }
-  }
-
   async createChecksum(method = '', query = '') {
     await this.loadConfig();
     const string = method + query + this.BBB_SECRET;
@@ -207,39 +218,28 @@ class ConferencesService {
     return crypto.createHash('sha1').update(string).digest('hex');
   }
 
-  static parseXml<T>(xml: string): Promise<T> {
-    return new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          resolve(result as T);
-        }
-      });
-    });
-  }
+  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
+    const promises = conferencesToBeSynced.map(async (conference) => {
+      const conferenceObject = conference.toObject() as ConferenceDocument;
+      const query = `meetingID=${conference.meetingID}`;
+      const checksum = await this.createChecksum('getMeetingInfo', query);
+      const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
 
-  static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
-    const { attendees } = bbbMeetingDto.response;
-    if (!attendees?.attendee) {
-      return [];
-    }
-    if (!Array.isArray(attendees.attendee)) {
-      return [
-        {
-          lastName: attendees.attendee.role,
-          firstName: attendees.attendee.fullName,
-          username: attendees.attendee.userID,
-        },
-      ];
-    }
-    return attendees.attendee.map((a) => ({
-      lastName: a.role,
-      firstName: a.fullName,
-      username: a.userID,
-    }));
+      try {
+        const response = await axios.get<string>(url);
+        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+        ConferencesService.handleBBBApiError(result);
+
+        await this.update({ ...conferenceObject, isRunning: true });
+        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
+      } catch (_) {
+        const updatedConference = { ...conferenceObject, isRunning: false };
+        await this.update(updatedConference);
+        return updatedConference;
+      }
+    });
+
+    return Promise.all(promises);
   }
 }
 

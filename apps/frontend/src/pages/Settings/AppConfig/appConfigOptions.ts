@@ -1,4 +1,5 @@
 import {
+  AiChatIcon,
   AntiMalwareIcon,
   BackupIcon,
   ChatIcon,
@@ -124,6 +125,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url'],
   },
   { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
+  { id: APPS.AICHAT, icon: AiChatIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
 ];
 
 export default APP_CONFIG_OPTIONS;
