@@ -22,8 +22,7 @@ const ConferencesList = (props: ConferencesListProps) => {
     const badges = [];
     for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i += 1) {
       const name =
-        item.joinedAttendees[i].label ||
-        `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}`;
+        item.joinedAttendees[i].label || `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}`;
 
       badges.push(
         <BadgeSH
@@ -49,7 +48,7 @@ const ConferencesList = (props: ConferencesListProps) => {
             onClick={() => joinConference(item.meetingID)}
           >
             <div className="w-full">
-              <div className="mb-1 flex justify-between gap-2 font-semibold items-center" >
+              <div className="mb-1 flex items-center justify-between gap-2 font-semibold">
                 {`${item.name}`}
                 {item.isRunning && <span className="flex h-2 w-2 rounded-full bg-ciRed" />}
               </div>
