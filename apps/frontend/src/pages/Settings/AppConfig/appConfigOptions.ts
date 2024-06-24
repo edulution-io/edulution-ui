@@ -51,7 +51,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     color: 'bg-ciDarkBlue',
-    options: ['url', 'apiKey'],
   },
   {
     id: APPS.KNOWLEDGE_BASE,

@@ -1,17 +1,19 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 import { Survey } from '@libs/survey/types/survey';
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SURVEY_ENDPOINT from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import UpdateOrCreateSurveyDto from "@libs/survey/dto/update-or-create-survey.dto";
 
 interface SurveyEditorFormStore {
   reset: () => void;
 
-  Name: string;
-  Formula: string;
-  setCreatorText: (creatorText: string) => void;
+  surveyName: string;
+  surveyFormula: string;
+  setSurveyFormula: (creatorText: string) => void;
   saveNo: number | undefined;
   setSaveNumber: (saveNo: number) => void;
   participants: Attendee[];
@@ -25,33 +27,22 @@ interface SurveyEditorFormStore {
   expirationTime: string | undefined;
   isAnonymous: boolean | undefined;
   newParticipants: Attendee[];
-  commitSurvey: (
-    id: number,
-    formula: JSON,
-    participants?: Attendee[],
-    participated?: string[],
-    saveNo?: number,
-    created?: Date,
-    expirationDate?: Date,
-    expirationTime?: string,
-    isAnonymous?: boolean,
-    canSubmitMultipleAnswers?: boolean,
-  ) => Promise<Survey | undefined>;
-  isCommiting: boolean;
-  errorCommiting: AxiosError | null;
+  updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<Survey | undefined>;
+  isLoading: boolean;
+  error: AxiosError | null;
 }
 
 const initialState: Partial<SurveyEditorFormStore> = {
-  Name: '',
-  Formula: '',
+  surveyName: '',
+  surveyFormula: '',
   saveNo: undefined,
   participants: [],
   participated: [],
   created: undefined,
   expirationDate: undefined,
   expirationTime: undefined,
-  isCommiting: false,
-  errorCommiting: null,
+  isLoading: false,
+  error: null,
 
   isOpenSaveSurveyDialog: false,
   newParticipants: [],
@@ -64,37 +55,18 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   openSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: true }),
   closeSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: false }),
 
-  commitSurvey: async (
-    id: number,
-    formula: JSON,
-    participants?: Attendee[],
-    participated?: string[],
-    saveNo?: number,
-    created?: Date,
-    expirationDate?: Date,
-    expirationTime?: string,
-    isAnonymous: boolean = false,
-    canSubmitMultipleAnswers: boolean = false,
+  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto
   ): Promise<Survey | undefined> => {
-    set({ isCommiting: true, errorCommiting: null });
+    set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, {
-        id,
-        formula,
-        participants,
-        participated,
-        saveNo,
-        created,
-        expirationDate,
-        expirationTime,
-        isAnonymous,
-        canSubmitMultipleAnswers,
-      });
-      set({ errorCommiting: undefined, isCommiting: false });
+      const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, survey);
+      set({ error: undefined, isLoading: false });
       return response.data;
     } catch (error) {
-      handleApiError(error, set);
-      set({ errorCommiting: error as AxiosError, isCommiting: false });
+      toast.error(error instanceof Error ? error.message : '');
+
+      handleApiError(error, set, 'errorCommiting');
+      set({error: error as AxiosError, isLoading: false});
       return undefined;
     }
   },

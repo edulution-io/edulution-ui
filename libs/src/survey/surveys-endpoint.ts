@@ -1,3 +1,15 @@
-const SURVEY_ENDPOINT = 'surveys/';
+export const SURVEYS = 'surveys';
+const SURVEY_ENDPOINT = `${SURVEYS}/`;
+
+export const All_SURVEYS_ENDPOINT = 'all/';
+export const ANSWER_ENDPOINT = 'answer/';
+export const FIND_ONE_ENDPOINT = 'findOne/';
+export const FIND_SURVEYS_ENDPOINT = 'find/';
+export const RESULT_ENDPOINT = 'result/';
+
+export const SURVEY_All_SURVEYS_ENDPOINT = `${SURVEY_ENDPOINT}${All_SURVEYS_ENDPOINT}`;
+export const SURVEY_ANSWER_ENDPOINT = `${SURVEY_ENDPOINT}${ANSWER_ENDPOINT}`;
+export const SURVEY_FIND_SURVEY_ENDPOINT = `${SURVEY_ENDPOINT}${FIND_ONE_ENDPOINT}`;
+export const SURVEY_FIND_SURVEYS_ENDPOINT = `${SURVEY_ENDPOINT}${FIND_SURVEYS_ENDPOINT}`;
 
 export default SURVEY_ENDPOINT;

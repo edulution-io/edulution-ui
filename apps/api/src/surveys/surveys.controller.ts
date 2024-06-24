@@ -1,109 +1,75 @@
-import { Body, Controller, Delete, Get, Logger, Post, Query, Patch } from '@nestjs/common';
-import UserSurveySearchTypes from '@libs/survey/types/user-survey-search-types-enum';
+import mongoose from 'mongoose';
+import {Body, Controller, Delete, Get, Post, Patch, Param} from '@nestjs/common';
+import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
+import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
+import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
+import {
+  All_SURVEYS_ENDPOINT,
+  FIND_ONE_ENDPOINT,
+  FIND_SURVEYS_ENDPOINT,
+  RESULT_ENDPOINT,
+  SURVEYS
+} from '@libs/survey/surveys-endpoint';
+import { SurveyModel } from './types/survey.schema';
 import SurveysService from './surveys.service';
-import CreateSurveyDto from './dto/create-survey.dto';
-import FindSurveyDto from './dto/find-survey.dto';
-import PushAnswerDto from './dto/push-answer.dto';
-import DeleteSurveyDto from './dto/delete-survey.dto';
-import { Survey } from './types/survey.schema';
 
-@Controller('surveys')
+@Controller(SURVEYS)
 class SurveysController {
   constructor(private readonly surveyService: SurveysService) {}
 
-  @Get()
-  async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto) {
-    const { search, surveyId } = params;
-    const { surveyIds } = body;
+  @Post()
+  async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto) {
+    const {
+      publicAnswers = [],
+      saveNo = 0,
+      created = new Date(),
+      isAnonymous,
+      canSubmitMultipleAnswers,
+    } = updateOrCreateSurveyDto;
 
-    if (search) {
-      switch (search) {
-        case UserSurveySearchTypes.ANSWERS:
-          if (!surveyId) {
-            throw new Error('The surveyId is required for this search type');
-          }
-          try {
-            const survey = await this.surveyService.findSurvey(surveyId);
-            if (!survey) {
-              throw new Error('Survey not found');
-            }
-            return survey.publicAnswers;
-          } catch (error) {
-            Logger.error(error);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return error;
-          }
+    const survey: SurveyModel = {
+      ...updateOrCreateSurveyDto,
+      publicAnswers,
+      saveNo,
+      created,
+      isAnonymous: !!isAnonymous,
+      canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
+    };
 
-        case UserSurveySearchTypes.ALL:
-        default:
-          return this.surveyService.findAllSurveys();
-      }
-    }
-
-    // only fetching a specific survey
-    if (surveyId) {
-      return this.surveyService.findSurvey(surveyId);
-    }
-
-    // fetching multiple specific surveys
-    if (surveyIds) {
-      return this.surveyService.findSurveys(surveyIds);
-    }
-
-    // fetch all surveys
-    return this.surveyService.findAllSurveys();
+    const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
+    return newSurvey;
   }
 
-  @Post()
-  async createOrUpdate(@Body() body: CreateSurveyDto) {
-    try {
-      const { participants } = body;
+  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
+  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.findOneSurvey(surveyId);
+  }
 
-      const createSurveyDto: Survey = {
-        ...body,
-        formula: body.formula,
-        participants,
-        publicAnswers: body.publicAnswers || [],
-        saveNo: body.saveNo || 0,
-        created: body.created || new Date(),
-        expirationDate: body.expirationDate,
-        expirationTime: body.expirationTime?.toString(),
-        isAnonymous: !!body.isAnonymous,
-        canSubmitMultipleAnswers: !!body.canSubmitMultipleAnswers,
-      };
+  @Get(`${FIND_SURVEYS_ENDPOINT}:surveyIds`)
+  async findSurveys(@Param('surveyIds') surveyIds: mongoose.Types.ObjectId[]) {
+    return this.surveyService.findSurveys(surveyIds);
+  }
 
-      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(createSurveyDto);
-      if (newSurvey == null) {
-        throw new Error('Survey was not found and we were not able to create a new survey given the parameters');
-      }
+  @Get(All_SURVEYS_ENDPOINT)
+  async getAllSurveys() {
+    return this.surveyService.getAllSurveys();
+  }
 
-      return newSurvey;
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      Logger.error(`Survey Error (Create/Update): ${error.message}`);
-      return error as Error;
-    }
+  @Get(`${RESULT_ENDPOINT}:surveyId`)
+  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.getPublicAnswers(surveyId);
   }
 
   @Delete()
-  remove(@Query() deleteSurveyDto: DeleteSurveyDto) {
-    const surveyName = deleteSurveyDto.surveyId;
-    const deleted = this.surveyService.removeSurvey(surveyName);
-    return deleted;
+  deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
+    return this.surveyService.deleteSurveys(deleteSurveyDto.surveyIds);
   }
 
   @Patch()
-  async manageUsersSurveys(@Body() body: PushAnswerDto) {
-    const { surveyId, answer } = body;
-
-    try {
-      // This function does also check if the user is a participant and has not already submitted an answer
-      return await this.surveyService.addPublicAnswer(surveyId, answer);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      Logger.error(`Survey Error (Adding Answer): ${error.message}`);
-      return error as Error;
-    }
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
+    const { surveyId, answer } = pushAnswerDto;
+    const updatedSurvey = await this.surveyService.addPublicAnswer(surveyId, answer);
+    return updatedSurvey;
   }
 }
 

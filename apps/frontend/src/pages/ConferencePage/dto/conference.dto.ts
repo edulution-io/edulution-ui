@@ -1,4 +1,4 @@
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 export class Conference {
   name: string;
