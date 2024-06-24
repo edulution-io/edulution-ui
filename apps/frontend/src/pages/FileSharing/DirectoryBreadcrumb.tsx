@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -27,6 +28,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
+  const { username } = useUserStore();
 
   const filteredSegment = segments.filter((item) => item !== 'teachers');
   const handleSegmentClick = (segment: string) => {
@@ -41,7 +43,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
         <BreadcrumbItem key="home">
           <BreadcrumbLink
             href="#"
-            onClick={() => onNavigate(`/teachers/${sessionStorage.getItem('user')}/`)}
+            onClick={() => onNavigate(`/teachers/${username}/`)}
           >
             {t('home')}
           </BreadcrumbLink>
