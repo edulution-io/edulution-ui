@@ -1,9 +1,11 @@
 import React from 'react';
 import i18next from 'i18next';
 import { UseFormReturn } from 'react-hook-form';
-import { localization } from 'survey-creator-core';
+import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import 'survey-core/survey.i18n';
 import 'survey-creator-core/i18n/german';
+import 'survey-creator-core/survey-creator-core.i18n';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 
@@ -15,20 +17,22 @@ interface SurveyEditorProps {
   error: Error | null;
 }
 
+editorLocalization.defaultLocale = 'de';
+localization.currentLocale = i18next.language;
+
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula, error } = props;
 
   const creatorOptions = {
     generateValidJSON: true,
-
-    isAutoSave: true,
-
-    showPreviewTab: false,
     showJSONEditorTab: true,
+    showPreviewTab: false,
+    isAutoSave: true,
     maxNestedPanels: 0,
-    localization: localization.currentLocale = i18next.language,
   };
   const creator = new SurveyCreator(creatorOptions);
+
+  creator.locale = editorLocalization.defaultLocale;
 
   creator.saveNo = saveNumber;
   if (formula) {

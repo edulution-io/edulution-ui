@@ -7,7 +7,7 @@ import { AiOutlineSave } from 'react-icons/ai';
 import { FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import EmptyForm from '@libs/survey/get-survey-editor-form-data';
+import EmptyForm from '@libs/survey/utils/get-survey-editor-form-data';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -80,7 +80,7 @@ const SurveyEditorForm = () => {
       isAnonymous,
       canSubmitMultipleAnswers,
     });
-  }
+  };
 
   // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(
@@ -102,8 +102,8 @@ const SurveyEditorForm = () => {
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          { getSurveyEditor }
-          { error ? (toast.error(error.message)) : null }
+          {getSurveyEditor}
+          {error ? toast.error(error.message) : null}
         </ScrollArea>
       </div>
       <TooltipProvider>
@@ -113,7 +113,7 @@ const SurveyEditorForm = () => {
               type="button"
               variant="btn-hexagon"
               className="bottom-10 space-x-8 bg-opacity-90 p-4"
-              onClick={ () => saveSurvey() }
+              onClick={() => saveSurvey()}
             >
               <IconContext.Provider value={iconContextValue}>
                 <AiOutlineSave />

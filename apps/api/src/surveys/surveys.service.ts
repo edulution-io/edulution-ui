@@ -1,7 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-// import Attendee from '@/pages/ConferencePage/dto/attendee';
 import Attendee from '@libs/survey/types/attendee';
 import NeitherFoundNorCreatedSurveyError from '@libs/survey/errors/neither-updated-nor-found-survey-error';
 import NotAbleToDeleteSurveyError from '@libs/survey/errors/not-able-to-delete-survey-error';
@@ -45,7 +44,7 @@ class SurveysService {
   async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<SurveyModel[] | null> {
     const surveys = this.surveyModel.find<SurveyModel>({ _id: { $in: surveyIds } }).exec();
     if (surveys == null) {
-      const error = SurveysNotFoundError
+      const error = SurveysNotFoundError;
       Logger.error(error.message);
       throw error;
     }
@@ -57,7 +56,7 @@ class SurveysService {
       await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
     } catch (error) {
-      const err = NotAbleToDeleteSurveyError
+      const err = NotAbleToDeleteSurveyError;
       Logger.error(err.message);
       Logger.warn(error);
       throw err;
@@ -88,7 +87,7 @@ class SurveysService {
     if (updatedSurvey == null) {
       const createdSurvey = await this.createSurvey(survey);
       if (createdSurvey == null) {
-        const error = NeitherFoundNorCreatedSurveyError
+        const error = NeitherFoundNorCreatedSurveyError;
         Logger.error(error.message);
         throw error;
       }
@@ -113,16 +112,20 @@ class SurveysService {
     return survey.publicAnswers || [];
   }
 
-  async addPublicAnswer(surveyId: mongoose.Types.ObjectId, answer: JSON, username?: string): Promise<SurveyModel | undefined> {
+  async addPublicAnswer(
+    surveyId: mongoose.Types.ObjectId,
+    answer: JSON,
+    username?: string,
+  ): Promise<SurveyModel | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      const error1 = SurveyIdIsNoValidMongoIdError
+      const error1 = SurveyIdIsNoValidMongoIdError;
       Logger.error(error1.message);
       throw error1;
     }
 
     const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
     if (!existingSurvey) {
-      const error2 = SurveyNotFoundError
+      const error2 = SurveyNotFoundError;
       Logger.error(error2.message);
       throw error2;
     }

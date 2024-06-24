@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
+import i18next from 'i18next';
 import SurveyEditorForm from '@libs/survey/types/survey-editor-form-data';
 
-const EMPTY_JSON = {} as JSON;
+const EmptySurveyFormula = JSON.parse(`{ "locale": "${i18next.language}" }`);
 
 class EmptyForm implements SurveyEditorForm {
   id: mongoose.Types.ObjectId;
@@ -19,7 +20,7 @@ class EmptyForm implements SurveyEditorForm {
 
   constructor() {
     this.id = new mongoose.Types.ObjectId();
-    this.formula = EMPTY_JSON;
+    this.formula = EmptySurveyFormula;
     this.participants = [];
     this.participated = [];
     this.saveNo = 0;

@@ -6,7 +6,7 @@ import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SURVEY_ENDPOINT from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import UpdateOrCreateSurveyDto from "@libs/survey/dto/update-or-create-survey.dto";
+import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 
 interface SurveyEditorFormStore {
   reset: () => void;
@@ -55,8 +55,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   openSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: true }),
   closeSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: false }),
 
-  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto
-  ): Promise<Survey | undefined> => {
+  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<Survey | undefined> => {
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, survey);
@@ -66,7 +65,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
       toast.error(error instanceof Error ? error.message : '');
 
       handleApiError(error, set, 'errorCommiting');
-      set({error: error as AxiosError, isLoading: false});
+      set({ error: error as AxiosError, isLoading: false });
       return undefined;
     }
   },

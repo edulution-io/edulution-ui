@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {Body, Controller, Delete, Get, Post, Patch, Param} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Patch, Param } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
@@ -8,7 +8,7 @@ import {
   FIND_ONE_ENDPOINT,
   FIND_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
-  SURVEYS
+  SURVEYS,
 } from '@libs/survey/surveys-endpoint';
 import { SurveyModel } from './types/survey.schema';
 import SurveysService from './surveys.service';
