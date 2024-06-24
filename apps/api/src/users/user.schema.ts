@@ -26,7 +26,7 @@ export class User {
 
   @Prop({ type: UsersSurveysSchema, required: false })
   usersSurveys?: {
-    openSurveys?: mongoose.Types.ObjectId[],
+    openSurveys?: mongoose.Types.ObjectId[];
     createdSurveys?: mongoose.Types.ObjectId[];
     answeredSurveys?: {
       surveyId: mongoose.Types.ObjectId;

@@ -54,7 +54,7 @@ class SurveysController {
       } else {
         const error = `Found no answer from ${participant}`;
         // const json = { error };
-        JSON.parse(JSON.stringify({ error }))
+        JSON.parse(JSON.stringify({ error }));
         answers.push();
       }
     });
@@ -69,12 +69,7 @@ class SurveysController {
   @Post()
   async createOrUpdate(@Body() body: CreateSurveyDto, @GetCurrentUsername() username: string) {
     try {
-      const {
-        participants = [],
-        publicAnswers = [],
-        saveNo = 0,
-        created = new Date()
-      } = body;
+      const { participants = [], publicAnswers = [], saveNo = 0, created = new Date() } = body;
 
       const createSurveyDto: CreateSurveyDto = {
         ...body,

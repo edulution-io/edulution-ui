@@ -3,16 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
-import useResultStore from "@/pages/Surveys/Tables/dialogs/ResultStore";
-import ResultVisualizationDialog from "@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog";
+import useResultStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
+import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 
 const ResultVisualization = () => {
-  const {
-    selectedSurvey: survey,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
   const {
-
     isOpenPublicResultsVisualisationDialog,
     openPublicResultsVisualisationDialog,
     closePublicResultsVisualisationDialog,

@@ -4,12 +4,10 @@ import { HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
-import useResultStore from "@/pages/Surveys/Tables/dialogs/ResultStore";
+import useResultStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
 
 const ResultTable = () => {
-  const {
-    selectedSurvey: survey,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
   const {
     isOpenPublicResultsTableDialog,

@@ -7,11 +7,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageSt
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
 
 const Participate = () => {
-  const {
-    selectedSurvey: survey,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey: survey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
   const {
     isOpenParticipateSurveyDialog,

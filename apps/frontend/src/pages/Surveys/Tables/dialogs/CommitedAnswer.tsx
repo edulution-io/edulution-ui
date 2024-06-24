@@ -7,9 +7,7 @@ import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/Commit
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
 
 const CommitedAnswer = () => {
-  const {
-    selectedSurvey: survey,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
   const {
     isOpenCommitedAnswersDialog,

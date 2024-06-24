@@ -4,10 +4,10 @@ import { FiEdit } from 'react-icons/fi';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
-import CommitedAnswer from "@/pages/Surveys/Tables/dialogs/CommitedAnswer";
-import Participate from "@/pages/Surveys/Tables/dialogs/Participate";
-import Result from "@/pages/Surveys/Tables/dialogs/Result";
-import Delete from "@/pages/Surveys/Tables/components/Delete";
+import CommitedAnswer from '@/pages/Surveys/Tables/dialogs/CommitedAnswer';
+import Participate from '@/pages/Surveys/Tables/dialogs/Participate';
+import Result from '@/pages/Surveys/Tables/dialogs/Result';
+import Delete from '@/pages/Surveys/Tables/components/Delete';
 
 interface SurveysTablesDialogsProps {
   canEdit: boolean;
@@ -19,18 +19,9 @@ interface SurveysTablesDialogsProps {
 }
 
 const SurveysTablesDialogs = (props: SurveysTablesDialogsProps) => {
-  const {
-    canEdit,
-    editSurvey,
-    canDelete,
-    canShowCommitedAnswers,
-    canParticipate,
-    canShowResults,
-  } = props;
+  const { canEdit, editSurvey, canDelete, canShowCommitedAnswers, canParticipate, canShowResults } = props;
 
-  const {
-    selectedSurvey: survey,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
@@ -48,18 +39,10 @@ const SurveysTablesDialogs = (props: SurveysTablesDialogsProps) => {
             onClick={editSurvey}
           />
         ) : null}
-        {canDelete ? (
-          <Delete />
-        ) : null}
-        {canShowResults ? (
-          <Result />
-        ) : null}
-        {canParticipate ? (
-          <Participate />
-        ) : null}
-        {canShowCommitedAnswers ? (
-          <CommitedAnswer />
-        ) : null}
+        {canDelete ? <Delete /> : null}
+        {canShowResults ? <Result /> : null}
+        {canParticipate ? <Participate /> : null}
+        {canShowCommitedAnswers ? <CommitedAnswer /> : null}
       </div>
     </TooltipProvider>
   );

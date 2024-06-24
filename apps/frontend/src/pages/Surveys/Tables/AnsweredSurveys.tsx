@@ -18,7 +18,7 @@ const AnsweredSurveys = () => {
 
   const { t } = useTranslation();
 
-  const getAnsweredSurveys = useCallback( () => {
+  const getAnsweredSurveys = useCallback(() => {
     if (!answeredSurveys || answeredSurveys.length === 0) {
       if (!isFetchingAnsweredSurveys) {
         void updateAnsweredSurveys();

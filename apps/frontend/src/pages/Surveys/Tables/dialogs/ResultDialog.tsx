@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo} from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Survey from '@libs/survey/types/survey';
 import Attendee from '@libs/conferences/types/attendee';
@@ -58,7 +58,6 @@ const ResultDialog = (props: ResultDialogProps) => {
   }, []);
 
   const dialogBody = useMemo(() => {
-
     if (!survey?.formula) {
       return (
         <div className="rounded-xl bg-red-400 py-3 text-center text-black">
@@ -77,24 +76,18 @@ const ResultDialog = (props: ResultDialogProps) => {
 
     return (
       <ScrollArea className="overflow-x-auto overflow-y-auto">
-        { resultDialogType === 'chart'
-          ? (
-            <ResultVisualizationDialogBody
-              formula={survey.formula}
-              result={result}
-            />
-          )
-          : null
-        }
-        { resultDialogType === 'table'
-          ? (
-            <ResultTableDialogBody
-              formula={survey.formula}
-              result={result}
-            />
-          )
-          : null
-        }
+        {resultDialogType === 'chart' ? (
+          <ResultVisualizationDialogBody
+            formula={survey.formula}
+            result={result}
+          />
+        ) : null}
+        {resultDialogType === 'table' ? (
+          <ResultTableDialogBody
+            formula={survey.formula}
+            result={result}
+          />
+        ) : null}
         {errorLoadingResult ? (
           <div className="rounded-xl bg-red-400 py-3 text-center text-black">
             Survey Error: {errorLoadingResult.message}
@@ -103,7 +96,6 @@ const ResultDialog = (props: ResultDialogProps) => {
       </ScrollArea>
     );
   }, [resultDialogType, result, survey.formula]);
-
 
   // const getDialogBody = () => {
   //   return (
@@ -135,21 +127,21 @@ const ResultDialog = (props: ResultDialogProps) => {
   //   );
   // };
 
-  const dialog = useMemo(() =>
-    <AdaptiveDialog
-      isOpen={isOpenPublicResults}
-      trigger={trigger}
-      handleOpenChange={
-        isOpenPublicResults
-          ? closePublicResults
-          : openPublicResults
-      }
-      title={resultDialogType === 'chart' ? t('surveys.actions.showResultsChart') : t('surveys.actions.showResultsTable')}
-      body={dialogBody /* getDialogBody() */}
-      desktopContentClassName="min-h-[75%] max-w-[85%]"
-    />,
-    [result]);
-
+  const dialog = useMemo(
+    () => (
+      <AdaptiveDialog
+        isOpen={isOpenPublicResults}
+        trigger={trigger}
+        handleOpenChange={isOpenPublicResults ? closePublicResults : openPublicResults}
+        title={
+          resultDialogType === 'chart' ? t('surveys.actions.showResultsChart') : t('surveys.actions.showResultsTable')
+        }
+        body={dialogBody /* getDialogBody() */}
+        desktopContentClassName="min-h-[75%] max-w-[85%]"
+      />
+    ),
+    [result],
+  );
 
   if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult} />;
 

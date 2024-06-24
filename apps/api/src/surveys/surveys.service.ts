@@ -7,7 +7,7 @@ import NotAbleToDeleteError from './errors/not-able-to-delete-error';
 import SurveyNotFoundError from './errors/survey-not-found-error';
 // import UserIsNoParticipantError from './errors/user-is-no-participant-error';
 import UserHasAlreadyParticipatedError from './errors/user-has-already-participated-error';
-import CreateSurveyDto from "./dto/create-survey.dto";
+import CreateSurveyDto from './dto/create-survey.dto';
 
 @Injectable()
 class SurveysService {

@@ -4,7 +4,7 @@ import SURVEYS_ENDPOINT from '@libs/survey/utils/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
-import handleApiError from "@/utils/handleApiError";
+import handleApiError from '@/utils/handleApiError';
 
 interface DeleteStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -36,7 +36,7 @@ const useDeleteStore = create<DeleteStore>((set) => ({
       await eduApi.delete(SURVEYS_ENDPOINT, { params: { id: surveyID } });
       set({ isLoading: false });
     } catch (error) {
-      handleApiError(error as AxiosError, set)
+      handleApiError(error as AxiosError, set);
       set({ error: error as AxiosError, isLoading: false });
       throw error;
     }
