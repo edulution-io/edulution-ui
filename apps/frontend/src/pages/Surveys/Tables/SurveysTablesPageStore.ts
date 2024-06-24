@@ -1,13 +1,10 @@
 import { create } from 'zustand';
-import { CompleteEvent } from 'survey-core';
 import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT from '@libs/survey/utils/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
-import Attendee from '@libs/conferences/types/attendee';
 import Survey from '@libs/survey/types/survey';
 import UserSurveySearchTypes from '@libs/survey/types/user-survey-search-types-enum';
-import { EMPTY_JSON } from '@libs/survey/utils/empty-json';
 
 interface SurveysTablesPageStore {
   selectedPageView: SurveysPageView;
@@ -39,38 +36,6 @@ interface SurveysTablesPageStore {
   isPosting: boolean;
   errorPostingSurvey: Error | null;
 
-  deleteSurvey: (id: number) => Promise<void>;
-  isDeleting: boolean;
-  errorOnDeleting: Error | null;
-
-  isOpenParticipateSurveyDialog: boolean;
-  openParticipateSurveyDialog: () => void;
-  closeParticipateSurveyDialog: () => void;
-  commitAnswer: (surveyId: number, answer: JSON, options?: CompleteEvent) => Promise<string>;
-  isCommiting: boolean;
-  errorCommiting: Error | null;
-
-  isOpenCommitedAnswersDialog: boolean;
-  openCommitedAnswersDialog: () => void;
-  closeCommitedAnswersDialog: () => void;
-  getUsersCommitedAnswer: (surveyId: number, userName?: string) => Promise<JSON | undefined>;
-  user: string | undefined;
-  selectUser: (user: string) => void;
-  answer: JSON | undefined;
-  isLoadingAnswer: boolean;
-  errorLoadingAnswer: Error | null;
-
-  isOpenPublicResultsTableDialog: boolean;
-  openPublicResultsTableDialog: () => void;
-  closePublicResultsTableDialog: () => void;
-  isOpenPublicResultsVisualisationDialog: boolean;
-  openPublicResultsVisualisationDialog: () => void;
-  closePublicResultsVisualisationDialog: () => void;
-  getSurveyResult: (surveyId: number, participants: Attendee[]) => Promise<JSON[] | undefined>;
-  result: JSON[];
-  isLoadingResult: boolean;
-  errorLoadingResult: Error | null;
-
   reset: () => void;
 }
 
@@ -93,23 +58,6 @@ const initialState: Partial<SurveysTablesPageStore> = {
 
   isPosting: false,
   errorPostingSurvey: null,
-
-  isDeleting: false,
-  errorOnDeleting: null,
-
-  isOpenParticipateSurveyDialog: false,
-  isCommiting: false,
-  errorCommiting: null,
-  isOpenCommitedAnswersDialog: false,
-  user: undefined,
-  answer: undefined,
-  isLoadingAnswer: false,
-  errorLoadingAnswer: null,
-  isOpenPublicResultsTableDialog: false,
-  isOpenPublicResultsVisualisationDialog: false,
-  result: undefined,
-  isLoadingResult: false,
-  errorLoadingResult: null,
 };
 
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
@@ -184,89 +132,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
     } catch (error) {
       set({ errorPostingSurvey: error as AxiosError, isPosting: false });
       throw error;
-    }
-  },
-
-  deleteSurvey: async (surveyID: number): Promise<void> => {
-    set({ errorOnDeleting: null, isDeleting: true });
-    try {
-      await eduApi.delete(SURVEYS_ENDPOINT, { params: { id: surveyID } });
-      set({ isDeleting: false });
-    } catch (error) {
-      set({ errorOnDeleting: error as AxiosError, isDeleting: false });
-      throw error;
-    }
-  },
-
-  openParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: true }),
-  closeParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: false }),
-  commitAnswer: async (surveyId: number, answer: JSON, options?: CompleteEvent): Promise<string> => {
-    set({ errorCommiting: null, isCommiting: true });
-    try {
-      // Display the "Saving..." message (pass a string value to display a custom message)
-      options?.showSaveInProgress();
-
-      const response = await eduApi.patch<string>(SURVEYS_ENDPOINT, {
-        surveyId,
-        answer,
-      });
-
-      // Display the "Success" message (pass a string value to display a custom message)
-      options?.showSaveSuccess();
-
-      set({ isCommiting: false });
-      return response.data;
-    } catch (error) {
-      // Display the "Error" message (pass a string value to display a custom message)
-      options?.showSaveError();
-
-      set({ errorCommiting: error as AxiosError, isCommiting: false });
-      return '';
-    }
-  },
-
-  openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
-  closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),
-  selectUser: (userName: string) => set({ user: userName }),
-  getUsersCommitedAnswer: async (surveyId: number): Promise<JSON> => {
-    set({ isLoadingAnswer: true, errorLoadingAnswer: null });
-    try {
-      const response = await eduApi.get<JSON>(SURVEYS_ENDPOINT, {
-        params: { search: UserSurveySearchTypes.ANSWER, surveyId },
-      });
-      const answer = response.data;
-      set({ answer, isLoadingAnswer: false });
-      return answer;
-    } catch (error) {
-      set({ answer: undefined, errorLoadingAnswer: error as AxiosError, isLoadingAnswer: false });
-      return EMPTY_JSON;
-    }
-  },
-
-  openPublicResultsTableDialog: () => set({ isOpenPublicResultsTableDialog: true }),
-  closePublicResultsTableDialog: () => set({ isOpenPublicResultsTableDialog: false }),
-  openPublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: true }),
-  closePublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: false }),
-  getSurveyResult: async (surveyId: number, participants: Attendee[]): Promise<JSON[]> => {
-    set({ isLoadingResult: true, errorLoadingResult: null });
-    try {
-      const response = await eduApi.get<JSON[]>(SURVEYS_ENDPOINT, {
-        params: {
-          search: UserSurveySearchTypes.ANSWERS,
-          surveyId,
-        },
-        data: {
-          surveyId,
-          participants,
-          isAnonymous: false,
-        },
-      });
-      const result = response.data;
-      set({ result, isLoadingResult: false });
-      return result;
-    } catch (error) {
-      set({ errorLoadingResult: error as AxiosError, result: undefined, isLoadingResult: false });
-      return [EMPTY_JSON];
     }
   },
 }));

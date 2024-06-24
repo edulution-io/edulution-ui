@@ -14,7 +14,7 @@ export const getInitialFormValues = (selectedSurvey?: Survey): SurveyEditorFormD
   expirationTime: selectedSurvey?.expirationTime || undefined,
   isAnonymous: selectedSurvey?.isAnonymous || false,
   canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
-  invitedGroups: [],
+  // invitedGroups: [],
 
   canShowResultsChart: true,
   canShowResultsTable: true,
@@ -31,7 +31,7 @@ export const getEmptyFormValues = (): SurveyEditorFormData => ({
   expirationTime: undefined,
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
-  invitedGroups: [],
+  // invitedGroups: [],
 
   canShowResultsChart: true,
   canShowResultsTable: true,

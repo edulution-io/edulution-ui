@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Survey from '@libs/survey/types/survey';
 import Attendee from '@libs/conferences/types/attendee';
@@ -36,14 +36,20 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     trigger,
   } = props;
 
+  if (!isOpenPublicResultsTableDialog) return null;
+
   const { t } = useTranslation();
 
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  useMemo(async () => {
-    if (!survey) return;
-    if (!isOpenPublicResultsTableDialog) return;
-    await getSurveyResult(survey?.id, survey?.participants);
-  }, [survey, isOpenPublicResultsTableDialog]);
+  const getResult = useCallback(() => {
+    if (!survey) {
+      return;
+    }
+    void getSurveyResult(survey.id, survey.participants);
+  }, []);
+
+  useEffect((): void => {
+    getResult();
+  }, []);
 
   const getDialogBody = () => {
     if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult} />;

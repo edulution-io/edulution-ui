@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Model } from 'survey-core';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
@@ -15,23 +15,16 @@ interface SurveyVisualizationProps {
 const ResultTableDialogBody = (props: SurveyVisualizationProps) => {
   const { formula, result } = props;
 
-  const [survey, setSurvey] = useState<Model | undefined>(undefined);
   const [vizTable, setVizTable] = useState<Tabulator | undefined>(undefined);
 
-  if (!survey) {
-    const surveyModel = new Model(formula);
-    surveyModel.data = result;
-    setSurvey(surveyModel);
-  }
+  const surveyModel = new Model(formula);
 
-  useMemo((): void => {
-    if (!survey) {
-      return;
-    }
-    const surveyVizTable = new Tabulator(survey, result);
+  useEffect((): void => {
+    surveyModel.data = result;
+    const surveyVizTable = new Tabulator(surveyModel, result);
     surveyVizTable.locale = 'de';
     setVizTable(surveyVizTable);
-  }, [survey, result]);
+  }, [result]);
 
   useEffect((): void => {
     vizTable?.render('surveyDashboardContainer');

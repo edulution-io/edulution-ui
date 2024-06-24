@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
+
 type SurveyAnswer = {
-  surveyId: number;
+  surveyId: mongoose.Types.ObjectId;
   answer?: JSON;
 };
 

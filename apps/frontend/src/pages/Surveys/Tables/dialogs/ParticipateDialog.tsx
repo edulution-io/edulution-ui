@@ -48,6 +48,8 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     trigger,
   } = props;
 
+  if (!isOpenParticipateSurveyDialog) return null;
+
   const { t } = useTranslation();
 
   const initialFormValues: ParticipateDialogFormData = {

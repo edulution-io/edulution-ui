@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { UsersSurveys } from '../surveys/types/users-surveys.schema';
+import mongoose, { Document } from 'mongoose';
+import UsersSurveysSchema from '../surveys/types/users-surveys.schema';
 
 export type UserDocument = User & Document;
 
@@ -24,12 +24,12 @@ export class User {
   @Prop()
   roles?: string[];
 
-  @Prop({ type: SchemaFactory.createForClass(UsersSurveys), required: false })
+  @Prop({ type: UsersSurveysSchema, required: false })
   usersSurveys?: {
-    openSurveys?: number[];
-    createdSurveys?: number[];
+    openSurveys?: mongoose.Types.ObjectId[],
+    createdSurveys?: mongoose.Types.ObjectId[];
     answeredSurveys?: {
-      surveyId: number;
+      surveyId: mongoose.Types.ObjectId;
       answer?: JSON;
     }[];
   };

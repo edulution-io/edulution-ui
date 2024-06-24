@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Logger, Post, Query, Patch } from '@nestjs/common';
-import UserSurveySearchTypes from '@libs/survey/types/user-survey-search-types-enum';
+import mongoose from 'mongoose';
+import { Body, Controller, Delete, Get, Logger, Post, Query, Patch, Param } from '@nestjs/common';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import CreateSurveyDto from './dto/create-survey.dto';
@@ -8,8 +8,6 @@ import PushAnswerDto from './dto/push-answer.dto';
 import DeleteSurveyDto from './dto/delete-survey.dto';
 import { Survey } from './types/survey.schema';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import RequiresSurveyIdError from './errors/requires-survey-id-error';
-import SurveyNotFoundError from './errors/survey-not-found-error';
 import SurveyAnswerNotFoundError from './errors/survey-answer-not-found-error';
 import NeitherFoundNorCreatedSurveyError from './errors/neither-found-nor-created-survey-error';
 
@@ -20,115 +18,70 @@ class SurveysController {
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
-  @Get()
-  async find(@Body() body: FindSurveyDto, @Query() params: FindSurveyDto, @GetCurrentUsername() username: string) {
-    const { search, surveyId } = params;
-    const { surveyIds, participants } = body;
+  @Get(`open/`)
+  async getOpenSurveys(@GetCurrentUsername() username: string) {
+    return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
+  }
 
-    if (search) {
-      switch (search) {
-        case UserSurveySearchTypes.OPEN:
-          return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
+  @Get(`created/`)
+  async getCreatedSurveys(@GetCurrentUsername() username: string) {
+    return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyIds(username));
+  }
 
-        case UserSurveySearchTypes.CREATED:
-          return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyIds(username));
+  @Get(`answered/`)
+  async getAnsweredSurveys(@GetCurrentUsername() username: string) {
+    return this.surveyService.findSurveys(await this.usersSurveysService.getAnsweredSurveyIds(username));
+  }
 
-        case UserSurveySearchTypes.ANSWERS:
-          if (!surveyId) {
-            throw RequiresSurveyIdError;
-          }
-          try {
-            const survey = await this.surveyService.findSurvey(surveyId);
-            if (!survey) {
-              throw SurveyNotFoundError;
-            }
-            return survey.publicAnswers;
-          } catch (error) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            Logger.error(`Survey: Find survey answer error (1): ${error.message}`);
-            return error as Error;
-          }
+  @Get(`answer/:surveyId`)
+  async getSurveyAnswer(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
+    const answer = await this.usersSurveysService.getCommitedAnswer(username, surveyId);
+    if (!answer) {
+      throw SurveyAnswerNotFoundError;
+    }
+    return answer;
+  }
 
-        case UserSurveySearchTypes.ANSWER:
-          if (!surveyId) {
-            throw RequiresSurveyIdError;
-          }
-          if (participants && participants.length > 1) {
-            try {
-              const answers: JSON[] = [];
-              const promises: Promise<void>[] = participants.map(async (participant: string) => {
-                const answer = await this.usersSurveysService.getCommitedAnswer(participant, surveyId);
-                if (answer) {
-                  answers.push(answer);
-                }
-              });
-              await Promise.all(promises);
+  @Get(`answer/:surveyId`)
+  async getSurveyAnswers(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @Body() body: FindSurveyDto) {
+    const { participants = [] } = body;
 
-              if (!answers) {
-                throw SurveyAnswerNotFoundError;
-              }
-              return answers;
-            } catch (error) {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              Logger.error(`Survey: Find survey answer error (2): ${error.message}`);
-              return error as Error;
-            }
-          }
-          try {
-            const answer = await this.usersSurveysService.getCommitedAnswer(username, surveyId);
-            if (!answer) {
-              throw SurveyAnswerNotFoundError;
-            }
-            return answer;
-          } catch (error) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            Logger.error(`Survey: Find survey answer error (3): ${error.message}`);
-            return error as Error;
-          }
-
-        case UserSurveySearchTypes.ANSWERED:
-          return this.usersSurveysService
-            .getAnsweredSurveyIds(username)
-            .then((resultingSurveyIds: number[]) => this.surveyService.findSurveys(resultingSurveyIds))
-            .catch((e: Error) => {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              Logger.error(`Survey: Find answered survey error: ${e.message}`);
-              return [];
-            });
-
-        case UserSurveySearchTypes.ALL:
-        default:
-          return this.surveyService.findAllSurveys();
+    const answers: JSON[] = [];
+    const promises: Promise<void>[] = participants.map(async (participant: string) => {
+      const answer = await this.usersSurveysService.getCommitedAnswer(participant, surveyId);
+      if (answer) {
+        answers.push(answer);
+      } else {
+        const error = `Found no answer from ${participant}`;
+        // const json = { error };
+        JSON.parse(JSON.stringify({ error }))
+        answers.push();
       }
-    }
+    });
+    await Promise.all(promises);
 
-    // only fetching a specific survey
-    if (surveyId) {
-      return this.surveyService.findSurvey(surveyId);
+    if (!answers) {
+      throw SurveyAnswerNotFoundError;
     }
-
-    // fetching multiple specific surveys
-    if (surveyIds) {
-      return this.surveyService.findSurveys(surveyIds);
-    }
-
-    // fetch all surveys
-    return this.surveyService.findAllSurveys();
+    return answers;
   }
 
   @Post()
   async createOrUpdate(@Body() body: CreateSurveyDto, @GetCurrentUsername() username: string) {
     try {
-      const { participants = [] } = body;
+      const {
+        participants = [],
+        publicAnswers = [],
+        saveNo = 0,
+        created = new Date()
+      } = body;
 
-      const createSurveyDto: Survey = {
+      const createSurveyDto: CreateSurveyDto = {
         ...body,
-        formula: body.formula,
         participants,
-        publicAnswers: body.publicAnswers || [],
-        saveNo: body.saveNo || 0,
-        created: body.created || new Date(),
-        expirationDate: body.expirationDate,
+        publicAnswers,
+        saveNo,
+        created,
         expirationTime: body.expirationTime?.toString(),
         isAnonymous: !!body.isAnonymous,
         canSubmitMultipleAnswers: !!body.canSubmitMultipleAnswers,
@@ -139,15 +92,15 @@ class SurveysController {
         throw NeitherFoundNorCreatedSurveyError;
       }
 
-      const { id } = newSurvey;
-      await this.usersSurveysService.addToCreatedSurveys(username, id);
-      await this.usersSurveysService.populateSurvey(participants, id);
+      const { _id: newSurveyId } = newSurvey;
+      await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
+      await this.usersSurveysService.populateSurvey(participants, newSurveyId);
 
       return newSurvey;
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       Logger.error(`Survey: Create or update error: ${error.message}`);
-      return error as Error;
+      throw error;
     }
   }
 
@@ -171,7 +124,7 @@ class SurveysController {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       Logger.error(`Survey: Manage user surveys error: ${error.message}`);
-      return error as Error;
+      throw error;
     }
   }
 }

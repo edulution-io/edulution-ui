@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import Attendee from '@libs/conferences/types/attendee';
@@ -32,17 +32,17 @@ class UsersSurveysService {
     return existingUser;
   }
 
-  async getOpenSurveyIds(username: string): Promise<number[]> {
+  async getOpenSurveyIds(username: string): Promise<mongoose.Types.ObjectId[]> {
     const user = await this.getExistingUser(username);
     return user?.usersSurveys?.openSurveys || [];
   }
 
-  async getCreatedSurveyIds(username: string): Promise<number[]> {
+  async getCreatedSurveyIds(username: string): Promise<mongoose.Types.ObjectId[]> {
     const user = await this.getExistingUser(username);
     return user?.usersSurveys?.createdSurveys || [];
   }
 
-  async getAnsweredSurveyIds(username: string): Promise<number[]> {
+  async getAnsweredSurveyIds(username: string): Promise<mongoose.Types.ObjectId[]> {
     const user = await this.getExistingUser(username);
     const answeredSurveys = user?.usersSurveys?.answeredSurveys?.map(
       (surveyAnswer: SurveyAnswer) => surveyAnswer.surveyId,
@@ -50,7 +50,7 @@ class UsersSurveysService {
     return answeredSurveys || [];
   }
 
-  async addToOpenSurveys(participant: Attendee | string, surveyId: number): Promise<void> {
+  async addToOpenSurveys(participant: Attendee | string, surveyId: mongoose.Types.ObjectId): Promise<void> {
     const existingUser = await this.getExistingUser(participant);
     if (!existingUser) {
       throw UserNotFoundError;
@@ -69,7 +69,7 @@ class UsersSurveysService {
     await this.updateUser(participant, newUser);
   }
 
-  async populateSurvey(participants: Attendee[], surveyId: number): Promise<void> {
+  async populateSurvey(participants: Attendee[], surveyId: mongoose.Types.ObjectId): Promise<void> {
     const promises: Promise<void>[] = [];
     participants.forEach((user) => {
       promises.push(this.addToOpenSurveys(user, surveyId));
@@ -77,7 +77,7 @@ class UsersSurveysService {
     await Promise.all(promises);
   }
 
-  async addToCreatedSurveys(username: string, surveyId: number): Promise<User | null> {
+  async addToCreatedSurveys(username: string, surveyId: mongoose.Types.ObjectId): Promise<User | null> {
     const existingUser = await this.getExistingUser(username);
     if (!existingUser) {
       throw UserNotFoundError;
@@ -97,7 +97,7 @@ class UsersSurveysService {
     return updatedUser;
   }
 
-  async onRemoveSurvey(surveyId: number): Promise<void> {
+  async onRemoveSurvey(surveyId: mongoose.Types.ObjectId): Promise<void> {
     const existingUsers = await this.userModel.find<User>().exec();
 
     const promises = existingUsers.map(async (user): Promise<void> => {
@@ -111,7 +111,7 @@ class UsersSurveysService {
       let shouldUpdateUser = false;
 
       const usersCreatedSurveys =
-        createdSurveys.filter((survey: number) => {
+        createdSurveys.filter((survey: mongoose.Types.ObjectId) => {
           if (survey !== surveyId) {
             return true;
           }
@@ -120,7 +120,7 @@ class UsersSurveysService {
         }) || [];
 
       const usersOpenSurveys =
-        openSurveys.filter((survey: number) => {
+        openSurveys.filter((survey: mongoose.Types.ObjectId) => {
           if (survey !== surveyId) {
             return true;
           }
@@ -156,7 +156,7 @@ class UsersSurveysService {
 
   async addAnswer(
     username: string,
-    surveyId: number,
+    surveyId: mongoose.Types.ObjectId,
     answer: JSON,
     canSubmitMultipleAnswers: boolean = false,
   ): Promise<void> {
@@ -181,7 +181,7 @@ class UsersSurveysService {
     await this.updateUser(username, newUser);
   }
 
-  async getCommitedAnswer(username: string, surveyId: number): Promise<JSON | undefined> {
+  async getCommitedAnswer(username: string, surveyId: mongoose.Types.ObjectId): Promise<JSON | undefined> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
       throw UserNotFoundError;

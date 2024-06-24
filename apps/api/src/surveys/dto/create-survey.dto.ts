@@ -1,7 +1,8 @@
+import mongoose from 'mongoose';
 import Attendee from '@libs/conferences/types/attendee';
 
 class CreateSurveyDto {
-  id: number;
+  id: mongoose.Types.ObjectId;
 
   formula: JSON;
 

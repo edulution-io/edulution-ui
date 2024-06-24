@@ -16,6 +16,6 @@ export class UsersSurveys {
   answeredSurveys: SurveyAnswer[];
 }
 
-export const UsersSurveysSchema = SchemaFactory.createForClass(UsersSurveys);
+const UsersSurveysSchema = SchemaFactory.createForClass(UsersSurveys);
 
 export default UsersSurveysSchema;

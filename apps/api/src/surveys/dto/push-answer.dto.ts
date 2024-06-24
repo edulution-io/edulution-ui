@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
+
 class PushAnswerDto {
-  surveyId: number;
+  surveyId: mongoose.Types.ObjectId;
 
   answer: JSON;
 

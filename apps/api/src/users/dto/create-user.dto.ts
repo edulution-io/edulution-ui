@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 class CreateUserDto {
   username: string;
 
@@ -8,10 +10,10 @@ class CreateUserDto {
   roles: string[];
 
   usersSurveys?: {
-    openSurveys?: number[];
-    createdSurveys?: number[];
+    openSurveys?: mongoose.Types.ObjectId[];
+    createdSurveys?: mongoose.Types.ObjectId[];
     answeredSurveys?: {
-      surveyId: number;
+      surveyId: mongoose.Types.ObjectId;
       answer?: JSON;
     }[];
   };

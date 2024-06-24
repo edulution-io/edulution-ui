@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Survey from '@libs/survey/types/survey';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -38,22 +38,22 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
 
     trigger,
   } = props;
+
+  if (!isOpenCommitedAnswersDialog) return null;
+
   const { t } = useTranslation();
 
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  useMemo(async () => {
+  const getAnswer = useCallback(() => {
     if (!survey) return;
-    if (!isOpenCommitedAnswersDialog) return;
-    await getUsersCommitedAnswer(survey?.id);
-  }, [survey, isOpenCommitedAnswersDialog]);
+    void getUsersCommitedAnswer(survey.id);
+  }, []);
 
-  if (!survey) {
-    return null;
-  }
+  useEffect((): void => {
+    getAnswer();
+  }, []);
 
-  if (!answer) {
-    return null;
-  }
+  if (!survey) return null;
+  if (!answer) return null;
 
   const getDialogBody = () => {
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin

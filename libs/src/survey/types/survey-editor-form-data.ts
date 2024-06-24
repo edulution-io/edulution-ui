@@ -11,13 +11,13 @@ interface SurveyEditorFormData {
   expirationDate?: Date;
   expirationTime?: string;
   isAnonymous?: boolean;
+  // invitedGroups: Group[];
 
   canShowResultsTable?: boolean;
   canShowResultsChart?: boolean;
 
   canSubmitMultipleAnswers?: boolean;
 
-  // invitedGroups: Group[];
 }
 
 export default SurveyEditorFormData;

@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
+
 class DeleteSurveyDto {
-  surveyId: number;
+  surveyId: mongoose.Types.ObjectId;
 }
 
 export default DeleteSurveyDto;
