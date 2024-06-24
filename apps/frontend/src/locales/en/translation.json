@@ -8,7 +8,8 @@
       "title": "MOBILE DATA ACCESS",
       "manual": "Manual",
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code."
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code.",
+      "scanAppStoreLink": "You can download the edulution-io app via the following link."
     }
   },
   "ticketsystem": {

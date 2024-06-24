@@ -3,11 +3,11 @@ import { Button } from '@/components/shared/Button';
 import { AppleLogo } from '@/assets/icons';
 import { Card, CardContent } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
-import MobileAccessIntroduction from './MobileAccessDialog';
+import MobileAccessDialog from './MobileAccessDialog';
 
 const MobileDataAccess: React.FC = () => {
   const { t } = useTranslation();
-  const [isMobileAccessOpen, setIsMobileAccessOpen] = useState<boolean>(false);
+  const [isMobileAccessOpen, setIsMobileAccessOpen] = useState(false);
   return (
     <Card variant="security">
       <CardContent>
@@ -26,7 +26,7 @@ const MobileDataAccess: React.FC = () => {
             />
             <p>{t('dashboard.mobileAccess.manual')}</p>
           </Button>
-          <MobileAccessIntroduction
+          <MobileAccessDialog
             isMobileAccessIntroductionOpen={isMobileAccessOpen}
             setIsMobileAccessIntroductionOpen={setIsMobileAccessOpen}
           />

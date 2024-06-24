@@ -1,74 +1,85 @@
-import React from 'react';
-import { Sheet, SheetContent, SheetHeader } from '@/components/ui/Sheet';
+import React, { useMemo, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { t } from 'i18next';
-import { Dialog, DialogContent } from '@/components/ui/Dialog';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
+import { MdArrowBackIosNew, MdArrowForwardIos, MdOutlineFileDownload } from 'react-icons/md';
+import { Button } from '@/components/shared/Button';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { NavLink } from 'react-router-dom';
+import { IconContext } from 'react-icons';
 
-interface MobileAccessIntroductionProps {
+type MobileAccessDialogProps = {
   isMobileAccessIntroductionOpen: boolean;
   setIsMobileAccessIntroductionOpen: (open: boolean) => void;
-}
+};
 
-const MobileAccessIntroduction: React.FC<MobileAccessIntroductionProps> = ({
+const MobileAccessDialog: React.FC<MobileAccessDialogProps> = ({
   isMobileAccessIntroductionOpen,
   setIsMobileAccessIntroductionOpen,
 }) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { user } = useUserStore();
+  const [isStepOne, setIsStepOne] = useState(true);
 
-  const qrData = {
+  const urlAppStore = 'https://apps.apple.com/de/app/edulution-io/id6478116528';
+
+  const qrCodeLoginData = {
     displayName: `${window.document.title}`,
     url: `${window.location.origin}/webdav`,
     username: user,
     password: '',
     token: '',
   };
-  const qrContent = JSON.stringify(qrData);
+  const qrCodeLogin = JSON.stringify(qrCodeLoginData);
 
-  const handleOpenChange = (open: boolean) => {
-    setIsMobileAccessIntroductionOpen(open);
-  };
-
-  const mobileContent = (
-    <Sheet
-      open={isMobileAccessIntroductionOpen}
-      onOpenChange={handleOpenChange}
-    >
-      <SheetContent
-        side="bottom"
-        className="flex flex-col"
-      >
-        <SheetHeader>
-          <h4>{t('dashboard.mobileAccess.scanAccessInfo')}</h4>
-          <div className="flex justify-center">
-            <QRCodeDisplay value={qrContent} />
-          </div>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
-  );
-
-  const desktopContent = (
-    <div className="flex-col">
-      <h4 className="flex justify-center text-black">{t('dashboard.mobileAccess.scanAccessInfo')}</h4>
-      <div className="justify-center">
-        <QRCodeDisplay value={qrContent} />
+  const getDialogBody = () => (
+    <>
+      <p className="flex justify-center text-black">
+        {t(isStepOne ? 'dashboard.mobileAccess.scanAppStoreLink' : 'dashboard.mobileAccess.scanAccessInfo')}
+      </p>
+      <div className="mt-4 justify-center">
+        <QRCodeDisplay value={isStepOne ? urlAppStore : qrCodeLogin} />
       </div>
-    </div>
+
+      <Button
+        type="button"
+        variant="btn-outline"
+        onClick={() => setIsStepOne(!isStepOne)}
+        className={`absolute top-1/2 text-black ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
+      >
+        {isStepOne ? <MdArrowForwardIos /> : <MdArrowBackIosNew />}
+      </Button>
+    </>
   );
 
-  return isMobile ? (
-    mobileContent
-  ) : (
-    <Dialog
-      open={isMobileAccessIntroductionOpen}
-      onOpenChange={handleOpenChange}
+  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+
+  const getSheetBody = () => (
+    <NavLink
+      to={urlAppStore}
+      className="flex flex-col items-center"
     >
-      <DialogContent>{desktopContent}</DialogContent>
-    </Dialog>
+      <p className="my-4 text-black">{t('dashboard.mobileAccess.scanAppStoreLink')}</p>
+      <Button
+        variant="btn-outline"
+        className="flex items-center justify-center"
+      >
+        <IconContext.Provider value={iconContextValue}>
+          <MdOutlineFileDownload className="text-black" />
+        </IconContext.Provider>
+      </Button>
+    </NavLink>
+  );
+
+  return (
+    <AdaptiveDialog
+      isOpen={isMobileAccessIntroductionOpen}
+      handleOpenChange={() => setIsMobileAccessIntroductionOpen(!isMobileAccessIntroductionOpen)}
+      title={t('dashboard.mobileAccess.title')}
+      body={isMobile ? getSheetBody() : getDialogBody()}
+    />
   );
 };
 
-export default MobileAccessIntroduction;
+export default MobileAccessDialog;

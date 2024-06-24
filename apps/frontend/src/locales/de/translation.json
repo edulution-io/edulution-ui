@@ -8,7 +8,8 @@
       "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
       "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert.",
-      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code scannen."
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code scannen.",
+      "scanAppStoreLink": "Über folgenden Link kannst du die edulution-io App herunterladen."
     }
   },
   "ticketsystem": {
