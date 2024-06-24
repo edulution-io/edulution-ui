@@ -53,6 +53,7 @@ export enum APPS {
   ANTIMALWARE = 'antimalware',
   BACKUP = 'backup',
   AICHAT = 'aichat',
+  LINUXMUSTER = 'linuxmuster',
 }
 
 export interface FileTypePreviewProps {

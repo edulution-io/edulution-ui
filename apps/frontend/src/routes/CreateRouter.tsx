@@ -24,6 +24,8 @@ const pageSwitch = (page: string) => {
       return <RoomBookingPage />;
     case APPS.MAIL:
       return <FramePlaceholder />;
+    case APPS.LINUXMUSTER:
+      return <FramePlaceholder />;
     default:
       return (
         <Navigate
