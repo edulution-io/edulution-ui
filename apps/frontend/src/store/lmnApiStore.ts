@@ -4,7 +4,7 @@ import lmnApi from '@/api/lmnApi';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
 import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
-import UserStore from '@/store/userStore';
+import userStore from '@/store/UserStore/UserStore';
 
 interface LmnApiStore {
   lmnApiToken: string;
@@ -12,7 +12,6 @@ interface LmnApiStore {
   isLoading: boolean;
   error: Error | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
-  setToken: (token: string) => void;
   getUserData: () => Promise<void>;
   reset: () => void;
 }
@@ -26,15 +25,13 @@ const initialState = {
 
 type PersistedUserLmnInfoStore = (
   userData: StateCreator<LmnApiStore>,
-  options: PersistOptions<LmnApiStore>,
+  options: PersistOptions<Partial<LmnApiStore>>,
 ) => StateCreator<LmnApiStore>;
 
 const useLmnApiStore = create<LmnApiStore>(
   (persist as PersistedUserLmnInfoStore)(
     (set) => ({
       ...initialState,
-
-      setToken: (token: string) => set({ lmnApiToken: token }),
 
       setLmnApiToken: async (username, password): Promise<void> => {
         set({ isLoading: true });
@@ -51,7 +48,7 @@ const useLmnApiStore = create<LmnApiStore>(
       getUserData: async () => {
         set({ isLoading: true });
         try {
-          const response = await lmnApi.get<UserLmnInfo>(`${EDU_API_USERS_ENDPOINT}/${UserStore.getState().username}`);
+          const response = await lmnApi.get<UserLmnInfo>(`${EDU_API_USERS_ENDPOINT}/${userStore.getState().username}`);
           set({
             user: response.data,
             isLoading: false,
@@ -66,8 +63,12 @@ const useLmnApiStore = create<LmnApiStore>(
     }),
     {
       name: 'lmn-user-storage',
-      storage: createJSONStorage(() => localStorage),
-    } as PersistOptions<LmnApiStore>,
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        lmnApiToken: state.lmnApiToken,
+        user: state.user,
+      }),
+    },
   ),
 );
 

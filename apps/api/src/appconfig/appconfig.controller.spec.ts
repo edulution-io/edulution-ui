@@ -6,6 +6,7 @@ import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppIntegrationType } from './appconfig.types';
 import mockAppConfigService from './appconfig.service.mock';
+import { AppConfig } from './appconfig.schema';
 
 const mockAppConfigModel = {
   insertMany: jest.fn(),
@@ -27,7 +28,7 @@ describe('AppConfigController', () => {
           useValue: mockAppConfigService,
         },
         {
-          provide: getModelToken('AppConfig'),
+          provide: getModelToken(AppConfig.name),
           useValue: mockAppConfigModel,
         },
       ],

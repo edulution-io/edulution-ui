@@ -3,6 +3,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import AppConfigService from './appconfig.service';
 import { AppIntegrationType } from './appconfig.types';
 import mockAppConfigService from './appconfig.service.mock';
+import { AppConfig } from './appconfig.schema';
 
 const mockAppConfigModel = {
   insertMany: jest.fn(),
@@ -22,7 +23,7 @@ describe('AppConfigService', () => {
           useValue: mockAppConfigService,
         },
         {
-          provide: getModelToken('AppConfig'),
+          provide: getModelToken(AppConfig.name),
           useValue: mockAppConfigModel,
         },
       ],

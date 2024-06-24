@@ -4,11 +4,11 @@ import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import axios from 'axios';
+import { LDAPUser } from '@libs/user/types/ldap/ldapUser';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import RegisterUserDto from './dto/register-user.dto';
-import { LDAPUser } from '../types/ldapUser';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 
 const { KEYCLOAK_API } = process.env;
@@ -19,6 +19,26 @@ class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  private static async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {
+    const config = {
+      method: 'get',
+      url: `${KEYCLOAK_API}users`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await axios.request<LDAPUser[]>(config);
+
+      return response.data;
+    } catch (e) {
+      Logger.error(e, UsersService.name);
+      throw e;
+    }
+  }
 
   async register(userDto: RegisterUserDto): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
@@ -85,26 +105,6 @@ class UsersService {
           user.username?.toLowerCase().includes(searchString),
       )
       .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
-  }
-
-  private static async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {
-    const config = {
-      method: 'get',
-      url: `${KEYCLOAK_API}users`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    try {
-      const response = await axios.request<LDAPUser[]>(config);
-
-      return response.data;
-    } catch (e) {
-      Logger.error(e, UsersService.name);
-      throw e;
-    }
   }
 }
 

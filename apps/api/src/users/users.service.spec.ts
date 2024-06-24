@@ -4,13 +4,13 @@ import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Query } from 'mongoose';
 import axios from 'axios';
+import { LDAPUser } from '@libs/user/types/ldap/ldapUser';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import RegisterUserDto from './dto/register-user.dto';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
-import { LDAPUser } from '../types/ldapUser';
 
 jest.mock('axios');
 const mockAxios = axios as jest.Mocked<typeof axios>;
@@ -104,7 +104,7 @@ const cacheManagerMock = {
   set: jest.fn(),
 };
 
-describe('UsersService', () => {
+describe(UsersService.name, () => {
   let service: UsersService;
   let model: Model<UserDocument>;
 

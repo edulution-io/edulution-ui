@@ -24,193 +24,10 @@ class ConferencesService {
     private readonly appConfigService: AppConfigService,
   ) {}
 
-  async loadConfig() {
-    const appConfig = await this.appConfigService.getAppConfigByName('conferences');
-    if (!appConfig?.options.url || !appConfig.options.apiKey) {
-      throw new HttpException('App is not properly configured', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    this.BBB_API_URL = appConfig.options.url;
-    this.BBB_SECRET = appConfig.options.apiKey;
-  }
-
-  async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference> {
-    await this.loadConfig();
-
-    const creator = {
-      firstName: currentUser.given_name,
-      lastName: currentUser.family_name,
-      username: currentUser.preferred_username,
-    };
-
-    const newConference = {
-      name: createConferenceDto.name,
-      creator,
-      meetingID: uuidv4(),
-      password: createConferenceDto.password,
-      invitedAttendees: [...createConferenceDto.invitedAttendees, creator],
-      isMeetingStarted: false,
-    };
-
-    return this.conferenceModel.create(newConference);
-  }
-
-  async toggleConferenceIsRunning(meetingID: string, username: string) {
-    await this.loadConfig();
-
-    const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
-    if (!isCreator) {
-      throw new HttpException('You are not the creator!', HttpStatus.UNAUTHORIZED);
-    }
-
-    if (conference.isRunning) {
-      await this.stopConference(conference);
-    } else {
-      await this.startConference(conference);
-    }
-  }
-
-  private async startConference(conference: Conference) {
-    await this.loadConfig();
-
-    try {
-      const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('create', query);
-      const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
-
-      const response = await axios.get<string>(url);
-      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-      ConferencesService.handleBBBApiError(result);
-
-      await this.update({ ...conference, isRunning: true });
-    } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
-    }
-  }
-
-  private async stopConference(conference: Conference) {
-    await this.loadConfig();
-
-    try {
-      const query = `meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('end', query);
-      const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
-
-      const response = await axios.get<string>(url);
-      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-      ConferencesService.handleBBBApiError(result);
-
-      await this.update({ ...conference, isRunning: false });
-    } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
-    }
-  }
-
-  public async isCurrentUserTheCreator(
-    meetingID: string,
-    username: string,
-  ): Promise<{ conference: Conference; isCreator: boolean }> {
-    const conference = await this.findOne(meetingID);
-    if (!conference) {
-      throw new HttpException(`No meeting with ID ${meetingID} found`, HttpStatus.NOT_FOUND);
-    }
-    return { conference, isCreator: conference.creator.username === username };
-  }
-
-  async join(meetingID: string, user: JWTUser): Promise<string> {
-    await this.loadConfig();
-
-    try {
-      const { preferred_username: username, given_name: givenName, family_name: familyName } = user;
-
-      let role = ConferenceRole.Viewer;
-      const { isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
-      if (isCreator) {
-        role = ConferenceRole.Moderator;
-      }
-
-      const fullName = `${givenName} ${familyName}`;
-      const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
-      const checksum = this.createChecksum('join', query);
-
-      return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
-    } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.METHOD_NOT_ALLOWED);
-    }
-  }
-
-  async findUsersConferences(username: string): Promise<Conference[]> {
-    await this.loadConfig();
-
-    const usersConferences = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
-
-    const promises = usersConferences.map(async (conference) => {
-      const conferenceObject = conference.toObject();
-      const query = `meetingID=${conference.meetingID}`;
-      const checksum = this.createChecksum('getMeetingInfo', query);
-      const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
-
-      try {
-        const response = await axios.get<string>(url);
-        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-        ConferencesService.handleBBBApiError(result);
-
-        await this.update({ ...conferenceObject, isRunning: true });
-        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
-      } catch (_) {
-        const updatedConference = { ...conferenceObject, isRunning: false };
-        await this.update(updatedConference);
-        return updatedConference;
-      }
-    });
-
-    return Promise.all(promises);
-  }
-
-  async findOne(meetingID: string): Promise<Conference | null> {
-    await this.loadConfig();
-    return this.conferenceModel.findOne<Conference>({ meetingID }).exec();
-  }
-
-  async update(conference: Conference): Promise<Conference | null> {
-    await this.loadConfig();
-    return this.conferenceModel
-      .findOneAndUpdate<Conference>(
-        {
-          meetingID: conference.meetingID,
-        },
-        conference,
-        {
-          new: true,
-        },
-      )
-      .exec();
-  }
-
-  async remove(meetingIDs: string[], username: string): Promise<boolean> {
-    await this.loadConfig();
-    const result = await this.conferenceModel
-      .deleteMany({
-        meetingID: { $in: meetingIDs },
-        'creator.username': username,
-      })
-      .exec();
-
-    return result.deletedCount > 0;
-  }
-
   static handleBBBApiError(result: { response: { returncode: string } }) {
     if (result.response.returncode !== 'SUCCESS') {
       throw new Error('BBB API did not return SUCCESS returncode');
     }
-  }
-
-  createChecksum(method = '', query = '') {
-    const string = method + query + this.BBB_SECRET;
-
-    return crypto.createHash('sha1').update(string).digest('hex');
   }
 
   static parseXml<T>(xml: string): Promise<T> {
@@ -246,6 +63,183 @@ class ConferencesService {
       firstName: a.fullName,
       username: a.userID,
     }));
+  }
+
+  async loadConfig() {
+    if (this.BBB_API_URL && this.BBB_SECRET) {
+      return;
+    }
+
+    const appConfig = await this.appConfigService.getAppConfigByName('conferences');
+    if (!appConfig?.options.url || !appConfig.options.apiKey) {
+      throw new HttpException('App is not properly configured', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.BBB_API_URL = appConfig.options.url;
+    this.BBB_SECRET = appConfig.options.apiKey;
+  }
+
+  async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference> {
+    const creator = {
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+      username: currentUser.preferred_username,
+    };
+
+    const newConference = {
+      name: createConferenceDto.name,
+      creator,
+      meetingID: uuidv4(),
+      password: createConferenceDto.password,
+      invitedAttendees: [...createConferenceDto.invitedAttendees, creator],
+      isMeetingStarted: false,
+    };
+
+    return this.conferenceModel.create(newConference);
+  }
+
+  async toggleConferenceIsRunning(meetingID: string, username: string) {
+    const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
+    if (!isCreator) {
+      throw new HttpException('You are not the creator!', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (conference.isRunning) {
+      await this.stopConference(conference);
+    } else {
+      await this.startConference(conference);
+    }
+  }
+
+  async startConference(conference: Conference) {
+    try {
+      const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
+      const checksum = await this.createChecksum('create', query);
+      const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
+
+      const response = await axios.get<string>(url);
+      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+      ConferencesService.handleBBBApiError(result);
+
+      await this.update({ ...conference, isRunning: true });
+    } catch (e) {
+      Logger.error(e, ConferencesService.name);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  async stopConference(conference: Conference) {
+    try {
+      const query = `meetingID=${conference.meetingID}`;
+      const checksum = await this.createChecksum('end', query);
+      const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
+
+      const response = await axios.get<string>(url);
+      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+      ConferencesService.handleBBBApiError(result);
+
+      await this.update({ ...conference, isRunning: false });
+    } catch (e) {
+      Logger.error(e, ConferencesService.name);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  public async isCurrentUserTheCreator(
+    meetingID: string,
+    username: string,
+  ): Promise<{ conference: Conference; isCreator: boolean }> {
+    const conference = await this.findOne(meetingID);
+    if (!conference) {
+      throw new HttpException(`No meeting with ID ${meetingID} found`, HttpStatus.NOT_FOUND);
+    }
+    return { conference, isCreator: conference.creator.username === username };
+  }
+
+  async join(meetingID: string, user: JWTUser): Promise<string> {
+    try {
+      const { preferred_username: username, given_name: givenName, family_name: familyName } = user;
+
+      let role = ConferenceRole.Viewer;
+      const { isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
+      if (isCreator) {
+        role = ConferenceRole.Moderator;
+      }
+
+      const fullName = `${givenName} ${familyName}`;
+      const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
+      const checksum = await this.createChecksum('join', query);
+
+      return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
+    } catch (e) {
+      Logger.error(e, ConferencesService.name);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.METHOD_NOT_ALLOWED);
+    }
+  }
+
+  async findAllConferencesTheUserHasAccessTo(username: string): Promise<Conference[]> {
+    const conferencesToBeSynced = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
+    return this.syncConferencesWithBBB(conferencesToBeSynced);
+  }
+
+  async findOne(meetingID: string): Promise<Conference | null> {
+    return this.conferenceModel.findOne<Conference>({ meetingID }).exec();
+  }
+
+  async update(conference: Conference): Promise<Conference | null> {
+    return this.conferenceModel
+      .findOneAndUpdate<Conference>(
+        {
+          meetingID: conference.meetingID,
+        },
+        conference,
+        {
+          new: true,
+        },
+      )
+      .exec();
+  }
+
+  async remove(meetingIDs: string[], username: string): Promise<boolean> {
+    const result = await this.conferenceModel
+      .deleteMany({
+        meetingID: { $in: meetingIDs },
+        'creator.username': username,
+      })
+      .exec();
+
+    return result.deletedCount > 0;
+  }
+
+  async createChecksum(method = '', query = '') {
+    await this.loadConfig();
+    const string = method + query + this.BBB_SECRET;
+
+    return crypto.createHash('sha1').update(string).digest('hex');
+  }
+
+  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
+    const promises = conferencesToBeSynced.map(async (conference) => {
+      const conferenceObject = conference.toObject() as ConferenceDocument;
+      const query = `meetingID=${conference.meetingID}`;
+      const checksum = await this.createChecksum('getMeetingInfo', query);
+      const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
+
+      try {
+        const response = await axios.get<string>(url);
+        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+        ConferencesService.handleBBBApiError(result);
+
+        await this.update({ ...conferenceObject, isRunning: true });
+        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
+      } catch (_) {
+        const updatedConference = { ...conferenceObject, isRunning: false };
+        await this.update(updatedConference);
+        return updatedConference;
+      }
+    });
+
+    return Promise.all(promises);
   }
 }
 
