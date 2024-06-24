@@ -27,8 +27,14 @@
     "promise"
   ],
   "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
     "import/resolver": {
-      "typescript": {}
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": ["apps/frontend/tsconfig.json", "apps/api/tsconfig.json", "libs/tsconfig.json"]
+      }
     }
   },
   "ignorePatterns": [

@@ -8,7 +8,7 @@
     "es2022": false,
     "jest": true
   },
-  "parserOptions": { "project": ["./tsconfig.eslint.json"], "sourceType": "module" },
+  "parserOptions": { "project": ["apps/api/tsconfig.eslint.json"] },
   "rules": {
     "class-methods-use-this": 0,
     "@typescript-eslint/class-methods-use-this": 1,

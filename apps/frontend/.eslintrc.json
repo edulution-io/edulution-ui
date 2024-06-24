@@ -6,5 +6,5 @@
     "browser": true,
     "es2022": true
   },
-  "parserOptions": { "project": ["./tsconfig.app.json"] }
+  "parserOptions": { "project": ["apps/frontend/tsconfig.app.json", "./tsconfig.app.json"] }
 }
