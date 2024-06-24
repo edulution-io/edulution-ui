@@ -46,6 +46,8 @@
     "scripts/*"
   ],
   "rules": {
+    // Allow void statement if promise is implictly handeled
+    "no-void": ["error", { "allowAsStatement": true }],
     // Allowed console logs for debug purpose
     "no-console": ["error", { "allow": ["info", "error"] }],
     // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/function-component-definition.md
