@@ -1,11 +1,12 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import Attendee from '@libs/conferences/types/attendee';
+// import { Attendee } from '../../conferences/dto/attendee';
+import Attendee from '@libs/survey/types/attendee';
 
-export type SurveyDocument = Survey & Document;
+export type SurveyDocument = SurveyModel & Document;
 
 @Schema()
-export class Survey {
+export class SurveyModel {
   @Prop({ required: true })
   _id: mongoose.Types.ObjectId;
 
@@ -40,6 +41,6 @@ export class Survey {
   canSubmitMultipleAnswers?: boolean;
 }
 
-const SurveySchema = SchemaFactory.createForClass(Survey);
+const SurveySchema = SchemaFactory.createForClass(SurveyModel);
 
 export default SurveySchema;

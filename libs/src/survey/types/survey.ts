@@ -1,7 +1,8 @@
-import Attendee from '@libs/conferences/types/attendee';
+import mongoose from 'mongoose';
+import Attendee from '@libs/survey/types/attendee';
 
 interface Survey {
-  id: number;
+  id: mongoose.Types.ObjectId;
   formula: JSON;
   publicAnswers: JSON[];
   participants: Attendee[];

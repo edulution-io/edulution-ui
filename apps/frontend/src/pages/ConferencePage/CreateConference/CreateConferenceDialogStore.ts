@@ -5,7 +5,7 @@ import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@/pages/ConferencePage/dto/attendee';
 import { EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 interface CreateConferenceDialogStore {

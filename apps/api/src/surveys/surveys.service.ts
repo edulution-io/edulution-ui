@@ -1,90 +1,165 @@
 import mongoose, { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-// import Attendee from '@libs/conferences/types/attendee';
-import { Survey, SurveyDocument } from './types/survey.schema';
-import NotAbleToDeleteError from './errors/not-able-to-delete-error';
-import SurveyNotFoundError from './errors/survey-not-found-error';
-// import UserIsNoParticipantError from './errors/user-is-no-participant-error';
-import UserHasAlreadyParticipatedError from './errors/user-has-already-participated-error';
-import CreateSurveyDto from './dto/create-survey.dto';
+import Attendee from '@libs/survey/types/attendee';
+import NeitherFoundNorCreatedSurveyError from '@libs/survey/errors/neither-updated-nor-found-survey-error';
+import NotAbleToDeleteSurveyError from '@libs/survey/errors/not-able-to-delete-survey-error';
+import SurveyNotFoundError from '@libs/survey/errors/survey-not-found-error';
+import SurveysNotFoundError from '@libs/survey/errors/surveys-not-found-error';
+import UserIsNoParticipantError from '@libs/survey/errors/user-is-no-participant-error';
+import UserHasAlreadyParticipatedError from '@libs/survey/errors/user-has-already-participated-error';
+import SurveyIdIsNoValidMongoIdError from '@libs/survey/errors/survey-id-is-no-valid-mongo-id-error';
+import NotAbleToUpdateSurveyError from '@libs/survey/errors/not-able-to-update-survey-error';
+import { SurveyModel, SurveyDocument } from './types/survey.schema';
 
 @Injectable()
 class SurveysService {
-  constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
+  constructor(@InjectModel(SurveyModel.name) private surveyModel: Model<SurveyDocument>) {}
 
-  async findAllSurveys(): Promise<Survey[]> {
-    return this.surveyModel.find().exec();
+  async getAllSurveys(): Promise<SurveyModel[]> {
+    const surveys = this.surveyModel.find().exec();
+    if (surveys == null) {
+      const error = SurveysNotFoundError;
+      Logger.error(error.message);
+      throw error;
+    }
+    return surveys;
   }
 
-  async findSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
-    return this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
+  async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<SurveyModel | null> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      const error = SurveyIdIsNoValidMongoIdError;
+      Logger.error(error.message);
+      throw error;
+    }
+    const survey = this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
+    if (survey == null) {
+      const error = SurveyNotFoundError;
+      Logger.error(error.message);
+      throw error;
+    }
+    return survey;
   }
 
-  async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
-    return this.surveyModel.find<Survey>({ id: { $in: surveyIds } }).exec();
+  async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<SurveyModel[] | null> {
+    const surveys = this.surveyModel.find<SurveyModel>({ _id: { $in: surveyIds } }).exec();
+    if (surveys == null) {
+      const error = SurveysNotFoundError;
+      Logger.error(error.message);
+      throw error;
+    }
+    return surveys;
   }
 
-  async removeSurvey(surveyId: mongoose.Types.ObjectId): Promise<void> {
+  async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
-      await this.surveyModel.deleteOne({ id: surveyId }).exec();
+      await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
+      Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
     } catch (error) {
-      console.error(error);
-      throw NotAbleToDeleteError;
+      const err = NotAbleToDeleteSurveyError;
+      Logger.error(err.message);
+      Logger.warn(error);
+      throw err;
     }
   }
 
-  async updateOrCreateSurvey(createSurveyDto: CreateSurveyDto): Promise<Survey | null> {
-    const survey = await this.surveyModel
-      .findOneAndUpdate<Survey>(
-        { _id: createSurveyDto.id },
-        {
-          ...createSurveyDto,
-          _id: createSurveyDto.id,
-          saveNo: createSurveyDto.saveNo || 0,
-          created: createSurveyDto.created ? createSurveyDto.created.toString() : new Date().toString(),
-        },
+  async updateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+    const updatedSurvey = await this.surveyModel
+      .findOneAndUpdate<SurveyModel>(
+        // eslint-disable-next-line no-underscore-dangle
+        { _id: survey._id },
+        { ...survey },
       )
       .exec();
-    if (survey != null) {
-      return survey;
-    }
-    const newSurvey = await this.surveyModel.create(createSurveyDto);
-    return newSurvey;
+
+    Logger.log(updatedSurvey == null ? 'Could not update the survey' : 'Updated survey successfully');
+    return updatedSurvey;
   }
 
-  async addPublicAnswer(id: mongoose.Types.ObjectId, answer: JSON, username: string): Promise<Survey | undefined> {
-    const existingSurvey = await this.surveyModel.findOne<Survey>({ id }).exec();
+  async createSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+    const createdSurvey = await this.surveyModel.create(survey);
+    Logger.log(createdSurvey == null ? 'Could not create the new survey' : 'Created the new survey successfully');
+    return createdSurvey;
+  }
+
+  async updateOrCreateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+    const updatedSurvey = await this.updateSurvey(survey);
+    if (updatedSurvey == null) {
+      const createdSurvey = await this.createSurvey(survey);
+      if (createdSurvey == null) {
+        const error = NeitherFoundNorCreatedSurveyError;
+        Logger.error(error.message);
+        throw error;
+      }
+      return createdSurvey;
+    }
+    return updatedSurvey;
+  }
+
+  async addPublicAnswer(
+    surveyId: mongoose.Types.ObjectId,
+    answer: JSON,
+    username?: string,
+  ): Promise<SurveyModel | undefined> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      const error1 = SurveyIdIsNoValidMongoIdError;
+      Logger.error(error1.message);
+      throw error1;
+    }
+
+    const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
     if (!existingSurvey) {
-      throw SurveyNotFoundError;
+      const error2 = SurveyNotFoundError;
+      Logger.error(error2.message);
+      throw error2;
     }
 
-    // const participants = existingSurvey.participants || [];
-    // const isParticipant = participants.find((user: Attendee) =>
-    //   user.username && username ? user.username === username : false,
-    // );
-    // if (!isParticipant) {
-    //   throw UserIsNoParticipantError;
-    // }
-
+    const participants = existingSurvey.participants || [];
     const participated = existingSurvey.participated || [];
-    const hasAlreadyParticipated = participated.find((user: string) => user === username);
-    if (hasAlreadyParticipated) {
-      throw UserHasAlreadyParticipatedError;
+    if (username) {
+      const isParticipant = participants.find((participant: Attendee) => participant.username === username);
+      if (!isParticipant) {
+        const error3 = UserIsNoParticipantError;
+        Logger.warn(error3.message);
+        throw error3;
+      }
+      const hasAlreadyParticipated = participated.find((user: string) => user === username);
+      if (hasAlreadyParticipated) {
+        const error4 = UserHasAlreadyParticipatedError;
+        Logger.warn(error4.message);
+        throw error4;
+      }
+      participated.push(username);
     }
+
     const answers = existingSurvey.publicAnswers || [];
     answers.push(answer);
 
-    participated.push(username);
-
     const updatedSurvey = await this.surveyModel
-      .findOneAndUpdate<Survey>({ id }, { publicAnswers: answers, participated })
+      .findOneAndUpdate<SurveyModel>({ _id: surveyId }, { publicAnswers: answers, participated })
       .exec();
-    if (updatedSurvey != null) {
-      return updatedSurvey;
+    if (updatedSurvey == null) {
+      const error5 = NotAbleToUpdateSurveyError;
+      Logger.error(error5.message);
+      throw error5;
+    }
+    return updatedSurvey;
+  }
+
+  async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      const error1 = SurveyIdIsNoValidMongoIdError;
+      Logger.error(error1.message);
+      throw error1;
     }
 
-    return undefined;
+    const survey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
+    if (survey == null) {
+      const error2 = SurveyNotFoundError;
+      Logger.error(error2.message);
+      throw error2;
+    }
+    return survey.publicAnswers || [];
   }
 }
 

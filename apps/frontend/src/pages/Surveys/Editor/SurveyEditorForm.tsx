@@ -6,6 +6,7 @@ import { AiOutlineSave } from 'react-icons/ai';
 import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import EmptyForm from '@libs/survey/utils/get-survey-editor-form-data';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -13,7 +14,6 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import {
-  getEmptyFormValues,
   getInitialFormValues,
 } from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
@@ -26,16 +26,16 @@ const SurveyEditorForm = () => {
     isOpenSaveSurveyDialog,
     openSaveSurveyDialog,
     closeSaveSurveyDialog,
-    commitSurvey,
-    isCommiting,
-    errorCommiting,
+
+    updateOrCreateSurvey,
+    isLoading,
+    error
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-
   const initialFormValues: SurveyEditorFormData = useMemo(() => getInitialFormValues(selectedSurvey), [selectedSurvey]);
 
-  const emptyFormValues: SurveyEditorFormData = getEmptyFormValues();
+  const emptyFormValues: SurveyEditorFormData = new EmptyForm();
 
   const formSchema = z.object({
     id: z.number(),
@@ -82,28 +82,23 @@ const SurveyEditorForm = () => {
   } = form.getValues();
 
   const saveSurvey = async () => {
-    try {
-      await commitSurvey(
-        id,
-        formula,
-        participants,
-        participated,
-        saveNo,
-        created,
-        expirationDate,
-        expirationTime,
-        isAnonymous,
-        canSubmitMultipleAnswers,
-      );
+    await updateOrCreateSurvey({
+      id,
+      formula,
+      participants,
+      participated,
+      saveNo,
+      created,
+      expirationDate,
+      expirationTime,
+      isAnonymous,
+      canSubmitMultipleAnswers,
+    });
 
-      closeSaveSurveyDialog();
-      await updateCreatedSurveys();
-      await updateOpenSurveys();
-      await updateAnsweredSurveys();
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      toast.error(<div>{error.message}</div>);
-    }
+    closeSaveSurveyDialog();
+    await updateCreatedSurveys();
+    await updateOpenSurveys();
+    await updateAnsweredSurveys();
   };
 
   // useMemo to not update the SurveyEditor component when changing values in dialog
@@ -113,23 +108,19 @@ const SurveyEditorForm = () => {
         form={form}
         formula={formula}
         saveNumber={saveNo}
-        error={errorCommiting}
+        error={error}
       />
     ),
     [formula, saveNo],
   );
 
-  if (isCommiting) return <LoadingIndicator isOpen={isCommiting} />;
+  if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
   return (
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
           {getSurveyEditor}
-          {errorCommiting ? (
-            <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-              {t('survey.error')}: {errorCommiting.message}
-            </div>
-          ) : null}
+          {error ? toast.error(error.message) : null}
         </ScrollArea>
       </div>
       <TooltipProvider>
@@ -157,7 +148,7 @@ const SurveyEditorForm = () => {
         openSaveSurveyDialog={openSaveSurveyDialog}
         closeSaveSurveyDialog={closeSaveSurveyDialog}
         commitSurvey={saveSurvey}
-        isCommitting={isCommiting}
+        isCommitting={isLoading}
       />
     </>
   );

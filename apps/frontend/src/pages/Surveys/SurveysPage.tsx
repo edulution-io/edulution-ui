@@ -34,7 +34,6 @@ const SurveysPage = () => {
       default:
         return (
           <div className="flex flex-col justify-between">
-            <p>{page}</p>
             <h2>{t('surveys.title')}</h2>
             <div className="pt-5 sm:pt-0">
               <p className="pb-4">{t('surveys.description')}</p>

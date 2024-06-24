@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@libs/survey/types/attendee';
 
-class CreateSurveyDto {
+class UpdateOrCreateSurveyDto {
   id: mongoose.Types.ObjectId;
 
   formula: JSON;
@@ -25,4 +25,4 @@ class CreateSurveyDto {
   canSubmitMultipleAnswers?: boolean;
 }
 
-export default CreateSurveyDto;
+export default UpdateOrCreateSurveyDto;

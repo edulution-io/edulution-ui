@@ -1,22 +1,38 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Logger, Post, Query, Patch, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
+import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
+import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
+import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
+import {
+  All_SURVEYS_ENDPOINT,
+  FIND_ONE_ENDPOINT,
+  FIND_SURVEYS_ENDPOINT,
+  RESULT_ENDPOINT,
+  SURVEYS,
+} from '@libs/survey/surveys-endpoint';
+import { SurveyModel } from './types/survey.schema';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
-import CreateSurveyDto from './dto/create-survey.dto';
 import FindSurveyDto from './dto/find-survey.dto';
-import PushAnswerDto from './dto/push-answer.dto';
-import DeleteSurveyDto from './dto/delete-survey.dto';
 import { Survey } from './types/survey.schema';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import SurveyAnswerNotFoundError from './errors/survey-answer-not-found-error';
-import NeitherFoundNorCreatedSurveyError from './errors/neither-found-nor-created-survey-error';
 
-@Controller('surveys')
+@Controller(SURVEYS)
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
+
+  @Get(`${FIND_SURVEYS_ENDPOINT}:surveyIds`)
+  async findSurveys(@Param('surveyIds') surveyIds: mongoose.Types.ObjectId[]) {
+    return this.surveyService.findSurveys(surveyIds);
+  }
+
+  @Get(`${RESULT_ENDPOINT}:surveyId`)
+  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.getPublicAnswers(surveyId);
+  }
 
   @Get(`open/`)
   async getOpenSurveys(@GetCurrentUsername() username: string) {
@@ -33,13 +49,14 @@ class SurveysController {
     return this.surveyService.findSurveys(await this.usersSurveysService.getAnsweredSurveyIds(username));
   }
 
+  @Get(All_SURVEYS_ENDPOINT)
+  async getAllSurveys() {
+    return this.surveyService.getAllSurveys();
+  }
+
   @Get(`answer/:surveyId`)
   async getSurveyAnswer(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
-    const answer = await this.usersSurveysService.getCommitedAnswer(username, surveyId);
-    if (!answer) {
-      throw SurveyAnswerNotFoundError;
-    }
-    return answer;
+    return await this.usersSurveysService.getCommitedAnswer(username, surveyId);
   }
 
   @Get(`answer/:surveyId`)
@@ -59,68 +76,56 @@ class SurveysController {
       }
     });
     await Promise.all(promises);
-
-    if (!answers) {
-      throw SurveyAnswerNotFoundError;
-    }
     return answers;
   }
 
   @Post()
-  async createOrUpdate(@Body() body: CreateSurveyDto, @GetCurrentUsername() username: string) {
-    try {
-      const { participants = [], publicAnswers = [], saveNo = 0, created = new Date() } = body;
+  async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto, @GetCurrentUsername() username: string) {
+    const {
+      participants = [],
+      publicAnswers = [],
+      saveNo = 0,
+      created = new Date(),
+      isAnonymous,
+      canSubmitMultipleAnswers,
+    } = updateOrCreateSurveyDto;
 
-      const createSurveyDto: CreateSurveyDto = {
-        ...body,
-        participants,
-        publicAnswers,
-        saveNo,
-        created,
-        expirationTime: body.expirationTime?.toString(),
-        isAnonymous: !!body.isAnonymous,
-        canSubmitMultipleAnswers: !!body.canSubmitMultipleAnswers,
-      };
+    const survey: UpdateOrCreateSurveyDto = {
+      ...updateOrCreateSurveyDto,
+      participants,
+      publicAnswers,
+      saveNo,
+      created,
+      isAnonymous: !!isAnonymous,
+      canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
+    };
 
-      const newSurvey: Survey | null = await this.surveyService.updateOrCreateSurvey(createSurveyDto);
-      if (newSurvey == null) {
-        throw NeitherFoundNorCreatedSurveyError;
-      }
+    const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
 
-      const { _id: newSurveyId } = newSurvey;
-      await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
-      await this.usersSurveysService.populateSurvey(participants, newSurveyId);
-
-      return newSurvey;
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      Logger.error(`Survey: Create or update error: ${error.message}`);
-      throw error;
+    if (newSurvey) {
+      const { _id: id } = newSurvey;
+      await this.usersSurveysService.addToCreatedSurveys(username, id);
+      await this.usersSurveysService.populateSurvey(participants, id);
     }
   }
 
+  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
+  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.findOneSurvey(surveyId);
+  }
+
   @Delete()
-  async remove(@Query() deleteSurveyDto: DeleteSurveyDto) {
-    const surveyName = deleteSurveyDto.surveyId;
-    const deleted = this.surveyService.removeSurvey(surveyName);
-    await this.usersSurveysService.onRemoveSurvey(surveyName);
+  async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
+    const deleted = this.surveyService.deleteSurveys(deleteSurveyDto.surveyIds);
+    await this.usersSurveysService.onRemoveSurvey(deleteSurveyDto.surveyIds);
     return deleted;
   }
 
   @Patch()
-  async manageUsersSurveys(@Body() body: PushAnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, answer, canSubmitMultipleAnswers } = body;
-
-    try {
-      // This function does also check if the user is a participant and has not already submitted an answer
-      await this.surveyService.addPublicAnswer(surveyId, answer, username);
-
-      return await this.usersSurveysService.addAnswer(username, surveyId, answer, canSubmitMultipleAnswers);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      Logger.error(`Survey: Manage user surveys error: ${error.message}`);
-      throw error;
-    }
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
+    const { surveyId, answer } = pushAnswerDto;
+    await this.surveyService.addPublicAnswer(surveyId, answer);
+    return await this.usersSurveysService.addAnswer(username, surveyId, answer);
   }
 }
 
