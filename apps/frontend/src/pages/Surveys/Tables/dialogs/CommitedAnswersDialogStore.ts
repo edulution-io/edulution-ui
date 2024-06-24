@@ -1,11 +1,9 @@
+import mongoose from 'mongoose';
 import { create } from 'zustand';
-import { AxiosError } from 'axios';
-import SURVEYS_ENDPOINT from '@libs/survey/utils/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
-import { EMPTY_JSON } from '@libs/survey/utils/empty-json';
 import eduApi from '@/api/eduApi';
-import UserSurveySearchTypes from '@libs/survey/types/user-survey-search-types-enum';
 
 interface CommitedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -15,7 +13,7 @@ interface CommitedAnswersDialogStore {
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;
   closeCommitedAnswersDialog: () => void;
-  getUsersCommitedAnswer: (surveyId: number, userName?: string) => Promise<JSON | undefined>;
+  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, userName?: string) => Promise<JSON | undefined>;
   user: string | undefined;
   selectUser: (user: string) => void;
   answer: JSON | undefined;
@@ -43,18 +41,18 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
   closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),
   selectUser: (userName: string) => set({ user: userName }),
-  getUsersCommitedAnswer: async (surveyId: number): Promise<JSON> => {
+  getUsersCommitedAnswer: async (surveyId: mongoose.Types.ObjectId): Promise<JSON | undefined> => {
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<JSON>(SURVEYS_ENDPOINT, {
-        params: { search: UserSurveySearchTypes.ANSWER, surveyId },
+        params: { surveyId },
       });
       const answer = response.data;
       set({ answer, isLoading: false });
       return answer;
     } catch (error) {
-      set({ answer: undefined, error: error as AxiosError, isLoading: false });
-      return EMPTY_JSON;
+      set({ answer: undefined, error: error instanceof Error ? error : null, isLoading: false });
+      return undefined;
     }
   },
 }));

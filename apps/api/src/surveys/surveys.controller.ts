@@ -3,6 +3,7 @@ import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/commo
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
+import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
 import {
   All_SURVEYS_ENDPOINT,
   FIND_ONE_ENDPOINT,
@@ -10,12 +11,10 @@ import {
   RESULT_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
-import { SurveyModel } from './types/survey.schema';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
-import FindSurveyDto from './dto/find-survey.dto';
-import { Survey } from './types/survey.schema';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import { SurveyModel } from './types/survey.schema';
 
 @Controller(SURVEYS)
 class SurveysController {
@@ -56,7 +55,7 @@ class SurveysController {
 
   @Get(`answer/:surveyId`)
   async getSurveyAnswer(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
-    return await this.usersSurveysService.getCommitedAnswer(username, surveyId);
+    return this.usersSurveysService.getCommitedAnswer(username, surveyId);
   }
 
   @Get(`answer/:surveyId`)
@@ -80,8 +79,12 @@ class SurveysController {
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto, @GetCurrentUsername() username: string) {
+  async updateOrCreateSurvey(
+    @Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto,
+    @GetCurrentUsername() username: string,
+  ) {
     const {
+      id,
       participants = [],
       publicAnswers = [],
       saveNo = 0,
@@ -90,8 +93,9 @@ class SurveysController {
       canSubmitMultipleAnswers,
     } = updateOrCreateSurveyDto;
 
-    const survey: UpdateOrCreateSurveyDto = {
+    const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
+      _id: id,
       participants,
       publicAnswers,
       saveNo,
@@ -103,9 +107,9 @@ class SurveysController {
     const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
 
     if (newSurvey) {
-      const { _id: id } = newSurvey;
-      await this.usersSurveysService.addToCreatedSurveys(username, id);
-      await this.usersSurveysService.populateSurvey(participants, id);
+      const { _id: newSurveyId } = newSurvey;
+      await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
+      await this.usersSurveysService.populateSurvey(participants, newSurveyId);
     }
   }
 
@@ -125,7 +129,7 @@ class SurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
     await this.surveyService.addPublicAnswer(surveyId, answer);
-    return await this.usersSurveysService.addAnswer(username, surveyId, answer);
+    return this.usersSurveysService.addAnswer(username, surveyId, answer);
   }
 }
 

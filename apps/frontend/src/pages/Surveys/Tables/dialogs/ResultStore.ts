@@ -1,10 +1,10 @@
+import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import SURVEYS_ENDPOINT from '@libs/survey/utils/surveys-endpoint';
-import Attendee from '@libs/conferences/types/attendee';
-import Survey from '@libs/survey/types/survey';
-import { EMPTY_JSON } from '@libs/survey/utils/empty-json';
 import eduApi from '@/api/eduApi';
+import Survey from '@libs/survey/types/survey';
+import Attendee from '@libs/survey/types/attendee';
+import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 
 interface ResultStore {
   selectedSurvey: Survey | undefined;
@@ -16,7 +16,7 @@ interface ResultStore {
   isOpenPublicResultsVisualisationDialog: boolean;
   openPublicResultsVisualisationDialog: () => void;
   closePublicResultsVisualisationDialog: () => void;
-  getSurveyResult: (surveyId: number, participants: Attendee[]) => Promise<JSON[] | undefined>;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoading: boolean;
   error: Error | null;
@@ -43,7 +43,7 @@ const useResultStore = create<ResultStore>((set) => ({
   closePublicResultsTableDialog: () => set({ isOpenPublicResultsTableDialog: false }),
   openPublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: true }),
   closePublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: false }),
-  getSurveyResult: async (surveyId: number, participants: Attendee[]): Promise<JSON[]> => {
+  getSurveyResult: async (surveyId: mongoose.Types.ObjectId, participants: Attendee[]): Promise<JSON[]> => {
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<JSON[]>(SURVEYS_ENDPOINT, {
@@ -61,7 +61,7 @@ const useResultStore = create<ResultStore>((set) => ({
       return result;
     } catch (error) {
       set({ error: error as AxiosError, result: undefined, isLoading: false });
-      return [EMPTY_JSON];
+      return [];
     }
   },
 }));

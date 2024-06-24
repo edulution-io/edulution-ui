@@ -1,7 +1,8 @@
+import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
 import { AxiosError } from 'axios';
-import SURVEYS_ENDPOINT from '@libs/survey/utils/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
 
@@ -12,7 +13,7 @@ interface ParticipateDialogStore {
   isOpenParticipateSurveyDialog: boolean;
   openParticipateSurveyDialog: () => void;
   closeParticipateSurveyDialog: () => void;
-  commitAnswer: (surveyId: number, answer: JSON, options?: CompleteEvent) => Promise<string>;
+  pushAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<string>;
   isLoading: boolean;
   error: Error | null;
 
@@ -34,7 +35,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
 
   openParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: true }),
   closeParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: false }),
-  commitAnswer: async (surveyId: number, answer: JSON, options?: CompleteEvent): Promise<string> => {
+  pushAnswer: async (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent): Promise<string> => {
     set({ error: null, isLoading: true });
     try {
       // Display the "Saving..." message (pass a string value to display a custom message)

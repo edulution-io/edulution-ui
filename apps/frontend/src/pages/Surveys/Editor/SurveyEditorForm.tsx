@@ -6,19 +6,17 @@ import { AiOutlineSave } from 'react-icons/ai';
 import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import EmptyForm from '@libs/survey/utils/get-survey-editor-form-data';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
+import EmptyForm from '@libs/survey/utils/empty-form';
+import InitialForm from '@libs/survey/utils/initial-form';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import FloatingActionButton from '@/components/shared/FloatingActionButton';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import {
-  getInitialFormValues,
-} from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
 
 const SurveyEditorForm = () => {
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys, updateCreatedSurveys } = useSurveyTablesPageStore();
@@ -29,11 +27,11 @@ const SurveyEditorForm = () => {
 
     updateOrCreateSurvey,
     isLoading,
-    error
+    error,
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-  const initialFormValues: SurveyEditorFormData = useMemo(() => getInitialFormValues(selectedSurvey), [selectedSurvey]);
+  const initialFormValues: SurveyEditorFormData = useMemo(() => new InitialForm(selectedSurvey), [selectedSurvey]);
 
   const emptyFormValues: SurveyEditorFormData = new EmptyForm();
 

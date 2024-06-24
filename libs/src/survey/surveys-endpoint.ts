@@ -1,11 +1,19 @@
 export const SURVEYS = 'surveys';
 const SURVEY_ENDPOINT = `${SURVEYS}/`;
 
+export const OPEN_SURVEYS_ENDPOINT = 'open/';
+export const CREATED_SURVEYS_ENDPOINT = 'created/';
+export const ANSWERED_SURVEYS_ENDPOINT = 'answered/';
+
 export const All_SURVEYS_ENDPOINT = 'all/';
 export const ANSWER_ENDPOINT = 'answer/';
 export const FIND_ONE_ENDPOINT = 'findOne/';
 export const FIND_SURVEYS_ENDPOINT = 'find/';
 export const RESULT_ENDPOINT = 'result/';
+
+export const SURVEY_OPEN_SURVEYS_ENDPOINT = `${SURVEY_ENDPOINT}${OPEN_SURVEYS_ENDPOINT}`;
+export const SURVEY_CREATED_SURVEYS_ENDPOINT = `${SURVEY_ENDPOINT}${CREATED_SURVEYS_ENDPOINT}`;
+export const SURVEY_ANSWERED_SURVEYS_ENDPOINT = `${SURVEY_ENDPOINT}${ANSWERED_SURVEYS_ENDPOINT}`;
 
 export const SURVEY_All_SURVEYS_ENDPOINT = `${SURVEY_ENDPOINT}${All_SURVEYS_ENDPOINT}`;
 export const SURVEY_ANSWER_ENDPOINT = `${SURVEY_ENDPOINT}${ANSWER_ENDPOINT}`;

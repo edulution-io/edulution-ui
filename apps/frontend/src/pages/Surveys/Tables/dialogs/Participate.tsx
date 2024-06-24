@@ -13,7 +13,7 @@ const Participate = () => {
     isOpenParticipateSurveyDialog,
     openParticipateSurveyDialog,
     closeParticipateSurveyDialog,
-    commitAnswer,
+    pushAnswer,
     isLoading,
     error,
   } = useParticipateDialogStore();
@@ -36,7 +36,7 @@ const Participate = () => {
         isOpenParticipateSurveyDialog={isOpenParticipateSurveyDialog}
         openParticipateSurveyDialog={openParticipateSurveyDialog}
         closeParticipateSurveyDialog={closeParticipateSurveyDialog}
-        commitAnswer={commitAnswer}
+        commitAnswer={pushAnswer}
         isCommiting={isLoading}
         errorCommiting={error}
         updateOpenSurveys={updateOpenSurveys}

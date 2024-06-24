@@ -36,7 +36,7 @@ const SurveyTable = (props: SurveyTableProps) => {
 
         return (
           <TableRow
-            key={`survey_row_-_${survey.id}`}
+            key={`survey_row_-_${survey.id.toHexString()}`}
             className="cursor-pointer"
             onClick={() => {
               selectSurvey(survey);

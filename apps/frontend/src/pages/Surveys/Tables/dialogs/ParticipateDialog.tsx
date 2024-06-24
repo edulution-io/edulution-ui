@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import React from 'react';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -21,7 +22,7 @@ interface ParticipateDialogProps {
   isOpenParticipateSurveyDialog: boolean;
   openParticipateSurveyDialog: () => void;
   closeParticipateSurveyDialog: () => void;
-  commitAnswer: (surveyId: number, answer: JSON, options?: CompleteEvent) => Promise<string>;
+  commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<string>;
   isCommiting: boolean;
   errorCommiting: Error | null;
 
@@ -81,8 +82,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
       updateOpenSurveys();
       updateAnsweredSurveys();
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      toast.error(<div>{error.message}</div>);
+      toast.error(error instanceof Error ? error.message : '');
     }
   };
 

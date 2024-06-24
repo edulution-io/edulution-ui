@@ -1,7 +1,8 @@
+import mongoose from 'mongoose';
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Survey from '@libs/survey/types/survey';
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@libs/survey/types/attendee';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -13,7 +14,7 @@ interface ShowSurveyResultsTableDialogProps {
   isOpenPublicResultsTableDialog: boolean;
   openPublicResultsTableDialog: () => void;
   closePublicResultsTableDialog: () => void;
-  getSurveyResult: (surveyId: number, participants: Attendee[]) => Promise<JSON[] | undefined>;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoadingResult: boolean;
   errorLoadingResult: Error | null;

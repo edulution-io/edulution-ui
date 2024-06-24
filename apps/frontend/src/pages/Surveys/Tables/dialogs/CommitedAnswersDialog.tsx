@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import mongoose from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import Survey from '@libs/survey/types/survey';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -12,7 +13,7 @@ interface ShowSurveyAnswerDialogProps {
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;
   closeCommitedAnswersDialog: () => void;
-  getUsersCommitedAnswer: (surveyId: number, userName?: string) => Promise<JSON | undefined>;
+  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, userName?: string) => Promise<JSON | undefined>;
   // user: string | undefined;
   // selectUser: (user: string) => void;
   answer: JSON | undefined;

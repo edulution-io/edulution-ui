@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import cn from '@/lib/utils';
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@libs/survey/types/attendee';
 import useUserStore from '@/store/UserStore/UserStore';
 import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';

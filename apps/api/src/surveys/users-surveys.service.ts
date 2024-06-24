@@ -1,7 +1,7 @@
 import mongoose, { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import Attendee from '@libs/conferences/types/attendee';
+import Attendee from '@libs/survey/types/attendee';
 import SurveyAnswer from '@libs/survey/types/survey-answer';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
@@ -12,13 +12,14 @@ import UserDidNotUpdateError from './errors/user-did-not-update-error';
 class UsersSurveysService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async updateUser(participant: Attendee | string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const name = typeof participant === 'string' ? participant : participant.username;
+  async updateUser(participant: string, updateUserDto: UpdateUserDto): Promise<User | null> {
     const newUser = await this.userModel
-      .findOneAndUpdate<User>({ username: name }, updateUserDto, { new: true })
+      .findOneAndUpdate<User>({ username: participant }, updateUserDto, { new: true })
       .exec();
     if (!newUser) {
-      throw UserDidNotUpdateError;
+      const error = UserDidNotUpdateError;
+      Logger.error(error.message);
+      throw error;
     }
     return newUser;
   }
@@ -27,7 +28,9 @@ class UsersSurveysService {
     const name = typeof participant === 'string' ? participant : participant.username;
     const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
     if (!existingUser) {
-      throw UserNotFoundError;
+      const error = UserNotFoundError;
+      Logger.error(error.message);
+      throw error;
     }
     return existingUser;
   }
@@ -50,7 +53,7 @@ class UsersSurveysService {
     return answeredSurveys || [];
   }
 
-  async addToOpenSurveys(participant: Attendee | string, surveyId: mongoose.Types.ObjectId): Promise<void> {
+  async addToOpenSurveys(participant: string, surveyId: mongoose.Types.ObjectId): Promise<void> {
     const existingUser = await this.getExistingUser(participant);
     if (!existingUser) {
       throw UserNotFoundError;
@@ -72,7 +75,7 @@ class UsersSurveysService {
   async populateSurvey(participants: Attendee[], surveyId: mongoose.Types.ObjectId): Promise<void> {
     const promises: Promise<void>[] = [];
     participants.forEach((user) => {
-      promises.push(this.addToOpenSurveys(user, surveyId));
+      promises.push(this.addToOpenSurveys(user.username, surveyId));
     });
     await Promise.all(promises);
   }
@@ -97,7 +100,7 @@ class UsersSurveysService {
     return updatedUser;
   }
 
-  async onRemoveSurvey(surveyId: mongoose.Types.ObjectId): Promise<void> {
+  async onRemoveSurvey(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     const existingUsers = await this.userModel.find<User>().exec();
 
     const promises = existingUsers.map(async (user): Promise<void> => {
@@ -112,7 +115,7 @@ class UsersSurveysService {
 
       const usersCreatedSurveys =
         createdSurveys.filter((survey: mongoose.Types.ObjectId) => {
-          if (survey !== surveyId) {
+          if (!surveyIds.includes(survey)) {
             return true;
           }
           shouldUpdateUser = true;
@@ -121,7 +124,7 @@ class UsersSurveysService {
 
       const usersOpenSurveys =
         openSurveys.filter((survey: mongoose.Types.ObjectId) => {
-          if (survey !== surveyId) {
+          if (!surveyIds.includes(survey)) {
             return true;
           }
           shouldUpdateUser = true;
@@ -130,7 +133,7 @@ class UsersSurveysService {
 
       const usersAnsweredSurveys =
         answeredSurveys.filter((surveyAnswer: SurveyAnswer) => {
-          if (surveyAnswer.surveyId !== surveyId) {
+          if (!surveyIds.includes(surveyAnswer.surveyId)) {
             return true;
           }
           shouldUpdateUser = true;
