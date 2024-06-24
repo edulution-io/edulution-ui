@@ -13,7 +13,7 @@ const BlankLayout: React.FC<PropsWithChildren> = () => {
   return (
     <div className="flex">
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:pr-20">
-        <Header isLogoShown={!isMainPage} />
+        {!isMainPage ? <Header hideHeadingText /> : null}
         <main className="flex-1">
           <Outlet />
         </main>

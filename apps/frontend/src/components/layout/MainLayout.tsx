@@ -29,7 +29,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
     <div className="flex">
       {isMainPage ? null : <MenuBar />}
       <div className="flex h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header isLogoShown={isMainPage} />
+        {isMainPage ? <Header /> : null}
         <main className="flex-1">
           <Outlet />
         </main>

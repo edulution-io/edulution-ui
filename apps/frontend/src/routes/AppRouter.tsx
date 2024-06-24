@@ -33,6 +33,7 @@ const AppRouter: React.FC = () => {
           auth.removeUser().catch((e) => console.error('Error fetching data:', e));
           setIsLoggedInInEduApi(false);
           sessionStorage.clear();
+          localStorage.clear();
         }
       });
     }

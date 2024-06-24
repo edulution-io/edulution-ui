@@ -1,5 +1,5 @@
 const logoutScript = `
-    const logoutButton = document.querySelector('a[aria-label="Beenden"]');
+    const logoutButton = document.querySelector('md-icon[aria-label="settings_power"]');
 
     if (logoutButton) {
       logoutButton.click();
