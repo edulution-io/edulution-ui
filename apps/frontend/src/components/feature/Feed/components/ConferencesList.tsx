@@ -18,14 +18,13 @@ const ConferencesList = (props: ConferencesListProps) => {
 
   const { joinConference } = useConferenceDetailsDialogStore();
 
-  const getFirstXBadges = (item: Conference) => {
+  const getShownBadges = (item: Conference) => {
     const badges = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i++) {
+    for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i += 1) {
       const name =
         item.joinedAttendees[i].label ||
-        `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}` ||
-        item.joinedAttendees[i].username;
+        `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}`;
+
       badges.push(
         <BadgeSH
           className="max-w-[100px] hover:bg-ciLightBlue"
@@ -43,19 +42,20 @@ const ConferencesList = (props: ConferencesListProps) => {
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
           <Button
-            key={`feed-conference-${item.meetingID}`}
+            key={item.meetingID}
             variant="btn-outline"
-            className="h-fit-content w-full"
+            type="button"
+            className="w-full"
             onClick={() => joinConference(item.meetingID)}
           >
             <div className="w-full">
-              <div className="mb-1 flex justify-between gap-2 font-semibold">
+              <div className="mb-1 flex justify-between gap-2 font-semibold items-center" >
                 {`${item.name}`}
                 {item.isRunning && <span className="flex h-2 w-2 rounded-full bg-ciRed" />}
               </div>
               <div className="flex gap-2">
                 {item.joinedAttendees.length > 0 ? (
-                  <div className="flex items-center gap-2 rounded">{getFirstXBadges(item)}</div>
+                  <div className="flex items-center gap-2 rounded">{getShownBadges(item)}</div>
                 ) : null}
                 {item.joinedAttendees.length > NUMBER_OF_BADGES_TO_SHOW ? (
                   <BadgeSH

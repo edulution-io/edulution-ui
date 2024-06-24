@@ -40,12 +40,15 @@ const Feed = () => {
         <div className="flex flex-col gap-3">
           <h4 className="font-bold">{t('feed.title')}</h4>
           <ScrollArea>
-            <Accordion type="multiple">
-              <AccordionItem value={`feed-card-${APPS.CONFERENCES}`}>
+            <Accordion
+              type="multiple"
+              defaultValue={[APPS.CONFERENCES]}
+            >
+              <AccordionItem value={APPS.CONFERENCES}>
                 <AccordionTrigger className="flex text-xl font-bold">
                   <img
                     src={ConferencesIcon}
-                    alt={`feed-icon-${APPS.CONFERENCES}`}
+                    alt={`${APPS.CONFERENCES}-notification-icon`}
                     width={BUTTONS_ICON_WIDTH}
                     className="mr-4"
                   />
