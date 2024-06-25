@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Logger, Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import GetAnswerDto from '@libs/survey/dto/get-answer.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
@@ -134,9 +134,6 @@ class SurveysController {
 
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
-
-    Logger.log(`JSON.stringify(pushAnswerDto): ${JSON.stringify(pushAnswerDto)}`);
-
     const { surveyId, answer } = pushAnswerDto;
     await this.surveyService.addPublicAnswer(surveyId, answer);
     return this.usersSurveysService.addAnswer(username, surveyId, answer);
