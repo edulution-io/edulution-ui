@@ -11,7 +11,7 @@ const vizPanelOptions = {
   showToolbar: false,
   allowDynamicLayout: false,
   allowHideQuestions: false,
-}
+};
 
 interface ResultVisualizationDialogBodyProps {
   formula: JSON;
@@ -30,32 +30,28 @@ const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps
   }
 
   if (!vizPanel && !!survey) {
-    const visualizationPanel = new VisualizationPanel(
-      survey.getAllQuestions(),
-      result,
-      vizPanelOptions
-    );
+    const visualizationPanel = new VisualizationPanel(survey.getAllQuestions(), result, vizPanelOptions);
     visualizationPanel.locale = i18next.language;
     visualizationPanel.showToolbar = false;
     setVizPanel(visualizationPanel);
   }
 
   useEffect(() => {
-    vizPanel?.render("surveyVizPanel");
+    vizPanel?.render('surveyVizPanel');
 
     const component = document.getElementById('surveyVizPanel');
     return () => {
       if (component) {
         component.innerHTML = '';
       }
-    }
+    };
   }, [vizPanel]);
 
   return (
     <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-white">
-      <div id="surveyVizPanel"/>
+      <div id="surveyVizPanel" />
     </div>
   );
-}
+};
 
 export default ResultVisualizationDialogBody;

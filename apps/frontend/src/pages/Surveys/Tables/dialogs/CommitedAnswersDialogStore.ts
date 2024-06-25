@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
+import { toast } from 'sonner';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
-import {toast} from "sonner";
-import handleApiError from "@/utils/handleApiError";
+import handleApiError from '@/utils/handleApiError';
 
 interface CommitedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -43,12 +43,13 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
   closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),
   selectUser: (userName: string) => set({ user: userName }),
-  getUsersCommitedAnswer: async (surveyId: mongoose.Types.ObjectId, participant?: string): Promise<JSON | undefined> => {
+  getUsersCommitedAnswer: async (
+    surveyId: mongoose.Types.ObjectId,
+    participant?: string,
+  ): Promise<JSON | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<JSON>(SURVEY_ANSWER_ENDPOINT,
-        { surveyId, participant },
-      );
+      const response = await eduApi.post<JSON>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
       const answer = response.data;
       set({ answer, isLoading: false });
       return answer;

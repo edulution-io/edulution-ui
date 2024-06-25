@@ -34,7 +34,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     trigger,
   } = props;
 
-
   const { t } = useTranslation();
 
   const getResult = useCallback(() => {
@@ -48,7 +47,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   useEffect((): void => {
     getResult();
   }, []);
-
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;

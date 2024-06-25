@@ -37,14 +37,14 @@ const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
       if (component) {
         component.innerHTML = '';
       }
-    }
+    };
   }, [vizTable]);
 
   return (
     <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-black">
-      <div id="surveyDashboardContainer"/>
+      <div id="surveyDashboardContainer" />
     </div>
   );
-}
+};
 
 export default ResultTableDialogBody;

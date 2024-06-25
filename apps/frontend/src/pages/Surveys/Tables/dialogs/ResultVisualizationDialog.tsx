@@ -6,7 +6,7 @@ import Survey from '@libs/survey/types/survey';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ResultVisualizationDialogBody from "@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody";
+import ResultVisualizationDialogBody from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody';
 
 interface ResultVisualizationDialogProps {
   survey: Survey;
