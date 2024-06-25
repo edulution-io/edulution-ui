@@ -1,7 +1,7 @@
 const getLoginScript = (user: string, password: string) => `
     function fillAndSubmitLoginForm() {
-      const usernameField = document.querySelector('input[placeholder="Benutzername"]');
-      const passwordField = document.querySelector('input[placeholder="Passwort"]');;
+      const usernameField = document.querySelector('input[ng\\\\:model="username"]');
+      const passwordField = document.querySelector('input[ng\\\\:model="password"]');
 
       if (usernameField && passwordField) {
         usernameField.value = '${user}';

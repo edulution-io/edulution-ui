@@ -3,7 +3,7 @@ import { useEncryption } from '@/hooks/mutations';
 import { APPS } from '@/datatypes/types';
 import useUserStore from '@/store/UserStore/UserStore';
 import NativeIframeLayout from '@/components/framing/NativeIframeLayout';
-import getLoginScript from '@/pages/Mail/scripts/login';
+import getLoginScript from '@/pages/LinuxmusterPage/scripts/login';
 import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
 
 const LinuxmusterPage: React.FC = () => {
