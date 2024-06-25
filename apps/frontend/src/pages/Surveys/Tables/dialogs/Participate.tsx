@@ -4,7 +4,7 @@ import { AiOutlineUpSquare } from 'react-icons/ai';
 import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 
 const Participate = () => {
   const { selectedSurvey: survey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();

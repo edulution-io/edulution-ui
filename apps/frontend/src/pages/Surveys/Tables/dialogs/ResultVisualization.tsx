@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useResultStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 

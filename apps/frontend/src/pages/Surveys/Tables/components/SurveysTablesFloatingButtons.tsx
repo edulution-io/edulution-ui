@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import CommitedAnswer from '@/pages/Surveys/Tables/dialogs/CommitedAnswer';
 import Participate from '@/pages/Surveys/Tables/dialogs/Participate';
 import ResultTable from '@/pages/Surveys/Tables/dialogs/ResultTable';

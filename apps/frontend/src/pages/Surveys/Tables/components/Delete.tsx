@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FiDelete } from 'react-icons/fi';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import useDeleteStore from '@/pages/Surveys/Tables/components/DeleteStore';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const Delete = () => {

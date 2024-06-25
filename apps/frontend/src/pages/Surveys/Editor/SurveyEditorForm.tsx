@@ -12,7 +12,7 @@ import InitialForm from '@libs/survey/utils/initial-form';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';

@@ -8,10 +8,9 @@ interface SearchUsersOrGroupsProps {
   value: Attendee[];
   onChange: (options: MultipleSelectorOptionSH[]) => void;
   onSearch: (value: string) => Promise<Attendee[]>;
-  options?: Attendee[];
 }
 
-const SearchUsersOrGroups = ({ options, value, onChange, onSearch }: SearchUsersOrGroupsProps) => {
+const SearchUsersOrGroups = ({ value, onChange, onSearch }: SearchUsersOrGroupsProps) => {
   const { t } = useTranslation();
 
   return (
@@ -22,7 +21,6 @@ const SearchUsersOrGroups = ({ options, value, onChange, onSearch }: SearchUsers
         onSearch={onSearch}
         onChange={onChange}
         placeholder={t('search.type-to-search')}
-        options={options}
       />
     </div>
   );
