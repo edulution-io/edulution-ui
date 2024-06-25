@@ -103,6 +103,7 @@ class SurveysController {
       await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
       await this.usersSurveysService.populateSurvey(participants, newSurveyId);
     }
+    return newSurvey;
   }
 
   @Delete()

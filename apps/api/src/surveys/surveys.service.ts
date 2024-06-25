@@ -101,8 +101,6 @@ class SurveysService {
     answer: JSON,
     username?: string,
   ): Promise<SurveyModel | undefined> {
-    // Logger.log(`Adding public answer to survey ${surveyId}`);
-
     if (!mongoose.isValidObjectId(surveyId)) {
       const error1 = NotValidSurveyIdIsNoMongooseObjectId;
       Logger.error(error1.message);
