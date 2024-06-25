@@ -33,6 +33,7 @@ services:
       MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
+      - ./public/downloads:/opt/edulution/public/downloads
 
   mongoEdu:
     container_name: mongoEdu
@@ -43,15 +44,3 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: <DBUSER>
       MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>
-
-  # A simole web frontend for mongoDB
-  # mongoEdu-express:
-  #   image: mongo-express
-  #   restart: always
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: <DBUSER>
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: <DBPASSWORD>
-  #     ME_CONFIG_MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
-  #     ME_CONFIG_BASICAUTH: false

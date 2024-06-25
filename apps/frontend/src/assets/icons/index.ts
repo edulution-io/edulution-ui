@@ -44,3 +44,4 @@ export { default as SurveysSidebarIcon } from '@/assets/icons/survey-sidebar.svg
 export { default as SurveysViewAnsweredIcon } from '@/assets/icons/survey-view-answered-surveys.svg';
 export { default as SurveysViewManagementIcon } from '@/assets/icons/survey-view-management.svg';
 export { default as SurveysViewOpenIcon } from '@/assets/icons/survey-view-open-surveys.svg';
+export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
