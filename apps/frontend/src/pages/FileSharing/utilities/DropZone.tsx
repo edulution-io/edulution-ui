@@ -1,11 +1,10 @@
 import React, { FC, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { DocumentIcon } from '@heroicons/react/16/solid';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
+import { HiDocument, HiXMark } from 'react-icons/hi2';
 
 export interface FileWithPreview extends File {
   preview: string;
@@ -77,14 +76,14 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
               />
             ) : (
               <div className="flex h-20 items-center justify-center">
-                <DocumentIcon className="h-8 w-8 text-gray-500" />
+                <HiDocument className="h-8 w-8 text-gray-500" />
               </div>
             )}
             <Button
               onClick={() => removeFile(file.name)}
               className="absolute right-0 top-0 rounded-full bg-white bg-opacity-70 p-1"
             >
-              <XMarkIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
+              <HiXMark className="h-5 w-5 text-red-500 hover:text-red-700" />
             </Button>
             <div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>
           </li>
