@@ -44,7 +44,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
           size="lg"
           type="submit"
         >
-          {t('save')}
+          {t('common.save')}
         </Button>
       </form>
     </div>
@@ -55,7 +55,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
       isOpen={isOpenSaveSurveyDialog}
       trigger={trigger}
       handleOpenChange={isOpenSaveSurveyDialog ? closeSaveSurveyDialog : openSaveSurveyDialog}
-      title={t('survey.editor.saveDialog.title')}
+      title={t('surveys.saveDialog.title')}
       body={getDialogBody()}
       footer={getFooter()}
       desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"

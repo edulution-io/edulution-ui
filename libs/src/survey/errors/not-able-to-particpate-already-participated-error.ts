@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios';
 import { HttpStatus } from "@nestjs/common";
 
-const UserHasAlreadyParticipatedError = new AxiosError(
+const NotAbleToParticpateAlreadyParticipatedError = new AxiosError(
   'User has already participated in the survey',
   `${ HttpStatus.FORBIDDEN }`,
 );
 
-export default UserHasAlreadyParticipatedError;
+export default NotAbleToParticpateAlreadyParticipatedError;

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 
-class UpdateOrCreateSurveyDto {
+interface UpdateOrCreateSurveyDto {
   id: mongoose.Types.ObjectId;
 
   formula: JSON;

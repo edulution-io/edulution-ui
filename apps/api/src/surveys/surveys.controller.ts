@@ -1,20 +1,25 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
+import { Logger, Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
+import GetAnswerDto from '@libs/survey/dto/get-answer.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
 import {
   All_SURVEYS_ENDPOINT,
+  ANSWER_ENDPOINT,
+  ANSWERED_SURVEYS_ENDPOINT,
+  CREATED_SURVEYS_ENDPOINT,
   FIND_ONE_ENDPOINT,
   FIND_SURVEYS_ENDPOINT,
+  OPEN_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import { SurveyModel } from './types/survey.schema';
+import { SurveyModel } from './survey.schema';
 
 @Controller(SURVEYS)
 class SurveysController {
@@ -23,8 +28,14 @@ class SurveysController {
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
-  @Get(`${FIND_SURVEYS_ENDPOINT}:surveyIds`)
-  async findSurveys(@Param('surveyIds') surveyIds: mongoose.Types.ObjectId[]) {
+  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
+  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.findOneSurvey(surveyId);
+  }
+
+  @Get(FIND_SURVEYS_ENDPOINT)
+  async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
+    const { surveyIds } = findSurveyDto;
     return this.surveyService.findSurveys(surveyIds);
   }
 
@@ -33,17 +44,17 @@ class SurveysController {
     return this.surveyService.getPublicAnswers(surveyId);
   }
 
-  @Get(`open/`)
+  @Get(OPEN_SURVEYS_ENDPOINT)
   async getOpenSurveys(@GetCurrentUsername() username: string) {
     return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
   }
 
-  @Get(`created/`)
+  @Get(CREATED_SURVEYS_ENDPOINT)
   async getCreatedSurveys(@GetCurrentUsername() username: string) {
     return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyIds(username));
   }
 
-  @Get(`answered/`)
+  @Get(ANSWERED_SURVEYS_ENDPOINT)
   async getAnsweredSurveys(@GetCurrentUsername() username: string) {
     return this.surveyService.findSurveys(await this.usersSurveysService.getAnsweredSurveyIds(username));
   }
@@ -53,14 +64,14 @@ class SurveysController {
     return this.surveyService.getAllSurveys();
   }
 
-  @Get(`answer/:surveyId`)
+  @Get(`${ANSWER_ENDPOINT}:surveyId`)
   async getSurveyAnswer(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
     return this.usersSurveysService.getCommitedAnswer(username, surveyId);
   }
 
-  @Get(`answer/:surveyId`)
-  async getSurveyAnswers(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @Body() body: FindSurveyDto) {
-    const { participants = [] } = body;
+  @Get(ANSWER_ENDPOINT)
+  async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto) {
+    const { surveyId, participants = [] } = getAnswerDto;
 
     const answers: JSON[] = [];
     const promises: Promise<void>[] = participants.map(async (participant: string) => {
@@ -113,20 +124,19 @@ class SurveysController {
     }
   }
 
-  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
-  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.findOneSurvey(surveyId);
-  }
-
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
-    const deleted = this.surveyService.deleteSurveys(deleteSurveyDto.surveyIds);
-    await this.usersSurveysService.onRemoveSurvey(deleteSurveyDto.surveyIds);
+    const { surveyIds } = deleteSurveyDto;
+    const deleted = this.surveyService.deleteSurveys(surveyIds);
+    await this.usersSurveysService.onRemoveSurvey(surveyIds);
     return deleted;
   }
 
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
+
+    Logger.log(`JSON.stringify(pushAnswerDto): ${JSON.stringify(pushAnswerDto)}`);
+
     const { surveyId, answer } = pushAnswerDto;
     await this.surveyService.addPublicAnswer(surveyId, answer);
     return this.usersSurveysService.addAnswer(username, surveyId, answer);

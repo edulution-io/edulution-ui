@@ -89,7 +89,9 @@
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes"
-    }
+    },
+    "noFormula": "The formula of the survey is not readable",
+    "noAnswer": "No answer available"
   },
   "surveys": {
     "title": "SURVEYS",
@@ -198,7 +200,9 @@
     "edit": "Edit",
     "delete": "Delete",
     "participate": "Participate",
-    "not-available": "'Not available'"
+    "not-available": "'Not available'",
+    "date": "Date",
+    "time": "Time"
   },
   "form": {
     "path": "Path",

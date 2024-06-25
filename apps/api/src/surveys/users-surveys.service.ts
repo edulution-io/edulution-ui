@@ -3,10 +3,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import Attendee from '@libs/survey/types/attendee';
 import SurveyAnswer from '@libs/survey/types/survey-answer';
+import NotAbleToFindUserError from '@libs/survey/errors/not-able-to-find-user-error';
+import UserDidNotUpdateError from '@libs/survey/errors/not-able-to-update-user-error';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
-import UserNotFoundError from './errors/user-not-found-error';
-import UserDidNotUpdateError from './errors/user-did-not-update-error';
 
 @Injectable()
 class UsersSurveysService {
@@ -28,7 +28,7 @@ class UsersSurveysService {
     const name = typeof participant === 'string' ? participant : participant.username;
     const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
     if (!existingUser) {
-      const error = UserNotFoundError;
+      const error = NotAbleToFindUserError;
       Logger.error(error.message);
       throw error;
     }
@@ -56,7 +56,9 @@ class UsersSurveysService {
   async addToOpenSurveys(participant: string, surveyId: mongoose.Types.ObjectId): Promise<void> {
     const existingUser = await this.getExistingUser(participant);
     if (!existingUser) {
-      throw UserNotFoundError;
+      const error = NotAbleToFindUserError;
+      Logger.error(error.message);
+      throw error;
     }
 
     const usersOpenSurveys = existingUser.usersSurveys?.openSurveys || [];
@@ -83,7 +85,9 @@ class UsersSurveysService {
   async addToCreatedSurveys(username: string, surveyId: mongoose.Types.ObjectId): Promise<User | null> {
     const existingUser = await this.getExistingUser(username);
     if (!existingUser) {
-      throw UserNotFoundError;
+      const error = NotAbleToFindUserError;
+      Logger.error(error.message);
+      throw error;
     }
 
     const usersCreatedSurveys = existingUser.usersSurveys?.createdSurveys || [];
@@ -165,7 +169,9 @@ class UsersSurveysService {
   ): Promise<void> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
-      throw UserNotFoundError;
+      const error = NotAbleToFindUserError;
+      Logger.error(error.message);
+      throw error;
     }
 
     const usersOpenSurveys = existingUser.usersSurveys?.openSurveys?.filter((survey) => survey !== surveyId) || [];
@@ -187,7 +193,9 @@ class UsersSurveysService {
   async getCommitedAnswer(username: string, surveyId: mongoose.Types.ObjectId): Promise<JSON | undefined> {
     const existingUser = await this.userModel.findOne<User>({ username }).exec();
     if (!existingUser) {
-      throw UserNotFoundError;
+      const error = NotAbleToFindUserError;
+      Logger.error(error.message);
+      throw error;
     }
 
     const answeredSurvey = existingUser.usersSurveys?.answeredSurveys?.find((answer: SurveyAnswer) => {

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
+import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
@@ -44,7 +44,7 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   getUsersCommitedAnswer: async (surveyId: mongoose.Types.ObjectId): Promise<JSON | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<JSON>(SURVEYS_ENDPOINT, {
+      const response = await eduApi.get<JSON>(SURVEY_ANSWER_ENDPOINT, {
         params: { surveyId },
       });
       const answer = response.data;

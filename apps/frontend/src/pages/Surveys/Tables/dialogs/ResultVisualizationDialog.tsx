@@ -45,7 +45,8 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
     if (!survey) {
       return;
     }
-    void getSurveyResult(survey.id, survey.participants);
+    // eslint-disable-next-line  no-underscore-dangle
+    void getSurveyResult(survey._id, survey.participants);
   }, []);
 
   useEffect((): void => {

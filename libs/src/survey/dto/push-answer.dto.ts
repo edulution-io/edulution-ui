@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-class PushAnswerDto {
+interface PushAnswerDto {
   surveyId: mongoose.Types.ObjectId;
 
   answer: JSON;

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-class DeleteSurveyDto {
+interface DeleteSurveyDto {
   surveyIds: mongoose.Types.ObjectId[];
 }
 

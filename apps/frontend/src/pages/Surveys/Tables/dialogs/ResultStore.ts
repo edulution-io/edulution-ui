@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
 import Survey from '@libs/survey/types/survey';
 import Attendee from '@libs/survey/types/attendee';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
+import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/surveys-endpoint';
 
 interface ResultStore {
   selectedSurvey: Survey | undefined;
@@ -46,7 +46,7 @@ const useResultStore = create<ResultStore>((set) => ({
   getSurveyResult: async (surveyId: mongoose.Types.ObjectId, participants: Attendee[]): Promise<JSON[]> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<JSON[]>(SURVEYS_ENDPOINT, {
+      const response = await eduApi.get<JSON[]>(SURVEY_RESULT_ENDPOINT, {
         params: {
           surveyId,
         },

@@ -40,7 +40,6 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
     try {
       // Display the "Saving..." message (pass a string value to display a custom message)
       options?.showSaveInProgress();
-
       const response = await eduApi.patch<string>(SURVEYS_ENDPOINT, {
         surveyId,
         answer,

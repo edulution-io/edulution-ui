@@ -33,7 +33,8 @@ const Delete = () => {
       icon={FiDelete}
       text={t('common.delete')}
       onClick={async () => {
-        await deleteSurvey(survey.id);
+        // eslint-disable-next-line no-underscore-dangle
+        await deleteSurvey(survey._id);
         await updateOpenSurveys();
         await updateCreatedSurveys();
         await updateAnsweredSurveys();

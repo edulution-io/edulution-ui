@@ -1,13 +1,7 @@
-class FindSurveyDto {
-  surveyId?: number;
+import mongoose from 'mongoose';
 
-  surveyIds?: number[];
-
-  username?: string;
-
-  isAnonymous?: boolean;
-
-  participants?: string[];
+interface FindSurveyDto {
+  surveyIds: mongoose.Types.ObjectId[];
 }
 
 export default FindSurveyDto;

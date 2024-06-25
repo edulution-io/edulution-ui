@@ -16,8 +16,7 @@ interface ShowSurveyResultsTableDialogProps {
   closePublicResultsTableDialog: () => void;
   getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
   result: JSON[];
-  isLoadingResult: boolean;
-  errorLoadingResult: Error | null;
+  isLoading: boolean;
 
   trigger?: React.ReactNode;
 }
@@ -31,9 +30,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     closePublicResultsTableDialog,
     getSurveyResult,
     result,
-    isLoadingResult,
-    errorLoadingResult,
-
+    isLoading,
     trigger,
   } = props;
 
@@ -45,7 +42,8 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     if (!survey) {
       return;
     }
-    void getSurveyResult(survey.id, survey.participants);
+    // eslint-disable-next-line  no-underscore-dangle
+    void getSurveyResult(survey._id, survey.participants);
   }, []);
 
   useEffect((): void => {
@@ -53,7 +51,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   }, []);
 
   const getDialogBody = () => {
-    if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult} />;
+    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
 
     if (!survey?.formula) {
       return (
@@ -76,11 +74,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
           formula={survey.formula}
           result={result}
         />
-        {errorLoadingResult ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            Survey Error: {errorLoadingResult.message}
-          </div>
-        ) : null}
       </ScrollArea>
     );
   };

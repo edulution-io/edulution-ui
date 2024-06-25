@@ -21,7 +21,8 @@ const SurveyTable = (props: SurveyTableProps) => {
   const surveyRows = useMemo(
     () =>
       surveys.map((survey: Survey) => {
-        const isSelectedSurvey = selectedSurvey?.id === survey.id;
+        // eslint-disable-next-line no-underscore-dangle
+        const isSelectedSurvey = selectedSurvey?._id === survey._id;
         if (!survey.formula) {
           return null;
         }
@@ -36,7 +37,8 @@ const SurveyTable = (props: SurveyTableProps) => {
 
         return (
           <TableRow
-            key={`survey_row_-_${survey.id.toHexString()}`}
+            // eslint-disable-next-line no-underscore-dangle
+            key={`survey_row_-_${survey._id?.toHexString()}`}
             className="cursor-pointer"
             onClick={() => {
               selectSurvey(survey);

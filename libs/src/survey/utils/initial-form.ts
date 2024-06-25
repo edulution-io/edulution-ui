@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 import Survey from '@libs/survey/types/survey';
-import EmptyFormula from '@libs/survey/utils/empty-formula';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
 class InitialForm implements SurveyEditorFormData {
@@ -19,8 +18,8 @@ class InitialForm implements SurveyEditorFormData {
   canShowResultsChart: boolean;
 
   constructor(selectedSurvey?: Survey) {
-    this.id = selectedSurvey?.id || new mongoose.Types.ObjectId();
-    this.formula =  selectedSurvey?.formula || EmptyFormula;
+    this.id = selectedSurvey?._id || new mongoose.Types.ObjectId();
+    this.formula =  selectedSurvey?.formula || {} as JSON;
     this.participants = selectedSurvey?.participants || [];
     this.participated = [];
     this.saveNo = selectedSurvey?.saveNo || 0;

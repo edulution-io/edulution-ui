@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/page-view';
+// import SurveysPageView from '@libs/survey/types/page-view';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const OpenSurveys = () => {
   const {
-    selectedPageView,
-    updateSelectedPageView,
+    // selectedPageView,
+    // updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
     openSurveys,
@@ -19,19 +19,12 @@ const OpenSurveys = () => {
   const { t } = useTranslation();
 
   const getOpenSurveys = useCallback(() => {
-    if (!openSurveys || openSurveys.length === 0) {
-      if (!isFetchingOpenSurveys) {
-        void updateOpenSurveys();
-      }
+    if (!isFetchingOpenSurveys) {
+      void updateOpenSurveys();
     }
   }, []);
 
   useEffect((): void => {
-    if (selectedPageView !== SurveysPageView.OPEN_SURVEYS) {
-      selectSurvey(undefined);
-      updateSelectedPageView(SurveysPageView.OPEN_SURVEYS);
-    }
-
     getOpenSurveys();
   }, []);
 

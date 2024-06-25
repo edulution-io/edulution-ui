@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import EmptyFormula from '@libs/survey/utils/empty-formula';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
 class EmptyForm implements SurveyEditorFormData {
@@ -17,8 +16,9 @@ class EmptyForm implements SurveyEditorFormData {
   canShowResultsChart: boolean;
 
   constructor() {
-    this.id = new mongoose.Types.ObjectId();
-    this.formula = EmptyFormula;
+    const time = new Date().getTime();
+    this.id = mongoose.Types.ObjectId.createFromTime(time);
+    this.formula = {} as JSON;
     this.participants = [];
     this.participated = [];
     this.saveNo = 0;

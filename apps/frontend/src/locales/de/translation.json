@@ -89,7 +89,9 @@
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen"
-    }
+    },
+    "noFormula": "Das Formular ist nicht lesbar",
+    "noAnswer": "Keine Antwort verfügbar"
   },
   "surveys": {
     "title": "UMFRAGEN",
@@ -108,7 +110,7 @@
       "showCommittedAnswers": "Verfügbare Abgaben"
     },
     "saveDialog": {
-      "title": "Speichern und nutzern zuweisen",
+      "title": "Speichern und Benutzern zuweisen",
       "expires": "Deadline",
       "flags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
@@ -198,7 +200,9 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "participate": "Teilnehmen",
-    "not-available": "'Nicht verfügbar'"
+    "not-available": "'Nicht verfügbar'",
+    "date": "Datum",
+    "time": "Uhrzeit"
   },
   "form": {
     "path": "Link",

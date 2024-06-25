@@ -6,7 +6,8 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
 import CommitedAnswer from '@/pages/Surveys/Tables/dialogs/CommitedAnswer';
 import Participate from '@/pages/Surveys/Tables/dialogs/Participate';
-import Result from '@/pages/Surveys/Tables/dialogs/Result';
+import ResultTable from '@/pages/Surveys/Tables/dialogs/ResultTable';
+import ResultVisualization from '@/pages/Surveys/Tables/dialogs/ResultVisualization';
 import Delete from '@/pages/Surveys/Tables/components/Delete';
 
 interface SurveysTablesDialogsProps {
@@ -40,7 +41,8 @@ const SurveysTablesDialogs = (props: SurveysTablesDialogsProps) => {
           />
         ) : null}
         {canDelete ? <Delete /> : null}
-        {canShowResults ? <Result /> : null}
+        {canShowResults ? <ResultTable /> : null}
+        {canShowResults ? <ResultVisualization /> : null}
         {canParticipate ? <Participate /> : null}
         {canShowCommitedAnswers ? <CommitedAnswer /> : null}
       </div>
