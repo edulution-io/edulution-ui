@@ -1,4 +1,5 @@
-FROM nginx:stable-alpine
+### index digest for nginx:stable-alpine3.19 arch:amd64
+FROM nginx@sha256:d1e71ea5319a3916725e44ba4aa230d24c17924389d44cbdab67b7abd41d3b78
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY dist/apps/frontend .
