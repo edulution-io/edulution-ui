@@ -15,6 +15,12 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier"
   ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.base.json"]
+  },
   "plugins": [
     "react",
     "react-refresh",
@@ -42,8 +48,8 @@
     "vitest.workspace.ts",
     "jest.preset.cjs",
     "jest.config.ts",
-    "dist/apps/*",
-    "scripts/*"
+    "dist/**",
+    "scripts/**"
   ],
   "rules": {
     // Allowed console logs for debug purpose

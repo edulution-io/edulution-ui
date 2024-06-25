@@ -4,8 +4,21 @@
     "moduleResolution": "Bundler",
     "composite": true,
     "declaration": true,
-    "noEmit": true
+    "jsx": "preserve",
+    "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "@libs/src/**/*"],
-  "exclude": ["postcss.config.js"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/**/*"],
+  "exclude": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.tsx",
+    "src/**/*.test.js",
+    "src/**/*.spec.js",
+    "src/**/*.test.jsx",
+    "src/**/*.spec.jsx",
+    "src/**/*.d.ts"
+  ]
 }
