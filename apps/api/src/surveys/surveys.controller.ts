@@ -18,7 +18,6 @@ import SurveysService from './surveys.service';
 class SurveysController {
   constructor(private readonly surveyService: SurveysService) {}
 
-
   @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
   async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
     return this.surveyService.findOneSurvey(surveyId);
