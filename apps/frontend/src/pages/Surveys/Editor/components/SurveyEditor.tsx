@@ -8,7 +8,7 @@ import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/survey-creator-core.i18n';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
-import {toast} from "sonner";
+import { toast } from 'sonner';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
