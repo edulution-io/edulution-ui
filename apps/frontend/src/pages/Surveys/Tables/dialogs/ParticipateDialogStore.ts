@@ -5,6 +5,8 @@ import { AxiosError } from 'axios';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
+import {toast} from "sonner";
+import handleApiError from "@/utils/handleApiError";
 
 interface ParticipateDialogStore {
   selectedSurvey: Survey | undefined;
@@ -54,7 +56,9 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
       // Display the "Error" message (pass a string value to display a custom message)
       options?.showSaveError();
 
-      set({ error: error as AxiosError, isLoading: false });
+      set({ error: error instanceof AxiosError ? error : null, isLoading: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting the answer for a survey');
+      handleApiError(error, set);
       return '';
     }
   },

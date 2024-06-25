@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import eduApi from '@/api/eduApi';
+import { toast } from 'sonner';
 import Survey from '@libs/survey/types/survey';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/surveys-endpoint';
+import eduApi from '@/api/eduApi';
+import handleApiError from "@/utils/handleApiError";
 
 interface ResultStore {
   selectedSurvey: Survey | undefined;
@@ -46,13 +48,13 @@ const useResultStore = create<ResultStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('base64')}`);
-
       const result = response.data;
-
       set({ result, isLoading: false });
       return result;
     } catch (error) {
-      set({ error: error as AxiosError, result: undefined, isLoading: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while fetching the survey results');
+      handleApiError(error, set);
+      set({ result: undefined, error: error instanceof AxiosError ? error : null, isLoading: false });
       return [];
     }
   },

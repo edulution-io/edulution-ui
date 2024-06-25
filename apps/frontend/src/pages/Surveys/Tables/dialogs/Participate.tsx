@@ -37,8 +37,8 @@ const Participate = () => {
         openParticipateSurveyDialog={openParticipateSurveyDialog}
         closeParticipateSurveyDialog={closeParticipateSurveyDialog}
         commitAnswer={pushAnswer}
-        isCommiting={isLoading}
-        errorCommiting={error}
+        isLoading={isLoading}
+        error={error}
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
       />

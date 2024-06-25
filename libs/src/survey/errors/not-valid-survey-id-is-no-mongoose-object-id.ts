@@ -1,9 +1,12 @@
-import { AxiosError } from 'axios';
-import { HttpStatus } from "@nestjs/common";
+// TODO: Refactor errors when error handling is implemented
 
-const NotValidSurveyIdIsNoMongooseObjectId = new AxiosError(
-  'The survey id must convertable into a valid mongo id',
-  `${ HttpStatus.NOT_ACCEPTABLE }`,
+import { HttpException, HttpStatus } from '@nestjs/common';
+import SurveyErrors from '@libs/survey/survey-errors';
+
+const NotValidSurveyIdIsNoMongooseObjectId = new HttpException(
+  // 'The survey id must convertable into a valid mongo id',
+  SurveyErrors.NotValidSurveyIdIsNoMongooseObjectId,
+  HttpStatus.NOT_ACCEPTABLE,
 );
 
 export default NotValidSurveyIdIsNoMongooseObjectId;

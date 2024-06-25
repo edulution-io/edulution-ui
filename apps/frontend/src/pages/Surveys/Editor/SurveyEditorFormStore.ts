@@ -62,10 +62,9 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
       set({ error: undefined, isLoading: false });
       return response.data;
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : '');
-
+      set({ error: error instanceof AxiosError ? error : null, isLoading: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting a new/updated survey');
       handleApiError(error, set);
-      set({ error: error as AxiosError, isLoading: false });
       return undefined;
     }
   },

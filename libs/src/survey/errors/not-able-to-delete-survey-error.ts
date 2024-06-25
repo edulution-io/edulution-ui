@@ -1,9 +1,12 @@
-import { AxiosError } from 'axios';
-import { HttpStatus } from '@nestjs/common';
+// TODO: Refactor errors when error handling is implemented
 
-const NotAbleToDeleteSurveyError = new AxiosError(
-  'Not able to delete survey',
-  `${ HttpStatus.NOT_MODIFIED }`,
+import { HttpException, HttpStatus } from '@nestjs/common';
+import SurveyErrors from "@libs/survey/survey-errors";
+
+const NotAbleToDeleteSurveyError = new HttpException(
+  // 'Not able to delete survey',
+  SurveyErrors.NotAbleToDeleteSurveyError,
+  HttpStatus.NOT_MODIFIED,
 );
 
 export default NotAbleToDeleteSurveyError;

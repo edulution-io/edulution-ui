@@ -41,8 +41,8 @@ const CommitedAnswer = () => {
         // user={user}
         // selectUser={selectUser}
         answer={answer}
-        isLoadingAnswer={isLoading}
-        errorLoadingAnswer={error}
+        isLoading={isLoading}
+        error={error}
       />
     </>
   );

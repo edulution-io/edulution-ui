@@ -370,5 +370,18 @@
   },
   "groupsPage": {
     "classes": "Classes"
+  },
+  "errors": {
+    "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
+    "notAbleToDeleteSurveyError": "Not able to delete survey",
+    "notAbleToFindSurveyAnswerError": "Survey answers not found",
+    "notAbleToFindSurveyError": "Survey not found",
+    "notAbleToFindSurveysError": "Did not find a single survey",
+    "notAbleToFindUserError": "User not found",
+    "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
+    "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
+    "notAbleToUpdateSurveyError": "Not able to update the survey",
+    "notAbleToUpdateUserError": "Not able to update the user",
+    "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
   }
 }

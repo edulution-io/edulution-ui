@@ -23,8 +23,8 @@ interface ParticipateDialogProps {
   openParticipateSurveyDialog: () => void;
   closeParticipateSurveyDialog: () => void;
   commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<string>;
-  isCommiting: boolean;
-  errorCommiting: Error | null;
+  isLoading: boolean;
+  error: Error | null;
 
   updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
@@ -40,8 +40,8 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     openParticipateSurveyDialog,
     closeParticipateSurveyDialog,
     commitAnswer,
-    isCommiting,
-    errorCommiting,
+    isLoading,
+    error,
 
     updateOpenSurveys,
     updateAnsweredSurveys,
@@ -82,8 +82,8 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
       closeParticipateSurveyDialog();
       updateOpenSurveys();
       updateAnsweredSurveys();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : '');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '');
     }
   };
 
@@ -91,7 +91,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
 
   const getDialogBody = () => {
     if (!survey) return null;
-    if (isCommiting) return <LoadingIndicator isOpen={isCommiting} />;
+    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
       <>
         <ParticipateDialogBody
@@ -99,11 +99,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
           handleFormSubmit={handleFormSubmit}
           form={form}
         />
-        {errorCommiting ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            {t('survey.error')}: {errorCommiting.message}
-          </div>
-        ) : null}
+        {error ? toast.error(t(error.message)) : null}
       </>
     );
   };

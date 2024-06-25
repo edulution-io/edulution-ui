@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
+import {toast} from "sonner";
 
 interface ShowSurveyResultsTableDialogProps {
   survey: Survey;
@@ -17,6 +18,7 @@ interface ShowSurveyResultsTableDialogProps {
   getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoading: boolean;
+  error: Error | null;
 
   trigger?: React.ReactNode;
 }
@@ -32,6 +34,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     result,
     isLoading,
     trigger,
+    error,
   } = props;
 
   const { t } = useTranslation();
@@ -72,6 +75,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
           formula={survey.formula}
           result={result}
         />
+        {error ? toast.error(t(error.message)) : null}
       </ScrollArea>
     );
   };

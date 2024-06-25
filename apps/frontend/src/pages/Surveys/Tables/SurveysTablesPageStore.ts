@@ -9,6 +9,8 @@ import SURVEYS_ENDPOINT, {
 } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
+import {toast} from "sonner";
+import handleApiError from "@/utils/handleApiError";
 
 interface SurveysTablesPageStore {
   selectedPageView: SurveysPageView;
@@ -79,7 +81,9 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       set({ openSurveys: surveys, isFetchingOpenSurveys: false });
       return surveys;
     } catch (error) {
-      set({ errorFetchingOpenSurveys: error as AxiosError, isFetchingOpenSurveys: false });
+      set({ openSurveys: [], errorFetchingOpenSurveys: error instanceof Error ? error : null, isFetchingOpenSurveys: false });
+      toast.error(error instanceof Error ? `${error.name}: ${error.message}` : 'Error while fetching the list of surveys, you have to answer');
+      handleApiError(error, set, 'errorFetchingOpenSurveys');
       return [];
     }
   },
@@ -92,7 +96,9 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       set({ createdSurveys: surveys, isFetchingCreatedSurveys: false });
       return surveys;
     } catch (error) {
-      set({ errorFetchingCreatedSurveys: error as AxiosError, isFetchingCreatedSurveys: false });
+      set({ createdSurveys: [], errorFetchingCreatedSurveys: error instanceof AxiosError ? error : null, isFetchingCreatedSurveys: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while fetching the list of surveys, you have created');
+      handleApiError(error, set, 'errorFetchingCreatedSurveys');
       return [];
     }
   },
@@ -105,7 +111,9 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       set({ answeredSurveys: surveys, isFetchingAnsweredSurveys: false });
       return surveys;
     } catch (error) {
-      set({ errorFetchingAnsweredSurveys: error as AxiosError, isFetchingAnsweredSurveys: false });
+      set({ answeredSurveys: [], errorFetchingAnsweredSurveys: error instanceof AxiosError ? error : null, isFetchingAnsweredSurveys: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while fetching the list of surveys, you have answered, already');
+      handleApiError(error, set, 'errorFetchingAnsweredSurveys');
       return [];
     }
   },
@@ -118,7 +126,9 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       set({ allSurveys: surveys, isFetchingAllSurveys: false });
       return surveys;
     } catch (error) {
-      set({ errorFetchingAllSurveys: error as AxiosError, isFetchingAllSurveys: false });
+      set({ allSurveys: [], errorFetchingAllSurveys: error instanceof AxiosError ? error : null, isFetchingAllSurveys: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while fetching all surveys');
+      handleApiError(error, set, 'errorFetchingAllSurveys');
       return [];
     }
   },
@@ -130,7 +140,9 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       set({ isPosting: false });
       return response.data;
     } catch (error) {
-      set({ errorPostingSurvey: error as AxiosError, isPosting: false });
+      set({ errorPostingSurvey: error instanceof AxiosError ? error : null, isPosting: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while creating/updating a survey');
+      handleApiError(error, set, 'errorPostingSurvey');
       throw error;
     }
   },

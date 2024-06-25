@@ -10,25 +10,12 @@ interface SurveysTablePageProps {
   selectedSurvey?: Survey | undefined;
   surveys?: Survey[];
 
-  // updateOpenSurveys?: () => void;
-  // updateCreatedSurveys?: () => void;
-  // updateAnsweredSurveys?: () => void;
-
   canEdit?: boolean;
   editSurvey?: () => void;
-
   canDelete?: boolean;
-  // deleteSurvey?: (surveyID: number) => void;
-
   canShowCommitedAnswers?: boolean;
-  // openCommitedAnswersDialog?: () => void;
-
   canParticipate?: boolean;
-  // openParticipateSurveyDialog?: () => void;
-
   canShowResults?: boolean;
-  // openPublicResultsTableDialog?: () => void;
-  // openPublicResultsVisualisationDialog?: () => void;
 }
 
 const SurveyTablePage = (props: SurveysTablePageProps) => {
@@ -58,7 +45,6 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
       </ScrollArea>
       {selectedSurvey ? (
         <SurveysTablesDialogs
-          // survey={selectedSurvey}
           canEdit={canEdit}
           editSurvey={editSurvey}
           canDelete={canDelete}

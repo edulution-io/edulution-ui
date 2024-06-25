@@ -118,7 +118,7 @@ const SurveyEditorForm = () => {
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
           {getSurveyEditor}
-          {error ? toast.error(error.message) : null}
+          {error ? toast.error(t(error.message)) : null}
         </ScrollArea>
       </div>
       <TooltipProvider>

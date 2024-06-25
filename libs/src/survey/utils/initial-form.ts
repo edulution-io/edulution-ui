@@ -18,7 +18,8 @@ class InitialForm implements SurveyEditorFormData {
   canShowResultsChart: boolean;
 
   constructor(selectedSurvey?: Survey) {
-    this.id = selectedSurvey?._id || new mongoose.Types.ObjectId();
+    const time = new Date().getTime();
+    this.id = selectedSurvey?._id || mongoose.Types.ObjectId.createFromTime(time);
     this.formula =  selectedSurvey?.formula || {} as JSON;
     this.participants = selectedSurvey?.participants || [];
     this.participated = [];

@@ -17,6 +17,7 @@ const useSurveysPageMenu = () => {
     icon: SurveysSidebarIcon,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [
+      // TODO: check for global admin he may see all surveys
       // {
       //     id: 'manage-surveys',
       //     label: 'surveys.view.management',

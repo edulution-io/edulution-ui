@@ -6,8 +6,8 @@ import NeitherAbleToUpdateNorToCreateSurveyError from '@libs/survey/errors/neith
 import NotAbleToDeleteSurveyError from '@libs/survey/errors/not-able-to-delete-survey-error';
 import NotAbleToFindSurveyError from '@libs/survey/errors/not-able-to-find-survey-error';
 import NotAbleToFindSurveysError from '@libs/survey/errors/not-able-to-find-surveys-error';
-import NotAbleToParticpateNotAnParticipantError from '@libs/survey/errors/not-able-to-particpate-not-an-participant-error';
-import NotAbleToParticpateAlreadyParticipatedError from '@libs/survey/errors/not-able-to-particpate-already-participated-error';
+import NotAbleToParticipateNotAnParticipantError from '@libs/survey/errors/not-able-to-participate-not-an-participant-error';
+import NotAbleToParticipateAlreadyParticipatedError from '@libs/survey/errors/not-able-to-participate-already-participated-error';
 import NotValidSurveyIdIsNoMongooseObjectId from '@libs/survey/errors/not-valid-survey-id-is-no-mongoose-object-id';
 import NotAbleToUpdateSurveyError from '@libs/survey/errors/not-able-to-update-survey-error';
 import { SurveyModel, SurveyDocument } from './survey.schema';
@@ -121,13 +121,13 @@ class SurveysService {
     if (username) {
       const isParticipant = participants.find((participant: Attendee) => participant.username === username);
       if (!isParticipant) {
-        const error3 = NotAbleToParticpateNotAnParticipantError;
+        const error3 = NotAbleToParticipateNotAnParticipantError;
         Logger.warn(error3.message);
         throw error3;
       }
       const hasAlreadyParticipated = participated.find((user: string) => user === username);
       if (hasAlreadyParticipated) {
-        const error4 = NotAbleToParticpateAlreadyParticipatedError;
+        const error4 = NotAbleToParticipateAlreadyParticipatedError;
         Logger.warn(error4.message);
         throw error4;
       }

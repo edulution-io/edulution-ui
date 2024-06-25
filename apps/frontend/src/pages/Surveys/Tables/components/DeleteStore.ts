@@ -6,6 +6,7 @@ import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import {toast} from "sonner";
 
 interface DeleteStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -37,8 +38,9 @@ const useDeleteStore = create<DeleteStore>((set) => ({
       await eduApi.delete(SURVEYS_ENDPOINT, { params: { id: surveyID } });
       set({ isLoading: false });
     } catch (error) {
-      handleApiError(error as AxiosError, set);
-      set({ error: error as AxiosError, isLoading: false });
+      set({ error: error instanceof AxiosError ? error : null, isLoading: false });
+      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting the answer for a survey');
+      handleApiError(error, set);
       throw error;
     }
   },

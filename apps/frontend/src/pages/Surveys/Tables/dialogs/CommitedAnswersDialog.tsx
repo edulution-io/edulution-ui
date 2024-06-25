@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CommitedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogBody';
+import {toast} from "sonner";
 
 interface ShowSurveyAnswerDialogProps {
   survey?: Survey;
@@ -17,8 +18,8 @@ interface ShowSurveyAnswerDialogProps {
   // user: string | undefined;
   // selectUser: (user: string) => void;
   answer: JSON | undefined;
-  isLoadingAnswer: boolean;
-  errorLoadingAnswer: Error | null;
+  isLoading: boolean;
+  error: Error | null;
 
   trigger?: React.ReactNode;
 }
@@ -34,8 +35,8 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
     // user,
     // selectUser,
     answer,
-    isLoadingAnswer,
-    errorLoadingAnswer,
+    isLoading,
+    error,
 
     trigger,
   } = props;
@@ -59,18 +60,14 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
 
   const getDialogBody = () => {
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
-    if (isLoadingAnswer) return <LoadingIndicator isOpen={isLoadingAnswer} />;
+    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
       <ScrollArea>
         <CommitedAnswersDialogBody
           formula={survey.formula}
           answer={answer}
         />
-        {errorLoadingAnswer ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            Survey Error: {errorLoadingAnswer.message}
-          </div>
-        ) : null}
+        {error ? toast.error(t(error.message)) : null}
       </ScrollArea>
     );
   };

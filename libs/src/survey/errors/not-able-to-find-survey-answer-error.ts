@@ -1,9 +1,12 @@
-import { AxiosError } from 'axios';
-import { HttpStatus } from "@nestjs/common";
+// TODO: Refactor errors when error handling is implemented
 
-const NotAbleToFindSurveyAnswerError = new AxiosError(
-  'Survey answers not found',
-  `${ HttpStatus.NOT_FOUND }`,
+import { HttpException, HttpStatus } from "@nestjs/common";
+import SurveyErrors from "@libs/survey/survey-errors";
+
+const NotAbleToFindSurveyAnswerError = new HttpException(
+  // 'Survey answers not found',
+  SurveyErrors.NotAbleToFindSurveyAnswerError,
+  HttpStatus.NOT_FOUND,
 );
 
 export default NotAbleToFindSurveyAnswerError;

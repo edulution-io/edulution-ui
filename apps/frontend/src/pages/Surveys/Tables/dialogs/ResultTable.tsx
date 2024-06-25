@@ -16,6 +16,7 @@ const ResultTable = () => {
     getSurveyResult,
     result,
     isLoading,
+    error,
   } = useResultStore();
 
   const { t } = useTranslation();
@@ -39,6 +40,7 @@ const ResultTable = () => {
         getSurveyResult={getSurveyResult}
         result={result}
         isLoading={isLoading}
+        error={error}
       />
     </>
   );
