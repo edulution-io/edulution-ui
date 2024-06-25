@@ -56,7 +56,7 @@ class SurveysService {
 
     let participated = existingSurvey.participated || [];
     const hasAlreadyParticipated = participated.find((user: string) => user === username);
-    if (hasAlreadyParticipated) {
+    if (hasAlreadyParticipated && !existingSurvey.canSubmitMultipleAnswers) {
       throw new Error('User has already participated in the survey');
     }
 

@@ -93,11 +93,6 @@ class UsersService {
         firstName: u.firstName,
         lastName: u.lastName,
         username: u.username,
-        usersSurveys: {
-          openSurveys: [],
-          createdSurveys: [],
-          answeredSurveys: [],
-        },
       }));
   }
 

@@ -7,7 +7,6 @@ import FramePlaceholder from '@/components/layout/Embedded/FramePlaceholder';
 
 import { HomePage } from '@/pages/Home';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
-import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
@@ -17,13 +16,14 @@ import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import UserSettings from '@/pages/UserSettings/UserSettings';
 import SchoolManagementPage from '@/pages/SchoolmanagementPage/SchoolManagementPage';
 import SurveysPage from "@/pages/Surveys/SurveysPage.tsx";
+import FileSharingPage from "@/pages/FileSharing/FileSharing";
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
     case APPS.CONFERENCES:
       return <ConferencePage />;
     case APPS.FILE_SHARING:
-      return <FileSharing />;
+      return <FileSharingPage />;
     case APPS.ROOM_BOOKING:
       return <RoomBookingPage />;
     case APPS.WHITEBOARD:

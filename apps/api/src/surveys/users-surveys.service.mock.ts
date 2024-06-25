@@ -77,7 +77,7 @@ export const Users_UserSurveys_afterRemove_answeredSurvey: UsersSurveys = {
 export const openSurveys_afterRemove_distributedSurvey = [openSurvey, 2, 3];
 export const createdSurveys_afterRemove_distributedSurvey = [createdSurvey, 5, 6];
 export const answeredSurveys_afterRemove_distributedSurvey = [
-  { surveyId: answeredSurvey, answer: EMPTY_JSON },
+  { surveyId: answeredSurvey, answer: mockedAnswer },
   { surveyId: 8, answer: EMPTY_JSON },
   { surveyId: 9, answer: EMPTY_JSON }
 ];
@@ -104,7 +104,7 @@ export const Users_UserSurveys_afterAddCreated_unknownSurvey: UsersSurveys = {
 
 export const openSurveys_afterAddAnswer_openSurvey = [2, 3, distributedSurvey];
 export const answeredSurveys_afterAddAnswer_openSurvey = [
-  { surveyId: answeredSurvey, answer: EMPTY_JSON },
+  { surveyId: answeredSurvey, answer: mockedAnswer },
   { surveyId: 8, answer: EMPTY_JSON },
   { surveyId: 9, answer: EMPTY_JSON },
   { surveyId: distributedSurvey, answer: EMPTY_JSON },

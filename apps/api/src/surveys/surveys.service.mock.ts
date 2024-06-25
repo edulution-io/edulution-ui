@@ -31,6 +31,12 @@ export const publicAnswer_FirstMockSurvey: JSON = {
   Frage2: 'this is a mocked text input',
 };
 
+export const addNewPublicAnswer_FirstMockSurvey: JSON = {
+  // @ts-ignore: 'publicAnswers' has this structure
+  Frage1: ['Item 2'],
+  Frage2: 'this is a second answer that will be added to the public answers of the survey',
+};
+
 export const firstMockSurvey: Survey = {
   id: id_FirstMockSurvey,
   formula: {
@@ -70,6 +76,17 @@ export const firstMockSurvey: Survey = {
   canSubmitMultipleAnswers: false,
 };
 
+export const partial_firstMockSurvey_afterAddedNewAnswer: Partial<Survey> = {
+  publicAnswers: [publicAnswer_FirstMockSurvey, addNewPublicAnswer_FirstMockSurvey],
+  participated: [first_username, second_username],
+};
+
+export const firstMockSurvey_afterAddedNewAnswer: Partial<Survey> = {
+  ...firstMockSurvey,
+  publicAnswers: [publicAnswer_FirstMockSurvey, addNewPublicAnswer_FirstMockSurvey],
+  participated: [first_username, second_username],
+};
+
 export const firstMockSurveyDocument: SurveyDocument = {
   ...firstMockSurvey,
   _id: '60d6c47e4094a113f0d0fe03',
@@ -79,9 +96,15 @@ export const firstMockSurveyDocument: SurveyDocument = {
 
 export const id_SecondMockSurvey: number = 2;
 
-const publicAnswer_SecondMockSurvey: JSON = {
+export const publicAnswer_SecondMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'pupil2',
+  Frage2: 'name2',
+};
+
+export const addNewPublicAnswer_SecondMockSurvey: JSON = {
+  // @ts-ignore: 'publicAnswers' has this structure
+  Frage1: 'pupil1',
   Frage2: 'name1',
 };
 
@@ -113,6 +136,17 @@ export const secondMockSurvey: Survey = {
   expirationTime: '14:30',
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+};
+
+export const partial_secondMockSurvey_afterAddedNewAnswer: Partial<Survey> = {
+  participated: [second_username, first_username],
+  publicAnswers: [publicAnswer_SecondMockSurvey, addNewPublicAnswer_SecondMockSurvey],
+};
+
+export const secondMockSurvey_afterAddedNewAnswer: Partial<Survey> = {
+  ...firstMockSurvey,
+  participated: [second_username, first_username],
+  publicAnswers: [publicAnswer_SecondMockSurvey, addNewPublicAnswer_SecondMockSurvey],
 };
 
 export const secondMockSurveyDocument: SurveyDocument = {

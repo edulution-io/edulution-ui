@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Post, Query, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, /* Logger, */ Post, Query, Patch } from '@nestjs/common';
 import SurveysService from './surveys.service';
 import CreateSurveyDto from './dto/create-survey.dto';
 import FindSurveyDto from './dto/find-survey.dto';
@@ -43,7 +43,7 @@ class SurveysController {
             }
             return survey.publicAnswers;
           } catch (error) {
-            Logger.error(error);
+            // Logger.error(error);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return error;
           }
@@ -68,7 +68,7 @@ class SurveysController {
               }
               return answers;
             } catch (error) {
-              Logger.error(error);
+              // Logger.error(error);
               // eslint-disable-next-line @typescript-eslint/no-unsafe-return
               return error;
             }
@@ -80,7 +80,7 @@ class SurveysController {
             }
             return answer;
           } catch (error) {
-            Logger.error(error);
+            // Logger.error(error);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return error;
           }
@@ -89,8 +89,8 @@ class SurveysController {
           return this.usersSurveysService
             .getAnsweredSurveyIds(username)
             .then((surveyIds: number[]) => this.surveyService.findSurveys(surveyIds))
-            .catch((e) => {
-              Logger.error(e);
+            .catch(() => {
+              // Logger.error(e);
               return [];
             });
 
@@ -143,7 +143,7 @@ class SurveysController {
 
       return newSurvey;
     } catch (error) {
-      Logger.error(`Survey Error (Create/Update): ${error.message}`);
+      // Logger.error(`Survey Error (Create/Update): ${error.message}`);
       return error;
     }
   }
@@ -166,7 +166,7 @@ class SurveysController {
 
       return await this.usersSurveysService.addAnswer(username, surveyId, answer, canSubmitMultipleAnswers);
     } catch (error) {
-      Logger.error(`Survey Error (Adding Answer): ${error.message}`);
+      // Logger.error(`Survey Error (Adding Answer): ${error.message}`);
       return error;
     }
   }

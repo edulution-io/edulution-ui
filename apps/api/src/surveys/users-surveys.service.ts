@@ -11,15 +11,6 @@ import { UserNotFoundError } from './errors/user-not-found-error.ts';
 class UsersSurveysService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async updateUser(participant: Attendee | string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const name = typeof(participant) === 'string' ? participant : participant.username;
-    const newUser = await this.userModel.findOneAndUpdate<User>({ username: name }, updateUserDto, { new: true }).exec();
-    if (!newUser) {
-      throw new Error('User did not update');
-    }
-    return newUser;
-  }
-
   async getExistingUser(participant: Attendee | string): Promise<User | null> {
     const name = typeof(participant) === 'string' ? participant : participant.username;
     const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
@@ -27,6 +18,15 @@ class UsersSurveysService {
       throw UserNotFoundError;
     }
     return existingUser;
+  }
+
+  async updateUser(participant: Attendee | string, updateUserDto: UpdateUserDto, createNew: boolean = false): Promise<User | null> {
+    const name = typeof(participant) === 'string' ? participant : participant.username;
+    const newUser = await this.userModel.findOneAndUpdate<User>({ username: name }, updateUserDto, { new: createNew }).exec();
+    if (!newUser) {
+      throw new Error('User did not update');
+    }
+    return newUser;
   }
 
   async getOpenSurveyIds(username: string): Promise<number[]> {
@@ -94,6 +94,10 @@ class UsersSurveysService {
 
   async onRemoveSurvey(surveyId: number): Promise<void> {
     const existingUsers = await this.userModel.find<User>().exec();
+
+    if (!existingUsers || existingUsers.length === 0) {
+      throw new Error('No users found');
+    }
 
     const promises = existingUsers.map(async (user) => {
       const {
