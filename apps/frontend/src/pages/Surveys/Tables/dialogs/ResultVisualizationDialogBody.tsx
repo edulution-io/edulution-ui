@@ -1,58 +1,61 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import i18next from 'i18next';
 import { Model } from 'survey-core';
+import { SurveyModel } from 'survey-core/typings/survey';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/default2.min.css';
-import './ResultVisualizationDialogBody.css';
 
-interface SurveyVisualizationProps {
+const vizPanelOptions = {
+  haveCommercialLicense: true,
+  defaultChartType: 'bar',
+  showToolbar: false,
+  allowDynamicLayout: false,
+  allowHideQuestions: false,
+}
+
+interface ResultVisualizationDialogBodyProps {
   formula: JSON;
   result: JSON[];
 }
 
-const ResultVisualizationDialogBody = (props: SurveyVisualizationProps) => {
+const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps) => {
   const { formula, result } = props;
 
-  const [survey, setSurvey] = useState<Model | undefined>(undefined);
+  const [survey, setSurvey] = useState<SurveyModel | undefined>(undefined);
   const [vizPanel, setVizPanel] = useState<VisualizationPanel | undefined>(undefined);
 
   if (!survey) {
     const surveyModel = new Model(formula);
-    surveyModel.data = result;
     setSurvey(surveyModel);
   }
 
-  useEffect(() => {
-    const surveyQuestions = survey?.getAllQuestions();
-    const surveyVizPanelOptions = {
-      haveCommercialLicense: true,
-      defaultChartType: 'bar',
-      showToolbar: false,
-    };
-    if (!surveyQuestions) {
-      return;
-    }
-    const surveyVizPanel = new VisualizationPanel(surveyQuestions, result, surveyVizPanelOptions);
-    surveyVizPanel.locale = 'de';
-    setVizPanel(surveyVizPanel);
-  }, [survey, result]);
+  if (!vizPanel && !!survey) {
+    const visualizationPanel = new VisualizationPanel(
+      survey.getAllQuestions(),
+      result,
+      vizPanelOptions
+    );
+    visualizationPanel.locale = i18next.language;
+    visualizationPanel.showToolbar = false;
+    setVizPanel(visualizationPanel);
+  }
 
   useEffect(() => {
-    vizPanel?.render('surveyVizPanel');
+    vizPanel?.render("surveyVizPanel");
+
     const component = document.getElementById('surveyVizPanel');
-    if (component) {
-      component.innerHTML = '';
+    return () => {
+      if (component) {
+        component.innerHTML = '';
+      }
     }
   }, [vizPanel]);
 
   return (
-    <div className="max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4 text-white">
-      <div id="surveyVizPanel" />
+    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-white">
+      <div id="surveyVizPanel"/>
     </div>
   );
-};
+}
 
 export default ResultVisualizationDialogBody;

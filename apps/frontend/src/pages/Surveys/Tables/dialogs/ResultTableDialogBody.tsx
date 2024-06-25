@@ -1,44 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import i18next from 'i18next';
 import { Model } from 'survey-core';
+import { SurveyModel } from 'survey-core/typings/survey';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/default2.min.css';
-import './ResultTableDialogBody.css';
+// import './ResultTableDialogBody.css';
 
-interface SurveyVisualizationProps {
+interface ResultTableDialogBodyProps {
   formula: JSON;
   result: JSON[];
 }
 
-const ResultTableDialogBody = (props: SurveyVisualizationProps) => {
+const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
   const { formula, result } = props;
 
+  const [survey, setSurvey] = useState<SurveyModel | undefined>(undefined);
   const [vizTable, setVizTable] = useState<Tabulator | undefined>(undefined);
 
-  const surveyModel = new Model(formula);
+  if (!survey) {
+    const surveyModel = new Model(formula);
+    setSurvey(surveyModel);
+  }
 
-  useEffect((): void => {
-    surveyModel.data = result;
-    const surveyVizTable = new Tabulator(surveyModel, result);
-    surveyVizTable.locale = 'de';
+  if (!vizTable && !!survey) {
+    const surveyVizTable = new Tabulator(survey, result);
+    surveyVizTable.locale = i18next.language;
     setVizTable(surveyVizTable);
-  }, [result]);
+  }
 
-  useEffect((): void => {
+  useEffect(() => {
     vizTable?.render('surveyDashboardContainer');
+
     const component = document.getElementById('surveyDashboardContainer');
-    if (component) {
-      component.innerHTML = '';
+    return () => {
+      if (component) {
+        component.innerHTML = '';
+      }
     }
   }, [vizTable]);
 
   return (
-    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-white">
-      <div id="surveyDashboardContainer" />
+    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-black">
+      <div id="surveyDashboardContainer"/>
     </div>
   );
-};
+}
 
 export default ResultTableDialogBody;

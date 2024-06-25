@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import Survey from '@libs/survey/types/survey';
 import Attendee from '@/pages/ConferencePage/dto/attendee';
-import SURVEY_ENDPOINT from '@libs/survey/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
@@ -58,7 +58,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<Survey | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, survey);
+      const response = await eduApi.post<Survey>(SURVEYS_ENDPOINT, survey);
       set({ error: undefined, isLoading: false });
       return response.data;
     } catch (error) {

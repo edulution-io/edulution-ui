@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 interface GetAnswerDto {
   surveyId: mongoose.Types.ObjectId;
 
-  participants: string[];
+  participant?: string;
 }
 
 export default GetAnswerDto;

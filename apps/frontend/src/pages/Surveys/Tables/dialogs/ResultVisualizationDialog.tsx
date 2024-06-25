@@ -6,7 +6,7 @@ import Survey from '@libs/survey/types/survey';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ResultVisualizationDialogBody from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody';
+import ResultVisualizationDialogBody from "@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody";
 
 interface ResultVisualizationDialogProps {
   survey: Survey;
@@ -17,7 +17,6 @@ interface ResultVisualizationDialogProps {
   getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoadingResult: boolean;
-  errorLoadingResult: Error | null;
 
   trigger?: React.ReactNode;
 }
@@ -31,13 +30,8 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
     getSurveyResult,
     result,
     isLoadingResult,
-    errorLoadingResult,
     trigger,
   } = props;
-
-  if (!isOpenPublicResultsVisualisationDialog) {
-    return null;
-  }
 
   const { t } = useTranslation();
 
@@ -77,14 +71,13 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
           formula={survey.formula}
           result={result}
         />
-        {errorLoadingResult ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            Survey Error: {errorLoadingResult.message}
-          </div>
-        ) : null}
       </ScrollArea>
     );
   };
+
+  if (!isOpenPublicResultsVisualisationDialog) {
+    return null;
+  }
 
   return (
     <AdaptiveDialog
@@ -95,7 +88,7 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
           ? closePublicResultsVisualisationDialog
           : openPublicResultsVisualisationDialog
       }
-      title={t('survey.resultingVisualization')}
+      title={t('surveys.resultChartDialog.title')}
       body={getDialogBody()}
       // desktopContentClassName="min-h-[75%] max-w-[85%]"
     />

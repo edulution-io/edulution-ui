@@ -118,6 +118,12 @@
       "flags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "canSubmitMultipleAnswers": "Auch nach Teilnahme des Benutzers bleibt der status auf offen?"
+    },
+    "resultChartDialog": {
+      "title": "Ein Schaubild in der die öffentlichen Antworten dargestellt werden"
+    },
+    "resultTableDialog": {
+      "title": "Eine Tabelle in der die öffentlichen Antworten aufgelistet sind"
     }
   },
   "printer": {

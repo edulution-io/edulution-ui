@@ -4,6 +4,8 @@ import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
+import {toast} from "sonner";
+import handleApiError from "@/utils/handleApiError";
 
 interface CommitedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -13,7 +15,7 @@ interface CommitedAnswersDialogStore {
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;
   closeCommitedAnswersDialog: () => void;
-  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, userName?: string) => Promise<JSON | undefined>;
+  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<JSON | undefined>;
   user: string | undefined;
   selectUser: (user: string) => void;
   answer: JSON | undefined;
@@ -41,17 +43,19 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
   closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),
   selectUser: (userName: string) => set({ user: userName }),
-  getUsersCommitedAnswer: async (surveyId: mongoose.Types.ObjectId): Promise<JSON | undefined> => {
+  getUsersCommitedAnswer: async (surveyId: mongoose.Types.ObjectId, participant?: string): Promise<JSON | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<JSON>(SURVEY_ANSWER_ENDPOINT, {
-        params: { surveyId },
-      });
+      const response = await eduApi.post<JSON>(SURVEY_ANSWER_ENDPOINT,
+        { surveyId, participant },
+      );
       const answer = response.data;
       set({ answer, isLoading: false });
       return answer;
     } catch (error) {
       set({ answer: undefined, error: error instanceof Error ? error : null, isLoading: false });
+      toast.error(error instanceof Error ? `${error.name} ${error.message}` : 'An error occurred');
+      handleApiError(error, set);
       return undefined;
     }
   },

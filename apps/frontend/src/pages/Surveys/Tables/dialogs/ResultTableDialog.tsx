@@ -34,7 +34,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     trigger,
   } = props;
 
-  if (!isOpenPublicResultsTableDialog) return null;
 
   const { t } = useTranslation();
 
@@ -49,6 +48,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   useEffect((): void => {
     getResult();
   }, []);
+
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
@@ -78,12 +78,14 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     );
   };
 
+  if (!isOpenPublicResultsTableDialog) return null;
+
   return (
     <AdaptiveDialog
       isOpen={isOpenPublicResultsTableDialog}
       trigger={trigger}
       handleOpenChange={isOpenPublicResultsTableDialog ? closePublicResultsTableDialog : openPublicResultsTableDialog}
-      title={t('survey.resultingVisualization')}
+      title={t('surveys.resultTableDialog.title')}
       body={getDialogBody()}
       desktopContentClassName="max-h-[75vh] max-w-[85%]"
     />

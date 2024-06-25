@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
 import Survey from '@libs/survey/types/survey';
-import Attendee from '@libs/survey/types/attendee';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/surveys-endpoint';
 
 interface ResultStore {
@@ -16,7 +15,7 @@ interface ResultStore {
   isOpenPublicResultsVisualisationDialog: boolean;
   openPublicResultsVisualisationDialog: () => void;
   closePublicResultsVisualisationDialog: () => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoading: boolean;
   error: Error | null;
@@ -43,20 +42,13 @@ const useResultStore = create<ResultStore>((set) => ({
   closePublicResultsTableDialog: () => set({ isOpenPublicResultsTableDialog: false }),
   openPublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: true }),
   closePublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: false }),
-  getSurveyResult: async (surveyId: mongoose.Types.ObjectId, participants: Attendee[]): Promise<JSON[]> => {
+  getSurveyResult: async (surveyId: mongoose.Types.ObjectId): Promise<JSON[]> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<JSON[]>(SURVEY_RESULT_ENDPOINT, {
-        params: {
-          surveyId,
-        },
-        data: {
-          surveyId,
-          participants,
-          isAnonymous: false,
-        },
-      });
+      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('base64')}`);
+
       const result = response.data;
+
       set({ result, isLoading: false });
       return result;
     } catch (error) {

@@ -161,6 +161,7 @@ class SurveysService {
       Logger.error(error2.message);
       throw error2;
     }
+
     return survey.publicAnswers || [];
   }
 }

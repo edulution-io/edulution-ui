@@ -118,6 +118,12 @@
       "flags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "canSubmitMultipleAnswers": "Should the survey still be visible after user has participated?"
+    },
+    "resultChartDialog": {
+      "title": "A chart that visualize the public answers of the survey"
+    },
+    "resultTableDialog": {
+      "title": "A table in which all the public answers are listed"
     }
   },
   "printer": {

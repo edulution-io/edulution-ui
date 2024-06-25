@@ -64,29 +64,10 @@ class SurveysController {
     return this.surveyService.getAllSurveys();
   }
 
-  @Get(`${ANSWER_ENDPOINT}:surveyId`)
-  async getSurveyAnswer(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
-    return this.usersSurveysService.getCommitedAnswer(username, surveyId);
-  }
-
-  @Get(ANSWER_ENDPOINT)
-  async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto) {
-    const { surveyId, participants = [] } = getAnswerDto;
-
-    const answers: JSON[] = [];
-    const promises: Promise<void>[] = participants.map(async (participant: string) => {
-      const answer = await this.usersSurveysService.getCommitedAnswer(participant, surveyId);
-      if (answer) {
-        answers.push(answer);
-      } else {
-        const error = `Found no answer from ${participant}`;
-        // const json = { error };
-        JSON.parse(JSON.stringify({ error }));
-        answers.push();
-      }
-    });
-    await Promise.all(promises);
-    return answers;
+  @Post(ANSWER_ENDPOINT)
+  async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto, @GetCurrentUsername() username: string) {
+    const { surveyId, participant = username } = getAnswerDto;
+    return this.usersSurveysService.getCommitedAnswer(participant, surveyId);
   }
 
   @Post()

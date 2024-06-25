@@ -38,7 +38,7 @@ const SurveyTable = (props: SurveyTableProps) => {
         return (
           <TableRow
             // eslint-disable-next-line no-underscore-dangle
-            key={`survey_row_-_${survey._id?.toHexString()}`}
+            key={`survey_row_-_${survey._id.toString('base64')}`}
             className="cursor-pointer"
             onClick={() => {
               selectSurvey(survey);

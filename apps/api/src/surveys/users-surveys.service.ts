@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import Attendee from '@libs/survey/types/attendee';
 import SurveyAnswer from '@libs/survey/types/survey-answer';
 import NotAbleToFindUserError from '@libs/survey/errors/not-able-to-find-user-error';
+import NotAbleToFindSurveyAnswerError from '@libs/survey/errors/not-able-to-find-survey-answer-error';
 import UserDidNotUpdateError from '@libs/survey/errors/not-able-to-update-user-error';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
@@ -205,6 +206,11 @@ class UsersSurveysService {
       return undefined;
     });
 
+    if (!answeredSurvey) {
+      const error = NotAbleToFindSurveyAnswerError;
+      Logger.error(error.message);
+      throw error;
+    }
     return answeredSurvey?.answer;
   }
 }

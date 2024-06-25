@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
-import SURVEY_ENDPOINT, {
+import SURVEYS_ENDPOINT, {
   SURVEY_All_SURVEYS_ENDPOINT,
   SURVEY_ANSWERED_SURVEYS_ENDPOINT,
   SURVEY_CREATED_SURVEYS_ENDPOINT,
@@ -126,7 +126,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
   patchSurvey: async (survey: Survey): Promise<Survey> => {
     set({ errorPostingSurvey: null, isPosting: true });
     try {
-      const response = await eduApi.post<Survey>(SURVEY_ENDPOINT, { ...survey });
+      const response = await eduApi.post<Survey>(SURVEYS_ENDPOINT, { ...survey });
       set({ isPosting: false });
       return response.data;
     } catch (error) {
