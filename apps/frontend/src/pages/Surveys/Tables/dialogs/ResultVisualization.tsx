@@ -16,7 +16,7 @@ const ResultVisualization = () => {
     getSurveyResult,
     result,
     isLoading,
-    error
+    error,
   } = useResultStore();
 
   const { t } = useTranslation();

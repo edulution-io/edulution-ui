@@ -15,11 +15,7 @@ const Delete = () => {
     updateAnsweredSurveys,
   } = useSurveyTablesPageStore();
 
-  const {
-    deleteSurvey,
-    isLoading,
-    error,
-  } = useDeleteStore();
+  const { deleteSurvey, isLoading, error } = useDeleteStore();
 
   const { t } = useTranslation();
 

@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import Survey from '@libs/survey/types/survey';
 import eduApi from '@/api/eduApi';
-import {toast} from "sonner";
-import handleApiError from "@/utils/handleApiError";
+import handleApiError from '@/utils/handleApiError';
 
 interface ParticipateDialogStore {
   selectedSurvey: Survey | undefined;
@@ -57,7 +57,9 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
       options?.showSaveError();
 
       set({ error: error instanceof AxiosError ? error : null, isLoading: false });
-      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting the answer for a survey');
+      toast.error(
+        error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting the answer for a survey',
+      );
       handleApiError(error, set);
       return '';
     }

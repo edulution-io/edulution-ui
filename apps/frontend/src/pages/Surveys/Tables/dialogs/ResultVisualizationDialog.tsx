@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
 import React, { useCallback, useEffect } from 'react';
+import mongoose from 'mongoose';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import Attendee from '@libs/survey/types/attendee';
 import Survey from '@libs/survey/types/survey';
@@ -7,7 +8,6 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ResultVisualizationDialogBody from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody';
-import {toast} from "sonner";
 
 interface ResultVisualizationDialogProps {
   survey: Survey;
