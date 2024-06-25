@@ -1,7 +1,9 @@
-class FindSurveyDto {
-  surveyId?: number;
+import mongoose from 'mongoose';
 
-  surveyIds?: number[];
+class FindSurveyDto {
+  surveyId?: mongoose.Types.ObjectId;
+
+  surveyIds: mongoose.Types.ObjectId[];
 
   username?: string;
 

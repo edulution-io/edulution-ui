@@ -1,9 +1,8 @@
-import { AxiosError } from 'axios';
-import { HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
-const NotAbleToDeleteSurveyError = new AxiosError(
+const NotAbleToDeleteSurveyError = new HttpException(
   'Not able to delete survey',
-  `${ HttpStatus.NOT_MODIFIED }`,
+  HttpStatus.NOT_MODIFIED,
 );
 
 export default NotAbleToDeleteSurveyError;
