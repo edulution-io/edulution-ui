@@ -6,7 +6,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/Breadcrumb';
-import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { useTranslation } from 'react-i18next';
 import {
   DropdownMenuContent,
@@ -16,6 +15,7 @@ import {
 } from '@/components/ui/DropdownMenuSH';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useUserStore from '@/store/UserStore/UserStore';
+import { HiChevronDown } from 'react-icons/hi';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -56,7 +56,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
               <DropdownMenuSH>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   ...
-                  <ChevronDownIcon />
+                  <HiChevronDown />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"

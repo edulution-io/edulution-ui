@@ -1,4 +1,4 @@
-# Edulution UI
+# edulution.io
 
 ## Description
 
