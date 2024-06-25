@@ -15,7 +15,7 @@ interface CommitedAnswersDialogStore {
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;
   closeCommitedAnswersDialog: () => void;
-  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<JSON | undefined>;
+  getCommittedSurveyAnswers: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<JSON | undefined>;
   user: string | undefined;
   selectUser: (user: string) => void;
   answer: JSON | undefined;
@@ -43,7 +43,7 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
   closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),
   selectUser: (userName: string) => set({ user: userName }),
-  getUsersCommitedAnswer: async (
+  getCommittedSurveyAnswers: async (
     surveyId: mongoose.Types.ObjectId,
     participant?: string,
   ): Promise<JSON | undefined> => {

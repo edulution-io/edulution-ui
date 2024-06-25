@@ -13,7 +13,7 @@ const CommitedAnswer = () => {
     isOpenCommitedAnswersDialog,
     openCommitedAnswersDialog,
     closeCommitedAnswersDialog,
-    getUsersCommitedAnswer,
+    getCommittedSurveyAnswers,
     answer,
     isLoading,
     error,
@@ -37,7 +37,7 @@ const CommitedAnswer = () => {
         isOpenCommitedAnswersDialog={isOpenCommitedAnswersDialog}
         openCommitedAnswersDialog={openCommitedAnswersDialog}
         closeCommitedAnswersDialog={closeCommitedAnswersDialog}
-        getUsersCommitedAnswer={getUsersCommitedAnswer}
+        getUsersCommitedAnswer={getCommittedSurveyAnswers}
         // user={user}
         // selectUser={selectUser}
         answer={answer}
