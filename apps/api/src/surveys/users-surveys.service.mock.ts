@@ -95,7 +95,7 @@ export const createdSurveys_afterRemove_distributedSurvey = [createdSurvey, surv
 export const answeredSurveys_afterRemove_distributedSurvey = [
   { surveyId: answeredSurvey, answer: mockedAnswer },
   { surveyId: surveyId08, answer: EMPTY_JSON },
-  { surveyId: surveyId09, answer: EMPTY_JSON }
+  { surveyId: surveyId09, answer: EMPTY_JSON },
 ];
 export const Users_UserSurveys_afterRemove_distributedSurvey: UsersSurveys = {
   openSurveys: openSurveys_afterRemove_distributedSurvey,
@@ -103,14 +103,26 @@ export const Users_UserSurveys_afterRemove_distributedSurvey: UsersSurveys = {
   answeredSurveys: answeredSurveys_afterRemove_distributedSurvey,
 };
 
-export const openSurveys_afterAddOpen_unknownSurvey = [openSurvey, surveyId02, surveyId03, distributedSurvey, unknownSurvey];
+export const openSurveys_afterAddOpen_unknownSurvey = [
+  openSurvey,
+  surveyId02,
+  surveyId03,
+  distributedSurvey,
+  unknownSurvey,
+];
 export const Users_UserSurveys_afterAddOpen_unknownSurvey: UsersSurveys = {
   openSurveys: openSurveys_afterAddOpen_unknownSurvey,
   createdSurveys: createdSurveys,
   answeredSurveys: answeredSurveys,
 };
 
-export const createdSurveys_afterAddCreated_unknownSurvey = [createdSurvey, surveyId05, surveyId06, distributedSurvey, unknownSurvey];
+export const createdSurveys_afterAddCreated_unknownSurvey = [
+  createdSurvey,
+  surveyId05,
+  surveyId06,
+  distributedSurvey,
+  unknownSurvey,
+];
 export const Users_UserSurveys_afterAddCreated_unknownSurvey: UsersSurveys = {
   openSurveys: openSurveys,
   createdSurveys: createdSurveys_afterAddCreated_unknownSurvey,
@@ -146,4 +158,3 @@ export const second_UserSurveysDocument: UsersSurveysDocument = {
 } as unknown as UsersSurveysDocument;
 
 export const mockedUserSurveysDocuments = [first_UserSurveysDocument, second_UserSurveysDocument];
-

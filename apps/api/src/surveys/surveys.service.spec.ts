@@ -24,15 +24,13 @@ import {
   partial_secondMockSurvey_afterAddedNewAnswer,
   newObjectId,
   addNewPublicAnswer_SecondMockSurvey_thirdUser,
-  third_username
+  third_username,
 } from './surveys.service.mock';
-import SurveyErrors from "@libs/survey/survey-errors";
-import NotAbleToParticipateAlreadyParticipatedError
-  from "@libs/survey/errors/not-able-to-participate-already-participated-error";
-import NotAbleToParticipateNotAnParticipantError
-  from "@libs/survey/errors/not-able-to-participate-not-an-participant-error";
-import NotAbleToCreateSurveyError from "@libs/survey/errors/not-able-to-create-survey-error";
-import NotAbleToUpdateSurveyError from "@libs/survey/errors/not-able-to-update-survey-error";
+import SurveyErrors from '@libs/survey/survey-errors';
+import NotAbleToParticipateAlreadyParticipatedError from '@libs/survey/errors/not-able-to-participate-already-participated-error';
+import NotAbleToParticipateNotAnParticipantError from '@libs/survey/errors/not-able-to-participate-not-an-participant-error';
+import NotAbleToCreateSurveyError from '@libs/survey/errors/not-able-to-create-survey-error';
+import NotAbleToUpdateSurveyError from '@libs/survey/errors/not-able-to-update-survey-error';
 
 describe('SurveyService', () => {
   let service: SurveysService;
@@ -139,9 +137,10 @@ describe('SurveyService', () => {
         exec: jest.fn().mockReturnValueOnce(firstMockSurvey),
       });
 
-      await service.updateOrCreateSurvey(firstMockSurvey)
-        .then ( (data) => expect(data).toStrictEqual(firstMockSurvey) )
-        .catch( () => {} );
+      await service
+        .updateOrCreateSurvey(firstMockSurvey)
+        .then((data) => expect(data).toStrictEqual(firstMockSurvey))
+        .catch(() => {});
 
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: firstMockSurvey._id }, { ...firstMockSurvey });
       expect(surveyModel.create).toHaveBeenCalledWith(firstMockSurvey);
@@ -155,9 +154,10 @@ describe('SurveyService', () => {
         exec: jest.fn().mockReturnValueOnce(secondMockSurvey),
       });
 
-      await service.updateOrCreateSurvey(secondMockSurvey)
-        .then ( (data) => expect(data).toStrictEqual(secondMockSurvey) )
-        .catch( () => {} );
+      await service
+        .updateOrCreateSurvey(secondMockSurvey)
+        .then((data) => expect(data).toStrictEqual(secondMockSurvey))
+        .catch(() => {});
 
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: secondMockSurvey._id }, { ...secondMockSurvey });
       expect(surveyModel.create).toHaveBeenCalledWith(secondMockSurvey);
@@ -209,7 +209,11 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.addPublicAnswer(firstMockSurvey._id, addNewPublicAnswer_FirstMockSurvey, 'NOT_EXISTING_USER_NAME');
+        await service.addPublicAnswer(
+          firstMockSurvey._id,
+          addNewPublicAnswer_FirstMockSurvey,
+          'NOT_EXISTING_USER_NAME',
+        );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrors.NotAbleToParticipateNotAnParticipantError);
@@ -252,7 +256,6 @@ describe('SurveyService', () => {
       }
     });
 
-
     it('in order to add an public answer it has to update the survey (first)', async () => {
       surveyModel.findOne = jest.fn().mockReturnValue({
         exec: jest.fn().mockReturnValue(firstMockSurvey),
@@ -261,10 +264,18 @@ describe('SurveyService', () => {
         exec: jest.fn().mockReturnValue(firstMockSurvey_afterAddedNewAnswer),
       });
 
-      const result = await service.addPublicAnswer(firstMockSurvey._id, addNewPublicAnswer_FirstMockSurvey, second_username, true);
+      const result = await service.addPublicAnswer(
+        firstMockSurvey._id,
+        addNewPublicAnswer_FirstMockSurvey,
+        second_username,
+        true,
+      );
 
       expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: firstMockSurvey._id });
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: firstMockSurvey._id }, { ...partial_firstMockSurvey_afterAddedNewAnswer });
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { _id: firstMockSurvey._id },
+        { ...partial_firstMockSurvey_afterAddedNewAnswer },
+      );
 
       expect(result).toStrictEqual(firstMockSurvey_afterAddedNewAnswer);
     });
@@ -277,10 +288,18 @@ describe('SurveyService', () => {
         exec: jest.fn().mockReturnValue(secondMockSurvey_afterAddedNewAnswer),
       });
 
-      const result = await service.addPublicAnswer(secondMockSurvey._id, addNewPublicAnswer_SecondMockSurvey_thirdUser, third_username, false);
+      const result = await service.addPublicAnswer(
+        secondMockSurvey._id,
+        addNewPublicAnswer_SecondMockSurvey_thirdUser,
+        third_username,
+        false,
+      );
 
       expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: secondMockSurvey._id });
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: secondMockSurvey._id }, { ...partial_secondMockSurvey_afterAddedNewAnswer });
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { _id: secondMockSurvey._id },
+        { ...partial_secondMockSurvey_afterAddedNewAnswer },
+      );
 
       expect(result).toStrictEqual(secondMockSurvey_afterAddedNewAnswer);
     });
@@ -314,7 +333,7 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, first_username)
+        await service.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, first_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);

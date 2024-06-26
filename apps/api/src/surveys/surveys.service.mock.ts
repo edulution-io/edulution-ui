@@ -39,7 +39,6 @@ export const mocked_participants = [
   },
 ];
 
-
 export const privateAnswer_FirstMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: ['Item 3'],
@@ -77,20 +76,16 @@ export const firstMockSurvey: SurveyModel = {
           {
             type: 'checkbox',
             name: 'Frage1',
-            choices: [
-              'Item 1',
-              'Item 2',
-              'Item 3'
-            ]
+            choices: ['Item 1', 'Item 2', 'Item 3'],
           },
           {
             type: 'text',
             name: 'Frage2',
-            title: 'text-input'
+            title: 'text-input',
           },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
   participants: mocked_participants,
   participated: [first_username],
@@ -122,7 +117,6 @@ export const firstMockSurveyDocument: SurveyDocument = {
   remove: jest.fn().mockResolvedValue(firstMockSurvey),
 } as unknown as SurveyDocument;
 
-
 export const publicAnswer_SecondMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'pupil2',
@@ -139,7 +133,7 @@ export const addNewPublicAnswer_SecondMockSurvey_thirdUser: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'pupil3',
   Frage2: 'name3',
-}
+};
 
 export const secondMockSurvey: SurveyModel = {
   _id: id_SecondMockSurvey,
@@ -151,14 +145,14 @@ export const secondMockSurvey: SurveyModel = {
       {
         type: 'text',
         name: 'Frage1',
-        title: 'Firstname/Vorname'
+        title: 'Firstname/Vorname',
       },
       {
         type: 'text',
         name: 'Frage2',
-        title: 'Lastname/Nachname'
+        title: 'Lastname/Nachname',
       },
-    ]
+    ],
   },
   participants: mocked_participants,
   participated: [second_username],
