@@ -22,7 +22,17 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "unexpectedError": "An unexpected error occurred"
+  },
   "conferences": {
+    "errors": {
+      "MeetingNotFound": "A meeting with this ID was not found",
+      "BbbServerNotReachable": "The external BBB is not reachable",
+      "BbbUnauthorized": "You are not authorized at external BBB server",
+      "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
+      "YouAreNotTheCreator": "You are not the creator of the conference"
+    },
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",

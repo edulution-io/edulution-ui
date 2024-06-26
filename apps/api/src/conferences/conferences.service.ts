@@ -1,10 +1,12 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import * as xml2js from 'xml2js';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
+import { CustomHttpException } from '@libs/error/CustomHttpException';
+import ConferencesErrorMessage from '@libs/conferences/conferencesErrorMessage';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
 import BbbResponseDto from './bbb-api/bbb-response.dto';
@@ -26,7 +28,9 @@ class ConferencesService {
 
   static handleBBBApiError(result: { response: { returncode: string } }) {
     if (result.response.returncode !== 'SUCCESS') {
-      throw new Error('BBB API did not return SUCCESS returncode');
+      throw new CustomHttpException(ConferencesErrorMessage.BbbUnauthorized, HttpStatus.UNAUTHORIZED, {
+        returncode: result.response.returncode,
+      });
     }
   }
 
@@ -72,7 +76,7 @@ class ConferencesService {
 
     const appConfig = await this.appConfigService.getAppConfigByName('conferences');
     if (!appConfig?.options.url || !appConfig.options.apiKey) {
-      throw new HttpException('App is not properly configured', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     this.BBB_API_URL = appConfig.options.url;
@@ -101,7 +105,7 @@ class ConferencesService {
   async toggleConferenceIsRunning(meetingID: string, username: string) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
-      throw new HttpException('You are not the creator!', HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(ConferencesErrorMessage.YouAreNotTheCreator, HttpStatus.UNAUTHORIZED);
     }
 
     if (conference.isRunning) {
@@ -123,8 +127,7 @@ class ConferencesService {
 
       await this.update({ ...conference, isRunning: true });
     } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
@@ -140,8 +143,7 @@ class ConferencesService {
 
       await this.update({ ...conference, isRunning: false });
     } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
@@ -151,7 +153,7 @@ class ConferencesService {
   ): Promise<{ conference: Conference; isCreator: boolean }> {
     const conference = await this.findOne(meetingID);
     if (!conference) {
-      throw new HttpException(`No meeting with ID ${meetingID} found`, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingID });
     }
     return { conference, isCreator: conference.creator.username === username };
   }
@@ -172,8 +174,7 @@ class ConferencesService {
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.METHOD_NOT_ALLOWED);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
