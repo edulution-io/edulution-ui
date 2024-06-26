@@ -23,7 +23,8 @@
     "prepare": "husky install",
     "check-circular-deps": "madge --circular --ts-config ./tsconfig.base.json apps/*",
     "format": "prettier --write 'apps/**/*.{js,jsx,ts,tsx}'",
-    "check-translations": "tsx ./scripts/checkTranslations.ts"
+    "check-translations": "tsx ./scripts/checkTranslations.ts",
+    "check-error-message-translations": "tsx scripts/checkErrorMessages.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -172,7 +173,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.2",
     "typescript-eslint": "^7.6.0",
     "vite": "^5.0.8",
     "vite-tsconfig-paths": "^4.3.1",

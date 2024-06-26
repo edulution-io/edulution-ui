@@ -40,7 +40,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
     set({ isLoading, error: null });
     try {
       const response = await eduApi.get<Conference[]>(apiEndpoint);
-      set({ conferences: response.data, isLoading: false });
+      set({ conferences: response.data });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -55,7 +55,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       const response = await eduApi.delete<Conference[]>(apiEndpoint, {
         data: conferences.map((c) => c.meetingID),
       });
-      set({ conferences: response.data, isLoading: false, selectedRows: {} });
+      set({ conferences: response.data, selectedRows: {} });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -66,7 +66,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
     set({ toggleConferenceRunningStateIsLoading: true });
     try {
       const response = await eduApi.put<Conference[]>(apiEndpoint, { meetingID });
-      set({ conferences: response.data, toggleConferenceRunningStateIsLoading: false });
+      set({ conferences: response.data });
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');
     } finally {

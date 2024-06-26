@@ -19,7 +19,7 @@ import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const { t } = useTranslation();
-  const { conferences, getConferences, isLoading, error, selectedRows, setSelectedRows } = useConferenceStore();
+  const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
@@ -52,8 +52,6 @@ const ConferencesTable = () => {
       setSelectedRows({});
     };
   }, [getConferences, setSelectedRows]);
-
-  if (error) return <div>Error: {error.message}</div>;
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 

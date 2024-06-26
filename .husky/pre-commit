@@ -2,7 +2,8 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npm run check-circular-deps
+npm run check-translations
+npm run check-error-message-translations
 npm run format
 npm run lint:fix
-npm run check-translations
 npm run test
