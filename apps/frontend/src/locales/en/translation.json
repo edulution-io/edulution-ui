@@ -22,6 +22,9 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "automaticLoginFailed": "Automatic login failed"
+  },
   "conferences": {
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",

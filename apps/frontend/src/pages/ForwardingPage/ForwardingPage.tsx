@@ -5,7 +5,7 @@ import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -61,7 +61,6 @@ const ForwardingPage: React.FC = () => {
         </Button>
       </div>
       <h3>{showIsForwarding ? t('forwardingpage.description') : '\u00A0'}</h3>
-      <Toaster />
     </div>
   );
 };

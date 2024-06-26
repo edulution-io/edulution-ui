@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { findAppConfigByName } from '@/utils/common';
 import useFrameStore from '@/components/framing/FrameStore';
-import { useMediaQuery } from 'usehooks-ts';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
@@ -13,7 +14,8 @@ interface NativeIframeLayoutProps {
 }
 
 const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop, appName }) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
+  const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
@@ -22,7 +24,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const getStyle = () =>
     activeFrame === appName
       ? // Fix 56px width calculated value: NIEDUUI-162
-        { display: 'block', width: isMobile ? '100%' : 'calc(100% - 56px)' }
+        { display: 'block', width: isMobileView ? '100%' : 'calc(100% - 56px)' }
       : { display: 'none' };
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
@@ -40,7 +42,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
       } catch (e) {
         console.error(e);
         if (e instanceof DOMException) {
-          toast.error(`${e.name}: ${e.message}`);
+          toast.error(t('errors.automaticLoginFailed'));
         }
       }
     };

@@ -7,10 +7,10 @@ import { useAuth } from 'react-oidc-context';
 import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface HeaderProps {
-  hideHeadingText: boolean;
+  hideHeadingText?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ hideHeadingText }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps) => {
   const isMobileView = useIsMobileView();
   const { t } = useTranslation();
   const auth = useAuth();
