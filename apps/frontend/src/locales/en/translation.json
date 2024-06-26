@@ -22,6 +22,9 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "automaticLoginFailed": "Automatic login failed"
+  },
   "conferences": {
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
@@ -130,6 +133,10 @@
     "title": "BACKUP",
     "sidebar": "Backup"
   },
+  "aichat": {
+    "title": "KI CHAT",
+    "sidebar": "KI Chat"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -212,6 +219,10 @@
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
     "filesToUpload": "Files to upload"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",

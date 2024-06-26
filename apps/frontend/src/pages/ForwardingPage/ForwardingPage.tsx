@@ -5,13 +5,13 @@ import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
 import { findAppConfigByName, getFromPathName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
 
-  const [isForwarding, setIsForwaring] = useState(false);
+  const [isForwarding, setIsForwarding] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
 
   const { appConfigs } = useAppConfigsStore();
@@ -20,7 +20,7 @@ const ForwardingPage: React.FC = () => {
 
   useEffect(() => {
     if (isForwarding) {
-      setIsForwaring(false);
+      setIsForwarding(false);
       const navigateToExternalPage = () => {
         const externalLink = findAppConfigByName(appConfigs, rootPathName)?.options.url;
         if (externalLink) {
@@ -33,7 +33,7 @@ const ForwardingPage: React.FC = () => {
       };
       navigateToExternalPage();
     }
-    setIsForwaring(false);
+    setIsForwarding(false);
   }, [isForwarding, rootPathName, appConfigs]);
 
   return (
@@ -50,7 +50,7 @@ const ForwardingPage: React.FC = () => {
           type="button"
           variant="btn-hexagon"
           onClick={() => {
-            setIsForwaring((prevVal) => !prevVal);
+            setIsForwarding((prevVal) => !prevVal);
           }}
         >
           <img
@@ -61,7 +61,6 @@ const ForwardingPage: React.FC = () => {
         </Button>
       </div>
       <h3>{showIsForwarding ? t('forwardingpage.description') : '\u00A0'}</h3>
-      <Toaster />
     </div>
   );
 };
