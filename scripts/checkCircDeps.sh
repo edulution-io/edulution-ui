@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the list of changed files
-CHANGED_FILES=$(git diff --name-only --cached)
+CHANGED_FILES=$(git diff --name-only --cached --diff-filter=ACMRT)
 
 # Filter the changed files to include only .ts and .tsx files
 FILTERED_FILES=$(echo "$CHANGED_FILES" | grep -E '\.ts$|\.tsx$')

@@ -4,7 +4,7 @@ import { useAuth } from 'react-oidc-context';
 
 import useIsMobileView from '@/hooks/useIsMobileView';
 import Feed from '@/components/feature/Feed/Feed';
-import MobileFileAccess from './MobileFileAccess/MobileFileAccess';
+import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
                   <Groups />
                 </div>
                 <div className="flex-1">
-                  <MobileFileAccess />
+                  <MobileFileAccessCard />
                 </div>
               </div>
               <div>
