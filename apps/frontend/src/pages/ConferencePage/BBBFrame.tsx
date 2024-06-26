@@ -37,7 +37,7 @@ const BBBIFrame = () => {
         </button>
         <button
           type="button"
-          className="rounded bg-red-500 px-4 text-white hover:bg-red-700"
+          className="rounded bg-ciLightRed px-4 text-white hover:bg-ciRed"
           onClick={() => setJoinConferenceUrl('')}
         >
           <MdClose className="inline" /> {isMobileView ? '' : t('conferences.close')}
