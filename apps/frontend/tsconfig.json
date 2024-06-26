@@ -1,10 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "ES2022",
     "moduleResolution": "Bundler",
-    "composite": true,
-    "declaration": true
+    "declaration": true,
+    "composite": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*.ts", "../../libs/src/*"],
-  "exclude": ["postcss.config.js"]
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ],
+  "exclude": ["postcss.config.js", "tailwind.config.ts"]
 }
