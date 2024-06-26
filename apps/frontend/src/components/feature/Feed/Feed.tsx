@@ -37,12 +37,7 @@ const Feed = () => {
   return (
     <Card
       variant="collaboration"
-      className={ cn(
-          {'min-h-[280px]': isMobileView},
-          {'min-h-[100%]': !isMobileView},
-          'overflow-y-auto'
-        )
-      }
+      className={cn({ 'min-h-[280px]': isMobileView }, { 'min-h-[100%]': !isMobileView }, 'overflow-y-auto')}
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>
