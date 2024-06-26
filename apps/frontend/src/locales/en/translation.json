@@ -23,7 +23,7 @@
     "sidebar": "Chat"
   },
   "errors": {
-    "automaticLoginFailed": "Automatic login failed"
+    "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred"
   },
   "conferences": {

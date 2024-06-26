@@ -9,7 +9,6 @@ interface CustomAxiosError extends AxiosError {
     };
     headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
     config: InternalAxiosRequestConfig;
-    request?: any;
   };
 }
 

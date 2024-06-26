@@ -91,6 +91,8 @@ const main = () => {
 
   console.log('Checking English translation file...');
   compareEnumWithJson(enumKeys, enJson, 'conferences.errors');
+
+  console.log('✔ Everything is awesome!');
 };
 
 main();

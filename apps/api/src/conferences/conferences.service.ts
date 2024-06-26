@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as xml2js from 'xml2js';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
-import { CustomHttpException } from '@libs/error/CustomHttpException';
+import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/conferencesErrorMessage';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
