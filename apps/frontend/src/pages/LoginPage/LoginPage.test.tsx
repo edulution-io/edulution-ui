@@ -151,7 +151,7 @@ describe('LoginPage', () => {
         () => {},
         () => {},
       );
-    }
+    };
 
     await userEvent.clear(userNameInput);
     await userEvent.type(userNameInput, 'success');
