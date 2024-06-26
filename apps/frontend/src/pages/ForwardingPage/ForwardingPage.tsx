@@ -3,9 +3,10 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { RoundArrowIcon } from '@/assets/layout';
-import { findAppConfigByName, getFromPathName } from '@/utils/common';
+import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { toast, Toaster } from 'sonner';
+import { getFromPathName } from '@libs/common/utils';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();

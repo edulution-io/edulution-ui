@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
-import { getFromPathName } from '@/utils/common';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
+import { getFromPathName } from '@libs/common/utils';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -11,7 +11,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
   const size = useWindowSize();
   const { pathname } = useLocation();
 
-  const rootPathName = `/${getFromPathName(pathname, 1)}`;
+  const rootPathName = getFromPathName(pathname, [0, 1]);
 
   useEffect(() => {
     if (buttonRef.current == null) return;

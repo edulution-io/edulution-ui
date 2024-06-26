@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery, useWindowSize } from 'usehooks-ts';
+import { useWindowSize } from 'usehooks-ts';
 import { SettingsIcon } from '@/assets/icons';
 import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import { SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 import useSidebarStore from './sidebarStore';
@@ -13,7 +14,7 @@ import useSidebarStore from './sidebarStore';
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isMobileView = useIsMobileView();
   const sidebarIconsRef = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
   const [translate, setTranslate] = useState(0);
@@ -167,13 +168,13 @@ const Sidebar: React.FC = () => {
     setIsDownButtonVisible,
   };
 
-  return isDesktop ? (
-    <DesktopSidebar
+  return isMobileView ? (
+    <MobileSidebar
       ref={sidebarIconsRef}
       {...sidebarProps}
     />
   ) : (
-    <MobileSidebar
+    <DesktopSidebar
       ref={sidebarIconsRef}
       {...sidebarProps}
     />

@@ -20,7 +20,7 @@ const DesktopSidebar = forwardRef<HTMLDivElement, SidebarProps>(
   ) => {
     const sidebarIconsRef = ref as MutableRefObject<HTMLDivElement>;
 
-    const renderListItem = () => (
+    return (
       <div className="fixed right-0 z-[50] h-screen border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none">
         <HomeButton />
         {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
@@ -46,8 +46,6 @@ const DesktopSidebar = forwardRef<HTMLDivElement, SidebarProps>(
         <UserMenuButton />
       </div>
     );
-
-    return renderListItem();
   },
 );
 
