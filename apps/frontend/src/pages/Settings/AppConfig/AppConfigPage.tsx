@@ -10,7 +10,6 @@ import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { TrashIcon } from '@/assets/icons';
-import Toaster from '@/components/ui/Sonner';
 import { AppIntegrationType } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
@@ -220,7 +219,6 @@ const AppConfigPage: React.FC = () => {
       </div>
       {settingsForm()}
       {isMobileView ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}
-      <Toaster />
     </>
   );
 };

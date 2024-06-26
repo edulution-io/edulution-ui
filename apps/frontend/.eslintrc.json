@@ -1,10 +1,16 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "jest.config.ts", "vite.config.ts", "postcss.config.js", "tailwind.config.ts"],
-  "parser": "@typescript-eslint/parser",
+  "ignorePatterns": ["jest.config.ts", "vite.config.ts", "postcss.config.js", "tailwind.config.ts"],
   "env": {
     "browser": true,
     "es2022": true
   },
-  "parserOptions": { "project": ["./tsconfig.json"], "sourceType": "module" }
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["apps/frontend/tsconfig.eslint.json"]
+      }
+    }
+  ]
 }

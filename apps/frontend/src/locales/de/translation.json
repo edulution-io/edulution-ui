@@ -23,7 +23,8 @@
     "sidebar": "Chat"
   },
   "errors": {
-    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten"
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
   },
   "conferences": {
     "errors": {
@@ -223,6 +224,10 @@
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "filesToUpload": "Dateien zum Hochladen"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "table": {
     "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",

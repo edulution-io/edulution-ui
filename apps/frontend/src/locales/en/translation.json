@@ -23,6 +23,7 @@
     "sidebar": "Chat"
   },
   "errors": {
+    "automaticLoginFailed": "Automatic login failed"
     "unexpectedError": "An unexpected error occurred"
   },
   "conferences": {
@@ -222,6 +223,10 @@
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
     "filesToUpload": "Files to upload"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",
