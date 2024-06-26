@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import { ConferencesIcon } from '@/assets/icons';
 import { APPS } from '@/datatypes/types';
+import cn from '@/lib/utils';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { AccordionContent, AccordionItem, Accordion, AccordionTrigger } from '@/components/ui/Accordion';
@@ -17,6 +19,8 @@ const Feed = () => {
   const { conferences, getConferences } = useConferenceStore();
 
   const { t } = useTranslation();
+
+  const isMobileView = useIsMobileView();
 
   // Interval fetch every 10s
   useInterval(() => {
@@ -33,7 +37,12 @@ const Feed = () => {
   return (
     <Card
       variant="collaboration"
-      className="min-h-[100%] overflow-auto"
+      className={ cn(
+          {'min-h-[280px]': isMobileView},
+          {'min-h-[100%]': !isMobileView},
+          'overflow-y-auto'
+        )
+      }
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>
