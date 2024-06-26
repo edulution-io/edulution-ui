@@ -12,14 +12,14 @@ const BlankLayout: React.FC<PropsWithChildren> = () => {
 
   return (
     <div className="flex">
-      <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        <Header isLogoShown={!isMainPage} />
+      <div className="flex min-h-[100vh] w-full flex-col px-5 lg:pr-20">
+        {!isMainPage ? <Header hideHeadingText /> : null}
         <main className="flex-1">
           <Outlet />
         </main>
-        <Footer />
       </div>
       {auth.isAuthenticated ? <Sidebar /> : null}
+      <Footer />
     </div>
   );
 };

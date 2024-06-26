@@ -8,7 +8,7 @@
     "*.scss": "tailwindcss"
   },
 
-  "eslint.workingDirectories": ["apps/api", "apps/frontend", "apps/api-e2e", "./"],
+  "eslint.workingDirectories": [{ "directory": "../" }],
   "CodeGPT.apiKey": "Ollama",
   "CodeGPT.Autocomplete.provider": "Ollama - codellama:code",
   "CodeGPT.Autocomplete.enabled": true,

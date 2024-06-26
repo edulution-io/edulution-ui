@@ -14,7 +14,7 @@ import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTab
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
