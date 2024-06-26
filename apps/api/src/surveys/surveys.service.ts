@@ -2,6 +2,7 @@ import mongoose, { Model } from 'mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import Attendee from '@libs/survey/types/attendee';
+import SurveyErrors from '@libs/survey/survey-errors';
 import NeitherAbleToUpdateNorToCreateSurveyError from '@libs/survey/errors/neither-able-to-update-nor-to-create-survey-error';
 import NotAbleToDeleteSurveyError from '@libs/survey/errors/not-able-to-delete-survey-error';
 import NotAbleToFindSurveyError from '@libs/survey/errors/not-able-to-find-survey-error';
@@ -64,6 +65,7 @@ class SurveysService {
   }
 
   async updateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+    Logger.log(`Update Survey :: survey := ${JSON.stringify(survey, null, 2)}`);
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<SurveyModel>(
         // eslint-disable-next-line no-underscore-dangle
@@ -72,13 +74,14 @@ class SurveysService {
       )
       .exec();
 
-    Logger.log(updatedSurvey == null ? 'Could not update the survey' : 'Updated survey successfully');
+    Logger.log(updatedSurvey == null ? SurveyErrors.NotAbleToUpdateSurveyError : 'Updated survey successfully');
     return updatedSurvey;
   }
 
   async createSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+    Logger.log(`Create Survey :: survey := ${JSON.stringify(survey, null, 2)}`);
     const createdSurvey = await this.surveyModel.create(survey);
-    Logger.log(createdSurvey == null ? 'Could not create the new survey' : 'Created the new survey successfully');
+    Logger.log(createdSurvey == null ? SurveyErrors.NotAbleToCreateSurveyError : 'Created the new survey successfully');
     return createdSurvey;
   }
 
@@ -100,6 +103,7 @@ class SurveysService {
     surveyId: mongoose.Types.ObjectId,
     answer: JSON,
     username?: string,
+    canSubmitMultipleAnswers: boolean = false,
   ): Promise<SurveyModel | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
       const error1 = NotValidSurveyIdIsNoMongooseObjectId;
@@ -116,6 +120,7 @@ class SurveysService {
 
     const participants = existingSurvey.participants || [];
     const participated = existingSurvey.participated || [];
+    const answers = existingSurvey.publicAnswers || [];
     if (username) {
       const isParticipant = participants.find((participant: Attendee) => participant.username === username);
       if (!isParticipant) {
@@ -124,16 +129,18 @@ class SurveysService {
         throw error3;
       }
       const hasAlreadyParticipated = participated.find((user: string) => user === username);
-      if (hasAlreadyParticipated) {
+      if (hasAlreadyParticipated && !canSubmitMultipleAnswers) {
         const error4 = NotAbleToParticipateAlreadyParticipatedError;
         Logger.warn(error4.message);
         throw error4;
       }
-      participated.push(username);
+      if (!hasAlreadyParticipated) {
+        participated.push(username);
+      }
+      if (!hasAlreadyParticipated || canSubmitMultipleAnswers) {
+        answers.push(answer);
+      }
     }
-
-    const answers = existingSurvey.publicAnswers || [];
-    answers.push(answer);
 
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<SurveyModel>({ _id: surveyId }, { publicAnswers: answers, participated })

@@ -68,7 +68,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   //   setValue('invitedGroups', groups);
   // };
 
-  const participantsWatched = watch('participants') as Attendee[];
+  // const participantsWatched = watch('participants') as Attendee[];
   const participantsValue = getValues('participants') as Attendee[];
 
   const expirationDateWatched = watch('expirationDate') as Date;
@@ -79,7 +79,6 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   return (
     <>
       <SearchUsersOrGroups
-        options={participantsWatched}
         value={participantsValue}
         onSearch={onAttendeesSearch}
         onChange={handleAttendeesChange}

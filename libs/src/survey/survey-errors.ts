@@ -2,11 +2,13 @@
 
 enum SurveyErrors {
   NeitherAbleToUpdateNorToCreateSurveyError = 'errors.neitherAbleToUpdateNorToCreateSurveyError',
+  NotAbleToCreateSurveyError = 'errors.notAbleToCreateSurveyError',
   NotAbleToDeleteSurveyError = 'errors.notAbleToDeleteSurveyError',
   NotAbleToFindSurveyAnswerError = 'errors.notAbleToFindSurveyAnswerError',
   NotAbleToFindSurveyError = 'errors.notAbleToFindSurveyError',
   NotAbleToFindSurveysError = 'errors.notAbleToFindSurveysError',
   NotAbleToFindUserError = 'errors.notAbleToFindUserError',
+  NotAbleToFindUsersError = 'errors.notAbleToFindUsersError',
   NotAbleToParticipateNotAnParticipantError = 'errors.notAbleToParticipateNotAnParticipantError',
   NotAbleToParticipateAlreadyParticipatedError = 'errors.notAbleToParticipateAlreadyParticipatedError',
   NotAbleToUpdateSurveyError = 'errors.notAbleToUpdateSurveyError',

@@ -373,11 +373,13 @@
   },
   "errors": {
     "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
+    "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
     "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
     "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
     "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
     "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
     "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
+    "notAbleToFindUsersError": "Nutzer konnten nicht gefunden werden",
     "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
     "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
     "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",

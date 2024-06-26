@@ -76,7 +76,8 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
-      id,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _id,
       participants = [],
       publicAnswers = [],
       saveNo = 0,
@@ -87,7 +88,7 @@ class SurveysController {
 
     const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
-      _id: id,
+      _id,
       participants,
       publicAnswers,
       saveNo,
