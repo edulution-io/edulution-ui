@@ -1,1 +1,1 @@
-export * from './appconfig/types/appconfig';
+export * from './appconfig/types/appIntegrationType';

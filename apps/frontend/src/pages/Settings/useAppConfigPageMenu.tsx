@@ -5,12 +5,12 @@ import { findAppConfigByName } from '@/utils/common';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
-const useSettingsMenuConfig = () => {
+const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
   const [, setSearchParams] = useSearchParams();
   const { appConfigs } = useAppConfigsStore();
 
-  const SETTINGS_CONFIG: MenuBarEntryProps = {
+  const settingsMenuBarEntry: MenuBarEntryProps = {
     title: 'settings.title',
     icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
@@ -24,8 +24,8 @@ const useSettingsMenuConfig = () => {
     ],
   };
 
-  const settingsMenuConfig = (): MenuBarEntryProps => ({
-    ...SETTINGS_CONFIG,
+  const appConfigPageMenu = (): MenuBarEntryProps => ({
+    ...settingsMenuBarEntry,
     menuItems: [
       ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
         (item) => ({
@@ -35,14 +35,14 @@ const useSettingsMenuConfig = () => {
           action: () => navigate(`/settings/${item.id}`),
         }),
       ),
-      ...SETTINGS_CONFIG.menuItems.map((item) => ({
+      ...settingsMenuBarEntry.menuItems.map((item) => ({
         ...item,
         action: () => setSearchParams({ mode: 'add' }),
       })),
     ],
   });
 
-  return settingsMenuConfig();
+  return appConfigPageMenu();
 };
 
-export default useSettingsMenuConfig;
+export default useAppConfigPageMenu;

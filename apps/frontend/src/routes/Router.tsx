@@ -13,12 +13,14 @@ import { RoomBookingPage } from '@/pages/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import { useAuth } from 'react-oidc-context';
 
-import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
+import { APPS } from '@/datatypes/types';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useUserQuery from '@/api/useUserQuery';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import useUserStore from '@/store/UserStore/UserStore';
 import MailPage from '@/pages/Mail/MailPage';
+import { AppConfigDto } from '@libs/appconfig/types/appconfig.dto';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -44,7 +46,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const router = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
+const router = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (

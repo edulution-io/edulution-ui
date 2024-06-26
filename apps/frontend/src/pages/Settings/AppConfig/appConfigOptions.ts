@@ -23,7 +23,7 @@ import {
   WlanIcon,
 } from '@/assets/icons';
 import { APPS } from '@/datatypes/types';
-import { AppConfigOptionType } from '@/datatypes/appConfigOptions';
+import { AppConfigOptionType } from '@libs/appconfig/types/appConfigOptions';
 
 type AppConfigOption = {
   id: string;

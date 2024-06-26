@@ -1,16 +1,17 @@
 import eduApi from '@/api/eduApi';
-import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import EDU_API_CONFIG_ENDPOINT from '@/api/endpoints/appconfig';
+import { AppConfigDto } from '@libs/appconfig/types/appconfig.dto';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 
 type AppConfigsStore = {
-  appConfigs: AppConfig[];
+  appConfigs: AppConfigDto[];
   isLoading: boolean;
   error: Error | null;
   getAppConfigs: () => Promise<void>;
-  updateAppConfig: (appConfigs: AppConfig[]) => Promise<void>;
+  updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
 };
 
@@ -29,7 +30,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
       getAppConfigs: async () => {
         set({ isLoading: true, error: null });
         try {
-          const response = await eduApi.get<AppConfig[]>(EDU_API_CONFIG_ENDPOINT);
+          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
           set({ appConfigs: response.data, isLoading: false });
         } catch (e) {
           handleApiError(e, set);
