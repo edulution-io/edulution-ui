@@ -1,12 +1,12 @@
 import React from 'react';
 import { useEncryption } from '@/hooks/mutations';
-import NativeIframeLayout from '@/components/framing/NativeIframeLayout';
 import { APPS } from '@/datatypes/types';
 import useUserStore from '@/store/UserStore/UserStore';
-import getLoginScript from '@/pages/Mail/scripts/login';
-import logoutScript from '@/pages/Mail/scripts/logout';
+import NativeIframeLayout from '@/components/framing/NativeIframeLayout';
+import getLoginScript from '@/pages/LinuxmusterPage/scripts/login';
+import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
 
-const MailPage: React.FC = () => {
+const LinuxmusterPage: React.FC = () => {
   const { username, webdavKey } = useUserStore();
 
   const decryptedPassword = useEncryption({
@@ -19,9 +19,9 @@ const MailPage: React.FC = () => {
     <NativeIframeLayout
       scriptOnStartUp={getLoginScript(username, decryptedPassword)}
       scriptOnStop={logoutScript}
-      appName={APPS.MAIL}
+      appName={APPS.LINUXMUSTER}
     />
   );
 };
 
-export default MailPage;
+export default LinuxmusterPage;
