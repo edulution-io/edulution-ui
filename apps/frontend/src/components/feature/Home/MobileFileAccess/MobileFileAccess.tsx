@@ -3,9 +3,9 @@ import { Button } from '@/components/shared/Button';
 import { AppleLogo } from '@/assets/icons';
 import { Card, CardContent } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
-import MobileAccessDialog from './MobileAccessDialog';
+import MobileFileAccessSetupDialog from './MobileFileAccessSetupDialog';
 
-const MobileDataAccess: React.FC = () => {
+const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
   const [isMobileAccessOpen, setIsMobileAccessOpen] = useState(false);
   return (
@@ -26,13 +26,13 @@ const MobileDataAccess: React.FC = () => {
             />
             <p>{t('dashboard.mobileAccess.manual')}</p>
           </Button>
-          <MobileAccessDialog
-            isMobileAccessIntroductionOpen={isMobileAccessOpen}
-            setIsMobileAccessIntroductionOpen={setIsMobileAccessOpen}
+          <MobileFileAccessSetupDialog
+            isOpen={isMobileAccessOpen}
+            setIsOpen={setIsMobileAccessOpen}
           />
         </div>
       </CardContent>
     </Card>
   );
 };
-export default MobileDataAccess;
+export default MobileFileAccess;

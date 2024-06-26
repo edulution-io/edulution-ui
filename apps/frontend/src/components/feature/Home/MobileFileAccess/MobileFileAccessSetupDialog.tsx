@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { useMediaQuery } from 'usehooks-ts';
 import { t } from 'i18next';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -8,17 +7,15 @@ import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
-type MobileAccessDialogProps = {
-  isMobileAccessIntroductionOpen: boolean;
-  setIsMobileAccessIntroductionOpen: (open: boolean) => void;
+type MobileFileAccessSetupDialogProps = {
+  isOpen: boolean;
+  setIsOpen: (isMobileAccessOpen: boolean) => void;
 };
 
-const MobileAccessDialog: React.FC<MobileAccessDialogProps> = ({
-  isMobileAccessIntroductionOpen,
-  setIsMobileAccessIntroductionOpen,
-}) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = ({ isOpen, setIsOpen }) => {
+  const isMobileView = useIsMobileView();
   const { user } = useUserStore();
   const [isStepOne, setIsStepOne] = useState(true);
 
@@ -74,12 +71,12 @@ const MobileAccessDialog: React.FC<MobileAccessDialogProps> = ({
 
   return (
     <AdaptiveDialog
-      isOpen={isMobileAccessIntroductionOpen}
-      handleOpenChange={() => setIsMobileAccessIntroductionOpen(!isMobileAccessIntroductionOpen)}
+      isOpen={isOpen}
+      handleOpenChange={() => setIsOpen(!isOpen)}
       title={t('dashboard.mobileAccess.title')}
-      body={isMobile ? getSheetBody() : getDialogBody()}
+      body={isMobileView ? getSheetBody() : getDialogBody()}
     />
   );
 };
 
-export default MobileAccessDialog;
+export default MobileFileAccessSetupDialog;

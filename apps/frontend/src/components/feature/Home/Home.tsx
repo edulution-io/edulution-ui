@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
 import MyFavourites from './MyFavourites';
-import MobileDataAccess from './MobileAccess/MobileDataAccess';
+import MobileFileAccess from './MobileFileAccess/MobileFileAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
                   <Groups />
                 </div>
                 <div className="flex-1">
-                  <MobileDataAccess />
+                  <MobileFileAccess />
                 </div>
               </div>
               <div>
