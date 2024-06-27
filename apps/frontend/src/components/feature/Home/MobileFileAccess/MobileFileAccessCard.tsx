@@ -26,10 +26,12 @@ const MobileFileAccess: React.FC = () => {
             />
             <p>{t('dashboard.mobileAccess.manual')}</p>
           </Button>
-          <MobileFileAccessSetupDialog
-            isOpen={isMobileAccessOpen}
-            setIsOpen={setIsMobileAccessOpen}
-          />
+          {isMobileAccessOpen ? (
+            <MobileFileAccessSetupDialog
+              isOpen={isMobileAccessOpen}
+              setIsOpen={setIsMobileAccessOpen}
+            />
+          ) : null}
         </div>
       </CardContent>
     </Card>

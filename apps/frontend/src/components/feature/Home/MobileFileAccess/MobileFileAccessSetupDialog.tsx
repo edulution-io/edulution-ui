@@ -8,6 +8,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { Card } from '@/components/shared/Card';
 
 type MobileFileAccessSetupDialogProps = {
   isOpen: boolean;
@@ -16,7 +17,7 @@ type MobileFileAccessSetupDialogProps = {
 
 const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = ({ isOpen, setIsOpen }) => {
   const isMobileView = useIsMobileView();
-  const { user } = useUserStore();
+  const { username } = useUserStore();
   const [isStepOne, setIsStepOne] = useState(true);
 
   const urlAppStore = 'https://apps.apple.com/de/app/edulution-io/id6478116528';
@@ -24,15 +25,34 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
   const qrCodeLoginData = {
     displayName: `${window.document.title}`,
     url: `${window.location.origin}/webdav`,
-    username: user,
+    username,
     password: '',
     token: '',
   };
   const qrCodeLogin = JSON.stringify(qrCodeLoginData);
 
+  const loginDataTable = () => (
+    <div className="mt-4">
+      {t('form.url')}:
+      <Card
+        variant="text"
+        className=""
+      >
+        <pre className="m-2  text-foreground">{urlAppStore}</pre>
+      </Card>
+      {t('common.username')}:
+      <Card
+        variant="text"
+        className=""
+      >
+        <pre className="m-2 text-foreground">{username}</pre>
+      </Card>
+    </div>
+  );
+
   const getDialogBody = () => (
-    <>
-      <p className="flex justify-center text-black">
+    <div className="text-foreground">
+      <p className="flex justify-center">
         {t(isStepOne ? 'dashboard.mobileAccess.scanAppStoreLink' : 'dashboard.mobileAccess.scanAccessInfo')}
       </p>
       <div className="mt-4 justify-center">
@@ -43,30 +63,39 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         type="button"
         variant="btn-outline"
         onClick={() => setIsStepOne(!isStepOne)}
-        className={`absolute top-1/2 text-black ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
+        className={`absolute top-1/2 ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
       >
         {isStepOne ? <MdArrowForwardIos /> : <MdArrowBackIosNew />}
       </Button>
-    </>
+
+      <p className="mt-4">
+        {t(isStepOne ? 'dashboard.mobileAccess.nextStepPreview' : 'dashboard.mobileAccess.copyCredentials')}
+      </p>
+      {isStepOne ? null : loginDataTable()}
+    </div>
   );
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   const getSheetBody = () => (
-    <NavLink
-      to={urlAppStore}
-      className="flex flex-col items-center"
-    >
-      <p className="my-4 text-black">{t('dashboard.mobileAccess.scanAppStoreLink')}</p>
-      <Button
-        variant="btn-outline"
-        className="flex items-center justify-center"
+    <div className="text-foreground">
+      <p className="my-4">{t('dashboard.mobileAccess.scanAppStoreLink')}</p>
+      <NavLink
+        to={urlAppStore}
+        className="flex flex-col items-center"
       >
-        <IconContext.Provider value={iconContextValue}>
-          <MdOutlineFileDownload className="text-black" />
-        </IconContext.Provider>
-      </Button>
-    </NavLink>
+        <Button
+          variant="btn-outline"
+          className="flex items-center justify-center"
+        >
+          <IconContext.Provider value={iconContextValue}>
+            <MdOutlineFileDownload className="text-foreground" />
+          </IconContext.Provider>
+        </Button>
+      </NavLink>
+      <p className="mt-4">{t('dashboard.mobileAccess.accessData')}:</p>
+      {loginDataTable()}
+    </div>
   );
 
   return (

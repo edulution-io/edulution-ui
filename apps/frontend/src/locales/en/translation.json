@@ -7,9 +7,12 @@
     "mobileAccess": {
       "title": "Mobile File Access",
       "manual": "Manual",
+      "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Select your operating system to see how it works.",
       "scanAccessInfo": "To transfer the access data, please scan the following QR code.",
-      "scanAppStoreLink": "You can download the edulution-io app via the following link."
+      "scanAppStoreLink": "Scan the QR code to download the edultion-io app from the AppStore.",
+      "nextStepPreview": "In the next step, you can transfer the access data by scanning a QR code.",
+      "copyCredentials": "Or enter manually:"
     }
   },
   "ticketsystem": {
