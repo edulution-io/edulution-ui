@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import {HttpException, HttpStatus} from '@nestjs/common';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 
 const NeitherAbleToUpdateNorToCreateSurveyError = new HttpException(

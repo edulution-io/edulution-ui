@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { waitForToken } from '@/api/common';
+import waitForToken from '@/api/common';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';

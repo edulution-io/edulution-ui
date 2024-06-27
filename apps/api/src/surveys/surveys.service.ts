@@ -2,7 +2,7 @@ import mongoose, { Model } from 'mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import Attendee from '@libs/survey/types/attendee';
-import NeitherFoundNorCreatedSurveyError from '@libs/survey/errors/neither-updated-nor-found-survey-error';
+import NeitherAbleToUpdateNorToCreateSurveyError from '@libs/survey/errors/neither-able-to-update-nor-to-create-survey-error';
 import NotAbleToDeleteSurveyError from '@libs/survey/errors/not-able-to-delete-survey-error';
 import NotAbleToFindSurveyError from '@libs/survey/errors/not-able-to-find-survey-error';
 import NotAbleToFindSurveysError from '@libs/survey/errors/not-able-to-find-surveys-error';
@@ -87,29 +87,13 @@ class SurveysService {
     if (updatedSurvey == null) {
       const createdSurvey = await this.createSurvey(survey);
       if (createdSurvey == null) {
-        const error = NeitherFoundNorCreatedSurveyError;
+        const error = NeitherAbleToUpdateNorToCreateSurveyError;
         Logger.error(error.message);
         throw error;
       }
       return createdSurvey;
     }
     return updatedSurvey;
-  }
-
-  async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
-    if (!mongoose.isValidObjectId(surveyId)) {
-      const error1 = NotValidSurveyIdIsNoMongooseObjectId;
-      Logger.error(error1.message);
-      throw error1;
-    }
-
-    const survey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
-    if (survey == null) {
-      const error2 = NotAbleToFindSurveyError;
-      Logger.error(error2.message);
-      throw error2;
-    }
-    return survey.publicAnswers || [];
   }
 
   async addPublicAnswer(
@@ -160,6 +144,22 @@ class SurveysService {
       throw error5;
     }
     return updatedSurvey;
+  }
+
+  async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      const error1 = NotValidSurveyIdIsNoMongooseObjectId;
+      Logger.error(error1.message);
+      throw error1;
+    }
+
+    const survey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
+    if (survey == null) {
+      const error2 = NotAbleToFindSurveyError;
+      Logger.error(error2.message);
+      throw error2;
+    }
+    return survey.publicAnswers || [];
   }
 }
 

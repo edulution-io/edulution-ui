@@ -1,4 +1,4 @@
-# Edulution UI
+# edulution.io
 
 ## Description
 
@@ -27,7 +27,7 @@ A Full Stack Application build with Vite+React (frontend) and Nest.js for the AP
    npm run dev
    ```
 
-   The API will be served on http://localhost:3000/
+   The API will be served on http://localhost:3001/
 
 4. Start Frontend
 
@@ -74,7 +74,7 @@ docker compose up -d
 #### Deploy
 
 ```bash
-echo "<GH_PERSONAL_ACCESS_TOKEN>" | docker login ghcr.io -u <USERNAME> --password-stdin
+echo "<GH_PERSONAL_ACCESS_TOKEN" | docker login ghcr.io -u <USERNAME> --password-stdin
 npm run build:docker:ui
 npm run build:docker:api
 npm run push:docker:ui

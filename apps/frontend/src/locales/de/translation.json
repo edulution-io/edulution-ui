@@ -24,13 +24,16 @@
   },
   "conferences": {
     "title": "KONFERENZEN",
+    "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
-    "create": "Neue Konferenz erstellen",
+    "create": "Konferenz erstellen",
     "creator": "Ersteller",
     "delete": "Löschen",
+    "deleteConference": "Konferenz löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
     "editConference": "Konferenz bearbeiten",
-    "confirmDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "confirmSingleDelete": "Soll diese Konferenz wirklich gelöscht werden?",
+    "confirmMultiDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
     "conference": "Konferenz",
     "password": "Passwort",
@@ -146,15 +149,31 @@
     "title": "BACKUP",
     "sidebar": "Backup"
   },
+  "aichat": {
+    "title": "KI CHAT",
+    "sidebar": "KI Chat"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
-    "addApp": { "title": "App hinzufügen", "description": "Bitte wählen Sie eine App aus:" },
+    "addApp": {
+      "title": "App hinzufügen",
+      "description": "Bitte wählen Sie eine App aus:"
+    },
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
-      "update": { "success": "Appliste erfolgreich gespeichert", "failed": "Aktualisierung fehlgeschlagen" },
-      "delete": { "success": "App wurde gelöscht", "failed": "Löschen fehlgeschlagen" },
-      "create": { "success": "App wurde angelegt", "failed": "App anlegen fehlgeschlagen" }
+      "update": {
+        "success": "Appliste erfolgreich gespeichert",
+        "failed": "Aktualisierung fehlgeschlagen"
+      },
+      "delete": {
+        "success": "App wurde gelöscht",
+        "failed": "Löschen fehlgeschlagen"
+      },
+      "create": {
+        "success": "App wurde angelegt",
+        "failed": "App anlegen fehlgeschlagen"
+      }
     }
   },
   "forwardingpage": {
@@ -185,7 +204,8 @@
     "password": "Passwort",
     "loading": "Laden...",
     "overview": "Übersicht",
-    "create": "Erstellen"
+    "create": "Erstellen",
+    "icon": "Icon"
   },
   "form": {
     "path": "Link",

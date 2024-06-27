@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Post, Patch, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
+import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
 import {
   All_SURVEYS_ENDPOINT,
   FIND_ONE_ENDPOINT,
@@ -16,6 +17,27 @@ import SurveysService from './surveys.service';
 @Controller(SURVEYS)
 class SurveysController {
   constructor(private readonly surveyService: SurveysService) {}
+
+  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
+  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.findOneSurvey(surveyId);
+  }
+
+  @Get(FIND_SURVEYS_ENDPOINT)
+  async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
+    const { surveyIds } = findSurveyDto;
+    return this.surveyService.findSurveys(surveyIds);
+  }
+
+  @Get(`${RESULT_ENDPOINT}:surveyId`)
+  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.getPublicAnswers(surveyId);
+  }
+
+  @Get(All_SURVEYS_ENDPOINT)
+  async getAllSurveys() {
+    return this.surveyService.getAllSurveys();
+  }
 
   @Post()
   async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto) {
@@ -38,26 +60,6 @@ class SurveysController {
 
     const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
     return newSurvey;
-  }
-
-  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
-  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.findOneSurvey(surveyId);
-  }
-
-  @Get(`${FIND_SURVEYS_ENDPOINT}:surveyIds`)
-  async findSurveys(@Param('surveyIds') surveyIds: mongoose.Types.ObjectId[]) {
-    return this.surveyService.findSurveys(surveyIds);
-  }
-
-  @Get(All_SURVEYS_ENDPOINT)
-  async getAllSurveys() {
-    return this.surveyService.getAllSurveys();
-  }
-
-  @Get(`${RESULT_ENDPOINT}:surveyId`)
-  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.getPublicAnswers(surveyId);
   }
 
   @Delete()

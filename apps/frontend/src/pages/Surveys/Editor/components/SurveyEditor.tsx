@@ -8,6 +8,7 @@ import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/survey-creator-core.i18n';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
+import { toast } from 'sonner';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,9 +55,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
           width: '100%',
         }}
       />
-      {error ? (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-black">Survey-Error: {error.message}</div>
-      ) : null}
+      {error ? toast.error(error.message) : null}
     </>
   );
 };
