@@ -89,12 +89,24 @@
   "survey": {
     "creationDate": "Creation date",
     "expirationDate": "Deadline",
+    "noFormula": "The formula of the survey is not readable",
+    "noAnswer": "No answer available",
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes"
     },
-    "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available"
+    "errors": {
+      "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
+      "notAbleToCreateSurveyError": "Not able to create the survey",
+      "notAbleToDeleteSurveyError": "Not able to delete survey",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found",
+      "notAbleToFindSurveyError": "Survey not found",
+      "notAbleToFindSurveysError": "Did not find a single survey",
+      "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
+      "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
+      "notAbleToUpdateSurveyError": "Not able to update the survey",
+      "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+    }
   },
   "surveys": {
     "title": "SURVEYS",
@@ -371,17 +383,10 @@
   "groupsPage": {
     "classes": "Classes"
   },
-  "errors": {
-    "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
-    "notAbleToDeleteSurveyError": "Not able to delete survey",
-    "notAbleToFindSurveyAnswerError": "Survey answers not found",
-    "notAbleToFindSurveyError": "Survey not found",
-    "notAbleToFindSurveysError": "Did not find a single survey",
-    "notAbleToFindUserError": "User not found",
-    "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
-    "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
-    "notAbleToUpdateSurveyError": "Not able to update the survey",
-    "notAbleToUpdateUserError": "Not able to update the user",
-    "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+  "user": {
+    "errors": {
+      "notAbleToFindUserError": "User not found",
+      "notAbleToUpdateUserError": "Not able to update the user"
+    }
   }
 }

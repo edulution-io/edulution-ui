@@ -1,11 +1,8 @@
-// TODO: Refactor errors when error handling is implemented
-
 import {HttpException, HttpStatus} from '@nestjs/common';
-import SurveyErrors from '@libs/survey/survey-errors';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 
 const NeitherAbleToUpdateNorToCreateSurveyError = new HttpException(
-  // 'Did not find the survey in order to update it. Neither could a new survey be created',
-  SurveyErrors.NeitherAbleToUpdateNorToCreateSurveyError,
+  SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
   HttpStatus.INTERNAL_SERVER_ERROR,
 );
 

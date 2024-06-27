@@ -1,11 +1,8 @@
-// TODO: Refactor errors when error handling is implemented
-
 import { HttpException, HttpStatus } from '@nestjs/common';
-import SurveyErrors from '@libs/survey/survey-errors';
+import UserErrorMessages from '@libs/user/user-error-messages';
 
 const NotAbleToUpdateUserError = new HttpException(
-  // 'Not able to update the user',
-  SurveyErrors.NotAbleToUpdateUserError,
+  UserErrorMessages.NotAbleToUpdateUserError,
   HttpStatus.INTERNAL_SERVER_ERROR,
 );
 

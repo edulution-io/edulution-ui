@@ -1,11 +1,8 @@
-// TODO: Refactor errors when error handling is implemented
-
-import { HttpException, HttpStatus } from "@nestjs/common";
-import SurveyErrors from "@libs/survey/survey-errors";
+import { HttpException, HttpStatus } from '@nestjs/common';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 
 const NotAbleToFindSurveyAnswerError = new HttpException(
-  // 'Survey answers not found',
-  SurveyErrors.NotAbleToFindSurveyAnswerError,
+  SurveyErrorMessages.NotAbleToFindSurveyAnswerError,
   HttpStatus.NOT_FOUND,
 );
 

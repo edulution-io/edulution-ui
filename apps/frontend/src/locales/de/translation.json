@@ -89,12 +89,24 @@
   "survey": {
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Deadline",
+    "noFormula": "Das Formular ist nicht lesbar",
+    "noAnswer": "Keine Antwort verfügbar",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen"
     },
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar"
+    "errors": {
+      "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
+      "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
+      "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
+      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
+      "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
+      "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
+      "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
+      "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
+      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+    }
   },
   "surveys": {
     "title": "UMFRAGEN",
@@ -371,17 +383,10 @@
   "groupsPage": {
     "classes": "Klassen"
   },
-  "errors": {
-    "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
-    "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
-    "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
-    "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
-    "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
-    "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
-    "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
-    "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
-    "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
-    "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden",
-    "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+  "user": {
+    "errors": {
+      "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
+      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"
+    }
   }
 }
