@@ -6,6 +6,7 @@ import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
+import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import { getFromPathName } from '@libs/common/utils';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
@@ -16,6 +17,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
+  const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -34,6 +36,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.MAIL: {
         return MAIL_MENUBAR_CONFIG;
+      }
+      case APPS.LINUXMUSTER: {
+        return LINUXMUSTER_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

@@ -1,10 +1,12 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import * as xml2js from 'xml2js';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import ConferencesErrorMessage from '@libs/conferences/conferencesErrorMessage';
 import { Conference, ConferenceDocument } from './conference.schema';
 import CreateConferenceDto from './dto/create-conference.dto';
 import BbbResponseDto from './bbb-api/bbb-response.dto';
@@ -24,6 +26,49 @@ class ConferencesService {
     private readonly appConfigService: AppConfigService,
   ) {}
 
+  static handleBBBApiError(result: { response: { returncode: string } }) {
+    if (result.response.returncode !== 'SUCCESS') {
+      throw new CustomHttpException(ConferencesErrorMessage.BbbUnauthorized, HttpStatus.UNAUTHORIZED, {
+        returncode: result.response.returncode,
+      });
+    }
+  }
+
+  static parseXml<T>(xml: string): Promise<T> {
+    return new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(result as T);
+        }
+      });
+    });
+  }
+
+  static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
+    const { attendees } = bbbMeetingDto.response;
+    if (!attendees?.attendee) {
+      return [];
+    }
+    if (!Array.isArray(attendees.attendee)) {
+      return [
+        {
+          lastName: attendees.attendee.role,
+          firstName: attendees.attendee.fullName,
+          username: attendees.attendee.userID,
+        },
+      ];
+    }
+    return attendees.attendee.map((a) => ({
+      lastName: a.role,
+      firstName: a.fullName,
+      username: a.userID,
+    }));
+  }
+
   async loadConfig() {
     if (this.BBB_API_URL && this.BBB_SECRET) {
       return;
@@ -31,7 +76,7 @@ class ConferencesService {
 
     const appConfig = await this.appConfigService.getAppConfigByName('conferences');
     if (!appConfig?.options.url || !appConfig.options.apiKey) {
-      throw new HttpException('App is not properly configured', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     this.BBB_API_URL = appConfig.options.url;
@@ -60,7 +105,7 @@ class ConferencesService {
   async toggleConferenceIsRunning(meetingID: string, username: string) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
-      throw new HttpException('You are not the creator!', HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(ConferencesErrorMessage.YouAreNotTheCreator, HttpStatus.UNAUTHORIZED);
     }
 
     if (conference.isRunning) {
@@ -70,7 +115,7 @@ class ConferencesService {
     }
   }
 
-  private async startConference(conference: Conference) {
+  async startConference(conference: Conference) {
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('create', query);
@@ -82,12 +127,11 @@ class ConferencesService {
 
       await this.update({ ...conference, isRunning: true });
     } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
-  private async stopConference(conference: Conference) {
+  async stopConference(conference: Conference) {
     try {
       const query = `meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('end', query);
@@ -99,8 +143,7 @@ class ConferencesService {
 
       await this.update({ ...conference, isRunning: false });
     } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.BAD_GATEWAY);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
@@ -110,7 +153,7 @@ class ConferencesService {
   ): Promise<{ conference: Conference; isCreator: boolean }> {
     const conference = await this.findOne(meetingID);
     if (!conference) {
-      throw new HttpException(`No meeting with ID ${meetingID} found`, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingID });
     }
     return { conference, isCreator: conference.creator.username === username };
   }
@@ -131,33 +174,8 @@ class ConferencesService {
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
-      Logger.error(e, ConferencesService.name);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.METHOD_NOT_ALLOWED);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     }
-  }
-
-  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
-    const promises = conferencesToBeSynced.map(async (conference) => {
-      const conferenceObject = conference.toObject() as ConferenceDocument;
-      const query = `meetingID=${conference.meetingID}`;
-      const checksum = await this.createChecksum('getMeetingInfo', query);
-      const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
-
-      try {
-        const response = await axios.get<string>(url);
-        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-        ConferencesService.handleBBBApiError(result);
-
-        await this.update({ ...conferenceObject, isRunning: true });
-        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
-      } catch (_) {
-        const updatedConference = { ...conferenceObject, isRunning: false };
-        await this.update(updatedConference);
-        return updatedConference;
-      }
-    });
-
-    return Promise.all(promises);
   }
 
   async findAllConferencesTheUserHasAccessTo(username: string): Promise<Conference[]> {
@@ -194,12 +212,6 @@ class ConferencesService {
     return result.deletedCount > 0;
   }
 
-  static handleBBBApiError(result: { response: { returncode: string } }) {
-    if (result.response.returncode !== 'SUCCESS') {
-      throw new Error('BBB API did not return SUCCESS returncode');
-    }
-  }
-
   async createChecksum(method = '', query = '') {
     await this.loadConfig();
     const string = method + query + this.BBB_SECRET;
@@ -207,39 +219,28 @@ class ConferencesService {
     return crypto.createHash('sha1').update(string).digest('hex');
   }
 
-  static parseXml<T>(xml: string): Promise<T> {
-    return new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          resolve(result as T);
-        }
-      });
-    });
-  }
+  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
+    const promises = conferencesToBeSynced.map(async (conference) => {
+      const conferenceObject = conference.toObject() as ConferenceDocument;
+      const query = `meetingID=${conference.meetingID}`;
+      const checksum = await this.createChecksum('getMeetingInfo', query);
+      const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
 
-  static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
-    const { attendees } = bbbMeetingDto.response;
-    if (!attendees?.attendee) {
-      return [];
-    }
-    if (!Array.isArray(attendees.attendee)) {
-      return [
-        {
-          lastName: attendees.attendee.role,
-          firstName: attendees.attendee.fullName,
-          username: attendees.attendee.userID,
-        },
-      ];
-    }
-    return attendees.attendee.map((a) => ({
-      lastName: a.role,
-      firstName: a.fullName,
-      username: a.userID,
-    }));
+      try {
+        const response = await axios.get<string>(url);
+        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+        ConferencesService.handleBBBApiError(result);
+
+        await this.update({ ...conferenceObject, isRunning: true });
+        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
+      } catch (_) {
+        const updatedConference = { ...conferenceObject, isRunning: false };
+        await this.update(updatedConference);
+        return updatedConference;
+      }
+    });
+
+    return Promise.all(promises);
   }
 }
 

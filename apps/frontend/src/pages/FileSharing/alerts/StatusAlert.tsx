@@ -33,7 +33,7 @@ const StatusAlert: React.FC<StatusAlertProps> = ({ success, message }) => {
         </Alert>
       )}
       {!success && (
-        <Alert className="bg-red-600">
+        <Alert className="bg-ciRed">
           <Ban className="h-4 w-4" />
           <AlertTitle>{t('common.failed')}</AlertTitle>
           <AlertDescription>{message}</AlertDescription>

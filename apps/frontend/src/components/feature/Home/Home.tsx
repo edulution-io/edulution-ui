@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
-import MyFavourites from './MyFavourites';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import Feed from '@/components/feature/Feed/Feed';
 import MobileDataAccess from './MobileDataAccess';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
@@ -10,20 +11,20 @@ import Groups from './Groups';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
+  const isMobileView = useIsMobileView();
   const auth = useAuth();
 
   return (
     <>
-      {/* Content Area */}
-
-      {/* Main Content */}
       <div>
-        <h2>
-          {t('heading', {
-            givenName: auth?.user?.profile?.given_name ?? '',
-            familyName: auth?.user?.profile?.family_name ?? '',
-          })}
-        </h2>
+        {isMobileView ? (
+          <h2>
+            {t('heading', {
+              givenName: auth?.user?.profile?.given_name ?? '',
+              familyName: auth?.user?.profile?.family_name ?? '',
+            })}
+          </h2>
+        ) : null}
         <p className="mt-4">{t('content')}</p>
       </div>
 
@@ -48,7 +49,7 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="flex-1">
-            <MyFavourites />
+            <Feed />
           </div>
         </div>
       </div>

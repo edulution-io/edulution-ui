@@ -4,7 +4,9 @@
     "outDir": "../dist/out-tsc",
     "declaration": true,
     "types": ["node"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "composite": true,
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
