@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import axios from 'axios';
+import { toast } from 'sonner';
+import i18n from 'i18next';
+import CustomAxiosError from '@libs/error/CustomAxiosError';
 
 /*
  * Use this function to handle errors in your store functions that do requests to the API.
@@ -9,12 +12,16 @@ import axios from 'axios';
  * if it differs you have to pass the variable name as string.
  */
 const handleApiError = (error: any, set: (params: any) => void, errorName = 'error') => {
-  console.error(error);
-
   if (axios.isAxiosError(error)) {
-    set({ [errorName]: error });
+    const axiosError = error as CustomAxiosError;
+
+    const errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
+
+    toast.error(errorMessage);
+    set({ [errorName]: errorMessage });
   } else {
-    set({ [errorName]: new Error('An unexpected error occurred') });
+    console.error((error as Error).message);
+    set({ [errorName]: i18n.t('errors.unexpectedError') });
   }
 };
 

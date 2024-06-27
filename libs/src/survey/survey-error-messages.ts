@@ -1,5 +1,6 @@
 enum SurveyErrorMessages {
   NeitherAbleToUpdateNorToCreateSurveyError = 'survey.errors.neitherAbleToUpdateNorToCreateSurveyError',
+  NotAbleToCreateSurveyError = 'survey.errors.notAbleToCreateSurveyError',
   NotAbleToDeleteSurveyError = 'survey.errors.notAbleToDeleteSurveyError',
   NotAbleToFindSurveyAnswerError = 'survey.errors.notAbleToFindSurveyAnswerError',
   NotAbleToFindSurveyError = 'survey.errors.notAbleToFindSurveyError',

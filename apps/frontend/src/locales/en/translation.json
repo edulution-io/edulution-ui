@@ -22,7 +22,18 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "automaticLoginFailed": "Automatic login failed",
+    "unexpectedError": "An unexpected error occurred"
+  },
   "conferences": {
+    "errors": {
+      "MeetingNotFound": "A meeting with this ID was not found",
+      "BbbServerNotReachable": "The external BBB is not reachable",
+      "BbbUnauthorized": "You are not authorized at external BBB server",
+      "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
+      "YouAreNotTheCreator": "You are not the creator of the conference"
+    },
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
@@ -60,6 +71,10 @@
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"
+  },
+  "feed": {
+    "title": "Current affairs",
+    "noConferences": "No running conferences were found"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -270,6 +285,10 @@
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
     "filesToUpload": "Files to upload"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",
