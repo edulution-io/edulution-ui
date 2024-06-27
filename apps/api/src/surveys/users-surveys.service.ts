@@ -5,7 +5,7 @@ import Attendee from '@libs/survey/types/attendee';
 import SurveyAnswer from '@libs/survey/types/survey-answer';
 import NotAbleToFindUserError from '@libs/user/errors/not-able-to-find-user-error';
 import NotAbleToFindSurveyAnswerError from '@libs/survey/errors/not-able-to-find-survey-answer-error';
-import UserDidNotUpdateError from '@libs/user/errors/not-able-to-update-user-error';
+import NotAbleToUpdateUserError from '@libs/user/errors/not-able-to-update-user-error';
 import { User, UserDocument } from '../users/user.schema';
 import UpdateUserDto from '../users/dto/update-user.dto';
 
@@ -18,7 +18,7 @@ class UsersSurveysService {
       .findOneAndUpdate<User>({ username: participant }, updateUserDto, { new: true })
       .exec();
     if (!newUser) {
-      const error = UserDidNotUpdateError;
+      const error = NotAbleToUpdateUserError;
       Logger.error(error.message);
       throw error;
     }
