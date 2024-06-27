@@ -1,6 +1,6 @@
 import Attendee from '@/pages/ConferencePage/dto/attendee';
 
-export class Conference {
+class Conference {
   name: string;
 
   meetingID: string;

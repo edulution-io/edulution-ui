@@ -16,6 +16,7 @@ const BBBIFrame = () => {
     return null;
   }
 
+  // Fix 56px width calculated value: NIEDUUI-162
   const style = isJoinedConferenceMinimized ? { width: 0 } : { width: isMobileView ? '100%' : 'calc(100% - 56px)' };
 
   return createPortal(
@@ -36,7 +37,7 @@ const BBBIFrame = () => {
         </button>
         <button
           type="button"
-          className="rounded bg-red-500 px-4 text-white hover:bg-red-700"
+          className="rounded bg-ciLightRed px-4 text-white hover:bg-ciRed"
           onClick={() => setJoinConferenceUrl('')}
         >
           <MdClose className="inline" /> {isMobileView ? '' : t('conferences.close')}

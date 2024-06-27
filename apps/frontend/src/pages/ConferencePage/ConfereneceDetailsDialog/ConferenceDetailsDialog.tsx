@@ -77,7 +77,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
       <>
         <CreateConferenceDialogBody form={form} />
         {error ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+          <div className="rounded-xl bg-ciLightRed py-3 text-center text-black">
             {t('conferences.error')}: {error.message}
           </div>
         ) : null}

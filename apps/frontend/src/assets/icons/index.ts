@@ -42,3 +42,4 @@ export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
 export { default as SurveysSidebarIcon } from '@/assets/icons/survey-sidebar.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
+export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
