@@ -67,7 +67,8 @@ const SurveyEditorForm = () => {
   });
 
   const {
-    id,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    _id,
     formula,
     participants,
     participated,
@@ -81,7 +82,7 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     await updateOrCreateSurvey({
-      _id: id,
+      _id,
       formula,
       participants,
       participated,

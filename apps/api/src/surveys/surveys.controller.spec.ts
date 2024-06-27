@@ -27,9 +27,6 @@ import {
 } from './surveys.service.mock';
 import { mockedAnswer } from './users-surveys.service.mock';
 import { User, UserDocument } from '../users/user.schema';
-// import NotAbleToUpdateSurveyError from "@libs/survey/errors/not-able-to-update-survey-error";
-// import SurveyErrors from "@libs/survey/survey-errors";
-// import NotAbleToDeleteSurveyError from "@libs/survey/errors/not-able-to-delete-survey-error";
 
 const firstUser = {
   email: 'first@example.com',
@@ -279,192 +276,182 @@ describe('SurveysController', () => {
   //     expect(surveysService.updateOrCreateSurvey).toHaveBeenCalledWith(secondMockSurvey);
   //     expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: id_SecondMockSurvey }, secondMockSurvey);
   //   });
-    //
-    //   it('should create a survey if it does not exists already', async () => {
-    //     jest.spyOn(surveysService, 'updateOrCreateSurvey');
-    //     jest.spyOn(usersSurveysService, 'addToCreatedSurveys');
-    //     jest.spyOn(usersSurveysService, 'populateSurvey');
-    //
-    //     userModel.findOne = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockResolvedValueOnce(firstUser),
-    //     });
-    //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockReturnValue(null),
-    //     });
-    //     surveyModel.create = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockResolvedValueOnce(fourthMockSurvey),
-    //     });
-    //
-    //     const result = await controller.updateOrCreateSurvey(fourthMockSurvey, first_username);
-    //     expect(result).toEqual(fourthMockSurvey);
-    //
-    //     expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: id_FourthMockSurvey }, fourthMockSurvey);
-    //
-    //
-    //     expect(usersSurveysService.addToCreatedSurveys).toHaveBeenCalledWith(first_username, id_FourthMockSurvey);
-    //     expect(usersSurveysService.populateSurvey).toHaveBeenCalledWith(mocked_participants, id_FourthMockSurvey);
-    //   });
-    //
-    //   it('should throw an error if the survey update fails', async () => {
-    //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-    //       exec: jest.fn().mockRejectedValue(NotAbleToUpdateSurveyError),
-    //     });
-    //
-    //     jest.spyOn(surveyModel, 'findOneAndUpdate');
-    //
-    //     try {
-    //       await controller.updateOrCreateSurvey(secondMockSurvey, first_username);
-    //     } catch (e) {
-    //       expect(e).toBeInstanceOf(Error);
-    //       expect(e.message).toBe(SurveyErrors.NotAbleToUpdateSurveyError);
-    //     }
-    //   });
-    // });
-    //
-    // describe('deleteSurvey', () => {
-    //   it('should remove a survey', async () => {
-    //     jest.spyOn(surveysService, 'deleteSurveys');
-    //
-    //     surveyModel.deleteMany = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockResolvedValueOnce(true),
-    //     });
-    //
-    //     const result = await controller.deleteSurvey({ surveyIds: [id_FirstMockSurvey] });
-    //     expect(result).toBe(true);
-    //
-    //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([id_FirstMockSurvey]);
-    //   });
-    //
-    //   it('should remove multiple surveys', async () => {
-    //     jest.spyOn(surveysService, 'deleteSurveys');
-    //
-    //     surveyModel.deleteMany = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockResolvedValueOnce(true),
-    //     });
-    //
-    //     const result = await controller.deleteSurvey({ surveyIds: [id_SecondMockSurvey, id_ThirdMockSurvey] });
-    //     expect(result).toBe(true);
-    //
-    //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([id_SecondMockSurvey, id_ThirdMockSurvey]);
-    //   });
-    //
-    //
-    //   it('should throw an error if the survey removal fails', async () => {
-    //     jest.spyOn(surveysService, 'deleteSurveys');
-    //
-    //     surveyModel.deleteMany = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockRejectedValueOnce(NotAbleToDeleteSurveyError),
-    //     });
-    //
-    //     try {
-    //       await controller.deleteSurvey({ surveyIds: [id_SecondMockSurvey, id_ThirdMockSurvey] });
-    //     } catch (e) {
-    //       expect(e).toBeInstanceOf(Error);
-    //       expect(e.message).toBe(SurveyErrors.NotAbleToDeleteSurveyError);
-    //     }
-    //
-    //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([id_SecondMockSurvey, id_ThirdMockSurvey]);
-    //   });
-    //
-    //   it('should return false if the survey was not found', async () => {
-    //
-    //     jest.spyOn(surveysService, 'deleteSurveys');
-    //
-    //     surveyModel.deleteMany = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockRejectedValueOnce(false),
-    //     });
-    //
-    //     const result = await controller.deleteSurvey({ surveyIds: [newObjectId] });
-    //     expect(result).toBe(false);
-    //
-    //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([newObjectId]);
-    //   });
-    // });
-    //
-    // describe('answerSurvey', () => {
-    //   it('should add an answer to a survey', async () => {
-    //     jest.spyOn(surveysService, 'addPublicAnswer');
-    //     jest.spyOn(usersSurveysService, 'addAnswer');
-    //
-    //     surveyModel.findOne = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockReturnValue(thirdMockSurvey),
-    //     });
-    //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockReturnValue(thirdMockSurvey_afterAddedNewAnswer),
-    //     });
-    //
-    //     userModel.findOne = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockResolvedValueOnce(firstUser),
-    //     });
-    //     userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockResolvedValueOnce(firstUser_afterAddedAnswer),
-    //     });
-    //
-    //     const result = await controller.answerSurvey({
-    //         surveyId: id_ThirdMockSurvey,
-    //         answer: addNewPublicAnswer_ThirdMockSurvey,
-    //         canSubmitMultipleAnswers: false,
-    //       },
-    //       second_username
-    //     );
-    //     expect(result).toHaveReturned();
-    //
-    //     expect(surveysService.addPublicAnswer).toHaveBeenCalledWith(
-    //       id_ThirdMockSurvey,
-    //       addNewPublicAnswer_ThirdMockSurvey,
-    //       first_username,
-    //     );
-    //     expect(surveysService.addPublicAnswer).toHaveReturnedWith(thirdMockSurvey_afterAddedNewAnswer);
-    //     expect(usersSurveysService.addAnswer).toHaveBeenCalledWith(
-    //       first_username,
-    //       id_ThirdMockSurvey,
-    //       addNewPublicAnswer_ThirdMockSurvey,
-    //     );
-    //     expect(usersSurveysService.addAnswer).toHaveReturnedWith(firstUser_afterAddedAnswer);
-    //   });
-    //
-    //   it('should throw an error if adding an answer fails', async () => {
-    //     jest.spyOn(surveysService, 'addPublicAnswer');
-    //     jest.spyOn(usersSurveysService, 'addAnswer');
-    //
-    //     surveyModel.findOne = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockReturnValue(thirdMockSurvey),
-    //     });
-    //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //       exec: jest.fn().mockRejectedValueOnce(NotAbleToUpdateSurveyError),
-    //     });
-    //
-    //     try {
-    //       await controller.answerSurvey({
-    //           surveyId: id_ThirdMockSurvey,
-    //           answer: addNewPublicAnswer_ThirdMockSurvey,
-    //           canSubmitMultipleAnswers: false,
-    //         },
-    //         second_username
-    //       );
-    //     } catch (e) {
-    //       expect(e).toBeInstanceOf(Error);
-    //       expect(e.message).toBe(SurveyErrors.NotAbleToUpdateSurveyError);
-    //     }
-    //
-    //     expect(surveysService.addPublicAnswer).toHaveBeenCalledWith(
-    //       id_ThirdMockSurvey,
-    //       addNewPublicAnswer_ThirdMockSurvey,
-    //       first_username,
-    //     );
-    //     expect(usersSurveysService.addAnswer).toHaveBeenCalledTimes(0);
-    //   });
+  //
+  //   it('should create a survey if it does not exists already', async () => {
+  //     jest.spyOn(surveysService, 'updateOrCreateSurvey');
+  //     jest.spyOn(usersSurveysService, 'addToCreatedSurveys');
+  //     jest.spyOn(usersSurveysService, 'populateSurvey');
+  //
+  //     userModel.findOne = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockResolvedValueOnce(firstUser),
+  //     });
+  //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockReturnValue(null),
+  //     });
+  //     surveyModel.create = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockResolvedValueOnce(fourthMockSurvey),
+  //     });
+  //
+  //     const result = await controller.updateOrCreateSurvey(fourthMockSurvey, first_username);
+  //     expect(result).toEqual(fourthMockSurvey);
+  //
+  //     expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: id_FourthMockSurvey }, fourthMockSurvey);
+  //
+  //
+  //     expect(usersSurveysService.addToCreatedSurveys).toHaveBeenCalledWith(first_username, id_FourthMockSurvey);
+  //     expect(usersSurveysService.populateSurvey).toHaveBeenCalledWith(mocked_participants, id_FourthMockSurvey);
+  //   });
+  //
+  //   it('should throw an error if the survey update fails', async () => {
+  //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
+  //       exec: jest.fn().mockRejectedValue(new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR),
+  //     });
+  //
+  //     jest.spyOn(surveyModel, 'findOneAndUpdate');
+  //
+  //     try {
+  //       await controller.updateOrCreateSurvey(secondMockSurvey, first_username);
+  //     } catch (e) {
+  //       expect(e).toBeInstanceOf(Error);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToUpdateSurveyError);
+  //     }
+  //   });
   // });
-
-
-
-
-
-
-
-
-
-
+  //
+  // describe('deleteSurvey', () => {
+  //   it('should remove a survey', async () => {
+  //     jest.spyOn(surveysService, 'deleteSurveys');
+  //
+  //     surveyModel.deleteMany = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockResolvedValueOnce(true),
+  //     });
+  //
+  //     const result = await controller.deleteSurvey({ surveyIds: [id_FirstMockSurvey] });
+  //     expect(result).toBe(true);
+  //
+  //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([id_FirstMockSurvey]);
+  //   });
+  //
+  //   it('should remove multiple surveys', async () => {
+  //     jest.spyOn(surveysService, 'deleteSurveys');
+  //
+  //     surveyModel.deleteMany = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockResolvedValueOnce(true),
+  //     });
+  //
+  //     const result = await controller.deleteSurvey({ surveyIds: [id_SecondMockSurvey, id_ThirdMockSurvey] });
+  //     expect(result).toBe(true);
+  //
+  //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([id_SecondMockSurvey, id_ThirdMockSurvey]);
+  //   });
+  //
+  //
+  //   it('should throw an error if the survey removal fails', async () => {
+  //     jest.spyOn(surveysService, 'deleteSurveys');
+  //
+  //     surveyModel.deleteMany = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockRejectedValueOnce(NotAbleToDeleteSurveyError),
+  //     });
+  //
+  //     try {
+  //       await controller.deleteSurvey({ surveyIds: [id_SecondMockSurvey, id_ThirdMockSurvey] });
+  //     } catch (e) {
+  //       expect(e).toBeInstanceOf(Error);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToDeleteSurveyError);
+  //     }
+  //
+  //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([id_SecondMockSurvey, id_ThirdMockSurvey]);
+  //   });
+  //
+  //   it('should return false if the survey was not found', async () => {
+  //
+  //     jest.spyOn(surveysService, 'deleteSurveys');
+  //
+  //     surveyModel.deleteMany = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockRejectedValueOnce(false),
+  //     });
+  //
+  //     const result = await controller.deleteSurvey({ surveyIds: [newObjectId] });
+  //     expect(result).toBe(false);
+  //
+  //     expect(surveysService.deleteSurveys).toHaveBeenCalledWith([newObjectId]);
+  //   });
+  // });
+  //
+  // describe('answerSurvey', () => {
+  //   it('should add an answer to a survey', async () => {
+  //     jest.spyOn(surveysService, 'addPublicAnswer');
+  //     jest.spyOn(usersSurveysService, 'addAnswer');
+  //
+  //     surveyModel.findOne = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockReturnValue(thirdMockSurvey),
+  //     });
+  //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockReturnValue(thirdMockSurvey_afterAddedNewAnswer),
+  //     });
+  //
+  //     userModel.findOne = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockResolvedValueOnce(firstUser),
+  //     });
+  //     userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockResolvedValueOnce(firstUser_afterAddedAnswer),
+  //     });
+  //
+  //     const result = await controller.answerSurvey({
+  //         surveyId: id_ThirdMockSurvey,
+  //         answer: addNewPublicAnswer_ThirdMockSurvey,
+  //         canSubmitMultipleAnswers: false,
+  //       },
+  //       second_username
+  //     );
+  //     expect(result).toHaveReturned();
+  //
+  //     expect(surveysService.addPublicAnswer).toHaveBeenCalledWith(
+  //       id_ThirdMockSurvey,
+  //       addNewPublicAnswer_ThirdMockSurvey,
+  //       first_username,
+  //     );
+  //     expect(surveysService.addPublicAnswer).toHaveReturnedWith(thirdMockSurvey_afterAddedNewAnswer);
+  //     expect(usersSurveysService.addAnswer).toHaveBeenCalledWith(
+  //       first_username,
+  //       id_ThirdMockSurvey,
+  //       addNewPublicAnswer_ThirdMockSurvey,
+  //     );
+  //     expect(usersSurveysService.addAnswer).toHaveReturnedWith(firstUser_afterAddedAnswer);
+  //   });
+  //
+  //   it('should throw an error if adding an answer fails', async () => {
+  //     jest.spyOn(surveysService, 'addPublicAnswer');
+  //     jest.spyOn(usersSurveysService, 'addAnswer');
+  //
+  //     surveyModel.findOne = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockReturnValue(thirdMockSurvey),
+  //     });
+  //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+  //       exec: jest.fn().mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR)),
+  //     });
+  //
+  //     try {
+  //       await controller.answerSurvey({
+  //           surveyId: id_ThirdMockSurvey,
+  //           answer: addNewPublicAnswer_ThirdMockSurvey,
+  //           canSubmitMultipleAnswers: false,
+  //         },
+  //         second_username
+  //       );
+  //     } catch (e) {
+  //       expect(e).toBeInstanceOf(Error);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToUpdateSurveyError);
+  //     }
+  //
+  //     expect(surveysService.addPublicAnswer).toHaveBeenCalledWith(
+  //       id_ThirdMockSurvey,
+  //       addNewPublicAnswer_ThirdMockSurvey,
+  //       first_username,
+  //     );
+  //     expect(usersSurveysService.addAnswer).toHaveBeenCalledTimes(0);
+  //   });
+  // });
 
   //   it('in order to add an public answer it has to update the survey (first)', async () => {
   //     surveyModel.findOne = jest.fn().mockReturnValue({
@@ -528,7 +515,7 @@ describe('SurveysController', () => {
   //       await service.addPublicAnswer(newObjectId, addNewPublicAnswer_FirstMockSurvey, second_username);
   //     } catch (e) {
   //       expect(e).toBeInstanceOf(Error);
-  //       expect(e.message).toBe(SurveyErrors.NotAbleToFindSurveyError);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToFindSurveyError);
   //     }
   //   });
   //
@@ -548,7 +535,7 @@ describe('SurveysController', () => {
   //       );
   //     } catch (e) {
   //       expect(e).toBeInstanceOf(Error);
-  //       expect(e.message).toBe(SurveyErrors.NotAbleToParticipateNotAnParticipantError);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError);
   //     }
   //   });
   //
@@ -566,7 +553,7 @@ describe('SurveysController', () => {
   //       await service.addPublicAnswer(firstMockSurvey._id, addNewPublicAnswer_FirstMockSurvey, first_username);
   //     } catch (e) {
   //       expect(e).toBeInstanceOf(Error);
-  //       expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
   //     }
   //   });
   //
@@ -584,7 +571,7 @@ describe('SurveysController', () => {
   //       await service.addPublicAnswer(secondMockSurvey._id, addNewPublicAnswer_SecondMockSurvey, second_username);
   //     } catch (e) {
   //       expect(e).toBeInstanceOf(Error);
-  //       expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
   //     }
   //   });
   //
@@ -593,7 +580,7 @@ describe('SurveysController', () => {
   //       exec: jest.fn().mockReturnValue(secondMockSurvey),
   //     });
   //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-  //       exec: jest.fn().mockRejectedValueOnce(NotAbleToParticipateNotAnParticipantError),
+  //       exec: jest.fn().mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError, HttpStatus.FORBIDDEN),
   //     });
   //
   //     jest.spyOn(surveyModel, 'findOneAndUpdate');
@@ -602,7 +589,7 @@ describe('SurveysController', () => {
   //       await service.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, 'NOT_EXISTING_USER_NAME');
   //     } catch (e) {
   //       expect(e).toBeInstanceOf(Error);
-  //       expect(e.message).toBe(SurveyErrors.NotAbleToParticipateNotAnParticipantError);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError);
   //     }
   //   });
   //
@@ -611,7 +598,7 @@ describe('SurveysController', () => {
   //       exec: jest.fn().mockReturnValue(secondMockSurvey),
   //     });
   //     surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-  //       exec: jest.fn().mockRejectedValueOnce(NotAbleToParticipateAlreadyParticipatedError),
+  //       exec: jest.fn().mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError, HttpStatus.FORBIDDEN)),
   //     });
   //
   //     jest.spyOn(surveyModel, 'findOneAndUpdate');
@@ -620,7 +607,7 @@ describe('SurveysController', () => {
   //       await service.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, first_username);
   //     } catch (e) {
   //       expect(e).toBeInstanceOf(Error);
-  //       expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);
+  //       expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
   //     }
   //   });
   // });

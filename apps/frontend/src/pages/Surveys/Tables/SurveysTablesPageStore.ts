@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT, {
-  SURVEY_All_SURVEYS_ENDPOINT,
+  SURVEY_ALL_SURVEYS_ENDPOINT,
   SURVEY_ANSWERED_SURVEYS_ENDPOINT,
   SURVEY_CREATED_SURVEYS_ENDPOINT,
   SURVEY_OPEN_SURVEYS_ENDPOINT,
@@ -145,7 +145,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
   updateAllSurveys: async (): Promise<Survey[]> => {
     set({ errorFetchingAllSurveys: null, isFetchingAllSurveys: true });
     try {
-      const response = await eduApi.get<Survey[]>(SURVEY_All_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<Survey[]>(SURVEY_ALL_SURVEYS_ENDPOINT);
       const surveys = response.data;
       set({ allSurveys: surveys, isFetchingAllSurveys: false });
       return surveys;

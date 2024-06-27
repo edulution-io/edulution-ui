@@ -2,9 +2,9 @@
 
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-// import { CacheModule } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
-import SurveyErrors from '@libs/survey/survey-errors';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import UserErrorMessages from '@libs/user/user-error-messages';
 import UsersSurveysService from './users-surveys.service';
 import { User, UserDocument } from '../users/user.schema';
 import {
@@ -33,7 +33,7 @@ import {
   Users_UserSurveys_afterRemove_openSurvey,
   userSurveys,
 } from './users-surveys.service.mock';
-import NotAbleToFindUsersError from '@libs/survey/errors/not-able-to-find-users-error';
+import { HttpStatus } from '@nestjs/common';
 
 describe('UsersSurveysService', () => {
   let service: UsersSurveysService;
@@ -83,7 +83,7 @@ describe('UsersSurveysService', () => {
         await service.getExistingUser('not-existing-user');
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToFindUserError);
+        expect(e.message).toBe(UserErrorMessages.NotAbleToFindUserError);
       }
     });
   });
@@ -236,7 +236,9 @@ describe('UsersSurveysService', () => {
         exec: jest.fn().mockResolvedValue(null),
       });
 
-      await expect(service.onRemoveSurvey([unknownSurvey])).rejects.toThrow(NotAbleToFindUsersError);
+      await expect(service.onRemoveSurvey([unknownSurvey])).rejects.toThrow(
+        new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND),
+      );
     });
   });
 
@@ -270,7 +272,7 @@ describe('UsersSurveysService', () => {
         await service.addToCreatedSurveys('not-found', unknownSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToFindUserError);
+        expect(e.message).toBe(UserErrorMessages.NotAbleToFindUserError);
       }
     });
   });
@@ -324,11 +326,11 @@ describe('UsersSurveysService', () => {
 
       try {
         expect(await service.addToCreatedSurveys('not-found', unknownSurvey)).toThrow(
-          SurveyErrors.NotAbleToFindUserError,
+          new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND),
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToFindUserError);
+        expect(e.message).toBe(UserErrorMessages.NotAbleToFindUserError);
       }
     });
   });

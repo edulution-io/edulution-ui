@@ -146,6 +146,12 @@ describe('LoginPage', () => {
     const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
+    submitButton.onclick = () => {
+      result.current.handleSubmit(
+        () => {},
+        () => {},
+      );
+    };
 
     await userEvent.clear(userNameInput);
     await userEvent.type(userNameInput, 'success');
@@ -159,9 +165,8 @@ describe('LoginPage', () => {
       'success',
     );
 
-    // TODO: NIEDUUI-107: Check why the trigger of the submit button is not working
     await userEvent.click(submitButton);
-    expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(0);
+    expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(1);
 
     expect(result.error).toBeUndefined();
   });

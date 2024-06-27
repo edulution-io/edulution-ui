@@ -14,12 +14,12 @@ import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTab
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const { t } = useTranslation();
-  const { conferences, getConferences, isLoading, error, selectedRows, setSelectedRows } = useConferenceStore();
+  const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
@@ -52,8 +52,6 @@ const ConferencesTable = () => {
       setSelectedRows({});
     };
   }, [getConferences, setSelectedRows]);
-
-  if (error) return <div>Error: {error.message}</div>;
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 

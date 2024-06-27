@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param, Logger } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import GetAnswerDto from '@libs/survey/dto/get-answer.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
 import {
-  All_SURVEYS_ENDPOINT,
+  ALL_SURVEYS_ENDPOINT,
   ANSWER_ENDPOINT,
   ANSWERED_SURVEYS_ENDPOINT,
   CREATED_SURVEYS_ENDPOINT,
@@ -39,11 +39,6 @@ class SurveysController {
     return this.surveyService.findSurveys(surveyIds);
   }
 
-  @Get(`${RESULT_ENDPOINT}:surveyId`)
-  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.getPublicAnswers(surveyId);
-  }
-
   @Get(OPEN_SURVEYS_ENDPOINT)
   async getOpenSurveys(@GetCurrentUsername() username: string) {
     return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
@@ -59,9 +54,14 @@ class SurveysController {
     return this.surveyService.findSurveys(await this.usersSurveysService.getAnsweredSurveyIds(username));
   }
 
-  @Get(All_SURVEYS_ENDPOINT)
+  @Get(ALL_SURVEYS_ENDPOINT)
   async getAllSurveys() {
     return this.surveyService.getAllSurveys();
+  }
+
+  @Get(`${RESULT_ENDPOINT}:surveyId`)
+  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.getPublicAnswers(surveyId);
   }
 
   @Post(ANSWER_ENDPOINT)
@@ -76,8 +76,6 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _id,
       participants = [],
       publicAnswers = [],
       saveNo = 0,
@@ -88,7 +86,6 @@ class SurveysController {
 
     const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
-      _id,
       participants,
       publicAnswers,
       saveNo,
@@ -104,6 +101,7 @@ class SurveysController {
       await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
       await this.usersSurveysService.populateSurvey(participants, newSurveyId);
     }
+
     return newSurvey;
   }
 
@@ -118,8 +116,12 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
-    await this.usersSurveysService.addAnswer(username, surveyId, answer);
-    return this.surveyService.addPublicAnswer(surveyId, answer);
+    try {
+      await this.surveyService.addPublicAnswer(surveyId, answer);
+    } catch (e) {
+      Logger.warn(`Survey error adding public answer: ${e instanceof Error ? e.message : JSON.stringify(e)}`);
+    }
+    return this.usersSurveysService.addAnswer(username, surveyId, answer);
   }
 }
 

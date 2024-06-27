@@ -2,35 +2,31 @@
 
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
+import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveysService from './surveys.service';
-import { SurveyModel, SurveyDocument } from './survey.schema';
+import { SurveyDocument, SurveyModel } from './survey.schema';
 import {
+  addNewPublicAnswer_FirstMockSurvey,
+  addNewPublicAnswer_SecondMockSurvey,
+  addNewPublicAnswer_SecondMockSurvey_thirdUser,
+  first_username,
   firstMockSurvey,
-  // firstMockSurveyDocument,
+  firstMockSurvey_afterAddedNewAnswer,
   id_FirstMockSurvey,
   ids_MockSurveys,
-  first_username,
   mockSurveys,
-  publicAnswer_FirstMockSurvey,
-  secondMockSurvey,
-  // secondMockSurveyDocument,
-  second_username,
-  firstMockSurvey_afterAddedNewAnswer,
-  secondMockSurvey_afterAddedNewAnswer,
-  addNewPublicAnswer_SecondMockSurvey,
-  addNewPublicAnswer_FirstMockSurvey,
+  newObjectId,
   partial_firstMockSurvey_afterAddedNewAnswer,
   partial_secondMockSurvey_afterAddedNewAnswer,
-  newObjectId,
-  addNewPublicAnswer_SecondMockSurvey_thirdUser,
+  // publicAnswer_FirstMockSurvey,
+  second_username,
+  secondMockSurvey,
+  secondMockSurvey_afterAddedNewAnswer,
   third_username,
 } from './surveys.service.mock';
-import SurveyErrors from '@libs/survey/survey-errors';
-import NotAbleToParticipateAlreadyParticipatedError from '@libs/survey/errors/not-able-to-participate-already-participated-error';
-import NotAbleToParticipateNotAnParticipantError from '@libs/survey/errors/not-able-to-participate-not-an-participant-error';
-import NotAbleToCreateSurveyError from '@libs/survey/errors/not-able-to-create-survey-error';
-import NotAbleToUpdateSurveyError from '@libs/survey/errors/not-able-to-update-survey-error';
 
 describe('SurveyService', () => {
   let service: SurveysService;
@@ -115,7 +111,11 @@ describe('SurveyService', () => {
 
     it('should throw an error if the survey update fails', async () => {
       surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockRejectedValue(NotAbleToUpdateSurveyError),
+        exec: jest
+          .fn()
+          .mockRejectedValue(
+            new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR),
+          ),
       });
 
       jest.spyOn(surveyModel, 'findOneAndUpdate');
@@ -124,7 +124,7 @@ describe('SurveyService', () => {
         await service.updateOrCreateSurvey(secondMockSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToUpdateSurveyError);
+        expect(e.message).toBe(SurveyErrorMessages.NotAbleToUpdateSurveyError);
       }
     });
 
@@ -168,7 +168,11 @@ describe('SurveyService', () => {
         exec: jest.fn().mockResolvedValue(null),
       });
       surveyModel.create = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockRejectedValueOnce(NotAbleToCreateSurveyError),
+        exec: jest
+          .fn()
+          .mockRejectedValueOnce(
+            new CustomHttpException(SurveyErrorMessages.NotAbleToCreateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR),
+          ),
       });
 
       jest.spyOn(surveyModel, 'create');
@@ -177,7 +181,7 @@ describe('SurveyService', () => {
         await service.updateOrCreateSurvey(firstMockSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(SurveyErrors.NotAbleToCreateSurveyError);
+        expect(e.message).toEqual(SurveyErrorMessages.NotAbleToCreateSurveyError);
       }
       expect(surveyModel.create).toHaveBeenCalledWith(firstMockSurvey);
     });
@@ -196,7 +200,7 @@ describe('SurveyService', () => {
         await service.addPublicAnswer(newObjectId, addNewPublicAnswer_FirstMockSurvey, second_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToFindSurveyError);
+        expect(e.message).toBe(SurveyErrorMessages.NotAbleToFindSurveyError);
       }
     });
 
@@ -216,7 +220,7 @@ describe('SurveyService', () => {
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToParticipateNotAnParticipantError);
+        expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError);
       }
     });
 
@@ -234,7 +238,7 @@ describe('SurveyService', () => {
         await service.addPublicAnswer(firstMockSurvey._id, addNewPublicAnswer_FirstMockSurvey, first_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);
+        expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
       }
     });
 
@@ -252,7 +256,7 @@ describe('SurveyService', () => {
         await service.addPublicAnswer(secondMockSurvey._id, addNewPublicAnswer_SecondMockSurvey, second_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);
+        expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
       }
     });
 
@@ -302,42 +306,6 @@ describe('SurveyService', () => {
       );
 
       expect(result).toStrictEqual(secondMockSurvey_afterAddedNewAnswer);
-    });
-
-    it('should throw an error if the survey update fails', async () => {
-      surveyModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockReturnValue(secondMockSurvey),
-      });
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockRejectedValueOnce(NotAbleToParticipateNotAnParticipantError),
-      });
-
-      jest.spyOn(surveyModel, 'findOneAndUpdate');
-
-      try {
-        await service.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, 'NOT_EXISTING_USER_NAME');
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToParticipateNotAnParticipantError);
-      }
-    });
-
-    it('should throw an error if the survey update fails', async () => {
-      surveyModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockReturnValue(secondMockSurvey),
-      });
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockRejectedValueOnce(NotAbleToParticipateAlreadyParticipatedError),
-      });
-
-      jest.spyOn(surveyModel, 'findOneAndUpdate');
-
-      try {
-        await service.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, first_username);
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrors.NotAbleToParticipateAlreadyParticipatedError);
-      }
     });
   });
 });

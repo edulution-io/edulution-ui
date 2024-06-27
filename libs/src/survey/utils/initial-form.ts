@@ -1,26 +1,40 @@
+// eslint-disable no-underscore-dangle
+
 import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 import Survey from '@libs/survey/types/survey';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
 class InitialForm implements SurveyEditorFormData {
-  id: mongoose.Types.ObjectId;
+  readonly _id: mongoose.Types.ObjectId;
+
   formula: JSON;
+
   participants: Attendee[];
+
   participated: string[];
+
   saveNo: number;
+
   created: Date;
+
   expirationDate: Date | undefined;
+
   expirationTime: string | undefined;
+
   isAnonymous: boolean;
+
   canSubmitMultipleAnswers: boolean;
+
   canShowResultsTable: boolean;
+
   canShowResultsChart: boolean;
 
   constructor(selectedSurvey?: Survey) {
     const time = new Date().getTime();
-    this.id = selectedSurvey?._id || mongoose.Types.ObjectId.createFromTime(time);
-    this.formula =  selectedSurvey?.formula || {} as JSON;
+    // eslint-disable-next-line no-underscore-dangle
+    this._id = selectedSurvey?._id || mongoose.Types.ObjectId.createFromTime(time);
+    this.formula = selectedSurvey?.formula || ({} as JSON);
     this.participants = selectedSurvey?.participants || [];
     this.participated = [];
     this.saveNo = selectedSurvey?.saveNo || 0;

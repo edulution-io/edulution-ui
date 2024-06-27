@@ -22,7 +22,18 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "automaticLoginFailed": "Automatic login failed",
+    "unexpectedError": "An unexpected error occurred"
+  },
   "conferences": {
+    "errors": {
+      "MeetingNotFound": "A meeting with this ID was not found",
+      "BbbServerNotReachable": "The external BBB is not reachable",
+      "BbbUnauthorized": "You are not authorized at external BBB server",
+      "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
+      "YouAreNotTheCreator": "You are not the creator of the conference"
+    },
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
@@ -61,6 +72,10 @@
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"
   },
+  "feed": {
+    "title": "Current affairs",
+    "noConferences": "No running conferences were found"
+  },
   "filesharing": {
     "title": "FILE SHARING",
     "sidebar": "File Sharing"
@@ -89,12 +104,24 @@
   "survey": {
     "creationDate": "Creation date",
     "expirationDate": "Deadline",
+    "noFormula": "The formula of the survey is not readable",
+    "noAnswer": "No answer available",
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes"
     },
-    "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available"
+    "errors": {
+      "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
+      "notAbleToCreateSurveyError": "Not able to create the survey",
+      "notAbleToDeleteSurveyError": "Not able to delete survey",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found",
+      "notAbleToFindSurveyError": "Survey not found",
+      "notAbleToFindSurveysError": "Did not find a single survey",
+      "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
+      "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
+      "notAbleToUpdateSurveyError": "Not able to update the survey",
+      "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+    }
   },
   "surveys": {
     "title": "SURVEYS",
@@ -259,6 +286,10 @@
     "dragDropClick": "Drag files here or click to select files",
     "filesToUpload": "Files to upload"
   },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
+  },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",
     "noDataAvailable": "No data available"
@@ -371,19 +402,10 @@
   "groupsPage": {
     "classes": "Classes"
   },
-  "errors": {
-    "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
-    "notAbleToCreateSurveyError": "Not able to create survey",
-    "notAbleToDeleteSurveyError": "Not able to delete survey",
-    "notAbleToFindSurveyAnswerError": "Survey answers not found",
-    "notAbleToFindSurveyError": "Survey not found",
-    "notAbleToFindSurveysError": "Did not find a single survey",
-    "notAbleToFindUserError": "User not found",
-    "notAbleToFindUsersError": "Did not find a single user",
-    "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
-    "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
-    "notAbleToUpdateSurveyError": "Not able to update the survey",
-    "notAbleToUpdateUserError": "Not able to update the user",
-    "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+  "user": {
+    "errors": {
+      "notAbleToFindUserError": "User not found",
+      "notAbleToUpdateUserError": "Not able to update the user"
+    }
   }
 }

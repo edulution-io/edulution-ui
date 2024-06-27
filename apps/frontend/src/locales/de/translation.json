@@ -22,7 +22,18 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+  },
   "conferences": {
+    "errors": {
+      "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
+      "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
+      "BbbUnauthorized": "Sie sind am externen BBB-Server nicht autorisiert",
+      "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wenden Sie sich an Ihren Systemadministrator",
+      "YouAreNotTheCreator": "Sie sind nicht der Ersteller der Konferenz"
+    },
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
@@ -61,6 +72,10 @@
     "title": "WISSENSDATENBANK",
     "sidebar": "Wissensdatenbank"
   },
+  "feed": {
+    "title": "Aktuelles",
+    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
+  },
   "filesharing": {
     "title": "FILESHARING",
     "sidebar": "Filesharing"
@@ -89,12 +104,24 @@
   "survey": {
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Deadline",
+    "noFormula": "Das Formular ist nicht lesbar",
+    "noAnswer": "Keine Antwort verfügbar",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen"
     },
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar"
+    "errors": {
+      "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
+      "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
+      "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
+      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
+      "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
+      "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
+      "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
+      "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
+      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+    }
   },
   "surveys": {
     "title": "UMFRAGEN",
@@ -260,6 +287,10 @@
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "filesToUpload": "Dateien zum Hochladen"
   },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
+  },
   "table": {
     "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
@@ -371,19 +402,10 @@
   "groupsPage": {
     "classes": "Klassen"
   },
-  "errors": {
-    "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
-    "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
-    "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
-    "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
-    "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
-    "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
-    "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
-    "notAbleToFindUsersError": "Nutzer konnten nicht gefunden werden",
-    "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
-    "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
-    "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
-    "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden",
-    "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+  "user": {
+    "errors": {
+      "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
+      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"
+    }
   }
 }

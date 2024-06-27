@@ -45,3 +45,4 @@ export { default as SurveysViewAnsweredIcon } from '@/assets/icons/survey-view-a
 export { default as SurveysViewManagementIcon } from '@/assets/icons/survey-view-management.svg';
 export { default as SurveysViewOpenIcon } from '@/assets/icons/survey-view-open-surveys.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
+export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
