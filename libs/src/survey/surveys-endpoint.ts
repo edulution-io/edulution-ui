@@ -1,6 +1,9 @@
 export const SURVEYS = 'surveys';
 const SURVEYS_ENDPOINT = `${SURVEYS}/`;
 
+export const FIND_ONE_ENDPOINT = 'findOne/';
+export const FIND_SURVEYS_ENDPOINT = 'find/';
+
 export const OPEN_SURVEYS_ENDPOINT = 'open/';
 export const CREATED_SURVEYS_ENDPOINT = 'created/';
 export const ANSWERED_SURVEYS_ENDPOINT = 'answered/';
