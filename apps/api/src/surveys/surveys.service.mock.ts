@@ -9,6 +9,10 @@ export const id_FirstMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.Ob
 
 export const id_SecondMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(2);
 
+export const id_ThirdMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(3);
+
+export const id_FourthMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(4);
+
 export const first_username = 'pupil1-name1';
 
 export const second_username = 'pupil2-name2';
@@ -189,3 +193,64 @@ export const ids_MockSurveys: mongoose.Types.ObjectId[] = [id_FirstMockSurvey, i
 export const mockSurveys: SurveyModel[] = [firstMockSurvey, secondMockSurvey];
 
 export const mockSurveyDocuments: SurveyDocument[] = [firstMockSurveyDocument, secondMockSurveyDocument];
+
+export const addNewPublicAnswer_ThirdMockSurvey: JSON = {
+  // @ts-ignore: 'publicAnswers' has this structure
+  Frage1: 'Lasagne',
+};
+
+export const thirdMockSurvey: SurveyModel = {
+  _id: id_ThirdMockSurvey,
+  formula: {
+    // @ts-ignore: 'formula' has the following structure
+    title: 'Third Survey',
+    description: 'This is a third survey to test for user surveys inside of the controller.spec',
+    elements: [
+      {
+        type: 'text',
+        name: 'Frage1',
+        title: 'FavouriteFood/LieblingsEssen',
+      },
+    ],
+  },
+  participants: mocked_participants,
+  participated: [],
+  publicAnswers: [],
+  saveNo: 2,
+  created: new Date('2020-11-29T00:00:00.000Z'),
+  expirationDate: new Date('2025-04-22'),
+  expirationTime: '14:30',
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+};
+
+export const thirdMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
+  ...thirdMockSurvey,
+  publicAnswers: [addNewPublicAnswer_ThirdMockSurvey],
+  participated: [first_username],
+};
+
+export const fourthMockSurvey: SurveyModel = {
+  _id: id_FourthMockSurvey,
+  formula: {
+    // @ts-ignore: 'formula' has the following structure
+    title: 'Fourth Survey',
+    description: 'This is the fourth survey to add to the user surveys',
+    elements: [
+      {
+        type: 'text',
+        name: 'Frage1',
+        title: 'FavouriteColor/LieblingsFarbe',
+      },
+    ],
+  },
+  participants: mocked_participants,
+  participated: [],
+  publicAnswers: [],
+  saveNo: 146,
+  created: new Date('2024-01-01T00:00:00.000Z'),
+  expirationDate: new Date('2025-01-01'),
+  expirationTime: '14:30',
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+};

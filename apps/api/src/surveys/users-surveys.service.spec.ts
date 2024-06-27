@@ -246,12 +246,10 @@ describe('UsersSurveysService', () => {
         exec: jest.fn().mockResolvedValue(first_mockedUser),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest
-          .fn()
-          .mockResolvedValue({
-            username: first_username,
-            usersSurveys: Users_UserSurveys_afterAddCreated_unknownSurvey,
-          }),
+        exec: jest.fn().mockResolvedValue({
+          username: first_username,
+          usersSurveys: Users_UserSurveys_afterAddCreated_unknownSurvey,
+        }),
       });
 
       jest.spyOn(service, 'updateUser');

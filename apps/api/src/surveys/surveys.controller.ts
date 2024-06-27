@@ -118,8 +118,8 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
-    await this.surveyService.addPublicAnswer(surveyId, answer);
-    return this.usersSurveysService.addAnswer(username, surveyId, answer);
+    await this.usersSurveysService.addAnswer(username, surveyId, answer);
+    return this.surveyService.addPublicAnswer(surveyId, answer);
   }
 }
 
