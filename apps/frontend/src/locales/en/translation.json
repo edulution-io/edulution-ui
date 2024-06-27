@@ -107,7 +107,8 @@
     },
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
-      "notAbleToDeleteSurveyError": "Not able to delete survey",
+      "notAbleToCreateSurveyError": "Not able to create the survey",
+      "notAbleToDeleteSurveyError": "Not able to delete surveys",
       "notAbleToFindSurveyError": "Survey not found",
       "notAbleToFindSurveysError": "Did not find a single survey",
       "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",

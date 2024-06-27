@@ -107,6 +107,7 @@
     },
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
+      "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
       "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
       "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
       "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
