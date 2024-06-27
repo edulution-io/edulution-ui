@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Get the list of changed files
+# Get the list of changed, renamed, and new files in the staging area
+# This includes renamed files and new files, but excludes deleted files
 CHANGED_FILES=$(git diff --name-only --cached --diff-filter=ACMRT)
 
 # Filter the changed files to include only .ts and .tsx files

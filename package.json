@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "0.1.8",
+  "version": "0.1.10",
   "scripts": {
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test",
@@ -23,7 +23,8 @@
     "prepare": "husky install",
     "check-circular-deps": "./scripts/checkCircDeps.sh",
     "format": "pretty-quick --staged",
-    "check-translations": "tsx ./scripts/checkTranslations.ts"
+    "check-translations": "tsx ./scripts/checkTranslations.ts",
+    "check-error-message-translations": "tsx scripts/checkErrorMessages.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -175,7 +176,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",
     "vite": "^5.0.8",
     "vite-tsconfig-paths": "^4.3.1",
