@@ -5,7 +5,7 @@ import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
 import {
-  All_SURVEYS_ENDPOINT,
+  ALL_SURVEYS_ENDPOINT,
   FIND_ONE_ENDPOINT,
   FIND_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
@@ -34,7 +34,7 @@ class SurveysController {
     return this.surveyService.getPublicAnswers(surveyId);
   }
 
-  @Get(All_SURVEYS_ENDPOINT)
+  @Get(ALL_SURVEYS_ENDPOINT)
   async getAllSurveys() {
     return this.surveyService.getAllSurveys();
   }
