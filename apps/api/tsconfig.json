@@ -3,14 +3,8 @@
   "compilerOptions": {
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
     "allowJs": true
   },
-  "typeRoots": [
-    "./node_modules/@types",
-    "./src/@types"
-  ],
-  "include": [
-    "./**/*"
-  ]
+  "typeRoots": ["./node_modules/@types", "./src/@types"],
+  "include": ["src/**/*"]
 }

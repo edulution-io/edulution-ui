@@ -3,6 +3,7 @@
 
 npm run check-circular-deps
 npm run format
-npm run lint:fix
+npm run lint
 npm run check-translations
 npm run test
+npm run build:all
