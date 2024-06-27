@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 
 interface UpdateOrCreateSurveyDto {
-  id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
 
   formula: JSON;
 

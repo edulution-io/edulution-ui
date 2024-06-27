@@ -39,7 +39,6 @@ class SurveysController {
     return this.surveyService.findSurveys(surveyIds);
   }
 
-
   @Get(OPEN_SURVEYS_ENDPOINT)
   async getOpenSurveys(@GetCurrentUsername() username: string) {
     return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
@@ -78,7 +77,6 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
-      id,
       participants = [],
       publicAnswers = [],
       saveNo = 0,
@@ -89,7 +87,6 @@ class SurveysController {
 
     const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
-      _id: id,
       participants,
       publicAnswers,
       saveNo,
