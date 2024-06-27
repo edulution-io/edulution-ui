@@ -1,9 +1,9 @@
-import { AxiosError } from 'axios';
-import { HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 
-const NeitherFoundNorCreatedSurveyError = new AxiosError(
-  'Did not find the survey in order to update it. Neither could a new survey be created',
-  `${ HttpStatus.INTERNAL_SERVER_ERROR }`,
+const NeitherAbleToUpdateNorToCreateSurveyError = new HttpException(
+  SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+  HttpStatus.INTERNAL_SERVER_ERROR,
 );
 
-export default NeitherFoundNorCreatedSurveyError;
+export default NeitherAbleToUpdateNorToCreateSurveyError;

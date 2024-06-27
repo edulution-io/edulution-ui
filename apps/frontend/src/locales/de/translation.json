@@ -86,6 +86,16 @@
   "survey": {
     "editor": {
       "new": "Neu (leer)"
+    },
+    "errors": {
+      "neitherAbleToUpdateNorToCreateSurveyError": "weder in der Lage eine Umfrage zu erstellen noch zu aktualisieren",
+      "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
+      "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
+      "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
+      "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
+      "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
+      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
     }
   },
   "surveys": {

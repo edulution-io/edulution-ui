@@ -4,11 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import Attendee from '@libs/survey/types/attendee';
 import NeitherFoundNorCreatedSurveyError from '@libs/survey/errors/neither-updated-nor-found-survey-error';
 import NotAbleToDeleteSurveyError from '@libs/survey/errors/not-able-to-delete-survey-error';
-import SurveyNotFoundError from '@libs/survey/errors/survey-not-found-error';
-import SurveysNotFoundError from '@libs/survey/errors/surveys-not-found-error';
-import UserIsNoParticipantError from '@libs/survey/errors/user-is-no-participant-error';
-import UserHasAlreadyParticipatedError from '@libs/survey/errors/user-has-already-participated-error';
-import SurveyIdIsNoValidMongoIdError from '@libs/survey/errors/survey-id-is-no-valid-mongo-id-error';
+import NotAbleToFindSurveyError from '@libs/survey/errors/not-able-to-find-survey-error';
+import NotAbleToFindSurveysError from '@libs/survey/errors/not-able-to-find-surveys-error';
+import NotAbleToParticipateNotAnParticipantError from '@libs/survey/errors/not-able-to-participate-not-an-participant-error';
+import NotAbleToParticipateAlreadyParticipatedError from '@libs/survey/errors/not-able-to-participate-already-participated-error';
+import NotValidSurveyIdIsNoMongooseObjectId from '@libs/survey/errors/not-valid-survey-id-is-no-mongoose-object-id';
 import NotAbleToUpdateSurveyError from '@libs/survey/errors/not-able-to-update-survey-error';
 import { SurveyModel, SurveyDocument } from './types/survey.schema';
 
@@ -19,7 +19,7 @@ class SurveysService {
   async getAllSurveys(): Promise<SurveyModel[]> {
     const surveys = this.surveyModel.find().exec();
     if (surveys == null) {
-      const error = SurveysNotFoundError;
+      const error = NotAbleToFindSurveysError;
       Logger.error(error.message);
       throw error;
     }
@@ -28,13 +28,13 @@ class SurveysService {
 
   async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<SurveyModel | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      const error = SurveyIdIsNoValidMongoIdError;
+      const error = NotValidSurveyIdIsNoMongooseObjectId;
       Logger.error(error.message);
       throw error;
     }
     const survey = this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
     if (survey == null) {
-      const error = SurveyNotFoundError;
+      const error = NotAbleToFindSurveyError;
       Logger.error(error.message);
       throw error;
     }
@@ -44,7 +44,7 @@ class SurveysService {
   async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<SurveyModel[] | null> {
     const surveys = this.surveyModel.find<SurveyModel>({ _id: { $in: surveyIds } }).exec();
     if (surveys == null) {
-      const error = SurveysNotFoundError;
+      const error = NotAbleToFindSurveysError;
       Logger.error(error.message);
       throw error;
     }
@@ -98,14 +98,14 @@ class SurveysService {
 
   async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      const error1 = SurveyIdIsNoValidMongoIdError;
+      const error1 = NotValidSurveyIdIsNoMongooseObjectId;
       Logger.error(error1.message);
       throw error1;
     }
 
     const survey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
     if (survey == null) {
-      const error2 = SurveyNotFoundError;
+      const error2 = NotAbleToFindSurveyError;
       Logger.error(error2.message);
       throw error2;
     }
@@ -118,14 +118,14 @@ class SurveysService {
     username?: string,
   ): Promise<SurveyModel | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      const error1 = SurveyIdIsNoValidMongoIdError;
+      const error1 = NotValidSurveyIdIsNoMongooseObjectId;
       Logger.error(error1.message);
       throw error1;
     }
 
     const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
     if (!existingSurvey) {
-      const error2 = SurveyNotFoundError;
+      const error2 = NotAbleToFindSurveyError;
       Logger.error(error2.message);
       throw error2;
     }
@@ -135,13 +135,13 @@ class SurveysService {
     if (username) {
       const isParticipant = participants.find((participant: Attendee) => participant.username === username);
       if (!isParticipant) {
-        const error3 = UserIsNoParticipantError;
+        const error3 = NotAbleToParticipateNotAnParticipantError;
         Logger.warn(error3.message);
         throw error3;
       }
       const hasAlreadyParticipated = participated.find((user: string) => user === username);
       if (hasAlreadyParticipated) {
-        const error4 = UserHasAlreadyParticipatedError;
+        const error4 = NotAbleToParticipateAlreadyParticipatedError;
         Logger.warn(error4.message);
         throw error4;
       }
