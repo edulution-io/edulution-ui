@@ -8,14 +8,16 @@ const MobileMenuButton: React.FC = () => {
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
 
   return (
-    <button
-      type="button"
-      onClick={toggleMobileSidebar}
-    >
-      <IconContext.Provider value={iconContextValue}>
-        <MdMenu />
-      </IconContext.Provider>
-    </button>
+    <div className="fixed right-0 top-0 z-[999] pr-4 pt-4">
+      <button
+        type="button"
+        onClickCapture={toggleMobileSidebar}
+      >
+        <IconContext.Provider value={iconContextValue}>
+          <MdMenu />
+        </IconContext.Provider>
+      </button>
+    </div>
   );
 };
 

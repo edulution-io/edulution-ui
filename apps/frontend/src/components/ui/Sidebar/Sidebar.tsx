@@ -169,10 +169,7 @@ const Sidebar: React.FC = () => {
   };
 
   return isMobileView ? (
-    <MobileSidebar
-      ref={sidebarIconsRef}
-      {...sidebarProps}
-    />
+    <MobileSidebar {...sidebarProps} />
   ) : (
     <DesktopSidebar
       ref={sidebarIconsRef}

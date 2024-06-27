@@ -5,12 +5,9 @@ interface SidebarStore {
   toggleMobileSidebar: () => void;
 }
 
-const useSidebarStore = create<SidebarStore>((set, get) => ({
+const useSidebarStore = create<SidebarStore>((set) => ({
   isMobileSidebarOpen: false,
-
-  toggleMobileSidebar: () => {
-    set({ isMobileSidebarOpen: !get().isMobileSidebarOpen });
-  },
+  toggleMobileSidebar: () => set((state) => ({ isMobileSidebarOpen: !state.isMobileSidebarOpen })),
 }));
 
 export default useSidebarStore;
