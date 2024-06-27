@@ -12,7 +12,9 @@
       "scanAccessInfo": "To transfer the access data, please scan the following QR code.",
       "scanAppStoreLink": "Scan the QR code to download the edultion-io app from the AppStore.",
       "nextStepPreview": "In the next step, you can transfer the access data by scanning a QR code.",
-      "copyCredentials": "Or enter manually:"
+      "copyCredentials": "Or enter manually:",
+      "downloadDirect": "Or download the app here:",
+      "downloadApp": "Download the edulution-io app here:"
     }
   },
   "ticketsystem": {
