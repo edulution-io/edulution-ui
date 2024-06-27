@@ -9,60 +9,47 @@ const deTranslationFilePath = path.join(localesDir, 'de/translation.json');
 const enTranslationFilePath = path.join(localesDir, 'en/translation.json');
 
 // Helper function to read and parse JSON files
-const readJsonFile = (filePath: string) => {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-};
+const readJsonFile = (filePath: string) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-// Helper function to get all enum keys
-const getEnumKeys = (sourceFile: ts.SourceFile): string[] => {
-  const keys: string[] = [];
+// Helper function to get full enum paths
+const getEnumFullPaths = (sourceFile: ts.SourceFile): string[] => {
+  const paths: string[] = [];
   const visit = (node: ts.Node) => {
     if (ts.isEnumDeclaration(node)) {
-      node.members.forEach((member: ts.EnumMember) => {
-        if (ts.isEnumMember(member) && member.name && ts.isIdentifier(member.name)) {
-          keys.push(member.name.text);
+      node.members.forEach((member) => {
+        // Check for string literal initializers
+        if (member.initializer && ts.isStringLiteral(member.initializer)) {
+          paths.push(member.initializer.text); // Use `.text` to get the string content
         }
       });
     }
     ts.forEachChild(node, visit);
   };
   visit(sourceFile);
-  return keys;
-};
-
-// Function to resolve @libs to libs/src in import paths
-const resolveImportPath = (importPath: string) => {
-  return importPath.replace('@libs', 'libs/src');
+  return paths;
 };
 
 // Function to parse the TypeScript file and get the imported enums
 const parseErrorMessageFile = (filePath: string): string[] => {
   const program = ts.createProgram([filePath], {});
   const sourceFile = program.getSourceFile(filePath);
-  if (!sourceFile) {
-    throw new Error(`Source file not found: ${filePath}`);
-  }
+  if (!sourceFile) throw new Error(`Source file not found: ${filePath}`);
 
-  const importPaths: string[] = [];
-
-  const visit = (node: ts.Node) => {
+  const importPaths = [];
+  sourceFile.forEachChild((node) => {
     if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
       importPaths.push(node.moduleSpecifier.text);
     }
-    ts.forEachChild(node, visit);
-  };
+  });
 
-  visit(sourceFile);
-
-  return importPaths.map(resolveImportPath);
+  return importPaths.map((importPath) => path.resolve(importPath.replace('@libs', 'libs/src') + '.ts'));
 };
 
-// Function to compare enum keys with JSON keys
-const compareEnumWithJson = (enumKeys: string[], json: any, prefix: string) => {
-  enumKeys.forEach((key) => {
-    const fullKey = `${prefix}.${key}`;
-    if (!fullKey.split('.').reduce((o, k) => (o || {})[k], json)) {
-      console.error(`Missing key in JSON: ${fullKey}`);
+// Function to compare enum full paths with JSON keys
+const compareEnumWithJson = (enumPaths: string[], json: any) => {
+  enumPaths.forEach((path) => {
+    if (!path.split('.').reduce((obj, key) => obj && obj[key], json)) {
+      console.error(`Missing key in JSON: ${path}`);
       process.exit(1);
     }
   });
@@ -71,28 +58,27 @@ const compareEnumWithJson = (enumKeys: string[], json: any, prefix: string) => {
 // Main function
 const main = () => {
   const enumImportPaths = parseErrorMessageFile(errorMessageFilePath);
-  const enumKeys: string[] = [];
+  const enumPaths = [];
 
   enumImportPaths.forEach((importPath) => {
-    const absolutePath = path.resolve(importPath + '.ts');
-    const program = ts.createProgram([absolutePath], {});
-    const sourceFile = program.getSourceFile(absolutePath);
-    if (!sourceFile) {
-      throw new Error(`Enum source file not found: ${absolutePath}`);
-    }
-    enumKeys.push(...getEnumKeys(sourceFile));
+    const program = ts.createProgram([importPath], {});
+    const sourceFile = program.getSourceFile(importPath);
+    if (!sourceFile) throw new Error(`Enum source file not found: ${importPath}`);
+    enumPaths.push(...getEnumFullPaths(sourceFile));
   });
 
   const deJson = readJsonFile(deTranslationFilePath);
   const enJson = readJsonFile(enTranslationFilePath);
 
   console.log('Checking German translation file...');
-  compareEnumWithJson(enumKeys, deJson, 'conferences.errors');
+  compareEnumWithJson(enumPaths, deJson);
+
+  console.log('✔ DE one is awesome!');
 
   console.log('Checking English translation file...');
-  compareEnumWithJson(enumKeys, enJson, 'conferences.errors');
+  compareEnumWithJson(enumPaths, enJson);
 
-  console.log('✔ Everything is awesome!');
+  console.log('✔ EN is awesome!');
 };
 
 main();
