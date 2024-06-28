@@ -45,7 +45,7 @@ class SurveysService {
       await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
     } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, error);
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED);
     }
   }
 
@@ -68,21 +68,6 @@ class SurveysService {
       createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully',
     );
     return createdSurvey;
-  }
-
-  async updateOrCreateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
-    const updatedSurvey = await this.updateSurvey(survey);
-    if (updatedSurvey == null) {
-      const createdSurvey = await this.createSurvey(survey);
-      if (createdSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      return createdSurvey;
-    }
-    return updatedSurvey;
   }
 
   async addPublicAnswer(

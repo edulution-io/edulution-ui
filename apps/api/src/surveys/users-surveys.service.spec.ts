@@ -149,7 +149,7 @@ describe('UsersSurveysService', () => {
 
       jest.spyOn(service, 'updateUser');
 
-      await service.onRemoveSurvey([openSurvey]);
+      await service.onRemoveSurveys([openSurvey]);
       expect(service.updateUser).toHaveBeenCalledWith(first_username, {
         usersSurveys: Users_UserSurveys_afterRemove_openSurvey,
       });
@@ -169,7 +169,7 @@ describe('UsersSurveysService', () => {
 
       jest.spyOn(service, 'updateUser');
 
-      await service.onRemoveSurvey([createdSurvey]);
+      await service.onRemoveSurveys([createdSurvey]);
       expect(service.updateUser).toHaveBeenCalledWith(first_username, {
         usersSurveys: Users_UserSurveys_afterRemove_createdSurvey,
       });
@@ -189,7 +189,7 @@ describe('UsersSurveysService', () => {
 
       jest.spyOn(service, 'updateUser');
 
-      await service.onRemoveSurvey([answeredSurvey]);
+      await service.onRemoveSurveys([answeredSurvey]);
       expect(service.updateUser).toHaveBeenCalledWith(first_username, {
         usersSurveys: Users_UserSurveys_afterRemove_answeredSurvey,
       });
@@ -209,7 +209,7 @@ describe('UsersSurveysService', () => {
 
       jest.spyOn(service, 'updateUser');
 
-      await service.onRemoveSurvey([distributedSurvey]);
+      await service.onRemoveSurveys([distributedSurvey]);
       expect(service.updateUser).toHaveBeenCalledWith(first_username, {
         usersSurveys: Users_UserSurveys_afterRemove_distributedSurvey,
       });
@@ -226,7 +226,7 @@ describe('UsersSurveysService', () => {
 
       jest.spyOn(service, 'updateUser');
 
-      await service.onRemoveSurvey([unknownSurvey]);
+      await service.onRemoveSurveys([unknownSurvey]);
 
       expect(service.updateUser).not.toHaveBeenCalled();
     });
@@ -236,7 +236,7 @@ describe('UsersSurveysService', () => {
         exec: jest.fn().mockResolvedValue(null),
       });
 
-      await expect(service.onRemoveSurvey([unknownSurvey])).rejects.toThrow(
+      await expect(service.onRemoveSurveys([unknownSurvey])).rejects.toThrow(
         new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND),
       );
     });

@@ -97,7 +97,7 @@ class UsersSurveysService {
     return updatedUser;
   }
 
-  async onRemoveSurvey(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
+  async onRemoveSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     const existingUsers = await this.userModel.find<User>().exec();
     if (!existingUsers) {
       throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);

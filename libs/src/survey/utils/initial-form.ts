@@ -1,5 +1,9 @@
 // eslint-disable no-underscore-dangle
 
+// To enforce the default language set in the survey editor, set initial form like:
+// const EmptySurveyFormula = JSON.parse(`{ "locale": "${i18next.language}" }`);
+// TODO: Test the initial formula above thoroughly
+
 import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 import Survey from '@libs/survey/types/survey';

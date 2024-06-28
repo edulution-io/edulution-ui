@@ -115,6 +115,7 @@ export const firstMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
 
 export const firstMockSurveyDocument: SurveyDocument = {
   ...firstMockSurvey,
+  delete: jest.fn().mockResolvedValue(true),
   create: jest.fn().mockResolvedValue(firstMockSurvey),
   find: jest.fn().mockResolvedValue(firstMockSurvey),
   save: jest.fn().mockResolvedValue(firstMockSurvey),
@@ -182,6 +183,7 @@ export const secondMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
 
 export const secondMockSurveyDocument: SurveyDocument = {
   ...secondMockSurvey,
+  delete: jest.fn().mockResolvedValue(true),
   create: jest.fn().mockResolvedValue(secondMockSurvey),
   find: jest.fn().mockResolvedValue(secondMockSurvey),
   save: jest.fn().mockResolvedValue(secondMockSurvey),

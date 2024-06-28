@@ -97,13 +97,13 @@ describe('SurveyService', () => {
     });
   });
 
-  describe('updateOrCreateSurvey', () => {
+  describe('updateSurvey', () => {
     it('should update a survey', async () => {
       surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(secondMockSurvey),
       });
 
-      const result = await service.updateOrCreateSurvey(secondMockSurvey);
+      const result = await service.updateSurvey(secondMockSurvey);
       expect(result).toStrictEqual(secondMockSurvey);
 
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: secondMockSurvey._id }, secondMockSurvey);
@@ -121,46 +121,26 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.updateOrCreateSurvey(secondMockSurvey);
+        await service.updateSurvey(secondMockSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToUpdateSurveyError);
       }
     });
+  });
 
-    // if 'findOneAndUpdate()' did not found a survey to update it will create one
-    it('should create a survey (first)', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockReturnValueOnce(null),
-      });
+  describe('createSurvey', () => {
+    it('should create a survey', async () => {
       surveyModel.create = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockReturnValueOnce(firstMockSurvey),
       });
 
       await service
-        .updateOrCreateSurvey(firstMockSurvey)
+        .createSurvey(firstMockSurvey)
         .then((data) => expect(data).toStrictEqual(firstMockSurvey))
         .catch(() => {});
 
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: firstMockSurvey._id }, { ...firstMockSurvey });
       expect(surveyModel.create).toHaveBeenCalledWith(firstMockSurvey);
-    });
-
-    it('should create a survey (second)', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(null),
-      });
-      surveyModel.create = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValueOnce(secondMockSurvey),
-      });
-
-      await service
-        .updateOrCreateSurvey(secondMockSurvey)
-        .then((data) => expect(data).toStrictEqual(secondMockSurvey))
-        .catch(() => {});
-
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: secondMockSurvey._id }, { ...secondMockSurvey });
-      expect(surveyModel.create).toHaveBeenCalledWith(secondMockSurvey);
     });
 
     it('should throw an error if the survey creation fails', async () => {
@@ -178,7 +158,7 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'create');
 
       try {
-        await service.updateOrCreateSurvey(firstMockSurvey);
+        await service.createSurvey(firstMockSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(SurveyErrorMessages.NotAbleToCreateSurveyError);

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param, Logger } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import GetAnswerDto from '@libs/survey/dto/get-answer.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
@@ -16,6 +16,8 @@ import {
   RESULT_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -76,6 +78,8 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _id,
       participants = [],
       publicAnswers = [],
       saveNo = 0,
@@ -86,6 +90,7 @@ class SurveysController {
 
     const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
+      _id,
       participants,
       publicAnswers,
       saveNo,
@@ -94,33 +99,39 @@ class SurveysController {
       canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
     };
 
-    const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
-
-    if (newSurvey) {
-      const { _id: newSurveyId } = newSurvey;
-      await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
-      await this.usersSurveysService.populateSurvey(participants, newSurveyId);
+    const updatedSurvey = await this.surveyService.updateSurvey(survey);
+    if (updatedSurvey == null) {
+      const createdSurvey = await this.surveyService.createSurvey(survey);
+      if (createdSurvey == null) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      // eslint-disable-next-line no-underscore-dangle
+      await this.usersSurveysService.addToCreatedSurveys(username, _id);
+      // eslint-disable-next-line no-underscore-dangle
+      await this.usersSurveysService.populateSurvey(participants, _id);
+      return createdSurvey;
     }
-
-    return newSurvey;
+    return updatedSurvey;
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    const deleted = this.surveyService.deleteSurveys(surveyIds);
-    await this.usersSurveysService.onRemoveSurvey(surveyIds);
-    return deleted;
+    try {
+      await this.surveyService.deleteSurveys(surveyIds);
+      await this.usersSurveysService.onRemoveSurveys(surveyIds);
+    } catch (e) {
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
+    }
   }
 
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
-    try {
-      await this.surveyService.addPublicAnswer(surveyId, answer);
-    } catch (e) {
-      Logger.warn(`Survey error adding public answer: ${e instanceof Error ? e.message : JSON.stringify(e)}`);
-    }
+    await this.surveyService.addPublicAnswer(surveyId, answer);
     return this.usersSurveysService.addAnswer(username, surveyId, answer);
   }
 }
