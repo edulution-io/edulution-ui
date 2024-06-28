@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MobileLogoIcon } from '@/assets/icons';
-import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
+import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 
 const HomeButton: React.FC = () => {
   const { t } = useTranslation();

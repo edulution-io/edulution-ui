@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
-import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
+import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getFromPathName } from '@libs/common/utils';
 
@@ -17,7 +17,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     if (buttonRef.current == null) return;
 
     const rect = buttonRef.current.getBoundingClientRect();
-    setIsInView(rect.bottom < window.innerHeight - 58);
+    setIsInView(rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT);
   }, [translate, size]);
 
   return (

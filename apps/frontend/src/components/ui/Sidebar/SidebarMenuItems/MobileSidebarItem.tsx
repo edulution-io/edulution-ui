@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
+import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getFromPathName } from '@libs/common/utils';
 import useSidebarStore from '../sidebarStore';

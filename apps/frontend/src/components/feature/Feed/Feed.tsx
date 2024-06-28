@@ -5,7 +5,7 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 import { ConferencesIcon } from '@/assets/icons';
 import { APPS } from '@/datatypes/types';
 import cn from '@/lib/utils';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
+import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { AccordionContent, AccordionItem, Accordion, AccordionTrigger } from '@/components/ui/Accordion';
 import { Card, CardContent } from '@/components/shared/Card';
