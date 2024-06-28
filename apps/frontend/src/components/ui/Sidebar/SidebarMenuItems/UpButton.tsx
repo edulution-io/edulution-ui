@@ -2,12 +2,9 @@ import React, { useMemo } from 'react';
 import { IconContext } from 'react-icons';
 import { MdArrowDropUp } from 'react-icons/md';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { SidebarArrowButtonProps } from '@libs/ui/types/sidebar/sidebarArrowButtonProps';
 
-type UpButtonProps = {
-  onClick: () => void;
-};
-
-const UpButton: React.FC<UpButtonProps> = ({ onClick }) => {
+const UpButton: React.FC<SidebarArrowButtonProps> = ({ onClick }) => {
   const isMobileView = useIsMobileView();
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
 
