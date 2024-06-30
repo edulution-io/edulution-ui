@@ -4,6 +4,7 @@ enum SurveyErrorMessages {
   NotAbleToDeleteSurveyError = 'survey.errors.notAbleToDeleteSurveyError',
   NotAbleToFindSurveyError = 'survey.errors.notAbleToFindSurveyError',
   NotAbleToFindSurveysError = 'survey.errors.notAbleToFindSurveysError',
+  notAbleToFindSurveyParameterError = 'survey.errors.notAbleToFindSurveyParameterError',
   NotAbleToParticipateNotAnParticipantError = 'survey.errors.notAbleToParticipateNotAnParticipantError',
   NotAbleToParticipateAlreadyParticipatedError = 'survey.errors.notAbleToParticipateAlreadyParticipatedError',
   NotAbleToUpdateSurveyError = 'survey.errors.notAbleToUpdateSurveyError',
