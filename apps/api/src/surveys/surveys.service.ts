@@ -4,6 +4,7 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import Attendee from '@libs/survey/types/attendee';
+import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 import { SurveyModel, SurveyDocument } from './survey.schema';
 
 @Injectable()
@@ -49,11 +50,11 @@ class SurveysService {
     }
   }
 
-  async updateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+  async updateSurvey(survey: UpdateOrCreateSurveyDto): Promise<SurveyModel | null> {
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<SurveyModel>(
         // eslint-disable-next-line no-underscore-dangle
-        { id: survey._id },
+        { id: survey.id },
         { ...survey },
       )
       .exec();
@@ -62,7 +63,7 @@ class SurveysService {
     return updatedSurvey;
   }
 
-  async createSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+  async createSurvey(survey: UpdateOrCreateSurveyDto): Promise<SurveyModel | null> {
     const createdSurvey = await this.surveyModel.create(survey);
     Logger.log(
       createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully',
@@ -70,25 +71,11 @@ class SurveysService {
     return createdSurvey;
   }
 
-  async updateOrCreateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
-    const updatedSurvey = await this.updateSurvey(survey);
-    if (updatedSurvey == null) {
-      const createdSurvey = await this.createSurvey(survey);
-      if (createdSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      return createdSurvey;
-    }
-    return updatedSurvey;
-  }
-
   async addPublicAnswer(
     surveyId: mongoose.Types.ObjectId,
     answer: JSON,
     username?: string,
+    canSubmitMultipleAnswers?: boolean,
   ): Promise<SurveyModel | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
@@ -104,6 +91,7 @@ class SurveysService {
 
     const participants = existingSurvey.participants || [];
     const participated = existingSurvey.participated || [];
+    const answers = existingSurvey.publicAnswers || [];
     if (username) {
       const isParticipant = participants.find((participant: Attendee) => participant.username === username);
       if (!isParticipant) {
@@ -119,11 +107,13 @@ class SurveysService {
           HttpStatus.FORBIDDEN,
         );
       }
-      participated.push(username);
+      if (!hasAlreadyParticipated) {
+        participated.push(username);
+      }
+      if (!hasAlreadyParticipated || canSubmitMultipleAnswers) {
+        answers.push(answer);
+      }
     }
-
-    const answers = existingSurvey.publicAnswers || [];
-    answers.push(answer);
 
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<SurveyModel>({ id: surveyId }, { publicAnswers: answers, participated })

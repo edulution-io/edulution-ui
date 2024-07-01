@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 import GetAnswerDto from '@libs/survey/types/get-answer.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/types/find-survey.dto';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import {
   ANSWER_ENDPOINT,
   ANSWERED_SURVEYS_ENDPOINT,
@@ -15,7 +14,8 @@ import {
   RESULT_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
-import { SurveyModel } from './survey.schema';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -36,7 +36,7 @@ class SurveysController {
     if (surveyId) {
       return this.surveyService.findOneSurvey(surveyId);
     }
-    throw new HttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
+    throw new CustomHttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
   }
 
   @Get(OPEN_SURVEYS_ENDPOINT)
@@ -76,8 +76,8 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
-      participants = [],
       id,
+      participants = [],
       publicAnswers = [],
       saveNo = 0,
       created = new Date(),
@@ -85,9 +85,9 @@ class SurveysController {
       canSubmitMultipleAnswers,
     } = updateOrCreateSurveyDto;
 
-    const survey: SurveyModel = {
+    const survey: UpdateOrCreateSurveyDto = {
       ...updateOrCreateSurveyDto,
-      _id: id,
+      id,
       participants,
       publicAnswers,
       saveNo,
@@ -96,23 +96,32 @@ class SurveysController {
       canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
     };
 
-    const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
-
-    if (newSurvey) {
-      const { _id: newSurveyId } = newSurvey;
-      await this.usersSurveysService.addToCreatedSurveys(username, newSurveyId);
-      await this.usersSurveysService.populateSurvey(participants, newSurveyId);
+    const updatedSurvey = await this.surveyService.updateSurvey(survey);
+    if (updatedSurvey == null) {
+      const createdSurvey = await this.surveyService.createSurvey(survey);
+      if (createdSurvey == null) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      await this.usersSurveysService.addToCreatedSurveys(username, id);
+      await this.usersSurveysService.populateSurvey(participants, id);
+      return createdSurvey;
     }
 
-    return newSurvey;
+    return updatedSurvey;
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    const deleted = this.surveyService.deleteSurveys(surveyIds);
-    await this.usersSurveysService.onRemoveSurveys(surveyIds);
-    return deleted;
+    try {
+      await this.surveyService.deleteSurveys(surveyIds);
+      await this.usersSurveysService.onRemoveSurveys(surveyIds);
+    } catch (e) {
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
+    }
   }
 
   @Patch()
