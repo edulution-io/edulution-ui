@@ -75,7 +75,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.toolbar.actions.splice(expandSettingsAction, 1);
 
   // TOOLBOX (LEFT SIDEBAR)
-  creator.showToolbox = true; // TODO: Ask Mi and Mo
+  creator.showToolbox = true; // TODO: Ask Mi and/or Mo
   creator.toolbox.overflowBehavior = 'hideInMenu';
   creator.toolbox.searchEnabled = false;
 
@@ -83,13 +83,18 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.showSidebar = false;
   creator.showPropertyGrid = false;
 
+  // ELEMENT MENU (part of the ELEMENT/QUESTION)
+  // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU
+  // creator.onDefineElementMenuItems.add((_, options) => {
+  //   let settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
+  //   options.items.splice(settingsItemIndex, 1);
+  // });
   // ADD PLACEHOLDER TEXT TO TEXT QUESTIONS
   // creator.onQuestionAdded.add((_, options) => {
   //   const updateOptions = options;
   //   if (updateOptions.question.getType() === 'text') {
   //     updateOptions.question.placeHolder = `${t('survey.editor.expectingUserInput')}`;
   //     // updateOptions.question.defaultValue = `${t('survey.editor.expectingUserInput')}`;
-  //     // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU
   //     // updateOptions.question.description = options.question.description || t('survey.editor.addDescription');
   //   }
   //   return updateOptions;

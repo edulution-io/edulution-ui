@@ -6,7 +6,7 @@ import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
-import { SurveyModel } from './types/survey.schema';
+import { SurveyModel } from './survey.schema';
 import SurveysService from './surveys.service';
 
 @Controller(SURVEYS)
@@ -38,6 +38,7 @@ class SurveysController {
   @Post()
   async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto) {
     const {
+      id,
       publicAnswers = [],
       saveNo = 0,
       created = new Date(),
@@ -47,6 +48,7 @@ class SurveysController {
 
     const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
+      _id: id,
       publicAnswers,
       saveNo,
       created,

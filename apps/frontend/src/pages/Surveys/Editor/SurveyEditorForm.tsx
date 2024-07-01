@@ -69,7 +69,7 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     await updateOrCreateSurvey({
-      _id: id,
+      id,
       formula,
       participants,
       participated,

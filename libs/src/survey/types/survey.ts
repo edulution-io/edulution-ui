@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 
-export interface Survey {
-  _id: mongoose.Types.ObjectId;
+interface Survey {
+  id: mongoose.Types.ObjectId;
   formula: JSON;
   publicAnswers: JSON[];
   participants: Attendee[];
@@ -18,3 +18,5 @@ export interface Survey {
 
   canSubmitMultipleAnswers?: boolean;
 }
+
+export default Survey;
