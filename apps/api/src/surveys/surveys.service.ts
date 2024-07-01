@@ -4,8 +4,8 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import Attendee from '@libs/survey/types/attendee';
-import { SurveyModel, SurveyDocument } from './survey.schema';
 import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
+import { SurveyModel, SurveyDocument } from './survey.schema';
 
 @Injectable()
 class SurveysService {
