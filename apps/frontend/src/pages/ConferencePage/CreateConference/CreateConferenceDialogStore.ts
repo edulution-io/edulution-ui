@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import CreateConferenceDto from '@/pages/ConferencePage/dto/create-conference.dto';
-import { Conference } from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';

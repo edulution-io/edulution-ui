@@ -8,6 +8,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true
   },

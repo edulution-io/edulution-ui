@@ -22,7 +22,18 @@
     "title": "CHAT",
     "sidebar": "Chat"
   },
+  "errors": {
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+  },
   "conferences": {
+    "errors": {
+      "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
+      "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
+      "BbbUnauthorized": "Sie sind am externen BBB-Server nicht autorisiert",
+      "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wenden Sie sich an Ihren Systemadministrator",
+      "YouAreNotTheCreator": "Sie sind nicht der Ersteller der Konferenz"
+    },
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
@@ -60,6 +71,10 @@
   "knowledgebase": {
     "title": "WISSENSDATENBANK",
     "sidebar": "Wissensdatenbank"
+  },
+  "feed": {
+    "title": "Aktuelles",
+    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
   },
   "filesharing": {
     "title": "FILESHARING",
@@ -213,6 +228,10 @@
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "filesToUpload": "Dateien zum Hochladen"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
   },
   "table": {
     "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",

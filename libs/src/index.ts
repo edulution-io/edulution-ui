@@ -1,1 +1,1 @@
-export * from './appconfig/types/appIntegrationType';
+export { default as AppIntegrationType } from './appconfig/types/appIntegrationType';
