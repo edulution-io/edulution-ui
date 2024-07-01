@@ -25,14 +25,14 @@ class SurveysController {
     throw new HttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
   }
 
-  @Get(`${RESULT_ENDPOINT}:surveyId`)
-  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.getPublicAnswers(surveyId);
-  }
-
   @Get(ALL_SURVEYS_ENDPOINT)
   async getAllSurveys() {
     return this.surveyService.getAllSurveys();
+  }
+
+  @Get(`${RESULT_ENDPOINT}:surveyId`)
+  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+    return this.surveyService.getPublicAnswers(surveyId);
   }
 
   @Post()
