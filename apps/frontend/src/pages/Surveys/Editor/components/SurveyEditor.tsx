@@ -24,13 +24,6 @@ interface SurveyEditorProps {
 editorLocalization.defaultLocale = i18next.language || 'en';
 localization.currentLocale = i18next.language || 'en';
 
-// const deuLocale = localization.getLocale('de');
-// deuLocale.ed.addNewQuestion = 'Neue Frage';
-// deuLocale.ed.addNewTypeQuestion = 'Neue {0}';
-
-// deuLocale.ed.addNewPage = 'Neue Seite';
-// deuLocale.ed.pageTypeName = 'Seite {0}';
-
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula, error } = props;
 
@@ -82,19 +75,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   // TOOLBOX (LEFT SIDEBAR)
   creator.toolbox.overflowBehavior = 'hideInMenu';
-
-  // PROPERTY GRID (RIGHT SIDEBAR)
-  // creator.onShowingProperty.add(function (sender, options) {
-  //   if (sender && options /* options.property.name === 'name' */) {
-  //     options.canShow = false;
-  //
-  //     // Hide properties found in `blackList`
-  //     // options.canShow = blackList.indexOf(options.property.name) < 0;
-  //
-  //     // Hide all properties except those found in `whiteList`
-  //     // options.canShow = whiteList.indexOf(options.property.name) > -1;
-  //   }
-  // });
 
   // ELEMENT MENU (part of the ELEMENT/QUESTION)
   // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU
