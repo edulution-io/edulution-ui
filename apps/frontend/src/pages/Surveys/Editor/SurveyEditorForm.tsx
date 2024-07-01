@@ -7,7 +7,7 @@ import { AiOutlineSave } from 'react-icons/ai';
 import { FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import EmptyForm from '@libs/survey/utils/get-survey-editor-form-data';
+import EmptyForm from '@libs/survey/types/get-survey-editor-form-data';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';

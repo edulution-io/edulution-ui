@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Get, Patch, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
-import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
-import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
-import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
-import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
+import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
+import PushAnswerDto from '@libs/survey/types/push-answer.dto';
+import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
+import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
 import { SurveyModel } from './types/survey.schema';

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-class PushAnswerDto {
+type PushAnswerDto = {
   surveyId: mongoose.Types.ObjectId;
 
   answer: JSON;
@@ -8,6 +8,6 @@ class PushAnswerDto {
   isAnonymous?: boolean;
 
   canSubmitMultipleAnswers?: boolean;
-}
+};
 
 export default PushAnswerDto;

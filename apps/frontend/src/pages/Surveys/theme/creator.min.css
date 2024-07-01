@@ -124,6 +124,11 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
+.svc-tab-designer .sd-container-modern.sd-container-modern--static {
+  max-width: calc(100% - 20vh);
+}
+
+/* turns some of the orange elements into green */
 /*
 .sv-svg-icon,
 .sv-action-bar,
@@ -1431,9 +1436,11 @@ svc-tab-designer {
   margin-right: auto;
 }
 
+/*
 .svc-tab-designer .sd-container-modern.sd-container-modern--static {
   max-width: calc(94 * (var(--sjs-base-unit, var(--base-unit, 8px))));
 }
+ */
 
 .svc-tab-designer .sd-container-modern.sd-container-modern--responsive {
   max-width: initial;
