@@ -64,7 +64,6 @@ class SurveysController {
     return this.surveyService.getPublicAnswers(surveyId);
   }
 
-
   @Post(ANSWER_ENDPOINT)
   async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, participant = username } = getAnswerDto;
@@ -110,7 +109,7 @@ class SurveysController {
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
     const deleted = this.surveyService.deleteSurveys(surveyIds);
-    await this.usersSurveysService.onRemoveSurvey(surveyIds);
+    await this.usersSurveysService.onRemoveSurveys(surveyIds);
     return deleted;
   }
 

@@ -6,7 +6,7 @@ import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 // TODO: Test the initial formula above thoroughly
 
 class EmptyForm implements SurveyEditorFormData {
-  _id: mongoose.Types.ObjectId;
+  readonly _id: mongoose.Types.ObjectId;
 
   formula: JSON;
 

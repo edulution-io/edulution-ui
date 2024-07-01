@@ -34,7 +34,7 @@ class InitialForm implements SurveyEditorFormData {
     const time = new Date().getTime();
     // eslint-disable-next-line no-underscore-dangle
     this._id = selectedSurvey?._id || mongoose.Types.ObjectId.createFromTime(time);
-    this.formula =  selectedSurvey?.formula || {} as JSON;
+    this.formula = selectedSurvey?.formula || ({} as JSON);
     this.participants = selectedSurvey?.participants || [];
     this.participated = [];
     this.saveNo = selectedSurvey?.saveNo || 0;
