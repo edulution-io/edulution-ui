@@ -2,7 +2,7 @@ import React from 'react';
 import i18next from 'i18next';
 import { toast } from 'sonner';
 import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import 'survey-creator-core/i18n/english';
@@ -27,7 +27,7 @@ localization.currentLocale = i18next.language || 'en';
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula, error } = props;
 
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -99,15 +99,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   //   }
   //   return updateOptions;
   // });
-
-  creator.onQuestionAdded.add((_, options) => {
-    const updateOptions = options;
-    if (updateOptions.question.getType() === 'text') {
-      updateOptions.question.defaultValue = `${t('survey.editor.expectingUserInput')}`;
-      updateOptions.question.description = options.question.description || t('survey.editor.addDescription');
-    }
-    return updateOptions;
-  });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
     form.setValue('formula', creator.JSON);
