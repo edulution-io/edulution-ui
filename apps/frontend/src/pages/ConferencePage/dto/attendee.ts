@@ -1,6 +1,6 @@
-import { User } from '@libs/conferences/types/user';
+import ConferenceUser from '@libs/conferences/types/conferenceUser';
 
-type Attendee = Pick<User, 'firstName' | 'lastName' | 'username'> & {
+type Attendee = Pick<ConferenceUser, 'firstName' | 'lastName' | 'username'> & {
   label: string;
   value: string;
 };

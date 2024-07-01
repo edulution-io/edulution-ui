@@ -1,25 +1,24 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
 import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
 import GetAnswerDto from '@libs/survey/dto/get-answer.dto';
 import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import {
-  ALL_SURVEYS_ENDPOINT,
   ANSWER_ENDPOINT,
   ANSWERED_SURVEYS_ENDPOINT,
   CREATED_SURVEYS_ENDPOINT,
-  FIND_ONE_ENDPOINT,
-  FIND_SURVEYS_ENDPOINT,
+  ALL_SURVEYS_ENDPOINT,
   OPEN_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
+import { SurveyModel } from './survey.schema';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import { SurveyModel } from './survey.schema';
 
 @Controller(SURVEYS)
 class SurveysController {
@@ -28,15 +27,16 @@ class SurveysController {
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
-  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
-  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.findOneSurvey(surveyId);
-  }
-
-  @Get(FIND_SURVEYS_ENDPOINT)
+  @Get()
   async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
-    const { surveyIds } = findSurveyDto;
-    return this.surveyService.findSurveys(surveyIds);
+    const { surveyId, surveyIds = [] } = findSurveyDto;
+    if (surveyIds.length > 0) {
+      return this.surveyService.findSurveys(surveyIds);
+    }
+    if (surveyId) {
+      return this.surveyService.findOneSurvey(surveyId);
+    }
+    throw new HttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
   }
 
   @Get(OPEN_SURVEYS_ENDPOINT)
