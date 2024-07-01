@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import EmptyForm from '@libs/survey/types/empty-survey-form-data';
-import InitialForm from '@libs/survey/types/initial-form';
+import InitialSurveyFormData from '@libs/survey/types/initial-survey-form-data';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -31,7 +31,10 @@ const SurveyEditorForm = () => {
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-  const initialFormValues: SurveyEditorFormData = useMemo(() => new InitialForm(selectedSurvey), [selectedSurvey]);
+  const initialFormValues: SurveyEditorFormData = useMemo(
+    () => new InitialSurveyFormData(selectedSurvey),
+    [selectedSurvey],
+  );
 
   const emptyFormValues: SurveyEditorFormData = new EmptyForm();
 

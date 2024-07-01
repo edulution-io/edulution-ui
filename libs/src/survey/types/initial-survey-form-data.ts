@@ -3,7 +3,7 @@ import Attendee from '@libs/survey/types/attendee';
 import Survey from '@libs/survey/types/survey';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
-class InitialForm implements SurveyEditorFormData {
+class InitialSurveyFormData implements SurveyEditorFormData {
   id: mongoose.Types.ObjectId;
 
   formula: JSON;
@@ -47,4 +47,4 @@ class InitialForm implements SurveyEditorFormData {
   }
 }
 
-export default InitialForm;
+export default InitialSurveyFormData;

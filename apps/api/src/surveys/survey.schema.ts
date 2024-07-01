@@ -9,9 +9,6 @@ export class SurveyModel {
   @Prop({ required: true })
   _id: mongoose.Types.ObjectId;
 
-  @Prop({ required: true })
-  id: mongoose.Types.ObjectId;
-
   @Prop({ type: JSON, required: true })
   formula: JSON;
 

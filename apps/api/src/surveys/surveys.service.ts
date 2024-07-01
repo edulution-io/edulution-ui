@@ -25,7 +25,7 @@ class SurveysService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    const survey = this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
+    const survey = this.surveyModel.findOne<SurveyModel>({ id: surveyId }).exec();
     if (survey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
@@ -33,7 +33,7 @@ class SurveysService {
   }
 
   async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<SurveyModel[] | null> {
-    const surveys = this.surveyModel.find<SurveyModel>({ _id: { $in: surveyIds } }).exec();
+    const surveys = this.surveyModel.find<SurveyModel>({ id: { $in: surveyIds } }).exec();
     if (surveys == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
     }
@@ -42,7 +42,7 @@ class SurveysService {
 
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
-      await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
+      await this.surveyModel.deleteMany({ id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, error);
@@ -53,7 +53,7 @@ class SurveysService {
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<SurveyModel>(
         // eslint-disable-next-line no-underscore-dangle
-        { id: survey.id },
+        { id: survey._id },
         { ...survey },
       )
       .exec();
@@ -97,7 +97,7 @@ class SurveysService {
       );
     }
 
-    const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
+    const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ id: surveyId }).exec();
     if (!existingSurvey) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
@@ -126,7 +126,7 @@ class SurveysService {
     answers.push(answer);
 
     const updatedSurvey = await this.surveyModel
-      .findOneAndUpdate<SurveyModel>({ _id: surveyId }, { publicAnswers: answers, participated })
+      .findOneAndUpdate<SurveyModel>({ id: surveyId }, { publicAnswers: answers, participated })
       .exec();
     if (updatedSurvey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -142,7 +142,7 @@ class SurveysService {
       );
     }
 
-    const survey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
+    const survey = await this.surveyModel.findOne<SurveyModel>({ id: surveyId }).exec();
     if (survey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
