@@ -1,6 +1,5 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-// import { Attendee } from '../../conferences/dto/attendee';
 import Attendee from '@libs/survey/types/attendee';
 
 export type SurveyDocument = SurveyModel & Document;
@@ -9,6 +8,9 @@ export type SurveyDocument = SurveyModel & Document;
 export class SurveyModel {
   @Prop({ required: true })
   _id: mongoose.Types.ObjectId;
+
+  @Prop({ required: true })
+  id: mongoose.Types.ObjectId;
 
   @Prop({ type: JSON, required: true })
   formula: JSON;

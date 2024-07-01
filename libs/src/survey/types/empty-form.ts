@@ -6,7 +6,7 @@ import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 // TODO: Test the initial formula above thoroughly
 
 class EmptyForm implements SurveyEditorFormData {
-  readonly _id: mongoose.Types.ObjectId;
+  readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
@@ -32,8 +32,7 @@ class EmptyForm implements SurveyEditorFormData {
 
   constructor() {
     const time = new Date().getTime();
-    // eslint-disable-next-line no-underscore-dangle
-    this._id = mongoose.Types.ObjectId.createFromTime(time);
+    this.id = mongoose.Types.ObjectId.createFromTime(time);
     this.formula = {} as JSON;
     this.participants = [];
     this.participated = [];

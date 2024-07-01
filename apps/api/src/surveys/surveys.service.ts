@@ -20,7 +20,10 @@ class SurveysService {
 
   async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<SurveyModel | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId, HttpStatus.NOT_ACCEPTABLE);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
     const survey = this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
     if (survey == null) {
@@ -50,7 +53,7 @@ class SurveysService {
     const updatedSurvey = await this.surveyModel
       .findOneAndUpdate<SurveyModel>(
         // eslint-disable-next-line no-underscore-dangle
-        { _id: survey._id },
+        { id: survey.id },
         { ...survey },
       )
       .exec();
@@ -61,7 +64,9 @@ class SurveysService {
 
   async createSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
     const createdSurvey = await this.surveyModel.create(survey);
-    Logger.log(createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully');
+    Logger.log(
+      createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully',
+    );
     return createdSurvey;
   }
 
@@ -70,7 +75,10 @@ class SurveysService {
     if (updatedSurvey == null) {
       const createdSurvey = await this.createSurvey(survey);
       if (createdSurvey == null) {
-        throw new CustomHttpException(SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CustomHttpException(
+          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
       return createdSurvey;
     }
@@ -83,7 +91,10 @@ class SurveysService {
     username?: string,
   ): Promise<SurveyModel | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId, HttpStatus.NOT_ACCEPTABLE);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
 
     const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();
@@ -96,11 +107,17 @@ class SurveysService {
     if (username) {
       const isParticipant = participants.find((participant: Attendee) => participant.username === username);
       if (!isParticipant) {
-        throw new CustomHttpException(SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError, HttpStatus.UNAUTHORIZED);
+        throw new CustomHttpException(
+          SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError,
+          HttpStatus.UNAUTHORIZED,
+        );
       }
       const hasAlreadyParticipated = participated.find((user: string) => user === username);
       if (hasAlreadyParticipated) {
-        throw new CustomHttpException(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError, HttpStatus.FORBIDDEN);
+        throw new CustomHttpException(
+          SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError,
+          HttpStatus.FORBIDDEN,
+        );
       }
       participated.push(username);
     }
@@ -119,7 +136,10 @@ class SurveysService {
 
   async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId, HttpStatus.NOT_ACCEPTABLE);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
 
     const survey = await this.surveyModel.findOne<SurveyModel>({ _id: surveyId }).exec();

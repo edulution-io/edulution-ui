@@ -3,7 +3,7 @@ import Attendee from '@libs/survey/types/attendee';
 // import Group from '@libs/conferences/types/group';
 
 interface SurveyEditorFormData {
-  _id: mongoose.Types.ObjectId;
+  id: mongoose.Types.ObjectId;
   formula: JSON;
   participants: Attendee[];
   participated: string[];

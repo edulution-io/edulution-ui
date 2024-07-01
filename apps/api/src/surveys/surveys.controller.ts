@@ -77,6 +77,7 @@ class SurveysController {
   ) {
     const {
       participants = [],
+      id,
       publicAnswers = [],
       saveNo = 0,
       created = new Date(),
@@ -86,6 +87,7 @@ class SurveysController {
 
     const survey: SurveyModel = {
       ...updateOrCreateSurveyDto,
+      _id: id,
       participants,
       publicAnswers,
       saveNo,
