@@ -1,17 +1,15 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus } from '@nestjs/common';
-import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
-import GetAnswerDto from '@libs/survey/dto/get-answer.dto';
-import PushAnswerDto from '@libs/survey/dto/push-answer.dto';
-import DeleteSurveyDto from '@libs/survey/dto/delete-survey.dto';
-import FindSurveyDto from '@libs/survey/dto/find-survey.dto';
+import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
+import GetAnswerDto from '@libs/survey/types/get-answer.dto';
+import PushAnswerDto from '@libs/survey/types/push-answer.dto';
+import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
+import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import {
-  ALL_SURVEYS_ENDPOINT,
   ANSWER_ENDPOINT,
   ANSWERED_SURVEYS_ENDPOINT,
   CREATED_SURVEYS_ENDPOINT,
-  FIND_ONE_ENDPOINT,
-  FIND_SURVEYS_ENDPOINT,
+  ALL_SURVEYS_ENDPOINT,
   OPEN_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
   SURVEYS,
@@ -21,7 +19,6 @@ import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import { SurveyModel } from './survey.schema';
 
 @Controller(SURVEYS)
 class SurveysController {
@@ -30,15 +27,16 @@ class SurveysController {
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
-  @Get(`${FIND_ONE_ENDPOINT}:surveyId`)
-  async findOneSurvey(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.findOneSurvey(surveyId);
-  }
-
-  @Get(FIND_SURVEYS_ENDPOINT)
+  @Get()
   async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
-    const { surveyIds } = findSurveyDto;
-    return this.surveyService.findSurveys(surveyIds);
+    const { surveyId, surveyIds = [] } = findSurveyDto;
+    if (surveyIds.length > 0) {
+      return this.surveyService.findSurveys(surveyIds);
+    }
+    if (surveyId) {
+      return this.surveyService.findOneSurvey(surveyId);
+    }
+    throw new CustomHttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
   }
 
   @Get(OPEN_SURVEYS_ENDPOINT)
@@ -78,8 +76,7 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _id,
+      id,
       participants = [],
       publicAnswers = [],
       saveNo = 0,
@@ -88,9 +85,9 @@ class SurveysController {
       canSubmitMultipleAnswers,
     } = updateOrCreateSurveyDto;
 
-    const survey: SurveyModel = {
+    const survey: UpdateOrCreateSurveyDto = {
       ...updateOrCreateSurveyDto,
-      _id,
+      id,
       participants,
       publicAnswers,
       saveNo,
@@ -109,11 +106,12 @@ class SurveysController {
         );
       }
       // eslint-disable-next-line no-underscore-dangle
-      await this.usersSurveysService.addToCreatedSurveys(username, _id);
+      await this.usersSurveysService.addToCreatedSurveys(username, id);
       // eslint-disable-next-line no-underscore-dangle
-      await this.usersSurveysService.populateSurvey(participants, _id);
+      await this.usersSurveysService.populateSurvey(participants, id);
       return createdSurvey;
     }
+
     return updatedSurvey;
   }
 

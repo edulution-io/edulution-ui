@@ -106,7 +106,7 @@ describe('SurveyService', () => {
       const result = await service.updateSurvey(secondMockSurvey);
       expect(result).toStrictEqual(secondMockSurvey);
 
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: secondMockSurvey._id }, secondMockSurvey);
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ id: secondMockSurvey.id }, secondMockSurvey);
     });
 
     it('should throw an error if the survey update fails', async () => {
@@ -193,11 +193,7 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.addPublicAnswer(
-          firstMockSurvey._id,
-          addNewPublicAnswer_FirstMockSurvey,
-          'NOT_EXISTING_USER_NAME',
-        );
+        await service.addPublicAnswer(firstMockSurvey.id, addNewPublicAnswer_FirstMockSurvey, 'NOT_EXISTING_USER_NAME');
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError);
@@ -215,7 +211,7 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.addPublicAnswer(firstMockSurvey._id, addNewPublicAnswer_FirstMockSurvey, first_username);
+        await service.addPublicAnswer(firstMockSurvey.id, addNewPublicAnswer_FirstMockSurvey, first_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
@@ -233,7 +229,7 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.addPublicAnswer(secondMockSurvey._id, addNewPublicAnswer_SecondMockSurvey, second_username);
+        await service.addPublicAnswer(secondMockSurvey.id, addNewPublicAnswer_SecondMockSurvey, second_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
@@ -249,15 +245,15 @@ describe('SurveyService', () => {
       });
 
       const result = await service.addPublicAnswer(
-        firstMockSurvey._id,
+        firstMockSurvey.id,
         addNewPublicAnswer_FirstMockSurvey,
         second_username,
         true,
       );
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: firstMockSurvey._id });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: firstMockSurvey.id });
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: firstMockSurvey._id },
+        { id: firstMockSurvey.id },
         { ...partial_firstMockSurvey_afterAddedNewAnswer },
       );
 
@@ -273,15 +269,15 @@ describe('SurveyService', () => {
       });
 
       const result = await service.addPublicAnswer(
-        secondMockSurvey._id,
+        secondMockSurvey.id,
         addNewPublicAnswer_SecondMockSurvey_thirdUser,
         third_username,
         false,
       );
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: secondMockSurvey._id });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: secondMockSurvey.id });
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: secondMockSurvey._id },
+        { id: secondMockSurvey.id },
         { ...partial_secondMockSurvey_afterAddedNewAnswer },
       );
 

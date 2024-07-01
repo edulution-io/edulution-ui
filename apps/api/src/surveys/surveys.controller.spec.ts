@@ -122,7 +122,7 @@ describe('SurveysController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('findOneSurvey', () => {
+  describe('findSurveys', () => {
     it('should return a survey given the id', async () => {
       jest.spyOn(surveysService, 'findOneSurvey');
 
@@ -131,16 +131,14 @@ describe('SurveysController', () => {
       });
 
       await controller
-        .findOneSurvey(id_FirstMockSurvey)
+        .findSurveys({ surveyId: id_FirstMockSurvey })
         .then((result) => expect(result).toEqual(firstMockSurvey))
         .catch((error) => expect(error).toBeUndefined());
 
       expect(surveysService.findOneSurvey).toHaveBeenCalledWith(id_FirstMockSurvey);
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: id_FirstMockSurvey });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: id_FirstMockSurvey });
     });
-  });
 
-  describe('findSurveys', () => {
     it('should return multiple surveys given the ids', async () => {
       jest.spyOn(surveysService, 'findSurveys');
 
@@ -154,7 +152,7 @@ describe('SurveysController', () => {
         .catch((error) => expect(error).toBeUndefined());
 
       expect(surveysService.findSurveys).toHaveBeenCalledWith([id_FirstMockSurvey, id_SecondMockSurvey]);
-      expect(surveyModel.find).toHaveBeenCalledWith({ _id: { $in: [id_FirstMockSurvey, id_SecondMockSurvey] } });
+      expect(surveyModel.find).toHaveBeenCalledWith({ id: { $in: [id_FirstMockSurvey, id_SecondMockSurvey] } });
     });
   });
 
@@ -172,7 +170,7 @@ describe('SurveysController', () => {
         .catch((error) => expect(error).toBeUndefined());
 
       expect(surveysService.getPublicAnswers).toHaveBeenCalledWith(id_FirstMockSurvey);
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: id_FirstMockSurvey });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: id_FirstMockSurvey });
     });
   });
 
@@ -194,7 +192,7 @@ describe('SurveysController', () => {
       expect(usersSurveysService.getOpenSurveyIds).toHaveBeenCalledWith(first_username);
       expect(userModel.findOne).toHaveBeenCalledWith({ username: first_username });
       expect(surveysService.findSurveys).toHaveBeenCalledWith([id_ThirdMockSurvey]);
-      expect(surveyModel.find).toHaveBeenCalledWith({ _id: { $in: [id_ThirdMockSurvey] } });
+      expect(surveyModel.find).toHaveBeenCalledWith({ id: { $in: [id_ThirdMockSurvey] } });
     });
   });
 
@@ -216,7 +214,7 @@ describe('SurveysController', () => {
       expect(usersSurveysService.getCreatedSurveyIds).toHaveBeenCalledWith(first_username);
       expect(userModel.findOne).toHaveBeenCalledWith({ username: first_username });
       expect(surveysService.findSurveys).toHaveBeenCalledWith([id_SecondMockSurvey]);
-      expect(surveyModel.find).toHaveBeenCalledWith({ _id: { $in: [id_SecondMockSurvey] } });
+      expect(surveyModel.find).toHaveBeenCalledWith({ id: { $in: [id_SecondMockSurvey] } });
     });
   });
 
@@ -238,7 +236,7 @@ describe('SurveysController', () => {
       expect(usersSurveysService.getAnsweredSurveyIds).toHaveBeenCalledWith(first_username);
       expect(userModel.findOne).toHaveBeenCalledWith({ username: first_username });
       expect(surveysService.findSurveys).toHaveBeenCalledWith([id_FirstMockSurvey]);
-      expect(surveyModel.find).toHaveBeenCalledWith({ _id: { $in: [id_FirstMockSurvey] } });
+      expect(surveyModel.find).toHaveBeenCalledWith({ id: { $in: [id_FirstMockSurvey] } });
     });
   });
 
@@ -292,7 +290,7 @@ describe('SurveysController', () => {
       expect(result).toEqual(secondMockSurvey);
 
       expect(surveysService.updateSurvey).toHaveBeenCalledWith(secondMockSurvey);
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: id_SecondMockSurvey }, secondMockSurvey);
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ id: id_SecondMockSurvey }, secondMockSurvey);
     });
 
     it('should create a survey if it does not exists already', async () => {
@@ -317,7 +315,7 @@ describe('SurveysController', () => {
 
       await controller.updateOrCreateSurvey(fourthMockSurvey, first_username);
 
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: id_FourthMockSurvey }, fourthMockSurvey);
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ id: id_FourthMockSurvey }, fourthMockSurvey);
       expect(usersSurveysService.addToCreatedSurveys).toHaveBeenCalledWith(first_username, id_FourthMockSurvey);
       expect(usersSurveysService.populateSurvey).toHaveBeenCalledWith(mocked_participants, id_FourthMockSurvey);
     });
@@ -511,15 +509,15 @@ describe('SurveysController', () => {
       });
 
       const result = await surveysService.addPublicAnswer(
-        firstMockSurvey._id,
+        firstMockSurvey.id,
         addNewPublicAnswer_FirstMockSurvey,
         second_username,
         true,
       );
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: firstMockSurvey._id });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: firstMockSurvey.id });
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: firstMockSurvey._id },
+        { id: firstMockSurvey.id },
         { ...partial_firstMockSurvey_afterAddedNewAnswer },
       );
 
@@ -535,15 +533,15 @@ describe('SurveysController', () => {
       });
 
       const result = await surveysService.addPublicAnswer(
-        secondMockSurvey._id,
+        secondMockSurvey.id,
         addNewPublicAnswer_SecondMockSurvey_thirdUser,
         third_username,
         false,
       );
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: secondMockSurvey._id });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: secondMockSurvey.id });
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: secondMockSurvey._id },
+        { id: secondMockSurvey.id },
         { ...partial_secondMockSurvey_afterAddedNewAnswer },
       );
 
@@ -578,7 +576,7 @@ describe('SurveysController', () => {
 
       try {
         await surveysService.addPublicAnswer(
-          firstMockSurvey._id,
+          firstMockSurvey.id,
           addNewPublicAnswer_FirstMockSurvey,
           'NOT_EXISTING_USER_NAME',
         );
@@ -599,7 +597,7 @@ describe('SurveysController', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await surveysService.addPublicAnswer(firstMockSurvey._id, addNewPublicAnswer_FirstMockSurvey, first_username);
+        await surveysService.addPublicAnswer(firstMockSurvey.id, addNewPublicAnswer_FirstMockSurvey, first_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
@@ -617,11 +615,7 @@ describe('SurveysController', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await surveysService.addPublicAnswer(
-          secondMockSurvey._id,
-          addNewPublicAnswer_SecondMockSurvey,
-          second_username,
-        );
+        await surveysService.addPublicAnswer(secondMockSurvey.id, addNewPublicAnswer_SecondMockSurvey, second_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
@@ -647,7 +641,7 @@ describe('SurveysController', () => {
 
       try {
         await surveysService.addPublicAnswer(
-          secondMockSurvey._id,
+          secondMockSurvey.id,
           publicAnswer_FirstMockSurvey,
           'NOT_EXISTING_USER_NAME',
         );
@@ -675,7 +669,7 @@ describe('SurveysController', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await surveysService.addPublicAnswer(secondMockSurvey._id, publicAnswer_FirstMockSurvey, first_username);
+        await surveysService.addPublicAnswer(secondMockSurvey.id, publicAnswer_FirstMockSurvey, first_username);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);

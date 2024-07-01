@@ -2,6 +2,7 @@
 
 import mongoose from 'mongoose';
 import { SurveyModel, SurveyDocument } from './survey.schema';
+import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 
 export const newObjectId = new mongoose.Types.ObjectId(52653415245934);
 
@@ -67,8 +68,8 @@ export const addNewPublicAnswer_FirstMockSurvey_thirdUser: JSON = {
   Frage2: 'this is a new answer',
 };
 
-export const firstMockSurvey: SurveyModel = {
-  _id: id_FirstMockSurvey,
+export const firstMockSurvey: UpdateOrCreateSurveyDto = {
+  id: id_FirstMockSurvey,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'First Survey',
@@ -140,8 +141,8 @@ export const addNewPublicAnswer_SecondMockSurvey_thirdUser: JSON = {
   Frage2: 'name3',
 };
 
-export const secondMockSurvey: SurveyModel = {
-  _id: id_SecondMockSurvey,
+export const secondMockSurvey: UpdateOrCreateSurveyDto = {
+  id: id_SecondMockSurvey,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'Second Survey',
@@ -170,12 +171,12 @@ export const secondMockSurvey: SurveyModel = {
   canSubmitMultipleAnswers: false,
 };
 
-export const partial_secondMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
+export const partial_secondMockSurvey_afterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
   participated: [second_username, third_username],
   publicAnswers: [publicAnswer_SecondMockSurvey, addNewPublicAnswer_SecondMockSurvey_thirdUser],
 };
 
-export const secondMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
+export const secondMockSurvey_afterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
   ...firstMockSurvey,
   participated: [second_username, third_username],
   publicAnswers: [publicAnswer_SecondMockSurvey, addNewPublicAnswer_SecondMockSurvey_thirdUser],
@@ -192,7 +193,7 @@ export const secondMockSurveyDocument: SurveyDocument = {
 
 export const ids_MockSurveys: mongoose.Types.ObjectId[] = [id_FirstMockSurvey, id_SecondMockSurvey];
 
-export const mockSurveys: SurveyModel[] = [firstMockSurvey, secondMockSurvey];
+export const mockSurveys: UpdateOrCreateSurveyDto[] = [firstMockSurvey, secondMockSurvey];
 
 export const mockSurveyDocuments: SurveyDocument[] = [firstMockSurveyDocument, secondMockSurveyDocument];
 
@@ -201,8 +202,8 @@ export const addNewPublicAnswer_ThirdMockSurvey: JSON = {
   Frage1: 'Lasagne',
 };
 
-export const thirdMockSurvey: SurveyModel = {
-  _id: id_ThirdMockSurvey,
+export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
+  id: id_ThirdMockSurvey,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'Third Survey',
@@ -226,14 +227,14 @@ export const thirdMockSurvey: SurveyModel = {
   canSubmitMultipleAnswers: false,
 };
 
-export const thirdMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
+export const thirdMockSurvey_afterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
   ...thirdMockSurvey,
   publicAnswers: [addNewPublicAnswer_ThirdMockSurvey],
   participated: [first_username],
 };
 
-export const fourthMockSurvey: SurveyModel = {
-  _id: id_FourthMockSurvey,
+export const fourthMockSurvey: UpdateOrCreateSurveyDto = {
+  id: id_FourthMockSurvey,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'Fourth Survey',

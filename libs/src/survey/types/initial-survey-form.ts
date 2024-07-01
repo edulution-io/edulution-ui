@@ -3,8 +3,8 @@ import Attendee from '@libs/survey/types/attendee';
 import Survey from '@libs/survey/types/survey';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
-class InitialForm implements SurveyEditorFormData {
-  readonly _id: mongoose.Types.ObjectId;
+class InitialSurveyForm implements SurveyEditorFormData {
+  readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
@@ -30,8 +30,7 @@ class InitialForm implements SurveyEditorFormData {
 
   constructor(selectedSurvey?: Survey) {
     const time = new Date().getTime();
-    // eslint-disable-next-line no-underscore-dangle
-    this._id = selectedSurvey?._id || mongoose.Types.ObjectId.createFromTime(time);
+    this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(time);
     this.formula = selectedSurvey?.formula || ({} as JSON);
     this.participants = selectedSurvey?.participants || [];
     this.participated = [];
@@ -48,4 +47,4 @@ class InitialForm implements SurveyEditorFormData {
   }
 }
 
-export default InitialForm;
+export default InitialSurveyForm;

@@ -108,15 +108,18 @@
     "noAnswer": "No answer available",
     "editor": {
       "new": "New (blank)",
-      "abort": "Revert all changes"
+      "abort": "Revert all changes",
+      "addDescription": "Add a description",
+      "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "neitherAbleToUpdateNorToCreateSurveyError": "Did not find the survey in order to update it. Neither could a new survey be created",
+      "neitherAbleToUpdateNorToCreateSurveyError": "Neither able to update a survey nor to create a new one",
       "notAbleToCreateSurveyError": "Not able to create the survey",
       "notAbleToDeleteSurveyError": "Not able to delete survey",
       "notAbleToFindSurveyAnswerError": "Survey answers not found",
       "notAbleToFindSurveyError": "Survey not found",
       "notAbleToFindSurveysError": "Did not find a single survey",
+      "notAbleToFindSurveyParameterError": "In order to find a survey you have to provide at least one surveyId",
       "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
       "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
       "notAbleToUpdateSurveyError": "Not able to update the survey",

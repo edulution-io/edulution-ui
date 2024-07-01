@@ -7,8 +7,8 @@ import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
-import EmptyForm from '@libs/survey/utils/empty-form';
-import InitialForm from '@libs/survey/utils/initial-form';
+import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
+import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -31,9 +31,12 @@ const SurveyEditorForm = () => {
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-  const initialFormValues: SurveyEditorFormData = useMemo(() => new InitialForm(selectedSurvey), [selectedSurvey]);
+  const initialFormValues: SurveyEditorFormData = useMemo(
+    () => new InitialSurveyForm(selectedSurvey),
+    [selectedSurvey],
+  );
 
-  const emptyFormValues: SurveyEditorFormData = new EmptyForm();
+  const emptyFormValues: SurveyEditorFormData = new EmptySurveyForm();
 
   const formSchema = z.object({
     id: z.number(),
@@ -67,8 +70,7 @@ const SurveyEditorForm = () => {
   });
 
   const {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    _id,
+    id,
     formula,
     participants,
     participated,
@@ -82,7 +84,7 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     await updateOrCreateSurvey({
-      _id,
+      id,
       formula,
       participants,
       participated,

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 
 interface Survey {
-  _id: mongoose.Types.ObjectId;
+  id: mongoose.Types.ObjectId;
   formula: JSON;
   publicAnswers: JSON[];
   participants: Attendee[];

@@ -1,14 +1,17 @@
 import React from 'react';
 import i18next from 'i18next';
+import { toast } from 'sonner';
 import { UseFormReturn } from 'react-hook-form';
+// import { useTranslation } from 'react-i18next';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
-import 'survey-core/survey.i18n';
+import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
-import 'survey-creator-core/survey-creator-core.i18n';
+import 'survey-creator-core/i18n/french';
+import 'survey-creator-core/i18n/spanish';
+import 'survey-creator-core/i18n/italian';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
-import { toast } from 'sonner';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,27 +21,84 @@ interface SurveyEditorProps {
   error: Error | null;
 }
 
-editorLocalization.defaultLocale = 'de';
-localization.currentLocale = i18next.language;
+editorLocalization.defaultLocale = i18next.language || 'en';
+localization.currentLocale = i18next.language || 'en';
 
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula, error } = props;
 
+  // const { t } = useTranslation();
+
   const creatorOptions = {
     generateValidJSON: true,
-    showJSONEditorTab: true,
-    showPreviewTab: false,
     isAutoSave: true,
     maxNestedPanels: 0,
+    showJSONEditorTab: true,
+    showPreviewTab: false,
+    questionTypes: [
+      'radiogroup',
+      'rating',
+      'checkbox',
+      'dropdown',
+      'tagbox',
+      'boolean',
+      'file',
+      'imagepicker',
+      'ranking',
+      'text',
+      'comment',
+      'multipletext',
+      'panel',
+      'paneldynamic',
+      'matrix',
+      'matrixdropdown',
+      'matrixdynamic',
+      'image',
+      // 'html',
+      // 'expression',
+      // 'image',
+      // 'signaturepad',
+    ],
   };
   const creator = new SurveyCreator(creatorOptions);
-
-  creator.locale = editorLocalization.defaultLocale;
 
   creator.saveNo = saveNumber;
   if (formula) {
     creator.JSON = formula;
   }
+
+  // TOOLBAR (HEADER)
+  const settingsAction = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
+  creator.toolbar.actions.splice(settingsAction, 1);
+
+  const expandSettingsAction = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
+  creator.toolbar.actions.splice(expandSettingsAction, 1);
+
+  // TOOLBOX (LEFT SIDEBAR)
+  creator.showToolbox = true; // TODO: Ask Mi and/or Mo
+  creator.toolbox.overflowBehavior = 'hideInMenu';
+  creator.toolbox.searchEnabled = false;
+
+  // PROPERTY GRID (RIGHT SIDEBAR)
+  creator.showSidebar = false;
+  creator.showPropertyGrid = false;
+
+  // ELEMENT MENU (part of the ELEMENT/QUESTION)
+  // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU
+  // creator.onDefineElementMenuItems.add((_, options) => {
+  //   let settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
+  //   options.items.splice(settingsItemIndex, 1);
+  // });
+  // ADD PLACEHOLDER TEXT TO TEXT QUESTIONS
+  // creator.onQuestionAdded.add((_, options) => {
+  //   const updateOptions = options;
+  //   if (updateOptions.question.getType() === 'text') {
+  //     updateOptions.question.placeHolder = `${t('survey.editor.expectingUserInput')}`;
+  //     // updateOptions.question.defaultValue = `${t('survey.editor.expectingUserInput')}`;
+  //     // updateOptions.question.description = options.question.description || t('survey.editor.addDescription');
+  //   }
+  //   return updateOptions;
+  // });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
     form.setValue('formula', creator.JSON);

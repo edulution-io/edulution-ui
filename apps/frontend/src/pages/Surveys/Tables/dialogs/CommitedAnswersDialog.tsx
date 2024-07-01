@@ -47,8 +47,7 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
 
   const getAnswer = useCallback(() => {
     if (!survey) return;
-    // eslint-disable-next-line  no-underscore-dangle
-    void getUsersCommitedAnswer(survey._id);
+    void getUsersCommitedAnswer(survey.id);
   }, []);
 
   useEffect((): void => {

@@ -77,8 +77,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     }
 
     try {
-      // eslint-disable-next-line  no-underscore-dangle
-      await commitAnswer(survey._id, answer, options);
+      await commitAnswer(survey.id, answer, options);
       closeParticipateSurveyDialog();
       updateOpenSurveys();
       updateAnsweredSurveys();

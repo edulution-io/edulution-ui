@@ -1,4 +1,4 @@
-export class User {
+type ConferenceUser = {
   username: string;
 
   email?: string;
@@ -10,6 +10,6 @@ export class User {
   password?: string;
 
   roles?: string[];
-}
+};
 
-export default User;
+export default ConferenceUser;
