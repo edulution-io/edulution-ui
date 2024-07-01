@@ -6,7 +6,7 @@ import Attendee from '@/pages/ConferencePage/dto/attendee';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import UpdateOrCreateSurveyDto from '@libs/survey/dto/update-or-create-survey.dto';
+import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 
 interface SurveyEditorFormStore {
   reset: () => void;
@@ -27,7 +27,7 @@ interface SurveyEditorFormStore {
   expirationTime: string | undefined;
   isAnonymous: boolean | undefined;
   newParticipants: Attendee[];
-  updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<Survey | undefined>;
+  updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<Survey | void>;
   isLoading: boolean;
   error: AxiosError | null;
 }
@@ -55,7 +55,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   openSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: true }),
   closeSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: false }),
 
-  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<Survey | undefined> => {
+  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<Survey | void> => {
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.post<Survey>(SURVEYS_ENDPOINT, survey);
@@ -67,7 +67,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
         error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting a new/updated survey',
       );
       handleApiError(error, set);
-      return undefined;
+      throw error;
     }
   },
 }));

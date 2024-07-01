@@ -31,12 +31,10 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   const creatorOptions = {
     generateValidJSON: true,
-    showJSONEditorTab: true,
-    showPreviewTab: true,
     isAutoSave: true,
     maxNestedPanels: 0,
-    showObjectTitles: true,
-    allowShowSettings: false,
+    showJSONEditorTab: true,
+    showPreviewTab: false,
     questionTypes: [
       'radiogroup',
       'rating',
@@ -56,8 +54,11 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       'matrixdropdown',
       'matrixdynamic',
       'image',
+      // 'html',
+      // 'expression',
+      // 'image',
+      // 'signaturepad',
     ],
-    // CURRENTLY EXCLUDED: ['html', 'expression', 'image', 'signaturepad']
   };
   const creator = new SurveyCreator(creatorOptions);
 
@@ -74,13 +75,29 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.toolbar.actions.splice(expandSettingsAction, 1);
 
   // TOOLBOX (LEFT SIDEBAR)
+  creator.showToolbox = true; // TODO: Ask Mi and/or Mo
   creator.toolbox.overflowBehavior = 'hideInMenu';
+  creator.toolbox.searchEnabled = false;
+
+  // PROPERTY GRID (RIGHT SIDEBAR)
+  creator.showSidebar = false;
+  creator.showPropertyGrid = false;
 
   // ELEMENT MENU (part of the ELEMENT/QUESTION)
   // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU
   // creator.onDefineElementMenuItems.add((_, options) => {
   //   let settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
   //   options.items.splice(settingsItemIndex, 1);
+  // });
+  // ADD PLACEHOLDER TEXT TO TEXT QUESTIONS
+  // creator.onQuestionAdded.add((_, options) => {
+  //   const updateOptions = options;
+  //   if (updateOptions.question.getType() === 'text') {
+  //     updateOptions.question.placeHolder = `${t('survey.editor.expectingUserInput')}`;
+  //     // updateOptions.question.defaultValue = `${t('survey.editor.expectingUserInput')}`;
+  //     // updateOptions.question.description = options.question.description || t('survey.editor.addDescription');
+  //   }
+  //   return updateOptions;
   // });
 
   creator.onQuestionAdded.add((_, options) => {
