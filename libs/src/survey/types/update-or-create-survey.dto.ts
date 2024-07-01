@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Attendee from '@libs/survey/types/attendee';
 
-type UpdateOrCreateSurveyDto = {
+interface UpdateOrCreateSurveyDto {
   _id: mongoose.Types.ObjectId;
 
   formula: JSON;
@@ -23,6 +23,6 @@ type UpdateOrCreateSurveyDto = {
   isAnonymous?: boolean;
 
   canSubmitMultipleAnswers?: boolean;
-};
+}
 
 export default UpdateOrCreateSurveyDto;

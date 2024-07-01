@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
-type FindSurveyDto = {
+interface FindSurveyDto {
   surveyId?: mongoose.Types.ObjectId;
 
   surveyIds?: mongoose.Types.ObjectId[];
-};
+}
 
 export default FindSurveyDto;

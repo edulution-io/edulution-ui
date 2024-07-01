@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-type PushAnswerDto = {
+interface PushAnswerDto {
   surveyId: mongoose.Types.ObjectId;
 
   answer: JSON;
@@ -8,6 +8,6 @@ type PushAnswerDto = {
   isAnonymous?: boolean;
 
   canSubmitMultipleAnswers?: boolean;
-};
+}
 
 export default PushAnswerDto;

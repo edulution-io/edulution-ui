@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-type DeleteSurveyDto = {
+interface DeleteSurveyDto {
   surveyIds: mongoose.Types.ObjectId[];
-};
+}
 
 export default DeleteSurveyDto;
