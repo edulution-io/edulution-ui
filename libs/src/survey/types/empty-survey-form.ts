@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
-class EmptyForm implements SurveyEditorFormData {
+class EmptySurveyForm implements SurveyEditorFormData {
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
@@ -44,4 +44,4 @@ class EmptyForm implements SurveyEditorFormData {
   }
 }
 
-export default EmptyForm;
+export default EmptySurveyForm;

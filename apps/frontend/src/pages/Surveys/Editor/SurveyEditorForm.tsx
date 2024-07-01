@@ -7,8 +7,8 @@ import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
-import EmptyForm from '@libs/survey/types/empty-survey-form-data';
-import InitialSurveyFormData from '@libs/survey/types/initial-survey-form-data';
+import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
+import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -32,11 +32,11 @@ const SurveyEditorForm = () => {
 
   const { t } = useTranslation();
   const initialFormValues: SurveyEditorFormData = useMemo(
-    () => new InitialSurveyFormData(selectedSurvey),
+    () => new InitialSurveyForm(selectedSurvey),
     [selectedSurvey],
   );
 
-  const emptyFormValues: SurveyEditorFormData = new EmptyForm();
+  const emptyFormValues: SurveyEditorFormData = new EmptySurveyForm();
 
   const formSchema = z.object({
     id: z.number(),
