@@ -27,7 +27,8 @@ class EmptySurveyForm implements SurveyEditorForm {
   canShowResultsChart: boolean;
 
   constructor() {
-    this.id = new mongoose.Types.ObjectId();
+    const time = new Date().getTime();
+    this.id = mongoose.Types.ObjectId.createFromTime(time);
     this.formula = {} as JSON;
     this.participants = [];
     this.participated = [];
