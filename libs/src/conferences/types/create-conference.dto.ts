@@ -1,4 +1,4 @@
-import { Attendee } from './attendee';
+import Attendee from '@libs/conferences/types/attendee';
 
 class CreateConferenceDto {
   name: string;

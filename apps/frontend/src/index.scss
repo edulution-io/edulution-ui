@@ -2,7 +2,7 @@
 @layer base {
   html {
     @apply text-white;
-    font-family: 'Lato';
+    font-family: 'Lato', serif;
   }
 }
 @tailwind components;

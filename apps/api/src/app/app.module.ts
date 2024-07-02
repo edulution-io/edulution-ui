@@ -5,11 +5,15 @@ import { JwtModule } from '@nestjs/jwt';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
+import GroupsModule from '../groups/groups.module';
+import ClassManagementModule from '../classManagement/classManagement.module';
 
 @Module({
   imports: [
     AppConfigModule,
     UsersModule,
+    GroupsModule,
+    ClassManagementModule,
     ConferencesModule,
     JwtModule.register({
       global: true,

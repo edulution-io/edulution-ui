@@ -4,10 +4,10 @@ import { StateCreator } from 'zustand';
 import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
 import JwtUser from '@/datatypes/jwtUser';
 import processLdapGroups from '@/utils/processLdapGroups';
-import User from '@/datatypes/user';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
+import User from '@libs/user/types/user';
 
 const initialState = {
   username: '',

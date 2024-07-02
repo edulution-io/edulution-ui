@@ -25,7 +25,7 @@ const Groups = () => {
     >
       <CardContent>
         <div className="flex flex-col gap-1">
-          <h4 className="text-md font-bold">{t('groupsPage.classes')}</h4>
+          <h4 className="text-md font-bold">{t('groups.classes')}</h4>
           {user?.schoolclasses.map((group) => (
             <div
               key={group}

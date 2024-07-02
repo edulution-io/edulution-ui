@@ -197,7 +197,9 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
-    "icon": "Icon"
+    "icon": "Icon",
+    "groups": "Groups",
+    "clearSelection": "Clear selection"
   },
   "form": {
     "path": "Path",
@@ -242,7 +244,8 @@
   "search": {
     "type-to-search": "Type to search",
     "loading": "Loading",
-    "no-results": "No results"
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -341,7 +344,14 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-  "groupsPage": {
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Group could not be found by path",
+      "CouldNotGetUsers": "Users could not be found",
+      "CouldNotFetchGroupMembers": "Group members could not be found",
+      "CouldNotFetchUserById": "User could not be found by ID",
+      "CouldNotSearchGroups": "Could not search for groups"
+    },
     "classes": "Classes"
   }
 }
