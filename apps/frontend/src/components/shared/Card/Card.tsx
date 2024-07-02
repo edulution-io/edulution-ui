@@ -5,15 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import styles from './card.module.scss';
 
-const cardVariants = cva('border-4 border-solid', {
+const cardVariants = cva('border-solid', {
   variants: {
     variant: {
-      collaboration: 'border-ciDarkBlue',
-      organisation: 'border-ciLightBlue',
-      infrastructure: 'border-ciLightGreen',
+      collaboration: 'border-ciDarkBlue border-4',
+      organisation: 'border-ciLightBlue border-4',
+      infrastructure: 'border-ciLightGreen border-4',
       security: styles['gradient-box'],
       modal:
-        'border-white fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-[25px] text-black',
+        'border-4 border-white fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-[25px] text-foreground',
+      text: 'border-ciLightGrey border-3 bg-ciLightGrey bg-opacity-20 inset-2 overflow-auto scrollbar-none hover:scrollbar-thin',
     },
   },
   defaultVariants: {
@@ -29,7 +30,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, variant, 
   return (
     <SHCard
       ref={ref}
-      className={cn(cardVariants({ variant }), 'border-4 border-solid', className)}
+      className={cn(cardVariants({ variant }), 'border-solid', className)}
       {...props}
     />
   );

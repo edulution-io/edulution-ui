@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import createRouter from '@/routes/CreateRouter';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 
 const AppRouter: React.FC = () => {
