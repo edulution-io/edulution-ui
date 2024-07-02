@@ -155,7 +155,7 @@
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": {
-        "success": "Appliste saved successfully",
+        "success": "App saved successfully",
         "failed": "Update failed"
       },
       "delete": {

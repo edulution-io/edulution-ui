@@ -2,8 +2,7 @@ import React from 'react';
 import { Control } from 'react-hook-form';
 import { findAppConfigByName } from '@/utils/common';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
-import { AppConfigDto } from '@libs/appconfig/types/appconfig.dto';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 
 interface AppConfigTypeSelectProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

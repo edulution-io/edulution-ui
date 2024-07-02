@@ -11,10 +11,8 @@ import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
-import { APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
-import { AppConfigDto } from '@libs/appconfig/types/appconfig.dto';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {

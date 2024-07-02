@@ -1,6 +1,6 @@
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';

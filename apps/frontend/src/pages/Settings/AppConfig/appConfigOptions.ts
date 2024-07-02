@@ -23,8 +23,8 @@ import {
   VirtualizationIcon,
   WlanIcon,
 } from '@/assets/icons';
-import { APPS } from '@/datatypes/types';
 import { AppConfigOptionType } from '@libs/appconfig/types/appConfigOptions';
+import { APPS } from '@libs/appconfig/types';
 
 type AppConfigOption = {
   id: string;

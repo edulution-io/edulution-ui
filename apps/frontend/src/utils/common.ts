@@ -1,6 +1,6 @@
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';
-import { AppConfigDto } from '@libs/appconfig/types/appconfig.dto';
+import { AppConfigDto } from '@libs/appconfig/types';
 
 export const translateKey = (key: string, variables = {}) => i18n.t(key, variables);
 

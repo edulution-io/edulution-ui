@@ -10,13 +10,12 @@ import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { TrashIcon } from '@/assets/icons';
-import Toaster from '@/components/ui/Sonner';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType } from '@libs/appconfig/types/appConfigOptions';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import { AppIntegrationType } from '@libs/appconfig/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
@@ -25,7 +24,7 @@ const AppConfigPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
-  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, updateAppConfig, deleteAppConfigEntry, error } = useAppConfigsStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
 
@@ -76,7 +75,7 @@ const AppConfigPage: React.FC = () => {
   }, [areSettingsVisible, settingLocation, appConfigs, setValue]);
 
   const settingsForm = () => {
-    const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
+    const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
       const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
 
       if (selectedOption) {
@@ -98,9 +97,10 @@ const AppConfigPage: React.FC = () => {
           return entry;
         });
 
-        updateAppConfig(updatedConfig)
-          .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`))
-          .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
+        await updateAppConfig(updatedConfig);
+        if (!error) {
+          toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`);
+        }
       }
     };
 
@@ -222,7 +222,6 @@ const AppConfigPage: React.FC = () => {
         filteredAppOptions={filteredAppOptions}
         setSearchParams={setSearchParams}
       />
-      <Toaster />
     </>
   );
 };

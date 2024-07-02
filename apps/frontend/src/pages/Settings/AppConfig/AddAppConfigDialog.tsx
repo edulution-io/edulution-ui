@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownMenu } from '@/components';
 import { Button } from '@/components/shared/Button';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import appIntegrationType from '@libs/appconfig/types/appIntegrationType';
-import { AppConfigDto } from '@libs/appconfig/types/appconfig.dto';
+import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,32 +39,28 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
           selectedVal={t(option)}
           handleChange={setOption}
         />
-        {error ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">
-            {t('conferences.error')}: {error.message}
-          </div>
-        ) : null}
       </div>
     );
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const selectedOption = option.toLowerCase().split('.')[0];
-    navigate(`/settings/${selectedOption}`);
     const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
 
     if (optionsConfig) {
       const newConfig: AppConfigDto = {
         name: selectedOption,
         icon: optionsConfig.icon,
-        appType: appIntegrationType.FORWARDED,
+        appType: AppIntegrationType.FORWARDED,
         options: {},
       };
       const updatedConfig = [...appConfigs, newConfig];
 
-      updateAppConfig(updatedConfig)
-        .then(() => toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`))
-        .catch(() => toast.error(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.failed')}`));
+      await updateAppConfig(updatedConfig);
+      if (!error) {
+        navigate(`/settings/${selectedOption}`);
+        toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`);
+      }
     }
   };
 
