@@ -1,58 +1,31 @@
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
-import { FormControl, FormItem, FormMessage } from '@/components/ui/Form';
-import { AppConfig, AppIntegrationType } from '@/datatypes/types';
+import { Control } from 'react-hook-form';
 import { findAppConfigByName } from '@/utils/common';
+import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
+import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 
 interface AppConfigTypeSelectProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>;
   settingLocation: string;
-  appConfig: AppConfig[];
+  appConfig: AppConfigDto[];
 }
 
 const AppConfigTypeSelect: React.FC<AppConfigTypeSelectProps> = ({ control, settingLocation, appConfig }) => {
-  const { t } = useTranslation();
+  const radioGroupItems = [
+    { value: AppIntegrationType.NATIVE, translationId: 'form.native' },
+    { value: AppIntegrationType.FORWARDED, translationId: 'form.forwarded' },
+    { value: AppIntegrationType.EMBEDDED, translationId: 'form.embedded' },
+  ];
 
   return (
-    <FormItem className="space-y-3">
-      <h4>{t('form.apptype')}</h4>
-      <FormControl>
-        <Controller
-          control={control}
-          name={`${settingLocation}.appType`}
-          render={({ field }) => (
-            <RadioGroupSH
-              onValueChange={field.onChange}
-              defaultValue={findAppConfigByName(appConfig, settingLocation)?.appType}
-              className="flex flex-col space-y-1"
-            >
-              <FormItem className="flex items-center space-x-3 space-y-0">
-                <FormControl>
-                  <RadioGroupItemSH value={AppIntegrationType.NATIVE} />
-                </FormControl>
-                <p>{t('form.native')}</p>
-              </FormItem>
-              <FormItem className="flex items-center space-x-3 space-y-0">
-                <FormControl>
-                  <RadioGroupItemSH value={AppIntegrationType.FORWARDED} />
-                </FormControl>
-                <p>{t('form.forwarded')}</p>
-              </FormItem>
-              <FormItem className="flex items-center space-x-3 space-y-0">
-                <FormControl>
-                  <RadioGroupItemSH value={AppIntegrationType.EMBEDDED} />
-                </FormControl>
-                <p>{t('form.embedded')}</p>
-              </FormItem>
-            </RadioGroupSH>
-          )}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
+    <RadioGroupFormField
+      control={control}
+      name={`${settingLocation}.appType`}
+      titleTranslationId="form.apptype"
+      defaultValue={findAppConfigByName(appConfig, settingLocation)?.appType}
+      items={radioGroupItems}
+    />
   );
 };
 

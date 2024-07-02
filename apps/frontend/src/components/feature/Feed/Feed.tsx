@@ -2,14 +2,17 @@ import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { ConferencesIcon } from '@/assets/icons';
 import cn from '@/lib/utils';
-import { AppConfig, APPS } from '@/datatypes/types';
+import { APPS } from '@libs/appconfig/types';
+import { AppConfig } from '@/datatypes/types';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Accordion } from '@/components/ui/Accordion';
 import { Card, CardContent } from '@/components/shared/Card';
 import RunningConferencesAccordionItem from '@/components/feature/Feed/components/RunningConferencesAccordionItem';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useAppConfigsStore from '@/store/appConfigsStore';
+import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const FEED_PULL_TIME_INTERVAL = 10000;
 

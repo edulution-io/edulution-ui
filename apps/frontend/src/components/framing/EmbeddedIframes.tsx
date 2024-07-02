@@ -1,8 +1,8 @@
 import React from 'react';
-import { AppIntegrationType } from '@/datatypes/types';
 import useFrameStore from '@/components/framing/FrameStore';
 import { useMediaQuery } from 'usehooks-ts';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import { AppIntegrationType } from '@libs/appconfig/types';
 
 const EmbeddedIframes = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
