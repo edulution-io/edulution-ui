@@ -97,6 +97,7 @@ class SurveysController {
     };
 
     const updatedSurvey = await this.surveyService.updateSurvey(survey);
+
     if (updatedSurvey == null) {
       const createdSurvey = await this.surveyService.createSurvey(survey);
       if (createdSurvey == null) {
