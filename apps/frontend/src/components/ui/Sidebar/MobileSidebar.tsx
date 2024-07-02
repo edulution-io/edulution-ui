@@ -11,13 +11,9 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   const handleClickOutside = useCallback(
     (event: MouseEvent | TouchEvent) => {
-      if (
-        isMobileSidebarOpen &&
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
+      const isSidebarRef = sidebarRef.current && !sidebarRef.current.contains(event.target as Node);
+      const isButtonRef = buttonRef.current && !buttonRef.current.contains(event.target as Node);
+      if (isMobileSidebarOpen && isSidebarRef && isButtonRef) {
         toggleMobileSidebar();
       }
     },
