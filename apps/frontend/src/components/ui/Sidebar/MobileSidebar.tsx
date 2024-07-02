@@ -1,18 +1,34 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import { UserMenuButton, HomeButton, MobileMenuButton, MobileSidebarItem } from './SidebarMenuItems';
 import useSidebarStore from './sidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
 
-  useOnClickOutside(sidebarRef, isMobileSidebarOpen ? toggleMobileSidebar : () => {});
+  const handleClickOutside = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      if (
+        isMobileSidebarOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        toggleMobileSidebar();
+      }
+    },
+    [isMobileSidebarOpen, toggleMobileSidebar],
+  );
+
+  useOnClickOutside(sidebarRef, handleClickOutside);
 
   return (
     <>
-      <MobileMenuButton />
+      <MobileMenuButton ref={buttonRef} />
       <div
         className="fixed right-0 top-0 z-[40] h-full w-full transform transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(${isMobileSidebarOpen ? '0' : '100%'})` }}

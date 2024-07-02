@@ -1,17 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import { MdMenu } from 'react-icons/md';
 import { IconContext } from 'react-icons';
 import useSidebarStore from '../sidebarStore';
 
-const MobileMenuButton: React.FC = () => {
-  const { toggleMobileSidebar } = useSidebarStore();
+const MobileMenuButton = forwardRef<HTMLButtonElement>((_props, ref) => {
+  const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
 
   return (
-    <div className="fixed right-0 top-0 z-[999] pr-4 pt-4">
+    <div
+      className={`fixed right-0 top-0 z-[50] transform pr-4 pt-4 transition-transform ease-in-out ${
+        isMobileSidebarOpen ? 'translate-x-[-48vw] duration-300' : 'translate-x-0 duration-200'
+      }`}
+    >
       <button
         type="button"
-        onClickCapture={toggleMobileSidebar}
+        onClick={toggleMobileSidebar}
+        ref={ref}
+        className="rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
       >
         <IconContext.Provider value={iconContextValue}>
           <MdMenu />
@@ -19,6 +25,8 @@ const MobileMenuButton: React.FC = () => {
       </button>
     </div>
   );
-};
+});
+
+MobileMenuButton.displayName = 'MobileMenuButton';
 
 export default MobileMenuButton;
