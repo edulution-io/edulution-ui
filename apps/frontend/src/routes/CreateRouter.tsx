@@ -13,6 +13,7 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import UserSettings from '@/pages/UserSettings/UserSettings';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -61,6 +62,10 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
             <Route
               path="/"
               element={<HomePage />}
+            />
+            <Route
+              path="user"
+              element={<UserSettings />}
             />
 
             <Route

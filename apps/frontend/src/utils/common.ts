@@ -1,3 +1,5 @@
+// TODO: Move to shared libs folder ??
+
 import { AppConfig } from '@/datatypes/types';
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';

@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import waitForToken from '@/api/common';
+import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { USER_SETTINGS_SECURITY_SECTION } from '@libs/userSettings/types/user-settings-endpoints';
+import waitForToken from '@/api/common';
+import useLmnApiStore from '@/store/lmnApiStore';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import useLmnApiStore from '@/store/lmnApiStore';
 
 const AccountInformation = () => {
   const { user, getUserData } = useLmnApiStore();
@@ -47,16 +49,19 @@ const AccountInformation = () => {
               </p>
             </div>
           ))}
-
-          <Button
-            variant="btn-collaboration"
-            className="mt-4"
-            size="sm"
+          <NavLink
+            to={USER_SETTINGS_SECURITY_SECTION}
+            className="mt-4 h-fit w-fit cursor-pointer items-center border-b-0 md:block"
           >
-            {t('accountData.change_password')}
-          </Button>
+            <Button
+              variant="btn-collaboration"
+              size="sm"
+              onClick={() => {}}
+            >
+              {t('accountData.change_password')}
+            </Button>
+          </NavLink>
         </div>
-
         <div className="mt-6">
           <h4 className="font-bold">{t('accountData.my_information')}</h4>
           {user?.mail && user?.mail.length > 1 && (

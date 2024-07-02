@@ -168,6 +168,28 @@
       }
     }
   },
+  "usersettings": {
+    "title": "USER",
+    "sidebar": "Settings",
+    "security": {
+      "title": "Security",
+      "sidebar": "Security",
+      "description": "Configure here the security settings of your account",
+      "changePassword": {
+        "title": "Change Password",
+        "current": "Current password",
+        "new": "New Password",
+        "confirmation": "Confirm Password",
+        "confirm": "Change Password"
+      }
+    },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 8 characters long"
+    }
+  },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
     "description": "The application opens in a new window. No further authorization is required.",

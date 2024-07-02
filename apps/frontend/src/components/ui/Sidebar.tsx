@@ -1,21 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button } from '@/components/shared/Button';
-import { NavLink, useLocation } from 'react-router-dom';
-
-import { MobileLogoIcon, SettingsIcon, UserIcon } from '@/assets/icons';
-
-import { IconContext } from 'react-icons';
-import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
-
+import { useAuth } from 'react-oidc-context';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
-import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
-import { useAuth } from 'react-oidc-context';
+import { IconContext } from 'react-icons';
+import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import { findAppConfigByName } from '@/utils/common';
+import { MobileLogoIcon, SettingsIcon } from '@/assets/icons';
+import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+import USER_SETTINGS from '@libs/userSettings/types/user-settings-endpoints';
+import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/store/appConfigsStore';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import useUserStore from '@/store/UserStore/UserStore';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
+import Avatar from '@/components/shared/Avatar';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSH,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenuSH';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
@@ -48,6 +53,8 @@ const Sidebar = () => {
       color: 'bg-ciGreenToBlue',
     },
   ];
+
+  const navigate = useNavigate();
 
   useOnClickOutside(sidebarRef, isOpen ? toggle : () => {});
 
@@ -240,34 +247,31 @@ const Sidebar = () => {
     cleanAllStores();
   };
 
-  const logoutButton = () => (
+  const userMenu = () => (
+    <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
+      <DropdownMenuSH>
+        <DropdownMenuTrigger className="flex items-center gap-1">
+          <Avatar />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          className="z-50 bg-white text-black"
+        >
+          <DropdownMenuItem onClick={() => navigate(USER_SETTINGS)}>{t('usersettings.sidebar')}</DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => handleLogout()}>{t('common.logout')}</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenuSH>
+    </div>
+  );
+
+  const userButton = () => (
     <div
       key="logout"
-      className={`${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black ' : 'border-b-2 border-ciLightGrey'}`}
+      className={`group flex items-center justify-end ${isDesktop ? 'fixed bottom-0 right-0 border-t-2 bg-black' : 'border-b-2 border-ciLightGrey'}`}
     >
-      <NavLink
-        onClick={handleLogout}
-        to="/"
-        className={`group flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 md:block md:px-2  ${pathname === '/logout' ? 'bg-black' : ''}`}
-      >
-        <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
-        <img
-          src={UserIcon}
-          width={SIDEBAR_ICON_WIDTH}
-          className="relative z-0 "
-          alt=""
-        />
-        {isDesktop ? (
-          <div className="absolute bottom-0 left-full z-[50] flex h-full items-center gap-4 rounded-l-[8px] bg-black pl-4 pr-[38px] duration-300 ease-out group-hover:-translate-x-full">
-            <p className="text-md whitespace-nowrap font-bold">{t('common.logout')}</p>
-            <img
-              src={UserIcon}
-              width={SIDEBAR_ICON_WIDTH}
-              alt=""
-            />
-          </div>
-        ) : null}
-      </NavLink>
+      <p className="text-md font-bold md:hidden">{t('common.logout')}</p>
+      {userMenu()}
     </div>
   );
 
@@ -299,10 +303,10 @@ const Sidebar = () => {
             translate={translate}
           />
         ))}
-        {!isDesktop ? logoutButton() : null}
+        {!isDesktop ? userButton() : null}
       </div>
       {isDownButtonVisible ? downButton() : null}
-      {isDesktop ? logoutButton() : null}
+      {isDesktop ? userButton() : null}
     </div>
   );
 

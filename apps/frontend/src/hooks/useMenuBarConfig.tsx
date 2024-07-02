@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
+import { getFromPathName } from '@/utils/common';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useSettingsMenuConfig from '@/pages/Settings/config';
-import { getFromPathName } from '@/utils/common';
+import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 
@@ -14,6 +15,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const { t } = useTranslation();
 
   const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
+  const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
@@ -23,6 +25,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
+    if (rootPathName === 'user') return USERSETTINGS_MENUBAR_CONFIG;
 
     switch (rootPathName as APPS) {
       case APPS.FILE_SHARING: {
