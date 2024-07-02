@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { USER_SETTINGS_SECURITY_SECTION } from '@libs/userSettings/types/user-settings-endpoints';
 import waitForToken from '@/api/common';
@@ -9,6 +9,8 @@ import { Button } from '@/components/shared/Button';
 
 const AccountInformation = () => {
   const { user, getUserData } = useLmnApiStore();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
@@ -49,18 +51,13 @@ const AccountInformation = () => {
               </p>
             </div>
           ))}
-          <NavLink
-            to={USER_SETTINGS_SECURITY_SECTION}
-            className="mt-4 h-fit w-fit cursor-pointer items-center border-b-0 md:block"
+          <Button
+            variant="btn-collaboration"
+            size="sm"
+            onClick={() => navigate(USER_SETTINGS_SECURITY_SECTION)}
           >
-            <Button
-              variant="btn-collaboration"
-              size="sm"
-              onClick={() => {}}
-            >
-              {t('accountData.change_password')}
-            </Button>
-          </NavLink>
+            {t('accountData.change_password')}
+          </Button>
         </div>
         <div className="mt-6">
           <h4 className="font-bold">{t('accountData.my_information')}</h4>
