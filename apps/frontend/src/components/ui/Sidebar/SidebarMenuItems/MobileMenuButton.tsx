@@ -9,8 +9,8 @@ const MobileMenuButton = forwardRef<HTMLButtonElement>((_props, ref) => {
 
   return (
     <div
-      className={`right-0 top-0 z-[50] transform pr-4 pt-4 transition-transform ease-in-out ${
-        isMobileSidebarOpen ? 'relative translate-x-[-200px] duration-300' : 'fixed translate-x-0 duration-200'
+      className={`fixed right-0 top-0 z-[50] h-fit transform pr-4 pt-4 transition-transform ease-in-out ${
+        isMobileSidebarOpen ? 'translate-x-[-200px] duration-300' : 'translate-x-0 duration-200'
       }`}
     >
       <button
