@@ -46,7 +46,7 @@ class SurveysService {
       await this.surveyModel.deleteMany({ id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
     } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED);
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, error);
     }
   }
 

@@ -97,6 +97,7 @@ class SurveysController {
     };
 
     const updatedSurvey = await this.surveyService.updateSurvey(survey);
+
     if (updatedSurvey == null) {
       const createdSurvey = await this.surveyService.createSurvey(survey);
       if (createdSurvey == null) {
@@ -105,9 +106,7 @@ class SurveysController {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      // eslint-disable-next-line no-underscore-dangle
       await this.usersSurveysService.addToCreatedSurveys(username, id);
-      // eslint-disable-next-line no-underscore-dangle
       await this.usersSurveysService.populateSurvey(participants, id);
       return createdSurvey;
     }
