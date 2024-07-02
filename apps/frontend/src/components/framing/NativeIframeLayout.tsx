@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { findAppConfigByName } from '@/utils/common';
 import useFrameStore from '@/components/framing/FrameStore';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';

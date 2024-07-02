@@ -1,7 +1,7 @@
 import React from 'react';
-import { AppIntegrationType } from '@/datatypes/types';
 import useFrameStore from '@/components/framing/FrameStore';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import { AppIntegrationType } from '@libs/appconfig/types';
 
 const EmbeddedIframes = () => {
   const { appConfigs } = useAppConfigsStore();

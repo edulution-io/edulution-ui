@@ -12,7 +12,7 @@ import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'useh
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
 import { useAuth } from 'react-oidc-context';
 import { findAppConfigByName } from '@/utils/common';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import cleanAllStores from '@/store/utilis/cleanAllStores';
 import useUserStore from '@/store/UserStore/UserStore';

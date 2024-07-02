@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { ConferencesIcon } from '@/assets/icons';
-import { APPS } from '@/datatypes/types';
 import cn from '@/lib/utils';
 import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -12,8 +11,9 @@ import { Card, CardContent } from '@/components/shared/Card';
 import ConferencesList from '@/components/feature/Feed/components/ConferencesList';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import Conference from '@libs/conferences/types/conference.dto';
+import { APPS } from '@libs/appconfig/types';
 
-const FEED_PULL_TIME_INTERVAL = 500000;
+const FEED_PULL_TIME_INTERVAL = 10000;
 
 const Feed = () => {
   const { conferences, getConferences } = useConferenceStore();
