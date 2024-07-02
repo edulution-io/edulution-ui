@@ -162,7 +162,7 @@
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
-        "success": "Appliste erfolgreich gespeichert",
+        "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"
       },
       "delete": {

@@ -1,20 +1,23 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { APPS, MenuBarEntryProps, MenuItem } from '@/datatypes/types';
+
+import { APPS } from '@libs/appconfig/types';
+import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { getFromPathName } from '@/utils/common';
+
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
-import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
-import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
-import useSettingsMenuConfig from '@/pages/Settings/config';
+import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
+import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
-  const SETTINGS_MENU_CONFIG = useSettingsMenuConfig();
+  const SETTINGS_MENU_CONFIG = useAppConfigPageMenu();
   const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
@@ -57,15 +60,13 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
     icon: item.icon,
   }));
 
-  const menuBarEntries: MenuBarEntryProps = {
+  return {
     menuItems,
     title: t(configValues.title),
     disabled: configValues.disabled,
     icon: configValues.icon,
     color: configValues.color,
   };
-
-  return menuBarEntries;
 };
 
 export default useMenuBarConfig;

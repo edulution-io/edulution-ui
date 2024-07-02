@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 
+import useIsMobileView from '@/hooks/useIsMobileView';
 import styles from './dropdownmenu.module.scss';
 
 export type DropdownOptions = {
@@ -20,6 +21,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const isMobileView = useIsMobileView();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -66,9 +68,9 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
           />
         </div>
-        <div className={clsx(styles.arrow, { [styles.open]: isOpen })} />
+        <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: isMobileView })} />
       </div>
-      <div className={clsx(styles.options, { [styles.open]: isOpen })}>
+      <div className={clsx(styles.options, { [styles.open]: isOpen, [styles.up]: isMobileView })}>
         {filter(options).map((option) => (
           <div
             key={option.id}

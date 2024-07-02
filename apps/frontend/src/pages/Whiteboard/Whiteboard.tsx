@@ -1,8 +1,8 @@
 import React from 'react';
 import { Excalidraw, THEME } from '@excalidraw/excalidraw';
-import { APPS } from '@/datatypes/types';
 import cn from '@/lib/utils';
 import useFrameStore from '@/components/framing/FrameStore';
+import { APPS } from '@libs/appconfig/types';
 
 const Whiteboard = () => {
   const { activeFrame } = useFrameStore();

@@ -1,8 +1,7 @@
-// TODO: Move to shared libs folder ??
-
 import { AppConfig } from '@/datatypes/types';
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';
+import { AppConfigDto } from '@libs/appconfig/types';
 
 export const translateKey = (key: string, variables = {}) => i18n.t(key, variables);
 
@@ -13,5 +12,5 @@ export const decryptPassword = ({ data, key }: { data: string; key: string }) =>
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 
-export const findAppConfigByName = (appConfig: AppConfig[], entryName: string) =>
+export const findAppConfigByName = (appConfig: AppConfigDto[], entryName: string) =>
   appConfig.find(({ name }) => name === entryName);

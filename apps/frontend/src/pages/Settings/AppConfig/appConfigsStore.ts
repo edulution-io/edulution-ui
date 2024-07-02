@@ -1,16 +1,16 @@
 import eduApi from '@/api/eduApi';
-import { AppConfig, AppIntegrationType } from '@/datatypes/types';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import EDU_API_CONFIG_ENDPOINT from '@/api/endpoints/appconfig';
+import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 
 type AppConfigsStore = {
-  appConfigs: AppConfig[];
+  appConfigs: AppConfigDto[];
   isLoading: boolean;
   error: Error | null;
   getAppConfigs: () => Promise<void>;
-  updateAppConfig: (appConfigs: AppConfig[]) => Promise<void>;
+  updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
 };
 
@@ -29,31 +29,37 @@ const useAppConfigsStore = create<AppConfigsStore>(
       getAppConfigs: async () => {
         set({ isLoading: true, error: null });
         try {
-          const response = await eduApi.get<AppConfig[]>(EDU_API_CONFIG_ENDPOINT);
-          set({ appConfigs: response.data, isLoading: false });
+          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
+          set({ appConfigs: response.data });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       updateAppConfig: async (appConfigs) => {
-        set({ appConfigs, isLoading: true });
+        set({ isLoading: true, error: null });
         try {
           await eduApi.put(EDU_API_CONFIG_ENDPOINT, appConfigs);
-          set({ isLoading: false });
+          set({ appConfigs });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       deleteAppConfigEntry: async (name) => {
-        set({ isLoading: true });
+        set({ isLoading: true, error: null });
         try {
           await eduApi.delete(`${EDU_API_CONFIG_ENDPOINT}/${name}`);
           const newAppConfigs = get().appConfigs.filter((item) => item.name !== name);
-          set({ appConfigs: newAppConfigs, isLoading: false });
+          set({ appConfigs: newAppConfigs });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),

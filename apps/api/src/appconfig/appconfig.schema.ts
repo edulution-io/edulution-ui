@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AppConfigOptions, AppIntegrationType } from './appconfig.types';
+import { AppConfigOptions, AppIntegrationType } from '@libs/appconfig/types';
 
 @Schema({ timestamps: true, strict: true })
 export class AppConfig extends Document {
