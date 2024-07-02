@@ -1,4 +1,3 @@
-import { AppConfig } from '@/datatypes/types';
 import i18n from '@/i18n';
 import CryptoJS from 'crypto-js';
 import { AppConfigDto } from '@libs/appconfig/types';

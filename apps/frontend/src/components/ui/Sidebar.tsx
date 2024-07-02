@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useOnClickOutside, useToggle, useWindowSize } from 'usehooks-ts';
 import { IconContext } from 'react-icons';
 import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
+import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@/constants/style';
+import { MobileLogoIcon, SettingsIcon } from '@/assets/icons';
 import { findAppConfigByName } from '@/utils/common';
 import USER_SETTINGS from '@libs/userSettings/types/user-settings-endpoints';
 import { Button } from '@/components/shared/Button';
@@ -12,7 +14,6 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import cleanAllStores from '@/store/utilis/cleanAllStores';
 import useUserStore from '@/store/UserStore/UserStore';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import Avatar from '@/components/shared/Avatar';
 import {
   DropdownMenuContent,
@@ -20,7 +21,6 @@ import {
   DropdownMenuSH,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
