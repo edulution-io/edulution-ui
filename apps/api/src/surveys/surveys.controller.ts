@@ -6,9 +6,9 @@ import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
+import CustomHttpException from '@libs/error/CustomHttpException';
 import { SurveyModel } from './survey.schema';
 import SurveysService from './surveys.service';
-import CustomHttpException from '@libs/error/CustomHttpException';
 
 @Controller(SURVEYS)
 class SurveysController {
