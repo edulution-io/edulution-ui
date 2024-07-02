@@ -32,7 +32,8 @@
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
       "BbbUnauthorized": "Sie sind am externen BBB-Server nicht autorisiert",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wenden Sie sich an Ihren Systemadministrator",
-      "YouAreNotTheCreator": "Sie sind nicht der Ersteller der Konferenz"
+      "YouAreNotTheCreator": "Sie sind nicht der Ersteller der Konferenz",
+      "AlreadyInAnotherMeeting": "Sie befinden sich bereits in einer Konferenz. Bitte verlassen Sie die laufende Konferenz, bevor Sie einer neuen beitreten."
     },
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",

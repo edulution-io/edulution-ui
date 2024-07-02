@@ -1,4 +1,6 @@
 import React from 'react';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -13,13 +15,15 @@ interface ConferencesListProps {
 
 const NUMBER_OF_BADGES_TO_SHOW = 2;
 
-const ConferencesList = (props: ConferencesListProps) => {
+const RunningConferencesList = (props: ConferencesListProps) => {
   const { items, className } = props;
 
-  const { joinConference } = useConferenceDetailsDialogStore();
+  const { joinConference, joinConferenceUrl } = useConferenceDetailsDialogStore();
+
+  const { t } = useTranslation();
 
   const getShownBadges = (item: Conference) => {
-    const badges = [];
+    const badges: React.ReactNode[] = [];
     for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i += 1) {
       const name =
         item.joinedAttendees[i].label || `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}`;
@@ -36,6 +40,15 @@ const ConferencesList = (props: ConferencesListProps) => {
     return badges;
   };
 
+  function onJoinConference(meetingID: string): void {
+    if (!joinConferenceUrl) {
+      void joinConference(meetingID);
+    } else {
+      // TODO: NIEDUUI-309: Discuss should we show a toastr if the user is already in a conference (IF SO, MOVE TO CONFERENCE STORE)
+      toast.error(t('conferences.errors.AlreadyInAnotherMeeting'));
+    }
+  }
+
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
       <div className="flex flex-col gap-2 p-4 pt-0">
@@ -45,7 +58,7 @@ const ConferencesList = (props: ConferencesListProps) => {
             variant="btn-outline"
             type="button"
             className="w-full"
-            onClick={() => joinConference(item.meetingID)}
+            onClick={() => onJoinConference(item.meetingID)}
           >
             <div className="w-full">
               <div className="mb-1 flex items-center justify-between gap-2 font-semibold">
@@ -73,4 +86,4 @@ const ConferencesList = (props: ConferencesListProps) => {
   );
 };
 
-export default ConferencesList;
+export default RunningConferencesList;
