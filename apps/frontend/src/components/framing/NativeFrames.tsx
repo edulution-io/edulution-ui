@@ -4,6 +4,7 @@ import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/store/appConfigsStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 
 const isActiveNativeFrame = (appConfig: AppConfig, loadedFrames: string[]) => {
   const { appType } = appConfig;
@@ -23,6 +24,8 @@ const NativeFrames = () => {
           return <MailPage key={appConfig.name} />;
         case APPS.LINUXMUSTER:
           return <LinuxmusterPage key={appConfig.name} />;
+        case APPS.WHITEBOARD:
+          return <Whiteboard key={appConfig.name} />;
         default:
           return null;
       }
