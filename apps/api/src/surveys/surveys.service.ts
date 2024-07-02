@@ -70,21 +70,6 @@ class SurveysService {
     return createdSurvey;
   }
 
-  async updateOrCreateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
-    const updatedSurvey = await this.updateSurvey(survey);
-    if (updatedSurvey == null) {
-      const createdSurvey = await this.createSurvey(survey);
-      if (createdSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      return createdSurvey;
-    }
-    return updatedSurvey;
-  }
-
   async addPublicAnswer(
     surveyId: mongoose.Types.ObjectId,
     answer: JSON,

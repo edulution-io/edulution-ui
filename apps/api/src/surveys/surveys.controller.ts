@@ -8,6 +8,7 @@ import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
 import { SurveyModel } from './survey.schema';
 import SurveysService from './surveys.service';
+import CustomHttpException from '@libs/error/CustomHttpException';
 
 @Controller(SURVEYS)
 class SurveysController {
@@ -56,8 +57,21 @@ class SurveysController {
       canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
     };
 
-    const newSurvey = await this.surveyService.updateOrCreateSurvey(survey);
-    return newSurvey;
+    const updatedSurvey = await this.surveyService.updateSurvey(survey);
+    if (updatedSurvey == null) {
+      const createdSurvey = await this.surveyService.createSurvey(survey);
+      if (createdSurvey == null) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      // TODO: NIEDUUI-254: add user functionality to manage surveys
+
+      return createdSurvey;
+    }
+    return updatedSurvey;
   }
 
   @Delete()
