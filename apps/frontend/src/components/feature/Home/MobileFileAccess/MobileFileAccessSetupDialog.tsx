@@ -21,31 +21,34 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
   const { username } = useUserStore();
   const [isStepOne, setIsStepOne] = useState(true);
 
-  const qrCodeLoginData = {
+  const webdavAccessDetails = {
     displayName: `${window.document.title}`,
     url: `${window.location.origin}/webdav`,
     username,
     password: '',
     token: '',
   };
-  const qrCodeLogin = JSON.stringify(qrCodeLoginData);
+  const webdavAccessJson = JSON.stringify(webdavAccessDetails);
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   const loginDataTable = () => (
-    <div className="mt-4 overflow-auto">
-      {t('form.url')}:
-      <Card variant="text">
-        <pre className="m-2 text-foreground">{qrCodeLoginData.url}</pre>
-      </Card>
-      {t('common.username')}:
-      <Card variant="text">
-        <pre className="m-2 text-foreground">{username}</pre>
-      </Card>
-    </div>
+    <>
+      {isMobileView ? null : <p className="mt-4">{t('dashboard.mobileAccess.copyCredentials')}</p>}
+      <div className="mt-4 overflow-auto">
+        {t('form.url')}:
+        <Card variant="text">
+          <pre className="m-2 text-foreground">{webdavAccessDetails.url}</pre>
+        </Card>
+        {t('common.username')}:
+        <Card variant="text">
+          <pre className="m-2 text-foreground">{username}</pre>
+        </Card>
+      </div>
+    </>
   );
 
-  const navtoAppStoreButton = () => (
+  const navToAppStoreButton = () => (
     <div className="flex items-center justify-center">
       <Button
         variant="btn-outline"
@@ -70,7 +73,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         {t(isStepOne ? 'dashboard.mobileAccess.scanAppStoreLink' : 'dashboard.mobileAccess.scanAccessInfo')}
       </p>
       <div className="mt-4 justify-center">
-        <QRCodeDisplay value={isStepOne ? EDU_APP_APPSTORE_URL : qrCodeLogin} />
+        <QRCodeDisplay value={isStepOne ? EDU_APP_APPSTORE_URL : webdavAccessJson} />
       </div>
       <Button
         type="button"
@@ -80,24 +83,22 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
       >
         {isStepOne ? <MdArrowForwardIos /> : <MdArrowBackIosNew />}
       </Button>
-      <p className="mt-4">
-        {t(isStepOne ? 'dashboard.mobileAccess.nextStepPreview' : 'dashboard.mobileAccess.copyCredentials')}
-      </p>
       {isStepOne ? (
         <>
           <p className="my-4">{t('dashboard.mobileAccess.downloadDirect')}</p>
-          {navtoAppStoreButton()}
+          {navToAppStoreButton()}
         </>
       ) : (
         loginDataTable()
       )}
+      <p className="mt-4">{isStepOne && t('dashboard.mobileAccess.nextStepPreview')}</p>
     </div>
   );
 
   const getSheetBody = () => (
     <div className="text-foreground">
       <p className="my-4">{t('dashboard.mobileAccess.downloadApp')}</p>
-      {navtoAppStoreButton()}
+      {navToAppStoreButton()}
       <p className="mt-4">{t('dashboard.mobileAccess.accessData')}:</p>
       {loginDataTable()}
     </div>

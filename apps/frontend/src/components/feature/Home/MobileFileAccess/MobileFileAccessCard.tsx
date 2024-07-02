@@ -7,7 +7,7 @@ import MobileFileAccessSetupDialog from './MobileFileAccessSetupDialog';
 
 const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
-  const [isMobileAccessOpen, setIsMobileAccessOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <Card variant="security">
       <CardContent>
@@ -17,7 +17,7 @@ const MobileFileAccess: React.FC = () => {
           <Button
             variant="btn-infrastructure"
             size="lg"
-            onClick={() => setIsMobileAccessOpen(!isMobileAccessOpen)}
+            onClick={() => setIsDialogOpen(!isDialogOpen)}
           >
             <img
               src={AppleLogo}
@@ -26,10 +26,10 @@ const MobileFileAccess: React.FC = () => {
             />
             <p>{t('dashboard.mobileAccess.manual')}</p>
           </Button>
-          {isMobileAccessOpen ? (
+          {isDialogOpen ? (
             <MobileFileAccessSetupDialog
-              isOpen={isMobileAccessOpen}
-              setIsOpen={setIsMobileAccessOpen}
+              isOpen={isDialogOpen}
+              setIsOpen={setIsDialogOpen}
             />
           ) : null}
         </div>

@@ -8,12 +8,12 @@
       "title": "Mobile File Access",
       "manual": "Manual",
       "accessData": "Login data",
-      "content": "You can access the school server from many mobile devices. Select your operating system to see how it works.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code.",
-      "scanAppStoreLink": "Scan the QR code to download the edultion-io app from the AppStore.",
-      "nextStepPreview": "In the next step, you can transfer the access data by scanning a QR code.",
+      "content": "You can access the school server from many mobile devices. Click on Manual to start.",
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
+      "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
+      "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
-      "downloadDirect": "Or download the app here:",
+      "downloadDirect": "Or download the app directly:",
       "downloadApp": "Download the edulution-io app here:"
     }
   },
