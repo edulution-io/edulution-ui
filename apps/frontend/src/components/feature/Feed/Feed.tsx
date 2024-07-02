@@ -2,35 +2,29 @@ import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import { ConferencesIcon } from '@/assets/icons';
 import cn from '@/lib/utils';
-import { APPS } from '@libs/appconfig/types';
-import { AppConfig } from '@/datatypes/types';
+import { AppConfigDto, APPS } from '@libs/appconfig/types';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Accordion } from '@/components/ui/Accordion';
 import { Card, CardContent } from '@/components/shared/Card';
 import RunningConferencesAccordionItem from '@/components/feature/Feed/components/RunningConferencesAccordionItem';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import useAppConfigsStore from '@/store/appConfigsStore';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
 
 const FEED_PULL_TIME_INTERVAL = 10000;
 
 const Feed = () => {
-  const { appConfigs = [], getAppConfigs } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
 
-  const { conferences = [], getConferences } = useConferenceStore();
+  const { getConferences } = useConferenceStore();
 
   const { t } = useTranslation();
 
   const isMobileView = useIsMobileView();
 
-  useEffect(() => {
-    void getAppConfigs();
-  }, []);
-
+  // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
   const isConferenceAppActivated = useMemo(
-    () => !!appConfigs.find((conf: AppConfig) => conf.name === APPS.CONFERENCES.toString()),
+    () => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.CONFERENCES.toString()),
     [appConfigs],
   );
 
@@ -61,7 +55,7 @@ const Feed = () => {
               type="multiple"
               defaultValue={[APPS.CONFERENCES]}
             >
-              {isConferenceAppActivated ? <RunningConferencesAccordionItem conferences={conferences} /> : null}
+              {isConferenceAppActivated ? <RunningConferencesAccordionItem /> : null}
             </Accordion>
           </ScrollArea>
         </div>

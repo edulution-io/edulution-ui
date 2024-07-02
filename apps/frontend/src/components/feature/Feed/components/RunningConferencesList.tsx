@@ -44,7 +44,7 @@ const RunningConferencesList = (props: ConferencesListProps) => {
     if (!joinConferenceUrl) {
       void joinConference(meetingID);
     } else {
-      // TODO: NIEDUUI-309: Discuss should we show a toastr if the user is already in a conference (IF SO, MOVE TO CONFERENCE STORE)
+      // TODO: NIEDUUI-309: Remove after handling has moved to the conferences fetch
       toast.error(t('conferences.errors.AlreadyInAnotherMeeting'));
     }
   }

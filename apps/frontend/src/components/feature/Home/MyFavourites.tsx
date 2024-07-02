@@ -1,12 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { CardContent, Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import Printer from '@/assets/icons/edulution/Drucker.svg';
 import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
 import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
 import { FirewallIcon } from '@/assets/icons';
-import { useTranslation } from 'react-i18next';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
 
 const MyFavourites = () => {
   const { t } = useTranslation();
@@ -29,7 +28,7 @@ const MyFavourites = () => {
             <img
               src={FileSharing}
               alt="Filesharing"
-              width={BUTTONS_ICON_WIDTH}
+              className="w-[var(--icon-width-inside-of-a-button)]"
             />
           </Button>
           <Button variant="btn-organisation">
@@ -37,7 +36,7 @@ const MyFavourites = () => {
             <img
               src={RoomBooking}
               alt="Raumbuchung"
-              width={BUTTONS_ICON_WIDTH}
+              className="w-[var(--icon-width-inside-of-a-button)]"
             />
           </Button>
           <Button variant="btn-infrastructure">
@@ -45,7 +44,7 @@ const MyFavourites = () => {
             <img
               src={Printer}
               alt="Drucker"
-              width={BUTTONS_ICON_WIDTH}
+              className="w-[var(--icon-width-inside-of-a-button)]"
             />
           </Button>
           <Button variant="btn-security">
@@ -53,7 +52,7 @@ const MyFavourites = () => {
             <img
               src={FirewallIcon}
               alt="Firewall"
-              width={BUTTONS_ICON_WIDTH}
+              className="w-[var(--icon-width-inside-of-a-button)]"
             />
           </Button>
         </div>

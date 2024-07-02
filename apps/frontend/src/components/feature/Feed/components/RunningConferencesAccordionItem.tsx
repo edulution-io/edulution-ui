@@ -1,18 +1,14 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConferencesIcon } from '@/assets/icons';
-import { APPS } from '@/datatypes/types';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
+import { APPS } from '@libs/appconfig/types';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/Accordion';
 import RunningConferencesList from '@/components/feature/Feed/components/RunningConferencesList';
 import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 
-interface RunningConferencesAccordionItemProps {
-  conferences: Conference[];
-}
-
-const RunningConferencesAccordionItem = (props: RunningConferencesAccordionItemProps) => {
-  const { conferences } = props;
+const RunningConferencesAccordionItem = () => {
+  const { conferences } = useConferenceStore();
 
   const { t } = useTranslation();
 
@@ -28,8 +24,7 @@ const RunningConferencesAccordionItem = (props: RunningConferencesAccordionItemP
         <img
           src={ConferencesIcon}
           alt={`${APPS.CONFERENCES}-notification-icon`}
-          width={BUTTONS_ICON_WIDTH}
-          className="mr-4"
+          className="mr-4 w-[var(--icon-width-inside-of-a-button)]"
         />
         {t('conferences.sidebar')}
       </AccordionTrigger>
