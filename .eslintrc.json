@@ -44,6 +44,9 @@
     }
   },
   "ignorePatterns": [
+    // TODO: NIEDUUI-314: REMOVE THIS WHEN LINTING IS FIXED FOR THE TESTS (eslint-plugin-jest(?))
+    "**.spec.**",
+    "**.mock.**",
     "prettier.config.js",
     "vitest.workspace.ts",
     "jest.preset.cjs",
