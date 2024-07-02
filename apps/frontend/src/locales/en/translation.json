@@ -232,6 +232,10 @@
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"
   },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",
     "noDataAvailable": "No data available"

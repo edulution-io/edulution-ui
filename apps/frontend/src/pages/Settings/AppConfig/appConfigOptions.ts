@@ -21,6 +21,7 @@ import {
   SchoolManagementIcon,
   TicketSystemIcon,
   VirtualizationIcon,
+  WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
 import { AppConfigOptionType } from '@libs/appconfig/types/appConfigOptions';
@@ -122,6 +123,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   { id: APPS.BACKUP, icon: BackupIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   { id: APPS.AICHAT, icon: AiChatIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   { id: APPS.LINUXMUSTER, icon: LinuxmusterIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
+  { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue' },
 ];
 
 export default APP_CONFIG_OPTIONS;

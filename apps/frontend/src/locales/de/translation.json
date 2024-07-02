@@ -233,6 +233,10 @@
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"
   },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
   "table": {
     "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
