@@ -54,6 +54,7 @@ export enum APPS {
   BACKUP = 'backup',
   AICHAT = 'aichat',
   LINUXMUSTER = 'linuxmuster',
+  WHITEBOARD = 'whiteboard',
 }
 
 export interface FileTypePreviewProps {

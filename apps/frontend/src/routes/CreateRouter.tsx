@@ -27,6 +27,8 @@ const pageSwitch = (page: string) => {
       return <FramePlaceholder />;
     case APPS.LINUXMUSTER:
       return <FramePlaceholder />;
+    case APPS.WHITEBOARD:
+      return <FramePlaceholder />;
     default:
       return (
         <Navigate

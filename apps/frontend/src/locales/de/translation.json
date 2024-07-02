@@ -5,9 +5,16 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILER DATENZUGRIFF",
+      "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
-      "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
+      "accessData": "Zugangsdaten",
+      "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
+      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edultion-io App im AppStore herunterzuladen.",
+      "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
+      "copyCredentials": "Oder manuell eintragen:",
+      "downloadDirect": "Oder lade die App direkt herunter:",
+      "downloadApp": "Lade hier die edulution-io App herunter:"
     }
   },
   "ticketsystem": {
@@ -254,6 +261,10 @@
   "linuxmuster": {
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"
+  },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
   },
   "table": {
     "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
