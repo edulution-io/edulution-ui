@@ -24,8 +24,7 @@ import {
   WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
-import { AppConfigOptionType } from '@libs/appconfig/types/appConfigOptions';
-import { APPS } from '@libs/appconfig/types';
+import { AppConfigOptionType, APPS } from '@libs/appconfig/types';
 
 type AppConfigOption = {
   id: string;

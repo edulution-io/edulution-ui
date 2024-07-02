@@ -14,8 +14,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigOptions, AppConfigOptionType } from '@libs/appconfig/types/appConfigOptions';
-import { AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
