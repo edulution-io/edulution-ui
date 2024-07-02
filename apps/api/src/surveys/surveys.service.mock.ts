@@ -1,75 +1,60 @@
-/* eslint-disable */
-
 import mongoose from 'mongoose';
-import { SurveyModel, SurveyDocument } from './survey.schema';
 import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
+import { SurveyModel, SurveyDocument } from './survey.schema';
 
 export const newObjectId = new mongoose.Types.ObjectId(52653415245934);
 
-export const id_FirstMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(1);
+export const firstMockSurveyId: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(101);
 
-export const id_SecondMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(2);
+export const secondMockSurveyId: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(102);
 
-export const id_ThirdMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(3);
+export const thirdMockSurveyId: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(103);
 
-export const id_FourthMockSurvey: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(4);
+export const fourthMockSurveyId: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(104);
 
-export const first_username = 'pupil1-name1';
-
-export const second_username = 'pupil2-name2';
-
-export const third_username = 'pupil3-name3';
-
-export const mocked_participants = [
-  {
-    username: first_username,
-    lastName: 'name1',
-    firstName: 'pupil1',
-    label: 'pupil1-name1',
-    value: first_username,
-  },
-  {
-    username: second_username,
-    lastName: 'name2',
-    firstName: 'pupil2',
-    label: 'pupil2-name2',
-    value: second_username,
-  },
-  {
-    username: third_username,
-    lastName: 'name3',
-    firstName: 'pupil3',
-    label: 'pupil3-name3',
-    value: third_username,
-  },
-];
-
-export const privateAnswer_FirstMockSurvey: JSON = {
-  // @ts-ignore: 'publicAnswers' has this structure
-  Frage1: ['Item 3'],
-  Frage2: 'this is a private mocked test appended to the user',
+export const firstUsername = 'pupil1-name1';
+export const firstParticipant = {
+  username: firstUsername,
+  lastName: 'name1',
+  firstName: 'pupil1',
+  label: 'pupil1-name1',
+  value: firstUsername,
 };
 
-export const publicAnswer_FirstMockSurvey: JSON = {
+export const secondUsername = 'pupil2-name2';
+export const secondParticipant = {
+  username: secondUsername,
+  lastName: 'name2',
+  firstName: 'pupil2',
+  label: 'pupil2-name2',
+  value: secondUsername,
+};
+
+export const thirdUsername = 'pupil3-name3';
+export const thirdParticipant = {
+  username: thirdUsername,
+  lastName: 'name3',
+  firstName: 'pupil3',
+  label: 'pupil3-name3',
+  value: thirdUsername,
+};
+
+export const mockedParticipants = [firstParticipant, secondParticipant, thirdParticipant];
+
+export const publicAnswerForFirstMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: ['Item 1'],
   Frage2: 'this is a mocked text input',
 };
 
-export const addNewPublicAnswer_FirstMockSurvey: JSON = {
+export const addNewPublicAnswerToFirstMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: ['Item 2'],
   Frage2: 'this is a second answer that will be added to the public answers of the survey',
 };
 
-export const addNewPublicAnswer_FirstMockSurvey_thirdUser: JSON = {
-  // @ts-ignore: 'publicAnswers' has this structure
-  Frage1: ['Item 3'],
-  Frage2: 'this is a new answer',
-};
-
 export const firstMockSurvey: UpdateOrCreateSurveyDto = {
-  id: id_FirstMockSurvey,
+  id: firstMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'First Survey',
@@ -92,9 +77,9 @@ export const firstMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mocked_participants,
-  participated: [first_username],
-  publicAnswers: [publicAnswer_FirstMockSurvey],
+  participants: mockedParticipants,
+  participated: [firstUsername],
+  publicAnswers: [publicAnswerForFirstMockSurvey],
   saveNo: 117,
   created: new Date('2021-06-26T00:00:00.000Z'),
   expirationDate: new Date('2021-06-26'),
@@ -103,46 +88,37 @@ export const firstMockSurvey: UpdateOrCreateSurveyDto = {
   canSubmitMultipleAnswers: false,
 };
 
-export const partial_firstMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
-  publicAnswers: [publicAnswer_FirstMockSurvey, addNewPublicAnswer_FirstMockSurvey],
-  participated: [first_username, second_username],
+export const partialUpdateOnFirstMockSurveyAfterAddedNewAnswer: Partial<SurveyModel> = {
+  publicAnswers: [publicAnswerForFirstMockSurvey, addNewPublicAnswerToFirstMockSurvey],
+  participated: [firstUsername, secondUsername],
 };
 
-export const firstMockSurvey_afterAddedNewAnswer: Partial<SurveyModel> = {
+export const firstMockSurveyAfterAddedNewAnswer: Partial<SurveyModel> = {
   ...firstMockSurvey,
-  publicAnswers: [publicAnswer_FirstMockSurvey, addNewPublicAnswer_FirstMockSurvey],
-  participated: [first_username, second_username],
+  publicAnswers: [publicAnswerForFirstMockSurvey, addNewPublicAnswerToFirstMockSurvey],
+  participated: [firstUsername, secondUsername],
 };
 
-export const firstMockSurveyDocument: SurveyDocument = {
-  ...firstMockSurvey,
-  delete: jest.fn().mockResolvedValue(true),
-  create: jest.fn().mockResolvedValue(firstMockSurvey),
-  find: jest.fn().mockResolvedValue(firstMockSurvey),
-  save: jest.fn().mockResolvedValue(firstMockSurvey),
-  remove: jest.fn().mockResolvedValue(firstMockSurvey),
-} as unknown as SurveyDocument;
-
-export const publicAnswer_SecondMockSurvey: JSON = {
+export const publicAnswerForSecondMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'pupil2',
   Frage2: 'name2',
 };
 
-export const addNewPublicAnswer_SecondMockSurvey: JSON = {
+export const addNewPublicAnswerToSecondMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'pupil1',
   Frage2: 'name1',
 };
 
-export const addNewPublicAnswer_SecondMockSurvey_thirdUser: JSON = {
+export const addNewPublicAnswerToSecondMockSurveyFromThirdUser: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'pupil3',
   Frage2: 'name3',
 };
 
 export const secondMockSurvey: UpdateOrCreateSurveyDto = {
-  id: id_SecondMockSurvey,
+  id: secondMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'Second Survey',
@@ -160,9 +136,9 @@ export const secondMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mocked_participants,
-  participated: [second_username],
-  publicAnswers: [publicAnswer_SecondMockSurvey],
+  participants: mockedParticipants,
+  participated: [secondUsername],
+  publicAnswers: [publicAnswerForSecondMockSurvey],
   saveNo: 2,
   created: new Date('2020-11-29T00:00:00.000Z'),
   expirationDate: new Date('2025-04-22'),
@@ -171,15 +147,15 @@ export const secondMockSurvey: UpdateOrCreateSurveyDto = {
   canSubmitMultipleAnswers: false,
 };
 
-export const partial_secondMockSurvey_afterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
-  participated: [second_username, third_username],
-  publicAnswers: [publicAnswer_SecondMockSurvey, addNewPublicAnswer_SecondMockSurvey_thirdUser],
+export const partialUpdateOnSecondMockSurveyAfterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
+  participated: [secondUsername, thirdUsername],
+  publicAnswers: [publicAnswerForSecondMockSurvey, addNewPublicAnswerToSecondMockSurveyFromThirdUser],
 };
 
-export const secondMockSurvey_afterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
+export const secondMockSurveyAfterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
   ...firstMockSurvey,
-  participated: [second_username, third_username],
-  publicAnswers: [publicAnswer_SecondMockSurvey, addNewPublicAnswer_SecondMockSurvey_thirdUser],
+  participated: [secondUsername, thirdUsername],
+  publicAnswers: [publicAnswerForSecondMockSurvey, addNewPublicAnswerToSecondMockSurveyFromThirdUser],
 };
 
 export const secondMockSurveyDocument: SurveyDocument = {
@@ -191,19 +167,17 @@ export const secondMockSurveyDocument: SurveyDocument = {
   remove: jest.fn().mockResolvedValue(secondMockSurvey),
 } as unknown as SurveyDocument;
 
-export const ids_MockSurveys: mongoose.Types.ObjectId[] = [id_FirstMockSurvey, id_SecondMockSurvey];
+export const mockSurveyIds: mongoose.Types.ObjectId[] = [firstMockSurveyId, secondMockSurveyId];
 
 export const mockSurveys: UpdateOrCreateSurveyDto[] = [firstMockSurvey, secondMockSurvey];
 
-export const mockSurveyDocuments: SurveyDocument[] = [firstMockSurveyDocument, secondMockSurveyDocument];
-
-export const addNewPublicAnswer_ThirdMockSurvey: JSON = {
+export const thirdMockSurveyAddNewPublicAnswer: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'Lasagne',
 };
 
 export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
-  id: id_ThirdMockSurvey,
+  id: thirdMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'Third Survey',
@@ -216,7 +190,7 @@ export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mocked_participants,
+  participants: mockedParticipants,
   participated: [],
   publicAnswers: [],
   saveNo: 2,
@@ -227,14 +201,14 @@ export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
   canSubmitMultipleAnswers: false,
 };
 
-export const thirdMockSurvey_afterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
+export const thirdMockSurveyAfterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
   ...thirdMockSurvey,
-  publicAnswers: [addNewPublicAnswer_ThirdMockSurvey],
-  participated: [first_username],
+  publicAnswers: [thirdMockSurveyAddNewPublicAnswer],
+  participated: [firstUsername],
 };
 
 export const fourthMockSurvey: UpdateOrCreateSurveyDto = {
-  id: id_FourthMockSurvey,
+  id: fourthMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
     title: 'Fourth Survey',
@@ -247,7 +221,7 @@ export const fourthMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mocked_participants,
+  participants: mockedParticipants,
   participated: [],
   publicAnswers: [],
   saveNo: 146,

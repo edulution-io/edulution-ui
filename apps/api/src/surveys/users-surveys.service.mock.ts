@@ -1,7 +1,6 @@
-/* eslint-disable */
-
 import mongoose from 'mongoose';
-import { UsersSurveys, UsersSurveysDocument } from './users-surveys.schema';
+import { UsersSurveys } from './users-surveys.schema';
+import { firstUsername, secondUsername } from './surveys.service.mock';
 
 // TODO move to lib is also declared in 'get-survey-editor-form-data.ts'
 const EMPTY_JSON = {} as JSON;
@@ -21,26 +20,7 @@ export const surveyId06 = new mongoose.Types.ObjectId(6);
 export const surveyId08 = new mongoose.Types.ObjectId(8);
 export const surveyId09 = new mongoose.Types.ObjectId(9);
 
-export const first_username = 'pupil1-name1';
-export const first_participant = {
-  username: first_username,
-  lastName: 'name1',
-  firstName: 'pupil1',
-  label: 'pupil1-name1',
-  value: first_username,
-};
-export const second_username = 'pupil2-name2';
-export const second_participant = {
-  username: second_username,
-  lastName: 'name2',
-  firstName: 'pupil2',
-  label: 'pupil2-name2',
-  value: second_username,
-};
-
-export const mocked_participants = [first_participant, second_participant];
-
-export const mockedAnswer = JSON.parse('{"Frage1": "Antwort1"}');
+export const mockedAnswer: JSON = JSON.parse('{"Frage1": "Antwort1"}');
 export const openSurveys = [openSurvey, surveyId02, surveyId03, distributedSurvey];
 export const createdSurveys = [createdSurvey, surveyId05, surveyId06, distributedSurvey];
 export const answeredSurveyIds = [answeredSurvey, surveyId08, surveyId09, distributedSurvey];
@@ -52,109 +32,94 @@ export const answeredSurveys = [
 ];
 
 export const userSurveys: UsersSurveys = {
-  openSurveys: openSurveys,
-  createdSurveys: createdSurveys,
-  answeredSurveys: answeredSurveys,
+  openSurveys,
+  createdSurveys,
+  answeredSurveys,
 };
 
-export const first_mockedUser = {
-  username: first_username,
+export const firstMockUser = {
+  username: firstUsername,
   usersSurveys: userSurveys,
 };
-export const second_mockedUser = {
-  username: second_username,
+export const secondMockUser = {
+  username: secondUsername,
   usersSurveys: userSurveys,
 };
-export const mockedUsers = [first_mockedUser, second_mockedUser];
+export const mockedUsers = [firstMockUser, secondMockUser];
 
-export const openSurveys_afterRemove_openSurveys = [surveyId02, surveyId03, distributedSurvey];
-export const createdSurveys_afterRemove_createdSurvey = [surveyId05, surveyId06, distributedSurvey];
-export const answeredSurveys_afterRemove_answeredSurvey = [
+export const openSurveysAfterRemoveOpenSurvey = [surveyId02, surveyId03, distributedSurvey];
+export const createdSurveysAfterRemoveCreatedSurvey = [surveyId05, surveyId06, distributedSurvey];
+export const answeredSurveysAfterRemoveAnsweredSurvey = [
   { surveyId: surveyId08, answer: EMPTY_JSON },
   { surveyId: surveyId09, answer: EMPTY_JSON },
   { surveyId: distributedSurvey, answer: EMPTY_JSON },
 ];
-export const Users_UserSurveys_afterRemove_openSurvey: UsersSurveys = {
-  openSurveys: openSurveys_afterRemove_openSurveys,
-  createdSurveys: createdSurveys,
-  answeredSurveys: answeredSurveys,
+export const userSurveysAfterRemoveOpenSurvey: UsersSurveys = {
+  openSurveys: openSurveysAfterRemoveOpenSurvey,
+  createdSurveys,
+  answeredSurveys,
 };
-export const Users_UserSurveys_afterRemove_createdSurvey: UsersSurveys = {
-  openSurveys: openSurveys,
-  createdSurveys: createdSurveys_afterRemove_createdSurvey,
-  answeredSurveys: answeredSurveys,
+export const userSurveysAfterRemoveCreatedSurvey: UsersSurveys = {
+  openSurveys,
+  createdSurveys: createdSurveysAfterRemoveCreatedSurvey,
+  answeredSurveys,
 };
-export const Users_UserSurveys_afterRemove_answeredSurvey: UsersSurveys = {
-  openSurveys: openSurveys,
-  createdSurveys: createdSurveys,
-  answeredSurveys: answeredSurveys_afterRemove_answeredSurvey,
+export const userSurveysAfterRemoveAnsweredSurvey: UsersSurveys = {
+  openSurveys,
+  createdSurveys,
+  answeredSurveys: answeredSurveysAfterRemoveAnsweredSurvey,
 };
 
-export const openSurveys_afterRemove_distributedSurvey = [openSurvey, surveyId02, surveyId03];
-export const createdSurveys_afterRemove_distributedSurvey = [createdSurvey, surveyId05, surveyId06];
-export const answeredSurveys_afterRemove_distributedSurvey = [
+export const openSurveysAfterRemoveDistributedSurvey = [openSurvey, surveyId02, surveyId03];
+export const createdSurveysAfterRemoveDistributedSurvey = [createdSurvey, surveyId05, surveyId06];
+export const answeredSurveysAfterRemoveDistributedSurvey = [
   { surveyId: answeredSurvey, answer: mockedAnswer },
   { surveyId: surveyId08, answer: EMPTY_JSON },
   { surveyId: surveyId09, answer: EMPTY_JSON },
 ];
-export const Users_UserSurveys_afterRemove_distributedSurvey: UsersSurveys = {
-  openSurveys: openSurveys_afterRemove_distributedSurvey,
-  createdSurveys: createdSurveys_afterRemove_distributedSurvey,
-  answeredSurveys: answeredSurveys_afterRemove_distributedSurvey,
+
+export const userSurveysAfterRemoveDistributedSurvey: UsersSurveys = {
+  openSurveys: openSurveysAfterRemoveDistributedSurvey,
+  createdSurveys: createdSurveysAfterRemoveDistributedSurvey,
+  answeredSurveys: answeredSurveysAfterRemoveDistributedSurvey,
 };
 
-export const openSurveys_afterAddOpen_unknownSurvey = [
+export const openSurveysAfterAddOpenUnknownSurvey = [
   openSurvey,
   surveyId02,
   surveyId03,
   distributedSurvey,
   unknownSurvey,
 ];
-export const Users_UserSurveys_afterAddOpen_unknownSurvey: UsersSurveys = {
-  openSurveys: openSurveys_afterAddOpen_unknownSurvey,
-  createdSurveys: createdSurveys,
-  answeredSurveys: answeredSurveys,
+export const userSurveysAfterAddOpenUnknownSurvey: UsersSurveys = {
+  openSurveys: openSurveysAfterAddOpenUnknownSurvey,
+  createdSurveys,
+  answeredSurveys,
 };
 
-export const createdSurveys_afterAddCreated_unknownSurvey = [
+export const createdSurveysAfterAddCreatedUnknownSurvey = [
   createdSurvey,
   surveyId05,
   surveyId06,
   distributedSurvey,
   unknownSurvey,
 ];
-export const Users_UserSurveys_afterAddCreated_unknownSurvey: UsersSurveys = {
-  openSurveys: openSurveys,
-  createdSurveys: createdSurveys_afterAddCreated_unknownSurvey,
-  answeredSurveys: answeredSurveys,
+export const userSurveysAfterAddCreatedUnknownSurvey: UsersSurveys = {
+  openSurveys,
+  createdSurveys: createdSurveysAfterAddCreatedUnknownSurvey,
+  answeredSurveys,
 };
 
-export const openSurveys_afterAddAnswer_openSurvey = [surveyId02, surveyId03, distributedSurvey];
-export const answeredSurveys_afterAddAnswer_openSurvey = [
+export const openSurveysAfterAddAnswerForOpenSurvey = [surveyId02, surveyId03, distributedSurvey];
+export const answeredSurveysAfterAddAnswerForOpenSurvey = [
   { surveyId: answeredSurvey, answer: mockedAnswer },
   { surveyId: surveyId08, answer: EMPTY_JSON },
   { surveyId: surveyId09, answer: EMPTY_JSON },
   { surveyId: distributedSurvey, answer: EMPTY_JSON },
   { surveyId: openSurvey, answer: mockedAnswer },
 ];
-export const Users_UserSurveys_afterAddAnswer_openSurvey: UsersSurveys = {
-  openSurveys: openSurveys_afterAddAnswer_openSurvey,
-  createdSurveys: createdSurveys,
-  answeredSurveys: answeredSurveys_afterAddAnswer_openSurvey,
+export const userSurveysAfterAddAnswerForOpenSurvey: UsersSurveys = {
+  openSurveys: openSurveysAfterAddAnswerForOpenSurvey,
+  createdSurveys,
+  answeredSurveys: answeredSurveysAfterAddAnswerForOpenSurvey,
 };
-
-export const first_UserSurveysDocument: UsersSurveysDocument = {
-  ...userSurveys,
-  // _id: '60d6c47e4094a113f0d0fe03',
-  save: jest.fn().mockResolvedValue(userSurveys),
-  remove: jest.fn().mockResolvedValue(userSurveys),
-} as unknown as UsersSurveysDocument;
-
-export const second_UserSurveysDocument: UsersSurveysDocument = {
-  ...userSurveys,
-  // _id: '35d3c36e45674a89076f8d3fe55',
-  save: jest.fn().mockResolvedValue(userSurveys),
-  remove: jest.fn().mockResolvedValue(userSurveys),
-} as unknown as UsersSurveysDocument;
-
-export const mockedUserSurveysDocuments = [first_UserSurveysDocument, second_UserSurveysDocument];
