@@ -1,35 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
-import { SIDEBAR_ICON_WIDTH } from '@/constants/style';
-import { getFromPathName } from '@/utils/common';
+import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
+import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
+import { getRootPathName } from '@libs/common/utils';
 
-type SidebarMenuItem = {
-  title: string;
-  link: string;
-  icon: string;
-  color: string;
-};
-
-interface SidebarItemProps {
-  menuItem: SidebarMenuItem;
-  isDesktop: boolean;
-  pathname: string;
-  translate: number;
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname, translate }) => {
+const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
+  const { pathname } = useLocation();
 
-  const rootPathName = `/${getFromPathName(pathname, 1)}`;
+  const rootPathName = getRootPathName(pathname);
 
   useEffect(() => {
     if (buttonRef.current == null) return;
 
     const rect = buttonRef.current.getBoundingClientRect();
-    setIsInView(rect.bottom < window.innerHeight - 58);
+    setIsInView(rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT);
   }, [translate, size]);
 
   return (
@@ -47,17 +35,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ menuItem, isDesktop, pathname
           src={menuItem.icon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative z-0"
-          alt=""
+          alt={`${menuItem.title}-icon`}
         />
         {isInView ? (
           <div
-            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[38px] duration-300 ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
             <p className="whitespace-nowrap font-bold">{menuItem.title}</p>
             <img
               src={menuItem.icon}
               width={SIDEBAR_ICON_WIDTH}
-              alt=""
+              alt={`${menuItem.title}-icon`}
             />
           </div>
         ) : null}

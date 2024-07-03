@@ -175,6 +175,15 @@
       }
     }
   },
+  "usersettings": {
+    "title": "BENUTZER",
+    "sidebar": "Einstellungen",
+    "security": "Sicherheit",
+    "faq": "FAQ",
+    "externalIntegration": "Externe Anbindung",
+    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
+    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+  },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
@@ -187,6 +196,7 @@
   "program": "Programme",
   "share": "Share",
   "students": "Schüler",
+  "user": "Benutzer",
   "login": {
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken"
@@ -194,7 +204,7 @@
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
-    "logout": "Logout",
+    "logout": "Abmelden",
     "save": "Speichern",
     "successful": "Erfolgreich",
     "failed": "Fehlgeschlagen",
