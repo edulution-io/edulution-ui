@@ -1,8 +1,8 @@
 import React from 'react';
-import { AppIntegrationType } from '@/datatypes/types';
 import useFrameStore from '@/components/framing/FrameStore';
-import useAppConfigsStore from '@/store/appConfigsStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { AppIntegrationType } from '@libs/appconfig/types';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 const EmbeddedIframes = () => {
   const isMobileView = useIsMobileView();

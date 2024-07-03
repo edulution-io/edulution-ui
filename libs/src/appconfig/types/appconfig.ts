@@ -1,12 +1,9 @@
-export enum AppIntegrationType {
-  NATIVE = 'native',
-  FORWARDED = 'forwarded',
-  EMBEDDED = 'embedded',
-}
+import AppIntegrationType from './appIntegrationType';
+import { AppConfigOptions } from './appConfigOptions';
 
 export type AppConfigDto = {
   name: string;
-  linkPath: string;
   icon: string;
   appType: AppIntegrationType;
+  options: AppConfigOptions;
 };

@@ -46,7 +46,7 @@ const RadioGroupFormField = ({
             >
               {items.map((item) => (
                 <FormItem key={`${item.value}`}>
-                  <FormLabel className="flex items-center space-x-3 space-y-0 text-base">
+                  <FormLabel className="flex cursor-pointer items-center space-x-3 space-y-0 text-base">
                     <FormControl>
                       <RadioGroupItemSH value={item.value} />
                     </FormControl>

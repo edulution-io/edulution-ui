@@ -1,10 +1,10 @@
 import React from 'react';
 import { useEncryption } from '@/hooks/mutations';
-import { APPS } from '@/datatypes/types';
 import useUserStore from '@/store/UserStore/UserStore';
 import NativeIframeLayout from '@/components/framing/NativeIframeLayout';
 import getLoginScript from '@/pages/LinuxmusterPage/scripts/login';
 import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
+import { APPS } from '@libs/appconfig/types';
 
 const LinuxmusterPage: React.FC = () => {
   const { username, webdavKey } = useUserStore();
