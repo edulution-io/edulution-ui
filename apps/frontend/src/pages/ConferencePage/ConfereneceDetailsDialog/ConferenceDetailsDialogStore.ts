@@ -54,7 +54,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
     set({ isLoading: true });
     try {
       await eduApi.patch<Conference[]>(apiEndpoint, conference);
-      set({ isLoading: false, selectedConference: null });
+      set({ selectedConference: null });
     } catch (error) {
       handleApiError(error, set);
     } finally {

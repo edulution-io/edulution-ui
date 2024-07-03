@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import Attendee from '@libs/conferences/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import getConferencesFormSchema from '@/pages/ConferencePage/formSchema';
 
@@ -21,8 +21,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
   const { username } = useUserStore();
   const { getConferences } = useConferenceStore();
-  const { isLoading, error, selectedConference, setSelectedConference, updateConference } =
-    useConferenceDetailsDialogStore();
+  const { isLoading, selectedConference, setSelectedConference, updateConference } = useConferenceDetailsDialogStore();
 
   const initialFormValues: ConferencesForm = {
     name: selectedConference?.name || '',
@@ -41,7 +40,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as Attendee],
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as AttendeeDto],
       meetingID: selectedConference?.meetingID,
     };
 
@@ -53,16 +52,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const handleFormSubmit = form.handleSubmit(onSubmit);
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-    return (
-      <>
-        <CreateConferenceDialogBody form={form} />
-        {error ? (
-          <div className="rounded-xl bg-ciLightRed py-3 text-center text-black">
-            {t('conferences.error')}: {error.message}
-          </div>
-        ) : null}
-      </>
-    );
+    return <CreateConferenceDialogBody form={form} />;
   };
 
   const getFooter = () => (

@@ -1,19 +1,19 @@
-import Attendee from '@libs/conferences/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class Conference {
   name: string;
 
   meetingID: string;
 
-  creator: Attendee;
+  creator: AttendeeDto;
 
   password?: string;
 
   isRunning: boolean;
 
-  invitedAttendees: Attendee[];
+  invitedAttendees: AttendeeDto[];
 
-  joinedAttendees: Attendee[];
+  joinedAttendees: AttendeeDto[];
 }
 
 export default Conference;

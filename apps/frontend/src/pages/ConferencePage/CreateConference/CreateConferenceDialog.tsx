@@ -21,7 +21,6 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     openCreateConferenceDialog,
     closeCreateConferenceDialog,
     isLoading,
-    error,
     createConference,
   } = useCreateConferenceDialogStore();
   const { getConferences } = useConferenceStore();
@@ -57,16 +56,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-    return (
-      <>
-        <CreateConferenceDialogBody form={form} />
-        {error ? (
-          <div className="rounded-xl bg-ciLightRed py-3 text-center text-black">
-            {t('conferences.error')}: {error.message}
-          </div>
-        ) : null}
-      </>
-    );
+    return <CreateConferenceDialogBody form={form} />;
   };
 
   const getFooter = () => (

@@ -9,7 +9,7 @@ import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchU
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import useUserStore from '@/store/UserStore/UserStore';
 import CircleLoader from '@/components/ui/CircleLoader';
-import Attendee from '@libs/conferences/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
 
 interface CreateConferenceDialogBodyProps {
@@ -30,7 +30,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
     setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
-  const onAttendeesSearch = async (value: string): Promise<Attendee[]> => {
+  const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
     return result.filter((r) => r.username !== username);
   };
@@ -42,7 +42,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
 
     if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
       const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
-      const attendees = getValues('invitedAttendees') as Attendee[];
+      const attendees = getValues('invitedAttendees') as AttendeeDto[];
 
       const combinedAttendees = [...groupMembers, ...attendees];
 
@@ -79,7 +79,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           variant="default"
         />
         <SearchUsersOrGroups
-          users={watch('invitedAttendees') as Attendee[]}
+          users={watch('invitedAttendees') as AttendeeDto[]}
           onSearch={onAttendeesSearch}
           onUserChange={handleAttendeesChange}
           groups={watch('invitedGroups') as MultipleSelectorGroup[]}

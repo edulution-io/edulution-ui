@@ -5,7 +5,7 @@ import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import Conference from '@libs/conferences/types/conference.dto';
-import Attendee from '@libs/conferences/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
 import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
@@ -22,9 +22,9 @@ interface CreateConferenceDialogStore {
   reset: () => void;
   createConference: (conference: CreateConferenceDto) => Promise<void>;
   createdConference: Conference | null;
-  searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
+  searchAttendees: (searchQuery: string) => Promise<AttendeeDto[]>;
   searchGroups: (searchQuery: string) => Promise<MultipleSelectorGroup[]>;
-  getGroupMembers: (groupId: string) => Promise<Attendee[]>;
+  getGroupMembers: (groupId: string) => Promise<AttendeeDto[]>;
   isGetGroupMembersLoading: boolean;
 }
 
@@ -57,7 +57,7 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
   searchAttendees: async (searchParam) => {
     set({ error: null });
     try {
-      const response = await eduApi.get<Attendee[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
+      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
 
       if (!Array.isArray(response.data)) {
         return [];

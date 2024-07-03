@@ -2,16 +2,15 @@ import React from 'react';
 import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
-import Attendee from '@libs/conferences/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { Button } from '@/components/shared/Button';
-import cn from '@/lib/utils';
 import CircleLoader from '@/components/ui/CircleLoader';
 import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
 
 interface SearchUsersOrGroupsProps {
-  users: Attendee[];
+  users: AttendeeDto[];
   onUserChange: (options: MultipleSelectorOptionSH[]) => void;
-  onSearch: (value: string) => Promise<Attendee[]>;
+  onSearch: (value: string) => Promise<AttendeeDto[]>;
   groups: MultipleSelectorGroup[];
   onGroupSearch: (value: string) => Promise<MultipleSelectorGroup[]>;
   onGroupsChange: (options: MultipleSelectorOptionSH[]) => void;
@@ -30,9 +29,9 @@ const SearchUsersOrGroups = ({
   const { t } = useTranslation();
 
   return (
-    <div className={cn('flex w-full flex-col')}>
-      <p className={cn('text-m font-bold', 'text-black')}>{t('conferences.attendees')}</p>
-      <AsyncMultiSelect<Attendee>
+    <div className="flex w-full flex-col">
+      <p className="text-m font-bold text-foreground">{t('conferences.attendees')}</p>
+      <AsyncMultiSelect<AttendeeDto>
         value={users}
         onSearch={onSearch}
         onChange={onUserChange}
@@ -54,7 +53,7 @@ const SearchUsersOrGroups = ({
         </div>
       ) : null}
       {isGetGroupMembersLoading ? <CircleLoader className="mx-auto" /> : null}
-      <p className={cn('text-m font-bold', 'text-black')}>{t('common.groups')}</p>
+      <p className="text-m font-bold text-foreground">{t('common.groups')}</p>
       <AsyncMultiSelect<MultipleSelectorGroup>
         value={groups}
         onSearch={onGroupSearch}
