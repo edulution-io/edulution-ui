@@ -50,6 +50,7 @@ class SurveysController {
     const survey: Survey = {
       ...updateOrCreateSurveyDto,
       _id: id,
+      id,
       publicAnswers,
       saveNo,
       created,
