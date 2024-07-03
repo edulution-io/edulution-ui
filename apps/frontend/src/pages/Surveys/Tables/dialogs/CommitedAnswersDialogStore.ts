@@ -3,14 +3,14 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface CommitedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
-  selectedSurvey: Survey | undefined;
-  selectSurvey: (survey: Survey | undefined) => void;
+  selectedSurvey: SurveyDto | undefined;
+  selectSurvey: (survey: SurveyDto | undefined) => void;
 
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;
@@ -38,7 +38,7 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   ...(initialState as CommitedAnswersDialogStore),
   reset: () => set(initialState),
 
-  selectSurvey: (survey: Survey | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
   closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),

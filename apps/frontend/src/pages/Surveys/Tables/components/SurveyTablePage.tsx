@@ -1,14 +1,14 @@
 import React from 'react';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveysTablesDialogs from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
 
 interface SurveysTablePageProps {
   title: string;
-  selectSurvey: (survey: Survey | undefined) => void;
-  selectedSurvey?: Survey | undefined;
-  surveys?: Survey[];
+  selectSurvey: (survey: SurveyDto | undefined) => void;
+  selectedSurvey?: SurveyDto | undefined;
+  surveys?: SurveyDto[];
 
   canEdit?: boolean;
   editSurvey?: () => void;

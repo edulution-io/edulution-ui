@@ -2,20 +2,20 @@ import React, { useCallback, useEffect } from 'react';
 import mongoose from 'mongoose';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import Survey from '@libs/survey/types/survey';
-import Attendee from '@libs/survey/types/attendee';
+import SurveyDto from '@libs/survey/types/survey.dto';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 
 interface ShowSurveyResultsTableDialogProps {
-  survey: Survey;
+  survey: SurveyDto;
 
   isOpenPublicResultsTableDialog: boolean;
   openPublicResultsTableDialog: () => void;
   closePublicResultsTableDialog: () => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoading: boolean;
   error: Error | null;

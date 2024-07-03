@@ -4,12 +4,12 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
 import { MdArrowBackIosNew, MdArrowForwardIos, MdOutlineFileDownload } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { Card } from '@/components/shared/Card';
 import { EDU_APP_APPSTORE_URL } from '@libs/common/contants';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 
 type MobileFileAccessSetupDialogProps = {
   isOpen: boolean;
@@ -105,7 +105,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
   );
 
   return (
-    <AdaptiveDialog
+    <AdaptiveDialogSH
       isOpen={isOpen}
       handleOpenChange={() => setIsOpen(!isOpen)}
       title={t('dashboard.mobileAccess.title')}

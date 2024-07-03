@@ -15,8 +15,8 @@ import {
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import { Survey } from './survey.schema';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
+import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -90,6 +90,7 @@ class SurveysController {
       ...updateOrCreateSurveyDto,
       // eslint-ignore-next-line @typescript/no-underscore-dangle
       _id: id,
+      id,
       participants,
       publicAnswers,
       saveNo,

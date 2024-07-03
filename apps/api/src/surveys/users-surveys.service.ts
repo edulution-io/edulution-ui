@@ -1,7 +1,7 @@
 import mongoose, { Model } from 'mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import Attendee from '@libs/survey/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyAnswer from '@libs/survey/types/survey-answer';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
@@ -23,7 +23,7 @@ class UsersSurveysService {
     return newUser;
   }
 
-  async getExistingUser(participant: Attendee | string): Promise<User | null> {
+  async getExistingUser(participant: AttendeeDto | string): Promise<User | null> {
     const name = typeof participant === 'string' ? participant : participant.username;
     const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
     if (!existingUser) {
@@ -69,7 +69,7 @@ class UsersSurveysService {
     await this.updateUser(participant, newUser);
   }
 
-  async populateSurvey(participants: Attendee[], surveyId: mongoose.Types.ObjectId): Promise<void> {
+  async populateSurvey(participants: AttendeeDto[], surveyId: mongoose.Types.ObjectId): Promise<void> {
     const promises: Promise<void>[] = [];
     participants.forEach((user) => {
       promises.push(this.addToOpenSurveys(user.username, surveyId));

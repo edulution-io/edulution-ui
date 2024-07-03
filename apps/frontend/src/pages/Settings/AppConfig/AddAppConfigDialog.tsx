@@ -1,7 +1,6 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownMenu } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -9,6 +8,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 
 interface AddAppConfigDialogProps {
   isOpen: boolean;
@@ -78,7 +78,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
   );
 
   return (
-    <AdaptiveDialog
+    <AdaptiveDialogSH
       isOpen={isOpen}
       handleOpenChange={() => setSearchParams(new URLSearchParams(''))}
       title={t('settings.addApp.title')}

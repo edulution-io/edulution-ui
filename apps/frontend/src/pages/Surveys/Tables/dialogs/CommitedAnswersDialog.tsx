@@ -2,14 +2,14 @@ import React, { useCallback, useEffect } from 'react';
 import mongoose from 'mongoose';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CommitedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogBody';
 
 interface ShowSurveyAnswerDialogProps {
-  survey?: Survey;
+  survey?: SurveyDto;
 
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;

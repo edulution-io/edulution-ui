@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
-import Attendee from '@libs/survey/types/attendee';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class InitialSurveyForm implements SurveyEditorFormData {
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
-  participants: Attendee[];
+  participants: AttendeeDto[];
 
   participated: string[];
 
@@ -28,7 +28,7 @@ class InitialSurveyForm implements SurveyEditorFormData {
 
   canShowResultsChart: boolean;
 
-  constructor(selectedSurvey?: Survey) {
+  constructor(selectedSurvey?: SurveyDto) {
     const time = new Date().getTime();
     this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(time);
     this.formula = selectedSurvey?.formula || ({} as JSON);
