@@ -112,7 +112,7 @@ describe('UsersSurveysService', () => {
   });
 
   describe('getCreatedSurveyIds', () => {
-    it('should return open survey ids', async () => {
+    it('should return created survey ids', async () => {
       userModel.findOne = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(firstMockUser),
       });
@@ -123,7 +123,7 @@ describe('UsersSurveysService', () => {
   });
 
   describe('getAnsweredSurveyIds', () => {
-    it('should return open survey ids', async () => {
+    it('should return answered survey ids', async () => {
       userModel.findOne = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(firstMockUser),
       });

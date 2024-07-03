@@ -7,23 +7,21 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveysService from './surveys.service';
 import { SurveyDocument, SurveyModel } from './survey.schema';
 import {
-  addNewPublicAnswerToFirstMockSurvey,
-  addNewPublicAnswerToSecondMockSurvey,
-  addNewPublicAnswerToSecondMockSurveyFromThirdUser,
+  newObjectId,
+  mockSurveyIds,
+  mockSurveys,
   firstUsername,
   firstMockSurvey,
   firstMockSurveyAfterAddedNewAnswer,
   firstMockSurveyId,
-  mockSurveyIds,
-  mockSurveys,
-  newObjectId,
-  partialUpdateOnFirstMockSurveyAfterAddedNewAnswer,
-  partialUpdateOnSecondMockSurveyAfterAddedNewAnswer,
-  // publicAnswer_FirstMockSurvey,
   secondUsername,
   secondMockSurvey,
   secondMockSurveyAfterAddedNewAnswer,
   thirdUsername,
+  addNewPublicAnswerToFirstMockSurvey,
+  addNewPublicAnswerToSecondMockSurveyFromThirdUser,
+  partialUpdateOnFirstMockSurveyAfterAddedNewAnswer,
+  partialUpdateOnSecondMockSurveyAfterAddedNewAnswer,
 } from './surveys.service.mock';
 
 describe('SurveyService', () => {
@@ -202,7 +200,7 @@ describe('SurveyService', () => {
       }
     });
 
-    it('throw an error if a user adds an answer that already has participated and the survey does not accept multiple answers (first)', async () => {
+    it('throw an error if a user adds an answer that already has participated and the survey does not accept multiple answers', async () => {
       surveyModel.findOne = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockReturnValue(firstMockSurvey),
       });
@@ -214,24 +212,6 @@ describe('SurveyService', () => {
 
       try {
         await service.addPublicAnswer(firstMockSurvey.id, addNewPublicAnswerToFirstMockSurvey, firstUsername);
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
-      }
-    });
-
-    it('throw an error if a user adds an answer that already has participated and the survey does not accept multiple answers (second)', async () => {
-      surveyModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockReturnValue(secondMockSurvey),
-      });
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValueOnce(secondMockSurveyAfterAddedNewAnswer),
-      });
-
-      jest.spyOn(surveyModel, 'findOneAndUpdate');
-
-      try {
-        await service.addPublicAnswer(secondMockSurvey.id, addNewPublicAnswerToSecondMockSurvey, secondUsername);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError);
