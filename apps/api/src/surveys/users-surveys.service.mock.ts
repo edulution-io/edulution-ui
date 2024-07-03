@@ -45,7 +45,16 @@ export const userSurveys: UsersSurveys = {
   answeredSurveys,
 };
 
-export const thirdUser = {
+export const firstMockUser = {
+  username: firstUsername,
+  usersSurveys: userSurveys,
+};
+export const secondMockUser = {
+  username: secondUsername,
+  usersSurveys: userSurveys,
+};
+
+export const thirdMockUser = {
   email: 'first@example.com',
   username: thirdUsername,
   roles: ['user'],
@@ -58,8 +67,8 @@ export const thirdUser = {
   },
 };
 
-export const thirdUserAfterDeletingFirstSurvey = {
-  ...thirdUser,
+export const thirdMockUserAfterDeletingFirstSurvey = {
+  ...thirdMockUser,
   usersSurveys: {
     openSurveys: [thirdMockSurveyId],
     createdSurveys: [secondMockSurveyId],
@@ -67,8 +76,8 @@ export const thirdUserAfterDeletingFirstSurvey = {
   },
 };
 
-export const thirdUserAfterDeletingRemaining = {
-  ...thirdUser,
+export const thirdMockUserAfterDeletingRemaining = {
+  ...thirdMockUser,
   usersSurveys: {
     openSurveys: [],
     createdSurveys: [],
@@ -76,8 +85,8 @@ export const thirdUserAfterDeletingRemaining = {
   },
 };
 
-export const thirdUserAfterAddedAnswer = {
-  ...thirdUser,
+export const thirdMockUserAfterAddedAnswer = {
+  ...thirdMockUser,
   usersSurveys: {
     openSurveys: [],
     createdSurveys: [secondMockSurveyId],
@@ -86,15 +95,6 @@ export const thirdUserAfterAddedAnswer = {
       { surveyId: thirdMockSurveyId, answer: thirdMockSurveyAddNewPublicAnswer },
     ],
   },
-};
-
-export const firstMockUser = {
-  username: firstUsername,
-  usersSurveys: userSurveys,
-};
-export const secondMockUser = {
-  username: secondUsername,
-  usersSurveys: userSurveys,
 };
 
 export const openSurveysAfterRemoveOpenSurvey = [surveyId02, surveyId03, distributedSurvey];
