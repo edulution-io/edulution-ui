@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint, { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@libs/conferences/types/conference.dto';
 
 interface ConferenceDetailsDialogStore {
   selectedConference: Conference | null;
@@ -54,7 +54,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
     set({ isLoading: true });
     try {
       await eduApi.patch<Conference[]>(apiEndpoint, conference);
-      set({ isLoading: false, selectedConference: null });
+      set({ selectedConference: null });
     } catch (error) {
       handleApiError(error, set);
     } finally {

@@ -16,7 +16,7 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => {
         <DialogHeader>
           <div className="flex flex-col items-center justify-center space-y-4">
             <CircleLoader />
-            <p className="text-black">{t('loadingIndicator.message')}</p>
+            <p className="text-foreground">{t('loadingIndicator.message')}</p>
           </div>
         </DialogHeader>
       </DialogContent>

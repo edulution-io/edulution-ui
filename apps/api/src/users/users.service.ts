@@ -1,44 +1,23 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import axios from 'axios';
-import { LDAPUser } from '@libs/user/types/ldap/ldapUser';
+import { LDAPUser } from '@libs/user/types/groups/ldapUser';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import RegisterUserDto from './dto/register-user.dto';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
-
-const { KEYCLOAK_API } = process.env;
+import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly groupsService: GroupsService,
   ) {}
-
-  private static async fetchUsersFromExternalApi(token: string): Promise<LDAPUser[]> {
-    const config = {
-      method: 'get',
-      url: `${KEYCLOAK_API}users`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    try {
-      const response = await axios.request<LDAPUser[]>(config);
-
-      return response.data;
-    } catch (e) {
-      Logger.error(e, UsersService.name);
-      throw e;
-    }
-  }
 
   async register(userDto: RegisterUserDto): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
@@ -60,8 +39,7 @@ class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const newUser = await this.userModel.create(createUserDto);
-    return newUser;
+    return this.userModel.create(createUserDto);
   }
 
   async findAll(): Promise<User[]> {
@@ -87,7 +65,7 @@ class UsersService {
       return cachedUsers;
     }
 
-    const fetchedUsers = await UsersService.fetchUsersFromExternalApi(token);
+    const fetchedUsers = await this.groupsService.fetchUsers(token);
 
     await this.cacheManager.set('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     return fetchedUsers;

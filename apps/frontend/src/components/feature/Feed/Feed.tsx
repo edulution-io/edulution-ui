@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Card, CardContent } from '@/components/shared/Card';
 import ConferencesList from '@/components/feature/Feed/components/ConferencesList';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@libs/conferences/types/conference.dto';
 import { APPS } from '@libs/appconfig/types';
 
 const FEED_PULL_TIME_INTERVAL = 10000;

@@ -1,5 +1,6 @@
-import ConferencesErrorMessage from '@libs/conferences/conferencesErrorMessage';
+import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
+import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 
-type ErrorMessage = ConferencesErrorMessage;
+type ErrorMessage = ConferencesErrorMessage | GroupsErrorMessage;
 
 export default ErrorMessage;

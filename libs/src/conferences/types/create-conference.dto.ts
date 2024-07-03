@@ -1,11 +1,11 @@
-import { Attendee } from './attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class CreateConferenceDto {
   name: string;
 
   password?: string;
 
-  invitedAttendees: Attendee[];
+  invitedAttendees: AttendeeDto[];
 }
 
 export default CreateConferenceDto;

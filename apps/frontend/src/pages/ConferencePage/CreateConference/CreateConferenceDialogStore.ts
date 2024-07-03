@@ -1,12 +1,15 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import CreateConferenceDto from '@/pages/ConferencePage/dto/create-conference.dto';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
+import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
+import Conference from '@libs/conferences/types/conference.dto';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
+import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import { Group } from '@libs/user/types/groups/group';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -19,8 +22,10 @@ interface CreateConferenceDialogStore {
   reset: () => void;
   createConference: (conference: CreateConferenceDto) => Promise<void>;
   createdConference: Conference | null;
-  searchAttendees: (searchQuery: string) => Promise<Attendee[]>;
-  searchAttendeesResult: Attendee[];
+  searchAttendees: (searchQuery: string) => Promise<AttendeeDto[]>;
+  searchGroups: (searchQuery: string) => Promise<MultipleSelectorGroup[]>;
+  getGroupMembers: (groupId: string) => Promise<AttendeeDto[]>;
+  isGetGroupMembersLoading: boolean;
 }
 
 const initialState: Partial<CreateConferenceDialogStore> = {
@@ -28,7 +33,7 @@ const initialState: Partial<CreateConferenceDialogStore> = {
   isLoading: false,
   error: null,
   createdConference: null,
-  searchAttendeesResult: [],
+  isGetGroupMembersLoading: false,
 };
 
 const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set) => ({
@@ -46,31 +51,70 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
       set({ createdConference: response.data, isLoading: false, isCreateConferenceDialogOpen: false });
     } catch (error) {
       handleApiError(error, set);
-    } finally {
-      set({ isLoading: false });
     }
   },
 
   searchAttendees: async (searchParam) => {
     set({ error: null });
     try {
-      const response = await eduApi.get<Attendee[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
+      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
 
       if (!Array.isArray(response.data)) {
         return [];
       }
 
-      const searchAttendeesResult = response.data?.map((d) => ({
+      return response.data?.map((d) => ({
         ...d,
         value: d.username,
         label: `${d.firstName} ${d.lastName} (${d.username})`,
       }));
-
-      set({ searchAttendeesResult });
-      return searchAttendeesResult;
     } catch (error) {
       handleApiError(error, set);
       return [];
+    }
+  },
+
+  searchGroups: async (searchParam) => {
+    set({ error: null });
+    try {
+      const response = await eduApi.get<Group[]>(`/groups/${searchParam}`);
+
+      if (!Array.isArray(response.data)) {
+        return [];
+      }
+
+      const result: MultipleSelectorGroup[] = response.data.map((d) => ({
+        ...d,
+        value: d.id,
+        label: d.name,
+      }));
+
+      return result;
+    } catch (error) {
+      handleApiError(error, set);
+      return [];
+    }
+  },
+
+  getGroupMembers: async (groupId) => {
+    set({ isGetGroupMembersLoading: true, error: null });
+    try {
+      const response = await eduApi.get<LDAPUser[]>(`/classmanagement/${groupId}`);
+
+      if (!Array.isArray(response.data)) {
+        return [];
+      }
+
+      return response.data?.map((d) => ({
+        ...d,
+        value: d.username,
+        label: `${d.firstName} ${d.lastName} (${d.username})`,
+      }));
+    } catch (error) {
+      handleApiError(error, set);
+      return [];
+    } finally {
+      set({ isGetGroupMembersLoading: false });
     }
   },
 }));

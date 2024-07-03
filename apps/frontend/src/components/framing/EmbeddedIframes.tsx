@@ -1,19 +1,13 @@
 import React from 'react';
 import useFrameStore from '@/components/framing/FrameStore';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import { AppIntegrationType } from '@libs/appconfig/types';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import { AppIntegrationType } from '@libs/appconfig/types';
 
 const EmbeddedIframes = () => {
-  const isMobileView = useIsMobileView();
   const { appConfigs } = useAppConfigsStore();
   const { loadedFrames, activeFrame } = useFrameStore();
 
-  const getStyle = (appName: string) =>
-    activeFrame === appName
-      ? // Fix 56px width calculated value: NIEDUUI-162
-        { display: 'block', width: isMobileView ? '100%' : 'calc(100% - 56px)' }
-      : { display: 'none' };
+  const getStyle = (appName: string) => (activeFrame === appName ? { display: 'block' } : { display: 'none' });
 
   return appConfigs
     .filter((appConfig) => appConfig.appType === AppIntegrationType.EMBEDDED)
@@ -21,7 +15,7 @@ const EmbeddedIframes = () => {
       <iframe
         key={appConfig.name}
         title={appConfig.name}
-        className="absolute inset-y-0 left-0 ml-0 mr-14"
+        className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
         height="100%"
         src={loadedFrames.includes(appConfig.name) ? appConfig.options.url : undefined}
         style={getStyle(appConfig.name)}

@@ -1,6 +1,7 @@
 // This DTO is based on a third-party object definition from the BBB (BigBlueButton) API.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
-import ConferenceRole from '../dto/conference-role.enum';
+
+import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 
 export default class BbbAttendeeDto {
   userID: string;
