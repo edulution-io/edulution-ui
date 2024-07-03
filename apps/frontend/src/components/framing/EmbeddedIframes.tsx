@@ -1,18 +1,18 @@
 import React from 'react';
 import useFrameStore from '@/components/framing/FrameStore';
-import { useMediaQuery } from 'usehooks-ts';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import { AppIntegrationType } from '@libs/appconfig/types';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 const EmbeddedIframes = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const { appConfigs } = useAppConfigsStore();
   const { loadedFrames, activeFrame } = useFrameStore();
 
   const getStyle = (appName: string) =>
     activeFrame === appName
       ? // Fix 56px width calculated value: NIEDUUI-162
-        { display: 'block', width: isMobile ? '100%' : 'calc(100% - 56px)' }
+        { display: 'block', width: isMobileView ? '100%' : 'calc(100% - 56px)' }
       : { display: 'none' };
 
   return appConfigs
