@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import Attendee from '@libs/survey/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 export type SurveyDocument = Survey & Document;
 
@@ -13,7 +13,7 @@ export class Survey {
   formula: JSON;
 
   @Prop({ required: true })
-  participants: Attendee[];
+  participants: AttendeeDto[];
 
   @Prop({ type: Array<string>, required: false })
   participated?: string[];

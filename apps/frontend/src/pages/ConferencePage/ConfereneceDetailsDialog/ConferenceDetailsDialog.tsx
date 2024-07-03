@@ -4,14 +4,14 @@ import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
-import FormData from '@/pages/ConferencePage/CreateConference/form';
-import { z } from 'zod';
+import ConferencesForm from '@libs/conferences/types/conferencesForm';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
+import getConferencesFormSchema from '@/pages/ConferencePage/formSchema';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -21,39 +21,18 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
   const { username } = useUserStore();
   const { getConferences } = useConferenceStore();
-  const { isLoading, error, selectedConference, setSelectedConference, updateConference } =
-    useConferenceDetailsDialogStore();
+  const { isLoading, selectedConference, setSelectedConference, updateConference } = useConferenceDetailsDialogStore();
 
-  const initialFormValues: FormData = {
+  const initialFormValues: ConferencesForm = {
     name: selectedConference?.name || '',
     password: selectedConference?.password || '',
     invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== username) || [],
+    invitedGroups: [],
   };
 
-  const formSchema = z.object({
-    name: z
-      .string()
-      .min(3, { message: t('conferences.min_3_chars') })
-      .max(30, { message: t('conferences.max_30_chars') }),
-    password: z.string().optional(),
-    invitedAttendees: z.array(
-      z.intersection(
-        z.object({
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          username: z.string(),
-        }),
-        z.object({
-          value: z.string(),
-          label: z.string(),
-        }),
-      ),
-    ),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<ConferencesForm>({
     mode: 'onChange',
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(getConferencesFormSchema(t)),
     defaultValues: initialFormValues,
   });
 
@@ -61,7 +40,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as Attendee],
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as AttendeeDto],
       meetingID: selectedConference?.meetingID,
     };
 
@@ -73,16 +52,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const handleFormSubmit = form.handleSubmit(onSubmit);
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-    return (
-      <>
-        <CreateConferenceDialogBody form={form} />
-        {error ? (
-          <div className="rounded-xl bg-ciLightRed py-3 text-center text-black">
-            {t('conferences.error')}: {error.message}
-          </div>
-        ) : null}
-      </>
-    );
+    return <CreateConferenceDialogBody form={form} />;
   };
 
   const getFooter = () => (

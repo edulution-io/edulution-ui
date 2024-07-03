@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import Attendee from '@libs/survey/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { Survey, SurveyDocument } from './survey.schema';
 
 @Injectable()
@@ -90,7 +90,7 @@ class SurveysService {
     const participants = existingSurvey.participants || [];
     const participated = existingSurvey.participated || [];
     if (username) {
-      const isParticipant = participants.find((participant: Attendee) => participant.username === username);
+      const isParticipant = participants.find((participant: AttendeeDto) => participant.username === username);
       if (!isParticipant) {
         throw new CustomHttpException(
           SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError,

@@ -4,13 +4,13 @@ import { useInterval } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { ConferencesIcon } from '@/assets/icons';
 import cn from '@/lib/utils';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
+import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/Accordion';
 import { Card, CardContent } from '@/components/shared/Card';
 import ConferencesList from '@/components/feature/Feed/components/ConferencesList';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@libs/conferences/types/conference.dto';
 import { APPS } from '@libs/appconfig/types';
 
 const FEED_PULL_TIME_INTERVAL = 10000;

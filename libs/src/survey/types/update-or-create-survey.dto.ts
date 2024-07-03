@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import Attendee from '@libs/survey/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 interface UpdateOrCreateSurveyDto {
   id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
-  participants: Attendee[];
+  participants: AttendeeDto[];
 
   participated?: string[];
 

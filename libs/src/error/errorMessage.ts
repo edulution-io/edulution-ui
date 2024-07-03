@@ -1,6 +1,7 @@
-import ConferencesErrorMessage from '@libs/conferences/conferencesErrorMessage';
+import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
+import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 
-type ErrorMessage = ConferencesErrorMessage | SurveyErrorMessages;
+type ErrorMessage = ConferencesErrorMessage | GroupsErrorMessage | SurveyErrorMessages;
 
 export default ErrorMessage;

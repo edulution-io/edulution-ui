@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import Attendee from '@libs/survey/types/attendee';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 interface SurveyDto {
   id: mongoose.Types.ObjectId;
   formula: JSON;
   publicAnswers: JSON[];
-  participants: Attendee[];
+  participants: AttendeeDto[];
   participated: string[];
   saveNo: number;
   created?: Date;

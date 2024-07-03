@@ -3,10 +3,10 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 interface SurveyEditorFormStore {
   reset: () => void;
@@ -16,7 +16,7 @@ interface SurveyEditorFormStore {
   setSurveyFormula: (creatorText: string) => void;
   saveNo: number | undefined;
   setSaveNumber: (saveNo: number) => void;
-  participants: Attendee[];
+  participants: AttendeeDto[];
   participated: string[];
   created: Date | undefined;
 
@@ -26,7 +26,7 @@ interface SurveyEditorFormStore {
   expirationDate: Date | undefined;
   expirationTime: string | undefined;
   isAnonymous: boolean | undefined;
-  newParticipants: Attendee[];
+  newParticipants: AttendeeDto[];
   updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<SurveyDto>;
   isLoading: boolean;
   error: AxiosError | null;
