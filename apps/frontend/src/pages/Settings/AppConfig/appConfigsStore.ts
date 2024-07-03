@@ -26,6 +26,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
       isLoading: false,
       error: null,
 
+      // TODO: NIEDUUI-315: Limit the number of fetches for the appConfigs (add a debounce wrapper)
       getAppConfigs: async () => {
         const { isLoading } = get();
         if (isLoading) {
@@ -42,7 +43,6 @@ const useAppConfigsStore = create<AppConfigsStore>(
         }
       },
 
-      // TODO: NIEDUUI-315: Limit the number of fetches for the appConfigs (add a debounce wrapper)
       updateAppConfig: async (appConfigs) => {
         set({ isLoading: true, error: null });
         try {
