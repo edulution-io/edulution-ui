@@ -75,7 +75,7 @@ class SurveysService {
     surveyId: mongoose.Types.ObjectId,
     answer: JSON,
     username?: string,
-    canSubmitMultipleAnswers?: boolean,
+    canSubmitMultipleAnswers: boolean = false,
   ): Promise<SurveyModel | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
