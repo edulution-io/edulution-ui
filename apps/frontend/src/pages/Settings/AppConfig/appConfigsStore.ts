@@ -42,6 +42,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
         }
       },
 
+      // TODO: NIEDUUI-315: Limit the number of fetches for the appConfigs (add a debounce wrapper)
       updateAppConfig: async (appConfigs) => {
         set({ isLoading: true, error: null });
         try {
