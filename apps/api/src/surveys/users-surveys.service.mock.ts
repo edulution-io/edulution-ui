@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import { UsersSurveys } from './users-surveys.schema';
-import { firstUsername, secondUsername } from './surveys.service.mock';
+import {
+  firstMockSurveyId,
+  firstUsername,
+  secondMockSurveyId,
+  secondUsername,
+  thirdMockSurveyAddNewPublicAnswer,
+  thirdMockSurveyId,
+  thirdUsername,
+} from './surveys.service.mock';
 
 // TODO move to lib is also declared in 'get-survey-editor-form-data.ts'
 const EMPTY_JSON = {} as JSON;
@@ -37,6 +45,49 @@ export const userSurveys: UsersSurveys = {
   answeredSurveys,
 };
 
+export const thirdUser = {
+  email: 'first@example.com',
+  username: thirdUsername,
+  roles: ['user'],
+  mfaEnabled: false,
+  isTotpSet: false,
+  usersSurveys: {
+    openSurveys: [thirdMockSurveyId],
+    createdSurveys: [secondMockSurveyId],
+    answeredSurveys: [{ surveyId: firstMockSurveyId, answer: mockedAnswer }],
+  },
+};
+
+export const thirdUserAfterDeletingFirstSurvey = {
+  ...thirdUser,
+  usersSurveys: {
+    openSurveys: [thirdMockSurveyId],
+    createdSurveys: [secondMockSurveyId],
+    answeredSurveys: [],
+  },
+};
+
+export const thirdUserAfterDeletingRemaining = {
+  ...thirdUser,
+  usersSurveys: {
+    openSurveys: [],
+    createdSurveys: [],
+    answeredSurveys: [],
+  },
+};
+
+export const thirdUserAfterAddedAnswer = {
+  ...thirdUser,
+  usersSurveys: {
+    openSurveys: [],
+    createdSurveys: [secondMockSurveyId],
+    answeredSurveys: [
+      { surveyId: firstMockSurveyId, answer: mockedAnswer },
+      { surveyId: thirdMockSurveyId, answer: thirdMockSurveyAddNewPublicAnswer },
+    ],
+  },
+};
+
 export const firstMockUser = {
   username: firstUsername,
   usersSurveys: userSurveys,
@@ -45,7 +96,6 @@ export const secondMockUser = {
   username: secondUsername,
   usersSurveys: userSurveys,
 };
-export const mockedUsers = [firstMockUser, secondMockUser];
 
 export const openSurveysAfterRemoveOpenSurvey = [surveyId02, surveyId03, distributedSurvey];
 export const createdSurveysAfterRemoveCreatedSurvey = [surveyId05, surveyId06, distributedSurvey];

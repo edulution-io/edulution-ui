@@ -34,51 +34,14 @@ import {
   partialUpdateOnFirstMockSurveyAfterAddedNewAnswer,
   partialUpdateOnSecondMockSurveyAfterAddedNewAnswer,
 } from './surveys.service.mock';
-import { mockedAnswer } from './users-surveys.service.mock';
+import {
+  mockedAnswer,
+  thirdUser,
+  thirdUserAfterAddedAnswer,
+  thirdUserAfterDeletingFirstSurvey,
+  thirdUserAfterDeletingRemaining,
+} from './users-surveys.service.mock';
 import { User, UserDocument } from '../users/user.schema';
-
-const firstUser = {
-  email: 'first@example.com',
-  username: firstUsername,
-  roles: ['user'],
-  mfaEnabled: false,
-  isTotpSet: false,
-  usersSurveys: {
-    openSurveys: [thirdMockSurveyId],
-    createdSurveys: [secondMockSurveyId],
-    answeredSurveys: [{ surveyId: firstMockSurveyId, answer: mockedAnswer }],
-  },
-};
-
-const firstUserAfterDeletingFirstSurvey = {
-  ...firstUser,
-  usersSurveys: {
-    openSurveys: [thirdMockSurveyId],
-    createdSurveys: [secondMockSurveyId],
-    answeredSurveys: [],
-  },
-};
-
-const firstUserAfterDeletingRemaining = {
-  ...firstUser,
-  usersSurveys: {
-    openSurveys: [],
-    createdSurveys: [],
-    answeredSurveys: [],
-  },
-};
-
-const firstUserAfterAddedAnswer = {
-  ...firstUser,
-  usersSurveys: {
-    openSurveys: [],
-    createdSurveys: [secondMockSurveyId],
-    answeredSurveys: [
-      { surveyId: firstMockSurveyId, answer: mockedAnswer },
-      { surveyId: thirdMockSurveyId, answer: thirdMockSurveyAddNewPublicAnswer },
-    ],
-  },
-};
 
 describe('SurveysController', () => {
   let controller: SurveysController;
@@ -178,7 +141,7 @@ describe('SurveysController', () => {
       jest.spyOn(surveysService, 'findSurveys');
 
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUser),
+        exec: jest.fn().mockResolvedValueOnce(thirdUser),
       });
       surveyModel.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockReturnValue([thirdMockSurvey]),
@@ -200,7 +163,7 @@ describe('SurveysController', () => {
       jest.spyOn(surveysService, 'findSurveys');
 
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUser),
+        exec: jest.fn().mockResolvedValueOnce(thirdUser),
       });
       surveyModel.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockReturnValue([secondMockSurvey]),
@@ -222,7 +185,7 @@ describe('SurveysController', () => {
       jest.spyOn(surveysService, 'findSurveys');
 
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUser),
+        exec: jest.fn().mockResolvedValueOnce(thirdUser),
       });
       surveyModel.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockReturnValue([firstMockSurvey]),
@@ -259,7 +222,7 @@ describe('SurveysController', () => {
       jest.spyOn(usersSurveysService, 'getCommitedAnswer');
 
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUser),
+        exec: jest.fn().mockResolvedValueOnce(thirdUser),
       });
       surveyModel.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockReturnValue([firstMockSurvey]),
@@ -305,10 +268,10 @@ describe('SurveysController', () => {
       });
 
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(firstUser),
+        exec: jest.fn().mockResolvedValue(thirdUser),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(firstUser),
+        exec: jest.fn().mockResolvedValue(thirdUser),
       });
 
       await controller.updateOrCreateSurvey(fourthMockSurvey, firstUsername);
@@ -347,10 +310,10 @@ describe('SurveysController', () => {
         exec: jest.fn().mockResolvedValueOnce(true),
       });
       userModel.find = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([firstUser]),
+        exec: jest.fn().mockResolvedValue([thirdUser]),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([firstUserAfterDeletingFirstSurvey]),
+        exec: jest.fn().mockResolvedValue([thirdUserAfterDeletingFirstSurvey]),
       });
 
       await controller.deleteSurvey({ surveyIds: [firstMockSurveyId] });
@@ -367,10 +330,10 @@ describe('SurveysController', () => {
         exec: jest.fn().mockResolvedValueOnce(true),
       });
       userModel.find = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([firstUserAfterDeletingFirstSurvey]),
+        exec: jest.fn().mockResolvedValue([thirdUserAfterDeletingFirstSurvey]),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([firstUserAfterDeletingRemaining]),
+        exec: jest.fn().mockResolvedValue([thirdUserAfterDeletingRemaining]),
       });
 
       await controller.deleteSurvey({ surveyIds: [secondMockSurveyId, thirdMockSurveyId] });
@@ -426,10 +389,10 @@ describe('SurveysController', () => {
         exec: jest.fn().mockReturnValue(thirdMockSurveyAfterAddedNewAnswer),
       });
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUser),
+        exec: jest.fn().mockResolvedValueOnce(thirdUser),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUserAfterAddedAnswer),
+        exec: jest.fn().mockResolvedValueOnce(thirdUserAfterAddedAnswer),
       });
 
       try {
@@ -468,10 +431,10 @@ describe('SurveysController', () => {
           ),
       });
       userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUser),
+        exec: jest.fn().mockResolvedValueOnce(thirdUser),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(firstUserAfterAddedAnswer),
+        exec: jest.fn().mockResolvedValueOnce(thirdUserAfterAddedAnswer),
       });
 
       try {
