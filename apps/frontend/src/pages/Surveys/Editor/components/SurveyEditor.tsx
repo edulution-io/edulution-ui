@@ -81,7 +81,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   // PROPERTY GRID (RIGHT SIDEBAR)
   creator.showSidebar = false;
-  creator.showPropertyGrid = false;
 
   // ELEMENT MENU (part of the ELEMENT/QUESTION)
   // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU

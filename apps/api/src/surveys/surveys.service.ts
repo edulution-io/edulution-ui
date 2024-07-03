@@ -4,13 +4,13 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import Attendee from '@libs/survey/types/attendee';
-import { SurveyModel, SurveyDocument } from './survey.schema';
+import { Survey, SurveyDocument } from './survey.schema';
 
 @Injectable()
 class SurveysService {
-  constructor(@InjectModel(SurveyModel.name) private surveyModel: Model<SurveyDocument>) {}
+  constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
-  async getAllSurveys(): Promise<SurveyModel[]> {
+  async getAllSurveys(): Promise<Survey[]> {
     const surveys = this.surveyModel.find().exec();
     if (surveys == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
@@ -18,22 +18,22 @@ class SurveysService {
     return surveys;
   }
 
-  async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<SurveyModel | null> {
+  async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    const survey = this.surveyModel.findOne<SurveyModel>({ id: surveyId }).exec();
+    const survey = this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
     if (survey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
     return survey;
   }
 
-  async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<SurveyModel[] | null> {
-    const surveys = this.surveyModel.find<SurveyModel>({ id: { $in: surveyIds } }).exec();
+  async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
+    const surveys = this.surveyModel.find<Survey>({ id: { $in: surveyIds } }).exec();
     if (surveys == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
     }
@@ -49,11 +49,11 @@ class SurveysService {
     }
   }
 
-  async updateSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+  async updateSurvey(survey: Survey): Promise<Survey | null> {
     const updatedSurvey = await this.surveyModel
-      .findOneAndUpdate<SurveyModel>(
+      .findOneAndUpdate<Survey>(
         // eslint-disable-next-line no-underscore-dangle
-        { id: survey._id },
+        { _id: survey._id },
         { ...survey },
       )
       .exec();
@@ -62,7 +62,7 @@ class SurveysService {
     return updatedSurvey;
   }
 
-  async createSurvey(survey: SurveyModel): Promise<SurveyModel | null> {
+  async createSurvey(survey: Survey): Promise<Survey | null> {
     const createdSurvey = await this.surveyModel.create(survey);
     Logger.log(
       createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully',
@@ -74,7 +74,7 @@ class SurveysService {
     surveyId: mongoose.Types.ObjectId,
     answer: JSON,
     username?: string,
-  ): Promise<SurveyModel | undefined> {
+  ): Promise<Survey | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
@@ -82,7 +82,7 @@ class SurveysService {
       );
     }
 
-    const existingSurvey = await this.surveyModel.findOne<SurveyModel>({ id: surveyId }).exec();
+    const existingSurvey = await this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
     if (!existingSurvey) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
@@ -111,7 +111,7 @@ class SurveysService {
     answers.push(answer);
 
     const updatedSurvey = await this.surveyModel
-      .findOneAndUpdate<SurveyModel>({ id: surveyId }, { publicAnswers: answers, participated })
+      .findOneAndUpdate<Survey>({ id: surveyId }, { publicAnswers: answers, participated })
       .exec();
     if (updatedSurvey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,7 +127,7 @@ class SurveysService {
       );
     }
 
-    const survey = await this.surveyModel.findOne<SurveyModel>({ id: surveyId }).exec();
+    const survey = await this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
     if (survey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }

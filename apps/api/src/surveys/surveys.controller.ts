@@ -7,7 +7,7 @@ import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import { SurveyModel } from './survey.schema';
+import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 
 @Controller(SURVEYS)
@@ -47,7 +47,7 @@ class SurveysController {
       canSubmitMultipleAnswers,
     } = updateOrCreateSurveyDto;
 
-    const survey: SurveyModel = {
+    const survey: Survey = {
       ...updateOrCreateSurveyDto,
       _id: id,
       publicAnswers,
