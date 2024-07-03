@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import Attendee from '@/pages/ConferencePage/dto/attendee';
 
 interface SurveyEditorFormStore {
   reset: () => void;
@@ -16,7 +16,7 @@ interface SurveyEditorFormStore {
   setSurveyFormula: (creatorText: string) => void;
   saveNo: number | undefined;
   setSaveNumber: (saveNo: number) => void;
-  participants: Attendee[];
+  participants: AttendeeDto[];
   participated: string[];
   created: Date | undefined;
 
@@ -26,8 +26,8 @@ interface SurveyEditorFormStore {
   expirationDate: Date | undefined;
   expirationTime: string | undefined;
   isAnonymous: boolean | undefined;
-  newParticipants: Attendee[];
-  updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<Survey>;
+  newParticipants: AttendeeDto[];
+  updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<SurveyDto>;
   isLoading: boolean;
   error: AxiosError | null;
 }
@@ -55,10 +55,10 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   openSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: true }),
   closeSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: false }),
 
-  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<Survey> => {
+  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<SurveyDto> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<Survey>(SURVEYS_ENDPOINT, survey);
+      const response = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
       set({ error: undefined, isLoading: false });
       return response.data;
     } catch (error) {

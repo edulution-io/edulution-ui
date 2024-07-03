@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -6,14 +6,14 @@ import * as xml2js from 'xml2js';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import ConferencesErrorMessage from '@libs/conferences/conferencesErrorMessage';
-import { Conference, ConferenceDocument } from './conference.schema';
-import CreateConferenceDto from './dto/create-conference.dto';
-import BbbResponseDto from './bbb-api/bbb-response.dto';
+import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
+import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
+import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
+import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import JWTUser from '../types/JWTUser';
-import { Attendee } from './dto/attendee';
-import ConferenceRole from './dto/conference-role.enum';
+import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
+import Attendee from './attendee.schema';
 
 @Injectable()
 class ConferencesService {
@@ -28,9 +28,7 @@ class ConferencesService {
 
   static handleBBBApiError(result: { response: { returncode: string } }) {
     if (result.response.returncode !== 'SUCCESS') {
-      throw new CustomHttpException(ConferencesErrorMessage.BbbUnauthorized, HttpStatus.UNAUTHORIZED, {
-        returncode: result.response.returncode,
-      });
+      throw new HttpException(ConferencesErrorMessage.BbbUnauthorized, HttpStatus.UNAUTHORIZED);
     }
   }
 

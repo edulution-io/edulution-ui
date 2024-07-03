@@ -15,6 +15,7 @@ import {
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
+import { Survey } from './survey.schema';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveysService from './surveys.service';
 import UsersSurveysService from './users-surveys.service';
@@ -85,9 +86,10 @@ class SurveysController {
       canSubmitMultipleAnswers,
     } = updateOrCreateSurveyDto;
 
-    const survey: UpdateOrCreateSurveyDto = {
+    const survey: Survey = {
       ...updateOrCreateSurveyDto,
-      id,
+      // eslint-ignore-next-line @typescript/no-underscore-dangle
+      _id: id,
       participants,
       publicAnswers,
       saveNo,

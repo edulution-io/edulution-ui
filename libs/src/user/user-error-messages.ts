@@ -1,6 +1,6 @@
 enum UserErrorMessages {
-  NotAbleToFindUserError = 'user.errors.notAbleToFindUserError',
-  NotAbleToUpdateUserError = 'user.errors.notAbleToUpdateUserError',
+  NotAbleToFindUserError = 'users.errors.notAbleToFindUserError',
+  NotAbleToUpdateUserError = 'users.errors.notAbleToUpdateUserError',
 }
 
 export default UserErrorMessages;
