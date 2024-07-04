@@ -27,10 +27,12 @@ class UsersService {
       newUser = await this.create({
         email: userDto.email,
         username: userDto.preferred_username,
+        password: userDto.password,
         roles: userDto.ldapGroups,
       });
     } else {
       newUser = await this.update(userDto.preferred_username, {
+        password: userDto.password,
         roles: userDto.ldapGroups,
       });
     }

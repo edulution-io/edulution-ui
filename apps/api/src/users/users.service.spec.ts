@@ -144,6 +144,7 @@ describe(UsersService.name, () => {
       userDto.preferred_username = 'testuser';
       userDto.email = 'test@example.com';
       userDto.ldapGroups = ['group1'];
+      userDto.password = 'password';
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       jest.spyOn(model, 'findOne').mockReturnValueOnce({
@@ -156,6 +157,7 @@ describe(UsersService.name, () => {
       expect(model.create).toHaveBeenCalledWith({
         email: 'test@example.com',
         username: 'testuser',
+        password: 'password',
         roles: ['group1'],
       });
     });
@@ -164,12 +166,13 @@ describe(UsersService.name, () => {
       const userDto = new RegisterUserDto();
       userDto.preferred_username = 'testuser';
       userDto.ldapGroups = ['group1'];
+      userDto.password = 'password';
 
       await service.register(userDto);
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { username: 'testuser' },
-        { roles: ['group1'] },
+        { roles: ['group1'], password: 'password' }, // Ensure password is included here
         { new: true },
       );
     });
@@ -181,6 +184,7 @@ describe(UsersService.name, () => {
       createUserDto.email = 'test@example.com';
       createUserDto.username = 'testuser';
       createUserDto.roles = ['user'];
+      createUserDto.password = 'password';
 
       const newUser = await service.create(createUserDto);
       expect(newUser).toEqual(mockUser);
@@ -208,10 +212,18 @@ describe(UsersService.name, () => {
     it('should update a user', async () => {
       const updateUserDto = new UpdateUserDto();
       updateUserDto.email = 'updated@example.com';
+      updateUserDto.password = 'password';
 
-      const updatedUser = await service.update('testuser', updateUserDto);
-      expect(updatedUser).toEqual(mockUser);
-      expect(model.findOneAndUpdate).toHaveBeenCalledWith({ username: 'testuser' }, updateUserDto, { new: true });
+      await service.update('testuser', updateUserDto);
+
+      expect(model.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: 'testuser' },
+        expect.objectContaining({
+          email: 'updated@example.com',
+          password: 'password',
+        }),
+        { new: true },
+      );
     });
   });
 

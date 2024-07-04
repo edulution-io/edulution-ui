@@ -4,6 +4,8 @@ class RegisterUserDto {
   email: string;
 
   ldapGroups: string[];
+
+  password: string;
 }
 
 export default RegisterUserDto;

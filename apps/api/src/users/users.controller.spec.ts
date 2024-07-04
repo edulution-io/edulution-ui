@@ -66,6 +66,7 @@ describe(UsersController.name, () => {
         preferred_username: 'testuser',
         email: 'test@example.com',
         ldapGroups: ['group1'],
+        password: 'password',
       };
       await controller.register(registerDto);
       expect(service.register).toHaveBeenCalledWith(registerDto);
@@ -106,6 +107,7 @@ describe(UsersController.name, () => {
       const updateUserDto: UpdateUserDto = {
         username: 'updatedUser',
         email: 'updated@example.com',
+        password: 'password',
       };
       await controller.update(username, updateUserDto);
       expect(service.update).toHaveBeenCalledWith(username, updateUserDto);
