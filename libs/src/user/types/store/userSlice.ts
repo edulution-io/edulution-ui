@@ -19,6 +19,7 @@ type UserSlice = {
   setEduApiToken: (eduApiToken: string) => void;
   webdavKey: string;
   setWebdavKey: (webdavKey: string) => void;
+  getWebdavKey: () => string;
   isPreparingLogout: boolean;
   logout: () => Promise<void>;
   userIsLoading: boolean;

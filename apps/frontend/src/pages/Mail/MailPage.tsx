@@ -1,5 +1,4 @@
 import React from 'react';
-import { useEncryption } from '@/hooks/mutations';
 import NativeIframeLayout from '@/components/framing/NativeIframeLayout';
 import useUserStore from '@/store/UserStore/UserStore';
 import getLoginScript from '@/pages/Mail/scripts/login';
@@ -7,17 +6,11 @@ import logoutScript from '@/pages/Mail/scripts/logout';
 import { APPS } from '@libs/appconfig/types';
 
 const MailPage: React.FC = () => {
-  const { username, webdavKey } = useUserStore();
-
-  const decryptedPassword = useEncryption({
-    mode: 'decrypt',
-    data: webdavKey,
-    key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-  });
+  const { username, getWebdavKey } = useUserStore();
 
   return (
     <NativeIframeLayout
-      scriptOnStartUp={getLoginScript(username, decryptedPassword)}
+      scriptOnStartUp={getLoginScript(username, getWebdavKey())}
       scriptOnStop={logoutScript}
       appName={APPS.MAIL}
     />

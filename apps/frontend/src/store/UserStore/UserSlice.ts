@@ -9,6 +9,7 @@ import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import User from '@libs/user/types/user';
 import RegisterUserDto from '@libs/user/types/register-user.dto';
+import CryptoJS from 'crypto-js';
 
 const initialState = {
   username: '',
@@ -22,7 +23,9 @@ const initialState = {
   userIsLoading: false,
 };
 
-const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set) => ({
+const WEBDAV_SECRET = import.meta.env.VITE_WEBDAV_KEY as string;
+
+const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
   ...initialState,
 
   setUser: (userInfo: JwtUser) => {
@@ -34,7 +37,8 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set) => ({
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => set({ isLoggedInInEduApi }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
-  setWebdavKey: (webdavKey: string) => set({ webdavKey }),
+  setWebdavKey: (password: string) => set({ webdavKey: CryptoJS.AES.encrypt(password, WEBDAV_SECRET).toString() }),
+  getWebdavKey: () => CryptoJS.AES.decrypt(get().webdavKey, WEBDAV_SECRET).toString(CryptoJS.enc.Utf8),
 
   logout: async () => {
     set({ isPreparingLogout: true });

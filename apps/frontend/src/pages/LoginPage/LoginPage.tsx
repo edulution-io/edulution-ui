@@ -4,8 +4,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { useEncryption } from '@/hooks/mutations';
-
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -51,15 +49,9 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        const encryptedPassword = useEncryption({
-          mode: 'encrypt',
-          data: password,
-          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-        });
-
         setUsername(username);
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(encryptedPassword);
+        setWebdavKey(password);
 
         createWebdavClient();
         void setLmnApiToken(username, password);
@@ -75,17 +67,12 @@ const LoginPage: React.FC = () => {
       return;
     }
     const password = form.getValues('password') as string;
-    const encryptedPassword = useEncryption({
-      mode: 'encrypt',
-      data: password,
-      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-    });
 
     const newProfile = {
       preferred_username: profile.preferred_username,
       email: profile.email,
       ldapGroups: profile.ldapGroups,
-      password: encryptedPassword,
+      password,
     };
 
     void registerUser(newProfile as RegisterUserDto);
