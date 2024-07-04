@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import createRouter from '@/routes/CreateRouter';
@@ -13,11 +13,13 @@ const AppRouter: React.FC = () => {
   const { appConfigs, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated, logout } = useUserStore();
   const { t } = useTranslation();
+  const [tokenIsExpiring, setTokenIsExpiring] = useState(false);
 
   const handleLogout = async () => {
     await auth.removeUser();
     await logout();
     cleanAllStores();
+    setTokenIsExpiring(false);
   };
 
   useEffect(() => {
@@ -38,9 +40,14 @@ const AppRouter: React.FC = () => {
       const handleTokenExpired = () => {
         if (auth.user?.expired) {
           void handleLogout();
-          toast.error(t('sessionExpired'));
+          toast.error(t('auth.errors.TokenExpired'));
         }
       };
+
+      if (!tokenIsExpiring) {
+        setTokenIsExpiring(true);
+        toast.error(t('auth.errors.SessionExpiring'));
+      }
 
       auth.events.addAccessTokenExpiring(handleTokenExpired);
 

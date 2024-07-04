@@ -17,7 +17,7 @@
       "downloadApp": "Download the edulution-io app here:"
     }
   },
-  "auth": { "errors": { "TokenExpired": "Session expired" } },
+  "auth": { "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged out in 1 minute." } },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -202,7 +202,6 @@
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
   },
-  "sessionExpired": "Session expired",
   "common": {
     "add": "Add",
     "reload": "Reload",
