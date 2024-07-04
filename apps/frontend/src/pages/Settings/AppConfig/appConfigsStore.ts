@@ -10,7 +10,7 @@ type AppConfigsStore = {
   isLoading: boolean;
   error: Error | null;
   reset: () => void;
-  getAppConfigs: () => Promise<void>;
+  getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
 };
@@ -37,8 +37,10 @@ const useAppConfigsStore = create<AppConfigsStore>(
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
           set({ appConfigs: response.data });
+          return true;
         } catch (e) {
           handleApiError(e, set);
+          return false;
         } finally {
           set({ isLoading: false });
         }

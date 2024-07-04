@@ -21,8 +21,15 @@ const AppRouter: React.FC = () => {
   };
 
   useEffect(() => {
+    const handleGetAppConfigs = async () => {
+      const isApiResponding = await getAppConfigs();
+      if (!isApiResponding) {
+        void handleLogout();
+      }
+    };
+
     if (isAuthenticated) {
-      getAppConfigs().catch(handleLogout);
+      void handleGetAppConfigs();
     }
   }, [isAuthenticated]);
 
