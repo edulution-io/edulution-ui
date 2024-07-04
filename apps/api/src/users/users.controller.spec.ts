@@ -2,12 +2,12 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import RegisterUserDto from '@libs/user/types/register-user.dto';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import CreateUserDto from './dto/create-user.dto';
-import RegisterUserDto from './dto/register-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 
 const mockUserModel = {

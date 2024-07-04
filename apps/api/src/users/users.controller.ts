@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import RegisterUserDto from '@libs/user/types/register-user.dto';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
-import RegisterUserDto from './dto/register-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
 
 @Controller('users')

@@ -8,6 +8,7 @@ import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import User from '@libs/user/types/user';
+import RegisterUserDto from '@libs/user/types/register-user.dto';
 
 const initialState = {
   username: '',
@@ -39,6 +40,18 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set) => ({
     set({ isPreparingLogout: true });
     await delay(200);
     set({ isAuthenticated: false });
+  },
+
+  registerUser: async (user: RegisterUserDto) => {
+    set({ userIsLoading: true });
+    try {
+      await eduApi.post<RegisterUserDto>(`${EDU_API_USERS_ENDPOINT}/register`, user);
+    } catch (error) {
+      handleApiError(error, set, 'userError');
+    } finally {
+      set({ isAuthenticated: true });
+      set({ userIsLoading: false });
+    }
   },
 
   /*

@@ -14,11 +14,12 @@ import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
+import { toast } from 'sonner';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUsername, setWebdavKey, setIsAuthenticated, setEduApiToken } = useUserStore();
+  const { eduApiToken, registerUser, setUsername, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
@@ -58,17 +59,47 @@ const LoginPage: React.FC = () => {
         setUsername(username);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(encryptedPassword);
-        setIsAuthenticated(true);
 
         createWebdavClient();
-        await setLmnApiToken(username, password);
+        void setLmnApiToken(username, password);
       }
-
-      return null;
     } catch (e) {
-      return null;
+      toast.error('auth.errors.failed');
     }
   };
+
+  const handleLogin = () => {
+    const password = form.getValues('password') as string;
+    const encryptedPassword = useEncryption({
+      mode: 'encrypt',
+      data: password,
+      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
+    });
+
+    const profile = auth?.user?.profile;
+
+    const newProfile = {
+      preferred_username: profile?.preferred_username as string,
+      email: profile?.email as string,
+      ldapGroups: profile?.ldapGroups as string[],
+      password: encryptedPassword,
+    };
+
+    void registerUser(newProfile);
+  };
+
+  useEffect(() => {
+    const login = () => {
+      const isLoginDisabled = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
+      if (isLoginDisabled) {
+        return;
+      }
+
+      void handleLogin();
+    };
+
+    login();
+  }, [auth.isAuthenticated, eduApiToken]);
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
     <FormFieldSH
