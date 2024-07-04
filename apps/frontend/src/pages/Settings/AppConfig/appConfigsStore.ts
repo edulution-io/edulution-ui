@@ -9,6 +9,7 @@ type AppConfigsStore = {
   appConfigs: AppConfigDto[];
   isLoading: boolean;
   error: Error | null;
+  reset: () => void;
   getAppConfigs: () => Promise<void>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -19,12 +20,17 @@ type PersistedAppConfigsStore = (
   options: PersistOptions<Partial<AppConfigsStore>>,
 ) => StateCreator<AppConfigsStore>;
 
+const initialState = {
+  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
+  isLoading: false,
+  error: null,
+};
+
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
-      appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
-      isLoading: false,
-      error: null,
+      ...initialState,
+      reset: () => set(initialState),
 
       getAppConfigs: async () => {
         set({ isLoading: true, error: null });
