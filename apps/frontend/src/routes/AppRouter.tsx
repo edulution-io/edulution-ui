@@ -15,23 +15,14 @@ const AppRouter: React.FC = () => {
   const { t } = useTranslation();
 
   const handleLogout = async () => {
-    auth.removeUser().catch(console.error);
-    // await auth.revokeTokens();
+    await auth.removeUser();
     await logout();
     cleanAllStores();
   };
 
   useEffect(() => {
     if (isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          await getAppConfigs();
-        } catch (e) {
-          console.error('Error fetching data:', e);
-        }
-      };
-
-      void fetchData();
+      void getAppConfigs();
     }
   }, [isAuthenticated]);
 
