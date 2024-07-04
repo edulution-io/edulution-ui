@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import i18n from 'i18next';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
@@ -16,6 +16,7 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
     const axiosError = error as CustomAxiosError;
 
     const errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
+    if (error instanceof AxiosError && error.response?.status === 401) throw error;
 
     toast.error(errorMessage);
     set({ [errorName]: errorMessage });

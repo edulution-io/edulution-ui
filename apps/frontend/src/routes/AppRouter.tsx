@@ -22,15 +22,9 @@ const AppRouter: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      void getAppConfigs();
+      getAppConfigs().catch(handleLogout);
     }
   }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (!auth.user) {
-      void handleLogout();
-    }
-  }, [auth.user]);
 
   useEffect(() => {
     if (isAuthenticated || auth.isAuthenticated) {
