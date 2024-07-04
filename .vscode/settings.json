@@ -7,5 +7,6 @@
   "files.associations": {
     "*.scss": "tailwindcss"
   },
+  "eslint.workingDirectories": [{ "pattern": "libs" }],
   "CodeGPT.apiKey": "Ollama"
 }

@@ -4,11 +4,22 @@ import { useAuth } from 'react-oidc-context';
 import createRouter from '@/routes/CreateRouter';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 const AppRouter: React.FC = () => {
   const auth = useAuth();
   const { appConfigs, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setIsLoggedInInEduApi } = useUserStore();
+  const { isAuthenticated, logout } = useUserStore();
+  const { t } = useTranslation();
+
+  const handleLogout = async () => {
+    auth.removeUser().catch(console.error);
+    // await auth.revokeTokens();
+    await logout();
+    cleanAllStores();
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -20,23 +31,32 @@ const AppRouter: React.FC = () => {
         }
       };
 
-      // eslint-disable-next-line no-void
       void fetchData();
     }
   }, [isAuthenticated]);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
-      auth.events.addAccessTokenExpiring(() => {
-        if (auth.user?.expired) {
-          console.info('Session expired');
-          auth.removeUser().catch((e) => console.error('Error fetching data:', e));
-          setIsLoggedInInEduApi(false);
-          sessionStorage.clear();
-          localStorage.clear();
-        }
-      });
+    if (!auth.user) {
+      void handleLogout();
     }
+  }, [auth.user]);
+
+  useEffect(() => {
+    if (isAuthenticated || auth.isAuthenticated) {
+      const handleTokenExpired = () => {
+        if (auth.user?.expired) {
+          void handleLogout();
+          toast.error(t('sessionExpired'));
+        }
+      };
+
+      auth.events.addAccessTokenExpiring(handleTokenExpired);
+
+      return () => {
+        auth.events.removeAccessTokenExpiring(handleTokenExpired);
+      };
+    }
+    return () => {};
   }, [auth.events, auth.isAuthenticated]);
 
   return <RouterProvider router={createRouter(isAuthenticated, appConfigs)} />;

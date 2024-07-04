@@ -201,6 +201,7 @@
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken"
   },
+  "sessionExpired": "Sitzung abgelaufen",
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",

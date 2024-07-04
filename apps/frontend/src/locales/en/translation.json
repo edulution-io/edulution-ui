@@ -201,6 +201,7 @@
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
   },
+  "sessionExpired": "Session expired",
   "common": {
     "add": "Add",
     "reload": "Reload",

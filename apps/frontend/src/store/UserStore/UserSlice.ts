@@ -13,7 +13,6 @@ const initialState = {
   username: '',
   webdavKey: '',
   isAuthenticated: false,
-  isLoggedInInEduApi: false,
   isPreparingLogout: false,
   eduApiToken: '',
   user: null,
@@ -31,7 +30,6 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set) => ({
 
   setUsername: (username: string) => set({ username }),
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
-  setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => set({ isLoggedInInEduApi }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
   setWebdavKey: (webdavKey: string) => set({ webdavKey }),
 
