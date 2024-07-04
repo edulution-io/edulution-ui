@@ -1,6 +1,5 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 export type SurveyDocument = Survey & Document;
 
@@ -14,15 +13,6 @@ export class Survey {
 
   @Prop({ type: JSON, required: true })
   formula: JSON;
-
-  @Prop({ required: true })
-  participants: AttendeeDto[];
-
-  @Prop({ type: Array<string>, required: false })
-  participated?: string[];
-
-  @Prop({ type: Array<JSON>, required: false })
-  publicAnswers?: JSON[];
 
   @Prop({ required: false })
   saveNo?: number;
@@ -38,6 +28,9 @@ export class Survey {
 
   @Prop({ required: false })
   isAnonymous?: boolean;
+
+  @Prop({ required: false })
+  canUpdateFormerAnswer?: boolean;
 
   @Prop({ required: false })
   canSubmitMultipleAnswers?: boolean;

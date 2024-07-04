@@ -56,10 +56,6 @@ const SurveyTable = (props: SurveyTableProps) => {
             <TableCell className="text-white">
               {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
             </TableCell>
-            <TableCell className="text-white">
-              {survey?.participated?.length ? `${survey.participated.length}/` : ''}
-              {survey?.participants?.length || 0}
-            </TableCell>
           </TableRow>
         );
       }),

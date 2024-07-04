@@ -18,6 +18,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
+import SurveyAnswerService from './survey-answer.service';
 import UsersSurveysService from './users-surveys.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
@@ -25,6 +26,7 @@ import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
+    private readonly surveyAnswerService: SurveyAnswerService,
     private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
@@ -62,13 +64,13 @@ class SurveysController {
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
   async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.getPublicAnswers(surveyId);
+    return this.surveyAnswerService.getPublicAnswers(surveyId);
   }
 
   @Post(ANSWER_ENDPOINT)
   async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, participant = username } = getAnswerDto;
-    return this.usersSurveysService.getCommitedAnswer(participant, surveyId);
+    return this.surveyAnswerService.getPrivateAnswer(surveyId, participant);
   }
 
   @Post()
@@ -77,13 +79,13 @@ class SurveysController {
     @GetCurrentUsername() username: string,
   ) {
     const {
-      id,
       participants = [],
-      publicAnswers = [],
+
+      id,
       saveNo = 0,
       created = new Date(),
-      isAnonymous,
-      canSubmitMultipleAnswers,
+      isAnonymous = true,
+      canSubmitMultipleAnswers = false,
     } = updateOrCreateSurveyDto;
 
     const survey: Survey = {
@@ -91,12 +93,10 @@ class SurveysController {
       // eslint-ignore-next-line @typescript/no-underscore-dangle
       _id: id,
       id,
-      participants,
-      publicAnswers,
       saveNo,
       created,
-      isAnonymous: !!isAnonymous,
-      canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
+      isAnonymous,
+      canSubmitMultipleAnswers,
     };
 
     const updatedSurvey = await this.surveyService.updateSurvey(survey);
@@ -122,6 +122,7 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     try {
       await this.surveyService.deleteSurveys(surveyIds);
+      await this.surveyAnswerService.onRemoveSurveys(surveyIds);
       await this.usersSurveysService.onRemoveSurveys(surveyIds);
     } catch (e) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
@@ -131,8 +132,7 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
-    await this.surveyService.addPublicAnswer(surveyId, answer);
-    return this.usersSurveysService.addAnswer(username, surveyId, answer);
+    return this.surveyAnswerService.addAnswer(surveyId, answer, username);
   }
 }
 

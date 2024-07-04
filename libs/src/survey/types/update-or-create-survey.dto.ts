@@ -2,15 +2,13 @@ import mongoose from 'mongoose';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 interface UpdateOrCreateSurveyDto {
+  // ADDITIONAL
+  participants: AttendeeDto[];
+
+  // SURVEY
   id: mongoose.Types.ObjectId;
 
   formula: JSON;
-
-  participants: AttendeeDto[];
-
-  participated?: string[];
-
-  publicAnswers?: JSON[];
 
   saveNo?: number;
 

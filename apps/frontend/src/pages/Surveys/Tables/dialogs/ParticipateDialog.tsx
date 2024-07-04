@@ -49,8 +49,6 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     trigger,
   } = props;
 
-  if (!isOpenParticipateSurveyDialog) return null;
-
   const { t } = useTranslation();
 
   const initialFormValues: ParticipateDialogFormData = {
@@ -117,6 +115,8 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
   //     </form>
   //   </div>
   // );
+
+  if (!isOpenParticipateSurveyDialog) return null;
 
   return (
     <AdaptiveDialog

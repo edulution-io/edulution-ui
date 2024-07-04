@@ -33,14 +33,15 @@ const CommitedAnswer = () => {
         onClick={openCommitedAnswersDialog}
       />
       <CommitedAnswersDialog
-        survey={survey}
+        surveyId={survey?.id}
+        surveyJSON={survey?.formula}
+        answerJSON={answer}
         isOpenCommitedAnswersDialog={isOpenCommitedAnswersDialog}
         openCommitedAnswersDialog={openCommitedAnswersDialog}
         closeCommitedAnswersDialog={closeCommitedAnswersDialog}
         getUsersCommitedAnswer={getCommittedSurveyAnswers}
         // user={user}
         // selectUser={selectUser}
-        answer={answer}
         isLoading={isLoading}
         error={error}
       />

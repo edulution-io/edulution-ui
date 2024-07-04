@@ -70,10 +70,10 @@ const SurveyEditorForm = () => {
   });
 
   const {
+    participants,
+
     id,
     formula,
-    participants,
-    participated,
     saveNo,
     created,
     expirationDate,
@@ -84,10 +84,10 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     await updateOrCreateSurvey({
+      participants,
+
       id,
       formula,
-      participants,
-      participated,
       saveNo,
       created,
       expirationDate,

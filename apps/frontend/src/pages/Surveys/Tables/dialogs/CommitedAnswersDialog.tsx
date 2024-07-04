@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CommitedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogBody';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 interface ShowSurveyAnswerDialogProps {
-  survey?: SurveyDto;
+  surveyId: mongoose.Types.ObjectId;
+  surveyJSON: JSON | undefined;
+  answerJSON: JSON | undefined;
 
   isOpenCommitedAnswersDialog: boolean;
   openCommitedAnswersDialog: () => void;
@@ -17,7 +18,7 @@ interface ShowSurveyAnswerDialogProps {
   getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, userName?: string) => Promise<JSON | undefined>;
   // user: string | undefined;
   // selectUser: (user: string) => void;
-  answer: JSON | undefined;
+  // selectUser: (user: string) => void;
   isLoading: boolean;
   error: Error | null;
 
@@ -26,7 +27,9 @@ interface ShowSurveyAnswerDialogProps {
 
 const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
   const {
-    survey,
+    surveyId,
+    surveyJSON,
+    answerJSON,
 
     isOpenCommitedAnswersDialog,
     openCommitedAnswersDialog,
@@ -34,42 +37,35 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
     getUsersCommitedAnswer,
     // user,
     // selectUser,
-    answer,
     isLoading,
     error,
 
     trigger,
   } = props;
 
-  if (!isOpenCommitedAnswersDialog) return null;
-
   const { t } = useTranslation();
 
-  const getAnswer = useCallback(() => {
-    if (!survey) return;
-    void getUsersCommitedAnswer(survey.id);
-  }, []);
-
   useEffect((): void => {
-    getAnswer();
-  }, []);
+    if (isOpenCommitedAnswersDialog) {
+      void getUsersCommitedAnswer(surveyId);
+    }
+  }, [isOpenCommitedAnswersDialog, surveyId]);
 
-  if (!survey) return null;
-  if (!answer) return null;
+  if (isLoading) {
+    return <LoadingIndicator isOpen={isLoading} />;
+  }
 
-  const getDialogBody = () => {
+  const getDialogBody = () => (
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-    return (
-      <ScrollArea>
-        <CommitedAnswersDialogBody
-          formula={survey.formula}
-          answer={answer}
-        />
-        {error ? toast.error(t(error.message)) : null}
-      </ScrollArea>
-    );
-  };
+    <ScrollArea>
+      <CommitedAnswersDialogBody
+        formula={surveyJSON!}
+        answer={answerJSON!}
+      />
+      {error ? toast.error(t(error.message)) : null}
+    </ScrollArea>
+  );
+
   return (
     <AdaptiveDialog
       isOpen={isOpenCommitedAnswersDialog}

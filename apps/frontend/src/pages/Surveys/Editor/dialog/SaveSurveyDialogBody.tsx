@@ -1,17 +1,18 @@
 import React from 'react';
-// import { toast } from 'sonner';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import cn from '@/lib/utils';
-// import AttendeeDto from '@libs/conferences/types/attendee.dto';
-// import useUserStore from '@/store/UserStore/UserStore';
-import Checkbox from '@/components/ui/Checkbox';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import useUserStore from '@/store/UserStore/UserStore';
 import Input from '@/components/shared/Input';
 import DatePicker from '@/components/shared/DatePicker';
-// import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
-// import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-// import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
-// import Group from '@/pages/ConferencePage/dto/group';
+import Checkbox from '@/components/ui/Checkbox';
+import CircleLoader from '@/components/ui/CircleLoader';
+import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
+import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 
 interface EditSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,54 +23,50 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const {
     form, // saveSurveyLocally
   } = props;
-  const { setValue, /* getValues, */ watch } = form;
-
-  // const { user } = useUserStore();
-  // const { /* searchGroups, getGroupMembers, */ searchAttendees /* isGetGroupMembersLoading */ } =
-  //   useCreateConferenceDialogStore();
-
+  const { setValue, getValues, watch } = form;
+  const { username } = useUserStore();
+  const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
+    useCreateConferenceDialogStore();
   const { t } = useTranslation();
 
-  // const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
-  //   setValue('participants', attendees, { shouldValidate: true });
-  // };
-  //
-  // const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
-  //   const result = await searchAttendees(value);
-  //   return result.filter((r) => r.username !== user?.preferred_username);
-  // };
-  //
-  // // TODO: NIEDUUI-282 - Activate group search and selection
-  // // const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
-  // //   const selectedGroups = getValues('invitedGroups') as Group[];
-  // //
-  // //   const newlySelectedGroups = groups.filter((g) => !selectedGroups.some((sg) => sg.id === g.id));
-  // //
-  // //   if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
-  // //     const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
-  // //     const attendees = getValues('participants') as AttendeeDto[];
-  // //
-  // //     const combinedAttendees = [...groupMembers, ...attendees];
-  // //
-  // //     const uniqueAttendeesMap = new Map(combinedAttendees.map((a) => [a.username, a]));
-  // //     const uniqueAttendees = Array.from(uniqueAttendeesMap.values());
-  // //
-  // //     uniqueAttendees.sort((a, b) => a.username.localeCompare(b.username));
-  // //
-  // //     const newlyAddedAttendeesCount = groupMembers.filter(
-  // //       (member) => !attendees.some((attendee) => attendee.username === member.username),
-  // //     ).length;
-  // //
-  // //     setValue('participants', uniqueAttendees, { shouldValidate: true });
-  // //
-  // //     toast.success(t('search.usersAdded', { count: newlyAddedAttendeesCount }));
-  // //   }
-  // //
-  // //   setValue('invitedGroups', groups);
-  // // };
-  //
-  // // const participantsWatched = watch('participants') as AttendeeDto[];
-  // const participantsValue = getValues('participants') as AttendeeDto[];
+  if (isLoading) return <CircleLoader className="mx-auto" />;
+
+  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+    setValue('invitedAttendees', attendees, { shouldValidate: true });
+  };
+
+  const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
+    const result = await searchAttendees(value);
+    return result.filter((r) => r.username !== username);
+  };
+
+  const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
+    const selectedGroups = getValues('invitedGroups') as MultipleSelectorGroup[];
+
+    const newlySelectedGroups = groups.filter((g) => !selectedGroups.some((sg) => sg.id === g.id));
+
+    if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
+      const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
+      const attendees = getValues('invitedAttendees') as AttendeeDto[];
+
+      const combinedAttendees = [...groupMembers, ...attendees];
+
+      const uniqueAttendeesMap = new Map(combinedAttendees.map((a) => [a.username, a]));
+      const uniqueAttendees = Array.from(uniqueAttendeesMap.values());
+
+      uniqueAttendees.sort((a, b) => a.username.localeCompare(b.username));
+
+      const newlyAddedAttendeesCount = groupMembers.filter(
+        (member) => !attendees.some((attendee) => attendee.username === member.username),
+      ).length;
+
+      setValue('invitedAttendees', uniqueAttendees, { shouldValidate: true });
+
+      toast.success(t('search.usersAdded', { count: newlyAddedAttendeesCount }));
+    }
+
+    setValue('invitedGroups', groups);
+  };
 
   const expirationDateWatched = watch('expirationDate') as Date;
   const expirationTimeWatched = watch('expirationTime') as string[];
@@ -78,16 +75,15 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
 
   return (
     <>
-      {/* <SearchUsersOrGroups */}
-      {/*  users={participantsValue} */}
-      {/*  onSearch={onAttendeesSearch} */}
-      {/*  onUserChange={handleAttendeesChange} */}
-      {/*  // TODO: NIEDUUI-282 - Activate group search and selection */}
-      {/*  // groups={watch('invitedGroups')} */}
-      {/*  // onGroupSearch={searchGroups} */}
-      {/*  // onGroupsChange={handleGroupsChange} */}
-      {/*  // isGetGroupMembersLoading={isGetGroupMembersLoading} */}
-      {/* /> */}
+      <SearchUsersOrGroups
+        users={watch('participants') as AttendeeDto[]}
+        onSearch={onAttendeesSearch}
+        onUserChange={handleAttendeesChange}
+        groups={watch('invitedGroups') as MultipleSelectorGroup[]}
+        onGroupSearch={searchGroups}
+        onGroupsChange={handleGroupsChange}
+        isGetGroupMembersLoading={isGetGroupMembersLoading}
+      />
 
       <p className={cn('text-m font-bold', 'text-black')}>{t('survey.expirationDate')}</p>
       <div className="flex items-center text-black">

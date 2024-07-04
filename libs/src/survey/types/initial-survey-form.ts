@@ -1,16 +1,19 @@
 import mongoose from 'mongoose';
+import { Group } from '@libs/user/types/groups/group';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class InitialSurveyForm implements SurveyEditorFormData {
+  // ADDITIONAL
+  participants: AttendeeDto[];
+
+  invitedGroups: Group[];
+
+  // SURVEY
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
-
-  participants: AttendeeDto[];
-
-  participated: string[];
 
   saveNo: number;
 
@@ -29,18 +32,18 @@ class InitialSurveyForm implements SurveyEditorFormData {
   canShowResultsChart: boolean;
 
   constructor(selectedSurvey?: SurveyDto) {
+    this.participants = selectedSurvey?.participants || [];
+    this.invitedGroups = [];
+
     const time = new Date().getTime();
     this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(time);
     this.formula = selectedSurvey?.formula || ({} as JSON);
-    this.participants = selectedSurvey?.participants || [];
-    this.participated = [];
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.created = selectedSurvey?.created || new Date();
     this.expirationDate = selectedSurvey?.expirationDate || undefined;
     this.expirationTime = selectedSurvey?.expirationTime || undefined;
     this.isAnonymous = selectedSurvey?.isAnonymous || false;
     this.canSubmitMultipleAnswers = selectedSurvey?.canSubmitMultipleAnswers || false;
-    // this.invitedGroups = [];
 
     this.canShowResultsChart = true;
     this.canShowResultsTable = true;

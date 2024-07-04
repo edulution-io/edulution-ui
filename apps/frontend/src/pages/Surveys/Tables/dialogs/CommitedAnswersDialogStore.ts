@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyAnswer from '@libs/survey/types/survey-answer';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -49,12 +50,13 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   ): Promise<JSON | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<JSON>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
-      const answer = response.data;
+      const response = await eduApi.post<SurveyAnswer>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
+      const surveyAnswer = response.data;
+      const { answer } = surveyAnswer;
       set({ answer, isLoading: false });
       return answer;
     } catch (error) {
-      set({ answer: undefined, error: error instanceof Error ? error : null, isLoading: false });
+      set({ error: error instanceof Error ? error : null, isLoading: false });
       toast.error(error instanceof Error ? `${error.name}: ${error.message}` : 'Error while fetching an answer');
       handleApiError(error, set);
       return undefined;

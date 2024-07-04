@@ -34,7 +34,7 @@ const initialState: Partial<ResultStore> = {
   error: null,
 };
 
-const useResultStore = create<ResultStore>((set) => ({
+const useResultStore = create<ResultStore>((set, get) => ({
   ...(initialState as ResultStore),
   reset: () => set(initialState),
 
@@ -45,6 +45,10 @@ const useResultStore = create<ResultStore>((set) => ({
   openPublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: true }),
   closePublicResultsVisualisationDialog: () => set({ isOpenPublicResultsVisualisationDialog: false }),
   getSurveyResult: async (surveyId: mongoose.Types.ObjectId): Promise<JSON[]> => {
+    const { isOpenPublicResultsTableDialog, isOpenPublicResultsVisualisationDialog } = get();
+    if (!isOpenPublicResultsTableDialog && !isOpenPublicResultsVisualisationDialog) {
+      return [];
+    }
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('base64')}`);
