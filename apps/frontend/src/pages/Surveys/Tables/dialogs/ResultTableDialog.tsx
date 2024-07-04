@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -39,20 +39,13 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
 
   const { t } = useTranslation();
 
-  const getResult = useCallback(() => {
-    if (!survey) {
-      return;
-    }
-    void getSurveyResult(survey.id, survey.participants);
-  }, []);
-
   useEffect((): void => {
-    getResult();
-  }, []);
+    if (survey && isOpenPublicResultsTableDialog) {
+      void getSurveyResult(survey.id, survey.participants);
+    }
+  }, [isOpenPublicResultsTableDialog, survey]);
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-
     if (!survey?.formula) {
       return (
         <div className="rounded-xl bg-red-400 py-3 text-center text-black">
@@ -80,6 +73,8 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   };
 
   if (!isOpenPublicResultsTableDialog) return null;
+
+  if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
 
   return (
     <AdaptiveDialog

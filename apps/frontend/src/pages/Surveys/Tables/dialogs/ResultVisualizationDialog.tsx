@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
@@ -15,7 +14,7 @@ interface ResultVisualizationDialogProps {
   isOpenPublicResultsVisualisationDialog: boolean;
   openPublicResultsVisualisationDialog: () => void;
   closePublicResultsVisualisationDialog: () => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<JSON[] | undefined>;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoadingResult: boolean;
   error: Error | null;
@@ -38,16 +37,11 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
 
   const { t } = useTranslation();
 
-  const getResult = useCallback(() => {
-    if (!survey) {
-      return;
-    }
-    void getSurveyResult(survey.id, survey.participants);
-  }, []);
-
   useEffect((): void => {
-    getResult();
-  }, []);
+    if (survey && isOpenPublicResultsVisualisationDialog) {
+      void getSurveyResult(survey.id);
+    }
+  }, [isOpenPublicResultsVisualisationDialog, survey]);
 
   const getDialogBody = () => {
     if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult} />;

@@ -1,6 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import UsersSurveys from '@libs/survey/types/users-surveys';
 import UserErrorMessages from '@libs/user/user-error-messages';
@@ -135,10 +135,6 @@ class SurveyAnswersService {
     answer: JSON,
     participant: string,
   ): Promise<SurveyAnswer | undefined> {
-    Logger.log(
-      `addAnswer( username: ${participant}, surveyId: ${surveyId.toHexString()}, answer: ${JSON.stringify(answer, null, 2)} )`,
-    );
-
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
@@ -151,8 +147,6 @@ class SurveyAnswersService {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
 
-    Logger.log(`    existingSurvey: ${JSON.stringify(existingSurvey, null, 2)} )`);
-
     const {
       expirationDate,
       expirationTime,
@@ -164,9 +158,6 @@ class SurveyAnswersService {
     if (expirationDate && expirationTime) {
       const expirationDateAndTime = new Date(`${expirationDate.toDateString()}T${expirationTime.toString()}`);
       const isExpired = expirationDateAndTime < new Date();
-
-      Logger.log(`    isExpired: ${isExpired.toString()} )`);
-
       if (isExpired) {
         throw new CustomHttpException(
           SurveyErrorMessages.NotAbleToParticipateSurveyExpiredError,
@@ -180,18 +171,11 @@ class SurveyAnswersService {
       throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);
     }
 
-    Logger.log(`    existingUser: ${JSON.stringify(existingUser, null, 2)} )`);
-
     // const idExistingUsersAnswer = existingUser.usersSurveys?.answeredSurveys?.find((userAnswer) => userAnswer === surveyId);
     const idExistingUsersAnswer = await this.surveyAnswerModel
       .findOne<SurveyAnswer>({ survey: surveyId, user: participant })
       .exec();
     if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
-      Logger.log(`    idExistingUsersAnswer: ${JSON.stringify(idExistingUsersAnswer, null, 2)} )`);
-      Logger.log(
-        `    -> createNew( surveyId: ${surveyId.toHexString()}, participant: ${participant}, saveNo: ${saveNo}, answer: ${JSON.stringify(answer, null, 2)},   )`,
-      );
-
       return this.createNewAnswer(
         surveyId,
         participant,
@@ -204,17 +188,10 @@ class SurveyAnswersService {
         answer,
       );
     }
-    Logger.log(`    idExistingUsersAnswer: ${JSON.stringify(idExistingUsersAnswer, null, 2)} )`);
-    Logger.log(
-      `    -> updateExistingAnswer( idExistingUsersAnswer: ${JSON.stringify(idExistingUsersAnswer, null, 2)}, saveNo: ${saveNo}, answer: ${JSON.stringify(answer, null, 2)}, canUpdateFormerAnswer: ${canUpdateFormerAnswer},   )`,
-    );
-
     return this.updateExistingAnswer(idExistingUsersAnswer.id, saveNo, answer, canUpdateFormerAnswer);
   }
 
   async getPrivateAnswer(surveyId: mongoose.Types.ObjectId, username: string): Promise<SurveyAnswer> {
-    Logger.log(`getPrivateAnswer( surveyId: ${surveyId.toHexString()}, username: ${username} )`);
-
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
@@ -227,15 +204,10 @@ class SurveyAnswersService {
     if (usersSurveyAnswer == null) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
-
-    Logger.log(`    -> usersSurveyAnswer: ${JSON.stringify(usersSurveyAnswer, null, 2)}`);
-
     return usersSurveyAnswer;
   }
 
   async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
-    Logger.log(`getPublicAnswers( surveyId: ${surveyId.toHexString()} )`);
-
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
