@@ -15,6 +15,7 @@ import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
 import { toast } from 'sonner';
+import RegisterUserDto from '@libs/user/types/register-user.dto';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -68,7 +69,11 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleLogin = () => {
+  const handleRegisterUser = () => {
+    const profile = auth?.user?.profile;
+    if (!profile) {
+      return;
+    }
     const password = form.getValues('password') as string;
     const encryptedPassword = useEncryption({
       mode: 'encrypt',
@@ -76,29 +81,27 @@ const LoginPage: React.FC = () => {
       key: `${import.meta.env.VITE_WEBDAV_KEY}`,
     });
 
-    const profile = auth?.user?.profile;
-
     const newProfile = {
-      preferred_username: profile?.preferred_username as string,
-      email: profile?.email as string,
-      ldapGroups: profile?.ldapGroups as string[],
+      preferred_username: profile.preferred_username,
+      email: profile.email,
+      ldapGroups: profile.ldapGroups,
       password: encryptedPassword,
     };
 
-    void registerUser(newProfile);
+    void registerUser(newProfile as RegisterUserDto);
   };
 
   useEffect(() => {
-    const login = () => {
-      const isLoginDisabled = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
-      if (isLoginDisabled) {
+    const register = () => {
+      const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
+      if (isLoginPrevented) {
         return;
       }
 
-      void handleLogin();
+      void handleRegisterUser();
     };
 
-    login();
+    register();
   }, [auth.isAuthenticated, eduApiToken]);
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (

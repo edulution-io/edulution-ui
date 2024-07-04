@@ -172,7 +172,7 @@ describe(UsersService.name, () => {
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { username: 'testuser' },
-        { roles: ['group1'], password: 'password' }, // Ensure password is included here
+        { roles: ['group1'], password: 'password' },
         { new: true },
       );
     });
