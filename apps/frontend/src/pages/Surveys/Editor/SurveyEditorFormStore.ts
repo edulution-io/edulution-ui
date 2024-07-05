@@ -10,13 +10,13 @@ import handleApiError from '@/utils/handleApiError';
 interface SurveyEditorFormStore {
   reset: () => void;
 
+  participants: AttendeeDto[];
+
   surveyName: string;
   surveyFormula: string;
   setSurveyFormula: (creatorText: string) => void;
   saveNo: number | undefined;
   setSaveNumber: (saveNo: number) => void;
-  participants: AttendeeDto[];
-  participated: string[];
   created: Date | undefined;
 
   isOpenSaveSurveyDialog: boolean;
@@ -32,11 +32,11 @@ interface SurveyEditorFormStore {
 }
 
 const initialState: Partial<SurveyEditorFormStore> = {
+  participants: [],
+
   surveyName: '',
   surveyFormula: '',
   saveNo: undefined,
-  participants: [],
-  participated: [],
   created: undefined,
   expirationDate: undefined,
   expirationTime: undefined,

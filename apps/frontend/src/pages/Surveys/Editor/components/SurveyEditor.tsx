@@ -76,7 +76,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   // TOOLBOX (LEFT SIDEBAR)
   creator.showToolbox = true; // TODO: Ask
-  creator.toolbox.overflowBehavior = 'hideInMenu';
+  creator.toolbox.overflowBehavior = 'scroll';
   creator.toolbox.searchEnabled = false;
 
   // PROPERTY GRID (RIGHT SIDEBAR)

@@ -77,8 +77,7 @@ class SurveysController {
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUsername() username: string) {
     // first extrude the additional info fields from the remaining survey object
     const { participants, ...surveyData } = surveyDto;
-
-    const { id, saveNo = 0, created = new Date(), isAnonymous = true, canSubmitMultipleAnswers = false } = surveyData;
+    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
 
     const survey: Survey = {
       ...surveyData,

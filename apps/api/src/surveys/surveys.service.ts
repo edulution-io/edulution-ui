@@ -24,7 +24,7 @@ class SurveysService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    const survey = this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
+    const survey = this.surveyModel.findOne<Survey>({ _id: surveyId }).exec();
     if (survey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
@@ -32,7 +32,7 @@ class SurveysService {
   }
 
   async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
-    const surveys = this.surveyModel.find<Survey>({ id: { $in: surveyIds } }).exec();
+    const surveys = this.surveyModel.find<Survey>({ _id: { $in: surveyIds } }).exec();
     if (surveys == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
     }
@@ -41,7 +41,7 @@ class SurveysService {
 
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
-      await this.surveyModel.deleteMany({ id: { $in: surveyIds } }).exec();
+      await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, error);
