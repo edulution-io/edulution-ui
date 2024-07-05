@@ -28,7 +28,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
-  const { username } = useUserStore();
+  const { user } = useUserStore();
 
   const filteredSegment = segments.filter((item) => item !== 'teachers');
   const handleSegmentClick = (segment: string) => {
@@ -43,7 +43,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
         <BreadcrumbItem key="home">
           <BreadcrumbLink
             href="#"
-            onClick={() => onNavigate(`/teachers/${username}/`)}
+            onClick={() => onNavigate(`/teachers/${user?.username}/`)}
           >
             {t('home')}
           </BreadcrumbLink>

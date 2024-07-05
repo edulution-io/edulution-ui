@@ -58,7 +58,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const { username } = useUserStore();
+      const { user } = useUserStore();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const onClick = async () => {
         if (row.original.isRunning) {
@@ -72,7 +72,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
           onClick={onClick}
           icon={row.original.isRunning ? <MdLogin /> : undefined}
           text={row.original.name}
-          row={username === row.original.creator?.username ? row : undefined}
+          row={user?.username === row.original.creator?.username ? row : undefined}
         />
       );
     },
@@ -88,13 +88,13 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
-      const { username } = useUserStore();
+      const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            username === row.original.creator?.username
+            user?.username === row.original.creator?.username
               ? () => {
                   setSelectedConference(row.original);
                 }
@@ -117,13 +117,13 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
       const iconSize = 16;
-      const { username } = useUserStore();
+      const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            username === row.original.creator?.username
+            user?.username === row.original.creator?.username
               ? () => {
                   setSelectedConference(row.original);
                 }
@@ -158,13 +158,13 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
-      const { username } = useUserStore();
+      const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            username === row.original.creator?.username
+            user?.username === row.original.creator?.username
               ? () => {
                   setSelectedConference(row.original);
                 }
@@ -204,10 +204,10 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
       const { t } = useTranslation();
-      const { username } = useUserStore();
+      const { user } = useUserStore();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
-      const isUserTheCreator = username === creator?.username;
+      const isUserTheCreator = user?.username === creator?.username;
       const { icon, text } = getRowAction(isRunning, isLoading, isUserTheCreator, t);
       const onClick = async () => {
         if (isUserTheCreator) {

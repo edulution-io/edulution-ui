@@ -1,8 +1,6 @@
 import UserDto from '../user.dto';
 
 type UserSlice = {
-  username: string;
-  setUsername: (username: string) => void;
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   user: UserDto | null;

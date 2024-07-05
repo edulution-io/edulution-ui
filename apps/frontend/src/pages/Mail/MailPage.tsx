@@ -6,11 +6,11 @@ import logoutScript from '@/pages/Mail/scripts/logout';
 import { APPS } from '@libs/appconfig/types';
 
 const MailPage: React.FC = () => {
-  const { username, getWebdavKey } = useUserStore();
+  const { user, getWebdavKey } = useUserStore();
 
   return (
     <NativeIframeLayout
-      scriptOnStartUp={getLoginScript(username, getWebdavKey())}
+      scriptOnStartUp={getLoginScript(user?.username as string, getWebdavKey())}
       scriptOnStop={logoutScript}
       appName={APPS.MAIL}
     />

@@ -6,11 +6,11 @@ import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
 import { APPS } from '@libs/appconfig/types';
 
 const LinuxmusterPage: React.FC = () => {
-  const { username, getWebdavKey } = useUserStore();
+  const { user, getWebdavKey } = useUserStore();
 
   return (
     <NativeIframeLayout
-      scriptOnStartUp={getLoginScript(username, getWebdavKey())}
+      scriptOnStartUp={getLoginScript(user?.username as string, getWebdavKey())}
       scriptOnStop={logoutScript}
       appName={APPS.LINUXMUSTER}
     />

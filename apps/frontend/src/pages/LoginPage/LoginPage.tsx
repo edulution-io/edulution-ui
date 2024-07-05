@@ -19,7 +19,7 @@ import processLdapGroups from '@/utils/processLdapGroups';
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { eduApiToken, webdavKey, createOrUpdateUser, setUsername, setWebdavKey, setEduApiToken } = useUserStore();
+  const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
@@ -51,7 +51,6 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        setUsername(username);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(password);
 
