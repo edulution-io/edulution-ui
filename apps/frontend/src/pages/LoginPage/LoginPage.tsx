@@ -35,6 +35,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (auth.error) {
+      // NIEDUUI-322 Translate keycloak error messages
       form.setError('password', { type: 'custom', message: auth.error.message });
     }
   }, [auth.error]);
@@ -55,9 +56,12 @@ const LoginPage: React.FC = () => {
 
         createWebdavClient();
         void setLmnApiToken(username, password);
+      } else {
+        throw new Error();
       }
     } catch (e) {
-      toast.error('auth.errors.failed');
+      // NIEDUUI-322 Translate keycloak error messages
+      toast.error(auth.error?.message);
     }
   };
 

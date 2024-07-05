@@ -19,7 +19,7 @@ const mockToken = 'token';
 const mockUser = {
   email: 'test@example.com',
   username: 'testuser',
-  roles: ['user'],
+  ldapGroups: ['user'],
 };
 const cachedUsers: LDAPUser[] = [
   {
@@ -158,7 +158,7 @@ describe(UsersService.name, () => {
         email: 'test@example.com',
         username: 'testuser',
         password: 'password',
-        roles: ['group1'],
+        ldapGroups: ['group1'],
       });
     });
 
@@ -172,7 +172,7 @@ describe(UsersService.name, () => {
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { username: 'testuser' },
-        { roles: ['group1'], password: 'password' },
+        { ldapGroups: ['group1'], password: 'password' },
         { new: true },
       );
     });
@@ -183,7 +183,7 @@ describe(UsersService.name, () => {
       const createUserDto = new CreateUserDto();
       createUserDto.email = 'test@example.com';
       createUserDto.username = 'testuser';
-      createUserDto.roles = ['user'];
+      createUserDto.ldapGroups = ['user'];
       createUserDto.password = 'password';
 
       const newUser = await service.create(createUserDto);

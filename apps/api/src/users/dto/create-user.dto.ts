@@ -5,7 +5,7 @@ class CreateUserDto {
 
   password?: string;
 
-  roles: string[];
+  ldapGroups: string[];
 }
 
 export default CreateUserDto;

@@ -28,12 +28,12 @@ class UsersService {
         email: userDto.email,
         username: userDto.preferred_username,
         password: userDto.password,
-        roles: userDto.ldapGroups,
+        ldapGroups: userDto.ldapGroups,
       });
     } else {
       newUser = await this.update(userDto.preferred_username, {
         password: userDto.password,
-        roles: userDto.ldapGroups,
+        ldapGroups: userDto.ldapGroups,
       });
     }
 

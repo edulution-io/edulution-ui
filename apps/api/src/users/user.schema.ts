@@ -21,7 +21,7 @@ export class User {
   password?: string;
 
   @Prop()
-  roles?: string[];
+  ldapGroups?: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

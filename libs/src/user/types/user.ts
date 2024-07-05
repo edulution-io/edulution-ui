@@ -4,7 +4,7 @@ export default interface User {
   firstName?: string;
   lastName?: string;
   email: string;
-  roles: string[];
+  ldapGroups: string[];
   mfaEnabled: boolean;
   isTotpSet: boolean;
 }
