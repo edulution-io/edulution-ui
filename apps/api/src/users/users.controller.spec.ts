@@ -26,6 +26,16 @@ const mockUsersService = {
   searchUsersByName: jest.fn(),
 };
 
+const mockLdapGroups = {
+  school: 'school',
+  projects: ['project1', 'project2'],
+  projectPaths: ['/path/to/project1', '/path/to/project2'],
+  classes: ['class1A', 'class2B'],
+  classPaths: ['/path/to/class1A', '/path/to/class2B'],
+  role: 'teacher',
+  others: ['group1', 'group2'],
+};
+
 describe(UsersController.name, () => {
   let controller: UsersController;
   let service: UsersService;
@@ -64,7 +74,7 @@ describe(UsersController.name, () => {
       const registerDto: UserDto = {
         preferred_username: 'testuser',
         email: 'test@example.com',
-        ldapGroups: ['group1'],
+        ldapGroups: mockLdapGroups,
         password: 'password',
       };
       await controller.createOrUpdate(registerDto);

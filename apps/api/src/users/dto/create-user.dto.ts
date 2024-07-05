@@ -1,3 +1,5 @@
+import LdapGroups from '@libs/user/types/groups/ldapGroups';
+
 class CreateUserDto {
   username: string;
 
@@ -5,7 +7,7 @@ class CreateUserDto {
 
   password?: string;
 
-  ldapGroups: string[];
+  ldapGroups: LdapGroups;
 }
 
 export default CreateUserDto;

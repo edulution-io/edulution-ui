@@ -50,9 +50,6 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     }
   },
 
-  /*
-  TODO: Should return void and instead set the value in the store: NIEDUUI-215
-   */
   getUser: async (username) => {
     set({ userIsLoading: true });
     try {

@@ -14,6 +14,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
 import { toast } from 'sonner';
 import UserDto from '@libs/user/types/user.dto';
+import processLdapGroups from '@/utils/processLdapGroups';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -70,10 +71,11 @@ const LoginPage: React.FC = () => {
     if (!profile) {
       return;
     }
+
     const newUser: UserDto = {
       preferred_username: profile.preferred_username!,
       email: profile.email!,
-      ldapGroups: profile.ldapGroups as string[],
+      ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
       password: webdavKey,
     };
 

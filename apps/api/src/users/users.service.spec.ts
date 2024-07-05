@@ -105,6 +105,16 @@ const cacheManagerMock = {
   set: jest.fn(),
 };
 
+const mockLdapGroups = {
+  school: 'school',
+  projects: ['project1', 'project2'],
+  projectPaths: ['/path/to/project1', '/path/to/project2'],
+  classes: ['class1A', 'class2B'],
+  classPaths: ['/path/to/class1A', '/path/to/class2B'],
+  role: 'teacher',
+  others: ['group1', 'group2'],
+};
+
 describe(UsersService.name, () => {
   let service: UsersService;
   let model: Model<UserDocument>;
@@ -143,7 +153,7 @@ describe(UsersService.name, () => {
       const userDto = new UserDto();
       userDto.preferred_username = 'testuser';
       userDto.email = 'test@example.com';
-      userDto.ldapGroups = ['group1'];
+      userDto.ldapGroups = mockLdapGroups;
       userDto.password = 'password';
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -158,21 +168,21 @@ describe(UsersService.name, () => {
         email: 'test@example.com',
         username: 'testuser',
         password: 'password',
-        ldapGroups: ['group1'],
+        ldapGroups: mockLdapGroups,
       });
     });
 
     it('should update existing user', async () => {
       const userDto = new UserDto();
       userDto.preferred_username = 'testuser';
-      userDto.ldapGroups = ['group1'];
+      userDto.ldapGroups = mockLdapGroups;
       userDto.password = 'password';
 
       await service.createOrUpdate(userDto);
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { username: 'testuser' },
-        { ldapGroups: ['group1'], password: 'password' },
+        { ldapGroups: mockLdapGroups, password: 'password' },
         { new: true },
       );
     });
@@ -183,7 +193,7 @@ describe(UsersService.name, () => {
       const createUserDto = new CreateUserDto();
       createUserDto.email = 'test@example.com';
       createUserDto.username = 'testuser';
-      createUserDto.ldapGroups = ['user'];
+      createUserDto.ldapGroups = mockLdapGroups;
       createUserDto.password = 'password';
 
       const newUser = await service.create(createUserDto);

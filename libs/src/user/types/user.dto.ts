@@ -1,9 +1,11 @@
+import LdapGroups from './groups/ldapGroups';
+
 class UserDto {
   preferred_username: string;
 
   email: string;
 
-  ldapGroups: string[];
+  ldapGroups: LdapGroups;
 
   password: string;
 }

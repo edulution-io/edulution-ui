@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import LdapGroups from '@libs/user/types/groups/ldapGroups';
 
 export type UserDocument = User & Document;
 
@@ -20,8 +21,8 @@ export class User {
   @Prop()
   password?: string;
 
-  @Prop()
-  ldapGroups?: string[];
+  @Prop({ type: Object, default: {} })
+  ldapGroups?: LdapGroups;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
