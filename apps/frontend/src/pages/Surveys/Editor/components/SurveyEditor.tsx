@@ -75,7 +75,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.toolbar.actions.splice(expandSettingsAction, 1);
 
   // TOOLBOX (LEFT SIDEBAR)
-  creator.showToolbox = true; // TODO: Ask Mi and/or Mo
+  creator.showToolbox = true; // TODO: Ask
   creator.toolbox.overflowBehavior = 'scroll';
   creator.toolbox.searchEnabled = false;
 
