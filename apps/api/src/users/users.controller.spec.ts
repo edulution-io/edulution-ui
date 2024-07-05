@@ -2,7 +2,7 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import RegisterUserDto from '@libs/user/types/register-user.dto';
+import UserDto from '@libs/user/types/user.dto';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
@@ -61,7 +61,7 @@ describe(UsersController.name, () => {
 
   describe('createOrUpdate', () => {
     it('should call register method of usersService with correct arguments', async () => {
-      const registerDto: RegisterUserDto = {
+      const registerDto: UserDto = {
         preferred_username: 'testuser',
         email: 'test@example.com',
         ldapGroups: ['group1'],

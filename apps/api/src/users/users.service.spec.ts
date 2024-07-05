@@ -4,7 +4,7 @@ import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Query } from 'mongoose';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
-import RegisterUserDto from '@libs/user/types/register-user.dto';
+import UserDto from '@libs/user/types/user.dto';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -140,7 +140,7 @@ describe(UsersService.name, () => {
 
   describe('createOrUpdate', () => {
     it('should create a new user if not existing', async () => {
-      const userDto = new RegisterUserDto();
+      const userDto = new UserDto();
       userDto.preferred_username = 'testuser';
       userDto.email = 'test@example.com';
       userDto.ldapGroups = ['group1'];
@@ -163,7 +163,7 @@ describe(UsersService.name, () => {
     });
 
     it('should update existing user', async () => {
-      const userDto = new RegisterUserDto();
+      const userDto = new UserDto();
       userDto.preferred_username = 'testuser';
       userDto.ldapGroups = ['group1'];
       userDto.password = 'password';

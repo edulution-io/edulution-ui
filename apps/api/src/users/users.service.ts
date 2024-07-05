@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
-import RegisterUserDto from '@libs/user/types/register-user.dto';
+import UserDto from '@libs/user/types/user.dto';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -19,7 +19,7 @@ class UsersService {
     private readonly groupsService: GroupsService,
   ) {}
 
-  async createOrUpdate(userDto: RegisterUserDto): Promise<User | null> {
+  async createOrUpdate(userDto: UserDto): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
 
     let newUser;

@@ -6,7 +6,7 @@ import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import User from '@libs/user/types/user';
-import RegisterUserDto from '@libs/user/types/register-user.dto';
+import UserDto from '@libs/user/types/user.dto';
 import CryptoJS from 'crypto-js';
 
 const initialState = {
@@ -39,10 +39,10 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ isAuthenticated: false });
   },
 
-  createOrUpdateUser: async (user: RegisterUserDto) => {
+  createOrUpdateUser: async (user: UserDto) => {
     set({ userIsLoading: true });
     try {
-      await eduApi.post<RegisterUserDto>(EDU_API_USERS_ENDPOINT, user);
+      await eduApi.post<UserDto>(EDU_API_USERS_ENDPOINT, user);
     } catch (error) {
       handleApiError(error, set, 'userError');
     } finally {

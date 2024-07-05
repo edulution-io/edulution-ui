@@ -13,7 +13,7 @@ import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
 import { toast } from 'sonner';
-import RegisterUserDto from '@libs/user/types/register-user.dto';
+import UserDto from '@libs/user/types/user.dto';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
     if (!profile) {
       return;
     }
-    const newUser: RegisterUserDto = {
+    const newUser: UserDto = {
       preferred_username: profile.preferred_username!,
       email: profile.email!,
       ldapGroups: profile.ldapGroups as string[],

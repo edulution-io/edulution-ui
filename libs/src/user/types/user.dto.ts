@@ -1,4 +1,4 @@
-class RegisterUserDto {
+class UserDto {
   preferred_username: string;
 
   email: string;
@@ -8,4 +8,4 @@ class RegisterUserDto {
   password: string;
 }
 
-export default RegisterUserDto;
+export default UserDto;
