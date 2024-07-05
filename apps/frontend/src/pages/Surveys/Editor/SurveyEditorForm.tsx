@@ -54,25 +54,25 @@ const SurveyEditorForm = () => {
     defaultValues: emptyFormValues,
   });
 
-  const {
-    id,
-    formula,
-    participants,
-    participated,
-    saveNo,
-    created,
-    expirationDate,
-    expirationTime,
-    isAnonymous,
-    canSubmitMultipleAnswers,
-  } = form.getValues();
-
   const saveSurvey = async () => {
-    await updateOrCreateSurvey({
+    const {
+      participants,
+
       id,
       formula,
+      saveNo,
+      created,
+      expirationDate,
+      expirationTime,
+      isAnonymous,
+      canSubmitMultipleAnswers,
+    } = form.getValues();
+
+    await updateOrCreateSurvey({
       participants,
-      participated,
+
+      id,
+      formula,
       saveNo,
       created,
       expirationDate,
@@ -82,17 +82,20 @@ const SurveyEditorForm = () => {
     });
   };
 
+  const formulaWatcher = form.watch('formula');
+  const saveNoWatcher = form.watch('saveNo');
+
   // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(
     () => (
       <SurveyEditor
         form={form}
-        formula={formula}
-        saveNumber={saveNo}
+        formula={formulaWatcher}
+        saveNumber={saveNoWatcher}
         error={error}
       />
     ),
-    [formula, saveNo],
+    [formulaWatcher, saveNoWatcher],
   );
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
@@ -110,7 +113,7 @@ const SurveyEditorForm = () => {
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <div className="flex flex-col items-center justify-center space-x-2">
             <Button
-              type="button"
+              type="submit"
               variant="btn-hexagon"
               className="bottom-10 space-x-8 bg-opacity-90 p-4"
               onClick={() => saveSurvey()}

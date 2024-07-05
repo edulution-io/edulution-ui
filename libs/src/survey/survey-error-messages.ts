@@ -9,6 +9,7 @@ enum SurveyErrorMessages {
   NotAbleToParticipateAlreadyParticipatedError = 'survey.errors.notAbleToParticipateAlreadyParticipatedError',
   NotAbleToUpdateSurveyError = 'survey.errors.notAbleToUpdateSurveyError',
   NotValidSurveyIdIsNoMongooseObjectId = 'survey.errors.notValidSurveyIdIsNoMongooseObjectId',
+  NotAbleToParticipateSurveyExpiredError = 'survey.errors.notAbleToParticipateSurveyExpiredError',
 }
 
 export default SurveyErrorMessages;

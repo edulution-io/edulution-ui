@@ -123,8 +123,18 @@
       "notAbleToFindSurveyParameterError": "In order to find a survey you have to provide at least one surveyId",
       "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
       "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
+      "notAbleToParticipateSurveyExpiredError": "Survey has already expired",
       "notAbleToUpdateSurveyError": "Not able to update the survey",
       "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer",
+      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
     }
   },
   "surveys": {
@@ -401,5 +411,11 @@
       "CouldNotSearchGroups": "Could not search for groups"
     },
     "classes": "Classes"
+  },
+  "users": {
+    "errors": {
+      "notAbleToFindUserError": "User not found",
+      "notAbleToUpdateUserError": "Not able to update the user"
+    }
   }
 }

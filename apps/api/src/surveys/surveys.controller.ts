@@ -9,10 +9,15 @@ import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/sur
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
+import SurveyAnswerService from './survey-answer.service';
+import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
 @Controller(SURVEYS)
 class SurveysController {
-  constructor(private readonly surveyService: SurveysService) {}
+  constructor(
+    private readonly surveyService: SurveysService,
+    private readonly surveyAnswerService: SurveyAnswerService,
+  ) {}
 
   @Get()
   async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
@@ -33,25 +38,17 @@ class SurveysController {
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
   async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
-    return this.surveyService.getPublicAnswers(surveyId);
+    return this.surveyAnswerService.getPublicAnswers(surveyId);
   }
 
   @Post()
   async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto) {
-    const {
-      id,
-      publicAnswers = [],
-      saveNo = 0,
-      created = new Date(),
-      isAnonymous,
-      canSubmitMultipleAnswers,
-    } = updateOrCreateSurveyDto;
+    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = updateOrCreateSurveyDto;
 
     const survey: Survey = {
       ...updateOrCreateSurveyDto,
       _id: id,
       id,
-      publicAnswers,
       saveNo,
       created,
       isAnonymous: !!isAnonymous,
@@ -81,9 +78,9 @@ class SurveysController {
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
-    const updatedSurvey = await this.surveyService.addPublicAnswer(surveyId, answer);
+    const updatedSurvey = await this.surveyAnswerService.addAnswer(surveyId, answer, username);
     return updatedSurvey;
   }
 }

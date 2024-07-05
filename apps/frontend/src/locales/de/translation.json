@@ -123,8 +123,18 @@
       "notAbleToFindSurveyParameterError": "Um eine Umfrage findne zu können muss mindestens eine Survey-Id übergeben werden",
       "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
       "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "notAbleToParticipateSurveyExpiredError": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
       "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
       "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Benutzerumfrageantwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
+      "notAbleToUpdateSurveyAnswerError": "Die vorherige Abgabe für die Umfrage konnte nicht aktualisiert werden",
+      "notAbleToCreateSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht erstellt werden",
+      "notAbleToDeleteSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht gelöscht werden"
     }
   },
   "surveys": {
@@ -401,5 +411,11 @@
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
     },
     "classes": "Klassen"
+  },
+  "users": {
+    "errors": {
+      "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
+      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"
+    }
   }
 }

@@ -1,11 +1,15 @@
 import mongoose from 'mongoose';
+import { Group } from '@libs/user/types/groups/group';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 interface SurveyEditorFormData {
+  // ADDITIONAL
+  invitedGroups: Group[];
+  participants: AttendeeDto[];
+
+  // SURVEY
   id: mongoose.Types.ObjectId;
   formula: JSON;
-  participants: AttendeeDto[];
-  participated: string[];
   saveNo: number;
   created?: Date;
   expirationDate?: Date;
