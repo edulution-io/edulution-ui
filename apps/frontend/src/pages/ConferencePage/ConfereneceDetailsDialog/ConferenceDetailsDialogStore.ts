@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import apiEndpoint, { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
 import Conference from '@libs/conferences/types/conference.dto';
+import apiEndpoint, { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
 
 interface ConferenceDetailsDialogStore {
   selectedConference: Conference | null;
@@ -29,7 +31,7 @@ const initialState = {
   isJoinedConferenceMinimized: false,
 };
 
-const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set) => ({
+const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set, get) => ({
   ...initialState,
   setSelectedConference: (conference) => set({ selectedConference: conference }),
   setIsLoading: (isLoading) => set({ isLoading }),
@@ -39,6 +41,12 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   joinConference: async (meetingID) => {
     set({ isLoading: true, error: null });
     try {
+      const { t } = useTranslation();
+      if (get().joinConferenceUrl) {
+        toast.error(t('conferences.errors.AlreadyInAnotherMeeting'));
+        return;
+      }
+
       const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}${meetingID}`);
       set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {

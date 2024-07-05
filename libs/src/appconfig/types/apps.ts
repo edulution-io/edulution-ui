@@ -6,7 +6,6 @@ enum APPS {
   KNOWLEDGE_BASE = 'knowledgebase',
   FILE_SHARING = 'filesharing',
   FORUMS = 'forums',
-  ROOM_BOOKING = 'roombooking',
   LEARNING_MANAGEMENT = 'learningmanagement',
   SCHOOL_INFORMATION = 'schoolinformation',
   SCHOOL_MANAGEMENT = 'schoolmanagement',

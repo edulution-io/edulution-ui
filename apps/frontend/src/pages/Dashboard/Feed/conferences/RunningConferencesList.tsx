@@ -1,6 +1,4 @@
 import React from 'react';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -18,9 +16,7 @@ const NUMBER_OF_BADGES_TO_SHOW = 2;
 const RunningConferencesList = (props: ConferencesListProps) => {
   const { items, className } = props;
 
-  const { joinConference, joinConferenceUrl } = useConferenceDetailsDialogStore();
-
-  const { t } = useTranslation();
+  const { joinConference } = useConferenceDetailsDialogStore();
 
   const getShownBadges = (item: Conference) => {
     const badges: React.ReactNode[] = [];
@@ -40,15 +36,6 @@ const RunningConferencesList = (props: ConferencesListProps) => {
     return badges;
   };
 
-  function onJoinConference(meetingID: string): void {
-    if (!joinConferenceUrl) {
-      void joinConference(meetingID);
-    } else {
-      // TODO: NIEDUUI-309: Remove after handling has moved to the conferences fetch
-      toast.error(t('conferences.errors.AlreadyInAnotherMeeting'));
-    }
-  }
-
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
       <div className="flex flex-col gap-2 p-4 pt-0">
@@ -58,7 +45,7 @@ const RunningConferencesList = (props: ConferencesListProps) => {
             variant="btn-outline"
             type="button"
             className="w-full"
-            onClick={() => onJoinConference(item.meetingID)}
+            onClick={() => joinConference(item.meetingID)}
           >
             <div className="w-full">
               <div className="mb-1 flex items-center justify-between gap-2 font-semibold">

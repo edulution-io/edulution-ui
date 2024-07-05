@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
 import useIsMobileView from '@/hooks/useIsMobileView';
-import Feed from '@/components/feature/Feed/Feed';
+import Feed from '@/pages/Dashboard/Feed/Feed';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';

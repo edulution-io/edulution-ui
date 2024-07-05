@@ -4,19 +4,15 @@ import { useInterval } from 'usehooks-ts';
 import { ConferencesIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
 import Conference from '@libs/conferences/types/conference.dto';
-import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/Accordion';
-import WidgetLabelWithImageForTriggers from '@/components/feature/components/widgetLabelWithImageForTriggers';
-import FEED_PULL_TIME_INTERVAL from '@/components/feature/components/constants/pull-time-interval';
-import RunningConferencesList from '@/components/feature/Feed/conferences/RunningConferencesList';
+import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
+import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/feedWidgetAccordionTrigger';
+import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
+import RunningConferencesList from '@/pages/Dashboard/Feed/conferences/RunningConferencesList';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 const RunningConferencesAccordionItem = () => {
-  const { appConfigs, getAppConfigs } = useAppConfigsStore();
-
-  useEffect(() => {
-    void getAppConfigs();
-  }, []);
+  const { appConfigs } = useAppConfigsStore();
 
   // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
   const isConferenceAppActivated = useMemo(
@@ -50,13 +46,11 @@ const RunningConferencesAccordionItem = () => {
 
   return (
     <AccordionItem value={APPS.CONFERENCES}>
-      <AccordionTrigger className="flex text-xl font-bold">
-        <WidgetLabelWithImageForTriggers
-          src={ConferencesIcon}
-          alt={`${APPS.CONFERENCES}-notification-icon`}
-          translationIdLabel="conferences.sidebar"
-        />
-      </AccordionTrigger>
+      <FeedWidgetAccordionTrigger
+        src={ConferencesIcon}
+        alt={`${APPS.CONFERENCES}-notification-icon`}
+        labelTranslationId="conferences.sidebar"
+      />
       <AccordionContent>
         {filteredConferences.length > 0 ? (
           <RunningConferencesList

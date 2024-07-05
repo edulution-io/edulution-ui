@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import cn from '@/lib/utils';
@@ -6,10 +6,17 @@ import { APPS } from '@libs/appconfig/types';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Accordion } from '@/components/ui/Accordion';
 import { Card, CardContent } from '@/components/shared/Card';
-import RunningConferencesAccordionItem from '@/components/feature/Feed/conferences/RunningConferencesAccordionItem';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import RunningConferencesAccordionItem from '@/pages/Dashboard/Feed/conferences/RunningConferencesAccordionItem';
 
 const Feed = () => {
+  const { getAppConfigs } = useAppConfigsStore();
+
   const { t } = useTranslation();
+
+  useEffect(() => {
+    void getAppConfigs();
+  }, []);
 
   const isMobileView = useIsMobileView();
 
