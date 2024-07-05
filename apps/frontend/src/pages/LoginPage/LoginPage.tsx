@@ -73,7 +73,7 @@ const LoginPage: React.FC = () => {
     }
 
     const newUser: UserDto = {
-      preferred_username: profile.preferred_username!,
+      username: profile.preferred_username!,
       email: profile.email!,
       ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
       password: webdavKey,

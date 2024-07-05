@@ -20,18 +20,18 @@ class UsersService {
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
+    const existingUser = await this.userModel.findOne<User>({ username: userDto.username }).exec();
 
     let newUser;
     if (!existingUser) {
       newUser = await this.create({
         email: userDto.email,
-        username: userDto.preferred_username,
+        username: userDto.username,
         password: userDto.password,
         ldapGroups: userDto.ldapGroups,
       });
     } else {
-      newUser = await this.update(userDto.preferred_username, {
+      newUser = await this.update(userDto.username, {
         password: userDto.password,
         ldapGroups: userDto.ldapGroups,
       });

@@ -151,7 +151,7 @@ describe(UsersService.name, () => {
   describe('createOrUpdate', () => {
     it('should create a new user if not existing', async () => {
       const userDto = new UserDto();
-      userDto.preferred_username = 'testuser';
+      userDto.username = 'testuser';
       userDto.email = 'test@example.com';
       userDto.ldapGroups = mockLdapGroups;
       userDto.password = 'password';
@@ -174,7 +174,7 @@ describe(UsersService.name, () => {
 
     it('should update existing user', async () => {
       const userDto = new UserDto();
-      userDto.preferred_username = 'testuser';
+      userDto.username = 'testuser';
       userDto.ldapGroups = mockLdapGroups;
       userDto.password = 'password';
 

@@ -72,7 +72,7 @@ describe(UsersController.name, () => {
   describe('createOrUpdate', () => {
     it('should call register method of usersService with correct arguments', async () => {
       const registerDto: UserDto = {
-        preferred_username: 'testuser',
+        username: 'testuser',
         email: 'test@example.com',
         ldapGroups: mockLdapGroups,
         password: 'password',

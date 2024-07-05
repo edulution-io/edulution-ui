@@ -3,7 +3,7 @@ import LdapGroups from './groups/ldapGroups';
 class UserDto {
   _id?: string;
 
-  preferred_username: string;
+  username: string;
 
   email: string;
 
