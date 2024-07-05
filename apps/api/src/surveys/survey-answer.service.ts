@@ -171,7 +171,6 @@ class SurveyAnswersService {
       throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);
     }
 
-    // const idExistingUsersAnswer = existingUser.usersSurveys?.answeredSurveys?.find((userAnswer) => userAnswer === surveyId);
     const idExistingUsersAnswer = await this.surveyAnswerModel
       .findOne<SurveyAnswer>({ survey: surveyId, user: participant })
       .exec();

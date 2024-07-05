@@ -75,7 +75,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.toolbar.actions.splice(expandSettingsAction, 1);
 
   // TOOLBOX (LEFT SIDEBAR)
-  creator.showToolbox = true; // TODO: Ask Mi and/or Mo
+  creator.showToolbox = true; // TODO: Ask
   creator.toolbox.overflowBehavior = 'hideInMenu';
   creator.toolbox.searchEnabled = false;
 
@@ -105,6 +105,10 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };
+
+  creator.onModified.add(() => {
+    form.setValue('formula', creator.JSON);
+  });
 
   return (
     <>

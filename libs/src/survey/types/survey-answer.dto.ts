@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-type SurveyAnswer = {
+type SurveyAnswerDto = {
   _id: mongoose.Types.ObjectId;
   id: mongoose.Types.ObjectId;
   username: string;
@@ -9,4 +9,4 @@ type SurveyAnswer = {
   answer: JSON;
 };
 
-export default SurveyAnswer;
+export default SurveyAnswerDto;

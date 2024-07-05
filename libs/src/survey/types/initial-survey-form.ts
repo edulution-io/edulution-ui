@@ -2,9 +2,8 @@ import mongoose from 'mongoose';
 import { Group } from '@libs/user/types/groups/group';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 
-class InitialSurveyForm implements SurveyEditorFormData {
+class InitialSurveyForm implements SurveyDto {
   // ADDITIONAL
   participants: AttendeeDto[];
 

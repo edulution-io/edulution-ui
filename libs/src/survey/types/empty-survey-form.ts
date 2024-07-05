@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/user/types/groups/group';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
+import SurveyDto from '@libs/survey/types/survey.dto';
 
-class EmptySurveyForm implements SurveyEditorFormData {
+class EmptySurveyForm implements SurveyDto {
   participants: AttendeeDto[];
 
   invitedGroups: Group[];

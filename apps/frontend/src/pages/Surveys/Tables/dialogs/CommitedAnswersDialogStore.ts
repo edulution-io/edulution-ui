@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
-import SurveyAnswer from '@libs/survey/types/survey-answer';
+import SurveyAnswerDto from '@libs/survey/types/survey-answer.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -50,7 +50,7 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   ): Promise<JSON | undefined> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<SurveyAnswer>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
+      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
       set({ answer, isLoading: false });
