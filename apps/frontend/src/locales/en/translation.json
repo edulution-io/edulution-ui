@@ -17,6 +17,7 @@
       "downloadApp": "Download the edulution-io app here:"
     }
   },
+  "auth": { "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged out in 1 minute." } },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -190,6 +191,10 @@
         "confirm": "Change Password"
       }
     },
+    "faq": "FAQ",
+    "externalIntegration": "External Integration",
+    "config": { "mfa": "Setup Two-Factor-Authentication" },
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" },
     "errors": {
       "currentPasswordRequired": "Current password is required",
       "newPasswordRequired": "New password is required",
@@ -209,6 +214,7 @@
   "program": "Programs",
   "share": "Share",
   "students": "Students",
+  "user": "User",
   "login": {
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
@@ -226,7 +232,9 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
-    "icon": "Icon"
+    "icon": "Icon",
+    "groups": "Groups",
+    "clearSelection": "Clear selection"
   },
   "form": {
     "path": "Path",
@@ -275,7 +283,8 @@
   "search": {
     "type-to-search": "Type to search",
     "loading": "Loading",
-    "no-results": "No results"
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -374,7 +383,14 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-  "groupsPage": {
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Group could not be found by path",
+      "CouldNotGetUsers": "Users could not be found",
+      "CouldNotFetchGroupMembers": "Group members could not be found",
+      "CouldNotFetchUserById": "User could not be found by ID",
+      "CouldNotSearchGroups": "Could not search for groups"
+    },
     "classes": "Classes"
   }
 }

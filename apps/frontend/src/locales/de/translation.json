@@ -17,6 +17,9 @@
       "downloadApp": "Lade hier die edulution-io App herunter:"
     }
   },
+  "auth": {
+    "errors": { "TokenExpired": "Sitzung abgelaufen", "SessionExpiring": "Sie werden in 1 Minute abgemeldet." }
+  },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
     "sidebar": "Ticketsystem"
@@ -190,6 +193,10 @@
         "confirm": "Passwort ändern"
       }
     },
+    "faq": "FAQ",
+    "externalIntegration": "Externe Anbindung",
+    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
+    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
       "newPasswordRequired": "Neues Passwort ist erforderlich",
@@ -209,6 +216,7 @@
   "program": "Programme",
   "share": "Share",
   "students": "Schüler",
+  "user": "Benutzer",
   "login": {
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken"
@@ -216,7 +224,7 @@
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
-    "logout": "Logout",
+    "logout": "Abmelden",
     "save": "Speichern",
     "successful": "Erfolgreich",
     "failed": "Fehlgeschlagen",
@@ -226,7 +234,9 @@
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
-    "icon": "Icon"
+    "icon": "Icon",
+    "groups": "Gruppen",
+    "clearSelection": "Auswahl löschen"
   },
   "form": {
     "path": "Link",
@@ -276,7 +286,8 @@
   "search": {
     "type-to-search": "Tippen um zu suchen",
     "loading": "Lade",
-    "no-results": "Keine Ergebnisse"
+    "no-results": "Keine Ergebnisse",
+    "usersAdded": "{{ count }} hinzugefügt"
   },
   "fileCategory": {
     "folder": "Ordner",
@@ -374,7 +385,14 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-  "groupsPage": {
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Gruppe konnte anhand des Pfades nicht gefunden werden",
+      "CouldNotGetUsers": "Benutzer konnten nicht gefunden werden",
+      "CouldNotFetchGroupMembers": "Die Gruppenmitglieder konnten nicht gefunden werden",
+      "CouldNotFetchUserById": "Benutzer konnte anhand der ID nicht gefunden werden",
+      "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
+    },
     "classes": "Klassen"
   }
 }

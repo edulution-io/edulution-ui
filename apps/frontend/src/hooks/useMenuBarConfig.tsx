@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-
 import { APPS } from '@libs/appconfig/types';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
-import { getFromPathName } from '@/utils/common';
-
+import { getFromPathName } from '@libs/common/utils';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';

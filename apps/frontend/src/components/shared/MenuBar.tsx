@@ -4,10 +4,9 @@ import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '
 
 import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
-import { getFromPathName } from '@/utils/common';
-
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { getFromPathName } from '@libs/common/utils';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
