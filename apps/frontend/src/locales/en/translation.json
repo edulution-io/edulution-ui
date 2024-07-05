@@ -185,9 +185,9 @@
       "description": "Configure here the security settings of your account",
       "changePassword": {
         "title": "Change Password",
-        "current": "Current password",
-        "new": "New Password",
-        "confirmation": "Confirm Password",
+        "currentPassword": "Current password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
         "confirm": "Change Password"
       }
     },
@@ -198,6 +198,7 @@
     "errors": {
       "currentPasswordRequired": "Current password is required",
       "newPasswordRequired": "New password is required",
+      "confirmPasswordRequired": "Repeat the new password for the confirmation",
       "passwordsDoNotMatch": "Passwords do not match",
       "passwordLength": "Password must be at least 8 characters long"
     }

@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom';
 import { APPS } from '@libs/appconfig/types';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { getFromPathName } from '@libs/common/utils';
+import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
-import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
