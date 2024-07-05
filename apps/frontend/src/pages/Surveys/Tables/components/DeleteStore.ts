@@ -35,7 +35,7 @@ const useDeleteStore = create<DeleteStore>((set) => ({
   deleteSurvey: async (surveyIds: mongoose.Types.ObjectId[]): Promise<void> => {
     set({ error: null, isLoading: true });
     try {
-      await eduApi.delete(SURVEYS_ENDPOINT, { data: { surveyIds: surveyIds } });
+      await eduApi.delete(SURVEYS_ENDPOINT, { data: { surveyIds } });
       set({ isLoading: false });
     } catch (error) {
       set({ error: error instanceof AxiosError ? error : null, isLoading: false });
