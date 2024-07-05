@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
-import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -27,7 +26,7 @@ interface SurveyEditorFormStore {
   expirationTime: string | undefined;
   isAnonymous: boolean | undefined;
   newParticipants: AttendeeDto[];
-  updateOrCreateSurvey: (survey: UpdateOrCreateSurveyDto) => Promise<SurveyDto>;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<SurveyDto>;
   isLoading: boolean;
   error: AxiosError | null;
 }
@@ -55,7 +54,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   openSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: true }),
   closeSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: false }),
 
-  updateOrCreateSurvey: async (survey: UpdateOrCreateSurveyDto): Promise<SurveyDto> => {
+  updateOrCreateSurvey: async (survey: SurveyDto): Promise<SurveyDto> => {
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);

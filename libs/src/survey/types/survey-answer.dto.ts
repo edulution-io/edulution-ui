@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 
-type SurveyAnswer = {
+type SurveyAnswerDto = {
   surveyId: mongoose.Types.ObjectId;
+
   answer?: JSON;
 };
 
-export default SurveyAnswer;
+export default SurveyAnswerDto;

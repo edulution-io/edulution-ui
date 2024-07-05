@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Get, Patch, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
-import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/types/find-survey.dto';
@@ -42,11 +42,13 @@ class SurveysController {
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() updateOrCreateSurveyDto: UpdateOrCreateSurveyDto) {
-    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = updateOrCreateSurveyDto;
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
+    // first extrude the additional info fields from the remaining survey object
+    const { participants, ...surveyData } = surveyDto;
+    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
 
     const survey: Survey = {
-      ...updateOrCreateSurveyDto,
+      ...surveyData,
       _id: id,
       id,
       saveNo,

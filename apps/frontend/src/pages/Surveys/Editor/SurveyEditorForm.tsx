@@ -8,20 +8,20 @@ import { FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import EmptySurveyForm from '@libs/survey/types/empty-survey-form-data';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
+import SurveyDto from '@libs/survey/types/survey.dto';
 
 const SurveyEditorForm = () => {
   const { updateOrCreateSurvey, isLoading, error } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
 
-  const emptyFormValues: SurveyEditorFormData = new EmptySurveyForm();
+  const emptyFormValues: SurveyDto = new EmptySurveyForm();
 
   const formSchema = z.object({
     id: z.number(),
@@ -48,7 +48,7 @@ const SurveyEditorForm = () => {
     invitedGroups: z.array(z.object({})),
   });
 
-  const form = useForm<SurveyEditorFormData>({
+  const form = useForm<SurveyDto>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: emptyFormValues,

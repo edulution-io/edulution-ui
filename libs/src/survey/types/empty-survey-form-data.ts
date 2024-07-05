@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
+import SurveyDto from '@libs/survey/types/survey.dto';
 
-class EmptySurveyForm implements SurveyEditorFormData {
+class EmptySurveyForm implements SurveyDto {
   participants: [];
 
   invitedGroups: [];

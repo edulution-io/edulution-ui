@@ -7,15 +7,21 @@ interface SurveyDto {
 
   // SURVEY
   id: mongoose.Types.ObjectId;
+
   formula: JSON;
-  publicAnswers: JSON[];
+
   saveNo: number;
+
   created?: Date;
+
   expirationDate?: Date;
+
   expirationTime?: string;
+
   isAnonymous?: boolean;
 
   canShowResultsTable?: boolean;
+
   canShowResultsChart?: boolean;
 
   canSubmitMultipleAnswers?: boolean;
