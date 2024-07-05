@@ -1,4 +1,3 @@
-import User from '@libs/user/types/user';
 import UserDto from '../user.dto';
 
 type UserSlice = {
@@ -6,10 +5,10 @@ type UserSlice = {
   setUsername: (username: string) => void;
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
-  user: User | null;
+  user: UserDto | null;
   getUser: (username: string) => Promise<void>;
   createOrUpdateUser: (user: UserDto) => Promise<void>;
-  updateUser: (username: string, user: User) => Promise<void>;
+  updateUser: (username: string, user: UserDto) => Promise<void>;
   isLoggedInInEduApi: boolean;
   setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   eduApiToken: string;

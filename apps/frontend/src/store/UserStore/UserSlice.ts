@@ -5,7 +5,6 @@ import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
-import User from '@libs/user/types/user';
 import UserDto from '@libs/user/types/user.dto';
 import CryptoJS from 'crypto-js';
 
@@ -40,7 +39,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   },
 
   createOrUpdateUser: async (user: UserDto) => {
-    set({ userIsLoading: true });
+    set({ userIsLoading: true, user });
     try {
       await eduApi.post<UserDto>(EDU_API_USERS_ENDPOINT, user);
     } catch (error) {
@@ -53,7 +52,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   getUser: async (username) => {
     set({ userIsLoading: true });
     try {
-      const response = await eduApi.get<User>(`${EDU_API_USERS_ENDPOINT}/${username}`);
+      const response = await eduApi.get<UserDto>(`${EDU_API_USERS_ENDPOINT}/${username}`);
       set({ user: response.data });
     } catch (e) {
       handleApiError(e, set, 'userError');
@@ -65,7 +64,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   updateUser: async (username, userInfo) => {
     set({ userIsLoading: true });
     try {
-      await eduApi.patch<User>(`${EDU_API_USERS_ENDPOINT}/${username}`, userInfo);
+      await eduApi.patch<UserDto>(`${EDU_API_USERS_ENDPOINT}/${username}`, userInfo);
     } catch (error) {
       handleApiError(error, set, 'userError');
     } finally {

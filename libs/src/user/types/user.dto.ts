@@ -5,6 +5,10 @@ class UserDto {
 
   username: string;
 
+  firstName?: string;
+
+  lastName?: string;
+
   email: string;
 
   ldapGroups: LdapGroups;
