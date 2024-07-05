@@ -1,5 +1,3 @@
-import { JwtUserWithLdapGroups } from '@libs/user/types/jwt/jwtUserWithLdapGroups';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
 import User from '@libs/user/types/user';
 import RegisterUserDto from '../register-user.dto';
 
@@ -8,9 +6,8 @@ type UserSlice = {
   setUsername: (username: string) => void;
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
-  user: JwtUserWithLdapGroups | null;
-  setUser: (user: JwtUser) => void;
-  getUser: (username: string) => Promise<User | null>;
+  user: User | null;
+  getUser: (username: string) => Promise<void>;
   registerUser: (user: RegisterUserDto) => Promise<void>;
   updateUser: (username: string, user: User) => Promise<void>;
   isLoggedInInEduApi: boolean;

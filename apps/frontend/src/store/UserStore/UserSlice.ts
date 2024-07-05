@@ -2,8 +2,6 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
 import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
-import JwtUser from '@/datatypes/jwtUser';
-import processLdapGroups from '@/utils/processLdapGroups';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
@@ -28,11 +26,6 @@ const WEBDAV_SECRET = import.meta.env.VITE_WEBDAV_KEY as string;
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
   ...initialState,
 
-  setUser: (userInfo: JwtUser) => {
-    const user = processLdapGroups(userInfo);
-    set({ user });
-  },
-
   setUsername: (username: string) => set({ username }),
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => set({ isLoggedInInEduApi }),
@@ -53,8 +46,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     } catch (error) {
       handleApiError(error, set, 'userError');
     } finally {
-      set({ isAuthenticated: true });
-      set({ userIsLoading: false });
+      set({ isAuthenticated: true, userIsLoading: false });
     }
   },
 
@@ -65,10 +57,9 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ userIsLoading: true });
     try {
       const response = await eduApi.get<User>(`${EDU_API_USERS_ENDPOINT}/${username}`);
-      return response.data;
+      set({ user: response.data });
     } catch (e) {
       handleApiError(e, set, 'userError');
-      return null;
     } finally {
       set({ userIsLoading: false });
     }

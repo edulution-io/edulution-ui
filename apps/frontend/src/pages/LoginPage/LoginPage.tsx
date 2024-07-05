@@ -62,33 +62,29 @@ const LoginPage: React.FC = () => {
   };
 
   const handleRegisterUser = () => {
-    const profile = auth?.user?.profile;
+    const profile = auth.user?.profile;
     if (!profile) {
       return;
     }
     const password = form.getValues('password') as string;
 
-    const newProfile = {
-      preferred_username: profile.preferred_username,
-      email: profile.email,
-      ldapGroups: profile.ldapGroups,
+    const newUser: RegisterUserDto = {
+      preferred_username: profile.preferred_username!,
+      email: profile.email!,
+      ldapGroups: profile.ldapGroups as string[],
       password,
     };
 
-    void registerUser(newProfile as RegisterUserDto);
+    void registerUser(newUser);
   };
 
   useEffect(() => {
-    const register = () => {
-      const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
-      if (isLoginPrevented) {
-        return;
-      }
+    const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
+    if (isLoginPrevented) {
+      return;
+    }
 
-      void handleRegisterUser();
-    };
-
-    register();
+    void handleRegisterUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
