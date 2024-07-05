@@ -1,6 +1,8 @@
 import LdapGroups from './groups/ldapGroups';
 
 class UserDto {
+  _id?: string;
+
   preferred_username: string;
 
   email: string;
@@ -8,6 +10,10 @@ class UserDto {
   ldapGroups: LdapGroups;
 
   password: string;
+
+  mfaEnabled?: boolean;
+
+  isTotpSet?: boolean;
 }
 
 export default UserDto;
