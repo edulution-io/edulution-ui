@@ -138,7 +138,7 @@ describe(UsersService.name, () => {
     expect(service).toBeDefined();
   });
 
-  describe('register', () => {
+  describe('createOrUpdate', () => {
     it('should create a new user if not existing', async () => {
       const userDto = new RegisterUserDto();
       userDto.preferred_username = 'testuser';
@@ -151,7 +151,7 @@ describe(UsersService.name, () => {
         exec: jest.fn().mockResolvedValue(null),
       } as unknown as Query<any, any>);
 
-      await service.register(userDto);
+      await service.createOrUpdate(userDto);
 
       expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' });
       expect(model.create).toHaveBeenCalledWith({
@@ -168,7 +168,7 @@ describe(UsersService.name, () => {
       userDto.ldapGroups = ['group1'];
       userDto.password = 'password';
 
-      await service.register(userDto);
+      await service.createOrUpdate(userDto);
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { username: 'testuser' },

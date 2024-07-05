@@ -8,7 +8,7 @@ type UserSlice = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   user: User | null;
   getUser: (username: string) => Promise<void>;
-  registerUser: (user: RegisterUserDto) => Promise<void>;
+  createOrUpdateUser: (user: RegisterUserDto) => Promise<void>;
   updateUser: (username: string, user: User) => Promise<void>;
   isLoggedInInEduApi: boolean;
   setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;

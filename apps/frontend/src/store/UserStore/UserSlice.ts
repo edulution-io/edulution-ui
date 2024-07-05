@@ -39,10 +39,10 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ isAuthenticated: false });
   },
 
-  registerUser: async (user: RegisterUserDto) => {
+  createOrUpdateUser: async (user: RegisterUserDto) => {
     set({ userIsLoading: true });
     try {
-      await eduApi.post<RegisterUserDto>(`${EDU_API_USERS_ENDPOINT}/register`, user);
+      await eduApi.post<RegisterUserDto>(EDU_API_USERS_ENDPOINT, user);
     } catch (error) {
       handleApiError(error, set, 'userError');
     } finally {

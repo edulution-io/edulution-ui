@@ -7,7 +7,6 @@ import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
-import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 
 const mockUserModel = {
@@ -18,7 +17,7 @@ const mockUserModel = {
 };
 
 const mockUsersService = {
-  register: jest.fn(),
+  createOrUpdate: jest.fn(),
   create: jest.fn(),
   findAll: jest.fn(),
   findOne: jest.fn(),
@@ -60,7 +59,7 @@ describe(UsersController.name, () => {
     expect(service).toBeDefined();
   });
 
-  describe('register', () => {
+  describe('createOrUpdate', () => {
     it('should call register method of usersService with correct arguments', async () => {
       const registerDto: RegisterUserDto = {
         preferred_username: 'testuser',
@@ -68,21 +67,8 @@ describe(UsersController.name, () => {
         ldapGroups: ['group1'],
         password: 'password',
       };
-      await controller.register(registerDto);
-      expect(service.register).toHaveBeenCalledWith(registerDto);
-    });
-  });
-
-  describe('create', () => {
-    it('should call create method of usersService with correct arguments', async () => {
-      const createUserDto: CreateUserDto = {
-        username: 'testuser',
-        email: 'test@example.com',
-        password: 'password',
-        roles: ['role1'],
-      };
-      await controller.create(createUserDto);
-      expect(service.create).toHaveBeenCalledWith(createUserDto);
+      await controller.createOrUpdate(registerDto);
+      expect(service.createOrUpdate).toHaveBeenCalledWith(registerDto);
     });
   });
 

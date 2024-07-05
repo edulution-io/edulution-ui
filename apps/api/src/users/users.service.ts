@@ -19,7 +19,7 @@ class UsersService {
     private readonly groupsService: GroupsService,
   ) {}
 
-  async register(userDto: RegisterUserDto): Promise<User | null> {
+  async createOrUpdate(userDto: RegisterUserDto): Promise<User | null> {
     const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
 
     let newUser;
