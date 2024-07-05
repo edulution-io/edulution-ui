@@ -122,7 +122,7 @@
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "Umfrage konnte weder aktualisiert noch erstellt werden",
       "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
+      "notAbleToDeleteSurveyError": "Die Umfragen konnten nicht gelöscht werden",
       "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
       "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
       "notAbleToFindSurveyParameterError": "Um eine Umfrage findne zu können muss mindestens eine Survey-Id übergeben werden",

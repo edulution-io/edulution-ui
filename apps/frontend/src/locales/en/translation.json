@@ -122,7 +122,7 @@
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "Neither able to update a survey nor to create a new one",
       "notAbleToCreateSurveyError": "Not able to create the survey",
-      "notAbleToDeleteSurveyError": "Not able to delete survey",
+      "notAbleToDeleteSurveyError": "Not able to delete the surveys",
       "notAbleToFindSurveyError": "Survey not found",
       "notAbleToFindSurveysError": "Did not find a single survey",
       "notAbleToFindSurveyParameterError": "In order to find a survey you have to provide at least one surveyId",
