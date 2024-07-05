@@ -18,7 +18,7 @@ import RegisterUserDto from '@libs/user/types/register-user.dto';
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { eduApiToken, createOrUpdateUser, setUsername, setWebdavKey, setEduApiToken } = useUserStore();
+  const { eduApiToken, webdavKey, createOrUpdateUser, setUsername, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
@@ -66,13 +66,11 @@ const LoginPage: React.FC = () => {
     if (!profile) {
       return;
     }
-    const password = form.getValues('password') as string;
-
     const newUser: RegisterUserDto = {
       preferred_username: profile.preferred_username!,
       email: profile.email!,
       ldapGroups: profile.ldapGroups as string[],
-      password,
+      password: webdavKey,
     };
 
     void createOrUpdateUser(newUser);
