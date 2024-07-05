@@ -47,7 +47,7 @@ const SurveyEditorForm = () => {
     canSubmitMultipleAnswers: z.boolean().optional(),
 
     // ADDITIONAL
-    participants: z.array(
+    invitedAttendees: z.array(
       z.intersection(
         z.object({
           firstName: z.string().optional(),
@@ -71,7 +71,7 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     const {
-      participants,
+      invitedAttendees,
       invitedGroups,
 
       id,
@@ -85,7 +85,7 @@ const SurveyEditorForm = () => {
     } = form.getValues();
 
     await updateOrCreateSurvey({
-      participants,
+      invitedAttendees,
       invitedGroups,
 
       id,

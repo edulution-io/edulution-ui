@@ -76,7 +76,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   return (
     <>
       <SearchUsersOrGroups
-        users={watch('participants') as AttendeeDto[]}
+        users={watch('invitedAttendees') as AttendeeDto[]}
         onSearch={onAttendeesSearch}
         onUserChange={handleAttendeesChange}
         groups={watch('invitedGroups') as MultipleSelectorGroup[]}

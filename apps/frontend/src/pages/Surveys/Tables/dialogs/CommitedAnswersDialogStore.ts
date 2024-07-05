@@ -56,7 +56,7 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
       set({ answer, isLoading: false });
       return answer;
     } catch (error) {
-      set({ error: error instanceof Error ? error : null, isLoading: false });
+      set({ answer: undefined, error: error instanceof Error ? error : null, isLoading: false });
       toast.error(error instanceof Error ? `${error.name}: ${error.message}` : 'Error while fetching an answer');
       handleApiError(error, set);
       return undefined;

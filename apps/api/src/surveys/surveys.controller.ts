@@ -76,7 +76,7 @@ class SurveysController {
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUsername() username: string) {
     // first extrude the additional info fields from the remaining survey object
-    const { participants, ...surveyData } = surveyDto;
+    const { invitedAttendees, ...surveyData } = surveyDto;
     const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
 
     const survey: Survey = {
@@ -101,7 +101,7 @@ class SurveysController {
         );
       }
       await this.usersSurveysService.addToCreatedSurveys(username, id);
-      await this.usersSurveysService.populateSurvey(participants, id);
+      await this.usersSurveysService.populateSurvey(invitedAttendees, id);
       return createdSurvey;
     }
 

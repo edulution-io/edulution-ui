@@ -13,7 +13,7 @@ interface DeleteStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
-  deleteSurvey: (id: mongoose.Types.ObjectId) => Promise<void>;
+  deleteSurvey: (surveyIds: mongoose.Types.ObjectId[]) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 
@@ -32,10 +32,10 @@ const useDeleteStore = create<DeleteStore>((set) => ({
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  deleteSurvey: async (surveyID: mongoose.Types.ObjectId): Promise<void> => {
+  deleteSurvey: async (surveyIds: mongoose.Types.ObjectId[]): Promise<void> => {
     set({ error: null, isLoading: true });
     try {
-      await eduApi.delete(SURVEYS_ENDPOINT, { params: { id: surveyID } });
+      await eduApi.delete(SURVEYS_ENDPOINT, { data: { surveyIds: surveyIds } });
       set({ isLoading: false });
     } catch (error) {
       set({ error: error instanceof AxiosError ? error : null, isLoading: false });

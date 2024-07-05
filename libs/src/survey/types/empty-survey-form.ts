@@ -4,7 +4,7 @@ import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
 
 class EmptySurveyForm implements SurveyDto {
-  participants: AttendeeDto[];
+  invitedAttendees: AttendeeDto[];
 
   invitedGroups: Group[];
 
@@ -29,7 +29,7 @@ class EmptySurveyForm implements SurveyDto {
   canShowResultsChart: boolean;
 
   constructor() {
-    this.participants = [];
+    this.invitedAttendees = [];
     this.invitedGroups = [];
 
     const time = new Date().getTime();

@@ -4,7 +4,7 @@ import { Group } from '@libs/user/types/groups/group';
 
 interface SurveyDto {
   // ADDITIONAL;
-  participants: AttendeeDto[];
+  invitedAttendees: AttendeeDto[];
 
   invitedGroups: Group[];
 

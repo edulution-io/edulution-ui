@@ -41,7 +41,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
 
   useEffect((): void => {
     if (survey && isOpenPublicResultsTableDialog) {
-      void getSurveyResult(survey.id, survey.participants);
+      void getSurveyResult(survey.id, survey.invitedAttendees);
     }
   }, [isOpenPublicResultsTableDialog, survey]);
 
