@@ -11,8 +11,6 @@ type UserSlice = {
   setUser: (user: JwtUser) => void;
   getUser: (username: string) => Promise<User | null>;
   updateUser: (username: string, user: User) => Promise<void>;
-  isLoggedInInEduApi: boolean;
-  setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   eduApiToken: string;
   setEduApiToken: (eduApiToken: string) => void;
   webdavKey: string;
