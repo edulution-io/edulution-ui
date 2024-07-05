@@ -2,12 +2,12 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import ConferencesService from './conferences.service';
 import ConferencesController from './conferences.controller';
 import { Conference } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
-import CreateConferenceDto from './dto/create-conference.dto';
 import JWTUser from '../types/JWTUser';
 
 const mockConferencesModel = {

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import ConferencesService from './conferences.service';
-import CreateConferenceDto from './dto/create-conference.dto';
 import { Conference } from './conference.schema';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';

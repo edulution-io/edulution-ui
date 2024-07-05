@@ -5,10 +5,10 @@ import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMen
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
-import { getFromPathName } from '@/utils/common';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import { APPS } from '@libs/appconfig/types';
+import { getFromPathName } from '@libs/common/utils';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();

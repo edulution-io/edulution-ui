@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
 import { ConferencesIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
+import Conference from '@libs/conferences/types/conference.dto';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/Accordion';
 import WidgetLabelWithImageForTriggers from '@/components/feature/components/widgetLabelWithImageForTriggers';
 import FEED_PULL_TIME_INTERVAL from '@/components/feature/components/constants/pull-time-interval';
 import RunningConferencesList from '@/components/feature/Feed/conferences/RunningConferencesList';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 

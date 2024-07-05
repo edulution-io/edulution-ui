@@ -6,7 +6,7 @@ import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import Conference from '@/pages/ConferencePage/dto/conference.dto';
+import Conference from '@libs/conferences/types/conference.dto';
 
 interface ConferencesListProps {
   items: Conference[];
