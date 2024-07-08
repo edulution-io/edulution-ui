@@ -32,6 +32,7 @@ const contentFiletypes: ContentFileTypes = {
   '.java': 'code',
   '.py': 'code',
   '.cpp': 'code',
+  '.drawio': 'vector',
 };
 
 export function getFileCategorie(filename: string): IconType {
@@ -77,7 +78,7 @@ export function getElapsedTime(dateParam: Date): string {
 }
 
 export default {
+  getElapsedTime,
   parseDate,
   getFileCategorie,
-  getElapsedTime,
 };

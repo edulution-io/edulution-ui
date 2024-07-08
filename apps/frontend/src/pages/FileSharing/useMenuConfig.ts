@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
-import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
-import { DirectoryFile } from '@/datatypes/filesystem';
+import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import { MenuItem } from '@/datatypes/types';
 import {
   FileSharingIcon,
   IsoIcon,
@@ -12,76 +12,73 @@ import {
   TeacherIcon,
 } from '@/assets/icons';
 
-const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
-  if (mounts.filename.includes('teachers')) {
-    return TeacherIcon;
-  }
-  if (mounts.filename.includes('projects')) {
-    return ProjectIcon;
-  }
-  if (mounts.filename.includes('iso')) {
-    return IsoIcon;
-  }
-  if (mounts.filename.includes('programs')) {
-    return ProgrammIcon;
-  }
-  if (mounts.filename.includes('share')) {
-    return ShareIcon;
-  }
-  if (mounts.filename.includes('students')) {
-    return StudentsIcon;
-  }
-  return FileSharingIcon;
+const iconMap = {
+  teachers: TeacherIcon,
+  projects: ProjectIcon,
+  iso: IsoIcon,
+  programs: ProgrammIcon,
+  share: ShareIcon,
+  students: StudentsIcon,
+};
+
+const findCorrespondingMountPointIcon = (filename: string) => {
+  const key = Object.keys(iconMap).find((k) => filename.includes(k));
+  return key ? iconMap[key as keyof typeof iconMap] : FileSharingIcon;
 };
 
 const useFileSharingMenuConfig = () => {
-  const { fetchMountPoints, fetchFiles } = useFileManagerStoreOLD();
+  const { mountPoints, setMountPoints, fetchMountPoints } = useFileManagerStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  function constructFilePath(mountPoint: DirectoryFile, username: string) {
-    return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
-  }
-
-  type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
-
-  useEffect(() => {
-    const fetchAndPrepareMenuItems = async () => {
+  const fetchAndSetMountPoints = useCallback(async () => {
+    if (mountPoints.length === 0) {
       try {
-        const userStorageString: string | null = localStorage.getItem('user-storage');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-        const { user } = userStorage.state;
-
-        const mounts: DirectoryFile[] = await fetchMountPoints();
-        const items = mounts.map((mountPoint) => ({
-          id: mountPoint.basename,
-          label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
-          icon: findCorrespondingMountPointIcon(mountPoint),
-          action: async () => {
-            try {
-              await fetchFiles(constructFilePath(mountPoint, user));
-            } catch (error) {
-              console.error('Error fetching files:', error);
-            }
-          },
-        }));
-        setMenuItems(items);
+        const mounts = await fetchMountPoints();
+        if (Array.isArray(mounts)) {
+          setMountPoints(mounts);
+        }
       } catch (error) {
         console.error('Error fetching mount points:', error);
       }
+    }
+  }, [mountPoints.length, fetchMountPoints, setMountPoints]);
+
+  useEffect(() => {
+    const asyncSetMountPoints = async () => {
+      await fetchAndSetMountPoints();
     };
+    asyncSetMountPoints().catch((error) => {
+      console.error(error);
+    });
+  }, [fetchAndSetMountPoints]);
 
-    fetchAndPrepareMenuItems().catch(() => {});
-  }, []);
+  const handlePathChange = useCallback(
+    (newPath: string) => {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('path', newPath);
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams],
+  );
 
-  const fileSharingMenuConfig = (): MenuBarEntryProps => ({
+  useEffect(() => {
+    const items = mountPoints.map((mountPoint) => ({
+      id: mountPoint.basename,
+      label: mountPoint.basename,
+      icon: findCorrespondingMountPointIcon(mountPoint.filename),
+      color: 'hover:bg-ciGreenToBlue',
+      action: () => handlePathChange(mountPoint.filename.replace('/webdav', '')),
+    }));
+    setMenuItems(items);
+  }, [mountPoints]);
+
+  return {
     menuItems,
     title: 'filesharing.title',
     icon: FileSharingIcon,
-    color: 'hover:bg-ciDarkBlue',
-  });
-
-  return fileSharingMenuConfig();
+    color: 'hover:bg-ciGreenToBlue',
+  };
 };
 
 export default useFileSharingMenuConfig;

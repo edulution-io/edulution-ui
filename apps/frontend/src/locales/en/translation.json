@@ -226,7 +226,8 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
-    "filesToUpload": "Files to upload"
+    "filesToUpload": "Files to upload",
+    "limitExceeded": "Reached the limit of 5 files"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -250,16 +251,33 @@
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Presentation",
+    "spreadsheet": "Table",
+    "vector": "Diagram"
   },
   "fileCreateNewContent": {
+    "filename": "Dateiname",
+    "documentFile": "Create a new document",
+    "spreadsheetFile": "Create a new table",
+    "presentationFile": "Create a new presentation",
+    "textFile": "Create a new textfile",
+    "drawIoFile": "Create a new Draw.io-File",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
-    "unknownErrorOccurred": "An unknown error occurred"
+    "unknownErrorOccurred": "An unknown error occurred",
+    "newFileFromType": {
+      "drawIoFile": "New Draw.io-File",
+      "textFile": "New Textfile",
+      "spreadsheetFile": "New Table",
+      "presentationFile": "New Presentation",
+      "documentFile": "New Document"
+    }
   },
+
   "fileRenameContent": {
     "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",

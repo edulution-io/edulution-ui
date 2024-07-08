@@ -15,5 +15,6 @@ import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export default class UsersModule {}

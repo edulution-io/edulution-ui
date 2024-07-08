@@ -1,45 +1,6 @@
-export type ValidateNameResult = {
-  isValid: boolean;
-  error: string;
-};
-
 function getFileNameFromPath(path: string): string {
   const segments = path.split('/');
   return segments[segments.length - 1];
-}
-
-function getPathWithoutFileName(path: string): string {
-  const segments = path.split('/');
-  segments.pop();
-  return segments.join('/');
-}
-
-function getPrecedingPath(fullPath: string): string {
-  const parts = fullPath.split('/').filter(Boolean);
-  parts.pop();
-  return `${fullPath.startsWith('/') ? '/' : ''}${parts.join('/')}`;
-}
-
-function validateDirectoryName(path: string): ValidateNameResult {
-  const filename = getFileNameFromPath(path);
-  if (/\s/.test(filename) && !(filename.length <= 0)) {
-    return { isValid: false, error: 'Directory name should not contain spaces.' };
-  }
-  if (filename.includes('.')) {
-    return { isValid: false, error: 'Directory is not allowed to have a file extension' };
-  }
-  return { isValid: true, error: '' };
-}
-
-function validateFileName(path: string): ValidateNameResult {
-  const filename = getFileNameFromPath(path);
-  if (/\s/.test(filename) && !(filename.length <= 0)) {
-    return { isValid: false, error: 'File name should not contain spaces.' };
-  }
-  if (!filename.endsWith('.txt')) {
-    return { isValid: false, error: 'File name must end with .txt' };
-  }
-  return { isValid: true, error: '' };
 }
 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -54,17 +15,4 @@ function formatBytes(bytes: number, decimals = 2): string {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
-function getFileType(fullPath: string): string {
-  const parts = fullPath.split('.');
-  return parts.length > 1 ? parts.pop() || '' : '';
-}
-
-export {
-  getPathWithoutFileName,
-  getFileNameFromPath,
-  validateFileName,
-  validateDirectoryName,
-  getPrecedingPath,
-  formatBytes,
-  getFileType,
-};
+export { getFileNameFromPath, formatBytes };

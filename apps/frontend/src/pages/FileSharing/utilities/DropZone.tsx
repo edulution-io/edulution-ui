@@ -6,35 +6,23 @@ import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiDocument, HiXMark } from 'react-icons/hi2';
 
-export interface FileWithPreview extends File {
-  preview: string;
-}
-
 interface DropZoneProps {
-  files: FileWithPreview[];
-  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[]>>;
+  files: File[];
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
+const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   const { t } = useTranslation();
 
   const removeFile = (name: string) => {
-    setFiles((removed) => removed.filter((file) => file.name !== name));
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const newFiles = acceptedFiles.filter((file) => !files.some((f) => f.name === file.name));
       if (newFiles.length) {
-        setFiles((previousFiles) => [
-          ...previousFiles,
-          ...acceptedFiles.map((file) => {
-            const fileWithPreview: FileWithPreview = Object.assign(file, {
-              preview: URL.createObjectURL(file),
-            });
-            return fileWithPreview;
-          }),
-        ]);
+        setFiles((prevFiles) => [...prevFiles, ...newFiles]);
       }
     },
     [files, setFiles],
@@ -49,7 +37,7 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
     <form>
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-        {files.length <= 5 ? (
+        {files.length < 5 ? (
           <div className="flex flex-col items-center justify-center space-y-2">
             <p className="font-semibold text-gray-700">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
@@ -69,10 +57,10 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           >
             {file.type.startsWith('image/') ? (
               <img
-                src={file.preview}
-                alt={t('filesharingUpload.previewAlt', { filename: file.preview })}
+                src={URL.createObjectURL(file)}
+                alt={t('filesharingUpload.previewAlt', { filename: file.name })}
                 className="mb-2 h-auto w-full object-cover"
-                onLoad={() => URL.revokeObjectURL(file.preview)}
+                onLoad={() => URL.revokeObjectURL(file.name)}
               />
             ) : (
               <div className="flex h-20 items-center justify-center">
@@ -90,16 +78,21 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         ))}
       </ul>
       <p className="pt-4 text-black underline">{t('filesharingUpload.filesToUpload')}</p>
-      <ScrollArea className="h-[200px]">
+      <ScrollArea className="h-[30vh]">
         <ol
           type="1"
           className="text-black"
         >
           {files.map((file, i) => (
-            <li key={file.name}>{`${i + 1}. ${file.name}`}</li>
+            <li
+              key={file.name}
+              className="truncate-ellipsis flex w-full items-center justify-between rounded bg-white p-2 shadow"
+            >{`${i + 1}. ${file.name}`}</li>
           ))}
         </ol>
       </ScrollArea>
     </form>
   );
 };
+
+export default DropZone;

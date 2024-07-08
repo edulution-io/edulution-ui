@@ -4,7 +4,7 @@
     "outDir": "../../dist/apps/out-tsc",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "Multer"],
     "composite": true,
     "declaration": true
   },

@@ -227,7 +227,8 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
-    "filesToUpload": "Dateien zum Hochladen"
+    "filesToUpload": "Dateien zum Hochladen",
+    "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -251,15 +252,31 @@
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Präsentation",
+    "spreadsheet": "Tabelle",
+    "vector": "Diagramm"
   },
   "fileCreateNewContent": {
+    "documentFile": "Erstelle ein neues Dokument",
+    "spreadsheetFile": "Erstelle eine neue Tabelle",
+    "presentationFile": "Erstelle eine neue Präsentation",
+    "textFile": "Erstelle eine neue Textdatei",
+    "drawIoFile": "Erstelle eine neue Draw.io-Datei",
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
-    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+    "filename": "Dateiname",
+    "newFileFromType": {
+      "drawIoFile": "Neue Draw.io-Datei",
+      "textFile": "Neue Textdatei",
+      "spreadsheetFile": "Neue Tabelle",
+      "presentationFile": "Neue Präsentation",
+      "documentFile": "Neues Dokument"
+    }
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",

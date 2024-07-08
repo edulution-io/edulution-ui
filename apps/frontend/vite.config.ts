@@ -4,6 +4,9 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { resolve } from 'path';
 
 export default defineConfig({
+  define: {
+    'process.env': {},
+  },
   test: {
     globals: true,
     cache: {
@@ -60,6 +63,7 @@ export default defineConfig({
           Origin: 'https://server.schulung.multi.schule:8001',
         },
       },
+
       '/edu-api': {
         rewrite: (path) => path.replace(/^\/edu-api/, ''),
         target: 'http://localhost:3001/edu-api',

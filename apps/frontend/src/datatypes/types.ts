@@ -1,5 +1,5 @@
-import { DirectoryFile } from '@/datatypes/filesystem';
 import { AppConfigOptions } from '@/datatypes/appConfigOptions';
+import { DirectoryFile } from '@libs/filesharing/filesystem';
 
 export enum AppIntegrationType {
   NATIVE = 'native',
