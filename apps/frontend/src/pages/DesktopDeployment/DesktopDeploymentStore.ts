@@ -59,7 +59,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const response = await axios.post(
         `${baseUrl}/tokens`,
         {
-          username: userStore.getState().user,
+          username: userStore.getState().username,
           password,
         },
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
@@ -91,7 +91,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
 
     const vdiConnectionRequestBody = {
       group: 'win10-vdi',
-      user: userStore.getState().user,
+      user: userStore.getState().username,
     };
 
     try {
