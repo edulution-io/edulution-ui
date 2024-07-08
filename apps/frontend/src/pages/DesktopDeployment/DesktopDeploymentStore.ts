@@ -24,7 +24,7 @@ interface DesktopDeploymentStore {
   setVirtualMachines: (virtualMachines: VirtualMachines) => void;
   authenticate: () => Promise<void>;
   getConnections: () => Promise<void>;
-  postRequestVdi: () => Promise<VdiConnectionRequest | null>;
+  postRequestVdi: (group: string) => Promise<VdiConnectionRequest | null>;
   getVirtualMachines: () => Promise<void>;
 }
 
@@ -90,11 +90,11 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     }
   },
 
-  postRequestVdi: async () => {
+  postRequestVdi: async (group: string) => {
     set({ isLoading: true });
 
     const vdiConnectionRequestBody = {
-      group: 'win10-vdi',
+      group,
       user: userStore.getState().username,
     };
 

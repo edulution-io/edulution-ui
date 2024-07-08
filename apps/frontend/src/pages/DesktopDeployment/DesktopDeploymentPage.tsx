@@ -12,6 +12,7 @@ import { APPS } from '@libs/appconfig/types';
 import cn from '@/lib/utils';
 import useUserStore from '@/store/UserStore/UserStore';
 import { CloneVms, Connections } from '@libs/desktopdeployment/types';
+import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
@@ -64,9 +65,6 @@ const DesktopDeploymentPage: React.FC = () => {
         await getVirtualMachines();
       } catch (e) {
         console.error(e);
-      } finally {
-        const clones = virtualMachines?.data['win10-vdi']?.clone_vms || {};
-        setCloneVms(clones);
       }
     };
 
@@ -80,10 +78,17 @@ const DesktopDeploymentPage: React.FC = () => {
   }, [token]);
 
   useEffect(() => {
+    if (virtualMachines) {
+      const clones = virtualMachines.data[VirtualMachineOs.WIN10].clone_vms;
+      setCloneVms(clones);
+    }
+  }, [virtualMachines]);
+
+  useEffect(() => {
     if (Object.keys(cloneVms).length > 0) {
       const requestVdi = async () => {
         try {
-          const response = await postRequestVdi();
+          const response = await postRequestVdi(VirtualMachineOs.WIN10);
           const vdiConnection = response?.data;
           if (vdiConnection) {
             const result = findVmByIp(cloneVms, vdiConnection.ip);
