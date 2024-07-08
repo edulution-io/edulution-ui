@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 type BodyType = {
   group: string;
@@ -11,9 +11,20 @@ const lmnVdiApiUrl = process.env.LMN_VDI_API_URL;
 
 @Injectable()
 class VdiService {
+  private lmnApi: AxiosInstance;
+
+  constructor() {
+    this.lmnApi = axios.create({
+      baseURL: `${lmnVdiApiUrl}/api`,
+      headers: {
+        'LMN-API-Secret': lmnVdiApiSecret,
+      },
+    });
+  }
+
   async requestVdi(body: BodyType): Promise<AxiosResponse> {
     try {
-      const response = await axios.post(`${lmnVdiApiUrl}/api/connection/request`, body, {
+      const response = await this.lmnApi.post('/connection/request', body, {
         headers: {
           'LMN-API-Secret': lmnVdiApiSecret,
         },
@@ -26,7 +37,7 @@ class VdiService {
 
   async getStatusOfClones(): Promise<AxiosResponse | null> {
     try {
-      const response = await axios.get(`${lmnVdiApiUrl}/api/status/clones`, {
+      const response = await this.lmnApi.get('/status/clones', {
         headers: {
           'LMN-API-Secret': lmnVdiApiSecret,
         },
