@@ -122,8 +122,19 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    },
+    "win10": "Windows 10",
+    "clients": "Clients available",
+    "client": "Client available"
   },
   "wlan": {
     "title": "WLAN",
@@ -217,7 +228,9 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
-    "clearSelection": "Clear selection"
+    "clearSelection": "Clear selection",
+    "start": "Start",
+    "close": "Close"
   },
   "form": {
     "path": "Path",

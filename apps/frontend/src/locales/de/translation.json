@@ -124,8 +124,19 @@
     "sidebar": "Standortverbindung"
   },
   "desktopdeployment": {
-    "title": "DESKTOP-BEREITSTELLUNG",
-    "sidebar": "Desktop-Bereitstellung"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
+    "sidebar": "Desktop",
+    "connect": "Verbinden",
+    "close": "Verbindung schließen",
+    "error": {
+      "title": "Verbindungsfehler",
+      "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
+    },
+    "win10": "Windows 10",
+    "clients": "Clients verfügbar",
+    "client": "Client verfügbar"
   },
   "wlan": {
     "title": "WLAN",
@@ -219,7 +230,9 @@
     "create": "Erstellen",
     "icon": "Icon",
     "groups": "Gruppen",
-    "clearSelection": "Auswahl löschen"
+    "clearSelection": "Auswahl löschen",
+    "start": "Starten",
+    "close": "Schließen"
   },
   "form": {
     "path": "Link",

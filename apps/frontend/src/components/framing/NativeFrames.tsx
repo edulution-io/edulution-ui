@@ -5,6 +5,7 @@ import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
+import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
@@ -26,6 +27,8 @@ const NativeFrames = () => {
           return <LinuxmusterPage key={appConfig.name} />;
         case APPS.WHITEBOARD:
           return <Whiteboard key={appConfig.name} />;
+        case APPS.DESKTOP_DEPLOYMENT:
+          return <DesktopDeploymentPage key={appConfig.name} />;
         default:
           return null;
       }

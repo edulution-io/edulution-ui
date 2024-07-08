@@ -7,6 +7,7 @@ import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
+import VdiModule from '../vdi/vdi.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import ClassManagementModule from '../classManagement/classManagement.module';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    VdiModule,
     JwtModule.register({
       global: true,
     }),

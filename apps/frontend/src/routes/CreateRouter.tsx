@@ -28,6 +28,8 @@ const pageSwitch = (page: string) => {
       return <FramePlaceholder />;
     case APPS.WHITEBOARD:
       return <FramePlaceholder />;
+    case APPS.DESKTOP_DEPLOYMENT:
+      return <FramePlaceholder />;
     default:
       return (
         <Navigate
