@@ -1,11 +1,9 @@
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { HttpStatus } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/user-error-messages';
-import { HttpStatus } from '@nestjs/common';
-import UsersSurveysService from './users-surveys.service';
-import { User, UserDocument } from '../users/user.schema';
 import {
   unknownSurvey,
   newObjectId,
@@ -14,7 +12,6 @@ import {
   createdSurvey,
   createdSurveys,
   distributedSurvey,
-  mockedAnswer,
   openSurvey,
   openSurveys,
   firstMockUser,
@@ -29,10 +26,17 @@ import {
   userSurveysAfterRemoveDistributedSurvey,
 } from './users-surveys.service.mock';
 import { firstUsername, firstParticipant, secondUsername, secondParticipant } from './surveys.service.mock';
+import { User, UserDocument } from '../users/user.schema';
+import UsersSurveysService from './users-surveys.service';
+import { Survey } from './survey.schema';
+import SurveysService from './surveys.service';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import SurveysAnswerService from './survey-answer.service';
 
 describe('UsersSurveysService', () => {
   let service: UsersSurveysService;
   let userModel: Model<UserDocument>;
+  let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,6 +44,16 @@ describe('UsersSurveysService', () => {
         UsersSurveysService,
         {
           provide: getModelToken(User.name),
+          useValue: jest.fn(),
+        },
+        SurveysService,
+        {
+          provide: getModelToken(Survey.name),
+          useValue: jest.fn(),
+        },
+        SurveysAnswerService,
+        {
+          provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
       ],
@@ -272,27 +286,6 @@ describe('UsersSurveysService', () => {
     });
   });
 
-  describe('addAnswer', () => {
-    it('should remove the survey from open surveys and move it to answered together with the answer', async () => {
-      userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ username: firstUsername, usersSurveys: userSurveys }),
-      });
-      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest
-          .fn()
-          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddAnswerForOpenSurvey }),
-      });
-
-      jest.spyOn(service, 'updateUser');
-
-      await service.addAnswer(firstUsername, openSurvey, mockedAnswer, false);
-      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        username: firstUsername,
-        usersSurveys: userSurveysAfterAddAnswerForOpenSurvey,
-      });
-    });
-  });
-
   describe('addToOpenSurveys', () => {
     it('should add a survey to open surveys', async () => {
       userModel.findOne = jest.fn().mockReturnValueOnce({
@@ -361,21 +354,6 @@ describe('UsersSurveysService', () => {
 
       await service.populateSurvey([secondParticipant], newObjectId);
       expect(service.addToOpenSurveys).toHaveBeenCalledWith(secondParticipant.value, newObjectId);
-    });
-  });
-
-  describe('getCommitedAnswer', () => {
-    it('should return the previously commited answer for the survey with props.surveyId from user with props.username', async () => {
-      userModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest
-          .fn()
-          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddAnswerForOpenSurvey }),
-      });
-
-      jest.spyOn(service, 'getCommitedAnswer');
-
-      const result = await service.getCommitedAnswer(firstUsername, openSurvey);
-      expect(result).toStrictEqual(mockedAnswer);
     });
   });
 });

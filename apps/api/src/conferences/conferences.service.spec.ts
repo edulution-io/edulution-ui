@@ -4,13 +4,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
+import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
-import CreateConferenceDto from './dto/create-conference.dto';
-import { Attendee } from './dto/attendee';
 import JWTUser from '../types/JWTUser';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
+import Attendee from './attendee.schema';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',

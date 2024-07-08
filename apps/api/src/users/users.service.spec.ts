@@ -3,17 +3,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Query } from 'mongoose';
-import axios from 'axios';
-import { LDAPUser } from '@libs/user/types/ldap/ldapUser';
+import { LDAPUser } from '@libs/user/types/groups/ldapUser';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import RegisterUserDto from './dto/register-user.dto';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 jest.mock('axios');
-const mockAxios = axios as jest.Mocked<typeof axios>;
+const mockToken = 'token';
 
 const mockUser = {
   email: 'test@example.com',
@@ -121,6 +122,7 @@ describe(UsersService.name, () => {
           provide: getModelToken(User.name),
           useValue: userModelMock,
         },
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
@@ -225,18 +227,18 @@ describe(UsersService.name, () => {
     it('should return cached users if available', async () => {
       cacheManagerMock.get.mockResolvedValue(cachedUsers);
 
-      const result = await service.findAllCachedUsers('token');
+      const result = await service.findAllCachedUsers(mockToken);
       expect(result).toEqual(cachedUsers);
       expect(cacheManagerMock.get).toHaveBeenCalledWith('allUsers');
     });
 
     it('should fetch users from external API if not cached', async () => {
       cacheManagerMock.get.mockResolvedValue(null);
-      mockAxios.request.mockResolvedValue({ data: fetchedUsers });
+      mockGroupsService.fetchUsers.mockResolvedValue(fetchedUsers);
 
-      const result = await service.findAllCachedUsers('token');
+      const result = await service.findAllCachedUsers(mockToken);
       expect(result).toEqual(fetchedUsers);
-      expect(mockAxios.request).toHaveBeenCalled();
+      expect(mockGroupsService.fetchUsers).toHaveBeenCalledWith(mockToken);
       expect(cacheManagerMock.set).toHaveBeenCalledWith('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     });
   });
@@ -276,9 +278,9 @@ describe(UsersService.name, () => {
       ];
       jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(ldapUsers);
 
-      const result = await service.searchUsersByName('token', 'john');
+      const result = await service.searchUsersByName(mockToken, 'john');
       expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
-      expect(service.findAllCachedUsers).toHaveBeenCalledWith('token');
+      expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken);
     });
   });
 });

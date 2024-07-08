@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
 
 interface SurveyTableProps {
   title: string;
-  surveys: Survey[];
-  selectSurvey: (survey?: Survey) => void;
-  selectedSurvey?: Survey;
+  surveys: SurveyDto[];
+  selectSurvey: (survey?: SurveyDto) => void;
+  selectedSurvey?: SurveyDto;
 }
 
 const SURVEY_TABLE_HEADERS: string[] = ['Title', 'survey.creationDate', 'survey.expirationDate', 'participated'];
@@ -20,7 +20,7 @@ const SurveyTable = (props: SurveyTableProps) => {
 
   const surveyRows = useMemo(
     () =>
-      surveys.map((survey: Survey) => {
+      surveys.map((survey: SurveyDto) => {
         const isSelectedSurvey = selectedSurvey?.id === survey.id;
         if (!survey.formula) {
           return null;
@@ -55,10 +55,6 @@ const SurveyTable = (props: SurveyTableProps) => {
             </TableCell>
             <TableCell className="text-white">
               {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.participated?.length ? `${survey.participated.length}/` : ''}
-              {survey?.participants?.length || 0}
             </TableCell>
           </TableRow>
         );

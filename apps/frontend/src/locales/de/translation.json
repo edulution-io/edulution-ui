@@ -5,10 +5,20 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILER DATENZUGRIFF",
+      "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
-      "content": "Sie können von vielen mobilen Geräten aus auf den Schulserver zugreifen. Wählen Sie Ihr Betriebssystem aus, um zu sehen, wie es funktioniert."
+      "accessData": "Zugangsdaten",
+      "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
+      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edultion-io App im AppStore herunterzuladen.",
+      "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
+      "copyCredentials": "Oder manuell eintragen:",
+      "downloadDirect": "Oder lade die App direkt herunter:",
+      "downloadApp": "Lade hier die edulution-io App herunter:"
     }
+  },
+  "auth": {
+    "errors": { "TokenExpired": "Sitzung abgelaufen", "SessionExpiring": "Sie werden in 1 Minute abgemeldet." }
   },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
@@ -115,15 +125,24 @@
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "Umfrage konnte weder aktualisiert noch erstellt werden",
       "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
-      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
+      "notAbleToDeleteSurveyError": "Die Umfragen konnten nicht gelöscht werden",
       "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
       "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
       "notAbleToFindSurveyParameterError": "Um eine Umfrage findne zu können muss mindestens eine Survey-Id übergeben werden",
       "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
       "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "notAbleToParticipateSurveyExpiredError": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
       "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
       "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Benutzerumfrageantwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
+      "notAbleToUpdateSurveyAnswerError": "Die vorherige Abgabe für die Umfrage konnte nicht aktualisiert werden",
+      "notAbleToCreateSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht erstellt werden",
+      "notAbleToDeleteSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht gelöscht werden"
     }
   },
   "surveys": {
@@ -210,7 +229,7 @@
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
-        "success": "Appliste erfolgreich gespeichert",
+        "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"
       },
       "delete": {
@@ -222,6 +241,15 @@
         "failed": "App anlegen fehlgeschlagen"
       }
     }
+  },
+  "usersettings": {
+    "title": "BENUTZER",
+    "sidebar": "Einstellungen",
+    "security": "Sicherheit",
+    "faq": "FAQ",
+    "externalIntegration": "Externe Anbindung",
+    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
+    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
@@ -235,6 +263,7 @@
   "program": "Programme",
   "share": "Share",
   "students": "Schüler",
+  "user": "Benutzer",
   "login": {
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken"
@@ -242,7 +271,7 @@
   "common": {
     "add": "Hinzufügen",
     "reload": "Neu laden",
-    "logout": "Logout",
+    "logout": "Abmelden",
     "save": "Speichern",
     "successful": "Erfolgreich",
     "failed": "Fehlgeschlagen",
@@ -252,13 +281,15 @@
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
+    "icon": "Icon",
+    "groups": "Gruppen",
+    "clearSelection": "Auswahl löschen",
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "participate": "Teilnehmen",
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
-    "time": "Uhrzeit",
-    "icon": "Icon"
+    "time": "Uhrzeit"
   },
   "form": {
     "path": "Link",
@@ -294,17 +325,23 @@
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"
   },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
   "table": {
     "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
+    "title": "Lädt...",
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
     "loading": "Lade",
-    "no-results": "Keine Ergebnisse"
+    "no-results": "Keine Ergebnisse",
+    "usersAdded": "{{ count }} hinzugefügt"
   },
   "fileCategory": {
     "folder": "Ordner",
@@ -402,10 +439,17 @@
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
-  "groupsPage": {
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Gruppe konnte anhand des Pfades nicht gefunden werden",
+      "CouldNotGetUsers": "Benutzer konnten nicht gefunden werden",
+      "CouldNotFetchGroupMembers": "Die Gruppenmitglieder konnten nicht gefunden werden",
+      "CouldNotFetchUserById": "Benutzer konnte anhand der ID nicht gefunden werden",
+      "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
+    },
     "classes": "Klassen"
   },
-  "user": {
+  "users": {
     "errors": {
       "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
       "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"

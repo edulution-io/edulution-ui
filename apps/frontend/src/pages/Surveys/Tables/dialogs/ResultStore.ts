@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface ResultStore {
-  selectedSurvey: Survey | undefined;
-  selectSurvey: (survey: Survey | undefined) => void;
+  selectedSurvey: SurveyDto | undefined;
+  selectSurvey: (survey: SurveyDto | undefined) => void;
 
   isOpenPublicResultsTableDialog: boolean;
   openPublicResultsTableDialog: () => void;
@@ -38,7 +38,7 @@ const useResultStore = create<ResultStore>((set) => ({
   ...(initialState as ResultStore),
   reset: () => set(initialState),
 
-  selectSurvey: (survey: Survey | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   openPublicResultsTableDialog: () => set({ isOpenPublicResultsTableDialog: true }),
   closePublicResultsTableDialog: () => set({ isOpenPublicResultsTableDialog: false }),

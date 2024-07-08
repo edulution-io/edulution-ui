@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import UpdateOrCreateSurveyDto from '@libs/survey/types/update-or-create-survey.dto';
-import { SurveyModel, SurveyDocument } from './survey.schema';
+import { Survey, SurveyDocument } from './survey.schema';
+import SurveyDto from "@libs/survey/types/survey.dto";
 
 export const newObjectId = new mongoose.Types.ObjectId(52653415245934);
 
@@ -41,6 +41,7 @@ export const thirdParticipant = {
 
 export const mockedParticipants = [firstParticipant, secondParticipant, thirdParticipant];
 
+// TODO: MOVE; THERE ARE NO MORE PUBLIC ANSWERS ON A SURVEY DOCUMENT
 export const publicAnswerForFirstMockSurvey: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: ['Item 1'],
@@ -53,7 +54,8 @@ export const addNewPublicAnswerToFirstMockSurvey: JSON = {
   Frage2: 'this is a second answer that will be added to the public answers of the survey',
 };
 
-export const firstMockSurvey: UpdateOrCreateSurveyDto = {
+export const firstMockSurvey: Survey = {
+  _id: firstMockSurveyId,
   id: firstMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
@@ -77,9 +79,6 @@ export const firstMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mockedParticipants,
-  participated: [firstUsername],
-  publicAnswers: [publicAnswerForFirstMockSurvey],
   saveNo: 117,
   created: new Date('2021-06-26T00:00:00.000Z'),
   expirationDate: new Date('2021-06-26'),
@@ -88,36 +87,8 @@ export const firstMockSurvey: UpdateOrCreateSurveyDto = {
   canSubmitMultipleAnswers: false,
 };
 
-export const partialUpdateOnFirstMockSurveyAfterAddedNewAnswer: Partial<SurveyModel> = {
-  publicAnswers: [publicAnswerForFirstMockSurvey, addNewPublicAnswerToFirstMockSurvey],
-  participated: [firstUsername, secondUsername],
-};
-
-export const firstMockSurveyAfterAddedNewAnswer: Partial<SurveyModel> = {
-  ...firstMockSurvey,
-  publicAnswers: [publicAnswerForFirstMockSurvey, addNewPublicAnswerToFirstMockSurvey],
-  participated: [firstUsername, secondUsername],
-};
-
-export const publicAnswerForSecondMockSurvey: JSON = {
-  // @ts-ignore: 'publicAnswers' has this structure
-  Frage1: 'pupil2',
-  Frage2: 'name2',
-};
-
-export const addNewPublicAnswerToSecondMockSurvey: JSON = {
-  // @ts-ignore: 'publicAnswers' has this structure
-  Frage1: 'pupil1',
-  Frage2: 'name1',
-};
-
-export const addNewPublicAnswerToSecondMockSurveyFromThirdUser: JSON = {
-  // @ts-ignore: 'publicAnswers' has this structure
-  Frage1: 'pupil3',
-  Frage2: 'name3',
-};
-
-export const secondMockSurvey: UpdateOrCreateSurveyDto = {
+export const secondMockSurvey: Survey = {
+  _id: secondMockSurveyId,
   id: secondMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
@@ -136,9 +107,6 @@ export const secondMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mockedParticipants,
-  participated: [secondUsername],
-  publicAnswers: [publicAnswerForSecondMockSurvey],
   saveNo: 2,
   created: new Date('2020-11-29T00:00:00.000Z'),
   expirationDate: new Date('2025-04-22'),
@@ -147,15 +115,11 @@ export const secondMockSurvey: UpdateOrCreateSurveyDto = {
   canSubmitMultipleAnswers: false,
 };
 
-export const partialUpdateOnSecondMockSurveyAfterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
-  participated: [secondUsername, thirdUsername],
-  publicAnswers: [publicAnswerForSecondMockSurvey, addNewPublicAnswerToSecondMockSurveyFromThirdUser],
-};
-
-export const secondMockSurveyAfterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
-  ...firstMockSurvey,
-  participated: [secondUsername, thirdUsername],
-  publicAnswers: [publicAnswerForSecondMockSurvey, addNewPublicAnswerToSecondMockSurveyFromThirdUser],
+export const secondMockSurveyDto: SurveyDto = {
+  ...secondMockSurvey,
+  invitedAttendees: [],
+  invitedGroups: [],
+  saveNo: 1,
 };
 
 export const secondMockSurveyDocument: SurveyDocument = {
@@ -169,14 +133,15 @@ export const secondMockSurveyDocument: SurveyDocument = {
 
 export const mockSurveyIds: mongoose.Types.ObjectId[] = [firstMockSurveyId, secondMockSurveyId];
 
-export const mockSurveys: UpdateOrCreateSurveyDto[] = [firstMockSurvey, secondMockSurvey];
+export const mockSurveys: Survey[] = [firstMockSurvey, secondMockSurvey];
 
 export const thirdMockSurveyAddNewPublicAnswer: JSON = {
   // @ts-ignore: 'publicAnswers' has this structure
   Frage1: 'Lasagne',
 };
 
-export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
+export const thirdMockSurvey: Survey = {
+  _id: thirdMockSurveyId,
   id: thirdMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
@@ -190,9 +155,6 @@ export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mockedParticipants,
-  participated: [],
-  publicAnswers: [],
   saveNo: 2,
   created: new Date('2020-11-29T00:00:00.000Z'),
   expirationDate: new Date('2025-04-22'),
@@ -201,13 +163,8 @@ export const thirdMockSurvey: UpdateOrCreateSurveyDto = {
   canSubmitMultipleAnswers: false,
 };
 
-export const thirdMockSurveyAfterAddedNewAnswer: Partial<UpdateOrCreateSurveyDto> = {
-  ...thirdMockSurvey,
-  publicAnswers: [thirdMockSurveyAddNewPublicAnswer],
-  participated: [firstUsername],
-};
-
-export const fourthMockSurvey: UpdateOrCreateSurveyDto = {
+export const fourthMockSurvey: Survey = {
+  _id: fourthMockSurveyId,
   id: fourthMockSurveyId,
   formula: {
     // @ts-ignore: 'formula' has the following structure
@@ -221,13 +178,17 @@ export const fourthMockSurvey: UpdateOrCreateSurveyDto = {
       },
     ],
   },
-  participants: mockedParticipants,
-  participated: [],
-  publicAnswers: [],
   saveNo: 146,
   created: new Date('2024-01-01T00:00:00.000Z'),
   expirationDate: new Date('2025-01-01'),
   expirationTime: '14:30',
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+};
+
+export const fourthMockSurveyDto: SurveyDto = {
+  ...fourthMockSurvey,
+  invitedAttendees: [],
+  invitedGroups: [],
+  saveNo: 1,
 };

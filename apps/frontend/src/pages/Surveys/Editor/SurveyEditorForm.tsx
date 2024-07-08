@@ -6,7 +6,7 @@ import { AiOutlineSave } from 'react-icons/ai';
 import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
 import { TooltipProvider } from '@/components/ui/Tooltip';
@@ -31,17 +31,23 @@ const SurveyEditorForm = () => {
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-  const initialFormValues: SurveyEditorFormData = useMemo(
-    () => new InitialSurveyForm(selectedSurvey),
-    [selectedSurvey],
-  );
+  const initialFormValues: SurveyDto = useMemo(() => new InitialSurveyForm(selectedSurvey), [selectedSurvey]);
 
-  const emptyFormValues: SurveyEditorFormData = new EmptySurveyForm();
+  const emptyFormValues: SurveyDto = new EmptySurveyForm();
 
   const formSchema = z.object({
+    // SURVEY
     id: z.number(),
     formula: z.any(),
-    participants: z.array(
+    saveNo: z.number().optional(),
+    created: z.date().optional(),
+    expirationDate: z.date().optional(),
+    expirationTime: z.string().optional(),
+    isAnonymous: z.boolean().optional(),
+    canSubmitMultipleAnswers: z.boolean().optional(),
+
+    // ADDITIONAL
+    invitedAttendees: z.array(
       z.intersection(
         z.object({
           firstName: z.string().optional(),
@@ -54,40 +60,36 @@ const SurveyEditorForm = () => {
         }),
       ),
     ),
-    saveNo: z.number().optional(),
-    created: z.date().optional(),
-    expirationDate: z.date().optional(),
-    expirationTime: z.string().optional(),
-    isAnonymous: z.boolean().optional(),
-    canSubmitMultipleAnswers: z.boolean().optional(),
     invitedGroups: z.array(z.object({})),
   });
 
-  const form = useForm<SurveyEditorFormData>({
+  const form = useForm<SurveyDto>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: selectedSurvey ? initialFormValues : emptyFormValues,
   });
 
-  const {
-    id,
-    formula,
-    participants,
-    participated,
-    saveNo,
-    created,
-    expirationDate,
-    expirationTime,
-    isAnonymous,
-    canSubmitMultipleAnswers,
-  } = form.getValues();
-
   const saveSurvey = async () => {
-    await updateOrCreateSurvey({
+    const {
+      invitedAttendees,
+      invitedGroups,
+
       id,
       formula,
-      participants,
-      participated,
+      saveNo,
+      created,
+      expirationDate,
+      expirationTime,
+      isAnonymous,
+      canSubmitMultipleAnswers,
+    } = form.getValues();
+
+    await updateOrCreateSurvey({
+      invitedAttendees,
+      invitedGroups,
+
+      id,
+      formula,
       saveNo,
       created,
       expirationDate,
@@ -102,17 +104,20 @@ const SurveyEditorForm = () => {
     await updateAnsweredSurveys();
   };
 
+  const formulaWatcher = form.watch('formula');
+  const saveNoWatcher = form.watch('saveNo');
+
   // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(
     () => (
       <SurveyEditor
         form={form}
-        formula={formula}
-        saveNumber={saveNo}
+        formula={formulaWatcher}
+        saveNumber={saveNoWatcher}
         error={error}
       />
     ),
-    [formula, saveNo],
+    [formulaWatcher, saveNoWatcher],
   );
 
   if (isLoading) return <LoadingIndicator isOpen={isLoading} />;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,27 +10,26 @@ import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import { TrashIcon } from '@/assets/icons';
-import { AppIntegrationType } from '@/datatypes/types';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import MobileSettingsDialog from '@/pages/Settings/AppConfig/AppConfigDialog/MobileAppConfigDialog';
-import DesktopSettingsDialog from '@/pages/Settings/AppConfig/AppConfigDialog/DesktopAppConfigDialog';
-import { SettingsDialogProps } from '@/pages/Settings/AppConfig/AppConfigDialog/settingTypes';
-import { AppConfigOptions, AppConfigOptionType } from '@/datatypes/appConfigOptions';
+import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
+import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
-  const isMobileView = useIsMobileView();
-  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, updateAppConfig, deleteAppConfigEntry, error } = useAppConfigsStore();
   const [option, setOption] = useState('');
+  const [settingLocation, setSettingLocation] = useState('');
 
-  const settingLocation = pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '';
+  useEffect(() => {
+    setSettingLocation(pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '');
+  }, [pathname]);
 
   const formSchemaObject: { [key: string]: z.Schema } = {};
 
@@ -75,7 +74,7 @@ const AppConfigPage: React.FC = () => {
   }, [areSettingsVisible, settingLocation, appConfigs, setValue]);
 
   const settingsForm = () => {
-    const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = () => {
+    const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
       const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
 
       if (selectedOption) {
@@ -97,9 +96,10 @@ const AppConfigPage: React.FC = () => {
           return entry;
         });
 
-        updateAppConfig(updatedConfig)
-          .then(() => toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`))
-          .catch(() => toast.error(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.failed')}`));
+        await updateAppConfig(updatedConfig);
+        if (!error) {
+          toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`);
+        }
       }
     };
 
@@ -172,6 +172,10 @@ const AppConfigPage: React.FC = () => {
 
   const handleDeleteSettingsItem = () => {
     const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
+
+    setSettingLocation('');
+    navigate(`/settings`);
+
     deleteAppConfigEntry(deleteOptionName)
       .then(() => {
         toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {
@@ -183,14 +187,6 @@ const AppConfigPage: React.FC = () => {
           description: new Date().toLocaleString(),
         }),
       );
-  };
-
-  const dialogProps: SettingsDialogProps = {
-    isOpen: mode === 'add',
-    option,
-    setOption,
-    filteredAppOptions,
-    setSearchParams,
   };
 
   return (
@@ -218,7 +214,13 @@ const AppConfigPage: React.FC = () => {
         ) : null}
       </div>
       {settingsForm()}
-      {isMobileView ? <MobileSettingsDialog {...dialogProps} /> : <DesktopSettingsDialog {...dialogProps} />}
+      <AddAppConfigDialog
+        isOpen={mode === 'add'}
+        option={option}
+        setOption={setOption}
+        filteredAppOptions={filteredAppOptions}
+        setSearchParams={setSearchParams}
+      />
     </>
   );
 };

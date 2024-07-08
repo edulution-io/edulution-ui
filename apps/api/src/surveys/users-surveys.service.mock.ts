@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { UsersSurveys } from './users-surveys.schema';
+import UsersSurveys from '@libs/survey/types/users-surveys';
 import {
   firstMockSurveyId,
   firstUsername,
@@ -29,14 +29,59 @@ export const surveyId08 = new mongoose.Types.ObjectId(8);
 export const surveyId09 = new mongoose.Types.ObjectId(9);
 
 export const mockedAnswer: JSON = JSON.parse('{"Frage1": "Antwort1"}');
+
+export const surveyAnswerAId = new mongoose.Types.ObjectId(11);
+export const surveyAnswerBId = new mongoose.Types.ObjectId(12);
+export const surveyAnswerCId = new mongoose.Types.ObjectId(13);
+export const surveyAnswerDId = new mongoose.Types.ObjectId(14);
+
+export const surveyAnswerAddAnswerId = new mongoose.Types.ObjectId(15);
+
+export const surveyAnswerA = {
+  _id: surveyAnswerAId,
+  id: surveyAnswerAId,
+  survey: answeredSurvey,
+  user: firstUsername,
+  answer: mockedAnswer,
+};
+export const surveyAnswerB = {
+  _id: surveyAnswerBId,
+  id: surveyAnswerBId,
+  survey: surveyId08,
+  user: firstUsername,
+  answer: EMPTY_JSON,
+};
+export const surveyAnswerC = {
+  _id: surveyAnswerCId,
+  id: surveyAnswerCId,
+  survey: surveyId09,
+  user: firstUsername,
+  answer: EMPTY_JSON,
+};
+export const surveyAnswerD = {
+  _id: surveyAnswerDId,
+  id: surveyAnswerDId,
+  survey: distributedSurvey,
+  user: firstUsername,
+  answer: EMPTY_JSON,
+};
+
+export const surveyAnswerAddAnswer = {
+  _id: surveyAnswerAddAnswerId,
+  id: surveyAnswerAddAnswerId,
+  survey: openSurvey,
+  user: firstUsername,
+  answer: mockedAnswer,
+};
+
 export const openSurveys = [openSurvey, surveyId02, surveyId03, distributedSurvey];
 export const createdSurveys = [createdSurvey, surveyId05, surveyId06, distributedSurvey];
 export const answeredSurveyIds = [answeredSurvey, surveyId08, surveyId09, distributedSurvey];
 export const answeredSurveys = [
-  { surveyId: answeredSurvey, answer: mockedAnswer },
-  { surveyId: surveyId08, answer: EMPTY_JSON },
-  { surveyId: surveyId09, answer: EMPTY_JSON },
-  { surveyId: distributedSurvey, answer: EMPTY_JSON },
+  surveyAnswerAId,
+  surveyAnswerBId,
+  surveyAnswerCId,
+  surveyAnswerDId,
 ];
 
 export const userSurveys: UsersSurveys = {
@@ -66,6 +111,20 @@ export const thirdMockUser = {
     answeredSurveys: [{ surveyId: firstMockSurveyId, answer: mockedAnswer }],
   },
 };
+
+export const fourthMockUser = {
+  email: 'fourth@example.com',
+  username: 'NOT_EXISTING_USER_NAME',
+  roles: ['user'],
+  mfaEnabled: false,
+  isTotpSet: false,
+  usersSurveys: {
+    openSurveys: [],
+    createdSurveys: [],
+    answeredSurveys: [],
+  },
+};
+
 
 export const thirdMockUserAfterDeletingFirstSurvey = {
   ...thirdMockUser,
@@ -99,11 +158,8 @@ export const thirdMockUserAfterAddedAnswer = {
 
 export const openSurveysAfterRemoveOpenSurvey = [surveyId02, surveyId03, distributedSurvey];
 export const createdSurveysAfterRemoveCreatedSurvey = [surveyId05, surveyId06, distributedSurvey];
-export const answeredSurveysAfterRemoveAnsweredSurvey = [
-  { surveyId: surveyId08, answer: EMPTY_JSON },
-  { surveyId: surveyId09, answer: EMPTY_JSON },
-  { surveyId: distributedSurvey, answer: EMPTY_JSON },
-];
+export const answeredSurveysAfterRemoveAnsweredSurvey = [surveyAnswerBId, surveyAnswerCId, surveyAnswerDId];
+
 export const userSurveysAfterRemoveOpenSurvey: UsersSurveys = {
   openSurveys: openSurveysAfterRemoveOpenSurvey,
   createdSurveys,
@@ -122,11 +178,7 @@ export const userSurveysAfterRemoveAnsweredSurvey: UsersSurveys = {
 
 export const openSurveysAfterRemoveDistributedSurvey = [openSurvey, surveyId02, surveyId03];
 export const createdSurveysAfterRemoveDistributedSurvey = [createdSurvey, surveyId05, surveyId06];
-export const answeredSurveysAfterRemoveDistributedSurvey = [
-  { surveyId: answeredSurvey, answer: mockedAnswer },
-  { surveyId: surveyId08, answer: EMPTY_JSON },
-  { surveyId: surveyId09, answer: EMPTY_JSON },
-];
+export const answeredSurveysAfterRemoveDistributedSurvey = [surveyAnswerAId, surveyAnswerBId, surveyAnswerCId];
 
 export const userSurveysAfterRemoveDistributedSurvey: UsersSurveys = {
   openSurveys: openSurveysAfterRemoveDistributedSurvey,
@@ -161,13 +213,8 @@ export const userSurveysAfterAddCreatedUnknownSurvey: UsersSurveys = {
 };
 
 export const openSurveysAfterAddAnswerForOpenSurvey = [surveyId02, surveyId03, distributedSurvey];
-export const answeredSurveysAfterAddAnswerForOpenSurvey = [
-  { surveyId: answeredSurvey, answer: mockedAnswer },
-  { surveyId: surveyId08, answer: EMPTY_JSON },
-  { surveyId: surveyId09, answer: EMPTY_JSON },
-  { surveyId: distributedSurvey, answer: EMPTY_JSON },
-  { surveyId: openSurvey, answer: mockedAnswer },
-];
+export const answeredSurveysAfterAddAnswerForOpenSurvey = [surveyAnswerAId, surveyAnswerBId, surveyAnswerCId, surveyAnswerDId, surveyAnswerAddAnswerId];
+
 export const userSurveysAfterAddAnswerForOpenSurvey: UsersSurveys = {
   openSurveys: openSurveysAfterAddAnswerForOpenSurvey,
   createdSurveys,
