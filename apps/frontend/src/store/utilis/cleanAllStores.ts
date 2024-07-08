@@ -5,6 +5,8 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import UserStore from '@/store/UserStore/UserStore';
 import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
 import useFrameStore from '@/components/framing/FrameStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 
 const cleanAllStores = () => {
@@ -18,6 +20,8 @@ const cleanAllStores = () => {
   useFileManagerStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
+  useAppConfigsStore.getState().reset();
+  useSidebarStore.getState().reset();
 };
 
 export default cleanAllStores;

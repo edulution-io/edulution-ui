@@ -19,7 +19,6 @@ const useUserStore = create<UserStore>()(
         username: state.username,
         webdavKey: state.webdavKey,
         isAuthenticated: state.isAuthenticated,
-        isLoggedInInEduApi: state.isLoggedInInEduApi,
         isPreparingLogout: state.isPreparingLogout,
         eduApiToken: state.eduApiToken,
         user: state.user,

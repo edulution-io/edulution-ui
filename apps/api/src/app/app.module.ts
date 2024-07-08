@@ -5,6 +5,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
+import GroupsModule from '../groups/groups.module';
+import ClassManagementModule from '../classManagement/classManagement.module';
 import FilesharingModule from '../filesharing/filesharing.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
 
@@ -12,6 +14,8 @@ import LoggingInterceptor from '../logging/logging.interceptor';
   imports: [
     AppConfigModule,
     UsersModule,
+    GroupsModule,
+    ClassManagementModule,
     ConferencesModule,
     FilesharingModule,
     JwtModule.register({

@@ -4,6 +4,7 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { resolve } from 'path';
 
 export default defineConfig({
+  // Exception needed for excalidraw
   define: {
     'process.env': {},
   },

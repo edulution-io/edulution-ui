@@ -41,3 +41,4 @@ export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
+export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';

@@ -4,16 +4,15 @@ import { StateCreator } from 'zustand';
 import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
 import JwtUser from '@/datatypes/jwtUser';
 import processLdapGroups from '@/utils/processLdapGroups';
-import User from '@/datatypes/user';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
+import User from '@libs/user/types/user';
 
 const initialState = {
   username: '',
   webdavKey: '',
   isAuthenticated: false,
-  isLoggedInInEduApi: false,
   isPreparingLogout: false,
   eduApiToken: '',
   user: null,
@@ -31,7 +30,6 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set) => ({
 
   setUsername: (username: string) => set({ username }),
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
-  setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => set({ isLoggedInInEduApi }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
   setWebdavKey: (webdavKey: string) => set({ webdavKey }),
 

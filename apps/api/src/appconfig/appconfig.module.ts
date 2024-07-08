@@ -8,5 +8,6 @@ import { AppConfig, AppConfigSchema } from './appconfig.schema';
   imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
   controllers: [AppConfigController],
   providers: [AppConfigService],
+  exports: [AppConfigService],
 })
 export default class AppConfigModule {}

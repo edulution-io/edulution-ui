@@ -5,6 +5,7 @@ import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
+import GroupsModule from '../groups/groups.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
       ttl: DEFAULT_CACHE_TTL_MS,
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    GroupsModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
