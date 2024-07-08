@@ -4,7 +4,7 @@ import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import CryptoJS from 'crypto-js';
 import eduApi from '@/api/eduApi';
-import { Connections, VirtualMachines, VdiConnectionRequest } from '@libs/desktopdeployment/types';
+import { Connections, VdiConnectionRequest, VirtualMachines } from '@libs/desktopdeployment/types';
 
 interface DesktopDeploymentStore {
   token: string;
@@ -15,15 +15,17 @@ interface DesktopDeploymentStore {
   isVdiConnectionMinimized: boolean;
   openVdiConnection: boolean;
   guacId: string;
+  virtualMachines: VirtualMachines | null;
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized: boolean) => void;
   setOpenVdiConnection: (openVdiConnection: boolean) => void;
   setToken: (token: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   setGuacId: (guacId: string) => void;
+  setVirtualMachines: (virtualMachines: VirtualMachines) => void;
   authenticate: () => Promise<void>;
   getConnections: () => Promise<void>;
   postRequestVdi: () => Promise<VdiConnectionRequest | null>;
-  getVirtualMachines: () => Promise<VirtualMachines | null>;
+  getVirtualMachines: () => Promise<void>;
 }
 
 const initialState = {
@@ -35,6 +37,7 @@ const initialState = {
   isVdiConnectionMinimized: false,
   openVdiConnection: false,
   guacId: '',
+  virtualMachines: null,
 };
 
 const baseUrl = `${window.location.origin}/guacamole/api`;
@@ -48,6 +51,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized) => set({ isVdiConnectionMinimized }),
   setOpenVdiConnection: (openVdiConnection) => set({ openVdiConnection }),
   setGuacId: (guacId) => set({ guacId }),
+  setVirtualMachines: (virtualMachines) => set({ virtualMachines }),
 
   authenticate: async () => {
     set({ isLoading: true });
@@ -66,7 +70,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       );
 
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
-      set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false, error: null });
+      set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -78,7 +82,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     set({ isLoading: true });
     try {
       const response = await axios.get(`${baseUrl}/session/data/${get().dataSource}/connections?token=${get().token}`);
-      set({ isLoading: false, connections: response.data as Connections, error: null });
+      set({ isLoading: false, connections: response.data as Connections });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -95,8 +99,11 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     };
 
     try {
-      const response = await eduApi.post<VdiConnectionRequest>(`${EDU_API_VDI_ENDPOINT}`, vdiConnectionRequestBody);
-      set({ isLoading: false, error: null });
+      const response = await eduApi.post<VdiConnectionRequest>(
+        `${EDU_API_VDI_ENDPOINT}/request`,
+        vdiConnectionRequestBody,
+      );
+      set({ isLoading: false });
       return response.data;
     } catch (error) {
       handleApiError(error, set);
@@ -109,12 +116,10 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   getVirtualMachines: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<VirtualMachines>(`${EDU_API_VDI_ENDPOINT}/clones`);
-      set({ isLoading: false, error: null });
-      return response.data;
+      const response = await eduApi.get<VirtualMachines>(`${EDU_API_VDI_ENDPOINT}/virtualmachines`);
+      set({ isLoading: false, virtualMachines: response?.data });
     } catch (error) {
       handleApiError(error, set);
-      return null;
     } finally {
       set({ isLoading: false });
     }

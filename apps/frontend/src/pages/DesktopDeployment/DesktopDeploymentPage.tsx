@@ -11,7 +11,7 @@ import useFrameStore from '@/components/framing/FrameStore';
 import { APPS } from '@libs/appconfig/types';
 import cn from '@/lib/utils';
 import useUserStore from '@/store/UserStore/UserStore';
-import { Connections } from '@libs/desktopdeployment/types';
+import { CloneVms, Connections } from '@libs/desktopdeployment/types';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
@@ -19,8 +19,7 @@ import VdiCard from './components/VdiCard';
 
 const iconContextValue = { className: 'h-8 w-8 m-5' };
 
-const findVmByIp = (clones: { [vmId: string]: { ip: string; vmid: string } }, ip: string) =>
-  Object.values(clones).filter((vm) => vm.ip === ip)[0]?.vmid || '';
+const findVmByIp = (clones: CloneVms, ip: string) => Object.values(clones).filter((vm) => vm.ip === ip)[0]?.vmid || '';
 
 const searchForName = (connections: Connections | null, vmid: string) => {
   if (connections) {
@@ -42,6 +41,7 @@ const DesktopDeploymentPage: React.FC = () => {
     openVdiConnection,
     isLoading,
     connections,
+    virtualMachines,
     authenticate,
     setOpenVdiConnection,
     setGuacId,
@@ -61,11 +61,12 @@ const DesktopDeploymentPage: React.FC = () => {
 
     const getClones = async () => {
       try {
-        const response = await getVirtualMachines();
-        const clones = response?.data?.['win10-vdi']?.clone_vms || {};
-        setCloneVms(clones);
+        await getVirtualMachines();
       } catch (e) {
         console.error(e);
+      } finally {
+        const clones = virtualMachines?.data['win10-vdi']?.clone_vms || {};
+        setCloneVms(clones);
       }
     };
 
