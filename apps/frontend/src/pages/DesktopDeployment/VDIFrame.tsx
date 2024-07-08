@@ -3,16 +3,15 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import Guacamole from 'guacamole-common-js';
 import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
-import { useMediaQuery } from 'usehooks-ts';
 import cn from '@/lib/utils';
+import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
-
-const websocketProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
 
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
   const { t } = useTranslation();
   const {
     error,
@@ -43,8 +42,6 @@ const VDIFrame = () => {
 
   useEffect(() => {
     if (guacRef.current) {
-      // const layer = guacRef.current.getDisplay().getDefaultLayer();
-      // guacRef.current.getDisplay().resize(layer, screenWidth, screenHeight);
       guacRef.current.sendSize(screenWidth, screenHeight);
     }
   }, [guacRef.current, screenWidth, screenHeight]);
@@ -64,10 +61,9 @@ const VDIFrame = () => {
   };
 
   useEffect(() => {
-    if (token === '' || !displayRef.current) return;
-    const url = new URL(window.location.origin);
-    const webSocketFullUrl = `${websocketProtocol}://${url.host}/guacamole/websocket-tunnel`;
-    const tunnel = new Guacamole.WebSocketTunnel(webSocketFullUrl);
+    if (token === '' || !displayRef.current) return () => {};
+
+    const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
@@ -96,7 +92,7 @@ const VDIFrame = () => {
     });
     guac.connect(params);
 
-    const mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
+    const mouse: Guacamole.Mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
     // @ts-expect-error due to readability
     mouse.onmousedown = guac.sendMouseState.bind(guac);
     // @ts-expect-error due to readability
@@ -146,37 +142,12 @@ const VDIFrame = () => {
       }
     };
 
-    // eslint-disable-next-line consistent-return
     return () => {
       guac.disconnect();
-      displayElement.innerHTML = '';
     };
-  }, []);
+  }, [token]);
 
-  // useEffect(() => {
-  //   if (displayRef.current && guacRef.current) {
-  //     guacRef.current.sendSize(screenWidth, screenHeight);
-  //   }
-  // }, [displayRef, guacRef, screenWidth, screenHeight]);
-
-  useEffect(() => {
-    const displayElement = displayRef.current;
-    if (isVdiConnectionMinimized && displayElement) {
-      const canvasElements = Array.from(displayElement.getElementsByTagName('canvas'));
-      canvasElements.forEach((canvas) => {
-        const newCanvas = canvas;
-        newCanvas.style.width = '0';
-      });
-    } else if (!isVdiConnectionMinimized && displayElement) {
-      const canvasElements = Array.from(displayElement.getElementsByTagName('canvas'));
-      canvasElements.forEach((canvas) => {
-        const newCanvas = canvas;
-        newCanvas.style.width = `${screenWidth}px`;
-      });
-    }
-  }, [displayRef, isVdiConnectionMinimized]);
-
-  const style = isVdiConnectionMinimized ? { width: 0 } : { width: isMobile ? '100%' : 'calc(100% - 56px)' };
+  const style = isVdiConnectionMinimized ? { width: 0 } : { width: isMobileView ? '100%' : 'calc(100% - 56px)' };
 
   return createPortal(
     !error ? (
@@ -184,7 +155,7 @@ const VDIFrame = () => {
         <div
           className={cn(
             'fixed -top-1 left-1/2 z-[99] -translate-x-1/2 transform',
-            isMobile && 'flex items-center space-x-4',
+            isMobileView && 'flex items-center space-x-4',
           )}
         >
           <button
@@ -193,14 +164,14 @@ const VDIFrame = () => {
             onClick={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
           >
             {isVdiConnectionMinimized ? <MdMaximize className="inline" /> : <MdMinimize className="inline" />}{' '}
-            {isMobile ? '' : t(isVdiConnectionMinimized ? 'conferences.maximize' : 'conferences.minimize')}
+            {isMobileView ? '' : t(isVdiConnectionMinimized ? 'conferences.maximize' : 'conferences.minimize')}
           </button>
           <button
             type="button"
             className="rounded bg-ciRed px-4 text-white hover:bg-ciRed/90"
             onClick={handleDisconnect}
           >
-            <MdClose className="inline" /> {isMobile ? '' : t('desktopdeployment.close')}
+            <MdClose className="inline" /> {isMobileView ? '' : t('desktopdeployment.close')}
           </button>
         </div>
         <div
