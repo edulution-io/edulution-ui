@@ -22,7 +22,7 @@ class VdiService {
     });
   }
 
-  async requestVdi(body: BodyType): Promise<AxiosResponse> {
+  async requestVdi(body: BodyType) {
     try {
       const response = await this.lmnApi.post('/connection/request', body, {
         headers: {
@@ -35,7 +35,7 @@ class VdiService {
     }
   }
 
-  async getStatusOfClones(): Promise<AxiosResponse | null> {
+  async getVirtualMachines() {
     try {
       const response = await this.lmnApi.get('/status/clones', {
         headers: {

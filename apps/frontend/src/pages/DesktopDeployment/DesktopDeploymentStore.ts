@@ -4,7 +4,7 @@ import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import CryptoJS from 'crypto-js';
 import eduApi from '@/api/eduApi';
-import { Connections, StatusOfClones, VdiConnectionRequest } from '@libs/desktopdeployment/types';
+import { Connections, VirtualMachines, VdiConnectionRequest } from '@libs/desktopdeployment/types';
 
 interface DesktopDeploymentStore {
   token: string;
@@ -23,7 +23,7 @@ interface DesktopDeploymentStore {
   authenticate: () => Promise<void>;
   getConnections: () => Promise<void>;
   postRequestVdi: () => Promise<VdiConnectionRequest | null>;
-  getStatusOfClones: () => Promise<StatusOfClones | null>;
+  getVirtualMachines: () => Promise<VirtualMachines | null>;
 }
 
 const initialState = {
@@ -106,10 +106,10 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     }
   },
 
-  getStatusOfClones: async () => {
+  getVirtualMachines: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<StatusOfClones>(`${EDU_API_VDI_ENDPOINT}/clones`);
+      const response = await eduApi.get<VirtualMachines>(`${EDU_API_VDI_ENDPOINT}/clones`);
       set({ isLoading: false, error: null });
       return response.data;
     } catch (error) {

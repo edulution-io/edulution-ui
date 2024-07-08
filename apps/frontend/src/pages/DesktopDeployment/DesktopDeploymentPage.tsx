@@ -47,7 +47,7 @@ const DesktopDeploymentPage: React.FC = () => {
     setGuacId,
     getConnections,
     postRequestVdi,
-    getStatusOfClones,
+    getVirtualMachines,
   } = useDesktopDeploymentStore();
   const { activeFrame } = useFrameStore();
 
@@ -61,7 +61,7 @@ const DesktopDeploymentPage: React.FC = () => {
 
     const getClones = async () => {
       try {
-        const response = await getStatusOfClones();
+        const response = await getVirtualMachines();
         const clones = response?.data?.['win10-vdi']?.clone_vms || {};
         setCloneVms(clones);
       } catch (e) {

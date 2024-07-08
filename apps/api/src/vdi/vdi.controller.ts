@@ -11,7 +11,7 @@ type BodyType = {
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}
 
-  @Post()
+  @Post('request')
   async requestVdi(@Body() body: BodyType) {
     try {
       const response = await this.vdiService.requestVdi(body);
@@ -26,11 +26,11 @@ class VdiController {
     }
   }
 
-  @Get('clones')
-  async getStatusOfClones() {
+  @Get('virtualmachines')
+  async getVirtualMachines() {
     try {
-      const response = await this.vdiService.getStatusOfClones();
-      Logger.log('Get status of clones', VdiController.name);
+      const response = await this.vdiService.getVirtualMachines();
+      Logger.log('Get status of virtualmachines', VdiController.name);
       return response;
     } catch (error) {
       if (error instanceof HttpException) {

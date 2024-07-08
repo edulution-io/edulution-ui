@@ -1,7 +1,10 @@
-type StatusOfClones = {
+import CloneVms from './clone-vms';
+import VirtualMachineOs from './virtual-machines.enum';
+
+type VirtualMachines = {
   status: string;
   data: {
-    [vmType: string]: {
+    [key in VirtualMachineOs]: {
       summary: {
         allocated_vms: number;
         available_vms: number;
@@ -10,11 +13,9 @@ type StatusOfClones = {
         building_vms: number;
         failed_vms: number;
       };
-      clone_vms: {
-        [vmId: string]: unknown;
-      };
+      clone_vms: CloneVms;
     };
   };
 };
 
-export default StatusOfClones;
+export default VirtualMachines;
