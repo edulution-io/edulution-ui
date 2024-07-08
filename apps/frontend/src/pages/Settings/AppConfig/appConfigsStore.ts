@@ -9,7 +9,8 @@ type AppConfigsStore = {
   appConfigs: AppConfigDto[];
   isLoading: boolean;
   error: Error | null;
-  getAppConfigs: () => Promise<void>;
+  reset: () => void;
+  getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
 };
@@ -19,20 +20,27 @@ type PersistedAppConfigsStore = (
   options: PersistOptions<Partial<AppConfigsStore>>,
 ) => StateCreator<AppConfigsStore>;
 
+const initialState = {
+  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
+  isLoading: false,
+  error: null,
+};
+
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
-      appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
-      isLoading: false,
-      error: null,
+      ...initialState,
+      reset: () => set(initialState),
 
       getAppConfigs: async () => {
         set({ isLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
           set({ appConfigs: response.data });
+          return true;
         } catch (e) {
           handleApiError(e, set);
+          return false;
         } finally {
           set({ isLoading: false });
         }

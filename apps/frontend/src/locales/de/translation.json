@@ -17,6 +17,9 @@
       "downloadApp": "Lade hier die edulution-io App herunter:"
     }
   },
+  "auth": {
+    "errors": { "TokenExpired": "Sitzung abgelaufen", "SessionExpiring": "Sie werden in 1 Minute abgemeldet." }
+  },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
     "sidebar": "Ticketsystem"

@@ -12,7 +12,6 @@ const initialState = {
   username: '',
   webdavKey: '',
   isAuthenticated: false,
-  isLoggedInInEduApi: false,
   isPreparingLogout: false,
   eduApiToken: '',
   user: null,
@@ -26,7 +25,6 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   ...initialState,
 
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
-  setIsLoggedInInEduApi: (isLoggedInInEduApi: boolean) => set({ isLoggedInInEduApi }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
   setWebdavKey: (password: string) => set({ webdavKey: CryptoJS.AES.encrypt(password, WEBDAV_SECRET).toString() }),
   getWebdavKey: () => CryptoJS.AES.decrypt(get().webdavKey, WEBDAV_SECRET).toString(CryptoJS.enc.Utf8),
