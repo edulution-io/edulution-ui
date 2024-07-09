@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
-import Columns from '@/pages/FileSharing/table/Columns';
+import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
 import FileSharingFloatingButtonsBar from '@/pages/FileSharing/table/FloatingButtonsBar';
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
@@ -82,7 +82,7 @@ const FileSharingPage = () => {
           data-testid="test-id-file-sharing-page-data-table"
         >
           <FileSharingTable
-            columns={Columns}
+            columns={FileSharingTableColumns}
             data={files}
           />
         </div>

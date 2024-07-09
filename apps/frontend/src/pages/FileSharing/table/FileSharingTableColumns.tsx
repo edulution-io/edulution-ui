@@ -16,7 +16,7 @@ const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
-const Columns: ColumnDef<DirectoryFile>[] = [
+const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
 
@@ -158,4 +158,4 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   },
 ];
 
-export default Columns;
+export default FileSharingTableColumns;
