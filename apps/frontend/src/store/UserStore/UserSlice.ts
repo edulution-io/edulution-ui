@@ -9,7 +9,6 @@ import UserDto from '@libs/user/types/user.dto';
 import CryptoJS from 'crypto-js';
 
 const initialState = {
-  username: '',
   webdavKey: '',
   isAuthenticated: false,
   isPreparingLogout: false,
