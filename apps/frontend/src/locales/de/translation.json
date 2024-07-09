@@ -136,7 +136,11 @@
     },
     "win10": "Windows 10",
     "clients": "Clients verfügbar",
-    "client": "Client verfügbar"
+    "client": "Client verfügbar",
+    "errors": {
+      "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht."
+    }
   },
   "wlan": {
     "title": "WLAN",

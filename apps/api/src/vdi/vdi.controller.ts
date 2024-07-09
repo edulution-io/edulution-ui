@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import VdiService from './vdi.service';
 
@@ -11,34 +11,25 @@ type BodyType = {
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}
 
-  @Post('request')
-  async requestVdi(@Body() body: BodyType) {
-    try {
-      const response = await this.vdiService.requestVdi(body);
-      Logger.log('Request connection for user', VdiController.name);
-      return response;
-    } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      } else {
-        throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
+  @Post('auth')
+  /* Replace password when its available in db */
+  authVdi(@Body() body: { username: string; password: string }) {
+    return this.vdiService.authenticateVdi(body);
+  }
+
+  @Post('connections')
+  getConnections(@Body() body: { dataSource: string; token: string }) {
+    return this.vdiService.getConnections(body);
+  }
+
+  @Post()
+  requestVdi(@Body() body: BodyType) {
+    return this.vdiService.requestVdi(body);
   }
 
   @Get('virtualmachines')
-  async getVirtualMachines() {
-    try {
-      const response = await this.vdiService.getVirtualMachines();
-      Logger.log('Get status of virtualmachines', VdiController.name);
-      return response;
-    } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      } else {
-        throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
+  getVirtualMachines() {
+    return this.vdiService.getVirtualMachines();
   }
 }
 

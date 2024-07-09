@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import CryptoJS from 'crypto-js';
@@ -40,7 +40,6 @@ const initialState = {
   virtualMachines: null,
 };
 
-const baseUrl = `${window.location.origin}/guacamole/api`;
 const EDU_API_VDI_ENDPOINT = 'vdi';
 
 const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => ({
@@ -60,14 +59,10 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const decryptedValue = CryptoJS.AES.decrypt(userStore.getState().webdavKey, key);
       const password = decryptedValue.toString(CryptoJS.enc.Utf8);
 
-      const response = await axios.post(
-        `${baseUrl}/tokens`,
-        {
-          username: userStore.getState().username,
-          password,
-        },
-        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-      );
+      const response = await eduApi.post(`${EDU_API_VDI_ENDPOINT}/auth`, {
+        username: userStore.getState().username,
+        password,
+      });
 
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
       set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false });
@@ -81,7 +76,10 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   getConnections: async () => {
     set({ isLoading: true });
     try {
-      const response = await axios.get(`${baseUrl}/session/data/${get().dataSource}/connections?token=${get().token}`);
+      const response = await eduApi.post(`${EDU_API_VDI_ENDPOINT}/connections`, {
+        dataSource: get().dataSource,
+        token: get().token,
+      });
       set({ isLoading: false, connections: response.data as Connections });
     } catch (error) {
       handleApiError(error, set);
@@ -99,10 +97,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     };
 
     try {
-      const response = await eduApi.post<VdiConnectionRequest>(
-        `${EDU_API_VDI_ENDPOINT}/request`,
-        vdiConnectionRequestBody,
-      );
+      const response = await eduApi.post<VdiConnectionRequest>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
       set({ isLoading: false });
       return response.data;
     } catch (error) {

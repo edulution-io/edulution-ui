@@ -1,4 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import VdiErrorMessage from '@libs/desktopdeployment/types/vdiErrorMessages';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 type BodyType = {
@@ -8,13 +10,19 @@ type BodyType = {
 
 const lmnVdiApiSecret = process.env.LMN_VDI_API_SECRET;
 const lmnVdiApiUrl = process.env.LMN_VDI_API_URL;
+const gucamoleApiUrl = process.env.GUACAMOLE_API_URL;
 
 @Injectable()
 class VdiService {
-  private lmnApi: AxiosInstance;
+  private lmnVdiApi: AxiosInstance;
+
+  private guacamoleApi: AxiosInstance;
 
   constructor() {
-    this.lmnApi = axios.create({
+    this.guacamoleApi = axios.create({
+      baseURL: `${gucamoleApiUrl}/guacamole/api`,
+    });
+    this.lmnVdiApi = axios.create({
       baseURL: `${lmnVdiApiUrl}/api`,
       headers: {
         'LMN-API-Secret': lmnVdiApiSecret,
@@ -22,29 +30,42 @@ class VdiService {
     });
   }
 
-  async requestVdi(body: BodyType) {
+  async authenticateVdi(body: { username: string; password: string }) {
     try {
-      const response = await this.lmnApi.post('/connection/request', body, {
-        headers: {
-          'LMN-API-Secret': lmnVdiApiSecret,
-        },
+      const response = await this.guacamoleApi.post('/tokens', body, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
       return response.data as AxiosResponse;
     } catch (e) {
-      throw new HttpException('LMN-VDI-API not responding', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(VdiErrorMessage.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  async getConnections(body: { dataSource: string; token: string }) {
+    try {
+      const { dataSource, token } = body;
+      const response = await this.guacamoleApi.get(`/session/data/${dataSource}/connections?token=${token}`);
+      return response.data as AxiosResponse;
+    } catch (e) {
+      throw new CustomHttpException(VdiErrorMessage.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  async requestVdi(body: BodyType) {
+    try {
+      const response = await this.lmnVdiApi.post('/connection/request', body);
+      return response.data as AxiosResponse;
+    } catch (e) {
+      throw new CustomHttpException(VdiErrorMessage.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 
   async getVirtualMachines() {
     try {
-      const response = await this.lmnApi.get('/status/clones', {
-        headers: {
-          'LMN-API-Secret': lmnVdiApiSecret,
-        },
-      });
+      const response = await this.lmnVdiApi.get('/status/clones');
       return response.data as AxiosResponse;
     } catch (e) {
-      return null;
+      throw new CustomHttpException(VdiErrorMessage.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 }
