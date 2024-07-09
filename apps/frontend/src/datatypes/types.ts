@@ -1,4 +1,4 @@
-import { DirectoryFile } from '@/datatypes/filesystem';
+import { DirectoryFile } from '@libs/filesharing/filesystem';
 
 export interface MenuItem {
   id: string;
