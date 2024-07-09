@@ -20,15 +20,13 @@ const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
 
-    header: ({ table, column }) => {
-      return (
-        <SortableHeader<DirectoryFile, unknown>
-          titleTranslationId="fileSharingTable.filename"
-          table={table}
-          column={column}
-        />
-      );
-    },
+    header: ({ table, column }) => (
+      <SortableHeader<DirectoryFile, unknown>
+        titleTranslationId="fileSharingTable.filename"
+        table={table}
+        column={column}
+      />
+    ),
     accessorFn: (row) => row.type + row.filename,
 
     cell: ({ row }) => {
