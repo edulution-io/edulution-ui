@@ -64,10 +64,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea
-          className="overflow-auto"
-          style={{ maxHeight: 'calc(100vh - 210px)' }}
-        >
+        <ScrollArea className="max-h-[80vh] overflow-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

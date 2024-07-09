@@ -14,11 +14,13 @@ const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
+const hideOnMobileClassName = 'hidden lg:flex';
+
 const Columns: ColumnDef<DirectoryFile>[] = [
   {
     id: 'select-filename',
 
-    header: function Header({ table, column }) {
+    header: ({ table, column }) => {
       return (
         <SortableHeader<DirectoryFile, unknown>
           titleTranslationId="fileSharingTable.filename"
@@ -72,6 +74,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: function Header({ column }) {
       return (
         <SortableHeader<DirectoryFile, unknown>
+          className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.lastModified"
           column={column}
         />
@@ -110,6 +113,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: function Header({ column }) {
       return (
         <SortableHeader<DirectoryFile, unknown>
+          className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.size"
           column={column}
         />
@@ -133,6 +137,7 @@ const Columns: ColumnDef<DirectoryFile>[] = [
     header: function Header({ column }) {
       return (
         <SortableHeader<DirectoryFile, unknown>
+          className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.type"
           column={column}
         />
