@@ -137,7 +137,8 @@
     "client": "Client available",
     "errors": {
       "GuacamoleNotResponding": "RDP service not available.",
-      "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond."
+      "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
+      "SessionNotFound": "Session not found."
     }
   },
   "wlan": {

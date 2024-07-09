@@ -58,21 +58,15 @@ const DesktopDeploymentPage: React.FC = () => {
   const [cloneVms, setCloneVms] = useState({});
 
   useEffect(() => {
+    /* To get a "token" from guacamole */
     void authenticate();
-
-    const getClones = async () => {
-      try {
-        await getVirtualMachines();
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    void getClones();
+    /* To get a all "virtualMachines" on the hypervisor from lmn */
+    void getVirtualMachines();
   }, [user]);
 
   useEffect(() => {
     if (token) {
+      /* To get all "connections" from guacamole */
       void getConnections();
     }
   }, [token]);
