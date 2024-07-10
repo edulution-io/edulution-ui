@@ -24,6 +24,7 @@ const Feed = () => {
     <Card
       variant="collaboration"
       className={cn({ 'min-h-[280px]': isMobileView }, { 'min-h-[100%]': !isMobileView }, 'overflow-y-auto')}
+      // className="min-h-[280px] md:min-h-[100%] overflow-y-auto"
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>

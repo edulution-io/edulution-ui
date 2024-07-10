@@ -7,6 +7,7 @@ import {
   DesktopDeploymentIcon,
   FileSharingIcon,
   FirewallIcon,
+  RoomBookingIcon,
   ForumsIcon,
   KnowledgeBaseIcon,
   LearningManagementIcon,
@@ -60,6 +61,12 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url'],
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url'] },
+  {
+    id: APPS.ROOM_BOOKING,
+    icon: RoomBookingIcon,
+    color: 'bg-ciLightBlue',
+    options: ['url'],
+  },
   {
     id: APPS.LEARNING_MANAGEMENT,
     icon: LearningManagementIcon,

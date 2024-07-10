@@ -10,6 +10,7 @@ export { default as NetworkIcon } from '@/assets/icons/edulution/Netzwerk.svg';
 export { default as MailIcon } from '@/assets/icons/edulution/Mail.svg';
 export { default as SchoolInformationIcon } from '@/assets/icons/edulution/Information.svg';
 export { default as PrinterIcon } from '@/assets/icons/edulution/Drucker.svg';
+export { default as RoomBookingIcon } from '@/assets/icons/edulution/Raumbuchung.svg';
 export { default as ForumsIcon } from '@/assets/icons/edulution/Foren.svg';
 export { default as ChatIcon } from '@/assets/icons/edulution/Chat.svg';
 export { default as WlanIcon } from '@/assets/icons/edulution/Wlan.svg';

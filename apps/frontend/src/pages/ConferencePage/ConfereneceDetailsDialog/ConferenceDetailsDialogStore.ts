@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import Conference from '@libs/conferences/types/conference.dto';
@@ -41,9 +41,8 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   joinConference: async (meetingID) => {
     set({ isLoading: true, error: null });
     try {
-      const { t } = useTranslation();
       if (get().joinConferenceUrl) {
-        toast.error(t('conferences.errors.AlreadyInAnotherMeeting'));
+        toast.error(i18n.t('conferences.errors.AlreadyInAnotherMeeting'));
         return;
       }
 

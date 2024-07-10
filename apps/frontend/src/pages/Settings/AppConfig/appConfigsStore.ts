@@ -40,12 +40,13 @@ const useAppConfigsStore = create<AppConfigsStore>(
         set({ isLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
-          set({ appConfigs: response.data, isLoading: false });
+          set({ appConfigs: response.data });
           return true;
         } catch (e) {
           handleApiError(e, set);
-          set({ appConfigs: [], error: e instanceof Error ? e : null, isLoading: false });
           return false;
+        } finally {
+          set({isLoading: false});
         }
       },
 

@@ -5,14 +5,18 @@ import { ConferencesIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
 import Conference from '@libs/conferences/types/conference.dto';
 import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
-import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/feedWidgetAccordionTrigger';
 import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
 import RunningConferencesList from '@/pages/Dashboard/Feed/conferences/RunningConferencesList';
+import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 const RunningConferencesAccordionItem = () => {
   const { appConfigs } = useAppConfigsStore();
+
+  const { conferences, getConferences } = useConferenceStore();
+
+  const { t } = useTranslation();
 
   // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
   const isConferenceAppActivated = useMemo(
@@ -20,16 +24,10 @@ const RunningConferencesAccordionItem = () => {
     [appConfigs],
   );
 
-  if (!isConferenceAppActivated) {
-    return null;
-  }
-
-  const { conferences, getConferences } = useConferenceStore();
-
-  const { t } = useTranslation();
-
   useInterval(() => {
-    void getConferences();
+    if (isConferenceAppActivated) {
+      void getConferences();
+    }
   }, FEED_PULL_TIME_INTERVAL);
 
   useEffect(() => {
@@ -43,6 +41,10 @@ const RunningConferencesAccordionItem = () => {
     () => conferences.filter((conference: Conference) => conference.isRunning),
     [conferences],
   );
+
+  if (!isConferenceAppActivated) {
+    return null;
+  }
 
   return (
     <AccordionItem value={APPS.CONFERENCES}>
