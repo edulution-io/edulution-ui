@@ -125,12 +125,15 @@
     "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
     "sidebar": "Desktop",
     "connect": "Verbinden",
+    "reload": "Neu laden",
     "close": "Verbindung schließen",
     "error": {
       "title": "Verbindungsfehler",
       "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
     },
     "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
     "clients": "Clients verfügbar",
     "client": "Client verfügbar",
     "errors": {

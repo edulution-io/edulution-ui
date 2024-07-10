@@ -124,11 +124,14 @@
     "sidebar": "Desktop",
     "close": "Close connection",
     "connect": "Connect",
+    "reload": "Neu laden",
     "error": {
       "title": "Connection error",
       "description": "Please check your network connection and try again."
     },
     "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
     "clients": "Clients available",
     "client": "Client available",
     "errors": {

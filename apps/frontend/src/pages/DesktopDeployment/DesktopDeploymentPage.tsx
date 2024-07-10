@@ -41,24 +41,22 @@ const DesktopDeploymentPage: React.FC = () => {
 
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
 
-  useEffect(() => {
-    /* To get a "token" from guacamole */
-    void authenticate();
-    /* To get a "connection" from lmn vdi */
-    void postRequestVdi(VirtualMachineOs.WIN10);
-  }, [user]);
-
-  useEffect(() => {
+  const initialize = async () => {
+    if (user) {
+      await authenticate();
+      await postRequestVdi(VirtualMachineOs.WIN10);
+    }
     if (vdiIp) {
-      void createOrUpdateConnection();
+      await createOrUpdateConnection();
     }
-  }, [vdiIp]);
+    if (connectionEnabled) {
+      await getConnections();
+    }
+  };
 
   useEffect(() => {
-    if (connectionEnabled) {
-      void getConnections();
-    }
-  }, [connectionEnabled]);
+    void initialize();
+  }, [user, vdiIp, connectionEnabled]);
 
   useEffect(() => {
     if (error) {
@@ -68,6 +66,10 @@ const DesktopDeploymentPage: React.FC = () => {
 
   const handleConnnect = () => {
     setOpenVdiConnection(true);
+  };
+
+  const handleReload = () => {
+    void initialize();
   };
 
   return (
@@ -83,14 +85,33 @@ const DesktopDeploymentPage: React.FC = () => {
         <ConnectionErrorDialog
           isErrorDialogOpen={isErrorDialogOpen}
           setIsErrorDialogOpen={setIsErrorDialogOpen}
-          handleReload={() => authenticate()}
+          handleReload={() => getConnections()}
         />
       )}
-      <VdiCard
-        title={t('desktopdeployment.win10')}
-        availableClients={guacId ? 1 : 0}
-        onClick={() => handleConnnect()}
-      />
+      <div className="flex flex-row gap-10">
+        <VdiCard
+          title={t('desktopdeployment.win10')}
+          availableClients={guacId ? 1 : 0}
+          onClick={() => handleConnnect()}
+          osType={VirtualMachineOs.WIN10}
+        />
+        <VdiCard
+          /* Not implemented */
+          title={t('desktopdeployment.win11')}
+          availableClients={0}
+          onClick={() => handleConnnect()}
+          osType={VirtualMachineOs.WIN11}
+          disabled
+        />
+        <VdiCard
+          /* Not implemented */
+          title={t('desktopdeployment.ubuntu')}
+          availableClients={0}
+          onClick={() => handleConnnect()}
+          osType={VirtualMachineOs.UBUNTU}
+          disabled
+        />
+      </div>
       <div className="fixed bottom-10 left-10 flex flex-row space-x-8">
         <TooltipProvider>
           <div className="flex flex-col items-center">
@@ -105,6 +126,21 @@ const DesktopDeploymentPage: React.FC = () => {
               </IconContext.Provider>
             </Button>
             <p className="mt-2 text-background">{t('desktopdeployment.connect')}</p>
+          </div>
+        </TooltipProvider>
+        <TooltipProvider>
+          <div className="flex flex-col items-center">
+            <Button
+              type="button"
+              variant="btn-hexagon"
+              className="bg-opacity-90 p-4"
+              onClickCapture={() => handleReload()}
+            >
+              <IconContext.Provider value={iconContextValue}>
+                <RiShareForward2Line />
+              </IconContext.Provider>
+            </Button>
+            <p className="mt-2 text-background">{t('desktopdeployment.reload')}</p>
           </div>
         </TooltipProvider>
       </div>

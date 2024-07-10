@@ -1,16 +1,19 @@
 import React, { FC } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { WindowsLogo } from '@/assets/logos';
+import { LinuxLogo, WindowsLogo } from '@/assets/logos';
 import { Card } from '@/components/shared/Card';
+import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 
 interface CardProps {
   title: string;
   availableClients: number;
   onClick: () => void;
+  osType: VirtualMachineOs;
+  disabled?: boolean;
 }
 
-const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick }) => {
+const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick, osType, disabled = false }) => {
   const { t } = useTranslation();
 
   return (
@@ -20,8 +23,8 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick }) => {
     >
       <div className="col-span-1 flex items-center justify-center">
         <img
-          src={WindowsLogo}
-          alt="windows_logo"
+          src={osType === VirtualMachineOs.UBUNTU ? LinuxLogo : WindowsLogo}
+          alt="os_logo"
           className="h-12 w-12"
         />
       </div>
@@ -34,6 +37,7 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick }) => {
           variant="btn-collaboration"
           size="sm"
           onClick={onClick}
+          disabled={disabled}
         >
           {t('common.start')}
         </Button>
