@@ -12,9 +12,11 @@ import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
-import UserSettings from '@/pages/UserSettings/UserSettings';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
-
+import { SECURITY_PATH, USER_SETTINGS } from '@libs/userSettings/constants/user-settings-endpoints';
+import UserSettingsOutlet from '@/pages/UserSettings/UserSettingsOutlet';
+import UserSettingsDefaultPage from '@/pages/UserSettings/pages/UserSettingsDefaultPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/pages/Security/UserSettingsSecurityPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -67,10 +69,18 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
               element={<HomePage />}
             />
             <Route
-              path="user"
-              element={<UserSettings />}
-            />
-
+              path={USER_SETTINGS}
+              element={<UserSettingsOutlet />}
+            >
+              <Route
+                path=""
+                element={<UserSettingsDefaultPage />}
+              />
+              <Route
+                path={SECURITY_PATH}
+                element={<UserSettingsSecurityPage />}
+              />
+            </Route>
             <Route
               path="settings"
               element={<AppConfigPage />}

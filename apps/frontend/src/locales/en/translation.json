@@ -177,8 +177,10 @@
     }
   },
   "usersettings": {
-    "title": "USER",
-    "sidebar": "Settings",
+    "title": "USER SETTINGS",
+    "sidebar": "User settings",
+    "split-title": "USER SETTINGS",
+    "description": "Here you can view all your user-defined settings and adjust them if necessary.",
     "security": {
       "title": "Security",
       "sidebar": "Security",

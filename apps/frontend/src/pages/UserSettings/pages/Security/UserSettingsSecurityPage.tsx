@@ -1,19 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'usehooks-ts';
-import cn from '@/lib/utils';
 import { SecurityIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
-import PasswordChangeForm from '@/pages/UserSettings/Components/Security/compontns/PasswordChangeForm';
+import PasswordChangeForm from '@/pages/UserSettings/pages/Security/components/PasswordChangeForm';
 
-const SecurityComponent: React.FC = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
-
+const UserSettingsSecurityPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className={cn('absolute bottom-[32px] right-[57px] top-3 h-screen', isMobile ? 'left-4' : 'left-[256px]')}>
+    <div className="absolute bottom-[32px] left-4 right-[57px] top-3 h-screen md:left-[256px]">
       <NativeAppHeader
         title={t('usersettings.security.title')}
         description={t('usersettings.security.description')}
@@ -27,4 +23,4 @@ const SecurityComponent: React.FC = () => {
   );
 };
 
-export default SecurityComponent;
+export default UserSettingsSecurityPage;

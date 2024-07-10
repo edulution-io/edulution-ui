@@ -1,12 +1,13 @@
 import { SecurityIcon, UserIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 
 const useUserSettingsMenu = () => {
-  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntryProps = {
-    title: 'usersettings.title',
+    title: 'usersettings.split-title',
     icon: UserIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
@@ -14,7 +15,7 @@ const useUserSettingsMenu = () => {
         id: 'security',
         label: 'usersettings.security.title',
         icon: SecurityIcon,
-        action: () => setSearchParams({ section: 'security' }),
+        action: () => navigate(USER_SETTINGS_SECURITY_PATH),
       },
     ],
   };
