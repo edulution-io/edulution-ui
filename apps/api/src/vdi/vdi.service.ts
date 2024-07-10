@@ -9,6 +9,8 @@ import {
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { getDecryptedPassword } from '@libs/common/utils';
+import UsersService from '../users/users.service';
 
 @Injectable()
 class VdiService {
@@ -28,7 +30,9 @@ class VdiService {
 
   private guacamoleApiUser = process.env.GUACAMOLE_API_USER;
 
-  constructor() {
+  private encryptionKey = process.env.EDUI_ENCRYPTION_KEY as string;
+
+  constructor(private usersService: UsersService) {
     this.guacamoleApi = axios.create({
       baseURL: `${this.gucamoleApiUrl}/guacamole/api`,
     });
@@ -104,11 +108,13 @@ class VdiService {
   async createSession(body: { dataSource: string; token: string; hostname: string }, username: string) {
     try {
       const { dataSource, token, hostname } = body;
+      const user = await this.usersService.findOne(username);
+      const encryptedPassword = user?.password as string;
+      const password = getDecryptedPassword(encryptedPassword, this.encryptionKey);
       const requestBody = VdiService.createRDPConnection({
         hostname,
         username,
-        /* Get from database */
-        password: 'DemoMuster!',
+        password,
       });
 
       requestBody.name = `${username}`;
@@ -126,11 +132,13 @@ class VdiService {
   async updateSession(body: { dataSource: string; token: string; hostname: string }, username: string) {
     try {
       const { dataSource, token, hostname } = body;
+      const user = await this.usersService.findOne(username);
+      const encryptedPassword = user?.password as string;
+      const password = getDecryptedPassword(encryptedPassword, this.encryptionKey);
       const requestBody = VdiService.createRDPConnection({
         hostname,
         username,
-        /* Get from database */
-        password: 'DemoMuster!',
+        password,
       });
 
       requestBody.name = `${username}`;

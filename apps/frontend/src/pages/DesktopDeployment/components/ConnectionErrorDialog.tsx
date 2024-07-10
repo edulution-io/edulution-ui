@@ -17,7 +17,7 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const getDialogBody = () => <p className="text-black">{t('desktopdeployment.error.description')}</p>;
+  const getDialogBody = () => <p className="text-foreground">{t('desktopdeployment.error.description')}</p>;
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between gap-5">

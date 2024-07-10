@@ -9,7 +9,7 @@ import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}
 
-  @Get('auth')
+  @Get()
   authVdi() {
     return this.vdiService.authenticateVdi();
   }

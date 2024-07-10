@@ -27,14 +27,14 @@ export class Parameters {
   width: string = '';
   height: string = '';
   dpi: string = '';
-  'resize-method': string = '';
+  'resize-method': string = 'display-update';
   'console-audio': string = '';
   'disable-audio': string = '';
   'enable-audio-input': string = '';
   'enable-printing': string = '';
   'enable-drive': string = '';
   'create-drive-path': string = '';
-  'enable-wallpaper': string = '';
+  'enable-wallpaper': string = 'true';
   'enable-theming': string = '';
   'enable-font-smoothing': string = '';
   'enable-full-window-drag': string = '';

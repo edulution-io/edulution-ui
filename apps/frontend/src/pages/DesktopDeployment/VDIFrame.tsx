@@ -23,14 +23,13 @@ const VDIFrame = () => {
     setToken,
     setOpenVdiConnection,
   } = useDesktopDeploymentStore();
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const [connectionState, setConnectionState] = useState<string>('');
 
   useEffect(() => {
     const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-      setScreenHeight(window.innerHeight);
+      if (guacRef.current) {
+        guacRef.current.sendSize(window.innerWidth, window.innerHeight);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -39,12 +38,6 @@ const VDIFrame = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [isVdiConnectionMinimized]);
-
-  useEffect(() => {
-    if (guacRef.current) {
-      guacRef.current.sendSize(screenWidth, screenHeight);
-    }
-  }, [guacRef.current, screenWidth, screenHeight]);
 
   const handleDisconnect = () => {
     if (guacRef.current) {
@@ -73,8 +66,8 @@ const VDIFrame = () => {
       GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
-      GUAC_WIDTH: screenWidth - 56,
-      GUAC_HEIGHT: screenHeight,
+      GUAC_WIDTH: window.innerWidth - 56,
+      GUAC_HEIGHT: window.innerHeight,
       GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
       GUAC_AUDIO: ['audio/L8', 'audio/L16'],
@@ -160,7 +153,7 @@ const VDIFrame = () => {
         >
           <button
             type="button"
-            className="mr-1 rounded bg-ciLightBlue px-4 text-white hover:bg-ciDarkBlue"
+            className="mr-1 rounded bg-ciLightBlue px-4 hover:bg-ciDarkBlue"
             onClick={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
           >
             {isVdiConnectionMinimized ? <MdMaximize className="inline" /> : <MdMinimize className="inline" />}{' '}
@@ -168,7 +161,7 @@ const VDIFrame = () => {
           </button>
           <button
             type="button"
-            className="rounded bg-ciRed px-4 text-white hover:bg-ciRed/90"
+            className="rounded bg-ciRed px-4 hover:bg-ciRed/90"
             onClick={handleDisconnect}
           >
             <MdClose className="inline" /> {isMobileView ? '' : t('desktopdeployment.close')}

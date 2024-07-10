@@ -38,16 +38,15 @@ const AppRouter: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated || auth.isAuthenticated) {
       const handleTokenExpired = () => {
+        if (!tokenIsExpiring) {
+          setTokenIsExpiring(true);
+          toast.error(t('auth.errors.SessionExpiring'));
+        }
         if (auth.user?.expired) {
           void handleLogout();
           toast.error(t('auth.errors.TokenExpired'));
         }
       };
-
-      if (!tokenIsExpiring) {
-        setTokenIsExpiring(true);
-        toast.error(t('auth.errors.SessionExpiring'));
-      }
 
       auth.events.addAccessTokenExpiring(handleTokenExpired);
 

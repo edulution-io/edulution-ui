@@ -31,7 +31,6 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick }) => {
       </div>
       <div className="col-span-3 flex justify-end">
         <Button
-          className=""
           variant="btn-collaboration"
           size="sm"
           onClick={onClick}

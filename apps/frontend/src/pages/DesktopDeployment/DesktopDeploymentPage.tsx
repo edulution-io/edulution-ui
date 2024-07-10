@@ -23,6 +23,7 @@ const DesktopDeploymentPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
   const {
+    guacId,
     connectionEnabled,
     vdiIp,
     error,
@@ -87,7 +88,7 @@ const DesktopDeploymentPage: React.FC = () => {
       )}
       <VdiCard
         title={t('desktopdeployment.win10')}
-        availableClients={1}
+        availableClients={guacId ? 1 : 0}
         onClick={() => handleConnnect()}
       />
       <div className="fixed bottom-10 left-10 flex flex-row space-x-8">
@@ -103,7 +104,7 @@ const DesktopDeploymentPage: React.FC = () => {
                 <RiShareForward2Line />
               </IconContext.Provider>
             </Button>
-            <p className="mt-2 text-white">{t('desktopdeployment.connect')}</p>
+            <p className="mt-2 text-background">{t('desktopdeployment.connect')}</p>
           </div>
         </TooltipProvider>
       </div>

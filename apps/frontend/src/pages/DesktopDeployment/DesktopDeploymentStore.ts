@@ -59,7 +59,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   authenticate: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get(`${EDU_API_VDI_ENDPOINT}/auth`);
+      const response = await eduApi.get(EDU_API_VDI_ENDPOINT);
 
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
       set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false });
