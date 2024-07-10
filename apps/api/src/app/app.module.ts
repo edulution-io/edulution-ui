@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import LoggingInterceptor from '../logging/logging.interceptor';
 
 @Module({

@@ -18,28 +18,24 @@ const RunningConferencesAccordionItem = () => {
 
   const { t } = useTranslation();
 
-  // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
-  const isConferenceAppActivated = useMemo(
-    () => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.CONFERENCES.toString()),
-    [appConfigs],
-  );
-
   useInterval(() => {
-    if (isConferenceAppActivated) {
-      void getConferences();
-    }
+    void getConferences();
   }, FEED_PULL_TIME_INTERVAL);
 
   useEffect(() => {
-    if (isConferenceAppActivated) {
       void getConferences();
-    }
   }, []);
 
   // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
   const filteredConferences = useMemo(
     () => conferences.filter((conference: Conference) => conference.isRunning),
     [conferences],
+  );
+
+  // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
+  const isConferenceAppActivated = useMemo(
+    () => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.CONFERENCES.toString()),
+    [appConfigs],
   );
 
   if (!isConferenceAppActivated) {
