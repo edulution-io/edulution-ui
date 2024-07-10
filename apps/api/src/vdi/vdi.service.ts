@@ -1,34 +1,14 @@
-import { RDPConnection, VdiErrorMessages, Parameters, Attributes } from '@libs/desktopdeployment/types';
+import {
+  RDPConnection,
+  VdiErrorMessages,
+  Parameters,
+  Attributes,
+  LmnVdiRequest,
+  GuacamoleConnections,
+} from '@libs/desktopdeployment/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-
-type BodyType = {
-  group: string;
-  user: string;
-};
-
-interface ConAttributes {
-  [key: string]: any;
-}
-
-interface Item {
-  name: string;
-  identifier: string;
-  parentIdentifier: string;
-  protocol: string;
-  attributes: ConAttributes;
-  activeConnections: number;
-  lastActive?: number;
-}
-
-interface Data {
-  [key: string]: Item;
-}
-
-const lmnVdiApiSecret = process.env.LMN_VDI_API_SECRET;
-const lmnVdiApiUrl = process.env.LMN_VDI_API_URL;
-const gucamoleApiUrl = process.env.GUACAMOLE_API_URL;
 
 @Injectable()
 class VdiService {
@@ -38,14 +18,24 @@ class VdiService {
 
   private vdiId = '';
 
+  private lmnVdiApiSecret = process.env.LMN_VDI_API_SECRET;
+
+  private lmnVdiApiUrl = process.env.LMN_VDI_API_URL;
+
+  private gucamoleApiUrl = process.env.GUACAMOLE_API_URL;
+
+  private guacamoleApiPwd = process.env.GUACAMOLE_API_PASSWORD;
+
+  private guacamoleApiUser = process.env.GUACAMOLE_API_USER;
+
   constructor() {
     this.guacamoleApi = axios.create({
-      baseURL: `${gucamoleApiUrl}/guacamole/api`,
+      baseURL: `${this.gucamoleApiUrl}/guacamole/api`,
     });
     this.lmnVdiApi = axios.create({
-      baseURL: `${lmnVdiApiUrl}/api`,
+      baseURL: `${this.lmnVdiApiUrl}/api`,
       headers: {
-        'LMN-API-Secret': lmnVdiApiSecret,
+        'LMN-API-Secret': this.lmnVdiApiSecret,
       },
     });
   }
@@ -60,7 +50,7 @@ class VdiService {
     return rdpConnection;
   }
 
-  static getIdentifierByName(data: Data, username: string): string | null {
+  static getIdentifierByName(data: GuacamoleConnections, username: string): string | null {
     const items = Object.values(data);
     const item = items.find((itm) => itm.name === username);
 
@@ -75,7 +65,7 @@ class VdiService {
     try {
       const response = await this.guacamoleApi.post(
         '/tokens',
-        { username: process.env.GUACAMOLE_API_USER, password: process.env.GUACAMOLE_API_PASSWORD },
+        { username: this.guacamoleApiUser, password: this.guacamoleApiPwd },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         },
@@ -92,7 +82,7 @@ class VdiService {
     try {
       const { dataSource, token } = body;
       const response = await this.guacamoleApi.get(`/session/data/${dataSource}/connections?token=${token}`);
-      const identifier = VdiService.getIdentifierByName(response.data as Data, username);
+      const identifier = VdiService.getIdentifierByName(response.data as GuacamoleConnections, username);
       if (identifier) this.vdiId = identifier;
       return identifier;
     } catch (e) {
@@ -153,7 +143,7 @@ class VdiService {
     }
   }
 
-  async requestVdi(body: BodyType) {
+  async requestVdi(body: LmnVdiRequest) {
     try {
       const response = await this.lmnVdiApi.post('/connection/request', body);
       return response.data as AxiosResponse;

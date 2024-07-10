@@ -1,19 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { GuacRequest, LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VdiService from './vdi.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-
-type LmnVdiBody = {
-  group: string;
-  user: string;
-};
-
-type GuacRequestBody = {
-  id: number;
-  dataSource: string;
-  token: string;
-  hostname: string;
-};
 
 @ApiBearerAuth()
 @Controller('vdi')
@@ -26,17 +15,17 @@ class VdiController {
   }
 
   @Post('connections')
-  getConnections(@Body() body: GuacRequestBody, @GetCurrentUsername() username: string) {
+  getConnections(@Body() body: GuacRequest, @GetCurrentUsername() username: string) {
     return this.vdiService.getConnections(body, username);
   }
 
   @Post('sessions')
-  createOrUpdateSession(@Body() body: GuacRequestBody, @GetCurrentUsername() username: string) {
+  createOrUpdateSession(@Body() body: GuacRequest, @GetCurrentUsername() username: string) {
     return this.vdiService.createOrUpdateSession(body, username);
   }
 
   @Post()
-  requestVdi(@Body() body: LmnVdiBody) {
+  requestVdi(@Body() body: LmnVdiRequest) {
     return this.vdiService.requestVdi(body);
   }
 

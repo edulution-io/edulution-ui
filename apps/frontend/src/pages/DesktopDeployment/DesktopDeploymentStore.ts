@@ -108,7 +108,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
 
     const vdiConnectionRequestBody = {
       group,
-      user: userStore.getState().username,
+      user: userStore.getState().user!.username,
     };
 
     try {
