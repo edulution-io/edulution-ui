@@ -19,14 +19,14 @@ interface ConferenceDetailsDialogProps {
 
 const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
-  const { username } = useUserStore();
+  const { user } = useUserStore();
   const { getConferences } = useConferenceStore();
   const { isLoading, selectedConference, setSelectedConference, updateConference } = useConferenceDetailsDialogStore();
 
   const initialFormValues: ConferencesForm = {
     name: selectedConference?.name || '',
     password: selectedConference?.password || '',
-    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== username) || [],
+    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user?.username) || [],
     invitedGroups: [],
   };
 
@@ -40,7 +40,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as AttendeeDto],
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username: user?.username } as AttendeeDto],
       meetingID: selectedConference?.meetingID,
     };
 

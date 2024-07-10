@@ -13,13 +13,13 @@ interface ConferencesListProps {
 
 const NUMBER_OF_BADGES_TO_SHOW = 2;
 
-const ConferencesList = (props: ConferencesListProps) => {
+const RunningConferencesList = (props: ConferencesListProps) => {
   const { items, className } = props;
 
   const { joinConference } = useConferenceDetailsDialogStore();
 
   const getShownBadges = (item: Conference) => {
-    const badges = [];
+    const badges: React.ReactNode[] = [];
     for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i += 1) {
       const name =
         item.joinedAttendees[i].label || `${item.joinedAttendees[i].firstName} ${item.joinedAttendees[i].lastName}`;
@@ -73,4 +73,4 @@ const ConferencesList = (props: ConferencesListProps) => {
   );
 };
 
-export default ConferencesList;
+export default RunningConferencesList;

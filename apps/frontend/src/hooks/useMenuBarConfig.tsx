@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { APPS } from '@libs/appconfig/types';
-import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { getFromPathName } from '@libs/common/utils';
+import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
-import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
@@ -35,9 +34,6 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
-      }
-      case APPS.ROOM_BOOKING: {
-        return ROOMBOOKING_MENUBAR_CONFIG;
       }
       case APPS.MAIL: {
         return MAIL_MENUBAR_CONFIG;
