@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SecurityIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
-import PasswordChangeForm from '@/pages/UserSettings/pages/Security/components/PasswordChangeForm';
+import PasswordChangeForm from '@/pages/UserSettings/Security/components/PasswordChangeForm';
 
 const UserSettingsSecurityPage: React.FC = () => {
   const { t } = useTranslation();

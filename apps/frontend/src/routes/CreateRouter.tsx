@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, Outlet } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
@@ -13,10 +13,9 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
-import { SECURITY_PATH, USER_SETTINGS } from '@libs/userSettings/constants/user-settings-endpoints';
-import UserSettingsOutlet from '@/pages/UserSettings/UserSettingsOutlet';
-import UserSettingsDefaultPage from '@/pages/UserSettings/pages/UserSettingsDefaultPage';
-import UserSettingsSecurityPage from '@/pages/UserSettings/pages/Security/UserSettingsSecurityPage';
+import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -69,8 +68,8 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
               element={<HomePage />}
             />
             <Route
-              path={USER_SETTINGS}
-              element={<UserSettingsOutlet />}
+              path={USER_SETTINGS_PATH}
+              element={<Outlet />}
             >
               <Route
                 path=""
