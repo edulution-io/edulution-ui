@@ -2,11 +2,12 @@ import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
-import CryptoJS from 'crypto-js';
 import eduApi from '@/api/eduApi';
 import { Connections, VdiConnectionRequest, VirtualMachines } from '@libs/desktopdeployment/types';
 
 interface DesktopDeploymentStore {
+  connectionEnabled: boolean;
+  vdiIp: string;
   token: string;
   dataSource: string;
   isLoading: boolean;
@@ -24,11 +25,14 @@ interface DesktopDeploymentStore {
   setVirtualMachines: (virtualMachines: VirtualMachines) => void;
   authenticate: () => Promise<void>;
   getConnections: () => Promise<void>;
-  postRequestVdi: (group: string) => Promise<VdiConnectionRequest | null>;
+  postRequestVdi: (group: string) => Promise<void>;
   getVirtualMachines: () => Promise<void>;
+  createOrUpdateConnection: () => Promise<void>;
 }
 
 const initialState = {
+  connectionEnabled: false,
+  vdiIp: '',
   token: '',
   dataSource: '',
   isLoading: false,
@@ -55,18 +59,29 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   authenticate: async () => {
     set({ isLoading: true });
     try {
-      const key = `${import.meta.env.VITE_WEBDAV_KEY}`;
-      const decryptedValue = CryptoJS.AES.decrypt(userStore.getState().webdavKey, key);
-      const password = decryptedValue.toString(CryptoJS.enc.Utf8);
-
-      const response = await eduApi.post(`${EDU_API_VDI_ENDPOINT}/auth`, {
-        username: userStore.getState().username,
-        password,
-      });
+      const response = await eduApi.get(`${EDU_API_VDI_ENDPOINT}/auth`);
 
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
       set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false });
     } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  createOrUpdateConnection: async () => {
+    set({ isLoading: true });
+    try {
+      await eduApi.post(`${EDU_API_VDI_ENDPOINT}/sessions`, {
+        dataSource: get().dataSource,
+        token: get().token,
+        hostname: get().vdiIp,
+      });
+      set({ isLoading: false, connectionEnabled: true });
+    } catch (error) {
+      set({ isLoading: false, connectionEnabled: false });
+
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
@@ -80,7 +95,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
         dataSource: get().dataSource,
         token: get().token,
       });
-      set({ isLoading: false, connections: response.data as Connections });
+      set({ isLoading: false, guacId: response.data as string });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -98,11 +113,9 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
 
     try {
       const response = await eduApi.post<VdiConnectionRequest>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
-      set({ isLoading: false });
-      return response.data;
+      set({ isLoading: false, vdiIp: response.data.data.ip });
     } catch (error) {
       handleApiError(error, set);
-      return null;
     } finally {
       set({ isLoading: false });
     }

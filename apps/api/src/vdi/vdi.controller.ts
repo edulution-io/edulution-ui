@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import VdiService from './vdi.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -20,10 +20,9 @@ type GuacRequestBody = {
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}
 
-  @Post('auth')
-  /* Replace password when its available in db */
-  authVdi(@Body() body: { username: string; password: string }) {
-    return this.vdiService.authenticateVdi(body);
+  @Get('auth')
+  authVdi() {
+    return this.vdiService.authenticateVdi();
   }
 
   @Post('connections')
@@ -31,24 +30,9 @@ class VdiController {
     return this.vdiService.getConnections(body, username);
   }
 
-  @Get('session')
-  getSession(@Body() body: GuacRequestBody) {
-    return this.vdiService.getSession(body);
-  }
-
   @Post('sessions')
   createOrUpdateSession(@Body() body: GuacRequestBody, @GetCurrentUsername() username: string) {
     return this.vdiService.createOrUpdateSession(body, username);
-  }
-
-  @Post('session')
-  createSession(@Body() body: GuacRequestBody, @GetCurrentUsername() username: string) {
-    return this.vdiService.createSession(body, username);
-  }
-
-  @Put('session')
-  updateSession(@Body() body: GuacRequestBody, @GetCurrentUsername() username: string) {
-    return this.vdiService.updateSession(body, username);
   }
 
   @Post()

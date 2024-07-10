@@ -62,7 +62,6 @@ class VdiService {
 
   static getIdentifierByName(data: Data, username: string): string | null {
     const items = Object.values(data);
-
     const item = items.find((itm) => itm.name === username);
 
     if (item) {
@@ -72,12 +71,18 @@ class VdiService {
     return null;
   }
 
-  async authenticateVdi(body: { username: string; password: string }) {
+  async authenticateVdi() {
     try {
-      const response = await this.guacamoleApi.post('/tokens', body, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      });
-      return response.data as AxiosResponse;
+      const response = await this.guacamoleApi.post(
+        '/tokens',
+        { username: process.env.GUACAMOLE_API_USER, password: process.env.GUACAMOLE_API_PASSWORD },
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        },
+      );
+      const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
+
+      return { authToken, dataSource };
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
@@ -92,16 +97,6 @@ class VdiService {
       return identifier;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
-    }
-  }
-
-  async getSession(body: { id: number; dataSource: string; token: string }) {
-    try {
-      const { id, dataSource, token } = body;
-      const response = await this.guacamoleApi.get(`/session/data/${dataSource}/connections/${id}?token=${token}`);
-      return response.data as AxiosResponse;
-    } catch (e) {
-      return null;
     }
   }
 
