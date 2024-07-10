@@ -19,7 +19,7 @@ interface CreateConferenceDialogBodyProps {
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
   const { setValue, getValues, watch } = form;
-  const { username } = useUserStore();
+  const { user } = useUserStore();
   const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
     useCreateConferenceDialogStore();
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
 
   const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
-    return result.filter((r) => r.username !== username);
+    return result.filter((r) => r.username !== user?.username);
   };
 
   const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {

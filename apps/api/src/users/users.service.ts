@@ -4,10 +4,10 @@ import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import UserDto from '@libs/user/types/user.dto';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
-import RegisterUserDto from './dto/register-user.dto';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsService from '../groups/groups.service';
 
@@ -19,19 +19,21 @@ class UsersService {
     private readonly groupsService: GroupsService,
   ) {}
 
-  async register(userDto: RegisterUserDto): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: userDto.preferred_username }).exec();
+  async createOrUpdate(userDto: UserDto): Promise<User | null> {
+    const existingUser = await this.userModel.findOne<User>({ username: userDto.username }).exec();
 
     let newUser;
     if (!existingUser) {
       newUser = await this.create({
         email: userDto.email,
-        username: userDto.preferred_username,
-        roles: userDto.ldapGroups,
+        username: userDto.username,
+        password: userDto.password,
+        ldapGroups: userDto.ldapGroups,
       });
     } else {
-      newUser = await this.update(userDto.preferred_username, {
-        roles: userDto.ldapGroups,
+      newUser = await this.update(userDto.username, {
+        password: userDto.password,
+        ldapGroups: userDto.ldapGroups,
       });
     }
 
