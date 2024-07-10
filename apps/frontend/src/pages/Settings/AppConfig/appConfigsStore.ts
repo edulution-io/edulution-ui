@@ -33,6 +33,10 @@ const useAppConfigsStore = create<AppConfigsStore>(
       reset: () => set(initialState),
 
       getAppConfigs: async () => {
+        const { isLoading } = get();
+        if (isLoading) {
+          return false;
+        }
         set({ isLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
@@ -42,7 +46,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
           handleApiError(e, set);
           return false;
         } finally {
-          set({ isLoading: false });
+          set({isLoading: false});
         }
       },
 

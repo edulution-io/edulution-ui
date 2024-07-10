@@ -18,13 +18,13 @@ type MobileFileAccessSetupDialogProps = {
 
 const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = ({ isOpen, setIsOpen }) => {
   const isMobileView = useIsMobileView();
-  const { username } = useUserStore();
+  const { user } = useUserStore();
   const [isStepOne, setIsStepOne] = useState(true);
 
   const webdavAccessDetails = {
     displayName: `${window.document.title}`,
     url: `${window.location.origin}/webdav`,
-    username,
+    username: user?.username,
     password: '',
     token: '',
   };
@@ -42,7 +42,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         </Card>
         {t('common.username')}:
         <Card variant="text">
-          <pre className="m-2 text-foreground">{username}</pre>
+          <pre className="m-2 text-foreground">{user?.username}</pre>
         </Card>
       </div>
     </>
