@@ -18,6 +18,14 @@ class SurveyAnswersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
+  async getAllSurveys(): Promise<Survey[]> {
+    const surveys = this.surveyModel.find().exec();
+    if (surveys == null) {
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
+    }
+    return surveys;
+  }
+
   async onRemoveUser(userNames: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyAnswerModel.deleteMany({ user: { $in: userNames } }).exec();
@@ -32,7 +40,7 @@ class SurveyAnswersService {
 
   async onRemoveSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
-      await this.surveyAnswerModel.deleteMany({ survey: { $in: surveyIds } }).exec();
+      await this.surveyAnswerModel.deleteMany({ survey: { $in: surveyIds } }, { ordered: false }).exec();
     } catch (error) {
       throw new CustomHttpException(
         SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
@@ -200,6 +208,7 @@ class SurveyAnswersService {
     const usersSurveyAnswer = await this.surveyAnswerModel
       .findOne<SurveyAnswer>({ survey: surveyId, user: username })
       .exec();
+
     if (usersSurveyAnswer == null) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }

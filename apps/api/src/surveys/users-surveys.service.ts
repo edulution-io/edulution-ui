@@ -6,7 +6,6 @@ import UsersSurveys from '@libs/survey/types/users-surveys';
 import emptyUsersSurveys from '@libs/survey/types/empty-user-surveys';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/user-error-messages';
-import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
 import { User, UserDocument } from '../users/user.schema';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -60,8 +59,11 @@ class UsersSurveysService {
   }
 
   async getAnsweredSurveyIds(username: string): Promise<mongoose.Types.ObjectId[]> {
-    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ user: username }).exec();
-    return surveyAnswers.map((surveyAnswer: SurveyAnswer) => surveyAnswer.survey);
+    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ user: { $eq: username } }).exec();
+    if (surveyAnswers.length > 0) {
+      return surveyAnswers.map((answer: SurveyAnswer) => answer.survey);
+    }
+    return [];
   }
 
   async getAnsweredSurveys(username: string): Promise<Survey[]> {
@@ -120,80 +122,58 @@ class UsersSurveysService {
     return updatedUser;
   }
 
+  filterOutSurveyIds = (
+    existingSurveys: mongoose.Types.ObjectId[],
+    removingSurveyIds: mongoose.Types.ObjectId[],
+  ): mongoose.Types.ObjectId[] =>
+    existingSurveys.filter((survey: mongoose.Types.ObjectId) => !removingSurveyIds.includes(survey)) || [];
+
+  async updateUserOnRemovalOfSurvey(user: User, surveyIds: mongoose.Types.ObjectId[]): Promise<User | null> {
+    const { createdSurveys = [], openSurveys = [], answeredSurveys = [] } = user.usersSurveys || {};
+    const usersCreatedSurveys = this.filterOutSurveyIds(createdSurveys, surveyIds);
+    const usersOpenSurveys = this.filterOutSurveyIds(openSurveys, surveyIds);
+
+    const userAnswers = await this.surveyAnswerModel
+      .find<SurveyAnswer>({ user: { $eq: { user } }, survey: { $nin: answeredSurveys } })
+      .exec();
+    const usersAnsweredSurveys: mongoose.Types.ObjectId[] = userAnswers?.map((answer: SurveyAnswer) => answer.id);
+
+    const shouldUpdateUser =
+      createdSurveys.length !== usersCreatedSurveys.length ||
+      openSurveys.length !== usersOpenSurveys.length ||
+      answeredSurveys.length !== usersAnsweredSurveys.length;
+
+    return new Promise(() => {
+      if (shouldUpdateUser) {
+        const updatedUserSurveys: UsersSurveys = {
+          createdSurveys: [...usersCreatedSurveys],
+          openSurveys: [...usersOpenSurveys],
+          answeredSurveys: [...usersAnsweredSurveys],
+        };
+        this.updateUser(user.username, { usersSurveys: updatedUserSurveys })
+          .then((updatedUser: User | null) => {
+            if (updatedUser) {
+              return updatedUser;
+            }
+          });
+      }
+      return user;
+    });
+  }
+
   async onRemoveSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
-    const existingUsers = await this.userModel.find<User>().exec();
+    const existingUsers: User[] = await this.userModel.find<User>({}).exec();
     if (!existingUsers) {
       throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);
     }
 
-    const promises = existingUsers.map(async (user): Promise<void> => {
-      const {
-        createdSurveys = [],
-        openSurveys = [],
-        answeredSurveys = [],
-        ...remainingUserSurveys
-      } = user.usersSurveys || {};
-
-      let shouldUpdateUser = false;
-
-      const usersCreatedSurveys =
-        createdSurveys.filter((survey: mongoose.Types.ObjectId) => {
-          if (!surveyIds.includes(survey)) {
-            return true;
-          }
-          shouldUpdateUser = true;
-          return false;
-        }) || [];
-
-      const usersOpenSurveys =
-        openSurveys.filter((survey: mongoose.Types.ObjectId) => {
-          if (!surveyIds.includes(survey)) {
-            return true;
-          }
-          shouldUpdateUser = true;
-          return false;
-        }) || [];
-
-      let userAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ survey: { $in: answeredSurveys } }).exec();
-      userAnswers =
-        userAnswers.filter((answer: SurveyAnswer) => {
-          if (!surveyIds.includes(answer.survey)) {
-            return true;
-          }
-          shouldUpdateUser = true;
-          return false;
-        }) || [];
-      const usersAnsweredSurveys: mongoose.Types.ObjectId[] = userAnswers?.map((answer: SurveyAnswer) => answer.id);
-
-      if (shouldUpdateUser) {
-        const newUser: UpdateUserDto = {
-          usersSurveys: {
-            ...remainingUserSurveys,
-            createdSurveys: [...usersCreatedSurveys],
-            openSurveys: [...usersOpenSurveys],
-            answeredSurveys: [...usersAnsweredSurveys],
-          },
-        };
-
-        await this.updateUser(user.username, newUser);
-      }
+    const promises: Promise<User | null>[] = [];
+    existingUsers.forEach((user: User) => {
+      const prom: Promise<User | null> = this.updateUserOnRemovalOfSurvey(user, surveyIds);
+      promises.push(prom);
     });
 
-    try {
-      await Promise.all(promises);
-    } catch (error) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToUpdateUserError, HttpStatus.NOT_MODIFIED, error);
-    }
-
-    try {
-      await this.surveyAnswerModel.deleteMany({ survey: { $in: surveyIds } }).exec();
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
-        HttpStatus.NOT_MODIFIED,
-        error,
-      );
-    }
+    await Promise.all(promises);
   }
 }
 

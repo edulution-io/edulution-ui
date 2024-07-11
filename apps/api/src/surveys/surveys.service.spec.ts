@@ -7,12 +7,13 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import {
-  mockSurveyIds,
-  mockSurveys,
-  firstMockSurvey,
-  firstMockSurveyId,
-  secondMockSurvey,
-} from './surveys.service.mock';
+  mockedSurveyIds,
+  mockedSurveys,
+  distributedSurvey,
+  idOfDistributedSurvey,
+  theCreatedSurvey,
+  theUpdatedCreatedSurvey,
+} from './mocks';
 
 describe('SurveyService', () => {
   let service: SurveysService;
@@ -44,13 +45,13 @@ describe('SurveyService', () => {
   describe('findAllSurveys', () => {
     it('should return all surveys', async () => {
       surveyModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(mockSurveys),
+        exec: jest.fn().mockResolvedValue(mockedSurveys),
       });
 
       jest.spyOn(surveyModel, 'find');
 
       const result = await service.getAllSurveys();
-      expect(result).toStrictEqual(mockSurveys);
+      expect(result).toStrictEqual(mockedSurveys);
       expect(surveyModel.find).toHaveBeenCalled();
     });
   });
@@ -58,13 +59,13 @@ describe('SurveyService', () => {
   describe('findSurvey', () => {
     it('should return a single survey by ID', async () => {
       surveyModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(firstMockSurvey),
+        exec: jest.fn().mockResolvedValue(distributedSurvey),
       });
 
       jest.spyOn(surveyModel, 'findOne');
 
-      const result = await service.findOneSurvey(firstMockSurveyId);
-      expect(result).toStrictEqual(firstMockSurvey);
+      const result = await service.findOneSurvey(idOfDistributedSurvey);
+      expect(result).toStrictEqual(distributedSurvey);
       expect(surveyModel.findOne).toHaveBeenCalled();
     });
   });
@@ -72,13 +73,13 @@ describe('SurveyService', () => {
   describe('findSurveys', () => {
     it('should return multiple surveys by ID', async () => {
       surveyModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(mockSurveys),
+        exec: jest.fn().mockResolvedValue(mockedSurveys),
       });
 
       jest.spyOn(surveyModel, 'find');
 
-      const result = await service.findSurveys(mockSurveyIds);
-      expect(result).toStrictEqual(mockSurveys);
+      const result = await service.findSurveys(mockedSurveyIds);
+      expect(result).toStrictEqual(mockedSurveys);
       expect(surveyModel.find).toHaveBeenCalled();
     });
   });
@@ -86,13 +87,13 @@ describe('SurveyService', () => {
   describe('updateSurvey', () => {
     it('should update a survey', async () => {
       surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(secondMockSurvey),
+        exec: jest.fn().mockResolvedValue(theUpdatedCreatedSurvey),
       });
 
-      const result = await service.updateSurvey(secondMockSurvey);
-      expect(result).toStrictEqual(secondMockSurvey);
+      const result = await service.updateSurvey(theUpdatedCreatedSurvey);
+      expect(result).toStrictEqual(theUpdatedCreatedSurvey);
 
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ id: secondMockSurvey.id }, secondMockSurvey);
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: theCreatedSurvey.id }, theUpdatedCreatedSurvey);
     });
 
     it('should throw an error if the survey update fails', async () => {
@@ -107,7 +108,7 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'findOneAndUpdate');
 
       try {
-        await service.updateSurvey(secondMockSurvey);
+        await service.updateSurvey(theUpdatedCreatedSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotAbleToUpdateSurveyError);
@@ -118,15 +119,15 @@ describe('SurveyService', () => {
   describe('createSurvey', () => {
     it('should create a survey', async () => {
       surveyModel.create = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockReturnValueOnce(firstMockSurvey),
+        exec: jest.fn().mockReturnValueOnce(theCreatedSurvey),
       });
 
       await service
-        .createSurvey(firstMockSurvey)
-        .then((data) => expect(data).toStrictEqual(firstMockSurvey))
+        .createSurvey(theCreatedSurvey)
+        .then((data) => expect(data).toStrictEqual(theCreatedSurvey))
         .catch(() => {});
 
-      expect(surveyModel.create).toHaveBeenCalledWith(firstMockSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(theCreatedSurvey);
     });
 
     it('should throw an error if the survey creation fails', async () => {
@@ -144,12 +145,12 @@ describe('SurveyService', () => {
       jest.spyOn(surveyModel, 'create');
 
       try {
-        await service.createSurvey(firstMockSurvey);
+        await service.createSurvey(theCreatedSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(SurveyErrorMessages.NotAbleToCreateSurveyError);
       }
-      expect(surveyModel.create).toHaveBeenCalledWith(firstMockSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(theCreatedSurvey);
     });
   });
 });
