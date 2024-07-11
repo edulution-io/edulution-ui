@@ -17,7 +17,7 @@ const FileSharingPage = () => {
   const { user } = useLmnApiStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.sophomorixRole}s/${user?.displayName}`;
+  const homePath = `${user?.sophomorixRole}s/${user?.name}`;
 
   useEffect(() => {
     if (path === '/') {

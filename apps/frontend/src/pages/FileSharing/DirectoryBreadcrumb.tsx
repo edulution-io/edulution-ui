@@ -30,7 +30,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const homePath = `${user?.sophomorixRole}s/${user?.displayName}`;
+  const homePath = `${user?.sophomorixRole}s/${user?.name}`;
   const filteredSegment = segments.filter(
     (item) =>
       item !== HiddenAttributesBreadcrumb.teachers.toString() &&
