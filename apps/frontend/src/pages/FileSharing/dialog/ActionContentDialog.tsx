@@ -8,10 +8,11 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
 import { z } from 'zod';
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
-import ActionItems from '@/pages/FileSharing/dialog/ActionsType/ActionItems';
-import { AVAILABLE_FILE_TYPES, FileTypeKey } from '@/pages/FileSharing/fileoperations/fileCreationDropDownOptions';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
+import FileAction from '@libs/filesharing/FileAction';
+import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
+import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -35,7 +36,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setMoveItemsToPath,
     setFilesToUpload,
   } = useFileSharingDialogStore();
-  const { currentPath, selectedItems } = useFileManagerStore();
+  const { currentPath, selectedItems } = useFileSharingStore();
 
   const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, getData } =
     getDialogBodySetup(action);
@@ -93,7 +94,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
   };
 
-  const title = action === ActionItems.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
+  const title = action === FileAction.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
   return (
     <AdaptiveDialog
@@ -104,7 +105,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       body={isLoading ? <LoadingIndicator isOpen={isLoading} /> : <Component form={form} />}
       footer={
         error ? (
-          <div className="rounded-xl bg-red-400 py-3 text-center text-black">{error.message}</div>
+          <div className="rounded-xl  bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>
         ) : (
           <div className="mt-4 flex justify-end">
             <form onSubmit={handleFormSubmit}>

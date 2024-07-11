@@ -1,4 +1,4 @@
-import { mapToDirectories, mapToDirectoryFiles } from './webdav.utilits';
+import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilits';
 
 const sampleXML = `
 <d:multistatus xmlns:d="DAV:">

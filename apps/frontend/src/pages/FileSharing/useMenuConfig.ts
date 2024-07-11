@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { MenuItem } from '@/datatypes/types';
 import {
   FileSharingIcon,
@@ -27,19 +27,15 @@ const findCorrespondingMountPointIcon = (filename: string) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { mountPoints, setMountPoints, fetchMountPoints } = useFileManagerStore();
+  const { mountPoints, setMountPoints, fetchMountPoints } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const fetchAndSetMountPoints = useCallback(async () => {
     if (mountPoints.length === 0) {
-      try {
-        const mounts = await fetchMountPoints();
-        if (Array.isArray(mounts)) {
-          setMountPoints(mounts);
-        }
-      } catch (error) {
-        console.error('Error fetching mount points:', error);
+      const mounts = await fetchMountPoints();
+      if (Array.isArray(mounts)) {
+        setMountPoints(mounts);
       }
     }
   }, [mountPoints.length, fetchMountPoints, setMountPoints]);

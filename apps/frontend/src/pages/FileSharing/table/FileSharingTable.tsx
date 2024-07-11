@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
@@ -22,14 +22,14 @@ interface DataTableProps<TData, TValue> {
 
 const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const setSelectedItems = useFileManagerStore((state) => state.setSelectedItems);
+  const setSelectedItems = useFileSharingStore((state) => state.setSelectedItems);
   const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
-        ? updaterOrValue(useFileManagerStore.getState().selectedRows)
+        ? updaterOrValue(useFileSharingStore.getState().selectedRows)
         : updaterOrValue;
-    useFileManagerStore.getState().setSelectedRows(newValue);
+    useFileSharingStore.getState().setSelectedRows(newValue);
   };
 
   const table = useReactTable({
@@ -41,7 +41,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
     onRowSelectionChange: handleRowSelectionChange,
     state: {
       sorting,
-      rowSelection: useFileManagerStore((state) => state.selectedRows),
+      rowSelection: useFileSharingStore((state) => state.selectedRows),
     },
   });
 
@@ -53,14 +53,14 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <div className="flex-1 text-sm text-muted-foreground text-white">
+        <div className="flex-1 text-sm text-background text-muted-foreground">
           {t('table.rowsSelected', {
             selected: table.getFilteredSelectedRowModel().rows.length,
             total: table.getFilteredRowModel().rows.length,
           })}
         </div>
       ) : (
-        <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
+        <div className="flex-1 text-sm text-background text-muted-foreground">&nbsp;</div>
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
@@ -70,7 +70,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
-                  className="text-white"
+                  className="text-background"
                 >
                   {headerGroup.headers.map((header) => (
                     <TableHead key={header.id}>
@@ -91,7 +91,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        className="text-white"
+                        className="text-background"
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>

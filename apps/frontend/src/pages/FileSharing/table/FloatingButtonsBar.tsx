@@ -1,4 +1,4 @@
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import {
   MdDriveFileRenameOutline,
@@ -8,14 +8,14 @@ import {
 } from 'react-icons/md';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ActionItems from '@/pages/FileSharing/dialog/ActionsType/ActionItems';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import { FiUpload } from 'react-icons/fi';
-import FILE_TYPES from '@/pages/FileSharing/fileoperations/fileCreationDropDownOptions';
+import FileAction from '@libs/filesharing/FileAction';
+import FileTypesConfiguration from '@libs/ui/types/filesharing/FileTypesConfiguration';
 
 const FileSharingFloatingButtonsBar = () => {
-  const { selectedItems } = useFileManagerStore();
+  const { selectedItems } = useFileSharingStore();
   const { openDialog } = useFileSharingDialogStore();
   const { t } = useTranslation();
 
@@ -27,18 +27,18 @@ const FileSharingFloatingButtonsBar = () => {
             variant="dropdown"
             icon={MdFilePresent}
             text={t('tooltip.create.file')}
-            onClick={() => openDialog(ActionItems.CREATE_FILE)}
-            options={FILE_TYPES}
+            onClick={() => openDialog(FileAction.CREATE_FILE)}
+            options={FileTypesConfiguration}
           />
           <FloatingActionButton
             icon={HiOutlineFolderAdd}
             text={t('tooltip.create.folder')}
-            onClick={() => openDialog(ActionItems.CREATE_FOLDER)}
+            onClick={() => openDialog(FileAction.CREATE_FOLDER)}
           />
           <FloatingActionButton
             icon={FiUpload}
             text={t('tooltip.upload')}
-            onClick={() => openDialog(ActionItems.UPLOAD_FILE)}
+            onClick={() => openDialog(FileAction.UPLOAD_FILE)}
           />
         </>
       )}
@@ -47,7 +47,7 @@ const FileSharingFloatingButtonsBar = () => {
         <FloatingActionButton
           icon={MdDriveFileRenameOutline}
           text={t('tooltip.rename')}
-          onClick={() => openDialog(ActionItems.RENAME)}
+          onClick={() => openDialog(FileAction.RENAME)}
         />
       )}
 
@@ -56,12 +56,12 @@ const FileSharingFloatingButtonsBar = () => {
           <FloatingActionButton
             icon={MdOutlineDeleteOutline}
             text={t('tooltip.delete')}
-            onClick={() => openDialog(ActionItems.DELETE)}
+            onClick={() => openDialog(FileAction.DELETE)}
           />
           <FloatingActionButton
             icon={MdOutlineDriveFileMove}
             text={t('tooltip.move')}
-            onClick={() => openDialog(ActionItems.MOVE)}
+            onClick={() => openDialog(FileAction.MOVE)}
           />
         </>
       )}

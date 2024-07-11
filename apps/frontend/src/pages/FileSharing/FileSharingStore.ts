@@ -1,11 +1,13 @@
 import { RowSelectionState } from '@tanstack/react-table';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
 import eduApi from '@/api/eduApi';
-import APIPATH from '@/pages/FileSharing/utilities/apiPath';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
+import handleApiError from '@/utils/handleApiError';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 
-type FileManagerStore = {
+type FileSharingStore = {
   files: DirectoryFile[];
   selectedItems: DirectoryFile[];
   currentPath: string;
@@ -26,20 +28,7 @@ type FileManagerStore = {
   setMountPoints: (mountPoints: DirectoryFile[]) => void;
 };
 
-const initialState: Omit<
-  FileManagerStore,
-  | 'setSelectedRows'
-  | 'setCurrentPath'
-  | 'setFiles'
-  | 'setDirectorys'
-  | 'setSelectedItems'
-  | 'fetchFiles'
-  | 'fetchMountPoints'
-  | 'fetchDirs'
-  | 'reset'
-  | 'setMountPoints'
-  | 'setPathToRestoreSession'
-> = {
+const initialState = {
   files: [],
   selectedItems: [],
   currentPath: `/`,
@@ -50,13 +39,13 @@ const initialState: Omit<
 };
 
 type PersistedFileManagerStore = (
-  fileManagerData: StateCreator<FileManagerStore>,
-  options: PersistOptions<FileManagerStore>,
-) => StateCreator<FileManagerStore>;
+  fileManagerData: StateCreator<FileSharingStore>,
+  options: PersistOptions<FileSharingStore>,
+) => StateCreator<FileSharingStore>;
 
-const useFileManagerStore = create<FileManagerStore>(
+const useFileSharingStore = create<FileSharingStore>(
   (persist as PersistedFileManagerStore)(
-    (set, get) => ({
+    (set) => ({
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
@@ -79,31 +68,37 @@ const useFileManagerStore = create<FileManagerStore>(
 
       fetchFiles: async (path: string = '/') => {
         try {
-          const directoryFiles = await eduApi.get(`${APIPATH.FILESHARING_ROUTE}${path.replace('/webdav/', '')}`);
-          get().setCurrentPath(path);
-          get().setFiles(directoryFiles.data as DirectoryFile[]);
-          get().setSelectedItems([]);
-          get().setSelectedRows({});
+          const directoryFiles = await eduApi.get(
+            `${FileSharingApiEndpoints.FILESHARING_ROUTE}/${clearPathFromWebdav(path)}`,
+          );
+          set({
+            currentPath: path,
+            files: directoryFiles.data as DirectoryFile[],
+            selectedItems: [],
+            selectedRows: {},
+          });
         } catch (error) {
-          console.error('Error fetching files:', error);
+          handleApiError(error, set);
         }
       },
 
       fetchMountPoints: async () => {
         try {
-          const resp = await eduApi.get(`${APIPATH.FILESHARING_ROUTE}`);
-          get().setMountPoints(resp.data as DirectoryFile[]);
+          const resp = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ROUTE}/`);
+          set({ mountPoints: resp.data as DirectoryFile[] });
         } catch (error) {
-          console.error('Error fetching mount points:', error);
+          handleApiError(error, set);
         }
       },
 
       fetchDirs: async (path: string) => {
         try {
-          const directoryFiles = await eduApi.get(`${APIPATH.FILESHARING_ACTIONS}dirs/${path.replace('/webdav/', '')}`);
-          get().setDirectorys(directoryFiles.data as DirectoryFile[]);
+          const directoryFiles = await eduApi.get(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/dirs/${clearPathFromWebdav(path)}`,
+          );
+          set({ directorys: directoryFiles.data as DirectoryFile[] });
         } catch (error) {
-          console.error('Error fetching directory contents:', error);
+          handleApiError(error, set);
         }
       },
 
@@ -113,7 +108,7 @@ const useFileManagerStore = create<FileManagerStore>(
       reset: () => set({ ...initialState }),
     }),
     {
-      name: 'filemanagerstorage',
+      name: 'filesharing-storage',
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
         files: state.files,
@@ -121,8 +116,8 @@ const useFileManagerStore = create<FileManagerStore>(
         selectedItems: state.selectedItems,
         mountPoints: state.mountPoints,
       }),
-    } as PersistOptions<FileManagerStore>,
+    } as PersistOptions<FileSharingStore>,
   ),
 );
 
-export default useFileManagerStore;
+export default useFileSharingStore;

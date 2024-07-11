@@ -7,8 +7,8 @@ import {
   DropdownMenuTrigger as Trigger,
 } from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
-import { DropdownOption } from '@/pages/FileSharing/fileoperations/fileCreationDropDownOptions';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import { DropdownOption } from '@libs/ui/types/filesharing/fileCreationDropDownOptions';
 
 interface FloatingActionButtonProps {
   icon: IconType;

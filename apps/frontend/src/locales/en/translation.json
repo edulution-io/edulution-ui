@@ -84,9 +84,28 @@
     "title": "Current affairs",
     "noConferences": "No running conferences were found"
   },
+
   "filesharing": {
     "title": "FILE SHARING",
-    "sidebar": "File Sharing"
+    "sidebar": "File Sharing",
+    "errors": {
+      "FileNotFound": "File not found",
+      "MountPointsNotFound": "Mount points not found",
+      "FolderNotFound": "Folder not found",
+      "UploadFailed": "File could not be added",
+      "DeletionFailed": "Deletion failed",
+      "RenameFailed": "Rename failed",
+      "MoveFailed": "Move failed",
+      "CreationFailed": "Creation failed",
+      "DbAccessFailed": "Database access failed",
+      "WebDavError": "Data server access failed",
+      "FolderCreationFailed": "Folder creation failed"
+    },
+    "tooltips": {
+      "folderNameRequired": "Folder name is required",
+      "FileNameRequired": "File name is required",
+      "NewFileNameRequired": "New file name is required"
+    }
   },
   "forums": {
     "title": "FORUMS",
@@ -235,7 +254,7 @@
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
-    "filename": "File Name",
+    "filename": "Filename",
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type"
@@ -368,6 +387,7 @@
     "directory_created_successfully": "Directory {{directoryName}} created successfully",
     "file_created_successfully": "File {{fileName}} created successfully",
     "file_was_deleted_successfully": "File {{fileName}} was deleted successfully",
+    "files_deleted_successfully": "File was deleted successfully",
     "all_items_moved_successfully": "All items moved successfully",
     "destination_path_is_undefined": "Destination path is undefined"
   },

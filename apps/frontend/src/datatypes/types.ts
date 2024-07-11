@@ -1,5 +1,3 @@
-import { DirectoryFile } from '@libs/filesharing/filesystem';
-
 export interface MenuItem {
   id: string;
   label: string;
@@ -14,8 +12,4 @@ export interface MenuBarEntryProps {
   disabled?: boolean;
   icon: string;
   color: string;
-}
-
-export interface FileTypePreviewProps {
-  file: DirectoryFile;
 }

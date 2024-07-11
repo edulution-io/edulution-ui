@@ -3,78 +3,60 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import FileSharingFloatingButtonsBar from '@/pages/FileSharing/table/FloatingButtonsBar';
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import useLmnApiStore from '@/store/lmnApiStore';
 
 const FileSharingPage = () => {
-  const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession } = useFileManagerStore();
-  const { isLoading, fileOperationSuccessful } = useFileSharingDialogStore();
+  const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession } = useFileSharingStore();
+  const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { username } = useUserStore();
+  const { user } = useLmnApiStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `teachers/${username}`;
+  const homePath = `${user?.sophomorixRole}s/${username}`;
 
   useEffect(() => {
-    const fetchAndHandleFiles = async (pathToFetch: string) => {
-      try {
-        await fetchFiles(pathToFetch);
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
-    };
-
     if (path === '/') {
       if (pathToRestoreSession !== '/') {
         setSearchParams(pathToRestoreSession);
       } else {
-        fetchAndHandleFiles(homePath).catch((error) => {
-          console.error(error);
-        });
+        void fetchFiles(homePath);
       }
     } else {
-      fetchAndHandleFiles(path).catch((error) => {
-        console.error(error);
-      });
+      void fetchFiles(path);
       setPathToRestoreSession(path);
     }
   }, [path]);
 
   useEffect(() => {
-    const handel = async () => {
-      if (fileOperationSuccessful !== undefined && !isLoading) {
-        if (fileOperationSuccessful.success) {
-          toast.success(fileOperationSuccessful.message);
-          await fetchFiles(currentPath);
-        } else {
-          toast.error(fileOperationSuccessful.message);
-        }
+    if (fileOperationResult !== undefined && !isLoading) {
+      if (fileOperationResult.success) {
+        toast.success(fileOperationResult.message);
+        void fetchFiles(currentPath);
       }
-    };
-    handel().catch((error) => {
-      console.error(error);
-    });
-  }, [fileOperationSuccessful, isLoading]);
+    }
+  }, [fileOperationResult, isLoading]);
+
   return (
     <div className="w-full overflow-x-auto">
-      <div>{isLoading && <LoadingIndicator isOpen={isLoading} />}</div>
+      {isLoading && <LoadingIndicator isOpen={isLoading} />}
       <div className="flex-1 overflow-auto">
         <div className="flex w-full justify-between pb-3 pt-3">
-          <div className="flex flex-col ">
-            <div className="flex space-x-2">
-              <DirectoryBreadcrumb
-                path={currentPath}
-                onNavigate={(filenamePath) => {
-                  searchParams.set('path', filenamePath);
-                  setSearchParams(searchParams);
-                }}
-                style={{ color: 'white' }}
-              />
-            </div>
+          <div className="flex flex-col space-x-2">
+            <DirectoryBreadcrumb
+              path={currentPath}
+              onNavigate={(filenamePath) => {
+                searchParams.set('path', filenamePath);
+                setSearchParams(searchParams);
+              }}
+              style={{ color: 'white' }}
+            />
           </div>
         </div>
         <div

@@ -15,7 +15,7 @@ module.exports = {
       text: 'text-white',
     },
     extend: {
-      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt' },
+      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt', span: '0.875rem' },
       colors: {
         ciDarkBlue: 'hsla(var(--primary))',
         ciLightBlue: '#66B2DF',

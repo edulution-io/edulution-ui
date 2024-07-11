@@ -88,7 +88,25 @@
   },
   "filesharing": {
     "title": "FILESHARING",
-    "sidebar": "Filesharing"
+    "sidebar": "Filesharing",
+    "errors": {
+      "FileNotFound": "Datei nicht gefunden",
+      "MountPointsNotFound": "Laufwerke nicht gefunden",
+      "FolderNotFound": "Ordner nicht gefunden",
+      "UploadFailed": "Datei konnte nicht hinzugefügt werden",
+      "DeletionFailed": "Löschen fehlgeschlagen",
+      "RenameFailed": "Umbenennen fehlgeschlagen",
+      "MoveFailed": "Verschieben fehlgeschlagen",
+      "CreationFailed": "Erstellung fehlgeschlagen",
+      "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "WebDavError": "Dateiserver nicht erreichbar",
+      "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
+    },
+    "tooltips": {
+      "folderNameRequired": "Ordnername ist erforderlich",
+      "FileNameRequired": "Dateiname ist erforderlich",
+      "NewFileNameRequired": "Neuer Dateiname ist erforderlich"
+    }
   },
   "forums": {
     "title": "FOREN",
@@ -369,6 +387,7 @@
     "directory_created_successfully": "Verzeichnis {{directoryName}} erfolgreich erstellt",
     "file_created_successfully": "Datei {{fileName}} erfolgreich erstellt",
     "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
+    "files_deleted_successfully": "Dateien erfolgreich gelöscht",
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
   },

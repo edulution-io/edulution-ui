@@ -3,7 +3,7 @@ import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConfere
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import UserStore from '@/store/UserStore/UserStore';
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
@@ -17,7 +17,7 @@ const cleanAllStores = () => {
   useLmnApiStore.getState().reset();
   useConferenceStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
-  useFileManagerStore.getState().reset();
+  useFileSharingStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();

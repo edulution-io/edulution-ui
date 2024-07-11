@@ -5,7 +5,7 @@ import { ArrowRightIcon } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useFileManagerStore from '@/pages/FileSharing/FileManagerStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import useLmnApiStore from '@/store/lmnApiStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
@@ -15,13 +15,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = () => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState('');
   const { setMoveItemsToPath, moveItemsToPath } = useFileSharingDialogStore();
-  const { fetchDirs, directorys } = useFileManagerStore();
+  const { fetchDirs, directorys } = useFileSharingStore();
   const { user } = useLmnApiStore();
 
   useEffect(() => {
-    fetchDirs(currentPath).catch((error) => {
-      console.error(error);
-    });
+    void fetchDirs(currentPath);
   }, [currentPath]);
 
   const handleBreadcrumbNavigate = (path: string) => {
@@ -57,7 +55,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = () => {
       style={{
         backgroundColor: moveItemsToPath?.filename === row.filename ? 'bg-ciDarkBlue bg-opacity-30' : 'bg-transparent',
         cursor: 'pointer',
-        color: 'black',
       }}
     >
       <TableCell>
@@ -76,7 +73,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-black">{t('moveItemDialog.folderName')}</TableHead>
+            <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>{directorys.map(renderTableRow)}</TableBody>
@@ -89,11 +86,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = () => {
       <DirectoryBreadcrumb
         path={currentPath}
         onNavigate={handleBreadcrumbNavigate}
-        style={{ color: 'white' }}
       />
       <ScrollArea className="h-[200px]">{renderDirectoryTable()}</ScrollArea>
       {moveItemsToPath && (
-        <p className="pt-10 text-black">
+        <p className="pt-10 text-foreground">
           {t('moveItemDialog.selectedItem')}: {moveItemsToPath.filename}
         </p>
       )}

@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { Document, Packer } from 'docx';
 import PptxGenJS from 'pptxgenjs';
 import ExcelJS from 'exceljs';
 import { create } from 'xmlbuilder2';
@@ -16,34 +16,15 @@ const generateFile: GenerateFile = {
   docx: async function createWordDocumentWithMetadata(title: string): Promise<File> {
     const doc = new Document({
       title,
-      description: 'Created by edulution',
-      sections: [
-        {
-          properties: {},
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun('Hello World'),
-                new TextRun({
-                  text: 'Foo Bar',
-                  bold: true,
-                }),
-                new TextRun({
-                  text: '\tGithub is the best',
-                  bold: true,
-                }),
-              ],
-            }),
-          ],
-        },
-      ],
+      description: '',
+      sections: [],
     });
     const blob = await Packer.toBlob(doc);
     return new File([blob], `${title}.docx`, { type: blob.type });
   },
 
   txt: function createTextFile(title: string): File {
-    const content = 'Hello World';
+    const content = '';
     const blob = new Blob([content], { type: 'text/plain' });
     return new File([blob], `${title}.txt`, { type: blob.type });
   },
@@ -89,9 +70,6 @@ const generateFile: GenerateFile = {
 
   xlsx: async function createExcelFile(title: string): Promise<File> {
     const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Sheet 1');
-    sheet.addRow(['Hello World']);
-    sheet.addRow(['Foo', 'Bar', 'Baz']);
     const buffer = await workbook.xlsx.writeBuffer();
     const fileBlob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -102,11 +80,7 @@ const generateFile: GenerateFile = {
   pptx: async function createPowerPointFile(title: string): Promise<File> {
     const fileName = `${title}.pptx`;
     const pptx = new PptxGenJS();
-    const slide = pptx.addSlide();
     pptx.title = title;
-    const textboxText = 'Hello World from PptxGenJS!';
-    const textboxOpts = { x: 1, y: 1, color: '363636' };
-    slide.addText(textboxText, textboxOpts);
     const pptxBlob = await pptx.write();
     const fileBlob = new Blob([pptxBlob], {
       type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',

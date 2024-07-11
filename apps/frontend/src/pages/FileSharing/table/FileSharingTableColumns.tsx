@@ -1,14 +1,19 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { MdFolder } from 'react-icons/md';
-import { formatBytes } from '@/pages/FileSharing/utilities/fileManagerCommon';
-import { getElapsedTime, getFileCategorie, parseDate } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import {
+  formatBytes,
+  getElapsedTime,
+  getFileCategorie,
+  parseDate,
+} from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { ContentType, DirectoryFile } from '@libs/filesharing/filesystem';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
@@ -42,11 +47,11 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
           return (
             <FileIconComponent
               filename={item.filename}
-              size={22}
+              size={Number(TABLE_ICON_SIZE)}
             />
           );
         }
-        return <MdFolder size={22} />;
+        return <MdFolder size={TABLE_ICON_SIZE} />;
       };
 
       return (
@@ -89,8 +94,8 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
         formattedDate = 'Date not provided';
       }
       return (
-        <div className={`hidden items-center justify-center lg:flex ${lastModColumnWidth}`}>
-          <span className="text-md text-center font-medium">{formattedDate}</span>
+        <div className={`items-center justify-center overflow-auto lg:flex ${lastModColumnWidth}`}>
+          <span className=" overflow-auto text-center text-span font-medium">{formattedDate}</span>
         </div>
       );
     },
@@ -123,8 +128,8 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
         fileSize = row.original.size;
       }
       return (
-        <div className={`hidden flex-row lg:flex ${sizeColumnWidth}`}>
-          <p className="text-right font-medium">{formatBytes(fileSize)}</p>
+        <div className={`hidden lg:flex ${sizeColumnWidth}`}>
+          <span className="text-right text-base text-span font-medium">{formatBytes(fileSize)}</span>
         </div>
       );
     },
@@ -150,8 +155,8 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
       };
 
       return (
-        <div className={` hidden flex-row text-right text-base font-medium lg:flex ${typeColumnWidth}`}>
-          {renderFileCategorize(row.original)}
+        <div className={`hidden lg:flex ${typeColumnWidth}`}>
+          <span className="text-right text-base font-medium">{renderFileCategorize(row.original)}</span>
         </div>
       );
     },

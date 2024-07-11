@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
-import FilesharingService from './filesharing.service';
+
 import FilesharingController from './filesharing.controller';
-import WebdavModule from './webdav/webdav.module';
+import UsersModule from '../users/users.module';
+import { FileSharingConfigService } from './filesharing.config.service';
+import FilesharingService from './filesharing.service';
 
 @Module({
-  imports: [HttpModule, WebdavModule],
+  imports: [UsersModule],
   controllers: [FilesharingController],
-  providers: [FilesharingService],
+  providers: [FileSharingConfigService, FilesharingService],
 })
 export default class FilesharingModule {}

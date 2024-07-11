@@ -1,8 +1,7 @@
 import React from 'react';
 import { FileIcon } from 'react-file-icon';
-import { getFileCategorie } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import fileIconColors from '@/theme/fileIconColor';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 
 interface FileIconComponentProps {
   filename: string;
@@ -18,7 +17,7 @@ const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size })
     <div style={{ width: size, height: size, display: 'flex' }}>
       <FileIcon
         extension={extension}
-        type={fileType !== undefined ? fileType : 'document'}
+        type={fileType || 'document'}
         labelColor={labelColor}
       />
     </div>

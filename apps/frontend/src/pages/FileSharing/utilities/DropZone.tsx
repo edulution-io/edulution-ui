@@ -77,11 +77,11 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           </li>
         ))}
       </ul>
-      <p className="pt-4 text-black underline">{t('filesharingUpload.filesToUpload')}</p>
-      <ScrollArea className="h-[30vh]">
+      <p className="pt-4 text-foreground underline">{t('filesharingUpload.filesToUpload')}</p>
+      <ScrollArea className="max-h-[30vh]">
         <ol
           type="1"
-          className="text-black"
+          className="text-foreground"
         >
           {files.map((file, i) => (
             <li

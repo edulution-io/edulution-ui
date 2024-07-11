@@ -16,11 +16,13 @@ import {
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useUserStore from '@/store/UserStore/UserStore';
 import { HiChevronDown } from 'react-icons/hi';
+import useLmnApiStore from '@/store/lmnApiStore';
+import HiddenAttributesBreadcrumb from '@libs/ui/types/HiddenAttributesBreadcrumb';
 
 interface DirectoryBreadcrumbProps {
   path: string;
   onNavigate: (path: string) => void;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate, style }) => {
@@ -29,8 +31,14 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { username } = useUserStore();
-
-  const filteredSegment = segments.filter((item) => item !== 'teachers');
+  const { user } = useLmnApiStore();
+  const homePath = `${user?.sophomorixRole}s/${username}`;
+  const filteredSegment = segments.filter(
+    (item) =>
+      item !== HiddenAttributesBreadcrumb.teachers.toString() &&
+      item !== HiddenAttributesBreadcrumb.students.toString() &&
+      item !== HiddenAttributesBreadcrumb.webdav.toString(),
+  );
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
     onNavigate(pathTo);
@@ -43,7 +51,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
         <BreadcrumbItem key="home">
           <BreadcrumbLink
             href="#"
-            onClick={() => onNavigate(`/teachers/${username}/`)}
+            onClick={() => onNavigate(homePath)}
           >
             {t('home')}
           </BreadcrumbLink>
@@ -60,7 +68,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
-                  className="z-50 bg-white text-black"
+                  className="z-50 bg-white text-foreground"
                 >
                   {segments.slice(0, -1).map((segment) => (
                     <DropdownMenuItem
