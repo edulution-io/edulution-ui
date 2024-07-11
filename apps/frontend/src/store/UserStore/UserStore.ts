@@ -16,7 +16,6 @@ const useUserStore = create<UserStore>()(
       name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        username: state.username,
         webdavKey: state.webdavKey,
         isAuthenticated: state.isAuthenticated,
         isPreparingLogout: state.isPreparingLogout,

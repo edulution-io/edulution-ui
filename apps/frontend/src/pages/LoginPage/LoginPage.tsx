@@ -4,8 +4,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { useEncryption } from '@/hooks/mutations';
-
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -13,11 +11,14 @@ import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
+import { toast } from 'sonner';
+import UserDto from '@libs/user/types/user.dto';
+import processLdapGroups from '@/utils/processLdapGroups';
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUsername, setWebdavKey, setIsAuthenticated, setEduApiToken } = useUserStore();
+  const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
@@ -34,6 +35,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (auth.error) {
+      // NIEDUUI-322 Translate keycloak error messages
       form.setError('password', { type: 'custom', message: auth.error.message });
     }
   }, [auth.error]);
@@ -48,25 +50,43 @@ const LoginPage: React.FC = () => {
       });
 
       if (requestUser) {
-        const encryptedPassword = useEncryption({
-          mode: 'encrypt',
-          data: password,
-          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-        });
-
-        setUsername(username);
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(encryptedPassword);
-        setIsAuthenticated(true);
+        setWebdavKey(password);
 
-        await setLmnApiToken(username, password);
+        void setLmnApiToken(username, password);
+      } else {
+        throw new Error();
       }
-
-      return null;
     } catch (e) {
-      return null;
+      // NIEDUUI-322 Translate keycloak error messages
+      toast.error(auth.error?.message);
     }
   };
+
+  const handleRegisterUser = () => {
+    const profile = auth.user?.profile;
+    if (!profile) {
+      return;
+    }
+
+    const newUser: UserDto = {
+      username: profile.preferred_username!,
+      email: profile.email!,
+      ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
+      password: webdavKey,
+    };
+
+    void createOrUpdateUser(newUser);
+  };
+
+  useEffect(() => {
+    const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
+    if (isLoginPrevented) {
+      return;
+    }
+
+    void handleRegisterUser();
+  }, [auth.isAuthenticated, eduApiToken]);
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
     <FormFieldSH

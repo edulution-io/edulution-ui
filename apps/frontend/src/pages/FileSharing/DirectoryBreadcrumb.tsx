@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import useUserStore from '@/store/UserStore/UserStore';
 import { HiChevronDown } from 'react-icons/hi';
 import useLmnApiStore from '@/store/lmnApiStore';
 import HiddenAttributesBreadcrumb from '@libs/ui/types/HiddenAttributesBreadcrumb';
@@ -30,9 +29,8 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
-  const { username } = useUserStore();
   const { user } = useLmnApiStore();
-  const homePath = `${user?.sophomorixRole}s/${username}`;
+  const homePath = `${user?.sophomorixRole}s/${user?.displayName}`;
   const filteredSegment = segments.filter(
     (item) =>
       item !== HiddenAttributesBreadcrumb.teachers.toString() &&

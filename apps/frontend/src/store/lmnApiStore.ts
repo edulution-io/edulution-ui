@@ -48,7 +48,9 @@ const useLmnApiStore = create<LmnApiStore>(
       getUserData: async () => {
         set({ isLoading: true });
         try {
-          const response = await lmnApi.get<UserLmnInfo>(`${EDU_API_USERS_ENDPOINT}/${userStore.getState().username}`);
+          const response = await lmnApi.get<UserLmnInfo>(
+            `${EDU_API_USERS_ENDPOINT}/${userStore.getState().user?.username}`,
+          );
           set({
             user: response.data,
             isLoading: false,

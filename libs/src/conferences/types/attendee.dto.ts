@@ -1,6 +1,6 @@
-import User from '@libs/user/types/user';
+import UserDto from '@libs/user/types/user.dto';
 
-type AttendeeDto = Pick<User, 'firstName' | 'lastName' | 'username'> & {
+type AttendeeDto = Pick<UserDto, 'firstName' | 'lastName' | 'username'> & {
   label: string;
   value: string;
 };

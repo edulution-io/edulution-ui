@@ -9,17 +9,15 @@ import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog'
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
-import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
 
 const FileSharingPage = () => {
   const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
-  const { username } = useUserStore();
   const { user } = useLmnApiStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.sophomorixRole}s/${username}`;
+  const homePath = `${user?.sophomorixRole}s/${user?.displayName}`;
 
   useEffect(() => {
     if (path === '/') {
