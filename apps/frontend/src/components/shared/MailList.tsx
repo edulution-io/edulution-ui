@@ -23,12 +23,7 @@ interface MailListProps {
 
 export function MailList({ items, className }: MailListProps) {
   return (
-    <ScrollArea
-      className={cn(
-        'max-h-[470px] overflow-y-auto',
-        className,
-      )}
-    >
+    <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
           <button
@@ -54,9 +49,7 @@ export function MailList({ items, className }: MailListProps) {
                     key={label}
                     variant={getBadgeVariantFromLabel(label)}
                   >
-                    <div className="text-xs">
-                      {label}
-                    </div>
+                    <div className="text-xs">{label}</div>
                   </BadgeSH>
                 ))}
               </div>

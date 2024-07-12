@@ -17,7 +17,7 @@ const initialState: Partial<CurrentAffairsStore> = {
   isUpdating: false,
 };
 
-const useCurrentAffairsStore = create<CurrentAffairsStore>((set /* , get */ ) => ({
+const useCurrentAffairsStore = create<CurrentAffairsStore>((set /* , get */) => ({
   ...(initialState as CurrentAffairsStore),
   reset: () => set(initialState),
 

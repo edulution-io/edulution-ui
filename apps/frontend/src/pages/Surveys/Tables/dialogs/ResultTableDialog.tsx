@@ -33,7 +33,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     isLoadingResult,
     errorLoadingResult,
 
-    trigger
+    trigger,
   } = props;
 
   const { t } = useTranslation();
@@ -41,17 +41,16 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   useEffect(() => {
     const fetchAnswers = async () => {
       await getSurveyResult(survey?.id, survey?.participants);
-    }
+    };
 
     if (!survey) return;
     if (!isOpenPublicResultsTableDialog) return;
 
     fetchAnswers();
-
   }, [survey, isOpenPublicResultsTableDialog]);
 
   const getDialogBody = () => {
-    if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult}/>;
+    if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult} />;
 
     if (!survey?.formula) {
       return (
@@ -69,7 +68,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     }
 
     return (
-      <ScrollArea className="overflow-y-auto overflow-x-auto">
+      <ScrollArea className="overflow-x-auto overflow-y-auto">
         <ResultTableDialogBody
           formula={survey.formula}
           result={result}

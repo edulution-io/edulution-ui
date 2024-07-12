@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
@@ -13,7 +13,7 @@ interface SurveysManagementProps {
   edit: () => void;
 }
 
-const SurveysManagement = ({edit}: SurveysManagementProps) => {
+const SurveysManagement = ({ edit }: SurveysManagementProps) => {
   const {
     selectedPageView,
     updateSelectedPageView,
@@ -87,13 +87,10 @@ const SurveysManagement = ({edit}: SurveysManagementProps) => {
         selectedSurvey={selectedSurvey}
         surveys={allSurveys}
         selectSurvey={selectSurvey}
-
         canDelete
         deleteSurvey={deleteSurvey}
-
         canEdit
         editSurvey={edit}
-
         canParticipate
         openParticipateSurveyDialog={openParticipateSurveyDialog}
         canShowCommitedAnswers

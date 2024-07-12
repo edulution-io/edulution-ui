@@ -12,12 +12,7 @@ interface ConferencesListProps {
 
 export function ConferencesList({ items, className }: ConferencesListProps) {
   return (
-    <ScrollArea
-      className={cn(
-        'max-h-[470px] overflow-y-auto',
-        className,
-      )}
-    >
+    <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
           <button
@@ -37,12 +32,8 @@ export function ConferencesList({ items, className }: ConferencesListProps) {
             {item.joinedAttendees.length ? (
               <div className="flex items-center gap-2 rounded">
                 {item.joinedAttendees.map((attendee: Attendee) => (
-                  <BadgeSH
-                    key={attendee.label || attendee.username}
-                  >
-                    <div className="text-xs">
-                      {attendee.label}
-                    </div>
+                  <BadgeSH key={attendee.label || attendee.username}>
+                    <div className="text-xs">{attendee.label}</div>
                   </BadgeSH>
                 ))}
               </div>

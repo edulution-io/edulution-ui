@@ -3,7 +3,7 @@ import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 
 const SurveyEditorPage = () => {
-    const {
+  const {
     updateOpenSurveys,
     updateAnsweredSurveys,
     updateCreatedSurveys,

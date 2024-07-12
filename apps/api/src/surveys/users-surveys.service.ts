@@ -12,8 +12,10 @@ class UsersSurveysService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async updateUser(participant: Attendee | string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const name = typeof(participant) === 'string' ? participant : participant.username;
-    const newUser = await this.userModel.findOneAndUpdate<User>({ username: name }, updateUserDto, { new: true }).exec();
+    const name = typeof participant === 'string' ? participant : participant.username;
+    const newUser = await this.userModel
+      .findOneAndUpdate<User>({ username: name }, updateUserDto, { new: true })
+      .exec();
     if (!newUser) {
       throw new Error('User did not update');
     }
@@ -21,7 +23,7 @@ class UsersSurveysService {
   }
 
   async getExistingUser(participant: Attendee | string): Promise<User | null> {
-    const name = typeof(participant) === 'string' ? participant : participant.username;
+    const name = typeof participant === 'string' ? participant : participant.username;
     const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
     if (!existingUser) {
       throw UserNotFoundError;
@@ -41,7 +43,9 @@ class UsersSurveysService {
 
   async getAnsweredSurveyIds(username: string): Promise<number[]> {
     const user = await this.getExistingUser(username);
-    const answeredSurveys = user?.usersSurveys?.answeredSurveys?.map((surveyAnswer: SurveyAnswer) => surveyAnswer.surveyId);
+    const answeredSurveys = user?.usersSurveys?.answeredSurveys?.map(
+      (surveyAnswer: SurveyAnswer) => surveyAnswer.surveyId,
+    );
     return answeredSurveys || [];
   }
 
@@ -105,29 +109,32 @@ class UsersSurveysService {
 
       let shouldUpdateUser = false;
 
-      const usersCreatedSurveys = createdSurveys.filter((survey: number) => {
-        if (survey !== surveyId) {
-          return survey;
-        } else {
-          shouldUpdateUser = true;
-        }
-      }) || [];
+      const usersCreatedSurveys =
+        createdSurveys.filter((survey: number) => {
+          if (survey !== surveyId) {
+            return survey;
+          } else {
+            shouldUpdateUser = true;
+          }
+        }) || [];
 
-      const usersOpenSurveys = openSurveys.filter((survey: number) => {
-        if (survey !== surveyId) {
-          return survey;
-        } else {
-          shouldUpdateUser = true;
-        }
-      }) || [];
+      const usersOpenSurveys =
+        openSurveys.filter((survey: number) => {
+          if (survey !== surveyId) {
+            return survey;
+          } else {
+            shouldUpdateUser = true;
+          }
+        }) || [];
 
-      const usersAnsweredSurveys = answeredSurveys.filter((surveyAnswer: SurveyAnswer) => {
-        if (surveyAnswer.surveyId !== surveyId) {
-          return surveyAnswer;
-        } else {
-          shouldUpdateUser = true;
-        }
-      }) || [];
+      const usersAnsweredSurveys =
+        answeredSurveys.filter((surveyAnswer: SurveyAnswer) => {
+          if (surveyAnswer.surveyId !== surveyId) {
+            return surveyAnswer;
+          } else {
+            shouldUpdateUser = true;
+          }
+        }) || [];
 
       if (shouldUpdateUser) {
         const newUser: UpdateUserDto = {
@@ -179,13 +186,12 @@ class UsersSurveysService {
       throw UserNotFoundError;
     }
 
-    const answeredSurvey =
-      existingUser.usersSurveys?.answeredSurveys?.find((answer: SurveyAnswer) => {
-        if (answer.surveyId === surveyId) {
-          return answer.answer;
-        }
-        return undefined;
-      });
+    const answeredSurvey = existingUser.usersSurveys?.answeredSurveys?.find((answer: SurveyAnswer) => {
+      if (answer.surveyId === surveyId) {
+        return answer.answer;
+      }
+      return undefined;
+    });
 
     return answeredSurvey?.answer;
   }

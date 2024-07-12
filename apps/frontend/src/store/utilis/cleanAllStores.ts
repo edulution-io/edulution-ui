@@ -7,8 +7,8 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import useFileEditorStore from '@/pages/FileSharing/previews/documents/fileEditorStore';
 import useFrameStore from '@/routes/IframeStore';
 import useSchoolManagementStore from '@/pages/SchoolmanagementPage/store/schoolManagementStore';
-import useSurveyTablesPageStore from "@/pages/Surveys/Tables/SurveysTablesPageStore";
-import useSurveyEditorFormStore from "@/pages/Surveys/Editor/SurveyEditorFormStore";
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 
 const cleanAllStores = () => {
   useUserStore.getState().reset();

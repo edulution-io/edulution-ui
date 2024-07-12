@@ -158,7 +158,7 @@ class SurveysController {
 
   @Patch()
   async manageUsersSurveys(@Body() body: PushAnswerDto, @GetUsername() username: string) {
-    const {surveyId, answer, canSubmitMultipleAnswers} = body;
+    const { surveyId, answer, canSubmitMultipleAnswers } = body;
 
     try {
       // This function does also check if the user is a participant ant has not already submitted an answer

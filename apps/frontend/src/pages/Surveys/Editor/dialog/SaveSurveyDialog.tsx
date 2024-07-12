@@ -18,7 +18,15 @@ interface SaveSurveyDialogProps {
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { trigger, form, commitSurvey, isCommitting, isOpenSaveSurveyDialog, openSaveSurveyDialog, closeSaveSurveyDialog } = props;
+  const {
+    trigger,
+    form,
+    commitSurvey,
+    isCommitting,
+    isOpenSaveSurveyDialog,
+    openSaveSurveyDialog,
+    closeSaveSurveyDialog,
+  } = props;
 
   const { t } = useTranslation();
 

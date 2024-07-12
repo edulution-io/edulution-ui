@@ -7,5 +7,4 @@ import MailsService from './mails.service';
   controllers: [MailsController],
   providers: [MailsService],
 })
-
 export default class MailsModule {}

@@ -64,7 +64,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     openPublicResultsVisualisationDialog = () => {},
   } = props;
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const editButton = useMemo(() => {
     if (selectedSurvey && canEdit) {

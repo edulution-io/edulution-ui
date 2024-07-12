@@ -15,7 +15,10 @@ import { Survey } from '@/pages/Surveys/types/survey';
 import SurveyEditorForm from '@/pages/Surveys/Editor/components/survey-editor-form';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import { getEmptyFormValues, getInitialFormValues } from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
+import {
+  getEmptyFormValues,
+  getInitialFormValues,
+} from '@/pages/Surveys/Editor/components/get-survey-editor-form-data';
 
 interface SurveyEditorFormProps {
   selectedSurvey?: Survey;
@@ -26,7 +29,14 @@ interface SurveyEditorFormProps {
 
 const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { selectedSurvey, updateCreatedSurveys, updateAnsweredSurveys, updateOpenSurveys } = props;
-  const { isOpenSaveSurveyDialog, openSaveSurveyDialog, closeSaveSurveyDialog, commitSurvey, isCommiting, errorCommiting } = useSurveyEditorFormStore();
+  const {
+    isOpenSaveSurveyDialog,
+    openSaveSurveyDialog,
+    closeSaveSurveyDialog,
+    commitSurvey,
+    isCommiting,
+    errorCommiting,
+  } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
 
@@ -75,7 +85,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     expirationDate,
     expirationTime,
     isAnonymous,
-    canSubmitMultipleAnswers
+    canSubmitMultipleAnswers,
   } = form.getValues();
 
   const saveSurvey = async () => {
@@ -100,7 +110,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     } catch (error) {
       toast.error(error);
     }
-  }
+  };
 
   // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(() => {
@@ -119,7 +129,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          { getSurveyEditor }
+          {getSurveyEditor}
           {errorCommiting ? (
             <div className="rounded-xl bg-red-400 py-3 text-center text-black">
               {t('survey.error')}: {errorCommiting.message}

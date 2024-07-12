@@ -16,7 +16,6 @@ import ConferencesList from '@/components/feature/Home/CurrentAffairs/components
 import SurveysList from '@/components/feature/Home/CurrentAffairs/components/SurveysList';
 
 const CurrentAffairs = () => {
-
   const { t } = useTranslation();
 
   const { shouldUpdate, isUpdating, start, finish } = useCurrentAffairsStore();
@@ -48,7 +47,7 @@ const CurrentAffairs = () => {
   }, [shouldUpdate]);
 
   const filteredConferences = useMemo(() => {
-    return conferences.filter((conference: Conference) => conference.isRunning)
+    return conferences.filter((conference: Conference) => conference.isRunning);
   }, [conferences]);
 
   return (
@@ -61,11 +60,8 @@ const CurrentAffairs = () => {
         <div className="flex flex-col gap-3">
           <h4 className="font-bold">{t('current-affairs')}</h4>
           <ScrollArea>
-
-            <Collapsible
-              defaultOpen={true}
-            >
-              <CollapsibleTrigger className="text-xl font-bold flex">
+            <Collapsible defaultOpen={true}>
+              <CollapsibleTrigger className="flex text-xl font-bold">
                 <img
                   src={ConferencesIcon}
                   alt="conference-notification"
@@ -76,17 +72,18 @@ const CurrentAffairs = () => {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 {filteredConferences.length > 0 ? (
-                  <ConferencesList items={filteredConferences} className="mt-2 mb-6"/>
+                  <ConferencesList
+                    items={filteredConferences}
+                    className="mb-6 mt-2"
+                  />
                 ) : (
-                  <div className="text-center mt-2 mb-6">{t('current-affairs.noConferences')}</div>
+                  <div className="mb-6 mt-2 text-center">{t('current-affairs.noConferences')}</div>
                 )}
               </CollapsibleContent>
             </Collapsible>
 
-            <Collapsible
-              defaultOpen={true}
-            >
-              <CollapsibleTrigger className="text-xl font-bold flex">
+            <Collapsible defaultOpen={true}>
+              <CollapsibleTrigger className="flex text-xl font-bold">
                 <img
                   src={SurveysSidebarIcon}
                   alt="survey-notification"
@@ -97,17 +94,18 @@ const CurrentAffairs = () => {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 {openSurveys.length > 0 ? (
-                  <SurveysList items={openSurveys} className="mt-2 mb-6"/>
+                  <SurveysList
+                    items={openSurveys}
+                    className="mb-6 mt-2"
+                  />
                 ) : (
-                  <div className="text-center mt-2 mb-6">{t('current-affairs.noSurveys')}</div>
+                  <div className="mb-6 mt-2 text-center">{t('current-affairs.noSurveys')}</div>
                 )}
               </CollapsibleContent>
             </Collapsible>
 
-            <Collapsible
-              defaultOpen={true}
-            >
-              <CollapsibleTrigger className="text-xl font-bold flex">
+            <Collapsible defaultOpen={true}>
+              <CollapsibleTrigger className="flex text-xl font-bold">
                 <img
                   src={MailIcon}
                   alt="mail-notification"
@@ -118,9 +116,12 @@ const CurrentAffairs = () => {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 {mails.length > 0 ? (
-                  <MailList items={mails} className="mt-2 mb-6" />
+                  <MailList
+                    items={mails}
+                    className="mb-6 mt-2"
+                  />
                 ) : (
-                  <div className="text-center mt-2 mb-6">{t('current-affairs.noMails')}</div>
+                  <div className="mb-6 mt-2 text-center">{t('current-affairs.noMails')}</div>
                 )}
               </CollapsibleContent>
             </Collapsible>

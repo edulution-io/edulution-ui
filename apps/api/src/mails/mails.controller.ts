@@ -5,9 +5,7 @@ import mockedMails from './dto/mocked-mails';
 
 @Controller('mails')
 class MailsController {
-  constructor(
-    private readonly mailsService: MailsService,
-  ) {}
+  constructor(private readonly mailsService: MailsService) {}
 
   @Get()
   async update(@GetUsername() username: string) {
@@ -21,4 +19,3 @@ class MailsController {
 }
 
 export default MailsController;
-

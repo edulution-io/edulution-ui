@@ -7,7 +7,7 @@ import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/default2.min.css';
-import './ResultTableDialogBody.css'
+import './ResultTableDialogBody.css';
 
 interface SurveyVisualizationProps {
   formula: JSON;
@@ -35,7 +35,6 @@ const ResultTableDialogBody = (props: SurveyVisualizationProps) => {
     setVizTable(surveyVizTable);
   }, [survey, result]);
 
-
   useEffect(() => {
     vizTable?.render('surveyDashboardContainer');
     const component = document.getElementById('surveyDashboardContainer');
@@ -49,7 +48,7 @@ const ResultTableDialogBody = (props: SurveyVisualizationProps) => {
 
   return (
     <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-white">
-      <div id="surveyDashboardContainer"/>
+      <div id="surveyDashboardContainer" />
     </div>
   );
 };
