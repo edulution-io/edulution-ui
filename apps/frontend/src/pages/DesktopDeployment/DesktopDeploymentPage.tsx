@@ -1,45 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/shared/Button';
-import { TooltipProvider } from '@/components/ui/Tooltip';
-import { RiShareForward2Line } from 'react-icons/ri';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
-import { IconContext } from 'react-icons';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFrameStore from '@/components/framing/FrameStore';
 import { APPS } from '@libs/appconfig/types';
 import cn from '@/lib/utils';
 import useUserStore from '@/store/UserStore/UserStore';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
+import { useInterval } from 'usehooks-ts';
+import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
 import VdiCard from './components/VdiCard';
-
-const iconContextValue = { className: 'h-8 w-8 m-5' };
+import FloatingButtonsBar from './components/FloatingButtonsBar';
 
 const DesktopDeploymentPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
   const {
-    guacId,
     connectionEnabled,
     vdiIp,
     error,
     openVdiConnection,
     isLoading,
+    virtualMachines,
     authenticate,
     setOpenVdiConnection,
     postRequestVdi,
     createOrUpdateConnection,
     getConnections,
+    getVirtualMachines,
   } = useDesktopDeploymentStore();
   const { activeFrame } = useFrameStore();
 
   const getStyle = () => (activeFrame === APPS.DESKTOP_DEPLOYMENT ? 'block' : 'hidden');
 
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+  const [isSilent, setIsSilent] = useState(false);
 
   const initialize = async () => {
     if (user) {
@@ -55,6 +54,31 @@ const DesktopDeploymentPage: React.FC = () => {
   };
 
   useEffect(() => {
+    void getVirtualMachines();
+  }, []);
+
+  useInterval(() => {
+    const updateVirtualMachines = async () => {
+      setIsSilent(true);
+      try {
+        await getVirtualMachines();
+      } catch (e) {
+        // do nothing
+      } finally {
+        setIsSilent(true);
+      }
+    };
+    void updateVirtualMachines();
+  }, VDI_SYNC_TIME_INTERVAL);
+
+  const getAvailableClients = (osTypes: VirtualMachineOs) => {
+    if (virtualMachines) {
+      return Object.keys(virtualMachines.data[osTypes]?.clone_vms ?? {}).length;
+    }
+    return 0;
+  };
+
+  useEffect(() => {
     void initialize();
   }, [user, vdiIp, connectionEnabled]);
 
@@ -64,13 +88,19 @@ const DesktopDeploymentPage: React.FC = () => {
     }
   }, [error]);
 
-  const handleConnnect = () => {
+  const handleConnect = () => {
     setOpenVdiConnection(true);
   };
 
   const handleReload = () => {
     void initialize();
   };
+
+  const osConfigs = [
+    { os: VirtualMachineOs.WIN10, title: 'desktopdeployment.win10' },
+    { os: VirtualMachineOs.WIN11, title: 'desktopdeployment.win11' },
+    { os: VirtualMachineOs.UBUNTU, title: 'desktopdeployment.ubuntu' },
+  ];
 
   return (
     <div className={cn('absolute inset-y-0 left-0 ml-0 mr-14 w-screen p-5 lg:pr-20', getStyle())}>
@@ -85,66 +115,26 @@ const DesktopDeploymentPage: React.FC = () => {
         <ConnectionErrorDialog
           isErrorDialogOpen={isErrorDialogOpen}
           setIsErrorDialogOpen={setIsErrorDialogOpen}
-          handleReload={() => getConnections()}
+          handleReload={() => initialize()}
         />
       )}
       <div className="flex flex-row gap-10">
-        <VdiCard
-          title={t('desktopdeployment.win10')}
-          availableClients={guacId ? 1 : 0}
-          onClick={() => handleConnnect()}
-          osType={VirtualMachineOs.WIN10}
-        />
-        <VdiCard
-          /* Not implemented */
-          title={t('desktopdeployment.win11')}
-          availableClients={0}
-          onClick={() => handleConnnect()}
-          osType={VirtualMachineOs.WIN11}
-          disabled
-        />
-        <VdiCard
-          /* Not implemented */
-          title={t('desktopdeployment.ubuntu')}
-          availableClients={0}
-          onClick={() => handleConnnect()}
-          osType={VirtualMachineOs.UBUNTU}
-          disabled
-        />
+        {osConfigs.map(({ os, title }) => (
+          <VdiCard
+            key={os}
+            title={t(title)}
+            availableClients={getAvailableClients(os)}
+            onClick={() => handleConnect()}
+            osType={os}
+            disabled={getAvailableClients(os) === 0}
+          />
+        ))}
       </div>
-      <div className="fixed bottom-10 left-10 flex flex-row space-x-8">
-        <TooltipProvider>
-          <div className="flex flex-col items-center">
-            <Button
-              type="button"
-              variant="btn-hexagon"
-              className="bg-opacity-90 p-4"
-              onClickCapture={() => handleConnnect()}
-            >
-              <IconContext.Provider value={iconContextValue}>
-                <RiShareForward2Line />
-              </IconContext.Provider>
-            </Button>
-            <p className="mt-2 text-background">{t('desktopdeployment.connect')}</p>
-          </div>
-        </TooltipProvider>
-        <TooltipProvider>
-          <div className="flex flex-col items-center">
-            <Button
-              type="button"
-              variant="btn-hexagon"
-              className="bg-opacity-90 p-4"
-              onClickCapture={() => handleReload()}
-            >
-              <IconContext.Provider value={iconContextValue}>
-                <RiShareForward2Line />
-              </IconContext.Provider>
-            </Button>
-            <p className="mt-2 text-background">{t('desktopdeployment.reload')}</p>
-          </div>
-        </TooltipProvider>
-      </div>
-      <LoadingIndicator isOpen={isLoading} />
+      <FloatingButtonsBar
+        handleConnect={handleConnect}
+        handleReload={handleReload}
+      />
+      <LoadingIndicator isOpen={isLoading && !isSilent} />
     </div>
   );
 };
