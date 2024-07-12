@@ -24,7 +24,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
     form, // saveSurveyLocally
   } = props;
   const { setValue, getValues, watch } = form;
-  const { username } = useUserStore();
+  const { user } = useUserStore();
   const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
     useCreateConferenceDialogStore();
   const { t } = useTranslation();
@@ -37,7 +37,10 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
 
   const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
-    return result.filter((r) => r.username !== username);
+    if (!user) {
+      return result;
+    }
+    return result.filter((r) => r.username !== user.username);
   };
 
   const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {

@@ -4,12 +4,12 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
 import { MdArrowBackIosNew, MdArrowForwardIos, MdOutlineFileDownload } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { Card } from '@/components/shared/Card';
 import { EDU_APP_APPSTORE_URL } from '@libs/common/contants';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 
 type MobileFileAccessSetupDialogProps = {
   isOpen: boolean;
@@ -18,13 +18,13 @@ type MobileFileAccessSetupDialogProps = {
 
 const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = ({ isOpen, setIsOpen }) => {
   const isMobileView = useIsMobileView();
-  const { username } = useUserStore();
+  const { user } = useUserStore();
   const [isStepOne, setIsStepOne] = useState(true);
 
   const webdavAccessDetails = {
     displayName: `${window.document.title}`,
     url: `${window.location.origin}/webdav`,
-    username,
+    username: user?.username,
     password: '',
     token: '',
   };
@@ -42,7 +42,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         </Card>
         {t('common.username')}:
         <Card variant="text">
-          <pre className="m-2 text-foreground">{username}</pre>
+          <pre className="m-2 text-foreground">{user?.username}</pre>
         </Card>
       </div>
     </>

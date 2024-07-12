@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "0.1.16",
+  "version": "0.1.20",
   "scripts": {
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test",
@@ -67,7 +67,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
-    "crypto": "^1.0.1",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.0.3",

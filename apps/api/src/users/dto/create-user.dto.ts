@@ -1,3 +1,4 @@
+import LdapGroups from '@libs/user/types/groups/ldapGroups';
 import UsersSurveys from 'libs/src/survey/types/users-surveys';
 
 class CreateUserDto {
@@ -7,7 +8,7 @@ class CreateUserDto {
 
   password?: string;
 
-  roles: string[];
+  ldapGroups: LdapGroups;
 
   usersSurveys?: UsersSurveys;
 }

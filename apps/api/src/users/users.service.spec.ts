@@ -4,11 +4,11 @@ import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Query } from 'mongoose';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import UserDto from '@libs/user/types/user.dto';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
-import RegisterUserDto from './dto/register-user.dto';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
@@ -19,7 +19,7 @@ const mockToken = 'token';
 const mockUser = {
   email: 'test@example.com',
   username: 'testuser',
-  roles: ['user'],
+  ldapGroups: ['user'],
 };
 const cachedUsers: LDAPUser[] = [
   {
@@ -105,6 +105,16 @@ const cacheManagerMock = {
   set: jest.fn(),
 };
 
+const mockLdapGroups = {
+  school: 'school',
+  projects: ['project1', 'project2'],
+  projectPaths: ['/path/to/project1', '/path/to/project2'],
+  classes: ['class1A', 'class2B'],
+  classPaths: ['/path/to/class1A', '/path/to/class2B'],
+  role: 'teacher',
+  others: ['group1', 'group2'],
+};
+
 describe(UsersService.name, () => {
   let service: UsersService;
   let model: Model<UserDocument>;
@@ -138,38 +148,41 @@ describe(UsersService.name, () => {
     expect(service).toBeDefined();
   });
 
-  describe('register', () => {
+  describe('createOrUpdate', () => {
     it('should create a new user if not existing', async () => {
-      const userDto = new RegisterUserDto();
-      userDto.preferred_username = 'testuser';
+      const userDto = new UserDto();
+      userDto.username = 'testuser';
       userDto.email = 'test@example.com';
-      userDto.ldapGroups = ['group1'];
+      userDto.ldapGroups = mockLdapGroups;
+      userDto.password = 'password';
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       jest.spyOn(model, 'findOne').mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(null),
       } as unknown as Query<any, any>);
 
-      await service.register(userDto);
+      await service.createOrUpdate(userDto);
 
       expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' });
       expect(model.create).toHaveBeenCalledWith({
         email: 'test@example.com',
         username: 'testuser',
-        roles: ['group1'],
+        password: 'password',
+        ldapGroups: mockLdapGroups,
       });
     });
 
     it('should update existing user', async () => {
-      const userDto = new RegisterUserDto();
-      userDto.preferred_username = 'testuser';
-      userDto.ldapGroups = ['group1'];
+      const userDto = new UserDto();
+      userDto.username = 'testuser';
+      userDto.ldapGroups = mockLdapGroups;
+      userDto.password = 'password';
 
-      await service.register(userDto);
+      await service.createOrUpdate(userDto);
       expect(model.findOne).toHaveBeenCalled();
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { username: 'testuser' },
-        { roles: ['group1'] },
+        { ldapGroups: mockLdapGroups, password: 'password' },
         { new: true },
       );
     });
@@ -180,7 +193,8 @@ describe(UsersService.name, () => {
       const createUserDto = new CreateUserDto();
       createUserDto.email = 'test@example.com';
       createUserDto.username = 'testuser';
-      createUserDto.roles = ['user'];
+      createUserDto.ldapGroups = mockLdapGroups;
+      createUserDto.password = 'password';
 
       const newUser = await service.create(createUserDto);
       expect(newUser).toEqual(mockUser);
@@ -208,10 +222,18 @@ describe(UsersService.name, () => {
     it('should update a user', async () => {
       const updateUserDto = new UpdateUserDto();
       updateUserDto.email = 'updated@example.com';
+      updateUserDto.password = 'password';
 
-      const updatedUser = await service.update('testuser', updateUserDto);
-      expect(updatedUser).toEqual(mockUser);
-      expect(model.findOneAndUpdate).toHaveBeenCalledWith({ username: 'testuser' }, updateUserDto, { new: true });
+      await service.update('testuser', updateUserDto);
+
+      expect(model.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: 'testuser' },
+        expect.objectContaining({
+          email: 'updated@example.com',
+          password: 'password',
+        }),
+        { new: true },
+      );
     });
   });
 

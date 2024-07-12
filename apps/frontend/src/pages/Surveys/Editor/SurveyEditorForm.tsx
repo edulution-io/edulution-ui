@@ -73,7 +73,6 @@ const SurveyEditorForm = () => {
     const {
       invitedAttendees,
       invitedGroups,
-
       id,
       formula,
       saveNo,
@@ -87,7 +86,6 @@ const SurveyEditorForm = () => {
     await updateOrCreateSurvey({
       invitedAttendees,
       invitedGroups,
-
       id,
       formula,
       saveNo,

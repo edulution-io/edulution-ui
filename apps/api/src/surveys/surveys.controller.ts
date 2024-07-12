@@ -84,7 +84,6 @@ class SurveysController {
 
     const survey: Survey = {
       ...surveyData,
-      // eslint-ignore-next-line @typescript/no-underscore-dangle
       _id: id,
       id,
       saveNo,
@@ -94,7 +93,6 @@ class SurveysController {
     };
 
     const updatedSurvey = await this.surveyService.updateSurvey(survey);
-
     if (updatedSurvey == null) {
       const createdSurvey = await this.surveyService.createSurvey(survey);
       if (createdSurvey == null) {
@@ -107,7 +105,6 @@ class SurveysController {
       await this.usersSurveysService.populateSurvey(invitedAttendees, id);
       return createdSurvey;
     }
-
     return updatedSurvey;
   }
 
