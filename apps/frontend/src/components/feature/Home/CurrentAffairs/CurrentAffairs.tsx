@@ -58,7 +58,7 @@ const CurrentAffairs = () => {
     >
       <CardContent>
         <div className="flex flex-col gap-3">
-          <h4 className="font-bold">{t('current-affairs')}</h4>
+          <h4 className="font-bold">{t('current-affairs.title')}</h4>
           <ScrollArea>
             <Collapsible defaultOpen={true}>
               <CollapsibleTrigger className="flex text-xl font-bold">
