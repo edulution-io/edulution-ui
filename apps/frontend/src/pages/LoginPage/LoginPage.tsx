@@ -12,7 +12,6 @@ import { Card } from '@/components/shared/Card';
 import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
-import { toast } from 'sonner';
 import UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@/utils/processLdapGroups';
 
@@ -49,19 +48,15 @@ const LoginPage: React.FC = () => {
         username,
         password,
       });
-
       if (requestUser) {
         setEduApiToken(requestUser.access_token);
         setWebdavKey(password);
-
         createWebdavClient();
-        void setLmnApiToken(username, password);
       } else {
         throw new Error();
       }
     } catch (e) {
-      // NIEDUUI-322 Translate keycloak error messages
-      toast.error(auth.error?.message);
+      // Do nothing
     }
   };
 
@@ -86,7 +81,7 @@ const LoginPage: React.FC = () => {
     if (isLoginPrevented) {
       return;
     }
-
+    void setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
     void handleRegisterUser();
   }, [auth.isAuthenticated, eduApiToken]);
 

@@ -18,7 +18,10 @@
     }
   },
   "auth": {
-    "errors": { "TokenExpired": "Sitzung abgelaufen", "SessionExpiring": "Sie werden in 1 Minute abgemeldet." }
+    "errors": {
+      "TokenExpired": "Sitzung abgelaufen",
+      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet."
+    }
   },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
