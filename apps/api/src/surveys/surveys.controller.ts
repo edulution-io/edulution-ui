@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus, Logger } from '@nestjs/common';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import GetAnswerDto from '@libs/survey/types/get-answer.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
@@ -44,17 +44,20 @@ class SurveysController {
 
   @Get(OPEN_SURVEYS_ENDPOINT)
   async getOpenSurveys(@GetCurrentUsername() username: string) {
-    return this.surveyService.findSurveys(await this.usersSurveysService.getOpenSurveyIds(username));
+    const openSurveyIds = await this.usersSurveysService.getOpenSurveyIds(username);
+    return this.surveyService.findSurveys(openSurveyIds);
   }
 
   @Get(CREATED_SURVEYS_ENDPOINT)
   async getCreatedSurveys(@GetCurrentUsername() username: string) {
-    return this.surveyService.findSurveys(await this.usersSurveysService.getCreatedSurveyIds(username));
+    const createdSurveyIds = await this.usersSurveysService.getCreatedSurveyIds(username);
+    return this.surveyService.findSurveys(createdSurveyIds);
   }
 
   @Get(ANSWERED_SURVEYS_ENDPOINT)
   async getAnsweredSurveys(@GetCurrentUsername() username: string) {
-    return this.surveyService.findSurveys(await this.usersSurveysService.getAnsweredSurveyIds(username));
+    const answeredSurveyIds = await this.usersSurveysService.getAnsweredSurveyIds(username);
+    return this.surveyService.findSurveys(answeredSurveyIds);
   }
 
   @Get(ALL_SURVEYS_ENDPOINT)
@@ -76,7 +79,7 @@ class SurveysController {
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUsername() username: string) {
     // first extrude the additional info fields from the remaining survey object
-    const { invitedAttendees, ...surveyData } = surveyDto;
+    const { invitedAttendees, invitedGroups, ...surveyData } = surveyDto;
     const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
 
     const survey: Survey = {
@@ -113,9 +116,10 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     try {
       await this.surveyService.deleteSurveys(surveyIds);
-      await this.surveyAnswerService.onRemoveSurveys(surveyIds);
-      await this.usersSurveysService.onRemoveSurveys(surveyIds);
+      await this.surveyAnswerService.onSurveyRemoval(surveyIds);
+      await this.usersSurveysService.updateUsersOnSurveyRemoval(surveyIds);
     } catch (e) {
+      Logger.log(e);
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
     }
   }
