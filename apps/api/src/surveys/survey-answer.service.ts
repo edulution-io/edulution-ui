@@ -26,7 +26,7 @@ class SurveyAnswersService {
     return surveys;
   }
 
-  async onRemoveUser(userNames: mongoose.Types.ObjectId[]): Promise<void> {
+  async onUserRemoval(userNames: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyAnswerModel.deleteMany({ user: { $in: userNames } }).exec();
     } catch (error) {
@@ -38,7 +38,7 @@ class SurveyAnswersService {
     }
   }
 
-  async onRemoveSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
+  async onSurveyRemoval(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyAnswerModel.deleteMany({ survey: { $in: surveyIds } }, { ordered: false }).exec();
     } catch (error) {
@@ -182,6 +182,7 @@ class SurveyAnswersService {
     const idExistingUsersAnswer = await this.surveyAnswerModel
       .findOne<SurveyAnswer>({ survey: surveyId, user: participant })
       .exec();
+
     if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
       return this.createNewAnswer(
         surveyId,

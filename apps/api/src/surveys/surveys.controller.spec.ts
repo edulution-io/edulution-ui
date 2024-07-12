@@ -316,7 +316,7 @@ describe('SurveysController', () => {
   describe('deleteSurvey', () => {
     it('should remove a survey', async () => {
       jest.spyOn(surveysService, 'deleteSurveys');
-      jest.spyOn(surveyAnswersService, 'onRemoveSurveys');
+      jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
       jest.spyOn(usersSurveysService, 'updateUsersOnSurveyRemoval');
 
       surveyModel.deleteMany = jest.fn().mockReturnValue({
@@ -348,7 +348,7 @@ describe('SurveysController', () => {
 
     it('should remove multiple surveys', async () => {
       jest.spyOn(surveysService, 'deleteSurveys');
-      jest.spyOn(surveyAnswersService, 'onRemoveSurveys');
+      jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
       jest.spyOn(usersSurveysService, 'updateUsersOnSurveyRemoval');
 
       surveyModel.deleteMany = jest.fn().mockReturnValue({
@@ -386,7 +386,7 @@ describe('SurveysController', () => {
 
     it('should remove one survey from multiple survey lists', async () => {
       jest.spyOn(surveysService, 'deleteSurveys');
-      jest.spyOn(surveyAnswersService, 'onRemoveSurveys');
+      jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
       jest.spyOn(usersSurveysService, 'updateUsersOnSurveyRemoval');
 
       surveyModel.deleteMany = jest.fn().mockReturnValue({

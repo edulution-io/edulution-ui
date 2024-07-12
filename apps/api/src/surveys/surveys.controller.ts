@@ -116,7 +116,7 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     try {
       await this.surveyService.deleteSurveys(surveyIds);
-      await this.surveyAnswerService.onRemoveSurveys(surveyIds);
+      await this.surveyAnswerService.onSurveyRemoval(surveyIds);
       await this.usersSurveysService.updateUsersOnSurveyRemoval(surveyIds);
     } catch (e) {
       Logger.log(e);
