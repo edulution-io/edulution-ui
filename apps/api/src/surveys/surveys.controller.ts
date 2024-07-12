@@ -44,7 +44,7 @@ class SurveysController {
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
     // first extrude the additional info fields from the remaining survey object
-    const { participants, ...surveyData } = surveyDto;
+    const { invitedAttendees, ...surveyData } = surveyDto;
     const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
 
     const survey: Survey = {
@@ -53,8 +53,8 @@ class SurveysController {
       id,
       saveNo,
       created,
-      isAnonymous: !!isAnonymous,
-      canSubmitMultipleAnswers: !!canSubmitMultipleAnswers,
+      isAnonymous,
+      canSubmitMultipleAnswers,
     };
 
     const updatedSurvey = await this.surveyService.updateSurvey(survey);
@@ -82,8 +82,7 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, answer } = pushAnswerDto;
-    const updatedSurvey = await this.surveyAnswerService.addAnswer(surveyId, answer, username);
-    return updatedSurvey;
+    return this.surveyAnswerService.addAnswer(surveyId, answer, username);
   }
 }
 

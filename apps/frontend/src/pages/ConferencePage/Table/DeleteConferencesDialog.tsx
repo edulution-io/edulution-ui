@@ -1,5 +1,5 @@
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
 import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -82,7 +82,7 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
     );
 
   return (
-    <AdaptiveDialog
+    <AdaptiveDialogSH
       isOpen={isDeleteConferencesDialogOpen}
       trigger={trigger}
       handleOpenChange={() => setIsDeleteConferencesDialogOpen(!isDeleteConferencesDialogOpen)}

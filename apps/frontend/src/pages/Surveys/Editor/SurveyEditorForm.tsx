@@ -24,9 +24,18 @@ const SurveyEditorForm = () => {
   const emptyFormValues: SurveyDto = new EmptySurveyForm();
 
   const formSchema = z.object({
+    // SURVEY
     id: z.number(),
     formula: z.any(),
-    participants: z.array(
+    saveNo: z.number().optional(),
+    created: z.date().optional(),
+    expirationDate: z.date().optional(),
+    expirationTime: z.string().optional(),
+    isAnonymous: z.boolean().optional(),
+    canSubmitMultipleAnswers: z.boolean().optional(),
+
+    // ADDITIONAL
+    invitedAttendees: z.array(
       z.intersection(
         z.object({
           firstName: z.string().optional(),
@@ -39,12 +48,6 @@ const SurveyEditorForm = () => {
         }),
       ),
     ),
-    saveNo: z.number().optional(),
-    created: z.date().optional(),
-    expirationDate: z.date().optional(),
-    expirationTime: z.string().optional(),
-    isAnonymous: z.boolean().optional(),
-    canSubmitMultipleAnswers: z.boolean().optional(),
     invitedGroups: z.array(z.object({})),
   });
 
@@ -56,8 +59,8 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     const {
-      participants,
-
+      invitedAttendees,
+      invitedGroups,
       id,
       formula,
       saveNo,
@@ -69,8 +72,8 @@ const SurveyEditorForm = () => {
     } = form.getValues();
 
     await updateOrCreateSurvey({
-      participants,
-
+      invitedAttendees,
+      invitedGroups,
       id,
       formula,
       saveNo,
@@ -106,7 +109,7 @@ const SurveyEditorForm = () => {
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">
           {getSurveyEditor}
-          {error ? toast.error(error.message) : null}
+          {error ? toast.error(t(error.message)) : null}
         </ScrollArea>
       </div>
       <TooltipProvider>

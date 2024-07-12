@@ -113,14 +113,14 @@
   },
   "survey": {
     "editor": {
-      "new": "Neu (leer)",
+      "new": "Neu (Leer)",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "Umfrage konnte weder aktualisiert noch erstellt werden",
       "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyError": "Umfrage konnte nicht gelöscht werden",
+      "notAbleToDeleteSurveyError": "Die Umfragen konnten nicht gelöscht werden",
       "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
       "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
       "notAbleToFindSurveyParameterError": "Um eine Umfrage findne zu können muss mindestens eine Survey-Id übergeben werden",
@@ -301,6 +301,7 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
+    "title": "Lädt...",
     "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
   },
   "search": {

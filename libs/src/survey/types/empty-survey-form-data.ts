@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import { Group } from '@libs/user/types/groups/group';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
 
 class EmptySurveyForm implements SurveyDto {
-  participants: [];
+  invitedAttendees: AttendeeDto[];
 
-  invitedGroups: [];
+  invitedGroups: Group[];
 
   readonly id: mongoose.Types.ObjectId;
 
@@ -27,7 +29,7 @@ class EmptySurveyForm implements SurveyDto {
   canShowResultsChart: boolean;
 
   constructor() {
-    this.participants = [];
+    this.invitedAttendees = [];
     this.invitedGroups = [];
     const time = new Date().getTime();
     this.id = mongoose.Types.ObjectId.createFromTime(time);

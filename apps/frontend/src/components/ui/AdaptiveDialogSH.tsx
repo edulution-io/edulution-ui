@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import useIsMobileView from '@/hooks/useIsMobileView';
 
-interface AdaptiveDialogProps {
+interface AdaptiveDialogSHProps {
   isOpen: boolean;
   handleOpenChange: () => void;
   title: string;
@@ -13,7 +13,7 @@ interface AdaptiveDialogProps {
   footer?: React.ReactNode;
 }
 
-const AdaptiveDialog: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, title, trigger, body, footer }) => {
+const AdaptiveDialogSH: FC<AdaptiveDialogSHProps> = ({ isOpen, handleOpenChange, title, trigger, body, footer }) => {
   const isMobileView = useIsMobileView();
 
   return isMobileView ? (
@@ -45,4 +45,4 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, tit
   );
 };
 
-export default AdaptiveDialog;
+export default AdaptiveDialogSH;

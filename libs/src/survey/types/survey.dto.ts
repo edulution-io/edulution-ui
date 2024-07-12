@@ -1,9 +1,12 @@
 import mongoose from 'mongoose';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import { Group } from '@libs/user/types/groups/group';
 
 interface SurveyDto {
   // ADDITIONAL;
-  participants: AttendeeDto[];
+  invitedAttendees: AttendeeDto[];
+
+  invitedGroups: Group[];
 
   // SURVEY
   id: mongoose.Types.ObjectId;
