@@ -9,7 +9,6 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/lmnApiStore';
 import UserDto from '@libs/user/types/user.dto';
@@ -51,12 +50,9 @@ const LoginPage: React.FC = () => {
       if (requestUser) {
         setEduApiToken(requestUser.access_token);
         setWebdavKey(password);
-        createWebdavClient();
-      } else {
-        throw new Error();
       }
     } catch (e) {
-      // Do nothing
+      //
     }
   };
 
@@ -146,7 +142,7 @@ const LoginPage: React.FC = () => {
             </div> */}
           </div>
           <Button
-            className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
+            className="mx-auto w-full justify-center pt-4 text-background shadow-xl"
             type="submit"
             variant="btn-security"
             size="lg"
