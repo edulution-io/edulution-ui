@@ -1,3 +1,3 @@
-type CloneVms = { [vmId: string]: { ip: string; vmid: string } };
+type CloneVms = { [vmId: string]: { ip: string; vmid: string; status: string } };
 
 export default CloneVms;

@@ -8,8 +8,9 @@ import { APPS } from '@libs/appconfig/types';
 import cn from '@/lib/utils';
 import useUserStore from '@/store/UserStore/UserStore';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
-import { useInterval } from 'usehooks-ts';
+import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
+import { useInterval } from 'usehooks-ts';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
@@ -71,9 +72,10 @@ const DesktopDeploymentPage: React.FC = () => {
     void updateVirtualMachines();
   }, VDI_SYNC_TIME_INTERVAL);
 
-  const getAvailableClients = (osTypes: VirtualMachineOs) => {
-    if (virtualMachines) {
-      return Object.keys(virtualMachines.data[osTypes]?.clone_vms ?? {}).length;
+  const getAvailableClients = (osType: VirtualMachineOs, vms: VirtualMachines | null): number => {
+    if (vms && vms.data[osType]) {
+      const cloneVms = vms.data[osType].clone_vms;
+      return Object.values(cloneVms).filter((vm) => vm.status === 'running').length;
     }
     return 0;
   };
@@ -123,10 +125,10 @@ const DesktopDeploymentPage: React.FC = () => {
           <VdiCard
             key={os}
             title={t(title)}
-            availableClients={getAvailableClients(os)}
+            availableClients={getAvailableClients(os, virtualMachines)}
             onClick={() => handleConnect()}
             osType={os}
-            disabled={getAvailableClients(os) === 0}
+            disabled={getAvailableClients(os, virtualMachines) === 0}
           />
         ))}
       </div>
