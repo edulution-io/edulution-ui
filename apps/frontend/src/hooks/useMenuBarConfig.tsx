@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
+import { APPS } from '@libs/appconfig/types';
+import { getFromPathName } from '@libs/common/utils';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import ROOMBOOKING_MENUBAR_CONFIG from '@/pages/RoomBookingPage/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
-import { APPS } from '@libs/appconfig/types';
-import { getFromPathName } from '@libs/common/utils';
+import useLicenseInfoPageMenu from '@/pages/Licensing/useLicenseInfoPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -19,6 +20,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
+  const LICENSING_MENUBAR_CONFIG = useLicenseInfoPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -40,6 +42,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.LINUXMUSTER: {
         return LINUXMUSTER_MENUBAR_CONFIG;
+      }
+      case APPS.LICENSING: {
+        return LICENSING_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

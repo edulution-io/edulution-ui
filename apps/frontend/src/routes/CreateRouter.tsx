@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
+import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
@@ -12,7 +13,7 @@ import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
-import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
+import LicenseInfoPage from '@/pages/Licensing/LicenseInfoPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -28,6 +29,8 @@ const pageSwitch = (page: string) => {
       return <FramePlaceholder />;
     case APPS.WHITEBOARD:
       return <FramePlaceholder />;
+    case APPS.LICENSING:
+      return <LicenseInfoPage />;
     default:
       return (
         <Navigate

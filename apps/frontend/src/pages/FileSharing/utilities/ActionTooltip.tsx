@@ -29,7 +29,6 @@ const ActionTooltip: React.FC<ActionTooltipProps> = ({ trigger, onAction, toolti
       </TooltipTrigger>
       <TooltipContent
         side="top"
-        align="center"
       >
         {tooltipText}
       </TooltipContent>

@@ -217,7 +217,10 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
-    "clearSelection": "Clear selection"
+    "clearSelection": "Clear selection",
+    "active": "Active",
+    "inactive": "Inactive",
+    "selected": "Selected"
   },
   "form": {
     "path": "Path",
@@ -375,5 +378,30 @@
       "CouldNotSearchGroups": "Could not search for groups"
     },
     "classes": "Classes"
+  },
+  "licensing": {
+    "title": "LICENSES",
+    "sidebar": "Licenses",
+    "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well."
+  },
+  "license": {
+    "info": {
+      "title": "LICENSES",
+      "sidebar": "Licenses",
+      "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well.",
+      "id": "License ID",
+      "validFromUtc": "Valid from",
+      "validToUtc": "Valid until",
+      "isLicenseActive": "Active/Inactive",
+      "showOnlyActiveLicensesOn": "Show all",
+      "showOnlyActiveLicensesOff": "Hide inactive"
+    },
+    "errors": {
+      "InvalidLicenseSignature": "The Signature of the License is invalid.",
+      "LicenseAlreadyAdded": "The License has already been added.",
+      "LicenseValidationPublicKeyMissing": "The License Validation Public Key is missing.",
+      "NotALicense": "The provided file is not a license file.",
+      "MismatchingLicensePlatformFrontendUrl": "The Platform Frontend URL of the License does not match the Frontend URL of this Platform (The correct Platform Frontend URL is '{{{expectedPlatformFrontendURL}}}')."
+    }
   }
 }

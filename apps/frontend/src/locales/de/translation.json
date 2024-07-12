@@ -219,7 +219,10 @@
     "create": "Erstellen",
     "icon": "Icon",
     "groups": "Gruppen",
-    "clearSelection": "Auswahl löschen"
+    "clearSelection": "Auswahl löschen",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "selected": "Ausgewählt"
   },
   "form": {
     "path": "Link",
@@ -377,5 +380,27 @@
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
     },
     "classes": "Klassen"
+  },
+  "licensing": {
+    "title": "LIZENSEN",
+    "sidebar": "Lizensen",
+    "description": "Hier werden die erstellten lizensen angezeigt. Nutze den Toggle um auch die inaktiven Lizensen einzublenden."
+  },
+  "license": {
+    "info": {
+      "id": "Lizens ID",
+      "validFromUtc": "Gültig ab",
+      "validToUtc": "Gültig bis",
+      "isLicenseActive": "Aktiv/Inaktiv",
+      "showOnlyActiveLicensesOn": "Alle anzeigen",
+      "showOnlyActiveLicensesOff": "Inaktive ausblenden"
+    },
+    "errors": {
+      "InvalidLicenseSignature": "Die Signatur der Lizenz ist ungültig.",
+      "LicenseAlreadyAdded": "Die Lizenz wurde bereits hinzugefügt.",
+      "LicenseValidationPublicKeyMissing": "Die Lizenzprüfung ist fehlgeschlagen, da der öffentliche Schlüssel fehlt",
+      "NotALicense": "Die bereit gestellte Datei entspricht keiner bekannten Lizens",
+      "MismatchingLicensePlatformFrontendUrl": "Die Plattform Frontend URL der Lizenz stimmt nicht mit der Frontend URL dieser Plattform überein (Die korrekte Plattform Frontend URL ist '{{{expectedPlatformFrontendURL}}}')."
+    }
   }
 }

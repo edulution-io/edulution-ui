@@ -23,6 +23,7 @@ enum APPS {
   AICHAT = 'aichat',
   LINUXMUSTER = 'linuxmuster',
   WHITEBOARD = 'whiteboard',
+  LICENSING = 'licensing',
 }
 
 export default APPS;

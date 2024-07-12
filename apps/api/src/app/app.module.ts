@@ -9,6 +9,7 @@ import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import LoggingInterceptor from '../logging/logging.interceptor';
+import LicenseModule from "../licenses/license.modul";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import LoggingInterceptor from '../logging/logging.interceptor';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    LicenseModule,
     JwtModule.register({
       global: true,
     }),

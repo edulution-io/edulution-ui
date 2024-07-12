@@ -23,6 +23,7 @@ import {
   VirtualizationIcon,
   WhiteBoardIcon,
   WlanIcon,
+  license01,
 } from '@/assets/icons';
 import { AppConfigOptionType, APPS } from '@libs/appconfig/types';
 
@@ -123,6 +124,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   { id: APPS.AICHAT, icon: AiChatIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   { id: APPS.LINUXMUSTER, icon: LinuxmusterIcon, color: 'bg-ciGreenToBlue', options: ['url'] },
   { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue' },
+  { id: APPS.LICENSING, icon: license01, color: 'bg-ciDarkBlue'}
 ];
 
 export default APP_CONFIG_OPTIONS;
