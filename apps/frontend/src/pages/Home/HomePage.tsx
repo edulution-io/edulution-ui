@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home } from '@/components/feature/Home';
+import { Home } from '@/pages/Dashboard';
 
 const HomePage: React.FC = () => <Home />;
 

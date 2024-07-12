@@ -9,7 +9,6 @@ import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import SurveysPage from '@/pages/Surveys/SurveysPage';
-import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
@@ -21,8 +20,6 @@ const pageSwitch = (page: string) => {
       return <ConferencePage />;
     case APPS.FILE_SHARING:
       return <FileSharing />;
-    case APPS.ROOM_BOOKING:
-      return <RoomBookingPage />;
     case APPS.SURVEYS:
       return <SurveysPage />;
     case APPS.MAIL:
