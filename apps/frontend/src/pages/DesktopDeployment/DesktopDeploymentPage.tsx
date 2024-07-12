@@ -17,6 +17,12 @@ import VDIFrame from './VDIFrame';
 import VdiCard from './components/VdiCard';
 import FloatingButtonsBar from './components/FloatingButtonsBar';
 
+const osConfigs = [
+  { os: VirtualMachineOs.WIN10, title: 'desktopdeployment.win10' },
+  { os: VirtualMachineOs.WIN11, title: 'desktopdeployment.win11' },
+  { os: VirtualMachineOs.UBUNTU, title: 'desktopdeployment.ubuntu' },
+];
+
 const DesktopDeploymentPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
@@ -41,18 +47,24 @@ const DesktopDeploymentPage: React.FC = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [isSilent, setIsSilent] = useState(false);
 
-  const initialize = async () => {
+  useEffect(() => {
     if (user) {
-      await authenticate();
-      await postRequestVdi(VirtualMachineOs.WIN10);
+      void authenticate();
+      void postRequestVdi(VirtualMachineOs.WIN10);
     }
+  }, [user]);
+
+  useEffect(() => {
     if (vdiIp) {
-      await createOrUpdateConnection();
+      void createOrUpdateConnection();
     }
+  }, [vdiIp]);
+
+  useEffect(() => {
     if (connectionEnabled) {
-      await getConnections();
+      void getConnections();
     }
-  };
+  }, [connectionEnabled]);
 
   useEffect(() => {
     void getVirtualMachines();
@@ -72,6 +84,12 @@ const DesktopDeploymentPage: React.FC = () => {
     void updateVirtualMachines();
   }, VDI_SYNC_TIME_INTERVAL);
 
+  useEffect(() => {
+    if (error) {
+      setIsErrorDialogOpen(true);
+    }
+  }, [error]);
+
   const getAvailableClients = (osType: VirtualMachineOs, vms: VirtualMachines | null): number => {
     if (vms && vms.data[osType]) {
       const cloneVms = vms.data[osType].clone_vms;
@@ -80,29 +98,14 @@ const DesktopDeploymentPage: React.FC = () => {
     return 0;
   };
 
-  useEffect(() => {
-    void initialize();
-  }, [user, vdiIp, connectionEnabled]);
-
-  useEffect(() => {
-    if (error) {
-      setIsErrorDialogOpen(true);
-    }
-  }, [error]);
-
   const handleConnect = () => {
     setOpenVdiConnection(true);
   };
 
   const handleReload = () => {
-    void initialize();
+    void authenticate();
+    void postRequestVdi(VirtualMachineOs.WIN10);
   };
-
-  const osConfigs = [
-    { os: VirtualMachineOs.WIN10, title: 'desktopdeployment.win10' },
-    { os: VirtualMachineOs.WIN11, title: 'desktopdeployment.win11' },
-    { os: VirtualMachineOs.UBUNTU, title: 'desktopdeployment.ubuntu' },
-  ];
 
   return (
     <div className={cn('absolute inset-y-0 left-0 ml-0 mr-14 w-screen p-5 lg:pr-20', getStyle())}>
@@ -117,7 +120,7 @@ const DesktopDeploymentPage: React.FC = () => {
         <ConnectionErrorDialog
           isErrorDialogOpen={isErrorDialogOpen}
           setIsErrorDialogOpen={setIsErrorDialogOpen}
-          handleReload={() => initialize()}
+          handleReload={handleReload}
         />
       )}
       <div className="flex flex-row gap-10">
