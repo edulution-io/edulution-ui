@@ -30,7 +30,7 @@ const PasswordChangeForm: FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="max-w-[50vh]">
+        <div className="md:max-w-[75%]">
           <label
             htmlFor="currentPassword"
             className="block text-sm font-medium text-gray-300"
@@ -46,8 +46,6 @@ const PasswordChangeForm: FC = () => {
             }`}
           />
           {errors.currentPassword && <p className="mt-2 text-sm text-red-600">{errors.currentPassword.message}</p>}
-        </div>
-        <div className="max-w-[50vh]">
           <label
             htmlFor="newPassword"
             className="block text-sm font-medium text-gray-300"
@@ -66,8 +64,6 @@ const PasswordChangeForm: FC = () => {
             }`}
           />
           {errors.newPassword && <p className="mt-2 text-sm text-red-600">{errors.newPassword.message}</p>}
-        </div>
-        <div className="max-w-[50vh]">
           <label
             htmlFor="confirmPassword"
             className="block text-sm font-medium text-gray-300"
