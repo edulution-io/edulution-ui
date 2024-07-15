@@ -9,7 +9,7 @@ const UserSettingsSecurityPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="absolute bottom-[32px] left-4 right-[57px] top-3 h-screen md:left-[256px]">
+    <div className="absolute bottom-[32px] left-4 right-[0px] top-3 h-screen md:left-[256px] md:right-[57px]">
       <NativeAppHeader
         title={t('usersettings.security.title')}
         description={t('usersettings.security.description')}
