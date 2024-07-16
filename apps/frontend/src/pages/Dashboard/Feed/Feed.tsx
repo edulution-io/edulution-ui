@@ -12,7 +12,7 @@ const Feed = () => {
   return (
     <Card
       variant="collaboration"
-      className="min-h-[280px] md:min-h-[100%] overflow-y-auto"
+      className="min-h-[280px] overflow-y-auto md:min-h-[100%]"
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>
