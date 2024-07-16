@@ -1,7 +1,14 @@
 /* eslint-disable react/require-default-props */
 import React, { FC } from 'react';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/Dialog';
 import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface AdaptiveDialogProps {
@@ -54,6 +61,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         <DialogTitle>{title}</DialogTitle>
         {body}
         <DialogFooter>{footer}</DialogFooter>
+        <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>
   );

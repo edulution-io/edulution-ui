@@ -66,6 +66,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
       set({ isLoading: false, guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
     } catch (error) {
+      set({ error: error as AxiosError });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
