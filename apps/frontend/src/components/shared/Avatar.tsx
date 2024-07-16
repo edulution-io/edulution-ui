@@ -1,6 +1,6 @@
 import React from 'react';
-import { AvatarSH, AvatarFallback } from '@/components/ui/AvatarSH';
 import { useAuth } from 'react-oidc-context';
+import { AvatarSH, AvatarFallback } from '@/components/ui/AvatarSH';
 
 const Avatar: React.FC = () => {
   const { user } = useAuth();

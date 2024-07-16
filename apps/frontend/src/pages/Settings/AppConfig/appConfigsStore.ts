@@ -46,7 +46,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
           handleApiError(e, set);
           return false;
         } finally {
-          set({isLoading: false});
+          set({ isLoading: false });
         }
       },
 
