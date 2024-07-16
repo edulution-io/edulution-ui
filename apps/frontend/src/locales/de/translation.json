@@ -85,7 +85,8 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
+    "noConferences": "Es wurden keine laufenden Konferenzen gefunden",
+    "noMails": "Es konnten keine ungelesenen Mails gefunden/geladen werden"
   },
   "filesharing": {
     "title": "FILESHARING",

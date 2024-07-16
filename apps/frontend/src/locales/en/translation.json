@@ -83,7 +83,8 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conferences were found"
+    "noConferences": "No running conferences were found",
+    "noMails": "No unread mails could be found/loaded"
   },
   "filesharing": {
     "title": "FILE SHARING",

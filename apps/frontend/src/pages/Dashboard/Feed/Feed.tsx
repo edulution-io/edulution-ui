@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Accordion } from '@/components/ui/Accordion';
 import { Card, CardContent } from '@/components/shared/Card';
 import RunningConferencesAccordionItem from '@/pages/Dashboard/Feed/conferences/RunningConferencesAccordionItem';
+import UnreadMailsAccordionItem from "@/pages/Dashboard/Feed/mails/UnreadMailsAccordionItem";
 
 const Feed = () => {
   const { t } = useTranslation();
@@ -21,8 +22,9 @@ const Feed = () => {
           <ScrollArea>
             <Accordion
               type="multiple"
-              defaultValue={[APPS.CONFERENCES]}
+              defaultValue={[APPS.MAIL, APPS.CONFERENCES]}
             >
+              <UnreadMailsAccordionItem />
               <RunningConferencesAccordionItem />
             </Accordion>
           </ScrollArea>
