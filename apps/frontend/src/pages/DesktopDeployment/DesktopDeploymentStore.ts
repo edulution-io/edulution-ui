@@ -8,7 +8,7 @@ import { Connections, VdiConnectionRequest, VirtualMachines } from '@libs/deskto
 interface DesktopDeploymentStore {
   connectionEnabled: boolean;
   vdiIp: string;
-  token: string;
+  guacToken: string;
   dataSource: string;
   isLoading: boolean;
   error: AxiosError | null;
@@ -19,7 +19,7 @@ interface DesktopDeploymentStore {
   virtualMachines: VirtualMachines | null;
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized: boolean) => void;
   setOpenVdiConnection: (openVdiConnection: boolean) => void;
-  setToken: (token: string) => void;
+  setGuacToken: (guacToken: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   setGuacId: (guacId: string) => void;
   setVirtualMachines: (virtualMachines: VirtualMachines) => void;
@@ -28,12 +28,13 @@ interface DesktopDeploymentStore {
   postRequestVdi: (group: string) => Promise<void>;
   getVirtualMachines: () => Promise<void>;
   createOrUpdateConnection: () => Promise<void>;
+  reset: () => void;
 }
 
 const initialState = {
   connectionEnabled: false,
   vdiIp: '',
-  token: '',
+  guacToken: '',
   dataSource: '',
   isLoading: false,
   error: null,
@@ -48,9 +49,10 @@ const EDU_API_VDI_ENDPOINT = 'vdi';
 
 const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => ({
   ...initialState,
+  reset: () => set(initialState),
 
   setIsLoading: (isLoading) => set({ isLoading }),
-  setToken: (token) => set({ token }),
+  setGuacToken: (guacToken) => set({ guacToken }),
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized) => set({ isVdiConnectionMinimized }),
   setOpenVdiConnection: (openVdiConnection) => set({ openVdiConnection }),
   setGuacId: (guacId) => set({ guacId }),
@@ -62,7 +64,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const response = await eduApi.get(EDU_API_VDI_ENDPOINT);
 
       const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
-      set({ isLoading: false, token: authToken, dataSource, isVdiConnectionMinimized: false });
+      set({ isLoading: false, guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -75,7 +77,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     try {
       await eduApi.post(`${EDU_API_VDI_ENDPOINT}/sessions`, {
         dataSource: get().dataSource,
-        token: get().token,
+        token: get().guacToken,
         hostname: get().vdiIp,
       });
       set({ isLoading: false, connectionEnabled: true });
@@ -93,7 +95,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     try {
       const response = await eduApi.post(`${EDU_API_VDI_ENDPOINT}/connections`, {
         dataSource: get().dataSource,
-        token: get().token,
+        token: get().guacToken,
       });
       set({ isLoading: false, guacId: response.data as string });
     } catch (error) {

@@ -27,6 +27,7 @@ const DesktopDeploymentPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
   const {
+    guacToken,
     connectionEnabled,
     vdiIp,
     error,
@@ -48,8 +49,13 @@ const DesktopDeploymentPage: React.FC = () => {
   const [isSilent, setIsSilent] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (!guacToken) {
       void authenticate();
+    }
+  }, [guacToken]);
+
+  useEffect(() => {
+    if (user) {
       void postRequestVdi(VirtualMachineOs.WIN10);
     }
   }, [user]);

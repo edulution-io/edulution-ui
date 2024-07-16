@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import Guacamole from 'guacamole-common-js';
@@ -15,54 +15,32 @@ const VDIFrame = () => {
   const { t } = useTranslation();
   const {
     error,
-    token,
+    guacToken,
     dataSource,
     isVdiConnectionMinimized,
     guacId,
+    openVdiConnection,
     setIsVdiConnectionMinimized,
-    setToken,
     setOpenVdiConnection,
   } = useDesktopDeploymentStore();
-  const [connectionState, setConnectionState] = useState<string>('');
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (guacRef.current) {
-        guacRef.current.sendSize(window.innerWidth, window.innerHeight);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [isVdiConnectionMinimized]);
 
   const handleDisconnect = () => {
     if (guacRef.current) {
-      console.info('disconnect guac client');
-
       guacRef.current.disconnect();
     }
-    if (displayRef.current) {
-      console.info('set inner html to empty string');
-      displayRef.current.innerHTML = '';
-    }
-    setToken('');
     setOpenVdiConnection(false);
   };
 
   useEffect(() => {
-    if (token === '' || !displayRef.current) return () => {};
+    if (guacToken === '' || !displayRef.current) return () => {};
 
     const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
 
-    const paramsObject = {
-      token,
+    const guacamoleConfig = {
+      token: guacToken,
       GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
@@ -76,7 +54,7 @@ const VDIFrame = () => {
 
     const params = new URLSearchParams();
 
-    Object.entries(paramsObject).forEach(([key, value]) => {
+    Object.entries(guacamoleConfig).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((val) => params.append(key, val));
       } else {
@@ -93,13 +71,21 @@ const VDIFrame = () => {
     // @ts-expect-error due to readability
     mouse.onmousemove = guac.sendMouseState.bind(guac);
 
-    const touch = new Guacamole.Mouse.Touchscreen(guac.getDisplay().getElement());
+    const touchscreen = new Guacamole.Mouse.Touchscreen(guac.getDisplay().getElement());
     // @ts-expect-error due to readability
-    touch.onmousedown = guac.sendTouchState.bind(guac);
+    touchscreen.onmousedown = guac.sendMouseState.bind(guac);
     // @ts-expect-error due to readability
-    touch.onmouseup = guac.sendTouchState.bind(guac);
+    touchscreen.onmouseup = guac.sendMouseState.bind(guac);
     // @ts-expect-error due to readability
-    touch.onmousemove = guac.sendTouchState.bind(guac);
+    touchscreen.onmousemove = guac.sendMouseState.bind(guac);
+
+    const touch = new Guacamole.Touch(guac.getDisplay().getElement());
+    // @ts-expect-error due to readability
+    touch.ontouchstart = guac.sendTouchState.bind(guac);
+    // @ts-expect-error due to readability
+    touch.ontouchend = guac.sendTouchState.bind(guac);
+    // @ts-expect-error due to readability
+    touch.ontouchmove = guac.sendTouchState.bind(guac);
 
     const keyboard = new Guacamole.Keyboard(document);
     keyboard.onkeydown = (keysym) => guac.sendKeyEvent(1, keysym);
@@ -123,22 +109,31 @@ const VDIFrame = () => {
         4: 'DISCONNECTING',
         5: 'DISCONNECTED',
       };
-      setConnectionState(stateMap[state] || 'UNKNOWN');
-      if (state === 3) {
-        // CONNECTED
-        console.info('Guacamole client connected');
-      }
+      console.info(stateMap[state]);
+
       if (state === 5) {
-        // DISCONNECTED
         handleDisconnect();
-        console.info(connectionState, 'Guacamole client disconnected');
       }
     };
 
     return () => {
-      guac.disconnect();
+      handleDisconnect();
     };
-  }, [token]);
+  }, [guacToken, openVdiConnection]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (guacRef.current) {
+        guacRef.current.sendSize(window.innerWidth, window.innerHeight);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [guacRef.current, isVdiConnectionMinimized]);
 
   const style = isVdiConnectionMinimized ? { width: 0 } : { width: isMobileView ? '100%' : 'calc(100% - 56px)' };
 
