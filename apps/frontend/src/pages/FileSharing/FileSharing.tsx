@@ -24,6 +24,8 @@ import { ContentType } from '@/datatypes/filesystem';
 import DeleteItemAlert from '@/pages/FileSharing/alerts/DeleteItemAlert';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
+import useUserStore from '@/store/UserStore/UserStore';
+import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 
 const FileSharingPage = () => {
   const {
@@ -39,6 +41,14 @@ const FileSharingPage = () => {
     currentPath,
   } = useFileManagerStoreOLD();
   const { t } = useTranslation();
+
+  const { user } = useUserStore();
+
+  useEffect(() => {
+    if (user) {
+      createWebdavClient();
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchFiles().catch(console.error);
