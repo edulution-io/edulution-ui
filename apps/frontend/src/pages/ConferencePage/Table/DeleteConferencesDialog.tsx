@@ -35,7 +35,7 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
 
     return (
-      <div className="text-black">
+      <div className="text-foreground">
         {error ? (
           <>
             {t('conferences.error')}: {error.message}

@@ -2,7 +2,6 @@ enum SurveyErrorMessages {
   NeitherAbleToUpdateNorToCreateSurveyError = 'survey.errors.neitherAbleToUpdateNorToCreateSurveyError',
   NotAbleToCreateSurveyError = 'survey.errors.notAbleToCreateSurveyError',
   NotAbleToDeleteSurveyError = 'survey.errors.notAbleToDeleteSurveyError',
-  NotAbleToFindSurveyAnswerError = 'survey.errors.notAbleToFindSurveyAnswerError',
   NotAbleToFindSurveyError = 'survey.errors.notAbleToFindSurveyError',
   NotAbleToFindSurveysError = 'survey.errors.notAbleToFindSurveysError',
   notAbleToFindSurveyParameterError = 'survey.errors.notAbleToFindSurveyParameterError',
@@ -10,6 +9,7 @@ enum SurveyErrorMessages {
   NotAbleToParticipateAlreadyParticipatedError = 'survey.errors.notAbleToParticipateAlreadyParticipatedError',
   NotAbleToUpdateSurveyError = 'survey.errors.notAbleToUpdateSurveyError',
   NotValidSurveyIdIsNoMongooseObjectId = 'survey.errors.notValidSurveyIdIsNoMongooseObjectId',
+  NotAbleToParticipateSurveyExpiredError = 'survey.errors.notAbleToParticipateSurveyExpiredError',
 }
 
 export default SurveyErrorMessages;

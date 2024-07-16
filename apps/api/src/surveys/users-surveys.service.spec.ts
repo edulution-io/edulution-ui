@@ -1,38 +1,56 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { HttpStatus } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/user-error-messages';
-import { HttpStatus } from '@nestjs/common';
-import UsersSurveysService from './users-surveys.service';
 import { User, UserDocument } from '../users/user.schema';
+import UsersSurveysService from './users-surveys.service';
+import { Survey } from './survey.schema';
+import SurveysService from './surveys.service';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import SurveysAnswerService from './survey-answer.service';
 import {
-  unknownSurvey,
-  newObjectId,
-  answeredSurvey,
-  answeredSurveyIds,
-  createdSurvey,
-  createdSurveys,
-  distributedSurvey,
-  mockedAnswer,
-  openSurvey,
-  openSurveys,
+  firstUsername,
+  secondUsername,
+  firstParticipant,
+  secondParticipant,
   firstMockUser,
   secondMockUser,
-  userSurveys,
-  userSurveysAfterAddOpenUnknownSurvey,
-  userSurveysAfterAddAnswerForOpenSurvey,
-  userSurveysAfterAddCreatedUnknownSurvey,
-  userSurveysAfterRemoveOpenSurvey,
-  userSurveysAfterRemoveAnsweredSurvey,
-  userSurveysAfterRemoveCreatedSurvey,
-  userSurveysAfterRemoveDistributedSurvey,
-} from './users-surveys.service.mock';
-import { firstUsername, firstParticipant, secondUsername, secondParticipant } from './surveys.service.mock';
+  basicUserSurveysFirstUser,
+  userSurveysAfterAddingNewOpenSurveyFirstUser,
+  userSurveysAfterCreatingNewOpenSurveyFirstUser,
+  userSurveysAfterCreatingNewSurveyFirstUser,
+  userSurveysAfterRemoveAnsweredSurveyFirstUser,
+  userSurveysAfterRemoveCreatedSurveyFirstUser,
+  userSurveysAfterRemoveDistributedSurveyFirstUser,
+  userSurveysAfterRemoveOpenSurveyFirstUser,
+  userSurveysAfterAddingNewOpenSurveySecondUser,
+  userSurveysAfterRemoveMultipleSurveysFirstUser,
+  idOfTheOpenSurvey,
+  idOfCreateNewOpenSurvey,
+  idOfOpenSurvey01,
+  answerFromFirstUserForDistributedSurvey,
+  distributedSurvey,
+  idOfDistributedSurvey,
+  idOfTheCreatedSurvey,
+  idOfCreatedSurvey01,
+  idOfCreateNewCreatedSurvey,
+  answerFromFirstUserForAnsweredSurvey01,
+  answerFromFirstUserForAnsweredSurvey02,
+  idOfAnsweredSurvey01,
+  idOfAnsweredSurvey02,
+  idOfAnswerFromFirstUserForAnsweredSurvey01,
+  newId,
+  unknownId,
+} from './mocks';
 
 describe('UsersSurveysService', () => {
   let service: UsersSurveysService;
   let userModel: Model<UserDocument>;
+  let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,11 +60,22 @@ describe('UsersSurveysService', () => {
           provide: getModelToken(User.name),
           useValue: jest.fn(),
         },
+        SurveysService,
+        {
+          provide: getModelToken(Survey.name),
+          useValue: jest.fn(),
+        },
+        SurveysAnswerService,
+        {
+          provide: getModelToken(SurveyAnswer.name),
+          useValue: jest.fn(),
+        },
       ],
     }).compile();
 
     service = module.get<UsersSurveysService>(UsersSurveysService);
     userModel = module.get<Model<UserDocument>>(getModelToken(User.name));
+    surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });
 
   afterEach(() => {
@@ -86,15 +115,15 @@ describe('UsersSurveysService', () => {
   describe('updateUser', () => {
     it('should update a user', async () => {
       userModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue({ usersSurveys: userSurveys }),
+        exec: jest.fn().mockResolvedValue({ ...firstMockUser, usersSurveys: basicUserSurveysFirstUser }),
       });
 
-      const result = await service.updateUser(firstUsername, { usersSurveys: userSurveys });
-      expect(result).toStrictEqual({ usersSurveys: userSurveys });
+      const result = await service.updateUser(firstUsername, { usersSurveys: basicUserSurveysFirstUser });
+      expect(result).toStrictEqual({ ...firstMockUser, usersSurveys: basicUserSurveysFirstUser });
 
       expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
         { username: firstUsername },
-        { usersSurveys: userSurveys },
+        { usersSurveys: basicUserSurveysFirstUser },
         { new: true },
       );
     });
@@ -107,131 +136,471 @@ describe('UsersSurveysService', () => {
       });
 
       const result = await service.getOpenSurveyIds(firstUsername);
-      expect(result).toEqual(openSurveys);
+      expect(result).toEqual([idOfTheOpenSurvey, idOfOpenSurvey01, idOfDistributedSurvey]);
     });
   });
 
   describe('getCreatedSurveyIds', () => {
-    it('should return open survey ids', async () => {
+    it('should return created survey ids', async () => {
       userModel.findOne = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(firstMockUser),
       });
 
       const result = await service.getCreatedSurveyIds(firstUsername);
-      expect(result).toEqual(createdSurveys);
+      expect(result).toEqual([idOfTheCreatedSurvey, idOfCreatedSurvey01, idOfDistributedSurvey]);
     });
   });
 
   describe('getAnsweredSurveyIds', () => {
-    it('should return open survey ids', async () => {
+    it('should return answered survey ids', async () => {
       userModel.findOne = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(firstMockUser),
       });
+      surveyAnswerModel.find = jest.fn().mockReturnValueOnce({
+        exec: jest
+          .fn()
+          .mockResolvedValue([
+            answerFromFirstUserForAnsweredSurvey01,
+            answerFromFirstUserForAnsweredSurvey02,
+            answerFromFirstUserForDistributedSurvey,
+          ]),
+      });
 
       const result = await service.getAnsweredSurveyIds(firstUsername);
-      expect(result).toEqual(answeredSurveyIds);
+      expect(result).toEqual([idOfAnsweredSurvey01, idOfAnsweredSurvey02, distributedSurvey]);
     });
   });
 
-  describe('onRemoveSurvey', () => {
+  describe('updateUserIfSurveyWasAssigned', () => {
+    it('should remove survey from users survey list of openSurveys if assigned survey gets deleted', async () => {
+      jest.spyOn(service, 'updateUser');
+
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveOpenSurveyFirstUser }),
+      });
+
+      await service.saveUserWithUpdatedUsersSurveys(
+        firstMockUser,
+        userSurveysAfterRemoveOpenSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveOpenSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveOpenSurveyFirstUser.answeredSurveys,
+      );
+      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
+        usersSurveys: userSurveysAfterRemoveOpenSurveyFirstUser,
+      });
+      expect(service.updateUser).toHaveReturned();
+      expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: firstUsername },
+        { usersSurveys: userSurveysAfterRemoveOpenSurveyFirstUser },
+        { new: true },
+      );
+      expect(userModel.findOneAndUpdate).toHaveReturned();
+    });
+
+    it('should remove survey from users survey list of createdSurveys if assigned survey gets deleted', async () => {
+      jest.spyOn(service, 'updateUser');
+
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser }),
+      });
+
+      await service.saveUserWithUpdatedUsersSurveys(
+        firstMockUser,
+        userSurveysAfterRemoveCreatedSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveCreatedSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveCreatedSurveyFirstUser.answeredSurveys,
+      );
+      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
+        usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser,
+      });
+      expect(service.updateUser).toHaveReturned();
+      expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: firstUsername },
+        { usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser },
+        { new: true },
+      );
+      expect(userModel.findOneAndUpdate).toHaveReturned();
+    });
+
+    it('should remove survey from users survey list of createdSurveys if assigned survey gets deleted', async () => {
+      jest.spyOn(service, 'updateUser');
+
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser }),
+      });
+
+      await service.saveUserWithUpdatedUsersSurveys(
+        firstMockUser,
+        userSurveysAfterRemoveAnsweredSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveAnsweredSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveAnsweredSurveyFirstUser.answeredSurveys,
+      );
+      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
+        usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser,
+      });
+      expect(service.updateUser).toHaveReturned();
+      expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: firstUsername },
+        { usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser },
+        { new: true },
+      );
+      expect(userModel.findOneAndUpdate).toHaveReturned();
+    });
+
+    it('should remove survey from list of open-, created-, and answeredSurveys list if survey gets deleted and is included in all 3 (somehow)', async () => {
+      jest.spyOn(service, 'updateUser');
+
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser }),
+      });
+
+      await service.saveUserWithUpdatedUsersSurveys(
+        firstMockUser,
+        userSurveysAfterRemoveDistributedSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveDistributedSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveDistributedSurveyFirstUser.answeredSurveys,
+      );
+      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
+        usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser,
+      });
+      expect(service.updateUser).toHaveReturned();
+      expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: firstUsername },
+        { usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser },
+        { new: true },
+      );
+      expect(userModel.findOneAndUpdate).toHaveReturned();
+    });
+
+    it('should remove multiple surveys from the list of open-, created-, and answeredSurveys', async () => {
+      jest.spyOn(service, 'updateUser');
+
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockReturnValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveMultipleSurveysFirstUser }),
+      });
+
+      await service.saveUserWithUpdatedUsersSurveys(
+        firstMockUser,
+        userSurveysAfterRemoveMultipleSurveysFirstUser.createdSurveys,
+        userSurveysAfterRemoveMultipleSurveysFirstUser.openSurveys,
+        userSurveysAfterRemoveMultipleSurveysFirstUser.answeredSurveys,
+      );
+      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
+        usersSurveys: userSurveysAfterRemoveMultipleSurveysFirstUser,
+      });
+      expect(service.updateUser).toHaveReturned();
+      expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { username: firstUsername },
+        { usersSurveys: userSurveysAfterRemoveMultipleSurveysFirstUser },
+        { new: true },
+      );
+      expect(userModel.findOneAndUpdate).toHaveReturned();
+    });
+  });
+
+  describe('updateUserIfSurveyWasAssigned', () => {
+    it('should return null if the users survey list does not have to be updated', async () => {
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue([
+            answerFromFirstUserForAnsweredSurvey01,
+            answerFromFirstUserForAnsweredSurvey02,
+            answerFromFirstUserForDistributedSurvey,
+          ]),
+      });
+
+      service.saveUserWithUpdatedUsersSurveys = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(firstMockUser),
+      });
+
+      const result = await service.updateUsersUsersSurveysOnSurveyRemoval(firstMockUser, [unknownId]);
+      expect(result).toEqual(firstMockUser);
+    });
+
+    it('should remove survey from users survey list of openSurveys if assigned survey gets deleted', async () => {
+      jest.spyOn(service, 'updateUsersUsersSurveysOnSurveyRemoval');
+      jest.spyOn(UsersSurveysService, 'filterOutSurveyIds');
+
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue([
+            answerFromFirstUserForAnsweredSurvey01,
+            answerFromFirstUserForAnsweredSurvey02,
+            answerFromFirstUserForDistributedSurvey,
+          ]),
+      });
+
+      service.saveUserWithUpdatedUsersSurveys = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveOpenSurveyFirstUser }),
+      });
+
+      await service.updateUsersUsersSurveysOnSurveyRemoval(firstMockUser, [idOfTheOpenSurvey]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveReturned();
+
+      expect(UsersSurveysService.filterOutSurveyIds).toHaveBeenCalledTimes(2);
+      expect(service.saveUserWithUpdatedUsersSurveys).toHaveBeenCalledWith(
+        firstMockUser,
+        userSurveysAfterRemoveOpenSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveOpenSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveOpenSurveyFirstUser.answeredSurveys,
+      );
+    });
+
+    it('should remove survey from users survey list of createdSurveys if assigned survey gets deleted', async () => {
+      jest.spyOn(service, 'updateUsersUsersSurveysOnSurveyRemoval');
+      jest.spyOn(UsersSurveysService, 'filterOutSurveyIds');
+
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue([
+            answerFromFirstUserForAnsweredSurvey01,
+            answerFromFirstUserForAnsweredSurvey02,
+            answerFromFirstUserForDistributedSurvey,
+          ]),
+      });
+
+      service.saveUserWithUpdatedUsersSurveys = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser }),
+      });
+
+      await service.updateUsersUsersSurveysOnSurveyRemoval(firstMockUser, [idOfTheCreatedSurvey]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveReturned();
+
+      expect(UsersSurveysService.filterOutSurveyIds).toHaveBeenCalledTimes(2);
+      expect(service.saveUserWithUpdatedUsersSurveys).toHaveBeenCalledWith(
+        firstMockUser,
+        userSurveysAfterRemoveCreatedSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveCreatedSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveCreatedSurveyFirstUser.answeredSurveys,
+      );
+    });
+
+    it('should remove survey from users survey list of createdSurveys if assigned survey gets deleted', async () => {
+      jest.spyOn(service, 'updateUsersUsersSurveysOnSurveyRemoval');
+      jest.spyOn(UsersSurveysService, 'filterOutSurveyIds');
+
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue([answerFromFirstUserForAnsweredSurvey02, answerFromFirstUserForDistributedSurvey]),
+      });
+
+      service.saveUserWithUpdatedUsersSurveys = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser }),
+      });
+
+      await service.updateUsersUsersSurveysOnSurveyRemoval(firstMockUser, [idOfAnsweredSurvey01]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveReturned();
+
+      expect(UsersSurveysService.filterOutSurveyIds).toHaveBeenCalledTimes(2);
+      expect(service.saveUserWithUpdatedUsersSurveys).toHaveBeenCalledWith(
+        firstMockUser,
+        userSurveysAfterRemoveAnsweredSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveAnsweredSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveAnsweredSurveyFirstUser.answeredSurveys,
+      );
+    });
+
+    it('should remove survey from list of open-, created-, and answeredSurveys list if survey gets deleted and is included in all 3 (somehow)', async () => {
+      jest.spyOn(service, 'updateUsersUsersSurveysOnSurveyRemoval');
+      jest.spyOn(UsersSurveysService, 'filterOutSurveyIds');
+
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue([answerFromFirstUserForAnsweredSurvey01, answerFromFirstUserForAnsweredSurvey02]),
+      });
+
+      service.saveUserWithUpdatedUsersSurveys = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser }),
+      });
+
+      await service.updateUsersUsersSurveysOnSurveyRemoval(firstMockUser, [idOfDistributedSurvey]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveReturned();
+
+      expect(UsersSurveysService.filterOutSurveyIds).toHaveBeenCalledTimes(2);
+      expect(service.saveUserWithUpdatedUsersSurveys).toHaveBeenCalledWith(
+        firstMockUser,
+        userSurveysAfterRemoveDistributedSurveyFirstUser.createdSurveys,
+        userSurveysAfterRemoveDistributedSurveyFirstUser.openSurveys,
+        userSurveysAfterRemoveDistributedSurveyFirstUser.answeredSurveys,
+      );
+    });
+
+    it('should remove multiple surveys from the list of open-, created-, and answeredSurveys', async () => {
+      jest.spyOn(service, 'updateUsersUsersSurveysOnSurveyRemoval');
+      jest.spyOn(UsersSurveysService, 'filterOutSurveyIds');
+
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockReturnValue([answerFromFirstUserForAnsweredSurvey02, answerFromFirstUserForDistributedSurvey]),
+      });
+
+      service.saveUserWithUpdatedUsersSurveys = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockReturnValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveMultipleSurveysFirstUser }),
+      });
+
+      await service.updateUsersUsersSurveysOnSurveyRemoval(firstMockUser, [
+        idOfOpenSurvey01,
+        idOfCreatedSurvey01,
+        idOfAnsweredSurvey01,
+      ]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveReturned();
+
+      expect(UsersSurveysService.filterOutSurveyIds).toHaveBeenCalledTimes(2);
+      expect(service.saveUserWithUpdatedUsersSurveys).toHaveBeenCalledWith(
+        firstMockUser,
+        userSurveysAfterRemoveMultipleSurveysFirstUser.createdSurveys,
+        userSurveysAfterRemoveMultipleSurveysFirstUser.openSurveys,
+        userSurveysAfterRemoveMultipleSurveysFirstUser.answeredSurveys,
+      );
+    });
+  });
+
+  describe('updateUsersOnSurveyRemoval', () => {
+    it('should not call saveUserWithUpdatedUsersSurveys() if the survey was not assigned to the users surveys', async () => {
+      jest.spyOn(service, 'updateUsersUsersSurveysOnSurveyRemoval');
+
+      jest.spyOn(service, 'saveUserWithUpdatedUsersSurveys');
+
+      userModel.find = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockResolvedValue([firstMockUser]),
+      });
+      surveyAnswerModel.find = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockResolvedValue(firstMockUser.usersSurveys.answeredSurveys),
+      });
+
+      await service.updateUsersOnSurveyRemoval([unknownId]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveBeenCalledTimes(1);
+      expect(service.saveUserWithUpdatedUsersSurveys).toHaveBeenCalledTimes(0);
+    });
+
     it('should remove survey from list of openSurveys if survey gets deleted and is open', async () => {
       userModel.find = jest.fn().mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue([firstMockUser, secondMockUser]),
       });
-      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ usersSurveys: userSurveysAfterRemoveOpenSurvey }),
+      service.updateUsersUsersSurveysOnSurveyRemoval = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveOpenSurveyFirstUser }),
       });
 
-      jest.spyOn(service, 'updateUser');
-
-      await service.onRemoveSurveys([openSurvey]);
-      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        usersSurveys: userSurveysAfterRemoveOpenSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledWith(secondUsername, {
-        usersSurveys: userSurveysAfterRemoveOpenSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledTimes(2);
+      await service.updateUsersOnSurveyRemoval([idOfTheOpenSurvey]);
+      expect(service.updateUsersUsersSurveysOnSurveyRemoval).toHaveBeenCalledTimes(2);
     });
 
     it('should remove survey from list of createdSurveys if survey gets deleted and is in the created list', async () => {
-      userModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue([firstMockUser, secondMockUser]),
+      userModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue([firstMockUser]),
+      });
+      service.updateUsersUsersSurveysOnSurveyRemoval = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser }),
+      });
+      service.updateUser = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser }),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ usersSurveys: userSurveysAfterRemoveCreatedSurvey }),
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveCreatedSurveyFirstUser }),
       });
 
       jest.spyOn(service, 'updateUser');
 
-      await service.onRemoveSurveys([createdSurvey]);
-      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        usersSurveys: userSurveysAfterRemoveCreatedSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledWith(secondUsername, {
-        usersSurveys: userSurveysAfterRemoveCreatedSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledTimes(2);
+      await service.updateUsersOnSurveyRemoval([idOfTheCreatedSurvey]);
+      expect(service.updateUser).toHaveBeenCalledTimes(0);
     });
 
     it('should remove survey from list of answeredSurveys if survey gets deleted was already answered', async () => {
-      userModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue([firstMockUser, secondMockUser]),
+      userModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue([firstMockUser]),
+      });
+      service.updateUsersUsersSurveysOnSurveyRemoval = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockReturnValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser }),
+      });
+      service.updateUser = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockReturnValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser }),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ usersSurveys: userSurveysAfterRemoveAnsweredSurvey }),
+        exec: jest
+          .fn()
+          .mockReturnValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveAnsweredSurveyFirstUser }),
       });
 
-      jest.spyOn(service, 'updateUser');
-
-      await service.onRemoveSurveys([answeredSurvey]);
-      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        usersSurveys: userSurveysAfterRemoveAnsweredSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledWith(secondUsername, {
-        usersSurveys: userSurveysAfterRemoveAnsweredSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledTimes(2);
+      await service.updateUsersOnSurveyRemoval([idOfAnswerFromFirstUserForAnsweredSurvey01]);
+      expect(service.updateUser).toHaveBeenCalledTimes(0);
     });
 
     it('should remove survey from list of open-, created-, and answeredSurveys list if survey gets deleted and is included in all 3 (somehow)', async () => {
-      userModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue([firstMockUser, secondMockUser]),
+      userModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue([firstMockUser]),
+      });
+      service.updateUsersUsersSurveysOnSurveyRemoval = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser }),
+      });
+      service.updateUser = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser }),
       });
       userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ usersSurveys: userSurveysAfterRemoveDistributedSurvey }),
+        exec: jest
+          .fn()
+          .mockResolvedValue({ ...firstMockUser, usersSurveys: userSurveysAfterRemoveDistributedSurveyFirstUser }),
       });
 
-      jest.spyOn(service, 'updateUser');
-
-      await service.onRemoveSurveys([distributedSurvey]);
-      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        usersSurveys: userSurveysAfterRemoveDistributedSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledWith(secondUsername, {
-        usersSurveys: userSurveysAfterRemoveDistributedSurvey,
-      });
-      expect(service.updateUser).toHaveBeenCalledTimes(2);
-    });
-
-    it('should not remove any surveyId if the deleted id is not included in any of the lists', async () => {
-      userModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue([firstMockUser, secondMockUser]),
-      });
-
-      jest.spyOn(service, 'updateUser');
-
-      await service.onRemoveSurveys([unknownSurvey]);
-
-      expect(service.updateUser).not.toHaveBeenCalled();
+      await service.updateUsersOnSurveyRemoval([idOfDistributedSurvey]);
+      expect(service.updateUser).toHaveBeenCalledTimes(0);
     });
 
     it('should throw an error if the user is not found', async () => {
-      userModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(null),
+      userModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(null),
+      });
+      surveyAnswerModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue([]),
+      });
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockReturnValue(new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND)),
       });
 
-      await expect(service.onRemoveSurveys([unknownSurvey])).rejects.toThrow(
+      await expect(service.updateUsersOnSurveyRemoval([idOfDistributedSurvey])).rejects.toThrow(
         new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND),
       );
     });
@@ -239,32 +608,32 @@ describe('UsersSurveysService', () => {
 
   describe('addToCreatedSurveys', () => {
     it('should add a survey to the list of created surveys', async () => {
-      userModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(firstMockUser),
+      userModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(firstMockUser),
       });
-      userModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue({
-          username: firstUsername,
-          usersSurveys: userSurveysAfterAddCreatedUnknownSurvey,
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue({
+          ...firstMockUser,
+          usersSurveys: userSurveysAfterCreatingNewSurveyFirstUser,
         }),
       });
 
       jest.spyOn(service, 'updateUser');
 
-      await service.addToCreatedSurveys(firstUsername, unknownSurvey);
+      await service.addToCreatedSurveys(firstUsername, idOfCreateNewCreatedSurvey);
       expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        username: firstUsername,
-        usersSurveys: userSurveysAfterAddCreatedUnknownSurvey,
+        ...firstMockUser,
+        usersSurveys: userSurveysAfterCreatingNewSurveyFirstUser,
       });
     });
 
     it('should throw an error if the user is not found', async () => {
-      userModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(null),
+      userModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(null),
       });
 
       try {
-        await service.addToCreatedSurveys('not-found', unknownSurvey);
+        await service.addToCreatedSurveys('not-found', idOfDistributedSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(UserErrorMessages.NotAbleToFindUserError);
@@ -272,45 +641,25 @@ describe('UsersSurveysService', () => {
     });
   });
 
-  describe('addAnswer', () => {
-    it('should remove the survey from open surveys and move it to answered together with the answer', async () => {
-      userModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ username: firstUsername, usersSurveys: userSurveys }),
-      });
-      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest
-          .fn()
-          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddAnswerForOpenSurvey }),
-      });
-
-      jest.spyOn(service, 'updateUser');
-
-      await service.addAnswer(firstUsername, openSurvey, mockedAnswer, false);
-      expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        username: firstUsername,
-        usersSurveys: userSurveysAfterAddAnswerForOpenSurvey,
-      });
-    });
-  });
-
   describe('addToOpenSurveys', () => {
     it('should add a survey to open surveys', async () => {
-      userModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(firstMockUser),
+      userModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(firstMockUser),
       });
 
-      userModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest
-          .fn()
-          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddOpenUnknownSurvey }),
+      userModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue({
+          ...firstMockUser,
+          usersSurveys: userSurveysAfterCreatingNewOpenSurveyFirstUser,
+        }),
       });
 
       jest.spyOn(service, 'updateUser');
 
-      await service.addToOpenSurveys(firstUsername, unknownSurvey);
+      await service.addToOpenSurveys(firstUsername, idOfCreateNewOpenSurvey);
       expect(service.updateUser).toHaveBeenCalledWith(firstUsername, {
-        username: firstUsername,
-        usersSurveys: userSurveysAfterAddOpenUnknownSurvey,
+        ...firstMockUser,
+        usersSurveys: userSurveysAfterCreatingNewOpenSurveyFirstUser,
       });
     });
 
@@ -320,7 +669,7 @@ describe('UsersSurveysService', () => {
       });
 
       try {
-        expect(await service.addToCreatedSurveys('not-found', unknownSurvey)).toThrow(
+        expect(await service.addToCreatedSurveys('not-found', idOfDistributedSurvey)).toThrow(
           new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND),
         );
       } catch (e) {
@@ -338,13 +687,13 @@ describe('UsersSurveysService', () => {
       userModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
         exec: jest
           .fn()
-          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddAnswerForOpenSurvey }),
+          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddingNewOpenSurveyFirstUser }),
       });
 
       jest.spyOn(service, 'addToOpenSurveys');
 
-      await service.populateSurvey([firstParticipant], newObjectId);
-      expect(service.addToOpenSurveys).toHaveBeenCalledWith(firstParticipant.value, newObjectId);
+      await service.populateSurvey([firstParticipant], newId);
+      expect(service.addToOpenSurveys).toHaveBeenCalledWith(firstUsername, newId);
     });
 
     it('should populate survey to second participant', async () => {
@@ -354,28 +703,13 @@ describe('UsersSurveysService', () => {
       userModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
         exec: jest
           .fn()
-          .mockResolvedValue({ username: secondUsername, usersSurveys: userSurveysAfterAddAnswerForOpenSurvey }),
+          .mockResolvedValue({ username: secondUsername, usersSurveys: userSurveysAfterAddingNewOpenSurveySecondUser }),
       });
 
       jest.spyOn(service, 'addToOpenSurveys');
 
-      await service.populateSurvey([secondParticipant], newObjectId);
-      expect(service.addToOpenSurveys).toHaveBeenCalledWith(secondParticipant.value, newObjectId);
-    });
-  });
-
-  describe('getCommitedAnswer', () => {
-    it('should return the previously commited answer for the survey with props.surveyId from user with props.username', async () => {
-      userModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest
-          .fn()
-          .mockResolvedValue({ username: firstUsername, usersSurveys: userSurveysAfterAddAnswerForOpenSurvey }),
-      });
-
-      jest.spyOn(service, 'getCommitedAnswer');
-
-      const result = await service.getCommitedAnswer(firstUsername, openSurvey);
-      expect(result).toStrictEqual(mockedAnswer);
+      await service.populateSurvey([secondParticipant], newId);
+      expect(service.addToOpenSurveys).toHaveBeenCalledWith(secondUsername, newId);
     });
   });
 });

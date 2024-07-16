@@ -9,36 +9,36 @@ import SURVEYS_ENDPOINT, {
   SURVEY_OPEN_SURVEYS_ENDPOINT,
 } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveysTablesPageStore {
   selectedPageView: SurveysPageView;
   updateSelectedPageView: (pageView: SurveysPageView) => void;
-  selectedSurvey: Survey | undefined;
-  selectSurvey: (survey: Survey | undefined) => void;
+  selectedSurvey: SurveyDto | undefined;
+  selectSurvey: (survey: SurveyDto | undefined) => void;
 
-  openSurveys: Survey[];
-  updateOpenSurveys: () => Promise<Survey[]>;
+  openSurveys: SurveyDto[];
+  updateOpenSurveys: () => Promise<SurveyDto[]>;
   isFetchingOpenSurveys: boolean;
   errorFetchingOpenSurveys: Error | null;
 
-  createdSurveys: Survey[];
-  updateCreatedSurveys: () => Promise<Survey[]>;
+  createdSurveys: SurveyDto[];
+  updateCreatedSurveys: () => Promise<SurveyDto[]>;
   isFetchingCreatedSurveys: boolean;
   errorFetchingCreatedSurveys: Error | null;
 
-  answeredSurveys: Survey[];
-  updateAnsweredSurveys: () => Promise<Survey[]>;
+  answeredSurveys: SurveyDto[];
+  updateAnsweredSurveys: () => Promise<SurveyDto[]>;
   isFetchingAnsweredSurveys: boolean;
   errorFetchingAnsweredSurveys: Error | null;
 
-  allSurveys: Survey[];
-  updateAllSurveys: () => Promise<Survey[]>;
+  allSurveys: SurveyDto[];
+  updateAllSurveys: () => Promise<SurveyDto[]>;
   isFetchingAllSurveys: boolean;
   errorFetchingAllSurveys: Error | null;
 
-  patchSurvey: (survey: Survey) => Promise<Survey>;
+  patchSurvey: (survey: SurveyDto) => Promise<SurveyDto>;
   isPosting: boolean;
   errorPostingSurvey: Error | null;
 
@@ -71,12 +71,12 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
   reset: () => set(initialState),
 
   updateSelectedPageView: (pageView: SurveysPageView) => set({ selectedPageView: pageView }),
-  selectSurvey: (survey: Survey | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  updateOpenSurveys: async (): Promise<Survey[]> => {
+  updateOpenSurveys: async (): Promise<SurveyDto[]> => {
     set({ errorFetchingOpenSurveys: null, isFetchingOpenSurveys: true });
     try {
-      const response = await eduApi.get<Survey[]>(SURVEY_OPEN_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEY_OPEN_SURVEYS_ENDPOINT);
       const surveys = response.data;
       set({ openSurveys: surveys, isFetchingOpenSurveys: false });
       return surveys;
@@ -96,10 +96,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
     }
   },
 
-  updateCreatedSurveys: async (): Promise<Survey[]> => {
+  updateCreatedSurveys: async (): Promise<SurveyDto[]> => {
     set({ errorFetchingCreatedSurveys: null, isFetchingCreatedSurveys: true });
     try {
-      const response = await eduApi.get<Survey[]>(SURVEY_CREATED_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEY_CREATED_SURVEYS_ENDPOINT);
       const surveys = response.data;
       set({ createdSurveys: surveys, isFetchingCreatedSurveys: false });
       return surveys;
@@ -119,10 +119,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
     }
   },
 
-  updateAnsweredSurveys: async (): Promise<Survey[]> => {
+  updateAnsweredSurveys: async (): Promise<SurveyDto[]> => {
     set({ errorFetchingAnsweredSurveys: null, isFetchingAnsweredSurveys: true });
     try {
-      const response = await eduApi.get<Survey[]>(SURVEY_ANSWERED_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEY_ANSWERED_SURVEYS_ENDPOINT);
       const surveys = response.data;
       set({ answeredSurveys: surveys, isFetchingAnsweredSurveys: false });
       return surveys;
@@ -142,10 +142,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
     }
   },
 
-  updateAllSurveys: async (): Promise<Survey[]> => {
+  updateAllSurveys: async (): Promise<SurveyDto[]> => {
     set({ errorFetchingAllSurveys: null, isFetchingAllSurveys: true });
     try {
-      const response = await eduApi.get<Survey[]>(SURVEY_ALL_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEY_ALL_SURVEYS_ENDPOINT);
       const surveys = response.data;
       set({ allSurveys: surveys, isFetchingAllSurveys: false });
       return surveys;
@@ -161,10 +161,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
     }
   },
 
-  patchSurvey: async (survey: Survey): Promise<Survey> => {
+  patchSurvey: async (survey: SurveyDto): Promise<SurveyDto> => {
     set({ errorPostingSurvey: null, isPosting: true });
     try {
-      const response = await eduApi.post<Survey>(SURVEYS_ENDPOINT, { ...survey });
+      const response = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, { ...survey });
       set({ isPosting: false });
       return response.data;
     } catch (error) {

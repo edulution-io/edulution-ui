@@ -5,11 +5,19 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILE DATA ACCESS",
+      "title": "Mobile File Access",
       "manual": "Manual",
-      "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
+      "accessData": "Login data",
+      "content": "You can access the school server from many mobile devices. Click on Manual to start.",
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
+      "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
+      "nextStepPreview": "In the next step you can transfer the access data.",
+      "copyCredentials": "Or enter manually:",
+      "downloadDirect": "Or download the app directly:",
+      "downloadApp": "Download the edulution-io app here:"
     }
   },
+  "auth": { "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged out in 1 minute." } },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -115,15 +123,24 @@
     "errors": {
       "neitherAbleToUpdateNorToCreateSurveyError": "Neither able to update a survey nor to create a new one",
       "notAbleToCreateSurveyError": "Not able to create the survey",
-      "notAbleToDeleteSurveyError": "Not able to delete survey",
-      "notAbleToFindSurveyAnswerError": "Survey answers not found",
+      "notAbleToDeleteSurveyError": "Not able to delete the surveys",
       "notAbleToFindSurveyError": "Survey not found",
       "notAbleToFindSurveysError": "Did not find a single survey",
       "notAbleToFindSurveyParameterError": "In order to find a survey you have to provide at least one surveyId",
       "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
       "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
+      "notAbleToParticipateSurveyExpiredError": "Survey has already expired",
       "notAbleToUpdateSurveyError": "Not able to update the survey",
       "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer",
+      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
     }
   },
   "surveys": {
@@ -210,7 +227,7 @@
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": {
-        "success": "Appliste saved successfully",
+        "success": "App saved successfully",
         "failed": "Update failed"
       },
       "delete": {
@@ -222,6 +239,15 @@
         "failed": "App creation failed"
       }
     }
+  },
+  "usersettings": {
+    "title": "USER",
+    "sidebar": "Settings",
+    "security": "Security",
+    "faq": "FAQ",
+    "externalIntegration": "External Integration",
+    "config": { "mfa": "Setup Two-Factor-Authentication" },
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
@@ -235,6 +261,7 @@
   "program": "Programs",
   "share": "Share",
   "students": "Students",
+  "user": "User",
   "login": {
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
@@ -252,13 +279,15 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
+    "icon": "Icon",
+    "groups": "Groups",
+    "clearSelection": "Clear selection",
     "edit": "Edit",
     "delete": "Delete",
     "participate": "Participate",
     "not-available": "'Not available'",
     "date": "Date",
-    "time": "Time",
-    "icon": "Icon"
+    "time": "Time"
   },
   "form": {
     "path": "Path",
@@ -293,17 +322,23 @@
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"
   },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
+  },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
+    "title": "Loading...",
     "message": "Please wait while we process your request..."
   },
   "search": {
     "type-to-search": "Type to search",
     "loading": "Loading",
-    "no-results": "No results"
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -402,10 +437,17 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-  "groupsPage": {
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Group could not be found by path",
+      "CouldNotGetUsers": "Users could not be found",
+      "CouldNotFetchGroupMembers": "Group members could not be found",
+      "CouldNotFetchUserById": "User could not be found by ID",
+      "CouldNotSearchGroups": "Could not search for groups"
+    },
     "classes": "Classes"
   },
-  "user": {
+  "users": {
     "errors": {
       "notAbleToFindUserError": "User not found",
       "notAbleToUpdateUserError": "Not able to update the user"

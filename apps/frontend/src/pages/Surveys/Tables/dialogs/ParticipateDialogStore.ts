@@ -4,13 +4,13 @@ import { CompleteEvent } from 'survey-core';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface ParticipateDialogStore {
-  selectedSurvey: Survey | undefined;
-  selectSurvey: (survey: Survey | undefined) => void;
+  selectedSurvey: SurveyDto | undefined;
+  selectSurvey: (survey: SurveyDto | undefined) => void;
 
   isOpenParticipateSurveyDialog: boolean;
   openParticipateSurveyDialog: () => void;
@@ -33,7 +33,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
   ...(initialState as ParticipateDialogStore),
   reset: () => set(initialState),
 
-  selectSurvey: (survey: Survey | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   openParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: true }),
   closeParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: false }),

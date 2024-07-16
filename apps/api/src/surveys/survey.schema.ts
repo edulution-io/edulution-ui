@@ -1,25 +1,18 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import Attendee from '@libs/survey/types/attendee';
 
-export type SurveyDocument = SurveyModel & Document;
+export type SurveyDocument = Survey & Document;
 
 @Schema()
-export class SurveyModel {
+export class Survey {
   @Prop({ required: true })
   _id: mongoose.Types.ObjectId;
 
+  @Prop({ required: true })
+  id: mongoose.Types.ObjectId;
+
   @Prop({ type: JSON, required: true })
   formula: JSON;
-
-  @Prop({ required: true })
-  participants: Attendee[];
-
-  @Prop({ type: Array<string>, required: false })
-  participated?: string[];
-
-  @Prop({ type: Array<JSON>, required: false })
-  publicAnswers?: JSON[];
 
   @Prop({ required: false })
   saveNo?: number;
@@ -37,9 +30,12 @@ export class SurveyModel {
   isAnonymous?: boolean;
 
   @Prop({ required: false })
+  canUpdateFormerAnswer?: boolean;
+
+  @Prop({ required: false })
   canSubmitMultipleAnswers?: boolean;
 }
 
-const SurveySchema = SchemaFactory.createForClass(SurveyModel);
+const SurveySchema = SchemaFactory.createForClass(Survey);
 
 export default SurveySchema;

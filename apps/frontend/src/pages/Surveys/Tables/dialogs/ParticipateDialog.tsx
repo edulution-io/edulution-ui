@@ -6,7 +6,7 @@ import { CompleteEvent } from 'survey-core';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Survey from '@libs/survey/types/survey';
+import SurveyDto from '@libs/survey/types/survey.dto';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
@@ -17,7 +17,7 @@ interface ParticipateDialogFormData {
 }
 
 interface ParticipateDialogProps {
-  survey: Survey;
+  survey: SurveyDto;
 
   isOpenParticipateSurveyDialog: boolean;
   openParticipateSurveyDialog: () => void;
@@ -48,8 +48,6 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
 
     trigger,
   } = props;
-
-  if (!isOpenParticipateSurveyDialog) return null;
 
   const { t } = useTranslation();
 
@@ -117,6 +115,8 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
   //     </form>
   //   </div>
   // );
+
+  if (!isOpenParticipateSurveyDialog) return null;
 
   return (
     <AdaptiveDialog

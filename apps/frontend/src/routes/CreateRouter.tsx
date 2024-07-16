@@ -12,8 +12,8 @@ import SurveysPage from '@/pages/Surveys/SurveysPage';
 import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
-import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -29,6 +29,8 @@ const pageSwitch = (page: string) => {
       return <FramePlaceholder />;
     case APPS.LINUXMUSTER:
       return <FramePlaceholder />;
+    case APPS.WHITEBOARD:
+      return <FramePlaceholder />;
     default:
       return (
         <Navigate
@@ -39,7 +41,7 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const createRouter = (isAuthenticated: boolean, appConfig: AppConfig[]) =>
+const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (

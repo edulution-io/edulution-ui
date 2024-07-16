@@ -6,7 +6,7 @@ import RoomBooking from '@/assets/icons/edulution/Raumbuchung.svg';
 import FileSharing from '@/assets/icons/edulution/Filesharing.svg';
 import { FirewallIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
-import { BUTTONS_ICON_WIDTH } from '@/constants/style';
+import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 
 const MyFavourites = () => {
   const { t } = useTranslation();
