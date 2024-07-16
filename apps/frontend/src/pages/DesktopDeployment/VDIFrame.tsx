@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import Guacamole from 'guacamole-common-js';
@@ -6,6 +6,7 @@ import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
 import cn from '@/lib/utils';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
@@ -23,6 +24,7 @@ const VDIFrame = () => {
     setIsVdiConnectionMinimized,
     setOpenVdiConnection,
   } = useDesktopDeploymentStore();
+  const [clientState, setClientState] = useState(0);
 
   const handleDisconnect = () => {
     if (guacRef.current) {
@@ -110,6 +112,7 @@ const VDIFrame = () => {
         5: 'DISCONNECTED',
       };
       console.info(stateMap[state]);
+      setClientState(state);
 
       if (state === 5) {
         handleDisconnect();
@@ -140,6 +143,7 @@ const VDIFrame = () => {
   return createPortal(
     !error ? (
       <>
+        {clientState < 3 && <LoadingIndicator isOpen />}
         <div
           className={cn(
             'fixed -top-1 left-1/2 z-[99] -translate-x-1/2 transform',
