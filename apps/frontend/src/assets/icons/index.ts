@@ -43,4 +43,5 @@ export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
 export { default as SurveysSidebarIcon } from '@/assets/icons/survey-sidebar.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
+export { default as SecurityIcon } from '@/assets/icons/security.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';

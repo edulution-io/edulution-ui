@@ -17,7 +17,9 @@
       "downloadApp": "Download the edulution-io app here:"
     }
   },
-  "auth": { "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged out in 1 minute." } },
+  "auth": {
+    "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged off in less than a minute." }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -210,13 +212,33 @@
     }
   },
   "usersettings": {
-    "title": "USER",
-    "sidebar": "Settings",
-    "security": "Security",
+    "title": "USER SETTINGS",
+    "sidebar": "User settings",
+    "split-title": "USER SETTINGS",
+    "description": "Here you can view all your user-defined settings and adjust them if necessary.",
+    "security": {
+      "title": "Security",
+      "sidebar": "Security",
+      "description": "Configure here the security settings of your account",
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "confirm": "Change Password"
+      }
+    },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": { "mfa": "Setup Two-Factor-Authentication" },
-    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "confirmPasswordRequired": "Repeat the new password for the confirmation",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 8 characters long"
+    }
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
@@ -294,7 +316,6 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "title": "Loading...",
     "message": "Please wait while we process your request..."
   },
   "search": {

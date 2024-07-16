@@ -13,14 +13,14 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => {
   return (
     <Dialog open={isOpen}>
       <DialogContent showCloseButton={false}>
-        <DialogTitle>{t('loadingIndicator.title')}</DialogTitle>
+        <DialogTitle aria-disabled />
         <DialogHeader>
           <div className="flex flex-col items-center justify-center space-y-4">
             <CircleLoader />
             <p className="text-foreground">{t('loadingIndicator.message')}</p>
           </div>
         </DialogHeader>
-        <DialogDescription />
+        <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>
   );
