@@ -7,6 +7,7 @@ import UserStore from '@/store/UserStore/UserStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
+import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -20,6 +21,7 @@ const cleanAllStores = () => {
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
+  useLicenseInfoStore.getState().reset();
 };
 
 export default cleanAllStores;

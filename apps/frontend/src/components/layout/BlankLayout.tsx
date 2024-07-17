@@ -4,6 +4,7 @@ import { useAuth } from 'react-oidc-context';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import { Sidebar } from '@/components';
+import CommunityLicenseBanner from '@/pages/Licensing/CommunityLicense/CommunityLicenseBanner';
 
 const BlankLayout: React.FC<PropsWithChildren> = () => {
   const auth = useAuth();
@@ -13,6 +14,8 @@ const BlankLayout: React.FC<PropsWithChildren> = () => {
   return (
     <div className="flex">
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:pr-20">
+        <CommunityLicenseBanner />
+
         {!isMainPage ? <Header hideHeadingText /> : null}
         <main className="flex-1">
           <Outlet />

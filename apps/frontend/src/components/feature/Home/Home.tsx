@@ -8,6 +8,7 @@ import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
+import CommunityLicenseDialog from '@/pages/Licensing/CommunityLicense/CommunityLicenseDialog';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -53,6 +54,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <CommunityLicenseDialog />
     </>
   );
 };

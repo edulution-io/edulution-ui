@@ -1,5 +1,4 @@
 import mongoose, { Document } from 'mongoose';
-import { crypto } from 'cryptojs';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type LicenseDocument = License & Document;
@@ -13,10 +12,10 @@ export class License {
   id: mongoose.Types.ObjectId;
 
   @Prop({ required: true })
-  userId: mongoose.Types.ObjectId;
+  userId: string;
 
   @Prop({ required: true })
-  publicKey: crypto.KeyObject;
+  publicKey: string;
 
   @Prop({ type: String, required: true })
   signature: string;

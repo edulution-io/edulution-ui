@@ -23,9 +23,7 @@ class LicenseServerService {
    */
   private readonly licenseObjectSchema: z.Schema;
 
-  constructor(
-    @InjectModel(License.name) private licenseModel: Model<LicenseDocument>,
-  ) {
+  constructor(@InjectModel(License.name) private licenseModel: Model<LicenseDocument>) {
     this.serverPrivateKey = fs.readFileSync('server_private_key.pem', 'utf8');
     this.serverPublicKey = fs.readFileSync('server_public_key.pem', 'utf8');
 
@@ -34,8 +32,8 @@ class LicenseServerService {
       platformOwnerAddress: z.string(),
       licensingDeviceType: z.string(),
       deviceCount: z.number(),
-      validFromUtc: z.object({date: z.date(), time: z.string()}),
-      validToUtc: z.object({date: z.date(), time: z.string()}),
+      validFromUtc: z.object({ date: z.date(), time: z.string() }),
+      validToUtc: z.object({ date: z.date(), time: z.string() }),
       signature: z.string(),
     });
   }
@@ -47,8 +45,7 @@ class LicenseServerService {
    * @param value The value to check.
    * @returns True if the specified value is a license object; otherwise, false.
    */
-  public isLicenseObject = (value: unknown): boolean =>
-    this.licenseObjectSchema.parse(value).error === undefined;
+  public isLicenseObject = (value: unknown): boolean => this.licenseObjectSchema.parse(value).error === undefined;
 
   async createChallenge() {
     const challenge = crypto.randomBytes(32).toString('hex');
@@ -57,7 +54,9 @@ class LicenseServerService {
 
   async verifyChallengeAnswer(postChallengeAnswerDto: PostChallengeAnswerDto) {
     const { encryptedResponse, challenge } = postChallengeAnswerDto;
-    const decryptedResponse = crypto.privateDecrypt(this.serverPrivateKey, Buffer.from(encryptedResponse, 'base64')).toString('utf8');
+    const decryptedResponse = crypto
+      .privateDecrypt(this.serverPrivateKey, Buffer.from(encryptedResponse, 'base64'))
+      .toString('utf8');
     return decryptedResponse === challenge;
   }
 
@@ -68,7 +67,7 @@ class LicenseServerService {
     return sign.sign(this.serverPrivateKey, 'base64');
   }
 
-  async addLicense(addLicenseDto: LicenseDto, /*@GetCurrentUser() user: JWTUser*/) {
+  async addLicense(addLicenseDto: LicenseDto) {
     if (!this.isLicenseObject(addLicenseDto)) {
       throw new CustomHttpException(LicenseErrorMessages.NotALicenseError, HttpStatus.BAD_REQUEST);
     }

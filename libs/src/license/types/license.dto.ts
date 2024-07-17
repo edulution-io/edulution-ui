@@ -16,6 +16,8 @@ type LicenseDto = {
   validFromUtc: Date;
 
   validToUtc: Date;
+
+  publicKey: string;
 };
 
 export default LicenseDto;

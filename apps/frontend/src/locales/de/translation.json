@@ -217,6 +217,7 @@
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
+    "close": "Schließen",
     "icon": "Icon",
     "groups": "Gruppen",
     "clearSelection": "Auswahl löschen",
@@ -384,7 +385,11 @@
   "licensing": {
     "title": "LIZENSEN",
     "sidebar": "Lizensen",
-    "description": "Hier werden die erstellten lizensen angezeigt. Nutze den Toggle um auch die inaktiven Lizensen einzublenden."
+    "description": "Hier werden die erstellten lizensen angezeigt. Nutze den Toggle um auch die inaktiven Lizensen einzublenden.",
+    "communityLicenseDialog": {
+      "title": "Community Lizenz",
+      "description": "Die Community Lizenz ist eine kostenlose Lizenz, die von edulution.io zur Verfügung gestellt wird. Sie ermöglicht die Nutzung der edulution.io Plattform für nicht-kommerzielle Zwecke."
+    }
   },
   "license": {
     "info": {

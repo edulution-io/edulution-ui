@@ -4,24 +4,20 @@ import LicenseErrorMessages from '@libs/license/license-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import PostChallengeAnswerDto from '@libs/license/types/postChallengeAnswer.dto';
 import { LICENSE_ENDPOINT } from '@libs/license/types/license-endpoints';
-// import GetCurrentUser from '../common/decorators/getUser.decorator';
 import LicenseServerService from './licenseServer.service';
-// import JWTUser from '../types/JWTUser';
 
 @Controller(LICENSE_ENDPOINT)
 class LicenseServerController {
-  constructor(
-    private readonly licenseServerService: LicenseServerService,
-  ) {}
+  constructor(private readonly licenseServerService: LicenseServerService) {}
 
   @Post('/generate-license')
-  async addLicense(@Body() createLicenseDto: CreateLicenseDto, /*@GetCurrentUser() user: JWTUser*/) {
+  async addLicense(@Body() createLicenseDto: CreateLicenseDto) {
     if (!this.licenseServerService.isLicenseObject(createLicenseDto)) {
       throw new CustomHttpException(LicenseErrorMessages.NotALicenseError, HttpStatus.BAD_REQUEST);
     }
 
-    const signature = await this.licenseServerService.createSignature(createLicenseDto);
-    const license = { ...createLicenseDto, signature };
+    const signature = await this.licenseServerService.createSignature(JSON.stringify(createLicenseDto));
+    const license = { ...createLicenseDto, signature, userId: createLicenseDto.userId };
 
     try {
       await this.licenseServerService.addLicense(license);
@@ -36,14 +32,14 @@ class LicenseServerController {
   async getChallenge() {
     const encryptedChallenge = await this.licenseServerService.createChallenge();
 
-    return ({ challenge: encryptedChallenge });
+    return { challenge: encryptedChallenge };
   }
 
   @Post('/verify')
   async postChallengeAnswer(@Body() postChallengeAnswerDto: PostChallengeAnswerDto) {
     const decryptedResponse = await this.licenseServerService.verifyChallengeAnswer(postChallengeAnswerDto);
 
-    return ({ isValid: decryptedResponse });
+    return { isValid: decryptedResponse };
   }
 }
 

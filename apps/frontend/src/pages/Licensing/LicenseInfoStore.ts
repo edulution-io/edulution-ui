@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
-import { LICENSES_PATH } from '@libs/license/types/license-endpoints';
+import { LICENSE_MANAGEMENT_PATH } from '@libs/license/types/license-endpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -41,7 +41,7 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set) => ({
   getLicenses: async (isLoading = true) => {
     set({ isLoading, error: null });
     try {
-      const response = await eduApi.get<LicenseInfoDto[]>(LICENSES_PATH);
+      const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_MANAGEMENT_PATH);
       set({ licenses: response.data });
     } catch (error) {
       handleApiError(error, set);
@@ -53,7 +53,7 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set) => ({
   removeLicense: async (licenses: LicenseInfoDto[]) => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.delete<LicenseInfoDto[]>(LICENSES_PATH, {
+      const response = await eduApi.delete<LicenseInfoDto[]>(LICENSE_MANAGEMENT_PATH, {
         data: licenses,
       });
       set({ licenses: response.data, selectedRows: {} });

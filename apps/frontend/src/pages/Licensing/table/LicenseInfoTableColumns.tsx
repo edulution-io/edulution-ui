@@ -1,5 +1,5 @@
 import React from 'react';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ColumnDef } from '@tanstack/react-table';
 import cn from '@/lib/utils';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
@@ -7,8 +7,8 @@ import { licenseKeyActive01, licenseKeyInactive01 } from '@/assets/icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
-import Checkbox from "@/components/ui/Checkbox";
-import {TableCell} from "@/components/ui/Table";
+import Checkbox from '@/components/ui/Checkbox';
+import { TableCell } from '@/components/ui/Table';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
@@ -20,7 +20,7 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
         titleTranslationId=""
         table={table}
         column={column}
-        className={cn("max-w-[20px] min-w-[20px]", hideOnMobileClassName)}
+        className={cn('min-w-[20px] max-w-[20px]', hideOnMobileClassName)}
       />
     ),
     cell: ({ row }) => {
@@ -32,8 +32,8 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
             aria-label={`${t('common.selected')}`}
           />
         </TableCell>
-      )
-    }
+      );
+    },
   },
   {
     id: 'license-id',
@@ -44,14 +44,16 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
       />
     ),
     cell: ({ row }) => {
-      const {setSelectedLicense} = useLicenseInfoStore();
+      const { setSelectedLicense } = useLicenseInfoStore();
       return (
         <SelectableTextCell
-          onClick={() => { setSelectedLicense(row.original); } }
-          text={`${ row.original.id }`}
+          onClick={() => {
+            setSelectedLicense(row.original);
+          }}
+          text={`${row.original.id}`}
         />
-      )
-    }
+      );
+    },
   },
   {
     id: 'license-validFromUtc',
@@ -67,8 +69,10 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
-          onClick={ () => { setSelectedLicense(row.original); } }
-          text={`${ row.original.validFromUtc }`}
+          onClick={() => {
+            setSelectedLicense(row.original);
+          }}
+          text={`${row.original.validFromUtc}`}
         />
       );
     },
@@ -87,8 +91,10 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
-          onClick={ () => { setSelectedLicense(row.original); } }
-          text={`${ row.original.validToUtc }`}
+          onClick={() => {
+            setSelectedLicense(row.original);
+          }}
+          text={`${row.original.validToUtc}`}
         />
       );
     },
@@ -108,10 +114,12 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
-          onClick={ () => { setSelectedLicense(row.original); } }
-          text={ t(row.original.isLicenseActive ? 'common.active' : 'common.inactive') }
-          icon={ row.original.isLicenseActive
-            ? (
+          onClick={() => {
+            setSelectedLicense(row.original);
+          }}
+          text={t(row.original.isLicenseActive ? 'common.active' : 'common.inactive')}
+          icon={
+            row.original.isLicenseActive ? (
               <img
                 src={licenseKeyActive01}
                 alt="license-active-key-icon"

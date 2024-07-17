@@ -215,6 +215,7 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
+    "close": "Close",
     "icon": "Icon",
     "groups": "Groups",
     "clearSelection": "Clear selection",
@@ -382,13 +383,14 @@
   "licensing": {
     "title": "LICENSES",
     "sidebar": "Licenses",
-    "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well."
+    "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well.",
+    "communityLicenseDialog": {
+      "title": "Community license",
+      "description": "The Community License is a free license provided by edulution.io. It allows the use of the edulution.io platform for non-commercial purposes."
+    }
   },
   "license": {
     "info": {
-      "title": "LICENSES",
-      "sidebar": "Licenses",
-      "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well.",
       "id": "License ID",
       "validFromUtc": "Valid from",
       "validToUtc": "Valid until",

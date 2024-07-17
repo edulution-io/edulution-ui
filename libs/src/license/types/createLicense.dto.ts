@@ -5,7 +5,7 @@ type CreateLicenseDto = {
 
   id: mongoose.Types.ObjectId;
 
-  clientPublicKey: string;
+  publicKey: string;
 
   signature: string;
 
@@ -20,4 +20,4 @@ type CreateLicenseDto = {
   validToUtc: Date;
 };
 
-export default LicenseDto;
+export default CreateLicenseDto;

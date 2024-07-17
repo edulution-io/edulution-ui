@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import LicenseDto from '@libs/license/types/license.dto';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
+import { licenseValidationPublicKeyPEM } from './licenseValidationPublicKeyPEM';
 
 export const idLicense01 = new mongoose.Types.ObjectId(1);
 export const idLicense02 = new mongoose.Types.ObjectId(2);
@@ -11,82 +12,98 @@ export const idLicense05 = new mongoose.Types.ObjectId(5);
 export const license01: LicenseDto = {
   _id: idLicense01,
   id: idLicense01,
+  userId: 'agy-netzint-teacher',
+  publicKey: licenseValidationPublicKeyPEM,
   signature: 'signature01',
   platformFrontendUrl: 'platformFrontendUrl01',
   platformOwnerAddress: 'platformOwnerAddress01',
   validFromUtc: new Date('2022-01-01T00:00:00Z'),
   validToUtc: new Date('2028-12-31T23:59:59Z'),
-}
+};
 export const licenseInfo01: LicenseInfoDto = {
   id: license01.id,
   validFromUtc: license01.validFromUtc,
   validToUtc: license01.validToUtc,
   isLicenseActive: true,
-}
+};
 
 export const license02: LicenseDto = {
   _id: idLicense02,
   id: idLicense02,
+  userId: 'agy-netzint1',
+  publicKey: licenseValidationPublicKeyPEM,
   signature: 'signature02',
   platformFrontendUrl: 'platformFrontendUrl02',
   platformOwnerAddress: 'platformOwnerAddress02',
   validFromUtc: new Date('2021-04-01T00:00:00Z'),
   validToUtc: new Date('2023-10-31T23:59:59Z'),
-}
+};
 export const licenseInfo02: LicenseInfoDto = {
   id: license02.id,
   validFromUtc: license02.validFromUtc,
   validToUtc: license02.validToUtc,
   isLicenseActive: false,
-}
+};
 
 export const license03: LicenseDto = {
   _id: idLicense03,
   id: idLicense03,
+  userId: 'userId',
+  publicKey: licenseValidationPublicKeyPEM,
   signature: 'signature03',
   platformFrontendUrl: 'platformFrontendUrl03',
   platformOwnerAddress: 'platformOwnerAddress03',
   validFromUtc: new Date('2027-01-01T00:00:00Z'),
   validToUtc: new Date('2029-12-31T23:59:59Z'),
-}
+};
 export const licenseInfo03: LicenseInfoDto = {
   id: license03.id,
   validFromUtc: license03.validFromUtc,
   validToUtc: license03.validToUtc,
   isLicenseActive: false,
-}
+};
 
 export const license04: LicenseDto = {
   _id: idLicense04,
   id: idLicense04,
+  userId: 'userId',
+  publicKey: licenseValidationPublicKeyPEM,
   signature: 'signature04',
   platformFrontendUrl: 'platformFrontendUrl04',
   platformOwnerAddress: 'platformOwnerAddress04',
   validFromUtc: new Date('2024-01-01T00:00:00Z'),
   validToUtc: new Date('2024-12-31T23:59:59Z'),
-}
+};
 export const licenseInfo04: LicenseInfoDto = {
   id: license04.id,
   validFromUtc: license04.validFromUtc,
   validToUtc: license04.validToUtc,
   isLicenseActive: true,
-}
+};
 
 export const license05: LicenseDto = {
   _id: idLicense05,
   id: idLicense05,
+  userId: 'userId',
+  publicKey: licenseValidationPublicKeyPEM,
   signature: 'signature05',
   platformFrontendUrl: 'platformFrontendUrl05',
   platformOwnerAddress: 'platformOwnerAddress05',
   validFromUtc: new Date('2022-011-01T00:00:00Z'),
   validToUtc: new Date('2026-08-31T23:59:59Z'),
-}
+};
 export const licenseInfo05: LicenseInfoDto = {
   id: license05.id,
   validFromUtc: license05.validFromUtc,
   validToUtc: license05.validToUtc,
   isLicenseActive: true,
-}
+};
 
 export const mockedLicenses: LicenseDto[] = [license01, license02, license03, license04, license05];
-export const mockedLicenseInfos: LicenseInfoDto[] = [licenseInfo01, licenseInfo02, licenseInfo03, licenseInfo04, licenseInfo05];
+export const mockedLicenseInfos: LicenseInfoDto[] = [
+  licenseInfo01,
+  licenseInfo02,
+  licenseInfo03,
+  licenseInfo04,
+  licenseInfo05,
+];
