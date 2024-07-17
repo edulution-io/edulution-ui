@@ -1,4 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header,
+  Logger,
+  Param,
+  Post,
+  Put,
+  Query,
+  StreamableFile,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import FilesharingService from './filesharing.service';
@@ -69,6 +83,25 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.downloadLink(username, filePath, fileName);
+  }
+
+  @Get('fileStream')
+  @Header('Content-Type', 'application/octet-stream')
+  async webDavFileStream(
+    @Query('filePath') filePath: string,
+    @GetCurrentUsername() username: string,
+  ): Promise<StreamableFile> {
+    try {
+      const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+      const fileName = filePath.split('/').pop(); // Extract the filename from the filePath
+
+      return new StreamableFile(stream, {
+        disposition: `attachment; filename="${fileName}"`,
+      });
+    } catch (error) {
+      Logger.error(`Error in webDavFileStream: ${error}`);
+      throw new Error('An error occurred while fetching the file stream.');
+    }
   }
 }
 

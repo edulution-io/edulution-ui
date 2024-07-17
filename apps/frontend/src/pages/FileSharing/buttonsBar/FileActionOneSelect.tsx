@@ -12,28 +12,21 @@ interface FileActionOneSelectProps {
 }
 
 const FileActionOneSelect: FC<FileActionOneSelectProps> = ({ openDialog, selectedItem }) => {
-  const { getDownloadLinkURL } = useFileSharingStore();
+  const { downloadFile } = useFileSharingStore();
 
   const startDownload = async (filePath: string, filename: string) => {
     try {
-      const downloadLinkURL = await getDownloadLinkURL(filePath, filename);
+      const downloadLinkURL = await downloadFile(filePath);
       if (!downloadLinkURL) throw new Error('No download link URL');
-      const response = await fetch(downloadLinkURL);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const blob = await response.blob();
-
-      const blobURL = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = blobURL;
+      link.href = downloadLinkURL;
       link.setAttribute('download', filename);
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      window.URL.revokeObjectURL(blobURL);
+      window.URL.revokeObjectURL(downloadLinkURL);
     } catch (error) {
       console.error('Error getting the download link URL', error);
     }

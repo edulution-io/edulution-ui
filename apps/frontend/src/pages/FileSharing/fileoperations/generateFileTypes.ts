@@ -2,6 +2,7 @@ import { Document, Packer } from 'docx';
 import PptxGenJS from 'pptxgenjs';
 import ExcelJS from 'exceljs';
 import { create } from 'xmlbuilder2';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 interface GenerateFile {
   [key: string]: (title: string) => Promise<File> | File;
@@ -25,7 +26,7 @@ const generateFile: GenerateFile = {
 
   txt: function createTextFile(title: string): File {
     const content = '';
-    const blob = new Blob([content], { type: 'text/plain' });
+    const blob = new Blob([content], { type: RequestResponseContentType.TEXT_PLAIN });
     return new File([blob], `${title}.txt`, { type: blob.type });
   },
 

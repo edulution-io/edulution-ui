@@ -28,6 +28,7 @@ type FileSharingStore = {
   mountPoints: DirectoryFile[];
   setMountPoints: (mountPoints: DirectoryFile[]) => void;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
+  downloadFile: (filePath: string) => Promise<string | undefined>;
 };
 
 const initialState = {
@@ -101,6 +102,21 @@ const useFileSharingStore = create<FileSharingStore>(
           throw new Error('Failed to get the download link URL');
         } catch (error) {
           console.error('Error getting the download link URL', error);
+          throw error;
+        }
+      },
+
+      downloadFile: async (filePath: string) => {
+        try {
+          const response = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ACTIONS}/fileStream`, {
+            params: { filePath },
+            responseType: 'blob',
+          });
+
+          const blob = new Blob([response.data], { type: response.headers['content-type'] as string });
+          return window.URL.createObjectURL(blob);
+        } catch (error) {
+          console.error('Error downloading the file:', error);
           throw error;
         }
       },
