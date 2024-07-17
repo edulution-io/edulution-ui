@@ -6,10 +6,17 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import { HttpMethodes, HttpMethodesWebDav } from '@libs/common/types/http-methods';
+import * as crypto from 'crypto';
+import * as pathLib from 'path';
+import { createWriteStream, existsSync, mkdirSync, WriteStream } from 'fs';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { promisify } from 'util';
+import { pipeline } from 'stream';
+import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilits';
-import { WebdavStatusReplay } from './filesharing.types';
 import { FileSharingConfigService } from './filesharing.config.service';
 import { User } from '../users/user.schema';
 
@@ -19,14 +26,18 @@ class FilesharingService {
 
   private readonly baseurl: string;
 
+  private downloadLinkLocation: string;
+
   private readonly eduEncrytionKey: string;
 
   constructor(
     private fileSharingConfigService: FileSharingConfigService,
     private usersService: UsersService,
+    private readonly httpService: HttpService,
   ) {
     this.baseurl = this.fileSharingConfigService.get('EDUI_WEBDAV_URL');
     this.eduEncrytionKey = this.fileSharingConfigService.get('EDUI_ENCRYPTION_KEY');
+    this.downloadLinkLocation = this.fileSharingConfigService.get('EDUI_DOWNLOAD_DEV_DIR');
   }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -53,7 +64,7 @@ class FilesharingService {
   }
 
   private static getPathWithoutWebdav(path: string): string {
-    return path.replace('/webdav', '');
+    return path.replace('/webdav/', '');
   }
 
   private async ensureValidUser(username: string): Promise<User> {
@@ -85,6 +96,29 @@ class FilesharingService {
     this.clientCache.set(username, { client, timeout });
   }
 
+  private async getPasswordForUser(username: string): Promise<string> {
+    const user = await this.ensureValidUser(username);
+    return FilesharingService.decryptPassword(user?.password as string, this.eduEncrytionKey);
+  }
+
+  private async fetchFileStream(username: string, url: string): Promise<WriteStream> {
+    const password = await this.getPasswordForUser(username);
+    const authContents = `${username}:${password}`;
+    const protocol = url.startsWith('https') ? 'https' : 'http';
+    const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
+
+    Logger.log(authenticatedUrl, 'authenticatedUrl');
+    const response = this.httpService.get<WriteStream>(authenticatedUrl, {
+      responseType: 'stream',
+    });
+    return firstValueFrom(response).then((res) => res.data);
+  }
+
+  private static async saveFileStream(fileStream: any, outputPath: string): Promise<void> {
+    const pipelineAsync = promisify(pipeline);
+    await pipelineAsync(fileStream, createWriteStream(outputPath));
+  }
+
   private static handleWebDAVError(response: AxiosResponse) {
     if (!response || !(response.status >= 200 || response.status >= 300)) {
       Logger.error(`WebDAV request failed with status ${response.status}: ${response.statusText}`);
@@ -104,7 +138,7 @@ class FilesharingService {
   ): Promise<T | WebdavStatusReplay> {
     try {
       const response = await client(config);
-      FilesharingService.handleWebDAVError(response); // Ensuring only successful responses proceed
+      FilesharingService.handleWebDAVError(response);
 
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
@@ -311,6 +345,35 @@ class FilesharingService {
         }) as WebdavStatusReplay,
     );
   };
+
+  async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+    const outputFolder = pathLib.resolve(__dirname, '..', 'public', 'downloads');
+    const url = `${this.baseurl}${FilesharingService.getPathWithoutWebdav(filePath)}`;
+    Logger.log('url', url);
+    if (!existsSync(outputFolder)) {
+      mkdirSync(outputFolder, { recursive: true });
+    }
+
+    try {
+      const responseStream = await this.fetchFileStream(username, `${url}`);
+      const hash = crypto.createHash('sha256').update(filePath).digest('hex');
+      const extension = pathLib.extname(filename);
+      const hashedFilename = `${hash}${extension}`;
+      const outputFilePath = pathLib.join(outputFolder, hashedFilename);
+
+      await FilesharingService.saveFileStream(responseStream, outputFilePath);
+
+      const publicUrl = `${this.downloadLinkLocation}${hashedFilename}`;
+
+      return {
+        success: true,
+        status: HttpStatus.OK,
+        data: publicUrl,
+      } as WebdavStatusReplay;
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
 }
 
 export default FilesharingService;

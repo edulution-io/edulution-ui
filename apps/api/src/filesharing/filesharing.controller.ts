@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import FilesharingService from './filesharing.service';
@@ -15,8 +15,6 @@ class FilesharingController {
 
   @Get('files/*')
   async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
-    Logger.log(`Getting files at path ${path}`, 'FilesharingController', username);
-    Logger.log(username, `LALA`);
     return this.filesharingService.getFilesAtPath(username, path);
   }
 
@@ -62,6 +60,15 @@ class FilesharingController {
   @Put('locations')
   async moveResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
     return this.filesharingService.moveItems(username, body.originPath, body.newPath);
+  }
+
+  @Get('downloadLink')
+  async downloadFile(
+    @Query('filePath') filePath: string,
+    @Query('fileName') fileName: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.downloadLink(username, filePath, fileName);
   }
 }
 

@@ -6,6 +6,7 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
 
 type FileSharingStore = {
   files: DirectoryFile[];
@@ -26,6 +27,7 @@ type FileSharingStore = {
   reset: () => void;
   mountPoints: DirectoryFile[];
   setMountPoints: (mountPoints: DirectoryFile[]) => void;
+  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
 };
 
 const initialState = {
@@ -33,6 +35,7 @@ const initialState = {
   selectedItems: [],
   currentPath: `/`,
   pathToRestoreSession: `/`,
+  downloadLinkURL: '',
   selectedRows: {},
   mountPoints: [],
   directorys: [],
@@ -79,6 +82,26 @@ const useFileSharingStore = create<FileSharingStore>(
           });
         } catch (error) {
           handleApiError(error, set);
+        }
+      },
+
+      getDownloadLinkURL: async (filePath: string, filename: string) => {
+        try {
+          const response = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ACTIONS}/downloadLink`, {
+            params: {
+              filePath,
+              fileName: filename,
+            },
+          });
+          const { data, success } = response.data as WebdavStatusReplay;
+          if (success) {
+            return data;
+          }
+          console.error('Failed to get the download link URL', response.status);
+          throw new Error('Failed to get the download link URL');
+        } catch (error) {
+          console.error('Error getting the download link URL', error);
+          throw error;
         }
       },
 

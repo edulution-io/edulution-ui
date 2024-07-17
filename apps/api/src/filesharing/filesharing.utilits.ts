@@ -45,6 +45,10 @@ function parseWebDAVResponse(response: WebDAVResponse): DirectoryFile {
   };
 }
 
+export function fromBase64(str: string): string {
+  return Buffer.from(str, 'base64').toString('utf-8');
+}
+
 function parseWebDAVMultiStatus(xmlData: string) {
   const jsonObj: WebDAVMultiStatus = xmlParser.parse(xmlData) as WebDAVMultiStatus;
   if (!jsonObj[XA.MultiStatus] || !jsonObj[XA.MultiStatus][XA.Response]) {
@@ -80,4 +84,4 @@ export function mapToDirectories(xmlData: string): DirectoryFile[] {
   }
 }
 
-export default { mapToDirectoryFiles, mapToDirectories };
+export default { mapToDirectoryFiles, mapToDirectories, fromBase64 };

@@ -4,7 +4,7 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import FileSharingFloatingButtonsBar from '@/pages/FileSharing/table/FloatingButtonsBar';
+import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FloatingButtonsBar';
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';

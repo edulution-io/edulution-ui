@@ -101,6 +101,7 @@
       "CreationFailed": "Erstellung fehlgeschlagen",
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
+      "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
     },
     "tooltips": {

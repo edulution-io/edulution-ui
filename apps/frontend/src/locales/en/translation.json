@@ -100,6 +100,7 @@
       "CreationFailed": "Creation failed",
       "DbAccessFailed": "Database access failed",
       "WebDavError": "Data server access failed",
+      "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed"
     },
     "tooltips": {

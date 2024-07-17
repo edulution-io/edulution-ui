@@ -26,11 +26,6 @@ export interface WebDAVMultiStatus {
     'd:response': WebDAVResponse[];
   };
 }
-export interface WebdavStatusReplay {
-  success: boolean;
-  status: number;
-  filename?: string;
-}
 
 export enum XMLAttributes {
   DisplayName = 'd:displayname',
