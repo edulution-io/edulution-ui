@@ -15,7 +15,12 @@ interface ParticipateDialogStore {
   isOpenParticipateSurveyDialog: boolean;
   openParticipateSurveyDialog: () => void;
   closeParticipateSurveyDialog: () => void;
-  answerSurvey: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<string>;
+  answerSurvey: (
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+    options?: CompleteEvent,
+  ) => Promise<string>;
   isLoading: boolean;
   error: Error | null;
 
@@ -37,13 +42,19 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
 
   openParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: true }),
   closeParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: false }),
-  answerSurvey: async (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent): Promise<string> => {
+  answerSurvey: async (
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+    options?: CompleteEvent,
+  ): Promise<string> => {
     set({ error: null, isLoading: true });
     try {
       // Display the "Saving..." message (pass a string value to display a custom message)
       options?.showSaveInProgress();
       const response = await eduApi.patch<string>(SURVEYS_ENDPOINT, {
         surveyId,
+        saveNo,
         answer,
       });
 

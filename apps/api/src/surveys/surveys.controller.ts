@@ -9,7 +9,6 @@ import {
   ANSWER_ENDPOINT,
   ANSWERED_SURVEYS_ENDPOINT,
   CREATED_SURVEYS_ENDPOINT,
-  ALL_SURVEYS_ENDPOINT,
   OPEN_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
   SURVEYS,
@@ -19,15 +18,14 @@ import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
-import UsersSurveysService from './users-surveys.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import JWTUser from '../types/JWTUser';
 
 @Controller(SURVEYS)
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
-    private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
   @Get()
@@ -44,25 +42,17 @@ class SurveysController {
 
   @Get(OPEN_SURVEYS_ENDPOINT)
   async getOpenSurveys(@GetCurrentUsername() username: string) {
-    const openSurveyIds = await this.usersSurveysService.getOpenSurveyIds(username);
-    return this.surveyService.findSurveys(openSurveyIds);
+    return this.surveyAnswerService.getOpenSurveys(username);
   }
 
   @Get(CREATED_SURVEYS_ENDPOINT)
   async getCreatedSurveys(@GetCurrentUsername() username: string) {
-    const createdSurveyIds = await this.usersSurveysService.getCreatedSurveyIds(username);
-    return this.surveyService.findSurveys(createdSurveyIds);
+    return this.surveyAnswerService.getCreatedSurveys(username);
   }
 
   @Get(ANSWERED_SURVEYS_ENDPOINT)
   async getAnsweredSurveys(@GetCurrentUsername() username: string) {
-    const answeredSurveyIds = await this.usersSurveysService.getAnsweredSurveyIds(username);
-    return this.surveyService.findSurveys(answeredSurveyIds);
-  }
-
-  @Get(ALL_SURVEYS_ENDPOINT)
-  async getAllSurveys() {
-    return this.surveyService.getAllSurveys();
+    return this.surveyAnswerService.getAnsweredSurveys(username);
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
@@ -72,24 +62,21 @@ class SurveysController {
 
   @Post(ANSWER_ENDPOINT)
   async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, participant = username } = getAnswerDto;
-    return this.surveyAnswerService.getPrivateAnswer(surveyId, participant);
+    const { surveyId, attendee } = getAnswerDto;
+    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUsername() username: string) {
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
     // first extrude the additional info fields from the remaining survey object
-    const { invitedAttendees, invitedGroups, ...surveyData } = surveyDto;
-    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
+    const { invitedGroups, ...surveyData } = surveyDto;
+    const { id, created = new Date() } = surveyData;
 
     const survey: Survey = {
       ...surveyData,
       _id: id,
       id,
-      saveNo,
       created,
-      isAnonymous,
-      canSubmitMultipleAnswers,
     };
 
     const updatedSurvey = await this.surveyService.updateSurvey(survey);
@@ -101,8 +88,6 @@ class SurveysController {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      await this.usersSurveysService.addToCreatedSurveys(username, id);
-      await this.usersSurveysService.populateSurvey(invitedAttendees, id);
       return createdSurvey;
     }
     return updatedSurvey;
@@ -114,7 +99,6 @@ class SurveysController {
     try {
       await this.surveyService.deleteSurveys(surveyIds);
       await this.surveyAnswerService.onSurveyRemoval(surveyIds);
-      await this.usersSurveysService.updateUsersOnSurveyRemoval(surveyIds);
     } catch (e) {
       Logger.log(e);
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
@@ -122,9 +106,9 @@ class SurveysController {
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, answer, username);
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
+    const { surveyId, saveNo, answer } = pushAnswerDto;
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, user, answer);
   }
 }
 

@@ -9,14 +9,6 @@ import { Survey, SurveyDocument } from './survey.schema';
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
-  async getAllSurveys(): Promise<Survey[]> {
-    const surveys = this.surveyModel.find().exec();
-    if (surveys == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
-    }
-    return surveys;
-  }
-
   async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
@@ -24,7 +16,7 @@ class SurveysService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    const survey = this.surveyModel.findOne<Survey>({ _id: surveyId }).exec();
+    const survey = this.surveyModel.findById<Survey>(surveyId).exec();
     if (survey == null) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
     }
@@ -50,9 +42,9 @@ class SurveysService {
 
   async updateSurvey(survey: Survey): Promise<Survey | null> {
     const updatedSurvey = await this.surveyModel
-      .findOneAndUpdate<Survey>(
+      .findByIdAndUpdate<Survey>(
         // eslint-disable-next-line no-underscore-dangle
-        { _id: survey._id },
+        survey._id,
         { ...survey },
       )
       .exec();

@@ -22,7 +22,12 @@ interface ParticipateDialogProps {
   isOpenParticipateSurveyDialog: boolean;
   openParticipateSurveyDialog: () => void;
   closeParticipateSurveyDialog: () => void;
-  commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<string>;
+  commitAnswer: (
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+    options?: CompleteEvent,
+  ) => Promise<string>;
   isLoading: boolean;
   error: Error | null;
 
@@ -75,7 +80,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     }
 
     try {
-      await commitAnswer(survey.id, answer, options);
+      await commitAnswer(survey.id, survey.saveNo, answer, options);
       closeParticipateSurveyDialog();
       updateOpenSurveys();
       updateAnsweredSurveys();

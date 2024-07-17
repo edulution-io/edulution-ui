@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
+import useUserStore from '@/store/UserStore/UserStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -19,6 +20,12 @@ import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 
 const SurveyEditorForm = () => {
+  const { user } = useUserStore();
+
+  if (!user?.username) {
+    throw new Error('Users username has to be defined');
+  }
+
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys, updateCreatedSurveys } = useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
@@ -31,22 +38,45 @@ const SurveyEditorForm = () => {
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-  const initialFormValues: SurveyDto = useMemo(() => new InitialSurveyForm(selectedSurvey), [selectedSurvey]);
 
-  const emptyFormValues: SurveyDto = new EmptySurveyForm();
+  const initialFormValues: SurveyDto = useMemo(
+    () =>
+      new InitialSurveyForm(
+        {
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          username: user?.username,
+          value: user?.username,
+          label: `${user?.firstName} ${user?.lastName}`,
+        },
+        selectedSurvey,
+      ),
+    [selectedSurvey],
+  );
+
+  const emptyFormValues: SurveyDto = new EmptySurveyForm({
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    username: user?.username,
+    value: user?.username,
+    label: `${user?.firstName} ${user?.lastName}`,
+  });
 
   const formSchema = z.object({
-    // SURVEY
     id: z.number(),
     formula: z.any(),
     saveNo: z.number().optional(),
-    created: z.date().optional(),
-    expirationDate: z.date().optional(),
-    expirationTime: z.string().optional(),
-    isAnonymous: z.boolean().optional(),
-    canSubmitMultipleAnswers: z.boolean().optional(),
-
-    // ADDITIONAL
+    creator: z.intersection(
+      z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        username: z.string(),
+      }),
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      }),
+    ),
     invitedAttendees: z.array(
       z.intersection(
         z.object({
@@ -61,6 +91,25 @@ const SurveyEditorForm = () => {
       ),
     ),
     invitedGroups: z.array(z.object({})),
+    participatedAttendees: z.array(
+      z.intersection(
+        z.object({
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+          username: z.string(),
+        }),
+        z.object({
+          value: z.string(),
+          label: z.string(),
+        }),
+      ),
+    ),
+    answers: z.any(),
+    created: z.date().optional(),
+    expirationDate: z.date().optional(),
+    expirationTime: z.string().optional(),
+    isAnonymous: z.boolean().optional(),
+    canSubmitMultipleAnswers: z.boolean().optional(),
   });
 
   const form = useForm<SurveyDto>({
@@ -71,11 +120,14 @@ const SurveyEditorForm = () => {
 
   const saveSurvey = async () => {
     const {
-      invitedAttendees,
-      invitedGroups,
       id,
       formula,
       saveNo,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
       created,
       expirationDate,
       expirationTime,
@@ -84,11 +136,14 @@ const SurveyEditorForm = () => {
     } = form.getValues();
 
     await updateOrCreateSurvey({
-      invitedAttendees,
-      invitedGroups,
       id,
       formula,
       saveNo,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
       created,
       expirationDate,
       expirationTime,
