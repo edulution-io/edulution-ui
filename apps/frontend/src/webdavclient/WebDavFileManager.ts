@@ -1,8 +1,9 @@
 import { createClient } from 'webdav';
 import JSZip from 'jszip';
-import { decryptPassword, translateKey } from '@/utils/common';
+import { translateKey } from '@/utils/common';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
+import { getDecryptedPassword } from '@libs/common/utils';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
@@ -17,10 +18,7 @@ export const createWebdavClient = () => {
 
   return createClient(`${window.location.origin}/webdav`, {
     username,
-    password: decryptPassword({
-      data: webdavKey,
-      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-    }),
+    password: getDecryptedPassword(webdavKey, `${import.meta.env.VITE_WEBDAV_KEY}`),
   });
 };
 
@@ -206,7 +204,7 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${username}:${decryptPassword({ data: webdavKey, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
+      `Basic ${btoa(`${username}:${getDecryptedPassword(webdavKey, `${import.meta.env.VITE_WEBDAV_KEY}`)}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 
