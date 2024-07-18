@@ -17,26 +17,6 @@ class SurveyAnswersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async getAllSurveys(): Promise<Survey[]> {
-    const surveys = this.surveyModel.find().exec();
-    if (surveys == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
-    }
-    return surveys;
-  }
-
-  async onUserRemoval(userNames: mongoose.Types.ObjectId[]): Promise<void> {
-    try {
-      await this.surveyAnswerModel.deleteMany({ user: { $in: userNames } }).exec();
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
-        HttpStatus.NOT_MODIFIED,
-        error,
-      );
-    }
-  }
-
   async onSurveyRemoval(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyAnswerModel.deleteMany({ survey: { $in: surveyIds } }, { ordered: false }).exec();

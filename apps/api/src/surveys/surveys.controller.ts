@@ -5,7 +5,7 @@ import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import { ALL_SURVEYS_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
+import { RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
@@ -21,19 +21,11 @@ class SurveysController {
 
   @Get()
   async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
-    const { surveyId, surveyIds = [] } = findSurveyDto;
+    const { surveyIds = [] } = findSurveyDto;
     if (surveyIds.length > 0) {
       return this.surveyService.findSurveys(surveyIds);
     }
-    if (surveyId) {
-      return this.surveyService.findOneSurvey(surveyId);
-    }
     throw new HttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
-  }
-
-  @Get(ALL_SURVEYS_ENDPOINT)
-  async getAllSurveys() {
-    return this.surveyService.getAllSurveys();
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)

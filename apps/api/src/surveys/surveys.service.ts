@@ -9,14 +9,6 @@ import { Survey, SurveyDocument } from './survey.schema';
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
-  async getAllSurveys(): Promise<Survey[]> {
-    const surveys = this.surveyModel.find().exec();
-    if (surveys == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
-    }
-    return surveys;
-  }
-
   async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(
@@ -42,7 +34,7 @@ class SurveysService {
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
-      Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`);
+      Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, error);
     }
@@ -57,7 +49,10 @@ class SurveysService {
       )
       .exec();
 
-    Logger.log(updatedSurvey == null ? SurveyErrorMessages.NotAbleToUpdateSurveyError : 'Updated survey successfully');
+    Logger.log(
+      updatedSurvey == null ? SurveyErrorMessages.NotAbleToUpdateSurveyError : 'Updated survey successfully',
+      SurveysService.name,
+    );
     return updatedSurvey;
   }
 
@@ -65,6 +60,7 @@ class SurveysService {
     const createdSurvey = await this.surveyModel.create(survey);
     Logger.log(
       createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully',
+      SurveysService.name,
     );
     return createdSurvey;
   }

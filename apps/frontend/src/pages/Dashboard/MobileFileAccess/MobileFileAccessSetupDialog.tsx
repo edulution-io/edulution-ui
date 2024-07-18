@@ -4,7 +4,7 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
 import { MdArrowBackIosNew, MdArrowForwardIos, MdOutlineFileDownload } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -105,7 +105,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
   );
 
   return (
-    <AdaptiveDialogSH
+    <AdaptiveDialog
       isOpen={isOpen}
       handleOpenChange={() => setIsOpen(!isOpen)}
       title={t('dashboard.mobileAccess.title')}
