@@ -18,7 +18,7 @@ const FileSharingFloatingButtonsBar = () => {
   const { selectedItems } = useFileSharingStore();
   const { openDialog } = useFileSharingDialogStore();
   const { t } = useTranslation();
-
+  const { setSelectedFileType } = useFileSharingDialogStore();
   return (
     <div className="fixed bottom-8 flex flex-row bg-opacity-90">
       {selectedItems.length === 0 && (
@@ -29,6 +29,7 @@ const FileSharingFloatingButtonsBar = () => {
             text={t('tooltip.create.file')}
             onClick={() => openDialog(FileAction.CREATE_FILE)}
             options={FileTypesConfiguration}
+            onSelectFileSelect={setSelectedFileType}
           />
           <FloatingActionButton
             icon={HiOutlineFolderAdd}

@@ -6,7 +6,7 @@ import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import HomePage from '@/pages/Home/HomePage';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
-import FileSharing from '@/pages/FileSharing/FileSharing';
+import FileSharing from '@/pages/FileSharing/FileSharingPage';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 

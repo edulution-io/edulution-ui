@@ -15,8 +15,7 @@ class FilesharingController {
 
   @Get('files/*')
   async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
-    Logger.log(`Getting files at path ${path}`, 'FilesharingController', username);
-    Logger.log(username, `LALA`);
+    Logger.log(`Getting files at path ${path}`, FilesharingController.name);
     return this.filesharingService.getFilesAtPath(username, path);
   }
 

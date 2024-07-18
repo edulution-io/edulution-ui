@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
+import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
@@ -9,15 +9,15 @@ import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog'
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
-import useLmnApiStore from '@/store/lmnApiStore';
+import userStore from '@/store/UserStore/UserStore';
 
 const FileSharingPage = () => {
   const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
-  const { user } = useLmnApiStore();
+  const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.sophomorixRole}s/${user?.name}`;
+  const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
 
   useEffect(() => {
     if (path === '/') {
@@ -45,17 +45,15 @@ const FileSharingPage = () => {
     <div className="w-full overflow-x-auto">
       {isLoading && <LoadingIndicator isOpen={isLoading} />}
       <div className="flex-1 overflow-auto">
-        <div className="flex w-full justify-between pb-3 pt-3">
-          <div className="flex flex-col space-x-2">
-            <DirectoryBreadcrumb
-              path={currentPath}
-              onNavigate={(filenamePath) => {
-                searchParams.set('path', filenamePath);
-                setSearchParams(searchParams);
-              }}
-              style={{ color: 'white' }}
-            />
-          </div>
+        <div className="flex w-full flex-col  justify-between space-x-2 pb-3 pt-3">
+          <DirectoryBreadcrumb
+            path={currentPath}
+            onNavigate={(filenamePath) => {
+              searchParams.set('path', filenamePath);
+              setSearchParams(searchParams);
+            }}
+            style={{ color: 'white' }}
+          />
         </div>
         <div
           className="w-full md:w-auto md:max-w-7xl xl:max-w-full"

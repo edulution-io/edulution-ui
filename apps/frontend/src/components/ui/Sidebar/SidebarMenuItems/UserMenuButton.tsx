@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { useAuth } from 'react-oidc-context';
+import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
 import useUserStore from '@/store/UserStore/UserStore';
 import Avatar from '@/components/shared/Avatar';
 import {
@@ -21,7 +22,7 @@ const UserMenuButton: React.FC = () => {
   const { logout } = useUserStore();
 
   const handleUserSettingsClick = () => {
-    navigate('user');
+    navigate(USER_SETTINGS_PATH);
   };
 
   const handleLogout = async () => {

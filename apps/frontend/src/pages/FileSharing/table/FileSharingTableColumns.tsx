@@ -6,7 +6,7 @@ import {
   getElapsedTime,
   getFileCategorie,
   parseDate,
-} from '@/pages/FileSharing/utilities/fileManagerUtilits';
+} from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
@@ -15,7 +15,6 @@ import { ContentType, DirectoryFile } from '@libs/filesharing/filesystem';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 
-const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
@@ -93,11 +92,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
       } else {
         formattedDate = 'Date not provided';
       }
-      return (
-        <div className={`items-center justify-center overflow-auto lg:flex ${lastModColumnWidth}`}>
-          <span className=" overflow-auto text-center text-span font-medium">{formattedDate}</span>
-        </div>
-      );
+      return <span className="overflow-hidden text-ellipsis">{formattedDate}</span>;
     },
 
     sortingFn: (rowA, rowB, columnId) => {

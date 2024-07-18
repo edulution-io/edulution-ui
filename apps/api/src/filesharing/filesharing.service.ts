@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { AES, enc } from 'crypto-js';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
@@ -8,9 +8,8 @@ import ErrorMessage from '@libs/error/errorMessage';
 import { HttpMethodes, HttpMethodesWebDav } from '@libs/common/types/http-methods';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilits';
+import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import { WebdavStatusReplay } from './filesharing.types';
-import { FileSharingConfigService } from './filesharing.config.service';
 import { User } from '../users/user.schema';
 
 @Injectable()
@@ -21,12 +20,9 @@ class FilesharingService {
 
   private readonly eduEncrytionKey: string;
 
-  constructor(
-    private fileSharingConfigService: FileSharingConfigService,
-    private usersService: UsersService,
-  ) {
-    this.baseurl = this.fileSharingConfigService.get('EDUI_WEBDAV_URL');
-    this.eduEncrytionKey = this.fileSharingConfigService.get('EDUI_ENCRYPTION_KEY');
+  constructor(private usersService: UsersService) {
+    this.baseurl = process.env.EDUI_WEBDAV_URL as string;
+    this.eduEncrytionKey = process.env.EDUI_ENCRYPTION_KEY as string;
   }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -87,7 +83,6 @@ class FilesharingService {
 
   private static handleWebDAVError(response: AxiosResponse) {
     if (!response || !(response.status >= 200 || response.status >= 300)) {
-      Logger.error(`WebDAV request failed with status ${response.status}: ${response.statusText}`);
       throw new CustomHttpException(
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -131,7 +126,7 @@ class FilesharingService {
     return (await FilesharingService.executeWebdavRequest<DirectoryFile[]>(
       client,
       {
-        method: 'PROPFIND',
+        method: HttpMethodesWebDav.PROPFIND,
         data: this.webdavXML,
         headers: { 'Content-Type': 'application/xml' },
       },
@@ -156,7 +151,6 @@ class FilesharingService {
 
   getDirAtPath = async (username: string, path: string): Promise<DirectoryFile[]> => {
     const client = await this.getClient(username);
-    Logger.log('client', client.name);
     return (await FilesharingService.executeWebdavRequest<DirectoryFile[]>(
       client,
       {

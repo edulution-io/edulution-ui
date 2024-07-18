@@ -16,7 +16,7 @@ import {
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
 import useLmnApiStore from '@/store/lmnApiStore';
-import HiddenAttributesBreadcrumb from '@libs/ui/types/HiddenAttributesBreadcrumb';
+import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -31,12 +31,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
   const homePath = `${user?.sophomorixRole}s/${user?.name}`;
-  const filteredSegment = segments.filter(
-    (item) =>
-      item !== HiddenAttributesBreadcrumb.teachers.toString() &&
-      item !== HiddenAttributesBreadcrumb.students.toString() &&
-      item !== HiddenAttributesBreadcrumb.webdav.toString(),
-  );
+  const filteredSegment = filterSegments(segments);
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
     onNavigate(pathTo);
@@ -68,14 +63,16 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
                   align="start"
                   className="z-50 bg-white text-foreground"
                 >
-                  {segments.slice(0, -1).map((segment) => (
-                    <DropdownMenuItem
-                      key={segment}
-                      onClick={() => handleSegmentClick(segment)}
-                    >
-                      {segment}
-                    </DropdownMenuItem>
-                  ))}
+                  {filterSegments(segments)
+                    .slice(0, -1)
+                    .map((segment) => (
+                      <DropdownMenuItem
+                        key={segment}
+                        onClick={() => handleSegmentClick(segment)}
+                      >
+                        {segment}
+                      </DropdownMenuItem>
+                    ))}
                 </DropdownMenuContent>
               </DropdownMenuSH>
             </BreadcrumbItem>

@@ -2,10 +2,9 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import React from 'react';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { useTranslation } from 'react-i18next';
+import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
 
-export interface DeleteContentDialogBodyProps {}
-
-const DeleteContentDialogBody: React.FC<DeleteContentDialogBodyProps> = () => {
+const DeleteContentDialogBody: React.FC<EmptyDialogProps> = () => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
   return (

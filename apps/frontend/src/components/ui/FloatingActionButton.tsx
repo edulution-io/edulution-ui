@@ -7,8 +7,9 @@ import {
   DropdownMenuTrigger as Trigger,
 } from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import { DropdownOption } from '@libs/ui/types/filesharing/fileCreationDropDownOptions';
+import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
+import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 
 interface FloatingActionButtonProps {
   icon: IconType;
@@ -16,6 +17,7 @@ interface FloatingActionButtonProps {
   onClick?: () => void;
   variant?: 'button' | 'dropdown';
   options?: DropdownOption[];
+  onSelectFileSelect?: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
 }
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
@@ -24,9 +26,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   onClick,
   variant = 'button',
   options = [],
+  onSelectFileSelect,
 }) => {
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
-  const { setSelectedFileType } = useFileSharingDialogStore();
 
   const renderContent = () => {
     if (variant === 'dropdown' && options.length > 0) {
@@ -48,7 +50,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               <MenuItem
                 key={option.title}
                 onSelect={() => {
-                  setSelectedFileType(option.type);
+                  if (onSelectFileSelect) {
+                    onSelectFileSelect(option.type);
+                  }
                   if (onClick) {
                     onClick();
                   }
