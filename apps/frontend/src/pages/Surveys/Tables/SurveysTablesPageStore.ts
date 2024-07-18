@@ -3,7 +3,6 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT, {
-  SURVEY_ALL_SURVEYS_ENDPOINT,
   SURVEY_ANSWERED_SURVEYS_ENDPOINT,
   SURVEY_CREATED_SURVEYS_ENDPOINT,
   SURVEY_OPEN_SURVEYS_ENDPOINT,
@@ -138,25 +137,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
           : 'Error while fetching the list of surveys, you have answered, already',
       );
       handleApiError(error, set, 'errorFetchingAnsweredSurveys');
-      return [];
-    }
-  },
-
-  updateAllSurveys: async (): Promise<SurveyDto[]> => {
-    set({ errorFetchingAllSurveys: null, isFetchingAllSurveys: true });
-    try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEY_ALL_SURVEYS_ENDPOINT);
-      const surveys = response.data;
-      set({ allSurveys: surveys, isFetchingAllSurveys: false });
-      return surveys;
-    } catch (error) {
-      set({
-        allSurveys: [],
-        errorFetchingAllSurveys: error instanceof AxiosError ? error : null,
-        isFetchingAllSurveys: false,
-      });
-      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while fetching all surveys');
-      handleApiError(error, set, 'errorFetchingAllSurveys');
       return [];
     }
   },
