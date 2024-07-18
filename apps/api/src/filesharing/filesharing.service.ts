@@ -10,6 +10,7 @@ import {
   RequestResponseContentType,
   ResponseType,
 } from '@libs/common/types/http-methods';
+import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import * as pathLib from 'path';
 import { existsSync, mkdirSync } from 'fs';
@@ -353,6 +354,12 @@ class FilesharingService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
+  }
+
+  async getOnlyofficeToken(token: string, payload: string) {
+    if (!token) return '';
+    const secret = process.env.EDUI_ONLYOFFICE_SECRET as string;
+    return jwt.sign(payload, secret, { noTimestamp: true });
   }
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {

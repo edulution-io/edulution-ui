@@ -1,3 +1,4 @@
+import 'multer';
 import { Test, TestingModule } from '@nestjs/testing';
 import FilesharingService from './filesharing.service';
 

@@ -6,20 +6,22 @@ import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableC
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FloatingButtonsBar';
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import useLmnApiStore from '@/store/lmnApiStore';
 
 const FileSharingPage = () => {
-  const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession } = useFileSharingStore();
+  const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession, currentlyEditingFile } =
+    useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { user } = useLmnApiStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
   const homePath = `${user?.sophomorixRole}s/${user?.name}`;
-
+  const location = useLocation();
   useEffect(() => {
+    console.log(path, 'path');
     if (path === '/') {
       if (pathToRestoreSession !== '/') {
         setSearchParams(pathToRestoreSession);
@@ -30,7 +32,7 @@ const FileSharingPage = () => {
       void fetchFiles(path);
       setPathToRestoreSession(path);
     }
-  }, [path]);
+  }, [location]);
 
   useEffect(() => {
     if (fileOperationResult !== undefined && !isLoading) {
@@ -61,10 +63,22 @@ const FileSharingPage = () => {
           className="w-full md:w-auto md:max-w-7xl xl:max-w-full"
           data-testid="test-id-file-sharing-page-data-table"
         >
-          <FileSharingTable
-            columns={FileSharingTableColumns}
-            data={files}
-          />
+          <div className={`flex ${currentlyEditingFile ? 'justify-between' : 'justify-center'}`}>
+            <div className={currentlyEditingFile ? 'w-1/2' : 'w-full'}>
+              <FileSharingTable
+                columns={FileSharingTableColumns}
+                data={files}
+              />
+            </div>
+            {currentlyEditingFile && (
+              <div className="w-1/2">
+                <FileSharingTable
+                  columns={FileSharingTableColumns}
+                  data={files}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="fixed bottom-8 flex flex-row space-x-24 bg-opacity-90">

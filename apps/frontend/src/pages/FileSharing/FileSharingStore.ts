@@ -7,11 +7,14 @@ import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
+import OnlyOfficeJwtTokenConfig from '@libs/filesharing/OnlyOfficeJwtType';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 type FileSharingStore = {
   files: DirectoryFile[];
   selectedItems: DirectoryFile[];
   currentPath: string;
+  currentlyEditingFile: DirectoryFile;
   pathToRestoreSession: string;
   setDirectorys: (files: DirectoryFile[]) => void;
   directorys: DirectoryFile[];
@@ -26,6 +29,7 @@ type FileSharingStore = {
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFile[];
+  setCurrentlyEditingFile: (fileToPreview: DirectoryFile) => void;
   setMountPoints: (mountPoints: DirectoryFile[]) => void;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   downloadFile: (filePath: string) => Promise<string | undefined>;
@@ -38,6 +42,7 @@ const initialState = {
   pathToRestoreSession: `/`,
   downloadLinkURL: '',
   selectedRows: {},
+  currentlyEditingFile: {} as DirectoryFile,
   mountPoints: [],
   directorys: [],
 };
@@ -53,6 +58,10 @@ const useFileSharingStore = create<FileSharingStore>(
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
+      },
+
+      setCurrentlyEditingFile: (fileToPreview: DirectoryFile) => {
+        set({ currentlyEditingFile: fileToPreview });
       },
 
       setPathToRestoreSession: (path: string) => {
@@ -127,6 +136,24 @@ const useFileSharingStore = create<FileSharingStore>(
           set({ mountPoints: resp.data as DirectoryFile[] });
         } catch (error) {
           handleApiError(error, set);
+        }
+      },
+
+      getOnlyOfficeJwtToken: async (config: OnlyOfficeJwtTokenConfig) => {
+        try {
+          const response = await eduApi.post(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/oftoken/`,
+            JSON.stringify(config),
+            {
+              headers: {
+                'Content-Type': RequestResponseContentType.APPLICATION_JSON,
+              },
+            },
+          );
+          return response.data;
+        } catch (error) {
+          console.error('Error fetching OnlyOffice JWT token:', error);
+          throw error;
         }
       },
 

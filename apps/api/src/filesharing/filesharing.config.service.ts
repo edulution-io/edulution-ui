@@ -9,6 +9,7 @@ export class FileSharingConfigService {
       EDUI_WEBDAV_URL: process.env.EDUI_WEBDAV_URL as string,
       EDUI_ENCRYPTION_KEY: process.env.EDUI_ENCRYPTION_KEY as string,
       EDUI_DOWNLOAD_DEV_DIR: process.env.EDUI_DOWNLOAD_DEV_DIR as string,
+      EDUI_ONLYOFFICE_SECRET: process.env.EDUI_ONLYOFFICE_SECRET as string,
     };
   }
 

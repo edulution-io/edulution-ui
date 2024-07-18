@@ -311,7 +311,6 @@
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
-    "filename": "Dateiname",
     "newFileFromType": {
       "drawIoFile": "Neue Draw.io-Datei",
       "textFile": "Neue Textdatei",

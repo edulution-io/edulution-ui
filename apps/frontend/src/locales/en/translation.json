@@ -298,7 +298,6 @@
     "vector": "Diagram"
   },
   "fileCreateNewContent": {
-    "filename": "Dateiname",
     "documentFile": "Create a new document",
     "spreadsheetFile": "Create a new table",
     "presentationFile": "Create a new presentation",

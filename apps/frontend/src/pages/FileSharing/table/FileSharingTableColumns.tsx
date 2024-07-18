@@ -14,6 +14,7 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { ContentType, DirectoryFile } from '@libs/filesharing/filesystem';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 
 const lastModColumnWidth = 'w-3/12 lg:w-3/12 md:w-3/12';
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
@@ -36,10 +37,14 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
 
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
+      const { setCurrentlyEditingFile } = useFileSharingStore();
       const handleFilenameClick = (filenamePath: string) => {
         if (row.original.type === ContentType.directory) {
           searchParams.set('path', filenamePath);
           setSearchParams(searchParams);
+          setCurrentlyEditingFile({} as DirectoryFile);
+        } else {
+          setCurrentlyEditingFile(row.original);
         }
       };
       const renderFileIcon = (item: DirectoryFile) => {
