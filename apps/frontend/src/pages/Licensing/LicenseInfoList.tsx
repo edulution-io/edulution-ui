@@ -21,24 +21,18 @@ const LicenseInfoList = () => {
 
   const { t } = useTranslation();
 
-  const {
-    selectedRows,
-    setSelectedRows,
-    licenses,
-    showOnlyActiveLicenses,
-    getLicenses,
-    isLoading,
-  } = useLicenseInfoStore();
+  const { selectedRows, setSelectedRows, licenses, showOnlyActiveLicenses, getLicenses, isLoading } =
+    useLicenseInfoStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
   };
 
-  const filteredLicenses = useMemo((): LicenseInfoDto[] => showOnlyActiveLicenses
-      ? licenses.filter((a) => a.isLicenseActive)
-      : licenses,
-    [licenses, showOnlyActiveLicenses]);
+  const filteredLicenses = useMemo(
+    (): LicenseInfoDto[] => (showOnlyActiveLicenses ? licenses.filter((a) => a.isLicenseActive) : licenses),
+    [licenses, showOnlyActiveLicenses],
+  );
 
   const table = useReactTable({
     data: filteredLicenses,
@@ -47,7 +41,7 @@ const LicenseInfoList = () => {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: handleRowSelectionChange,
-    getRowId: (originalRow: LicenseInfoDto) => originalRow.id ? `${ originalRow.id }` : 'not-available',
+    getRowId: (originalRow: LicenseInfoDto) => (originalRow.id ? `${originalRow.id.toHexString()}` : 'not-available'),
     state: {
       sorting,
       rowSelection: selectedRows,

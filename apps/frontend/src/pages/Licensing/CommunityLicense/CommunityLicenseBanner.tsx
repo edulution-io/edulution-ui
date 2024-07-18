@@ -3,18 +3,18 @@ import { useTranslation } from 'react-i18next';
 
 import CircleLoader from '@/components/ui/CircleLoader';
 import useUserStore from '@/store/UserStore/UserStore';
-import useCommunityLicenseBannerStore from '@/pages/Licensing/CommunityLicense/Banner/useCommunityLicenseBannerStore';
+import useUsersLicenseStore from '@/pages/Licensing/CommunityLicense/useUsersLicenseStore';
 
 const CommunityLicenseBanner = () => {
   const { t } = useTranslation();
   const user = useUserStore();
-  const { checkForActiveUserLicenses, isOpen, isLoading } = useCommunityLicenseBannerStore();
+  const { checkForActiveUserLicenses, isLoading, showBanner } = useUsersLicenseStore();
 
   useEffect(() => {
     void checkForActiveUserLicenses();
   }, []);
 
-  if (!isOpen) {
+  if (!showBanner) {
     return null;
   }
 

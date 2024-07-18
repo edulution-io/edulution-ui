@@ -1,4 +1,4 @@
-import { Controller, Body, Post, HttpStatus } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import CreateLicenseDto from '@libs/license/types/createLicense.dto';
 import LicenseErrorMessages from '@libs/license/license-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -16,29 +16,22 @@ class LicenseServerController {
       throw new CustomHttpException(LicenseErrorMessages.NotALicenseError, HttpStatus.BAD_REQUEST);
     }
 
-    const signature = await this.licenseServerService.createSignature(JSON.stringify(createLicenseDto));
+    const signature = this.licenseServerService.createSignature(JSON.stringify(createLicenseDto));
     const license = { ...createLicenseDto, signature, userId: createLicenseDto.userId };
 
-    try {
-      await this.licenseServerService.addLicense(license);
-    } catch (error) {
-      throw new CustomHttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
+    await this.licenseServerService.addLicense(license);
     return license;
   }
 
   @Post('/challenge')
-  async getChallenge() {
-    const encryptedChallenge = await this.licenseServerService.createChallenge();
-
+  getChallenge() {
+    const encryptedChallenge = this.licenseServerService.createChallenge();
     return { challenge: encryptedChallenge };
   }
 
   @Post('/verify')
-  async postChallengeAnswer(@Body() postChallengeAnswerDto: PostChallengeAnswerDto) {
-    const decryptedResponse = await this.licenseServerService.verifyChallengeAnswer(postChallengeAnswerDto);
-
+  postChallengeAnswer(@Body() postChallengeAnswerDto: PostChallengeAnswerDto) {
+    const decryptedResponse = this.licenseServerService.verifyChallengeAnswer(postChallengeAnswerDto);
     return { isValid: decryptedResponse };
   }
 }

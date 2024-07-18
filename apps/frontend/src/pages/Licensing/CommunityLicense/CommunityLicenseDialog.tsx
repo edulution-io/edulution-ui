@@ -4,7 +4,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
-import useCommunityLicenseDialogStore from '@/pages/Licensing/CommunityLicense/Dialog/useCommunityLicenseDialogStore';
+import useUsersLicenseStore from '@/pages/Licensing/CommunityLicense/useUsersLicenseStore';
 
 interface CommunityLicenseDialogProps {
   trigger?: React.ReactNode;
@@ -13,19 +13,17 @@ interface CommunityLicenseDialogProps {
 const CommunityLicenseDialog = ({ trigger }: CommunityLicenseDialogProps) => {
   const { t } = useTranslation();
   const user = useUserStore();
-  const { checkForActiveUserLicenses, close, isOpen, isLoading } = useCommunityLicenseDialogStore();
+  const { checkForActiveUserLicenses, close, isOpen, isLoading } = useUsersLicenseStore();
 
   useEffect(() => {
     void checkForActiveUserLicenses();
   }, []);
 
-  const getDialogBody = () => {
-    return (
-      <div className="rounded-xl bg-ciLightRed p-4 text-black">
-        <p>{t('licensing.communityLicenseDialog.description')}</p>
-      </div>
-    );
-  };
+  const getDialogBody = () => (
+    <div className="rounded-xl bg-ciLightRed p-4 text-black">
+      <p>{t('licensing.communityLicenseDialog.description')}</p>
+    </div>
+  );
 
   const getFooter = () => (
     <div className="mt-4 flex justify-end">

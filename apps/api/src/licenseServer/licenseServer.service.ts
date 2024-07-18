@@ -16,6 +16,7 @@ class LicenseServerService {
    * The public key used to validate signatures of licenses.
    */
   private readonly serverPrivateKey;
+
   private readonly serverPublicKey;
 
   /**
@@ -45,14 +46,15 @@ class LicenseServerService {
    * @param value The value to check.
    * @returns True if the specified value is a license object; otherwise, false.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   public isLicenseObject = (value: unknown): boolean => this.licenseObjectSchema.parse(value).error === undefined;
 
-  async createChallenge() {
+  createChallenge() {
     const challenge = crypto.randomBytes(32).toString('hex');
     return crypto.publicEncrypt(this.serverPublicKey, Buffer.from(challenge)).toString('base64');
   }
 
-  async verifyChallengeAnswer(postChallengeAnswerDto: PostChallengeAnswerDto) {
+  verifyChallengeAnswer(postChallengeAnswerDto: PostChallengeAnswerDto) {
     const { encryptedResponse, challenge } = postChallengeAnswerDto;
     const decryptedResponse = crypto
       .privateDecrypt(this.serverPrivateKey, Buffer.from(encryptedResponse, 'base64'))
@@ -60,7 +62,7 @@ class LicenseServerService {
     return decryptedResponse === challenge;
   }
 
-  async createSignature(licenseData: string) {
+  createSignature(licenseData: string) {
     const sign = crypto.createSign('SHA256');
     sign.update(licenseData).end();
 
@@ -72,7 +74,15 @@ class LicenseServerService {
       throw new CustomHttpException(LicenseErrorMessages.NotALicenseError, HttpStatus.BAD_REQUEST);
     }
 
-    await this.licenseModel.create(addLicenseDto);
+    try {
+      await this.licenseModel.create(addLicenseDto);
+    } catch (error) {
+      throw new CustomHttpException(
+        LicenseErrorMessages.NotAbleToAddLicenseError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+      );
+    }
   }
 }
 

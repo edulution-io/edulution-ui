@@ -50,7 +50,7 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
           onClick={() => {
             setSelectedLicense(row.original);
           }}
-          text={`${row.original.id}`}
+          text={row.original.id ? `${row.original.id.toHexString()}` : 'not-available'}
         />
       );
     },
@@ -72,7 +72,7 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
           onClick={() => {
             setSelectedLicense(row.original);
           }}
-          text={`${row.original.validFromUtc}`}
+          text={row.original.validFromUtc ? `${row.original.validFromUtc.toISOString()}` : 'not-available'}
         />
       );
     },
@@ -94,7 +94,7 @@ const LicenseInfoTableColumns: ColumnDef<LicenseInfoDto>[] = [
           onClick={() => {
             setSelectedLicense(row.original);
           }}
-          text={`${row.original.validToUtc}`}
+          text={row.original.validToUtc ? `${row.original.validToUtc.toISOString()}` : 'not-available'}
         />
       );
     },

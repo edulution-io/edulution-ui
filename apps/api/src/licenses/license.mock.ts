@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import LicenseDto from '@libs/license/types/license.dto';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
-import { licenseValidationPublicKeyPEM } from './licenseValidationPublicKeyPEM';
+import licenseValidationPublicKeyPEM from './licenseValidationPublicKeyPEM';
 
 export const idLicense01 = new mongoose.Types.ObjectId(1);
 export const idLicense02 = new mongoose.Types.ObjectId(2);

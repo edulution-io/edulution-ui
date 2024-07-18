@@ -7,8 +7,6 @@ type UserSlice = {
   getUser: (username: string) => Promise<void>;
   createOrUpdateUser: (user: UserDto) => Promise<void>;
   updateUser: (username: string, user: UserDto) => Promise<void>;
-  isLoggedInInEduApi: boolean;
-  setIsLoggedInInEduApi: (isLoggedIn: boolean) => void;
   eduApiToken: string;
   setEduApiToken: (eduApiToken: string) => void;
   webdavKey: string;

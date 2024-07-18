@@ -9,7 +9,7 @@ import LicenseErrorMessages from '@libs/license/license-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { License, LicenseDocument } from './license.schema';
 import { mockedLicenses } from './license.mock';
-import { licenseValidationPublicKeyPEM } from './licenseValidationPublicKeyPEM';
+import licenseValidationPublicKeyPEM from './licenseValidationPublicKeyPEM';
 
 @Injectable()
 class LicenseService {
@@ -56,6 +56,7 @@ class LicenseService {
    * @param value The value to check.
    * @returns True if the specified value is a license object; otherwise, false.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   public isLicenseObject = (value: unknown): boolean => this.licenseObjectSchema.parse(value).error === undefined;
 
   /**
@@ -81,16 +82,16 @@ class LicenseService {
       throw new CustomHttpException(LicenseErrorMessages.InvalidLicenseSignatureError, HttpStatus.BAD_REQUEST);
     }
 
-    const existingLicense = await this.licenseModel.findOne({ signature: license.signature });
-    if (!!existingLicense) {
-      throw new CustomHttpException(LicenseErrorMessages.LicenseAlreadyAddedError, HttpStatus.BAD_REQUEST);
-    }
-
-    this.licenseModel.create(license);
+    await this.licenseModel.findOne({ signature: license.signature }).then(async (existingLicense) => {
+      if (existingLicense) {
+        throw new CustomHttpException(LicenseErrorMessages.LicenseAlreadyAddedError, HttpStatus.BAD_REQUEST);
+      }
+      return this.licenseModel.create(license);
+    });
   };
 
   public removeLicenses = async (licenseIds: mongoose.Types.ObjectId[]): Promise<void> => {
-    this.licenseModel.deleteMany({ _id: { $in: licenseIds } });
+    await this.licenseModel.deleteMany({ _id: { $in: licenseIds } });
   };
 
   /**
@@ -114,14 +115,15 @@ class LicenseService {
    * @param signature The signature to verify.
    * @returns True if the specified signature is valid for the specified data; otherwise, false.
    */
-  public verifySignature = (data: string, signature: string): boolean => {
-    return crypto.verify(
-      'SHA256',
-      Buffer.from(data),
-      this.licenseValidationPublicKey?.publicKey!,
-      Buffer.from(signature, 'base64'),
-    );
-  };
+  public verifySignature = (data: string, signature: string): boolean =>
+    this.licenseValidationPublicKey?.publicKey
+      ? crypto.verify(
+          'SHA256',
+          Buffer.from(data),
+          this.licenseValidationPublicKey?.publicKey,
+          Buffer.from(signature, 'base64'),
+        )
+      : false;
 
   /**
    * Gets details about all licenses of the platform.
@@ -130,7 +132,7 @@ class LicenseService {
    */
   public getLicensesDetails = async (username?: string) => {
     const now = new Date();
-    var licenses: LicenseDto[] = [];
+    let licenses: LicenseDto[] = [];
     if (username) {
       licenses = await this.licenseModel.find<LicenseDto>({ userId: { $eq: username } });
       if (!licenses || licenses.length === 0) {

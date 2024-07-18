@@ -4,11 +4,11 @@ import { useAuth } from 'react-oidc-context';
 
 import useIsMobileView from '@/hooks/useIsMobileView';
 import Feed from '@/components/feature/Feed/Feed';
+import CommunityLicenseDialog from '@/pages/Licensing/CommunityLicense/CommunityLicenseDialog';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
-import CommunityLicenseDialog from '@/pages/Licensing/CommunityLicense/CommunityLicenseDialog';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();

@@ -22,7 +22,7 @@ class LicenseController {
 
   @Get()
   async getLicenses(@GetCurrentUsername() username: string) {
-    return await this.licenseService.getLicensesDetails(username);
+    return this.licenseService.getLicensesDetails(username);
   }
 
   @Delete(LICENSE_MANAGEMENT_ENDPOINT)
@@ -33,7 +33,7 @@ class LicenseController {
 
   @Get(LICENSE_MANAGEMENT_ENDPOINT)
   async getAllLicenses() {
-    return await this.licenseService.getLicensesDetails();
+    return this.licenseService.getLicensesDetails();
   }
 }
 

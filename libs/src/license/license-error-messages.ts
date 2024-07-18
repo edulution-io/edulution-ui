@@ -3,7 +3,8 @@ enum LicenseErrorMessages {
   LicenseAlreadyAddedError = 'license.errors.LicenseAlreadyAdded',
   LicenseValidationPublicKeyMissingError = 'license.errors.LicenseValidationPublicKeyMissing',
   NotALicenseError = 'license.errors.NotALicense',
-  MismatchingLicensePlatformFrontendUrlError = 'license.errors.MismatchingLicensePlatformFrontendUrl'
+  NotAbleToAddLicenseError = 'license.errors.NotAbleToAddLicense',
+  MismatchingLicensePlatformFrontendUrlError = 'license.errors.MismatchingLicensePlatformFrontendUrl',
 }
 
 export default LicenseErrorMessages;
