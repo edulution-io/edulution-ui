@@ -4,20 +4,19 @@ import { HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useResultStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
 
 const ResultTable = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
   const {
     isOpenPublicResultsTableDialog,
-    openPublicResultsTableDialog,
-    closePublicResultsTableDialog,
+    setIsOpenPublicResultsTableDialog,
     getSurveyResult,
     result,
     isLoading,
     error,
-  } = useResultStore();
+  } = useResultDialogStore();
 
   const { t } = useTranslation();
 
@@ -30,13 +29,12 @@ const ResultTable = () => {
       <FloatingActionButton
         icon={HiOutlineArrowDownOnSquareStack}
         text={t('surveys.actions.showResultsTable')}
-        onClick={openPublicResultsTableDialog}
+        onClick={() => setIsOpenPublicResultsTableDialog(true)}
       />
       <ResultTableDialog
         survey={survey}
         isOpenPublicResultsTableDialog={isOpenPublicResultsTableDialog}
-        openPublicResultsTableDialog={openPublicResultsTableDialog}
-        closePublicResultsTableDialog={closePublicResultsTableDialog}
+        setIsOpenPublicResultsTableDialog={setIsOpenPublicResultsTableDialog}
         getSurveyResult={getSurveyResult}
         result={result}
         isLoading={isLoading}

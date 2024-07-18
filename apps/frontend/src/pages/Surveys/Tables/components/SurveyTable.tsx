@@ -11,7 +11,12 @@ interface SurveyTableProps {
   selectedSurvey?: SurveyDto;
 }
 
-const SURVEY_TABLE_HEADERS: string[] = ['Title', 'survey.creationDate', 'survey.expirationDate', 'participated'];
+const SURVEY_TABLE_HEADERS: string[] = [
+  'common.title',
+  'survey.creationDate',
+  'survey.expirationDate',
+  'common.participated',
+];
 
 const SurveyTable = (props: SurveyTableProps) => {
   const { title, surveys, selectedSurvey, selectSurvey } = props;

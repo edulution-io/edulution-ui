@@ -5,6 +5,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/user-error-messages';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -49,6 +50,19 @@ class SurveyAnswersService {
     const answeredSurveyIds = surveyAnswers.map((answer: SurveyAnswer) => answer.surveyId);
     const answeredSurveys = await this.surveyModel.find<Survey>({ _id: { $in: answeredSurveyIds } }).exec();
     return answeredSurveys || [];
+  }
+
+  async findUserSurveys(status: SurveyStatus, username: string): Promise<Survey[] | null> {
+    switch (status) {
+      case SurveyStatus.OPEN:
+        return this.getOpenSurveys(username);
+      case SurveyStatus.ANSWERED:
+        return this.getAnsweredSurveys(username);
+      case SurveyStatus.CREATED:
+        return this.getCreatedSurveys(username);
+      default:
+        return [];
+    }
   }
 
   async addAnswer(

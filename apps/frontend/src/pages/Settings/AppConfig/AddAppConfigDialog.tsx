@@ -1,7 +1,7 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownMenu } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -78,7 +78,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
   );
 
   return (
-    <AdaptiveDialogSH
+    <AdaptiveDialog
       isOpen={isOpen}
       handleOpenChange={() => setSearchParams(new URLSearchParams(''))}
       title={t('settings.addApp.title')}

@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { toast } from 'sonner';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
@@ -26,7 +25,7 @@ const SurveyEditorForm = () => {
     throw new Error('Users username has to be defined');
   }
 
-  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys, updateCreatedSurveys } = useSurveyTablesPageStore();
+  const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
     openSaveSurveyDialog,
@@ -152,9 +151,7 @@ const SurveyEditorForm = () => {
     });
 
     closeSaveSurveyDialog();
-    await updateCreatedSurveys();
-    await updateOpenSurveys();
-    await updateAnsweredSurveys();
+    void updateUsersSurveys();
   };
 
   const formulaWatcher = form.watch('formula');
@@ -173,14 +170,11 @@ const SurveyEditorForm = () => {
     [formulaWatcher, saveNoWatcher],
   );
 
-  if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
   return (
     <>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          {getSurveyEditor}
-          {error ? toast.error(t(error.message)) : null}
-        </ScrollArea>
+        <ScrollArea className="overflow-y-auto overflow-x-hidden">{getSurveyEditor}</ScrollArea>
       </div>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">

@@ -1,20 +1,14 @@
 import React, { useCallback, useEffect } from 'react';
+import { useInterval } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
-// import SurveysPageView from '@libs/survey/types/page-view';
+import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const OpenSurveys = () => {
-  const {
-    // selectedPageView,
-    // updateSelectedPageView,
-    selectedSurvey,
-    selectSurvey,
-    openSurveys,
-    updateOpenSurveys,
-    isFetchingOpenSurveys,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey, selectSurvey, openSurveys, updateOpenSurveys, isFetchingOpenSurveys } =
+    useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
@@ -24,23 +18,26 @@ const OpenSurveys = () => {
     }
   }, []);
 
-  useEffect((): void => {
-    getOpenSurveys();
+  useEffect(() => {
+    void getOpenSurveys();
   }, []);
 
-  if (isFetchingOpenSurveys) {
-    return <LoadingIndicator isOpen={isFetchingOpenSurveys} />;
-  }
+  useInterval(() => {
+    void getOpenSurveys();
+  }, FEED_PULL_TIME_INTERVAL);
 
   return (
-    <SurveysPage
-      title={t('surveys.view.open')}
-      selectSurvey={selectSurvey}
-      surveys={openSurveys || []}
-      selectedSurvey={selectedSurvey}
-      canShowResults
-      canParticipate
-    />
+    <>
+      {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
+      <SurveysPage
+        title={t('surveys.view.open')}
+        selectSurvey={selectSurvey}
+        surveys={openSurveys || []}
+        selectedSurvey={selectedSurvey}
+        canShowResults
+        canParticipate
+      />
+    </>
   );
 };
 

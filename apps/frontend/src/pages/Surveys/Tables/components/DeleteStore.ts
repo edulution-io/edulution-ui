@@ -8,7 +8,7 @@ import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
-interface DeleteStore {
+interface DeleteSurveyStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
@@ -20,14 +20,14 @@ interface DeleteStore {
   reset: () => void;
 }
 
-const initialState: Partial<DeleteStore> = {
+const initialState: Partial<DeleteSurveyStore> = {
   selectedSurvey: undefined,
   isLoading: false,
   error: null,
 };
 
-const useDeleteStore = create<DeleteStore>((set) => ({
-  ...(initialState as DeleteStore),
+const useDeleteStore = create<DeleteSurveyStore>((set) => ({
+  ...(initialState as DeleteSurveyStore),
   reset: () => set(initialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),

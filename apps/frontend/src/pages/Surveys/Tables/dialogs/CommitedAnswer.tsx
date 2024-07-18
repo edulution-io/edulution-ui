@@ -9,15 +9,8 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 const CommitedAnswer = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
-  const {
-    isOpenCommitedAnswersDialog,
-    openCommitedAnswersDialog,
-    closeCommitedAnswersDialog,
-    getCommittedSurveyAnswers,
-    answer,
-    isLoading,
-    error,
-  } = useCommitedAnswersDialogStore();
+  const { isOpenCommitedAnswersDialog, setIsOpenCommitedAnswersDialog, getCommittedSurveyAnswers, answer, isLoading } =
+    useCommitedAnswersDialogStore();
 
   const { t } = useTranslation();
 
@@ -30,20 +23,16 @@ const CommitedAnswer = () => {
       <FloatingActionButton
         icon={HiOutlineArrowDownOnSquare}
         text={t('surveys.actions.showCommittedAnswers')}
-        onClick={openCommitedAnswersDialog}
+        onClick={() => setIsOpenCommitedAnswersDialog(true)}
       />
       <CommitedAnswersDialog
         surveyId={survey?.id}
         surveyJSON={survey?.formula}
         answerJSON={answer}
         isOpenCommitedAnswersDialog={isOpenCommitedAnswersDialog}
-        openCommitedAnswersDialog={openCommitedAnswersDialog}
-        closeCommitedAnswersDialog={closeCommitedAnswersDialog}
+        setIsOpenCommitedAnswersDialog={setIsOpenCommitedAnswersDialog}
         getUsersCommitedAnswer={getCommittedSurveyAnswers}
-        // user={user}
-        // selectUser={selectUser}
         isLoading={isLoading}
-        error={error}
       />
     </>
   );

@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
@@ -13,14 +12,13 @@ interface ParticipateDialogStore {
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
   isOpenParticipateSurveyDialog: boolean;
-  openParticipateSurveyDialog: () => void;
-  closeParticipateSurveyDialog: () => void;
+  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   answerSurvey: (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
     options?: CompleteEvent,
-  ) => Promise<string>;
+  ) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 
@@ -40,19 +38,18 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  openParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: true }),
-  closeParticipateSurveyDialog: () => set({ isOpenParticipateSurveyDialog: false }),
+  setIsOpenParticipateSurveyDialog: (state: boolean) => set({ isOpenParticipateSurveyDialog: state }),
   answerSurvey: async (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
     options?: CompleteEvent,
-  ): Promise<string> => {
+  ): Promise<void> => {
     set({ error: null, isLoading: true });
     try {
       // Display the "Saving..." message (pass a string value to display a custom message)
       options?.showSaveInProgress();
-      const response = await eduApi.patch<string>(SURVEYS_ENDPOINT, {
+      await eduApi.patch<string>(SURVEYS_ENDPOINT, {
         surveyId,
         saveNo,
         answer,
@@ -62,17 +59,11 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
       options?.showSaveSuccess();
 
       set({ isLoading: false });
-      return response.data;
     } catch (error) {
       // Display the "Error" message (pass a string value to display a custom message)
       options?.showSaveError();
-
       set({ error: error instanceof AxiosError ? error : null, isLoading: false });
-      toast.error(
-        error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting the answer for a survey',
-      );
       handleApiError(error, set);
-      return '';
     }
   },
 }));

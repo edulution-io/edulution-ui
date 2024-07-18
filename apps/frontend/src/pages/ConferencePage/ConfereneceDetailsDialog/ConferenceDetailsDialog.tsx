@@ -2,7 +2,7 @@ import React from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
 import { useForm } from 'react-hook-form';
@@ -71,7 +71,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   );
 
   return (
-    <AdaptiveDialogSH
+    <AdaptiveDialog
       isOpen
       trigger={trigger}
       handleOpenChange={() => setSelectedConference(null)}

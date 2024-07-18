@@ -13,7 +13,7 @@ interface AdaptiveDialogSHProps {
   footer?: React.ReactNode;
 }
 
-const AdaptiveDialogSH: FC<AdaptiveDialogSHProps> = ({ isOpen, handleOpenChange, title, trigger, body, footer }) => {
+const AdaptiveDialog: FC<AdaptiveDialogSHProps> = ({ isOpen, handleOpenChange, title, trigger, body, footer }) => {
   const isMobileView = useIsMobileView();
 
   return isMobileView ? (
@@ -45,4 +45,4 @@ const AdaptiveDialogSH: FC<AdaptiveDialogSHProps> = ({ isOpen, handleOpenChange,
   );
 };
 
-export default AdaptiveDialogSH;
+export default AdaptiveDialog;

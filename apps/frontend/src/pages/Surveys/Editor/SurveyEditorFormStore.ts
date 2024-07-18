@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
@@ -26,7 +25,7 @@ interface SurveyEditorFormStore {
   expirationTime: string | undefined;
   isAnonymous: boolean | undefined;
   newParticipants: AttendeeDto[];
-  updateOrCreateSurvey: (survey: SurveyDto) => Promise<SurveyDto>;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
   isLoading: boolean;
   error: AxiosError | null;
 }
@@ -54,17 +53,13 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   openSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: true }),
   closeSaveSurveyDialog: () => set({ isOpenSaveSurveyDialog: false }),
 
-  updateOrCreateSurvey: async (survey: SurveyDto): Promise<SurveyDto> => {
+  updateOrCreateSurvey: async (survey: SurveyDto): Promise<void> => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
+      await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
       set({ error: undefined, isLoading: false });
-      return response.data;
     } catch (error) {
       set({ error: error instanceof AxiosError ? error : null, isLoading: false });
-      toast.error(
-        error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting a new/updated survey',
-      );
       handleApiError(error, set);
       throw error;
     }

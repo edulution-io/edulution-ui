@@ -20,9 +20,7 @@ interface EditSurveyDialogBodyProps {
 }
 
 const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
-  const {
-    form, // saveSurveyLocally
-  } = props;
+  const { form } = props;
   const { setValue, getValues, watch } = form;
   const { user } = useUserStore();
   const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
@@ -88,17 +86,17 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         isGetGroupMembersLoading={isGetGroupMembersLoading}
       />
 
-      <p className={cn('text-m font-bold', 'text-black')}>{t('survey.expirationDate')}</p>
-      <div className="flex items-center text-black">
+      <p className={cn('text-m font-bold', 'text-foreground')}>{t('survey.expirationDate')}</p>
+      <div className="flex items-center text-foreground">
         {t('common.date')}
         <div className="ml-2">
           <DatePicker
             selected={expirationDateWatched}
-            onSelect={(value: Date | undefined) => setValue('expirationDate', value, { shouldValidate: true })}
+            onSelect={(value: Date | undefined) => setValue('expirationDate', value /* , { shouldValidate: true } */)}
           />
         </div>
       </div>
-      <div className="flex items-center text-black">
+      <div className="flex items-center text-foreground">
         {t('common.time')}
         <Input
           type="time"
@@ -107,8 +105,8 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
           className="ml-2"
         />
       </div>
-      <p className={cn('text-m font-bold', 'text-black')}>{t('surveys.saveDialog.flags')}</p>
-      <div className="flex items-center text-black">
+      <p className={cn('text-m font-bold', 'text-foreground')}>{t('surveys.saveDialog.settingsFlags')}</p>
+      <div className="flex items-center text-foreground">
         <Checkbox
           checked={isAnonymousWatched}
           onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
@@ -117,7 +115,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.isAnonymous')}
       </div>
-      <div className="flex items-center text-black">
+      <div className="flex items-center text-foreground">
         <Checkbox
           checked={canSubmitMultipleAnswersWatched}
           onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}

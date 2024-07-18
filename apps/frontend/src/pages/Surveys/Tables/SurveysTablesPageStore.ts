@@ -1,15 +1,10 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT, {
-  SURVEY_ALL_SURVEYS_ENDPOINT,
-  SURVEY_ANSWERED_SURVEYS_ENDPOINT,
-  SURVEY_CREATED_SURVEYS_ENDPOINT,
-  SURVEY_OPEN_SURVEYS_ENDPOINT,
-} from '@libs/survey/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/page-view';
+import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveysPageView from '@libs/survey/types/page-view';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveysTablesPageStore {
@@ -18,25 +13,22 @@ interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
+  updateUsersSurveys: () => Promise<void>;
+
   openSurveys: SurveyDto[];
-  updateOpenSurveys: () => Promise<SurveyDto[]>;
+  updateOpenSurveys: () => Promise<void>;
   isFetchingOpenSurveys: boolean;
   errorFetchingOpenSurveys: Error | null;
 
   createdSurveys: SurveyDto[];
-  updateCreatedSurveys: () => Promise<SurveyDto[]>;
+  updateCreatedSurveys: () => Promise<void>;
   isFetchingCreatedSurveys: boolean;
   errorFetchingCreatedSurveys: Error | null;
 
   answeredSurveys: SurveyDto[];
-  updateAnsweredSurveys: () => Promise<SurveyDto[]>;
+  updateAnsweredSurveys: () => Promise<void>;
   isFetchingAnsweredSurveys: boolean;
   errorFetchingAnsweredSurveys: Error | null;
-
-  allSurveys: SurveyDto[];
-  updateAllSurveys: () => Promise<SurveyDto[]>;
-  isFetchingAllSurveys: boolean;
-  errorFetchingAllSurveys: Error | null;
 
   patchSurvey: (survey: SurveyDto) => Promise<SurveyDto>;
   isPosting: boolean;
@@ -46,7 +38,7 @@ interface SurveysTablesPageStore {
 }
 
 const initialState: Partial<SurveysTablesPageStore> = {
-  selectedPageView: SurveysPageView.OPEN_SURVEYS,
+  selectedPageView: SurveysPageView.OPEN,
   selectedSurvey: undefined,
 
   answeredSurveys: [],
@@ -58,106 +50,68 @@ const initialState: Partial<SurveysTablesPageStore> = {
   openSurveys: [],
   isFetchingOpenSurveys: false,
   errorFetchingOpenSurveys: null,
-  allSurveys: [],
-  isFetchingAllSurveys: false,
-  errorFetchingAllSurveys: null,
 
   isPosting: false,
   errorPostingSurvey: null,
 };
 
-const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
+const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(initialState as SurveysTablesPageStore),
   reset: () => set(initialState),
 
   updateSelectedPageView: (pageView: SurveysPageView) => set({ selectedPageView: pageView }),
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  updateUsersSurveys: async (): Promise<void> => {
+    const { updateOpenSurveys, updateCreatedSurveys, updateAnsweredSurveys } = get();
+    const promises = [updateOpenSurveys(), updateCreatedSurveys(), updateAnsweredSurveys()];
+    await Promise.all(promises);
+  },
 
-  updateOpenSurveys: async (): Promise<SurveyDto[]> => {
+  updateOpenSurveys: async (): Promise<void> => {
     set({ errorFetchingOpenSurveys: null, isFetchingOpenSurveys: true });
     try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEY_OPEN_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEYS_ENDPOINT, { params: { status: SurveyStatus.OPEN } });
       const surveys = response.data;
       set({ openSurveys: surveys, isFetchingOpenSurveys: false });
-      return surveys;
     } catch (error) {
       set({
         openSurveys: [],
         errorFetchingOpenSurveys: error instanceof Error ? error : null,
         isFetchingOpenSurveys: false,
       });
-      toast.error(
-        error instanceof Error
-          ? `${error.name}: ${error.message}`
-          : 'Error while fetching the list of surveys, you have to answer',
-      );
       handleApiError(error, set, 'errorFetchingOpenSurveys');
-      return [];
     }
   },
 
-  updateCreatedSurveys: async (): Promise<SurveyDto[]> => {
+  updateCreatedSurveys: async (): Promise<void> => {
     set({ errorFetchingCreatedSurveys: null, isFetchingCreatedSurveys: true });
     try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEY_CREATED_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEYS_ENDPOINT, { params: { status: SurveyStatus.CREATED } });
       const surveys = response.data;
       set({ createdSurveys: surveys, isFetchingCreatedSurveys: false });
-      return surveys;
     } catch (error) {
       set({
         createdSurveys: [],
         errorFetchingCreatedSurveys: error instanceof AxiosError ? error : null,
         isFetchingCreatedSurveys: false,
       });
-      toast.error(
-        error instanceof AxiosError
-          ? `${error.name}: ${error.message}`
-          : 'Error while fetching the list of surveys, you have created',
-      );
       handleApiError(error, set, 'errorFetchingCreatedSurveys');
-      return [];
     }
   },
 
-  updateAnsweredSurveys: async (): Promise<SurveyDto[]> => {
+  updateAnsweredSurveys: async (): Promise<void> => {
     set({ errorFetchingAnsweredSurveys: null, isFetchingAnsweredSurveys: true });
     try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEY_ANSWERED_SURVEYS_ENDPOINT);
+      const response = await eduApi.get<SurveyDto[]>(SURVEYS_ENDPOINT, { params: { status: SurveyStatus.ANSWERED } });
       const surveys = response.data;
       set({ answeredSurveys: surveys, isFetchingAnsweredSurveys: false });
-      return surveys;
     } catch (error) {
       set({
         answeredSurveys: [],
         errorFetchingAnsweredSurveys: error instanceof AxiosError ? error : null,
         isFetchingAnsweredSurveys: false,
       });
-      toast.error(
-        error instanceof AxiosError
-          ? `${error.name}: ${error.message}`
-          : 'Error while fetching the list of surveys, you have answered, already',
-      );
       handleApiError(error, set, 'errorFetchingAnsweredSurveys');
-      return [];
-    }
-  },
-
-  updateAllSurveys: async (): Promise<SurveyDto[]> => {
-    set({ errorFetchingAllSurveys: null, isFetchingAllSurveys: true });
-    try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEY_ALL_SURVEYS_ENDPOINT);
-      const surveys = response.data;
-      set({ allSurveys: surveys, isFetchingAllSurveys: false });
-      return surveys;
-    } catch (error) {
-      set({
-        allSurveys: [],
-        errorFetchingAllSurveys: error instanceof AxiosError ? error : null,
-        isFetchingAllSurveys: false,
-      });
-      toast.error(error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while fetching all surveys');
-      handleApiError(error, set, 'errorFetchingAllSurveys');
-      return [];
     }
   },
 
@@ -169,9 +123,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set) => ({
       return response.data;
     } catch (error) {
       set({ errorPostingSurvey: error instanceof AxiosError ? error : null, isPosting: false });
-      toast.error(
-        error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while creating/updating a survey',
-      );
       handleApiError(error, set, 'errorPostingSurvey');
       throw error;
     }

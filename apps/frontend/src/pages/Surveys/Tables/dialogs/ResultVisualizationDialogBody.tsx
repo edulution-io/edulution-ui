@@ -5,7 +5,7 @@ import { SurveyModel } from 'survey-core/typings/survey';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 
-const vizPanelOptions = {
+const visuPanelOptions = {
   haveCommercialLicense: true,
   defaultChartType: 'bar',
   showToolbar: false,
@@ -21,35 +21,35 @@ interface ResultVisualizationDialogBodyProps {
 const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps) => {
   const { formula, result } = props;
 
-  const [survey, setSurvey] = useState<SurveyModel | undefined>(undefined);
-  const [vizPanel, setVizPanel] = useState<VisualizationPanel | undefined>(undefined);
+  const [survey, setSurvey] = useState<SurveyModel | null>(null);
+  const [visuPanel, setVisuPanel] = useState<VisualizationPanel | null>(null);
 
-  if (!survey) {
+  if (survey == null) {
     const surveyModel = new Model(formula);
     setSurvey(surveyModel);
   }
 
-  if (!vizPanel && !!survey) {
-    const visualizationPanel = new VisualizationPanel(survey.getAllQuestions(), result, vizPanelOptions);
+  if (visuPanel == null && survey != null) {
+    const visualizationPanel = new VisualizationPanel(survey.getAllQuestions(), result, visuPanelOptions);
     visualizationPanel.locale = i18next.language;
     visualizationPanel.showToolbar = false;
-    setVizPanel(visualizationPanel);
+    setVisuPanel(visualizationPanel);
   }
 
   useEffect(() => {
-    vizPanel?.render('surveyVizPanel');
+    visuPanel?.render('surveyVisuPanel');
 
-    const component = document.getElementById('surveyVizPanel');
+    const component = document.getElementById('surveyVisuPanel');
     return () => {
       if (component) {
         component.innerHTML = '';
       }
     };
-  }, [vizPanel]);
+  }, [visuPanel]);
 
   return (
     <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-white">
-      <div id="surveyVizPanel" />
+      <div id="surveyVisuPanel" />
     </div>
   );
 };

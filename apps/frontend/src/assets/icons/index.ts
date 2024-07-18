@@ -42,7 +42,6 @@ export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
 export { default as SurveysSidebarIcon } from '@/assets/icons/survey-sidebar.svg';
 export { default as SurveysViewAnsweredIcon } from '@/assets/icons/survey-view-answered-surveys.svg';
-export { default as SurveysViewManagementIcon } from '@/assets/icons/survey-view-management.svg';
 export { default as SurveysViewOpenIcon } from '@/assets/icons/survey-view-open-surveys.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';

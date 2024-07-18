@@ -13,10 +13,9 @@ interface ShowSurveyResultsTableDialogProps {
   survey: SurveyDto;
 
   isOpenPublicResultsTableDialog: boolean;
-  openPublicResultsTableDialog: () => void;
-  closePublicResultsTableDialog: () => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<JSON[] | undefined>;
-  result: JSON[];
+  setIsOpenPublicResultsTableDialog: (state: boolean) => void;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<void>;
+  result: JSON[] | undefined;
   isLoading: boolean;
   error: Error | null;
 
@@ -28,8 +27,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     survey,
 
     isOpenPublicResultsTableDialog,
-    openPublicResultsTableDialog,
-    closePublicResultsTableDialog,
+    setIsOpenPublicResultsTableDialog,
     getSurveyResult,
     result,
     isLoading,
@@ -48,14 +46,14 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   const getDialogBody = () => {
     if (!survey?.formula) {
       return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
           <div>{t('survey.noFormula')}</div>
         </div>
       );
     }
     if (!result || result.length === 0) {
       return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
           <div>{t('survey.noAnswer')}</div>
         </div>
       );
@@ -80,7 +78,7 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     <AdaptiveDialog
       isOpen={isOpenPublicResultsTableDialog}
       trigger={trigger}
-      handleOpenChange={isOpenPublicResultsTableDialog ? closePublicResultsTableDialog : openPublicResultsTableDialog}
+      handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
       title={t('surveys.resultTableDialog.title')}
       body={getDialogBody()}
       desktopContentClassName="max-h-[75vh] max-w-[85%]"

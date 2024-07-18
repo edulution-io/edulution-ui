@@ -109,7 +109,7 @@
   },
   "survey": {
     "creationDate": "Creation date",
-    "expirationDate": "Deadline",
+    "expirationDate": "Expiration date",
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
     "editor": {
@@ -129,7 +129,8 @@
       "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
       "notAbleToParticipateSurveyExpiredError": "Survey has already expired",
       "notAbleToUpdateSurveyError": "Not able to update the survey",
-      "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
+      "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id",
+      "noAnswerForSubmission": "Please, provide an answer for the submission"
     }
   },
   "survey-answer": {
@@ -144,9 +145,7 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
-    "description": "Here you can create and manage surveys or to participate on surveys of the others",
     "view": {
-      "management": "Survey Management",
       "open": "Open Surveys",
       "created": "Owned Surveys",
       "answered": "Answered Surveys",
@@ -157,18 +156,23 @@
       "showResultsTable": "Result (Table)",
       "showCommittedAnswers": "Commited Answers"
     },
+    "commitedAnswersDialog": {
+      "title": "Commited survey answer"
+    },
     "saveDialog": {
       "title": "Save and assign to participants",
-      "expires": "Deadline",
-      "flags": "Options",
+      "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
-      "canSubmitMultipleAnswers": "Should the survey still be visible after user has participated?"
+      "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
+    },
+    "participateDialog": {
+      "title": "Participate in the survey"
     },
     "resultChartDialog": {
-      "title": "A chart that visualize the public answers of the survey"
+      "title": "Results (Chart)"
     },
     "resultTableDialog": {
-      "title": "A table in which all the public answers are listed"
+      "title": "Results (Table)"
     }
   },
   "printer": {
@@ -285,6 +289,7 @@
     "remember_me": "Remember me"
   },
   "common": {
+    "title": "Title",
     "add": "Add",
     "reload": "Reload",
     "logout": "Logout",
@@ -303,6 +308,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "participate": "Participate",
+    "participated": "Participated",
     "not-available": "'Not available'",
     "date": "Date",
     "time": "Time"
@@ -467,7 +473,8 @@
   "users": {
     "errors": {
       "notAbleToFindUserError": "User not found",
-      "notAbleToUpdateUserError": "Not able to update the user"
+      "notAbleToUpdateUserError": "Not able to update the user",
+      "databaseOfflineError": "Database seems to be offline"
     }
   }
 }
