@@ -1,16 +1,10 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus, Logger } from '@nestjs/common';
-import {
-  ANSWER_ENDPOINT,
-  ANSWERED_SURVEYS_ENDPOINT,
-  CREATED_SURVEYS_ENDPOINT,
-  OPEN_SURVEYS_ENDPOINT,
-  RESULT_ENDPOINT,
-  SURVEYS,
-} from '@libs/survey/surveys-endpoint';
+import { Body, Controller, Delete, Query, Get, Patch, Post, Param, HttpStatus, Logger } from '@nestjs/common';
+import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import GetAnswerDto from '@libs/survey/types/get-answer.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
@@ -32,28 +26,12 @@ class SurveysController {
   @Get()
   async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
     const { surveyIds = [] } = findSurveyDto;
-    if (surveyIds.length > 0) {
-      return this.surveyService.findSurveys(surveyIds);
-    }
-    throw new CustomHttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
+    return this.usersSurveysService.findSurveys(surveyIds);
   }
 
-  @Get(OPEN_SURVEYS_ENDPOINT)
-  async getOpenSurveys(@GetCurrentUsername() username: string) {
-    const openSurveyIds = await this.usersSurveysService.getOpenSurveyIds(username);
-    return this.surveyService.findSurveys(openSurveyIds);
-  }
-
-  @Get(CREATED_SURVEYS_ENDPOINT)
-  async getCreatedSurveys(@GetCurrentUsername() username: string) {
-    const createdSurveyIds = await this.usersSurveysService.getCreatedSurveyIds(username);
-    return this.surveyService.findSurveys(createdSurveyIds);
-  }
-
-  @Get(ANSWERED_SURVEYS_ENDPOINT)
-  async getAnsweredSurveys(@GetCurrentUsername() username: string) {
-    const answeredSurveyIds = await this.usersSurveysService.getAnsweredSurveyIds(username);
-    return this.surveyService.findSurveys(answeredSurveyIds);
+  @Get()
+  async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
+    return this.usersSurveysService.findUserSurveys(status, username);
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)

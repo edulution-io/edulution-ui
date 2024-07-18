@@ -12,10 +12,9 @@ interface ResultVisualizationDialogProps {
   survey: SurveyDto;
 
   isOpenPublicResultsVisualisationDialog: boolean;
-  openPublicResultsVisualisationDialog: () => void;
-  closePublicResultsVisualisationDialog: () => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<JSON[] | undefined>;
-  result: JSON[];
+  setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<void>;
+  result: JSON[] | undefined;
   isLoadingResult: boolean;
   error: Error | null;
 
@@ -26,8 +25,7 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
   const {
     survey,
     isOpenPublicResultsVisualisationDialog,
-    openPublicResultsVisualisationDialog,
-    closePublicResultsVisualisationDialog,
+    setIsOpenPublicResultsVisualisationDialog,
     getSurveyResult,
     result,
     isLoadingResult,
@@ -48,14 +46,14 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
 
     if (!survey?.formula) {
       return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
           <div>{t('survey.noFormula')}</div>
         </div>
       );
     }
     if (!result || result.length === 0) {
       return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-black">
+        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
           <div>{t('survey.noAnswer')}</div>
         </div>
       );
@@ -80,14 +78,9 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
     <AdaptiveDialog
       isOpen={isOpenPublicResultsVisualisationDialog}
       trigger={trigger}
-      handleOpenChange={
-        isOpenPublicResultsVisualisationDialog
-          ? closePublicResultsVisualisationDialog
-          : openPublicResultsVisualisationDialog
-      }
+      handleOpenChange={() => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog)}
       title={t('surveys.resultChartDialog.title')}
       body={getDialogBody()}
-      // desktopContentClassName="min-h-[75%] max-w-[85%]"
     />
   );
 };

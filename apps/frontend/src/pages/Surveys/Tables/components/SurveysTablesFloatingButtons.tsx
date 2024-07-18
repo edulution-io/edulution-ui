@@ -8,7 +8,7 @@ import CommitedAnswer from '@/pages/Surveys/Tables/dialogs/CommitedAnswer';
 import Participate from '@/pages/Surveys/Tables/dialogs/Participate';
 import ResultTable from '@/pages/Surveys/Tables/dialogs/ResultTable';
 import ResultVisualization from '@/pages/Surveys/Tables/dialogs/ResultVisualization';
-import Delete from '@/pages/Surveys/Tables/components/Delete';
+import DeleteSurveyButton from '@/pages/Surveys/Tables/components/DeleteSurveyButton';
 
 interface SurveysTablesDialogsProps {
   canEdit: boolean;
@@ -40,7 +40,7 @@ const SurveysTablesDialogs = (props: SurveysTablesDialogsProps) => {
             onClick={editSurvey}
           />
         ) : null}
-        {canDelete ? <Delete /> : null}
+        {canDelete ? <DeleteSurveyButton /> : null}
         {canShowResults ? <ResultTable /> : null}
         {canShowResults ? <ResultVisualization /> : null}
         {canParticipate ? <Participate /> : null}

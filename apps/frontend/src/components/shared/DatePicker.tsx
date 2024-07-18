@@ -24,7 +24,7 @@ const DatePicker = (props: DatePickerProps) => {
           <ButtonSH
             variant="outline"
             className={cn(
-              'h-8 justify-start rounded py-0 text-left font-normal text-black',
+              'h-8 justify-start rounded py-0 text-left font-normal text-foreground',
               !selected && 'text-muted-foreground',
             )}
           >

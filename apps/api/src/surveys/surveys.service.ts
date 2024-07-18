@@ -3,33 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
+import UserErrorMessages from '@libs/user/user-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
 
 @Injectable()
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
-
-  async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
-    if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
-    const survey = this.surveyModel.findOne<Survey>({ _id: surveyId }).exec();
-    if (survey == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
-    }
-    return survey;
-  }
-
-  async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
-    const surveys = this.surveyModel.find<Survey>({ _id: { $in: surveyIds } }).exec();
-    if (surveys == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
-    }
-    return surveys;
-  }
 
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
@@ -41,19 +20,25 @@ class SurveysService {
   }
 
   async updateSurvey(survey: Survey): Promise<Survey | null> {
-    const updatedSurvey = await this.surveyModel
-      .findOneAndUpdate<Survey>(
-        // eslint-disable-next-line no-underscore-dangle
-        { _id: survey._id },
-        { ...survey },
-      )
-      .exec();
+    try {
+      const updatedSurvey = await this.surveyModel
+        .findOneAndUpdate<Survey>(
+          // eslint-disable-next-line no-underscore-dangle
+          { _id: survey._id },
+          { ...survey },
+        )
+        .exec();
 
-    Logger.log(
-      updatedSurvey == null ? SurveyErrorMessages.NotAbleToUpdateSurveyError : 'Updated survey successfully',
-      SurveysService.name,
-    );
-    return updatedSurvey;
+      if (updatedSurvey == null) {
+        Logger.log(SurveyErrorMessages.NotAbleToUpdateSurveyError, SurveysService.name);
+        throw new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.NOT_MODIFIED);
+      }
+      Logger.log('Updated survey successfully', SurveysService.name);
+
+      return updatedSurvey;
+    } catch (error) {
+      throw new CustomHttpException(UserErrorMessages.DatabaseOfflineError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async createSurvey(survey: Survey): Promise<Survey | null> {

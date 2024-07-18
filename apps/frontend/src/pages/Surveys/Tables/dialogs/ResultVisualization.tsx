@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useResultStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 
 const ResultVisualization = () => {
@@ -11,13 +11,12 @@ const ResultVisualization = () => {
 
   const {
     isOpenPublicResultsVisualisationDialog,
-    openPublicResultsVisualisationDialog,
-    closePublicResultsVisualisationDialog,
+    setIsOpenPublicResultsVisualisationDialog,
     getSurveyResult,
     result,
     isLoading,
     error,
-  } = useResultStore();
+  } = useResultDialogStore();
 
   const { t } = useTranslation();
 
@@ -30,13 +29,12 @@ const ResultVisualization = () => {
       <FloatingActionButton
         icon={HiOutlineArrowDownOnSquareStack}
         text={t('surveys.actions.showResultsChart')}
-        onClick={openPublicResultsVisualisationDialog}
+        onClick={() => setIsOpenPublicResultsVisualisationDialog(true)}
       />
       <ResultVisualizationDialog
         survey={survey}
         isOpenPublicResultsVisualisationDialog={isOpenPublicResultsVisualisationDialog}
-        openPublicResultsVisualisationDialog={openPublicResultsVisualisationDialog}
-        closePublicResultsVisualisationDialog={closePublicResultsVisualisationDialog}
+        setIsOpenPublicResultsVisualisationDialog={setIsOpenPublicResultsVisualisationDialog}
         getSurveyResult={getSurveyResult}
         result={result}
         isLoadingResult={isLoading}

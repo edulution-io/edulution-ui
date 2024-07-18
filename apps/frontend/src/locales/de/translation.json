@@ -112,7 +112,7 @@
   },
   "survey": {
     "creationDate": "Erstellungsdatum",
-    "expirationDate": "Deadline",
+    "expirationDate": "Ablaufdatum",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "editor": {
@@ -132,7 +132,8 @@
       "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
       "notAbleToParticipateSurveyExpiredError": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
       "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
-      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID",
+      "noAnswerForSubmission": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
     }
   },
   "survey-answer": {
@@ -147,9 +148,7 @@
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "description": "Hier können Sie eigene Umfragen erstellen und verwalten oder an den Umfragen anderer teilnehmen.",
     "view": {
-      "management": "Umfragen verwalten",
       "open": "Offene Umfragen",
       "created": "Eigene Umfragen",
       "answered": "Schon beantwortet",
@@ -160,18 +159,23 @@
       "showResultsTable": "Resultat (Tabelle)",
       "showCommittedAnswers": "Verfügbare Abgaben"
     },
+    "commitedAnswersDialog": {
+      "title": "Eingereichte Abgabe des Nutzers"
+    },
     "saveDialog": {
       "title": "Speichern und Benutzern zuweisen",
-      "expires": "Deadline",
-      "flags": "Einstellungen",
+      "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme des Benutzers bleibt der status auf offen?"
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der status auf offen?"
+    },
+    "participateDialog": {
+      "title": "An der Umfrage teilnehmen"
     },
     "resultChartDialog": {
-      "title": "Ein Schaubild in der die öffentlichen Antworten dargestellt werden"
+      "title": "Ergebnisse (Schaubild)"
     },
     "resultTableDialog": {
-      "title": "Eine Tabelle in der die öffentlichen Antworten aufgelistet sind"
+      "title": "Ergebnisse (Tabelle)"
     }
   },
   "printer": {
@@ -288,6 +292,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -306,6 +311,7 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "participate": "Teilnehmen",
+    "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
     "time": "Uhrzeit"
@@ -470,7 +476,8 @@
   "users": {
     "errors": {
       "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
-      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"
+      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden",
+      "databaseOfflineError": "Die Datenbank scheint offline zu sein"
     }
   }
 }

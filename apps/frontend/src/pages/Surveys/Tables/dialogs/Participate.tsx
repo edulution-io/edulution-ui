@@ -9,14 +9,8 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 const Participate = () => {
   const { selectedSurvey: survey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const {
-    isOpenParticipateSurveyDialog,
-    openParticipateSurveyDialog,
-    closeParticipateSurveyDialog,
-    answerSurvey,
-    isLoading,
-    error,
-  } = useParticipateDialogStore();
+  const { isOpenParticipateSurveyDialog, setIsOpenParticipateSurveyDialog, answerSurvey, isLoading, error } =
+    useParticipateDialogStore();
 
   const { t } = useTranslation();
 
@@ -29,13 +23,12 @@ const Participate = () => {
       <FloatingActionButton
         icon={AiOutlineUpSquare}
         text={t('common.participate')}
-        onClick={openParticipateSurveyDialog}
+        onClick={() => setIsOpenParticipateSurveyDialog(true)}
       />
       <ParticipateDialog
         survey={survey}
         isOpenParticipateSurveyDialog={isOpenParticipateSurveyDialog}
-        openParticipateSurveyDialog={openParticipateSurveyDialog}
-        closeParticipateSurveyDialog={closeParticipateSurveyDialog}
+        setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
         commitAnswer={answerSurvey}
         isLoading={isLoading}
         error={error}

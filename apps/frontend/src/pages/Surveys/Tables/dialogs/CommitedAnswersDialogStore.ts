@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import { toast } from 'sonner';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
@@ -14,9 +13,8 @@ interface CommitedAnswersDialogStore {
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
   isOpenCommitedAnswersDialog: boolean;
-  openCommitedAnswersDialog: () => void;
-  closeCommitedAnswersDialog: () => void;
-  getCommittedSurveyAnswers: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<JSON | undefined>;
+  setIsOpenCommitedAnswersDialog: (state: boolean) => void;
+  getCommittedSurveyAnswers: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<void>;
   user: string | undefined;
   selectUser: (user: string) => void;
   answer: JSON | undefined;
@@ -41,25 +39,18 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  openCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: true }),
-  closeCommitedAnswersDialog: () => set({ isOpenCommitedAnswersDialog: false }),
+  setIsOpenCommitedAnswersDialog: (state: boolean) => set({ isOpenCommitedAnswersDialog: state }),
   selectUser: (userName: string) => set({ user: userName }),
-  getCommittedSurveyAnswers: async (
-    surveyId: mongoose.Types.ObjectId,
-    participant?: string,
-  ): Promise<JSON | undefined> => {
+  getCommittedSurveyAnswers: async (surveyId: mongoose.Types.ObjectId, participant?: string): Promise<void> => {
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
       set({ answer, isLoading: false });
-      return answer;
     } catch (error) {
       set({ answer: undefined, error: error instanceof Error ? error : null, isLoading: false });
-      toast.error(error instanceof Error ? `${error.name}: ${error.message}` : 'Error while fetching an answer');
       handleApiError(error, set);
-      return undefined;
     }
   },
 }));

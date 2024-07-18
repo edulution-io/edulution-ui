@@ -3,9 +3,10 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import UsersSurveys from '@libs/survey/types/users-surveys';
-import emptyUsersSurveys from '@libs/survey/types/empty-user-surveys';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/user-error-messages';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
+import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import { User, UserDocument } from '../users/user.schema';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -20,27 +21,63 @@ class UsersSurveysService {
   ) {}
 
   async updateUser(participant: string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const newUser = await this.userModel
-      .findOneAndUpdate<User>({ username: participant }, updateUserDto, { new: true })
-      .exec();
-    if (!newUser) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToUpdateUserError, HttpStatus.NOT_FOUND);
+    try {
+      const newUser = await this.userModel
+        .findOneAndUpdate<User>({ username: participant }, updateUserDto, { new: true })
+        .exec();
+      if (!newUser) {
+        throw new Error('No updated user object was returned');
+      }
+      return newUser;
+    } catch (error) {
+      throw new CustomHttpException(
+        UserErrorMessages.NotAbleToUpdateUserError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+      );
     }
-    return newUser;
   }
 
   async getExistingUser(participant: AttendeeDto | string): Promise<User | null> {
-    const name = typeof participant === 'string' ? participant : participant.username;
-    const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
-    if (!existingUser) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);
+    try {
+      const name = typeof participant === 'string' ? participant : participant.username;
+      const existingUser = await this.userModel.findOne<User>({ username: name }).exec();
+      if (!existingUser) {
+        throw new Error('No user object was returned');
+      }
+      return existingUser;
+    } catch (error) {
+      throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND, error);
     }
-    return existingUser;
   }
 
-  async getExistingUserSurveys(participant: AttendeeDto | string): Promise<UsersSurveys> {
-    const existingUser = await this.getExistingUser(participant);
-    return existingUser?.usersSurveys || emptyUsersSurveys;
+  async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
+    if (surveyIds.length === 0) {
+      throw new CustomHttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const surveys = await this.surveyModel.find<Survey>({ _id: { $in: surveyIds } }).exec();
+      if (surveys == null) {
+        throw new Error('No survey was returned');
+      }
+      return surveys;
+    } catch (error) {
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async findUserSurveys(status: SurveyStatus, username: string): Promise<Survey[] | null> {
+    switch (status) {
+      case SurveyStatus.OPEN:
+        return this.findSurveys(await this.getOpenSurveyIds(username));
+      case SurveyStatus.ANSWERED:
+        return this.findSurveys(await this.getAnsweredSurveyIds(username));
+      case SurveyStatus.CREATED:
+        return this.findSurveys(await this.getCreatedSurveyIds(username));
+      default:
+        return [];
+    }
   }
 
   async getOpenSurveyIds(username: string): Promise<mongoose.Types.ObjectId[]> {
@@ -53,23 +90,17 @@ class UsersSurveysService {
     return user?.usersSurveys?.createdSurveys || [];
   }
 
-  async getAnswerIds(username: string): Promise<mongoose.Types.ObjectId[]> {
-    const user = await this.getExistingUser(username);
-    return user?.usersSurveys?.answeredSurveys || [];
-  }
-
   async getAnsweredSurveyIds(username: string): Promise<mongoose.Types.ObjectId[]> {
-    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ user: { $eq: username } }).exec();
-    if (surveyAnswers.length > 0) {
+    try {
+      const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ user: { $eq: username } }).exec();
+      if (surveyAnswers.length === 0) {
+        throw new Error('No survey-answers was returned');
+      }
       return surveyAnswers.map((answer: SurveyAnswer) => answer.survey);
+    } catch (error) {
+      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND, error);
+      return [];
     }
-    return [];
-  }
-
-  async getAnsweredSurveys(username: string): Promise<Survey[]> {
-    const answeredSurveyIds = this.getAnsweredSurveyIds(username);
-    const answeredSurveys = await this.surveyModel.find<Survey>({ _id: { $in: answeredSurveyIds } }).exec();
-    return answeredSurveys || [];
   }
 
   async addToOpenSurveys(participant: string, surveyId: mongoose.Types.ObjectId): Promise<void> {

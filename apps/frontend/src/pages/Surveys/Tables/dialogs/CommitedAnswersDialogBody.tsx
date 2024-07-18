@@ -17,11 +17,10 @@ const CommitedAnswersDialogBody = (props: SurveySubmissionProps) => {
   const { t } = useTranslation();
 
   if (!formula || !answer) {
-    return <div className="bg-gray-600 p-4 text-center">{t('survey.noAnswerWasSubmitted')}</div>;
+    return <div className="bg-gray-600 p-4 text-center">{t('survey.noAnswer')}</div>;
   }
   const surveyModel = new Model(formula);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   surveyModel.data = answer;
 
   surveyModel.mode = 'display';

@@ -1,13 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import { MenuBarEntryProps } from '@/datatypes/types';
-import {
-  UserIcon,
-  PlusIcon,
-  SurveysViewAnsweredIcon,
-  SurveysViewOpenIcon,
-  SurveysSidebarIcon,
-  // SurveysViewManagementIcon,
-} from '@/assets/icons';
+import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 
 const useSurveysPageMenu = () => {
   const [, setSearchParams] = useSearchParams();
@@ -17,15 +10,6 @@ const useSurveysPageMenu = () => {
     icon: SurveysSidebarIcon,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [
-      // TODO: check for global admin he may see all surveys
-      // {
-      //     id: 'manage-surveys',
-      //     label: 'surveys.view.management',
-      //     icon: SurveysViewManagementIcon,
-      //     action: () => {
-      //         setSearchParams({ page: 'management' });
-      //     },
-      // },
       {
         id: 'overview-open-surveys',
         label: 'surveys.view.open',

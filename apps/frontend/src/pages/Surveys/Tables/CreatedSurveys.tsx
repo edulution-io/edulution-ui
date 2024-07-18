@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
+import { useInterval } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
+import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
 import SurveysPageView from '@libs/survey/types/page-view';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
@@ -31,31 +33,38 @@ const CreatedSurveys = ({ edit }: CreatedSurveysProps) => {
   }, []);
 
   useEffect((): void => {
-    if (selectedPageView !== SurveysPageView.CREATED_SURVEYS) {
+    if (selectedPageView !== SurveysPageView.CREATED) {
       selectSurvey(undefined);
-      updateSelectedPageView(SurveysPageView.CREATED_SURVEYS);
+      updateSelectedPageView(SurveysPageView.CREATED);
     }
 
     getCreatedSurveys();
   }, []);
+
+  useInterval(() => {
+    void getCreatedSurveys();
+  }, FEED_PULL_TIME_INTERVAL);
 
   if (isFetchingCreatedSurveys) {
     return <LoadingIndicator isOpen={isFetchingCreatedSurveys} />;
   }
 
   return (
-    <SurveysPage
-      title={t('surveys.view.created')}
-      selectedSurvey={selectedSurvey}
-      surveys={createdSurveys}
-      selectSurvey={selectSurvey}
-      canDelete
-      canEdit
-      editSurvey={edit}
-      canShowResults
-      canParticipate
-      canShowCommitedAnswers
-    />
+    <>
+      {isFetchingCreatedSurveys ? <LoadingIndicator isOpen={isFetchingCreatedSurveys} /> : null}
+      <SurveysPage
+        title={t('surveys.view.created')}
+        selectedSurvey={selectedSurvey}
+        surveys={createdSurveys}
+        selectSurvey={selectSurvey}
+        canDelete
+        canEdit
+        editSurvey={edit}
+        canShowResults
+        canParticipate
+        canShowCommitedAnswers
+      />
+    </>
   );
 };
 

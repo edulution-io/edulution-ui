@@ -5,7 +5,6 @@ import { SurveyModel } from 'survey-core/typings/survey';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
-// import './ResultTableDialogBody.css';
 
 interface ResultTableDialogBodyProps {
   formula: JSON;
@@ -15,22 +14,22 @@ interface ResultTableDialogBodyProps {
 const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
   const { formula, result } = props;
 
-  const [survey, setSurvey] = useState<SurveyModel | undefined>(undefined);
-  const [vizTable, setVizTable] = useState<Tabulator | undefined>(undefined);
+  const [survey, setSurvey] = useState<SurveyModel | null>(null);
+  const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
 
-  if (!survey) {
+  if (survey == null) {
     const surveyModel = new Model(formula);
     setSurvey(surveyModel);
   }
 
-  if (!vizTable && !!survey) {
-    const surveyVizTable = new Tabulator(survey, result);
-    surveyVizTable.locale = i18next.language;
-    setVizTable(surveyVizTable);
+  if (visuTable == null && survey != null) {
+    const surveyVisuTable = new Tabulator(survey, result);
+    surveyVisuTable.locale = i18next.language;
+    setVisuTable(surveyVisuTable);
   }
 
   useEffect(() => {
-    vizTable?.render('surveyDashboardContainer');
+    visuTable?.render('surveyDashboardContainer');
 
     const component = document.getElementById('surveyDashboardContainer');
     return () => {
@@ -38,10 +37,10 @@ const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
         component.innerHTML = '';
       }
     };
-  }, [vizTable]);
+  }, [visuTable]);
 
   return (
-    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-black">
+    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-foreground">
       <div id="surveyDashboardContainer" />
     </div>
   );

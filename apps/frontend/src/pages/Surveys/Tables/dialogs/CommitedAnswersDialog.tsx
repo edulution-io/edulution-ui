@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
@@ -13,14 +12,9 @@ interface ShowSurveyAnswerDialogProps {
   answerJSON: JSON | undefined;
 
   isOpenCommitedAnswersDialog: boolean;
-  openCommitedAnswersDialog: () => void;
-  closeCommitedAnswersDialog: () => void;
-  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, userName?: string) => Promise<JSON | undefined>;
-  // user: string | undefined;
-  // selectUser: (user: string) => void;
-  // selectUser: (user: string) => void;
+  setIsOpenCommitedAnswersDialog: (state: boolean) => void;
+  getUsersCommitedAnswer: (surveyId: mongoose.Types.ObjectId, userName?: string) => Promise<void>;
   isLoading: boolean;
-  error: Error | null;
 
   trigger?: React.ReactNode;
 }
@@ -32,13 +26,9 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
     answerJSON,
 
     isOpenCommitedAnswersDialog,
-    openCommitedAnswersDialog,
-    closeCommitedAnswersDialog,
+    setIsOpenCommitedAnswersDialog,
     getUsersCommitedAnswer,
-    // user,
-    // selectUser,
     isLoading,
-    error,
 
     trigger,
   } = props;
@@ -62,7 +52,6 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
         formula={surveyJSON!}
         answer={answerJSON!}
       />
-      {error ? toast.error(t(error.message)) : null}
     </ScrollArea>
   );
 
@@ -70,8 +59,8 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
     <AdaptiveDialog
       isOpen={isOpenCommitedAnswersDialog}
       trigger={trigger}
-      handleOpenChange={isOpenCommitedAnswersDialog ? closeCommitedAnswersDialog : openCommitedAnswersDialog}
-      title={t('survey.answer')}
+      handleOpenChange={() => setIsOpenCommitedAnswersDialog(!isOpenCommitedAnswersDialog)}
+      title={t('surveys.commitedAnswersDialog.title')}
       body={getDialogBody()}
       desktopContentClassName="max-w-[75%]"
     />

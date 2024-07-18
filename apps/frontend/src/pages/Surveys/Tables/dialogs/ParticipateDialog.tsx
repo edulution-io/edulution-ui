@@ -20,9 +20,8 @@ interface ParticipateDialogProps {
   survey: SurveyDto;
 
   isOpenParticipateSurveyDialog: boolean;
-  openParticipateSurveyDialog: () => void;
-  closeParticipateSurveyDialog: () => void;
-  commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<string>;
+  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
+  commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 
@@ -37,8 +36,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     survey,
 
     isOpenParticipateSurveyDialog,
-    openParticipateSurveyDialog,
-    closeParticipateSurveyDialog,
+    setIsOpenParticipateSurveyDialog,
     commitAnswer,
     isLoading,
     error,
@@ -70,13 +68,14 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
   const onSubmit = async () => {
     const { answer, options } = form.getValues();
 
-    if (!answer) {
-      throw new Error('Invalid form data');
+    if (!answer || answer === ({} as JSON)) {
+      toast.error(t('surveys.errors.noAnswerForSubmission'));
+      return;
     }
 
     try {
       await commitAnswer(survey.id, answer, options);
-      closeParticipateSurveyDialog();
+      setIsOpenParticipateSurveyDialog(false);
       updateOpenSurveys();
       updateAnsweredSurveys();
     } catch (e) {
@@ -101,31 +100,15 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     );
   };
 
-  // const getFooter = () => (
-  //   <div className="mt-4 flex justify-end">
-  //     <form onSubmit={handleFormSubmit}>
-  //       <Button
-  //         variant="btn-collaboration"
-  //         disabled={isAnswering}
-  //         size="lg"
-  //         type="submit"
-  //       >
-  //         {t('save')}
-  //       </Button>
-  //     </form>
-  //   </div>
-  // );
-
   if (!isOpenParticipateSurveyDialog) return null;
 
   return (
     <AdaptiveDialog
       isOpen={isOpenParticipateSurveyDialog}
       trigger={trigger}
-      handleOpenChange={isOpenParticipateSurveyDialog ? closeParticipateSurveyDialog : openParticipateSurveyDialog}
-      title={t('survey.participation')}
+      handleOpenChange={() => setIsOpenParticipateSurveyDialog(!isOpenParticipateSurveyDialog)}
+      title={t('surveys.participateDialog.title')}
       body={getDialogBody()}
-      // footer={getFooter()}
       desktopContentClassName="max-w-[75%]"
     />
   );
