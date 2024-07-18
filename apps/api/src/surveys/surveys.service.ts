@@ -9,20 +9,6 @@ import { Survey, SurveyDocument } from './survey.schema';
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
-  async findOneSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
-    if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
-    const survey = this.surveyModel.findOne<Survey>({ _id: surveyId }).exec();
-    if (survey == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
-    }
-    return survey;
-  }
-
   async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
     const surveys = this.surveyModel.find<Survey>({ _id: { $in: surveyIds } }).exec();
     if (surveys == null) {
