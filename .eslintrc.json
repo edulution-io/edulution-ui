@@ -52,8 +52,6 @@
     "scripts/**"
   ],
   "rules": {
-    // Allow void statement if promise is implictly handeled
-    "no-void": ["error", { "allowAsStatement": true }],
     // Allowed console logs for debug purpose
     "no-console": ["error", { "allow": ["info", "error", "warn"] }],
     // Allow void statement if promise is implictly handeled

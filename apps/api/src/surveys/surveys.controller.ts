@@ -1,21 +1,20 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Get, Patch, Post, Param, HttpStatus, Logger } from '@nestjs/common';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import GetAnswerDto from '@libs/survey/types/get-answer.dto';
-import PushAnswerDto from '@libs/survey/types/push-answer.dto';
-import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
-import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import {
   ANSWER_ENDPOINT,
   ANSWERED_SURVEYS_ENDPOINT,
   CREATED_SURVEYS_ENDPOINT,
-  ALL_SURVEYS_ENDPOINT,
   OPEN_SURVEYS_ENDPOINT,
   RESULT_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
+import SurveyDto from '@libs/survey/types/survey.dto';
+import GetAnswerDto from '@libs/survey/types/get-answer.dto';
+import PushAnswerDto from '@libs/survey/types/push-answer.dto';
+import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
+import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -32,12 +31,9 @@ class SurveysController {
 
   @Get()
   async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
-    const { surveyId, surveyIds = [] } = findSurveyDto;
+    const { surveyIds = [] } = findSurveyDto;
     if (surveyIds.length > 0) {
       return this.surveyService.findSurveys(surveyIds);
-    }
-    if (surveyId) {
-      return this.surveyService.findOneSurvey(surveyId);
     }
     throw new CustomHttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
   }
@@ -58,11 +54,6 @@ class SurveysController {
   async getAnsweredSurveys(@GetCurrentUsername() username: string) {
     const answeredSurveyIds = await this.usersSurveysService.getAnsweredSurveyIds(username);
     return this.surveyService.findSurveys(answeredSurveyIds);
-  }
-
-  @Get(ALL_SURVEYS_ENDPOINT)
-  async getAllSurveys() {
-    return this.surveyService.getAllSurveys();
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
