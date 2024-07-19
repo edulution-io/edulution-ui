@@ -18,7 +18,10 @@
     }
   },
   "auth": {
-    "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged off in less than a minute." }
+    "errors": {
+      "TokenExpired": "Session expired",
+      "SessionExpiring": "You will be logged off in less than a minute."
+    }
   },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
@@ -87,7 +90,6 @@
     "title": "Current affairs",
     "noConferences": "No running conferences were found"
   },
-
   "filesharing": {
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
@@ -107,7 +109,8 @@
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
-      "NewFileNameRequired": "New file name is required"
+      "NewFileNameRequired": "New file name is required",
+      "NameRequired": "Name is required"
     }
   },
   "forums": {
@@ -212,8 +215,13 @@
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
-    "config": { "mfa": "Setup Two-Factor-Authentication" },
-    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" },
+    "config": {
+      "mfa": "Setup Two-Factor-Authentication"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Please scan the QR-Code and enter the TOTP:"
+    },
     "errors": {
       "currentPasswordRequired": "Current password is required",
       "newPasswordRequired": "New password is required",
@@ -338,7 +346,6 @@
       "documentFile": "New Document"
     }
   },
-
   "fileRenameContent": {
     "placeholder": "Enter new name",
     "renameYourDirectory": "Rename your directory",

@@ -12,7 +12,7 @@ import { DirectoryFile } from '@libs/filesharing/filesystem';
 import FileAction from '@libs/filesharing/FileAction';
 import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
-import { FormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -41,7 +41,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, getData } =
     getDialogBodySetup(action);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FileSharingFormValues>({
     resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
     defaultValues: initialValues || {},

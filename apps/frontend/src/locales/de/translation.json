@@ -109,7 +109,8 @@
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
-      "NewFileNameRequired": "Neuer Dateiname ist erforderlich"
+      "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
+      "NameRequired": "Name erforderlich"
     }
   },
   "forums": {
@@ -214,8 +215,13 @@
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
-    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
-    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" },
+    "config": {
+      "mfa": "Zweifaktorauthentifizierung aktivieren"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
+    },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
       "newPasswordRequired": "Neues Passwort ist erforderlich",

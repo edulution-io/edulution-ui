@@ -5,7 +5,6 @@ import DeleteContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/Dele
 import UploadContentBody from '@/pages/FileSharing/dialog/DialogBodys/UploadContentBody';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
-import FormData from '@/pages/FileSharing/dialog/FormData';
 import { UseFormReturn } from 'react-hook-form';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
 import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
@@ -15,17 +14,17 @@ import FileAction from '@libs/filesharing/FileAction';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { t } from 'i18next';
 import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
-import { FilesharingDialogProps, FormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps, FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
 interface DialogBodyConfigurationBase {
-  schema?: z.ZodSchema<FormValues>;
+  schema?: z.ZodSchema<FileSharingFormValues>;
   titleKey: string;
   submitKey: string;
-  initialValues?: FormValues;
+  initialValues?: FileSharingFormValues;
   endpoint: string;
   httpMethod: HttpMethodes;
   getData: (
-    form: UseFormReturn<FormValues>,
+    form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
     inputValues: {
       selectedItems?: DirectoryFile[];
@@ -68,7 +67,7 @@ type DialogBodyConfiguration =
   | UploadFileDialogBodyConfiguration
   | MoveDialogBodyConfiguration;
 
-const initialFormValues: FormData = {
+const initialFormValues: FileSharingFormValues = {
   filename: '',
 };
 
@@ -76,7 +75,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   createFolder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
-      filename: z.string().min(1, t('filesharing.filesharing.tooltips.folderNameRequired')),
+      filename: z.string().min(1, t('filesharing.tooltips.folderNameRequired')),
     }),
     titleKey: 'fileCreateNewContent.directoryDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
@@ -92,7 +91,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   createFile: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
-      filename: z.string().min(1, t('filesharing.filesharing.tooltips.FileNameRequired')),
+      filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
     }),
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
@@ -120,7 +119,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   name: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
-      filename: z.string().min(1, t('filesharing.filesharing.tooltips.NewFileNameRequired')),
+      filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
     }),
     titleKey: 'fileRenameContent.rename',
     submitKey: 'fileRenameContent.rename',
