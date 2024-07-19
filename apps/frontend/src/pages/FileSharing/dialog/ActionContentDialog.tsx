@@ -7,12 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
-import { z } from 'zod';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
 import FileAction from '@libs/filesharing/FileAction';
 import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
+import { FormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -41,10 +41,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, getData } =
     getDialogBodySetup(action);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type FormDataType = typeof schema extends z.ZodSchema<any> ? z.infer<typeof schema> : Record<string, unknown>;
-
-  const form = useForm<FormDataType>({
+  const form = useForm<FormValues>({
     resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
     defaultValues: initialValues || {},
@@ -59,7 +56,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const onSubmit = async () => {
     if (schema) {
       const filename = form.getValues('filename');
-      setUserInput(filename as string);
+      setUserInput(filename);
     }
 
     const data = await getData(form, currentPath, { selectedItems, moveItemsToPath, selectedFileType, filesToUpload });

@@ -15,17 +15,17 @@ import FileAction from '@libs/filesharing/FileAction';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { t } from 'i18next';
 import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
-import { FilesharingDialogProps } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps, FormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
 interface DialogBodyConfigurationBase {
-  schema?: z.ZodSchema<FormData>;
+  schema?: z.ZodSchema<FormValues>;
   titleKey: string;
   submitKey: string;
-  initialValues?: FormData;
+  initialValues?: FormValues;
   endpoint: string;
   httpMethod: HttpMethodes;
   getData: (
-    form: UseFormReturn<Record<string, unknown>>,
+    form: UseFormReturn<FormValues>,
     currentPath: string,
     inputValues: {
       selectedItems?: DirectoryFile[];
@@ -102,7 +102,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     getData: async (form, currentPath, inputValues) => {
       const { selectedFileType } = inputValues;
       const fileType = selectedFileType?.extension || '';
-      const filename = String(form.getValues<string>('filename'));
+      const filename = String(form.getValues('filename'));
       const filenameWithExtension = filename + fileType;
       const generate = selectedFileType?.generate || '';
       const generateFileMethod = generateFile[generate];

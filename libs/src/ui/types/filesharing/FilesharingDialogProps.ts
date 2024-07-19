@@ -1,9 +1,10 @@
 import { UseFormReturn } from 'react-hook-form';
+import { z } from 'zod';
 
-export type FormValues = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
-};
+export const schema = z.object({
+  filename: z.string().nonempty('Filename is required'),
+});
+export type FormValues = z.infer<typeof schema>;
 
 export type FilesharingDialogProps = {
   form: UseFormReturn<FormValues>;
