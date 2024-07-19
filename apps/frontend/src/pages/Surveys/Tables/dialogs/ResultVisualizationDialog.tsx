@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -15,8 +14,7 @@ interface ResultVisualizationDialogProps {
   setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
   getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<void>;
   result: JSON[] | undefined;
-  isLoadingResult: boolean;
-  error: Error | null;
+  isLoading: boolean;
 
   trigger?: React.ReactNode;
 }
@@ -28,8 +26,7 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
     setIsOpenPublicResultsVisualisationDialog,
     getSurveyResult,
     result,
-    isLoadingResult,
-    error,
+    isLoading,
     trigger,
   } = props;
 
@@ -42,8 +39,6 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
   }, [isOpenPublicResultsVisualisationDialog, survey]);
 
   const getDialogBody = () => {
-    if (isLoadingResult) return <LoadingIndicator isOpen={isLoadingResult} />;
-
     if (!survey?.formula) {
       return (
         <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
@@ -65,24 +60,22 @@ const ResultVisualizationDialog = (props: ResultVisualizationDialogProps) => {
           formula={survey.formula}
           result={result}
         />
-        {error ? toast.error(t(error.message)) : null}
       </ScrollArea>
     );
   };
 
-  if (!isOpenPublicResultsVisualisationDialog) {
-    return null;
-  }
-
-  return (
-    <AdaptiveDialog
-      isOpen={isOpenPublicResultsVisualisationDialog}
-      trigger={trigger}
-      handleOpenChange={() => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog)}
-      title={t('surveys.resultChartDialog.title')}
-      body={getDialogBody()}
-    />
-  );
+  return isOpenPublicResultsVisualisationDialog ? (
+    <>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      <AdaptiveDialog
+        isOpen={isOpenPublicResultsVisualisationDialog}
+        trigger={trigger}
+        handleOpenChange={() => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog)}
+        title={t('surveys.resultChartDialog.title')}
+        body={getDialogBody()}
+      />
+    </>
+  ) : null;
 };
 
 export default ResultVisualizationDialog;

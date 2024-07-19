@@ -23,7 +23,6 @@ interface ParticipateDialogProps {
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<void>;
   isLoading: boolean;
-  error: Error | null;
 
   updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
@@ -39,7 +38,6 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
     setIsOpenParticipateSurveyDialog,
     commitAnswer,
     isLoading,
-    error,
 
     updateOpenSurveys,
     updateAnsweredSurveys,
@@ -87,30 +85,29 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
 
   const getDialogBody = () => {
     if (!survey) return null;
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
-      <>
-        <ParticipateDialogBody
-          formula={survey.formula}
-          handleFormSubmit={handleFormSubmit}
-          form={form}
-        />
-        {error ? toast.error(t(error.message)) : null}
-      </>
+      <ParticipateDialogBody
+        formula={survey.formula}
+        handleFormSubmit={handleFormSubmit}
+        form={form}
+      />
     );
   };
 
-  if (!isOpenParticipateSurveyDialog) return null;
-
   return (
-    <AdaptiveDialog
-      isOpen={isOpenParticipateSurveyDialog}
-      trigger={trigger}
-      handleOpenChange={() => setIsOpenParticipateSurveyDialog(!isOpenParticipateSurveyDialog)}
-      title={t('surveys.participateDialog.title')}
-      body={getDialogBody()}
-      desktopContentClassName="max-w-[75%]"
-    />
+    <>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isOpenParticipateSurveyDialog ? (
+        <AdaptiveDialog
+          isOpen={isOpenParticipateSurveyDialog}
+          trigger={trigger}
+          handleOpenChange={() => setIsOpenParticipateSurveyDialog(!isOpenParticipateSurveyDialog)}
+          title={t('surveys.participateDialog.title')}
+          body={getDialogBody()}
+          desktopContentClassName="max-w-[75%]"
+        />
+      ) : null}
+    </>
   );
 };
 

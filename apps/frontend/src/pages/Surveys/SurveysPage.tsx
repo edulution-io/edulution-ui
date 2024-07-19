@@ -5,6 +5,11 @@ import OpenSurveys from '@/pages/Surveys/Tables/OpenSurveys';
 import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys';
 import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys';
 import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ResultTable from '@/pages/Surveys/Tables/dialogs/ResultTable';
+import ResultVisualization from '@/pages/Surveys/Tables/dialogs/ResultVisualization';
+import Participate from '@/pages/Surveys/Tables/dialogs/Participate';
+import CommitedAnswer from '@/pages/Surveys/Tables/dialogs/CommitedAnswer';
 
 const SurveysPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,7 +35,19 @@ const SurveysPage = () => {
     }
   };
 
-  return renderPage();
+  return (
+    <>
+      {renderPage()}
+      <TooltipProvider>
+        <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+          <ResultTable />
+          <ResultVisualization />
+          <Participate />
+          <CommitedAnswer />
+        </div>
+      </TooltipProvider>
+    </>
+  );
 };
 
 export default SurveysPage;

@@ -19,7 +19,6 @@ interface CommitedAnswersDialogStore {
   selectUser: (user: string) => void;
   answer: JSON | undefined;
   isLoading: boolean;
-  error: Error | null;
 
   reset: () => void;
 }
@@ -30,7 +29,6 @@ const initialState: Partial<CommitedAnswersDialogStore> = {
   user: undefined,
   answer: undefined,
   isLoading: false,
-  error: null,
 };
 
 const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) => ({
@@ -42,14 +40,14 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
   setIsOpenCommitedAnswersDialog: (state: boolean) => set({ isOpenCommitedAnswersDialog: state }),
   selectUser: (userName: string) => set({ user: userName }),
   getCommittedSurveyAnswers: async (surveyId: mongoose.Types.ObjectId, participant?: string): Promise<void> => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true });
     try {
       const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
       set({ answer, isLoading: false });
     } catch (error) {
-      set({ answer: undefined, error: error instanceof Error ? error : null, isLoading: false });
+      set({ answer: undefined, isLoading: false });
       handleApiError(error, set);
     }
   },

@@ -41,10 +41,6 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
     }
   }, [isOpenCommitedAnswersDialog, surveyId]);
 
-  if (isLoading) {
-    return <LoadingIndicator isOpen={isLoading} />;
-  }
-
   const getDialogBody = () => (
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
     <ScrollArea>
@@ -56,14 +52,17 @@ const CommitedAnswersDialog = (props: ShowSurveyAnswerDialogProps) => {
   );
 
   return (
-    <AdaptiveDialog
-      isOpen={isOpenCommitedAnswersDialog}
-      trigger={trigger}
-      handleOpenChange={() => setIsOpenCommitedAnswersDialog(!isOpenCommitedAnswersDialog)}
-      title={t('surveys.commitedAnswersDialog.title')}
-      body={getDialogBody()}
-      desktopContentClassName="max-w-[75%]"
-    />
+    <>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      <AdaptiveDialog
+        isOpen={isOpenCommitedAnswersDialog}
+        trigger={trigger}
+        handleOpenChange={() => setIsOpenCommitedAnswersDialog(!isOpenCommitedAnswersDialog)}
+        title={t('surveys.commitedAnswersDialog.title')}
+        body={getDialogBody()}
+        desktopContentClassName="max-w-[75%]"
+      />
+    </>
   );
 };
 

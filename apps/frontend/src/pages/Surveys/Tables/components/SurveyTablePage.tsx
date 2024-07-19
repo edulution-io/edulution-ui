@@ -2,7 +2,7 @@ import React from 'react';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
-import SurveysTablesDialogs from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
+import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
 
 interface SurveysTablePageProps {
   title: string;
@@ -44,7 +44,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         />
       </ScrollArea>
       {selectedSurvey ? (
-        <SurveysTablesDialogs
+        <SurveysTablesFloatingButtons
           canEdit={canEdit}
           editSurvey={editSurvey}
           canDelete={canDelete}

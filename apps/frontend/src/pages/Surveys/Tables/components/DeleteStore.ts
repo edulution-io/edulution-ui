@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
@@ -39,9 +38,6 @@ const useDeleteStore = create<DeleteSurveyStore>((set) => ({
       set({ isLoading: false });
     } catch (error) {
       set({ error: error instanceof AxiosError ? error : null, isLoading: false });
-      toast.error(
-        error instanceof AxiosError ? `${error.name}: ${error.message}` : 'Error while posting the answer for a survey',
-      );
       handleApiError(error, set);
       throw error;
     }

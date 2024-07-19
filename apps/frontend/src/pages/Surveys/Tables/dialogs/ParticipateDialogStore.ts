@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
-import { AxiosError } from 'axios';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
@@ -15,7 +14,6 @@ interface ParticipateDialogStore {
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   answerSurvey: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<void>;
   isLoading: boolean;
-  error: Error | null;
 
   reset: () => void;
 }
@@ -24,7 +22,6 @@ const initialState: Partial<ParticipateDialogStore> = {
   selectedSurvey: undefined,
   isOpenParticipateSurveyDialog: false,
   isLoading: false,
-  error: null,
 };
 
 const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
@@ -35,7 +32,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
 
   setIsOpenParticipateSurveyDialog: (state: boolean) => set({ isOpenParticipateSurveyDialog: state }),
   answerSurvey: async (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent): Promise<void> => {
-    set({ error: null, isLoading: true });
+    set({ isLoading: true });
     try {
       // Display the "Saving..." message (pass a string value to display a custom message)
       options?.showSaveInProgress();
@@ -51,7 +48,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
     } catch (error) {
       // Display the "Error" message (pass a string value to display a custom message)
       options?.showSaveError();
-      set({ error: error instanceof AxiosError ? error : null, isLoading: false });
+      set({ isLoading: false });
       handleApiError(error, set);
     }
   },

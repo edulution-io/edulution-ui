@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import SurveysPageView from '@libs/survey/types/page-view';
 import useSurveysPageHook from '@libs/survey/use-surveys-page-hook';
-import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
+import SurveyTablePage from '@/pages/Surveys/Tables/components/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
@@ -32,7 +32,7 @@ const OpenSurveys = () => {
   return (
     <>
       {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
-      <SurveysPage
+      <SurveyTablePage
         title={t('surveys.view.open')}
         selectSurvey={selectSurvey}
         surveys={openSurveys || []}

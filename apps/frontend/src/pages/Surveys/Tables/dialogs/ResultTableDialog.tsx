@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
@@ -17,7 +16,6 @@ interface ShowSurveyResultsTableDialogProps {
   getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<void>;
   result: JSON[] | undefined;
   isLoading: boolean;
-  error: Error | null;
 
   trigger?: React.ReactNode;
 }
@@ -32,7 +30,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
     result,
     isLoading,
     trigger,
-    error,
   } = props;
 
   const { t } = useTranslation();
@@ -65,25 +62,23 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
           formula={survey.formula}
           result={result}
         />
-        {error ? toast.error(t(error.message)) : null}
       </ScrollArea>
     );
   };
 
-  if (!isOpenPublicResultsTableDialog) return null;
-
-  if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-
-  return (
-    <AdaptiveDialog
-      isOpen={isOpenPublicResultsTableDialog}
-      trigger={trigger}
-      handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
-      title={t('surveys.resultTableDialog.title')}
-      body={getDialogBody()}
-      desktopContentClassName="max-h-[75vh] max-w-[85%]"
-    />
-  );
+  return isOpenPublicResultsTableDialog ? (
+    <>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      <AdaptiveDialog
+        isOpen={isOpenPublicResultsTableDialog}
+        trigger={trigger}
+        handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
+        title={t('surveys.resultTableDialog.title')}
+        body={getDialogBody()}
+        desktopContentClassName="max-h-[75vh] max-w-[85%]"
+      />
+    </>
+  ) : null;
 };
 
 export default ResultTableDialog;

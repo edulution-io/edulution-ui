@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiDelete } from 'react-icons/fi';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import useDeleteStore from '@/pages/Surveys/Tables/components/DeleteStore';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
@@ -21,7 +21,7 @@ const DeleteSurveyButton = () => {
 
   return (
     <FloatingActionButton
-      icon={FiDelete}
+      icon={MdOutlineDeleteOutline}
       text={t('common.delete')}
       onClick={async () => {
         await deleteSurvey([survey.id]);

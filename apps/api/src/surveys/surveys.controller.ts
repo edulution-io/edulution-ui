@@ -5,7 +5,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SurveyStatus from '@libs/survey/types/survey-status-enum';
-import GetAnswerDto from '@libs/survey/types/get-answer.dto';
+import AnswerDto from '@libs/survey/types/answer.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import { Survey } from './survey.schema';
@@ -35,9 +35,9 @@ class SurveysController {
   }
 
   @Post(ANSWER_ENDPOINT)
-  async getCommittedSurveyAnswers(@Body() getAnswerDto: GetAnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, participant = username } = getAnswerDto;
-    return this.surveyAnswerService.getPrivateAnswer(surveyId, participant);
+  async getCommittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
+    const { surveyId, attendee = username } = getAnswerDto;
+    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee);
   }
 
   @Post()
