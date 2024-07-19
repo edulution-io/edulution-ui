@@ -15,8 +15,8 @@ import {
 } from '@/components/ui/DropdownMenuSH';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
-import useLmnApiStore from '@/store/lmnApiStore';
 import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -25,13 +25,17 @@ interface DirectoryBreadcrumbProps {
 }
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate, style }) => {
-  const segments = path.split('/').filter(Boolean);
+  const segments = path
+    .split('/')
+    .map((segment) => segment.replace(/%20/g, ' '))
+    .filter(Boolean);
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
-  const { user } = useLmnApiStore();
-  const homePath = `${user?.sophomorixRole}s/${user?.name}`;
+  const { user } = useUserStore();
+  const homePath = `${user?.ldapGroups.role}s/${user?.name}`;
   const filteredSegment = filterSegments(segments);
+
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
     onNavigate(pathTo);

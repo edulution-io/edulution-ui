@@ -15,7 +15,7 @@ import FileAction from '@libs/filesharing/FileAction';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { t } from 'i18next';
 import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
-import FilesharingDialogProps from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FormData>;
