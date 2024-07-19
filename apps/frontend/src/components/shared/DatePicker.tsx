@@ -2,6 +2,9 @@
 
 import * as React from 'react';
 import { format } from 'date-fns';
+import { enUS, de, fr } from 'date-fns/locale';
+import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import cn from '@/lib/utils';
@@ -17,6 +20,20 @@ interface DatePickerProps {
 const DatePicker = (props: DatePickerProps) => {
   const { selected, onSelect } = props;
 
+  const { t } = useTranslation();
+
+  const getLocaleFormat = () => {
+    switch (i18next.language) {
+      case 'de':
+        return de;
+      case 'fr':
+        return fr;
+      default:
+        return enUS;
+    }
+  };
+  const locale = getLocaleFormat();
+
   return (
     <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto text-gray-900">
       <Popover>
@@ -29,7 +46,7 @@ const DatePicker = (props: DatePickerProps) => {
             )}
           >
             <CalendarIcon className="mr-2 h-6 w-6" />
-            {selected ? format(selected, 'PPP') : `undefined`}
+            {selected ? format(selected, 'PPP', { locale }) : t(`common.select`)}
           </ButtonSH>
         </PopoverTrigger>
         <PopoverContent className="w-auto bg-gray-100 p-0">
@@ -37,6 +54,7 @@ const DatePicker = (props: DatePickerProps) => {
             mode="single"
             selected={selected}
             onSelect={onSelect}
+            locale={locale}
             classNames={{
               day_selected: 'border border-gray-200 text-gray-400',
             }}

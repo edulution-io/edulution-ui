@@ -304,6 +304,7 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
+    "select": "Select...",
     "clearSelection": "Clear selection",
     "edit": "Edit",
     "delete": "Delete",

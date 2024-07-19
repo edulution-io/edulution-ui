@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect } from 'react';
-import { useInterval } from 'usehooks-ts';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
 import SurveysPageView from '@libs/survey/types/page-view';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useSurveysPageHook from '@libs/survey/use-surveys-page-hook';
 import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 interface CreatedSurveysProps {
   edit: () => void;
 }
 
-const CreatedSurveys = ({ edit }: CreatedSurveysProps) => {
+const CreatedSurveys = (props: CreatedSurveysProps) => {
+  const { edit } = props;
   const {
     selectedPageView,
     updateSelectedPageView,
@@ -24,30 +24,15 @@ const CreatedSurveys = ({ edit }: CreatedSurveysProps) => {
 
   const { t } = useTranslation();
 
-  const getCreatedSurveys = useCallback(() => {
-    if (!createdSurveys || createdSurveys.length === 0) {
-      if (!isFetchingCreatedSurveys) {
-        void updateCreatedSurveys();
-      }
-    }
-  }, []);
-
-  useEffect((): void => {
-    if (selectedPageView !== SurveysPageView.CREATED) {
-      selectSurvey(undefined);
-      updateSelectedPageView(SurveysPageView.CREATED);
-    }
-
-    getCreatedSurveys();
-  }, []);
-
-  useInterval(() => {
-    void getCreatedSurveys();
-  }, FEED_PULL_TIME_INTERVAL);
-
-  if (isFetchingCreatedSurveys) {
-    return <LoadingIndicator isOpen={isFetchingCreatedSurveys} />;
-  }
+  useSurveysPageHook(
+    selectedPageView,
+    SurveysPageView.CREATED,
+    updateSelectedPageView,
+    selectSurvey,
+    updateCreatedSurveys,
+    isFetchingCreatedSurveys,
+    createdSurveys,
+  );
 
   return (
     <>

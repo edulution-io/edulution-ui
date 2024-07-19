@@ -53,9 +53,8 @@ class UsersSurveysService {
 
   async findSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<Survey[] | null> {
     if (surveyIds.length === 0) {
-      throw new CustomHttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
+      return null;
     }
-
     try {
       const surveys = await this.surveyModel.find<Survey>({ _id: { $in: surveyIds } }).exec();
       if (surveys == null) {

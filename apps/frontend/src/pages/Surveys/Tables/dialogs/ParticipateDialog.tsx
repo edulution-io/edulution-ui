@@ -68,7 +68,7 @@ const ParticipateDialog = (props: ParticipateDialogProps) => {
   const onSubmit = async () => {
     const { answer, options } = form.getValues();
 
-    if (!answer || answer === ({} as JSON)) {
+    if (!answer) {
       toast.error(t('surveys.errors.noAnswerForSubmission'));
       return;
     }

@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
+import SurveysPageView from '@libs/survey/types/page-view';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 
@@ -15,7 +16,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.open',
         icon: SurveysViewOpenIcon,
         action: () => {
-          setSearchParams({ page: 'open' });
+          setSearchParams({ page: SurveysPageView.OPEN });
         },
       },
       {
@@ -23,7 +24,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.answered',
         icon: SurveysViewAnsweredIcon,
         action: () => {
-          setSearchParams({ page: 'answered' });
+          setSearchParams({ page: SurveysPageView.ANSWERED });
         },
       },
       {
@@ -31,7 +32,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.created',
         icon: UserIcon,
         action: () => {
-          setSearchParams({ page: 'created' });
+          setSearchParams({ page: SurveysPageView.CREATED });
         },
       },
       {
@@ -39,7 +40,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.editor',
         icon: PlusIcon,
         action: () => {
-          setSearchParams({ page: 'editor' });
+          setSearchParams({ page: SurveysPageView.CREATOR });
         },
       },
     ],

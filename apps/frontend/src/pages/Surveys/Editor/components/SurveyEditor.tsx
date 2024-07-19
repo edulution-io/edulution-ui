@@ -1,6 +1,5 @@
 import React from 'react';
 import i18next from 'i18next';
-import { toast } from 'sonner';
 import { UseFormReturn } from 'react-hook-form';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
@@ -17,14 +16,13 @@ interface SurveyEditorProps {
   form: UseFormReturn<any>;
   saveNumber: number;
   formula?: JSON;
-  error: Error | null;
 }
 
 editorLocalization.defaultLocale = i18next.language || 'en';
 localization.currentLocale = i18next.language || 'en';
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form, saveNumber, formula, error } = props;
+  const { form, saveNumber, formula } = props;
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -97,16 +95,13 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   return (
-    <>
-      <SurveyCreatorComponent
-        creator={creator}
-        style={{
-          height: '85vh',
-          width: '100%',
-        }}
-      />
-      {error ? toast.error(error.message) : null}
-    </>
+    <SurveyCreatorComponent
+      creator={creator}
+      style={{
+        height: '85vh',
+        width: '100%',
+      }}
+    />
   );
 };
 

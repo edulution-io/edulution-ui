@@ -8,7 +8,6 @@ import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import GetAnswerDto from '@libs/survey/types/get-answer.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
-import FindSurveyDto from '@libs/survey/types/find-survey.dto';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -24,13 +23,9 @@ class SurveysController {
   ) {}
 
   @Get()
-  async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
-    const { surveyIds = [] } = findSurveyDto;
-    return this.usersSurveysService.findSurveys(surveyIds);
-  }
-
-  @Get()
   async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
+    Logger.log(`status: ${status} username: ${username}`, SurveysController.name);
+
     return this.usersSurveysService.findUserSurveys(status, username);
   }
 

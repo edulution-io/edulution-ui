@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
-import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
+import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyDto from '@libs/survey/types/survey.dto';
@@ -17,7 +17,12 @@ import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 
-const SurveyEditorForm = () => {
+interface SurveyEditorFormProps {
+  editMode?: boolean;
+}
+
+const SurveyEditorForm = (props: SurveyEditorFormProps) => {
+  const { editMode = false } = props;
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
@@ -26,13 +31,16 @@ const SurveyEditorForm = () => {
 
     updateOrCreateSurvey,
     isLoading,
-    error,
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
-  const initialFormValues: SurveyDto = useMemo(() => new InitialSurveyForm(selectedSurvey), [selectedSurvey]);
 
   const emptyFormValues: SurveyDto = new EmptySurveyForm();
+
+  const initialFormValues: SurveyDto = useMemo(
+    () => (editMode && selectedSurvey ? new InitialSurveyForm(selectedSurvey) : emptyFormValues),
+    [selectedSurvey],
+  );
 
   const formSchema = z.object({
     // SURVEY
@@ -65,7 +73,7 @@ const SurveyEditorForm = () => {
   const form = useForm<SurveyDto>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
-    defaultValues: selectedSurvey ? initialFormValues : emptyFormValues,
+    defaultValues: initialFormValues,
   });
 
   const saveSurvey = async () => {
@@ -109,7 +117,6 @@ const SurveyEditorForm = () => {
         form={form}
         formula={formulaWatcher}
         saveNumber={saveNoWatcher}
-        error={error}
       />
     ),
     [formulaWatcher, saveNoWatcher],
@@ -133,11 +140,13 @@ const SurveyEditorForm = () => {
             text={t('survey.editor.new')}
             onClick={() => form.reset(emptyFormValues)}
           />
-          <FloatingActionButton
-            icon={FiFileMinus}
-            text={t('survey.editor.abort')}
-            onClick={() => form.reset(initialFormValues)}
-          />
+          {editMode ? (
+            <FloatingActionButton
+              icon={FiFileMinus}
+              text={t('survey.editor.abort')}
+              onClick={() => form.reset(initialFormValues)}
+            />
+          ) : null}
         </div>
       </TooltipProvider>
       <SaveSurveyDialog

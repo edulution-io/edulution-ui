@@ -74,6 +74,11 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const isAnonymousWatched = watch('isAnonymous') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
+  const handleExpirationDateChange = (value: Date | undefined) =>
+    setValue('expirationDate', value /* , { shouldValidate: true } */);
+  const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setValue('expirationTime', e.target.value /* , { shouldValidate: true } */);
+
   return (
     <>
       <SearchUsersOrGroups
@@ -92,7 +97,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         <div className="ml-2">
           <DatePicker
             selected={expirationDateWatched}
-            onSelect={(value: Date | undefined) => setValue('expirationDate', value /* , { shouldValidate: true } */)}
+            onSelect={handleExpirationDateChange}
           />
         </div>
       </div>
@@ -100,9 +105,14 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         {t('common.time')}
         <Input
           type="time"
-          value={expirationTimeWatched}
-          onChange={(e) => setValue('expirationTime', e.target.value, { shouldValidate: true })}
-          className="ml-2"
+          value={expirationTimeWatched || '00:00'}
+          onChange={handleExpirationTimeChange}
+          variant="default"
+          className={cn(
+            'ml-2',
+            { 'text-gray-300': !expirationTimeWatched },
+            { 'text-foreground': expirationTimeWatched },
+          )}
         />
       </div>
       <p className={cn('text-m font-bold', 'text-foreground')}>{t('surveys.saveDialog.settingsFlags')}</p>
