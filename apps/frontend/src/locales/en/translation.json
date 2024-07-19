@@ -121,12 +121,12 @@
   },
   "desktopdeployment": {
     "title": "DESKTOP",
-    "topic": "Desktop-Bereitstellung",
+    "topic": "Desktop Deployment",
     "description": "Here you can connect to your virtual desktop.",
     "sidebar": "Desktop",
     "close": "Close connection",
     "connect": "Connect",
-    "reload": "Neu laden",
+    "reload": "Reload",
     "error": {
       "title": "Connection error",
       "description": "Please check your network connection and try again."
@@ -138,6 +138,7 @@
     "client": "Client available",
     "errors": {
       "GuacamoleNotResponding": "RDP service not available.",
+      "GuacamoleUserNotFound": "Username or password could not be found.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
       "SessionNotFound": "Session not found."
     }

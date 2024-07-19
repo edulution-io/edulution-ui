@@ -1,8 +1,7 @@
 type GuacRequest = {
-  id: number;
   dataSource: string;
-  token: string;
-  hostname: string;
+  authToken: string;
+  hostname?: string;
 };
 
 export default GuacRequest;

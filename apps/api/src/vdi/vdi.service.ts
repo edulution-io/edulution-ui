@@ -5,12 +5,24 @@ import {
   Attributes,
   LmnVdiRequest,
   GuacamoleConnections,
+  GuacRequest,
+  VdiConnectionRequest,
+  VirtualMachines,
 } from '@libs/desktopdeployment/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { getDecryptedPassword } from '@libs/common/utils';
 import UsersService from '../users/users.service';
+
+const {
+  LMN_VDI_API_SECRET,
+  LMN_VDI_API_URL,
+  GUACAMOLE_API_URL,
+  GUACAMOLE_API_PASSWORD,
+  GUACAMOLE_API_USER,
+  EDUI_ENCRYPTION_KEY,
+} = process.env;
 
 @Injectable()
 class VdiService {
@@ -20,46 +32,36 @@ class VdiService {
 
   private vdiId = '';
 
-  private lmnVdiApiSecret = process.env.LMN_VDI_API_SECRET;
-
-  private lmnVdiApiUrl = process.env.LMN_VDI_API_URL;
-
-  private gucamoleApiUrl = process.env.GUACAMOLE_API_URL;
-
-  private guacamoleApiPwd = process.env.GUACAMOLE_API_PASSWORD;
-
-  private guacamoleApiUser = process.env.GUACAMOLE_API_USER;
-
-  private encryptionKey = process.env.EDUI_ENCRYPTION_KEY as string;
-
   constructor(private usersService: UsersService) {
     this.guacamoleApi = axios.create({
-      baseURL: `${this.gucamoleApiUrl}/guacamole/api`,
+      baseURL: `${GUACAMOLE_API_URL}/guacamole/api`,
     });
     this.lmnVdiApi = axios.create({
-      baseURL: `${this.lmnVdiApiUrl}/api`,
+      baseURL: `${LMN_VDI_API_URL}/api`,
       headers: {
-        'LMN-API-Secret': this.lmnVdiApiSecret,
+        'LMN-API-Secret': LMN_VDI_API_SECRET,
       },
     });
   }
 
   static createRDPConnection(
+    username: string,
     customParams: Partial<Parameters> = {},
     customAttributes: Partial<Attributes> = {},
   ): RDPConnection {
     const rdpConnection = new RDPConnection();
+    rdpConnection.name = `${username}`;
     rdpConnection.parameters = { ...rdpConnection.parameters, ...customParams };
     rdpConnection.attributes = { ...rdpConnection.attributes, ...customAttributes };
     return rdpConnection;
   }
 
-  static getIdentifierByName(data: GuacamoleConnections, username: string): string | null {
-    const items = Object.values(data);
-    const item = items.find((itm) => itm.name === username);
+  static getConnectionIdentifierByUsername(connections: GuacamoleConnections, username: string): string | null {
+    const connectionValues = Object.values(connections);
+    const connection = connectionValues.find((itm) => itm.name === username);
 
-    if (item) {
-      return item.identifier;
+    if (connection) {
+      return connection.identifier;
     }
 
     return null;
@@ -67,14 +69,14 @@ class VdiService {
 
   async authenticateVdi() {
     try {
-      const response = await this.guacamoleApi.post(
+      const response = await this.guacamoleApi.post<GuacRequest>(
         '/tokens',
-        { username: this.guacamoleApiUser, password: this.guacamoleApiPwd },
+        { username: GUACAMOLE_API_USER, password: GUACAMOLE_API_PASSWORD },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         },
       );
-      const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
+      const { authToken, dataSource } = response.data;
 
       return { authToken, dataSource };
     } catch (e) {
@@ -82,11 +84,13 @@ class VdiService {
     }
   }
 
-  async getConnections(body: { dataSource: string; token: string }, username: string) {
+  async getConnection(body: GuacRequest, username: string) {
     try {
-      const { dataSource, token } = body;
-      const response = await this.guacamoleApi.get(`/session/data/${dataSource}/connections?token=${token}`);
-      const identifier = VdiService.getIdentifierByName(response.data as GuacamoleConnections, username);
+      const { dataSource, authToken } = body;
+      const response = await this.guacamoleApi.get<GuacamoleConnections>(
+        `/session/data/${dataSource}/connections?token=${authToken}`,
+      );
+      const identifier = VdiService.getConnectionIdentifierByUsername(response.data, username);
       if (identifier) this.vdiId = identifier;
       return identifier;
     } catch (e) {
@@ -94,56 +98,57 @@ class VdiService {
     }
   }
 
-  async createOrUpdateSession(
-    body: { id: number; dataSource: string; token: string; hostname: string },
-    username: string,
-  ) {
-    const response = await this.getConnections(body, username);
+  async createOrUpdateSession(body: GuacRequest, username: string) {
+    const response = await this.getConnection(body, username);
     if (response != null) {
       return this.updateSession(body, username);
     }
     return this.createSession(body, username);
   }
 
-  async createSession(body: { dataSource: string; token: string; hostname: string }, username: string) {
+  async findPwByUsername(username: string) {
+    const user = await this.usersService.findOne(username);
+    if (!user || !user.password || !EDUI_ENCRYPTION_KEY)
+      throw new CustomHttpException(VdiErrorMessages.GuacamoleUserNotFound, HttpStatus.BAD_GATEWAY);
+    const encryptedPassword = user.password;
+    const password = getDecryptedPassword(encryptedPassword, EDUI_ENCRYPTION_KEY);
+    return password;
+  }
+
+  async createSession(body: GuacRequest, username: string) {
+    const { dataSource, authToken, hostname } = body;
+    const password = await this.findPwByUsername(username);
     try {
-      const { dataSource, token, hostname } = body;
-      const user = await this.usersService.findOne(username);
-      const encryptedPassword = user?.password as string;
-      const password = getDecryptedPassword(encryptedPassword, this.encryptionKey);
-      const requestBody = VdiService.createRDPConnection({
+      const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,
         password,
       });
 
-      requestBody.name = `${username}`;
-
-      const response = await this.guacamoleApi.post(
-        `/session/data/${dataSource}/connections?token=${token}`,
-        requestBody,
+      const response = await this.guacamoleApi.post<GuacRequest>(
+        `/session/data/${dataSource}/connections?token=${authToken}`,
+        rdpConnection,
       );
-      return response.data as AxiosResponse;
+      return response.data;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async updateSession(body: { dataSource: string; token: string; hostname: string }, username: string) {
+  async updateSession(body: GuacRequest, username: string) {
     try {
-      const { dataSource, token, hostname } = body;
-      const user = await this.usersService.findOne(username);
-      const encryptedPassword = user?.password as string;
-      const password = getDecryptedPassword(encryptedPassword, this.encryptionKey);
-      const requestBody = VdiService.createRDPConnection({
+      const { dataSource, authToken, hostname } = body;
+      const password = await this.findPwByUsername(username);
+      const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,
         password,
       });
 
-      requestBody.name = `${username}`;
-
-      await this.guacamoleApi.put(`/session/data/${dataSource}/connections/${this.vdiId}?token=${token}`, requestBody);
+      await this.guacamoleApi.put<GuacRequest>(
+        `/session/data/${dataSource}/connections/${this.vdiId}?token=${authToken}`,
+        rdpConnection,
+      );
 
       return body;
     } catch (e) {
@@ -153,8 +158,8 @@ class VdiService {
 
   async requestVdi(body: LmnVdiRequest) {
     try {
-      const response = await this.lmnVdiApi.post('/connection/request', body);
-      return response.data as AxiosResponse;
+      const response = await this.lmnVdiApi.post<VdiConnectionRequest>('/connection/request', body);
+      return response.data;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);
     }
@@ -162,8 +167,8 @@ class VdiService {
 
   async getVirtualMachines() {
     try {
-      const response = await this.lmnVdiApi.get('/status/clones');
-      return response.data as AxiosResponse;
+      const response = await this.lmnVdiApi.get<VirtualMachines>('/status/clones');
+      return response.data;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);
     }

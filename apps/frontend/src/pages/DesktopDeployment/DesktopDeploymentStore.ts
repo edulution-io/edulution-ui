@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import eduApi from '@/api/eduApi';
-import { Connections, VdiConnectionRequest, VirtualMachines } from '@libs/desktopdeployment/types';
+import { Connections, GuacRequest, VdiConnectionRequest, VirtualMachines } from '@libs/desktopdeployment/types';
 
 interface DesktopDeploymentStore {
   connectionEnabled: boolean;
@@ -24,7 +24,7 @@ interface DesktopDeploymentStore {
   setGuacId: (guacId: string) => void;
   setVirtualMachines: (virtualMachines: VirtualMachines) => void;
   authenticate: () => Promise<void>;
-  getConnections: () => Promise<void>;
+  getConnection: () => Promise<void>;
   postRequestVdi: (group: string) => Promise<void>;
   getVirtualMachines: () => Promise<void>;
   createOrUpdateConnection: () => Promise<void>;
@@ -61,9 +61,9 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   authenticate: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get(EDU_API_VDI_ENDPOINT);
+      const response = await eduApi.get<GuacRequest>(EDU_API_VDI_ENDPOINT);
 
-      const { authToken, dataSource } = response.data as { authToken: string; dataSource: string };
+      const { authToken, dataSource } = response.data;
       set({ isLoading: false, guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
     } catch (error) {
       set({ error: error as AxiosError });
@@ -78,7 +78,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     try {
       await eduApi.post(`${EDU_API_VDI_ENDPOINT}/sessions`, {
         dataSource: get().dataSource,
-        token: get().guacToken,
+        authToken: get().guacToken,
         hostname: get().vdiIp,
       });
       set({ isLoading: false, connectionEnabled: true });
@@ -91,14 +91,14 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     }
   },
 
-  getConnections: async () => {
+  getConnection: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.post(`${EDU_API_VDI_ENDPOINT}/connections`, {
+      const response = await eduApi.post<string>(`${EDU_API_VDI_ENDPOINT}/connections`, {
         dataSource: get().dataSource,
-        token: get().guacToken,
+        authToken: get().guacToken,
       });
-      set({ isLoading: false, guacId: response.data as string });
+      set({ isLoading: false, guacId: response.data });
     } catch (error) {
       handleApiError(error, set);
     } finally {

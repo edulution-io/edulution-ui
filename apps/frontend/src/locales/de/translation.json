@@ -132,7 +132,7 @@
     "close": "Verbindung schließen",
     "error": {
       "title": "Verbindungsfehler",
-      "description": "Bitte prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
+      "description": "Bitte prüfe deine Netzwerkverbindung und versuche es erneut."
     },
     "win10": "Windows 10",
     "win11": "Windows 11",
@@ -141,6 +141,7 @@
     "client": "Client verfügbar",
     "errors": {
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
+      "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
       "SessionNotFound": "Session nicht gefunden."
     }

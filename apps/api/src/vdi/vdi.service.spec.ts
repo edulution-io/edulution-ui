@@ -5,8 +5,8 @@ import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enu
 import VdiService from './vdi.service';
 
 const vdiServicesMock = {
-  authenticateVdi: jest.fn().mockReturnValue({ dataSource: 'mysql', token: 'ABC123' }),
-  getConnections: jest.fn(),
+  authenticateVdi: jest.fn().mockReturnValue({ dataSource: 'mysql', authToken: 'ABC123' }),
+  getConnection: jest.fn(),
   createOrUpdateSession: jest.fn(),
   requestVdi: jest.fn(),
   getVirtualMachines: jest.fn(),
@@ -26,41 +26,39 @@ describe('VdiService', () => {
   it('should authenticate VDI successfully', async () => {
     const result = await service.authenticateVdi();
     expect(service.authenticateVdi).toHaveBeenCalledWith();
-    expect(result).toEqual({ dataSource: 'mysql', token: 'ABC123' });
+    expect(result).toEqual({ dataSource: 'mysql', authToken: 'ABC123' });
   });
 
   it('should return a successful response with the correct headers', async () => {
     const mockData = {
       dataSource: 'mysql',
-      token: 'ABC123',
+      authToken: 'ABC123',
     };
 
     axios.post = jest.fn().mockResolvedValue(mockData);
     const response = await axios.post(`${process.env.GUACAMOLE_API_URL}/guacamole/api`);
 
-    expect(response).toHaveProperty('token');
+    expect(response).toHaveProperty('authToken');
   });
 
-  describe('getConnections', () => {
-    it('should call getConnections with correct parameters', async () => {
+  describe('getConnection', () => {
+    it('should call getConnection with correct parameters', async () => {
       const body: GuacRequest = {
-        id: 1,
         dataSource: 'mysql',
-        token: 'ABC123',
+        authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      await service.getConnections(body, username);
-      expect(service.getConnections).toHaveBeenCalledWith(body, username);
+      await service.getConnection(body, username);
+      expect(service.getConnection).toHaveBeenCalledWith(body, username);
     });
   });
 
   describe('createOrUpdateSession', () => {
     it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
       const body: GuacRequest = {
-        id: 1,
         dataSource: 'mysql',
-        token: 'ABC123',
+        authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';

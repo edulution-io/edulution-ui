@@ -6,7 +6,7 @@ import VdiService from './vdi.service';
 
 const mockVdiServices = {
   authenticateVdi: jest.fn(),
-  getConnections: jest.fn(),
+  getConnection: jest.fn(),
   createOrUpdateSession: jest.fn(),
   requestVdi: jest.fn(),
   getVirtualMachines: jest.fn(),
@@ -42,26 +42,24 @@ describe('VdiController', () => {
     });
   });
 
-  describe('getConnections', () => {
-    it('should call vdiService.getConnections with correct parameters', async () => {
+  describe('getConnection', () => {
+    it('should call vdiService.getConnection with correct parameters', async () => {
       const body: GuacRequest = {
-        id: 1,
         dataSource: 'mysql',
-        token: 'ABC123',
+        authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      await vdiController.getConnections(body, username);
-      expect(vdiService.getConnections).toHaveBeenCalledWith(body, username);
+      await vdiController.getConnection(body, username);
+      expect(vdiService.getConnection).toHaveBeenCalledWith(body, username);
     });
   });
 
   describe('createOrUpdateSession', () => {
     it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
       const body: GuacRequest = {
-        id: 1,
         dataSource: 'mysql',
-        token: 'ABC123',
+        authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';

@@ -11,6 +11,7 @@ import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enu
 import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import { useInterval } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VDIFrame from './VDIFrame';
@@ -38,10 +39,11 @@ const DesktopDeploymentPage: React.FC = () => {
     setOpenVdiConnection,
     postRequestVdi,
     createOrUpdateConnection,
-    getConnections,
+    getConnection,
     getVirtualMachines,
   } = useDesktopDeploymentStore();
   const { activeFrame } = useFrameStore();
+  const isMobileView = useIsMobileView();
 
   const getStyle = () => (activeFrame === APPS.DESKTOP_DEPLOYMENT ? 'block' : 'hidden');
 
@@ -68,7 +70,7 @@ const DesktopDeploymentPage: React.FC = () => {
 
   useEffect(() => {
     if (connectionEnabled) {
-      void getConnections();
+      void getConnection();
     }
   }, [connectionEnabled]);
 
@@ -129,7 +131,7 @@ const DesktopDeploymentPage: React.FC = () => {
           handleReload={handleReload}
         />
       )}
-      <div className="flex flex-row gap-10">
+      <div className={cn('flex gap-10', isMobileView ? 'flex-col' : 'flex-row')}>
         {osConfigs.map(({ os, title }) => (
           <VdiCard
             key={os}

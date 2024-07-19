@@ -15,8 +15,8 @@ class VdiController {
   }
 
   @Post('connections')
-  getConnections(@Body() body: GuacRequest, @GetCurrentUsername() username: string) {
-    return this.vdiService.getConnections(body, username);
+  getConnection(@Body() body: GuacRequest, @GetCurrentUsername() username: string) {
+    return this.vdiService.getConnection(body, username);
   }
 
   @Post('sessions')
