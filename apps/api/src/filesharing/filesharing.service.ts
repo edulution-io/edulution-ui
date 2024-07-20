@@ -21,6 +21,7 @@ import { HttpService } from '@nestjs/axios';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import EduApiUtility from '../utilits/eduApiUtility';
+import UsersService from '../users/users.service';
 
 @Injectable()
 class FilesharingService {
@@ -34,9 +35,13 @@ class FilesharingService {
 
   private readonly eduEncrytionKey: string;
 
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly userService: UsersService,
+  ) {
     this.baseurl = process.env.EDUI_WEBDAV_URL as string;
     this.eduEncrytionKey = process.env.EDUI_ENCRYPTION_KEY as string;
+    this.eduApiUtilits = new EduApiUtility(this.userService, this.eduEncrytionKey);
   }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
