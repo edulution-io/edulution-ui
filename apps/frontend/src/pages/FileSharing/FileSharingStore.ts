@@ -5,16 +5,14 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
-import OnlyOfficeJwtTokenConfig from '@libs/filesharing/OnlyOfficeJwtType';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 type FileSharingStore = {
   files: DirectoryFile[];
   selectedItems: DirectoryFile[];
   currentPath: string;
-  currentlyEditingFile: DirectoryFile;
+  currentlyEditingFile: DirectoryFile | null;
   pathToRestoreSession: string;
   setDirectorys: (files: DirectoryFile[]) => void;
   directorys: DirectoryFile[];
@@ -29,7 +27,7 @@ type FileSharingStore = {
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFile[];
-  setCurrentlyEditingFile: (fileToPreview: DirectoryFile) => void;
+  setCurrentlyEditingFile: (fileToPreview: DirectoryFile | null) => void;
   setMountPoints: (mountPoints: DirectoryFile[]) => void;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   downloadFile: (filePath: string) => Promise<string | undefined>;
@@ -42,7 +40,7 @@ const initialState = {
   pathToRestoreSession: `/`,
   downloadLinkURL: '',
   selectedRows: {},
-  currentlyEditingFile: {} as DirectoryFile,
+  currentlyEditingFile: null,
   mountPoints: [],
   directorys: [],
 };
@@ -60,7 +58,7 @@ const useFileSharingStore = create<FileSharingStore>(
         set({ currentPath: path });
       },
 
-      setCurrentlyEditingFile: (fileToPreview: DirectoryFile) => {
+      setCurrentlyEditingFile: (fileToPreview: DirectoryFile | null) => {
         set({ currentlyEditingFile: fileToPreview });
       },
 
@@ -139,24 +137,6 @@ const useFileSharingStore = create<FileSharingStore>(
         }
       },
 
-      getOnlyOfficeJwtToken: async (config: OnlyOfficeJwtTokenConfig) => {
-        try {
-          const response = await eduApi.post(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/oftoken/`,
-            JSON.stringify(config),
-            {
-              headers: {
-                'Content-Type': RequestResponseContentType.APPLICATION_JSON,
-              },
-            },
-          );
-          return response.data;
-        } catch (error) {
-          console.error('Error fetching OnlyOffice JWT token:', error);
-          throw error;
-        }
-      },
-
       fetchDirs: async (path: string) => {
         try {
           const directoryFiles = await eduApi.get(
@@ -179,7 +159,6 @@ const useFileSharingStore = create<FileSharingStore>(
       partialize: (state) => ({
         files: state.files,
         currentPath: state.currentPath,
-        selectedItems: state.selectedItems,
         mountPoints: state.mountPoints,
       }),
     } as PersistOptions<FileSharingStore>,

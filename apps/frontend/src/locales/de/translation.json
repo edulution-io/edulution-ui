@@ -18,7 +18,10 @@
     }
   },
   "auth": {
-    "errors": { "TokenExpired": "Sitzung abgelaufen", "SessionExpiring": "Sie werden in 1 Minute abgemeldet." }
+    "errors": {
+      "TokenExpired": "Sitzung abgelaufen",
+      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet."
+    }
   },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
@@ -98,7 +101,7 @@
       "DeletionFailed": "Löschen fehlgeschlagen",
       "RenameFailed": "Umbenennen fehlgeschlagen",
       "MoveFailed": "Verschieben fehlgeschlagen",
-      "CreationFailed": "Erstellung fehlgeschlagen",
+      "CreationFailed": "Erstellen fehlgeschlagen",
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
       "DownloadFailed": "Herunterladen fehlgeschlagen",
@@ -107,7 +110,8 @@
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
-      "NewFileNameRequired": "Neuer Dateiname ist erforderlich"
+      "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
+      "NameRequired": "Name erforderlich"
     }
   },
   "forums": {
@@ -194,13 +198,38 @@
     }
   },
   "usersettings": {
-    "title": "BENUTZER",
-    "sidebar": "Einstellungen",
-    "security": "Sicherheit",
+    "title": "BENUTZEREINSTELLUNGEN",
+    "sidebar": "Benutzereinstellungen",
+    "split-title": "BENUTZER- EINSTELLUNGEN",
+    "description": "Hier können Sie alle ihre Benutzer definierten Einstellungen einsehen und gegebenfalls anpassen.",
+    "security": {
+      "title": "Sicherheit",
+      "sidebar": "Sicherheit",
+      "description": "Konfigurieren Sie hier die Sicherheitseinstellungen des Accounts",
+      "changePassword": {
+        "title": "Passwort ändern",
+        "currentPassword": "Aktuelles Passwort",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Passwort bestätigen",
+        "confirm": "Passwort ändern"
+      }
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
-    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
-    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+    "config": {
+      "mfa": "Zweifaktorauthentifizierung aktivieren"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
+    },
+    "errors": {
+      "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
+      "newPasswordRequired": "Neues Passwort ist erforderlich",
+      "confirmPasswordRequired": "Erneute Eingabe des Passwortes ist erforderlich zur Bestätigung",
+      "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein"
+    }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
@@ -280,7 +309,9 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
+    "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten...",
+    "previewLoading": "Vorschau wird geladen",
+    "unsupportedFile": "Dateityp wird nicht unterstützt"
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",

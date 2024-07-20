@@ -1,4 +1,4 @@
-import 'multer';
+// import 'multer' if the the test failes on your side because of the Express.Multer.File type comment it out
 import { Test, TestingModule } from '@nestjs/testing';
 import FilesharingService from './filesharing.service';
 

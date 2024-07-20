@@ -1,6 +1,6 @@
 import React from 'react';
 import { FileIcon } from 'react-file-icon';
-import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import fileIconColors from '@/theme/fileIconColor';
 
 interface FileIconComponentProps {

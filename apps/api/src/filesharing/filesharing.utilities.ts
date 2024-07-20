@@ -1,4 +1,3 @@
-// Update the imports to include the new enum
 import { XMLParser } from 'fast-xml-parser';
 import he from 'he';
 import { ContentType, DirectoryFile } from '@libs/filesharing/filesystem';
@@ -52,7 +51,6 @@ export function fromBase64(str: string): string {
 function parseWebDAVMultiStatus(xmlData: string) {
   const jsonObj: WebDAVMultiStatus = xmlParser.parse(xmlData) as WebDAVMultiStatus;
   if (!jsonObj[XA.MultiStatus] || !jsonObj[XA.MultiStatus][XA.Response]) {
-    Logger.warn('Invalid or empty WebDAV response structure: missing "d:response".');
     return [];
   }
 

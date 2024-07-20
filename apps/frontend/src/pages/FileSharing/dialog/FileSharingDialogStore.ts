@@ -8,7 +8,7 @@ import FileAction from '@libs/filesharing/FileAction';
 import handleApiError from '@/utils/handleApiError';
 import { WebDavActionResult } from '@libs/filesharing/FileActionStatus';
 import { t } from 'i18next';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
 import { HttpMethodes } from '@libs/common/types/http-methods';

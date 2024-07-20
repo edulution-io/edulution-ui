@@ -6,12 +6,12 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import DirectoryBreadcrumb from '@/pages/FileSharing/DirectoryBreadcrumb';
+import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import useLmnApiStore from '@/store/lmnApiStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
 
-export interface MoveContentDialogBodyProps {}
-const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = () => {
+const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState('');
   const { setMoveItemsToPath, moveItemsToPath } = useFileSharingDialogStore();

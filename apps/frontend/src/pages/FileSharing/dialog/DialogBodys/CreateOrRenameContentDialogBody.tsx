@@ -1,13 +1,9 @@
-import { UseFormReturn } from 'react-hook-form';
-import { Form } from '@/components/ui/Form';
 import React from 'react';
+import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
+import { FilesharingDialogProps } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
-export interface CreateNewContentDialogBodyProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
-}
-const CreateOrRenameContentDialogBody: React.FC<CreateNewContentDialogBodyProps> = ({ form }) => (
+const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => (
   <Form {...form}>
     <form
       className="space-y-4"

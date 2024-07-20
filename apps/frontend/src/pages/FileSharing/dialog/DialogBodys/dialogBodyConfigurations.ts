@@ -1,35 +1,30 @@
 import { z } from 'zod';
-import CreateOrRenameContentDialogBody, {
-  CreateNewContentDialogBodyProps,
-} from '@/pages/FileSharing/dialog/DialogBodys/CreateOrRenameContentDialogBody';
+import CreateOrRenameContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/CreateOrRenameContentDialogBody';
 
-import DeleteContentDialogBody, {
-  DeleteContentDialogBodyProps,
-} from '@/pages/FileSharing/dialog/DialogBodys/DeleteContentDialogBody';
-import UploadContentBody, { UploadContentBodyProps } from '@/pages/FileSharing/dialog/DialogBodys/UploadContentBody';
-import MoveContentDialogBody, {
-  MoveContentDialogBodyProps,
-} from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
+import DeleteContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/DeleteContentDialogBody';
+import UploadContentBody from '@/pages/FileSharing/dialog/DialogBodys/UploadContentBody';
+import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
-import FormData from '@/pages/FileSharing/dialog/FormData';
 import { UseFormReturn } from 'react-hook-form';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
 import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
 import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import { HttpMethodes } from '@libs/common/types/http-methods';
 import FileAction from '@libs/filesharing/FileAction';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { t } from 'i18next';
+import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
+import { FilesharingDialogProps, FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
 
 interface DialogBodyConfigurationBase {
-  schema?: z.ZodSchema<FormData>;
+  schema?: z.ZodSchema<FileSharingFormValues>;
   titleKey: string;
   submitKey: string;
-  initialValues?: FormData;
+  initialValues?: FileSharingFormValues;
   endpoint: string;
   httpMethod: HttpMethodes;
   getData: (
-    form: UseFormReturn<Record<string, unknown>>,
+    form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
     inputValues: {
       selectedItems?: DirectoryFile[];
@@ -41,27 +36,27 @@ interface DialogBodyConfigurationBase {
 }
 
 interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<CreateNewContentDialogBodyProps>;
+  Component: React.ComponentType<FilesharingDialogProps>;
 }
 
 interface CreateFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<CreateNewContentDialogBodyProps>;
+  Component: React.ComponentType<FilesharingDialogProps>;
 }
 
 interface RenameDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<CreateNewContentDialogBodyProps>;
+  Component: React.ComponentType<FilesharingDialogProps>;
 }
 
 interface DeleteDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<DeleteContentDialogBodyProps>;
+  Component: React.ComponentType<EmptyDialogProps>;
 }
 
 interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<UploadContentBodyProps>;
+  Component: React.ComponentType<EmptyDialogProps>;
 }
 
 interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<MoveContentDialogBodyProps>;
+  Component: React.ComponentType<EmptyDialogProps>;
 }
 
 type DialogBodyConfiguration =
@@ -72,7 +67,7 @@ type DialogBodyConfiguration =
   | UploadFileDialogBodyConfiguration
   | MoveDialogBodyConfiguration;
 
-const initialFormValues: FormData = {
+const initialFormValues: FileSharingFormValues = {
   filename: '',
 };
 
@@ -80,7 +75,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   createFolder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
-      filename: z.string().min(1, t('filesharing.filesharing.tooltips.folderNameRequired')),
+      filename: z.string().min(1, t('filesharing.tooltips.folderNameRequired')),
     }),
     titleKey: 'fileCreateNewContent.directoryDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
@@ -96,21 +91,20 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   createFile: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
-      filename: z.string().min(1, t('filesharing.filesharing.tooltips.FileNameRequired')),
+      filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
     }),
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileAction.UPLOAD_FILE}`, // Due to the fact that we create a doxc file which needs to be uploaded
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileAction.UPLOAD_FILE}`,
     httpMethod: HttpMethodes.POST,
     getData: async (form, currentPath, inputValues) => {
       const { selectedFileType } = inputValues;
       const fileType = selectedFileType?.extension || '';
-      const filename = String(form.getValues<string>('filename'));
+      const filename = String(form.getValues('filename'));
       const filenameWithExtension = filename + fileType;
       const generate = selectedFileType?.generate || '';
       const generateFileMethod = generateFile[generate];
-
       const file = await generateFileMethod(generate);
       const cleanedPath = clearPathFromWebdav(currentPath);
       return [
@@ -125,7 +119,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   name: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
-      filename: z.string().min(1, t('filesharing.filesharing.tooltips.NewFileNameRequired')),
+      filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
     }),
     titleKey: 'fileRenameContent.rename',
     submitKey: 'fileRenameContent.rename',
@@ -135,7 +129,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     getData: async (form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
-        throw new Error('No items selected for renaming');
+        return Promise.resolve([]);
       }
       const filename = String(form.getValues('filename'));
       const cleanedPath = clearPathFromWebdav(currentPath);
@@ -153,7 +147,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     getData: (_form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
-        throw new Error('No items selected for renaming');
+        return Promise.resolve([]);
       }
       const cleanedPath = clearPathFromWebdav(currentPath);
       return Promise.resolve(
@@ -174,7 +168,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       const { filesToUpload } = inputValues;
       const cleanedPath = clearPathFromWebdav(currentPath);
       if (!filesToUpload || filesToUpload.length === 0) {
-        throw new Error('No items selected for renaming');
+        return Promise.resolve([]);
       }
       return Promise.resolve(
         filesToUpload.map((file: File) => ({
@@ -195,7 +189,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     getData: (_form, currentPath, inputValues) => {
       const { moveItemsToPath, selectedItems } = inputValues;
       if (!moveItemsToPath || !selectedItems) {
-        throw new Error('No items selected for renaming');
+        return Promise.resolve([]);
       }
       const newCleanedPath = clearPathFromWebdav(moveItemsToPath.filename);
       const cleanedPath = clearPathFromWebdav(currentPath);
