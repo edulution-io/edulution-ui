@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -14,15 +14,13 @@ import * as crypto from 'crypto';
 import * as pathLib from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { firstValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
 import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
 import HashAlgorithm from '@libs/algorithm/hashAlgorithm';
+import { HttpService } from '@nestjs/axios';
 import WebdavClientFactory from './webdav.client.factory';
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilits';
-import { FileSharingConfigService } from './filesharing.config.service';
+import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import EduApiUtility from '../utilits/eduApiUtility';
-import UsersService from '../users/users.service';
 
 @Injectable()
 class FilesharingService {
@@ -36,15 +34,9 @@ class FilesharingService {
 
   private readonly eduEncrytionKey: string;
 
-  constructor(
-    private fileSharingConfigService: FileSharingConfigService,
-    userService: UsersService,
-    private readonly httpService: HttpService,
-  ) {
-    this.baseurl = this.fileSharingConfigService.get('EDUI_WEBDAV_URL');
-    this.eduEncrytionKey = this.fileSharingConfigService.get('EDUI_ENCRYPTION_KEY');
-    this.downloadLinkLocation = this.fileSharingConfigService.get('EDUI_DOWNLOAD_DEV_DIR');
-    this.eduApiUtilits = new EduApiUtility(userService, this.eduEncrytionKey);
+  constructor(private readonly httpService: HttpService) {
+    this.baseurl = process.env.EDUI_WEBDAV_URL as string;
+    this.eduEncrytionKey = process.env.EDUI_ENCRYPTION_KEY as string;
   }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -102,7 +94,6 @@ class FilesharingService {
 
   private static handleWebDAVError(response: AxiosResponse) {
     if (!response || !(response.status >= 200 || response.status >= 300)) {
-      Logger.error(`WebDAV request failed with status ${response.status}: ${response.statusText}`);
       throw new CustomHttpException(
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,

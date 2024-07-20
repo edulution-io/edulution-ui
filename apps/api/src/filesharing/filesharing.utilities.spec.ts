@@ -1,4 +1,4 @@
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilits';
+import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 
 const sampleXML = `
 <d:multistatus xmlns:d="DAV:">

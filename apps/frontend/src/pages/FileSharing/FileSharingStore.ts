@@ -5,7 +5,7 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilits';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
 
 type FileSharingStore = {
@@ -152,7 +152,6 @@ const useFileSharingStore = create<FileSharingStore>(
       partialize: (state) => ({
         files: state.files,
         currentPath: state.currentPath,
-        selectedItems: state.selectedItems,
         mountPoints: state.mountPoints,
       }),
     } as PersistOptions<FileSharingStore>,

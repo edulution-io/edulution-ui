@@ -11,6 +11,7 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
+import userStore from '@/store/UserStore/UserStore';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -27,27 +28,14 @@ const findCorrespondingMountPointIcon = (filename: string) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { mountPoints, setMountPoints, fetchMountPoints } = useFileSharingStore();
+  const { mountPoints, fetchMountPoints } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const fetchAndSetMountPoints = useCallback(async () => {
-    if (mountPoints.length === 0) {
-      const mounts = await fetchMountPoints();
-      if (Array.isArray(mounts)) {
-        setMountPoints(mounts);
-      }
-    }
-  }, [mountPoints.length, fetchMountPoints, setMountPoints]);
+  const { user } = userStore();
 
   useEffect(() => {
-    const asyncSetMountPoints = async () => {
-      await fetchAndSetMountPoints();
-    };
-    asyncSetMountPoints().catch((error) => {
-      console.error(error);
-    });
-  }, [fetchAndSetMountPoints]);
+    void fetchMountPoints();
+  }, [user?.username]);
 
   const handlePathChange = useCallback(
     (newPath: string) => {
