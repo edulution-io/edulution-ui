@@ -1,42 +1,23 @@
 import React, { useEffect } from 'react';
-import mongoose from 'mongoose';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
 
-interface ShowSurveyResultsTableDialogProps {
-  survey: SurveyDto;
+const ResultTableDialog = () => {
+  const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
-  isOpenPublicResultsTableDialog: boolean;
-  setIsOpenPublicResultsTableDialog: (state: boolean) => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<void>;
-  result: JSON[] | undefined;
-  isLoading: boolean;
-
-  trigger?: React.ReactNode;
-}
-
-const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
-  const {
-    survey,
-
-    isOpenPublicResultsTableDialog,
-    setIsOpenPublicResultsTableDialog,
-    getSurveyResult,
-    result,
-    isLoading,
-    trigger,
-  } = props;
+  const { isOpenPublicResultsTableDialog, setIsOpenPublicResultsTableDialog, getSurveyResult, result, isLoading } =
+    useResultDialogStore();
 
   const { t } = useTranslation();
 
   useEffect((): void => {
     if (survey && isOpenPublicResultsTableDialog) {
-      void getSurveyResult(survey.id, survey.invitedAttendees);
+      void getSurveyResult(survey.id);
     }
   }, [isOpenPublicResultsTableDialog, survey]);
 
@@ -71,7 +52,6 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenPublicResultsTableDialog}
-        trigger={trigger}
         handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
         title={t('surveys.resultTableDialog.title')}
         body={getDialogBody()}

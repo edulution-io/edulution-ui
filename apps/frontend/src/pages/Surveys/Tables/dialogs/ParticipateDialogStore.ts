@@ -10,6 +10,9 @@ interface ParticipateDialogStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
+  answer: JSON;
+  setAnswer: (answer: JSON | undefined) => void;
+
   isOpenParticipateSurveyDialog: boolean;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   answerSurvey: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<void>;
@@ -20,6 +23,7 @@ interface ParticipateDialogStore {
 
 const initialState: Partial<ParticipateDialogStore> = {
   selectedSurvey: undefined,
+  answer: {} as JSON,
   isOpenParticipateSurveyDialog: false,
   isLoading: false,
 };
@@ -29,6 +33,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
   reset: () => set(initialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  setAnswer: (answer: JSON | undefined) => set({ answer }),
 
   setIsOpenParticipateSurveyDialog: (state: boolean) => set({ isOpenParticipateSurveyDialog: state }),
   answerSurvey: async (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent): Promise<void> => {

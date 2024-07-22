@@ -172,10 +172,10 @@
       "title": "An der Umfrage teilnehmen"
     },
     "resultChartDialog": {
-      "title": "Ergebnisse (Schaubild)"
+      "title": "Ergebnisse - Schaubild"
     },
     "resultTableDialog": {
-      "title": "Ergebnisse (Tabelle)"
+      "title": "Ergebnisse - Tabelle"
     }
   },
   "printer": {

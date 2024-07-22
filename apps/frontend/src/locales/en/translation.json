@@ -169,10 +169,10 @@
       "title": "Participate in the survey"
     },
     "resultChartDialog": {
-      "title": "Results (Chart)"
+      "title": "Results - Chart"
     },
     "resultTableDialog": {
-      "title": "Results (Table)"
+      "title": "Results - Table"
     }
   },
   "printer": {
