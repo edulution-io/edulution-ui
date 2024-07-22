@@ -154,6 +154,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Raumbuchung"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -161,6 +164,7 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
@@ -396,5 +400,9 @@
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
     },
     "classes": "Klassen"
+  },
+  "permission": {
+    "groups": "Nutzergruppen",
+    "selectGroupsDescription": "Wähle die Nutzergruppen aus, die Zugriff auf die App bekommen sollen."
   }
 }

@@ -53,7 +53,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
       updateAppConfig: async (appConfigs) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.put(EDU_API_CONFIG_ENDPOINT, appConfigs);
+          await eduApi.put<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT, appConfigs);
           set({ appConfigs });
         } catch (e) {
           handleApiError(e, set);

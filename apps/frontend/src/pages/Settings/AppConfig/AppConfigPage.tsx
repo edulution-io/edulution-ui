@@ -5,16 +5,22 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
-import { TrashIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
+import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
+import useGroupStore from '@/store/GroupStore';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
+import { SettingsIcon } from '@/assets/icons';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
@@ -24,6 +30,7 @@ const AppConfigPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode');
   const { appConfigs, updateAppConfig, deleteAppConfigEntry, error } = useAppConfigsStore();
+  const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
 
@@ -59,7 +66,13 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    const newAccessGroups: MultipleSelectorOptionSH[] = currentConfig.accessGroups?.map((item) => ({
+      value: item,
+      label: item,
+    }));
+
     setValue(`${settingLocation}.appType`, currentConfig.appType);
+    setValue(`${settingLocation}.accessGroups`, newAccessGroups || []);
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
@@ -73,10 +86,18 @@ const AppConfigPage: React.FC = () => {
     }
   }, [areSettingsVisible, settingLocation, appConfigs, setValue]);
 
+  const handleGroupsChange = (newGroups: MultipleSelectorOptionSH[], fieldName: string) => {
+    const currentGroups = (getValues(`${fieldName}`) as MultipleSelectorOptionSH[]) || [];
+    const combinedGroups = [
+      ...currentGroups,
+      ...newGroups.filter((newGroup) => !currentGroups.some((currentGroup) => currentGroup.value === newGroup.value)),
+    ];
+    setValue(`${fieldName}`, combinedGroups, { shouldValidate: true });
+  };
+
   const settingsForm = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
       const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
-
       if (selectedOption) {
         const newConfig = {
           name: settingLocation,
@@ -87,7 +108,10 @@ const AppConfigPage: React.FC = () => {
               acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
               return acc;
             }, {} as AppConfigOptions) || {},
-          accessGroups: [''],
+          accessGroups:
+            ((getValues(`${settingLocation}.accessGroups`) as MultipleSelectorOptionSH[]).map(
+              (item) => item.path,
+            ) as string[]) || [],
         };
 
         const updatedConfig = appConfigs.map((entry) => {
@@ -143,6 +167,14 @@ const AppConfigPage: React.FC = () => {
                         appConfig={appConfigs}
                       />
                     </div>
+                    <div className="pt-10">
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`${item.id}.accessGroups`) as MultipleSelectorGroup[]}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups, `${item.id}.accessGroups`)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </div>
                     <div className="absolute right-20 sm:pr-10 md:right-20">
                       <Button
                         type="submit"
@@ -192,29 +224,21 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-between">
-        <div className="pt-5 sm:pt-0">
-          <h2>{t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}</h2>
-          <p className="pb-4">{t('settings.description')}</p>
-        </div>
-
-        {areSettingsVisible ? (
-          <Button
-            type="button"
-            variant="btn-hexagon"
-            className="fixed bottom-10 space-x-4 bg-opacity-90 p-4"
-            onClickCapture={handleDeleteSettingsItem}
-          >
-            <img
-              className="m-6"
-              src={TrashIcon}
-              alt="trash"
-              width="25px"
-            />
-          </Button>
-        ) : null}
-      </div>
+      <NativeAppHeader
+        title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
+        description={t('settings.description')}
+        iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
+      />
       {settingsForm()}
+      {areSettingsVisible ? (
+        <div className="fixed bottom-8 flex flex-row bg-opacity-90">
+          <FloatingActionButton
+            icon={MdOutlineDeleteOutline}
+            text={t('settings.delete')}
+            onClick={handleDeleteSettingsItem}
+          />
+        </div>
+      ) : null}
       <AddAppConfigDialog
         isOpen={mode === 'add'}
         option={option}
