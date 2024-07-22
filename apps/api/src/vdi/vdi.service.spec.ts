@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import axios from 'axios';
-import { GuacRequest, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import VdiService from './vdi.service';
 
@@ -43,38 +43,38 @@ describe('VdiService', () => {
 
   describe('getConnection', () => {
     it('should call getConnection with correct parameters', async () => {
-      const body: GuacRequest = {
+      const guacamoleDto: GuacamoleDto = {
         dataSource: 'mysql',
         authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      await service.getConnection(body, username);
-      expect(service.getConnection).toHaveBeenCalledWith(body, username);
+      await service.getConnection(guacamoleDto, username);
+      expect(service.getConnection).toHaveBeenCalledWith(guacamoleDto, username);
     });
   });
 
   describe('createOrUpdateSession', () => {
     it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
-      const body: GuacRequest = {
+      const guacamoleDto: GuacamoleDto = {
         dataSource: 'mysql',
         authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      await service.createOrUpdateSession(body, username);
-      expect(service.createOrUpdateSession).toHaveBeenCalledWith(body, username);
+      await service.createOrUpdateSession(guacamoleDto, username);
+      expect(service.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username);
     });
   });
 
   describe('requestVdi', () => {
     it('should call vdiService.requestVdi with correct parameters', async () => {
-      const body: LmnVdiRequest = {
+      const lmnVdiRequest: LmnVdiRequest = {
         group: VirtualMachineOs.WIN10,
         user: 'testuser',
       };
-      await service.requestVdi(body);
-      expect(service.requestVdi).toHaveBeenCalledWith(body);
+      await service.requestVdi(lmnVdiRequest);
+      expect(service.requestVdi).toHaveBeenCalledWith(lmnVdiRequest);
     });
   });
 

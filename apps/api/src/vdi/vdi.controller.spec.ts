@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GuacRequest, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import VdiController from './vdi.controller';
 import VdiService from './vdi.service';
@@ -44,38 +44,38 @@ describe('VdiController', () => {
 
   describe('getConnection', () => {
     it('should call vdiService.getConnection with correct parameters', async () => {
-      const body: GuacRequest = {
+      const guacamoleDto: GuacamoleDto = {
         dataSource: 'mysql',
         authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      await vdiController.getConnection(body, username);
-      expect(vdiService.getConnection).toHaveBeenCalledWith(body, username);
+      await vdiController.getConnection(guacamoleDto, username);
+      expect(vdiService.getConnection).toHaveBeenCalledWith(guacamoleDto, username);
     });
   });
 
   describe('createOrUpdateSession', () => {
     it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
-      const body: GuacRequest = {
+      const guacamoleDto: GuacamoleDto = {
         dataSource: 'mysql',
         authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      await vdiController.createOrUpdateSession(body, username);
-      expect(vdiService.createOrUpdateSession).toHaveBeenCalledWith(body, username);
+      await vdiController.createOrUpdateSession(guacamoleDto, username);
+      expect(vdiService.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username);
     });
   });
 
   describe('requestVdi', () => {
     it('should call vdiService.requestVdi with correct parameters', async () => {
-      const body: LmnVdiRequest = {
+      const lmnVdiRequest: LmnVdiRequest = {
         group: VirtualMachineOs.WIN10,
         user: 'testuser',
       };
-      await vdiController.requestVdi(body);
-      expect(vdiService.requestVdi).toHaveBeenCalledWith(body);
+      await vdiController.requestVdi(lmnVdiRequest);
+      expect(vdiService.requestVdi).toHaveBeenCalledWith(lmnVdiRequest);
     });
   });
 

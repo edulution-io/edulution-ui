@@ -5,7 +5,7 @@ import {
   Attributes,
   LmnVdiRequest,
   GuacamoleConnections,
-  GuacRequest,
+  GuacamoleDto,
   LmnVdiResponse,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
@@ -56,7 +56,7 @@ class VdiService {
     return rdpConnection;
   }
 
-  static getConnectionIdentifierByUsername(connections: GuacamoleConnections, username: string): string | null {
+  static getConnectionIdentifier(connections: GuacamoleConnections, username: string): string | null {
     const connectionValues = Object.values(connections);
     const connection = connectionValues.find((itm) => itm.name === username);
 
@@ -69,7 +69,7 @@ class VdiService {
 
   async authenticateVdi() {
     try {
-      const response = await this.guacamoleApi.post<GuacRequest>(
+      const response = await this.guacamoleApi.post<GuacamoleDto>(
         '/tokens',
         { username: GUACAMOLE_API_USER, password: GUACAMOLE_API_PASSWORD },
         {
@@ -84,13 +84,13 @@ class VdiService {
     }
   }
 
-  async getConnection(body: GuacRequest, username: string) {
+  async getConnection(guacamoleDto: GuacamoleDto, username: string) {
     try {
-      const { dataSource, authToken } = body;
+      const { dataSource, authToken } = guacamoleDto;
       const response = await this.guacamoleApi.get<GuacamoleConnections>(
         `/session/data/${dataSource}/connections?token=${authToken}`,
       );
-      const identifier = VdiService.getConnectionIdentifierByUsername(response.data, username);
+      const identifier = VdiService.getConnectionIdentifier(response.data, username);
       if (identifier) this.vdiId = identifier;
       return identifier;
     } catch (e) {
@@ -98,12 +98,12 @@ class VdiService {
     }
   }
 
-  async createOrUpdateSession(body: GuacRequest, username: string) {
-    const response = await this.getConnection(body, username);
-    if (response != null) {
-      return this.updateSession(body, username);
+  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string) {
+    const identifier = await this.getConnection(guacamoleDto, username);
+    if (identifier != null) {
+      return this.updateSession(guacamoleDto, username);
     }
-    return this.createSession(body, username);
+    return this.createSession(guacamoleDto, username);
   }
 
   async findPwByUsername(username: string) {
@@ -115,8 +115,8 @@ class VdiService {
     return password;
   }
 
-  async createSession(body: GuacRequest, username: string) {
-    const { dataSource, authToken, hostname } = body;
+  async createSession(guacamoleDto: GuacamoleDto, username: string) {
+    const { dataSource, authToken, hostname } = guacamoleDto;
     const password = await this.findPwByUsername(username);
     try {
       const rdpConnection = VdiService.createRDPConnection(username, {
@@ -125,7 +125,7 @@ class VdiService {
         password,
       });
 
-      const response = await this.guacamoleApi.post<GuacRequest>(
+      const response = await this.guacamoleApi.post<GuacamoleDto>(
         `/session/data/${dataSource}/connections?token=${authToken}`,
         rdpConnection,
       );
@@ -135,9 +135,9 @@ class VdiService {
     }
   }
 
-  async updateSession(body: GuacRequest, username: string) {
+  async updateSession(guacamoleDto: GuacamoleDto, username: string) {
     try {
-      const { dataSource, authToken, hostname } = body;
+      const { dataSource, authToken, hostname } = guacamoleDto;
       const password = await this.findPwByUsername(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
@@ -145,20 +145,20 @@ class VdiService {
         password,
       });
 
-      await this.guacamoleApi.put<GuacRequest>(
+      await this.guacamoleApi.put<GuacamoleDto>(
         `/session/data/${dataSource}/connections/${this.vdiId}?token=${authToken}`,
         rdpConnection,
       );
 
-      return body;
+      return guacamoleDto;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async requestVdi(body: LmnVdiRequest) {
+  async requestVdi(lmnVdiRequest: LmnVdiRequest) {
     try {
-      const response = await this.lmnVdiApi.post<LmnVdiResponse>('/connection/request', body);
+      const response = await this.lmnVdiApi.post<LmnVdiResponse>('/connection/request', lmnVdiRequest);
       return response.data;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);

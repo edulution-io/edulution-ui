@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { GuacRequest, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VdiService from './vdi.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
@@ -15,18 +15,18 @@ class VdiController {
   }
 
   @Post('connections')
-  getConnection(@Body() body: GuacRequest, @GetCurrentUsername() username: string) {
-    return this.vdiService.getConnection(body, username);
+  getConnection(@Body() guacamoleDto: GuacamoleDto, @GetCurrentUsername() username: string) {
+    return this.vdiService.getConnection(guacamoleDto, username);
   }
 
   @Post('sessions')
-  createOrUpdateSession(@Body() body: GuacRequest, @GetCurrentUsername() username: string) {
-    return this.vdiService.createOrUpdateSession(body, username);
+  createOrUpdateSession(@Body() guacamoleDto: GuacamoleDto, @GetCurrentUsername() username: string) {
+    return this.vdiService.createOrUpdateSession(guacamoleDto, username);
   }
 
   @Post()
-  requestVdi(@Body() body: LmnVdiRequest) {
-    return this.vdiService.requestVdi(body);
+  requestVdi(@Body() lmnVdiRequest: LmnVdiRequest) {
+    return this.vdiService.requestVdi(lmnVdiRequest);
   }
 
   @Get('virtualmachines')

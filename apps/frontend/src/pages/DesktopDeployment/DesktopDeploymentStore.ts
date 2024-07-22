@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import eduApi from '@/api/eduApi';
-import { DesktopDeploymentStore, GuacRequest, LmnVdiResponse, VirtualMachines } from '@libs/desktopdeployment/types';
+import { DesktopDeploymentStore, GuacamoleDto, LmnVdiResponse, VirtualMachines } from '@libs/desktopdeployment/types';
 
 const initialState = {
   connectionEnabled: false,
@@ -35,7 +35,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   authenticate: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<GuacRequest>(EDU_API_VDI_ENDPOINT);
+      const response = await eduApi.get<GuacamoleDto>(EDU_API_VDI_ENDPOINT);
 
       const { authToken, dataSource } = response.data;
       set({ guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
@@ -50,7 +50,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     set({ isLoading: true, connectionEnabled: false });
     try {
       const { guacToken, vdiIp, dataSource } = get();
-      await eduApi.post(`${EDU_API_VDI_ENDPOINT}/sessions`, {
+      await eduApi.post<GuacamoleDto>(`${EDU_API_VDI_ENDPOINT}/sessions`, {
         dataSource,
         authToken: guacToken,
         hostname: vdiIp,

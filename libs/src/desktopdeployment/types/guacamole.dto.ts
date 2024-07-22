@@ -1,7 +1,7 @@
-type GuacRequest = {
+type GuacamoleDto = {
   dataSource: string;
   authToken: string;
   hostname?: string;
 };
 
-export default GuacRequest;
+export default GuacamoleDto;
