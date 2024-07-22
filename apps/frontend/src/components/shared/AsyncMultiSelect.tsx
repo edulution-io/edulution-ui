@@ -1,6 +1,7 @@
 import React from 'react';
-import MultipleSelectorSH, { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
+import MultipleSelectorSH from '@/components/ui/MultipleSelectorSH';
 import { useTranslation } from 'react-i18next';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 export interface AsyncMultiSelectProps<T> {
   value?: T[];

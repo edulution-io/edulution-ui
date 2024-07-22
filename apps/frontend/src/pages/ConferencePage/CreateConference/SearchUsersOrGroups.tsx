@@ -1,11 +1,10 @@
 import React from 'react';
-import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import { Button } from '@/components/shared/Button';
-import CircleLoader from '@/components/ui/CircleLoader';
-import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 interface SearchUsersOrGroupsProps {
   users: AttendeeDto[];
@@ -14,7 +13,6 @@ interface SearchUsersOrGroupsProps {
   groups: MultipleSelectorGroup[];
   onGroupSearch: (value: string) => Promise<MultipleSelectorGroup[]>;
   onGroupsChange: (options: MultipleSelectorOptionSH[]) => void;
-  isGetGroupMembersLoading: boolean;
 }
 
 const SearchUsersOrGroups = ({
@@ -24,7 +22,6 @@ const SearchUsersOrGroups = ({
   groups,
   onGroupsChange,
   onGroupSearch,
-  isGetGroupMembersLoading,
 }: SearchUsersOrGroupsProps) => {
   const { t } = useTranslation();
 
@@ -52,14 +49,12 @@ const SearchUsersOrGroups = ({
           </Button>
         </div>
       ) : null}
-      {isGetGroupMembersLoading ? <CircleLoader className="mx-auto" /> : null}
       <p className="text-m font-bold text-foreground">{t('common.groups')}</p>
       <AsyncMultiSelect<MultipleSelectorGroup>
         value={groups}
         onSearch={onGroupSearch}
         onChange={onGroupsChange}
         placeholder={t('search.type-to-search')}
-        badgeClassName="hidden"
       />
     </div>
   );

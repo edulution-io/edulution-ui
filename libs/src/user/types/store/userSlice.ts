@@ -1,4 +1,5 @@
 import UserDto from '../user.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 type UserSlice = {
   isAuthenticated: boolean;
@@ -16,6 +17,9 @@ type UserSlice = {
   logout: () => Promise<void>;
   userIsLoading: boolean;
   userError: Error | null;
+  searchAttendees: (searchQuery: string) => Promise<AttendeeDto[]>;
+  searchError: Error | null;
+  searchIsLoading: boolean;
   resetUserSlice: () => void;
 };
 

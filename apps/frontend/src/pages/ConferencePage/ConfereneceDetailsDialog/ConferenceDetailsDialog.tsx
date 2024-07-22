@@ -9,9 +9,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
-import getConferencesFormSchema from '@/pages/ConferencePage/formSchema';
+import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -27,7 +27,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     name: selectedConference?.name || '',
     password: selectedConference?.password || '',
     invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user?.username) || [],
-    invitedGroups: [],
+    invitedGroups: selectedConference?.invitedGroups || [],
   };
 
   const form = useForm<ConferencesForm>({
@@ -41,6 +41,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
       name: form.getValues('name'),
       password: form.getValues('password'),
       invitedAttendees: [...form.getValues('invitedAttendees'), { username: user?.username } as AttendeeDto],
+      invitedGroups: form.getValues('invitedGroups'),
       meetingID: selectedConference?.meetingID,
     };
 

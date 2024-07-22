@@ -1,19 +1,31 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import GetTokenDecorator from '../common/decorators/getToken.decorator';
 import GroupsService from './groups.service';
+import GetUserDecorator from '../common/decorators/getUser.decorator';
+import JWTUser from '../types/JWTUser';
 
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
-  async getGroups(@GetTokenDecorator() token: string) {
-    return this.groupsService.searchGroups(token);
+  async getGroups() {
+    return await this.groupsService.searchGroups();
   }
 
-  @Get(':searchString')
-  async searchGroups(@GetTokenDecorator() token: string, @Param('searchString') searchString: string) {
-    return this.groupsService.searchGroups(token, searchString);
+  @Get('search/:searchString')
+  async searchGroups(@Param('searchString') searchString: string) {
+    return await this.groupsService.searchGroups(searchString);
+  }
+
+  @Post('user')
+  async getUserGroups(
+    @GetTokenDecorator() token: string,
+    @GetUserDecorator() user: JWTUser,
+    @Body() body: { lmnApiToken: string },
+  ) {
+    const currentUser = await this.groupsService.getOwnUserInfo(token, user.preferred_username);
+    return await this.groupsService.getUserGroups(currentUser, body.lmnApiToken);
   }
 }
 
