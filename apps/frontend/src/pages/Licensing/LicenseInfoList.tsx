@@ -42,7 +42,7 @@ const LicenseInfoList = () => {
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: handleRowSelectionChange,
     getRowId: (originalRow: LicenseInfoDto) =>
-      originalRow.id && typeof originalRow.id != 'string' ? `${originalRow.id.toHexString()}` : originalRow.id,
+      originalRow.id && typeof originalRow.id !== 'string' ? `${originalRow.id.toHexString()}` : originalRow.id,
     state: {
       sorting,
       rowSelection: selectedRows,
