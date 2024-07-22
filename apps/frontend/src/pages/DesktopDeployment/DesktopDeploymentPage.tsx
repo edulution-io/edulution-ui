@@ -29,11 +29,11 @@ const DesktopDeploymentPage: React.FC = () => {
     guacToken,
     connectionEnabled,
     vdiIp,
-    openVdiConnection,
+    isVdiConnectionOpen,
     isLoading,
     virtualMachines,
     authenticate,
-    setOpenVdiConnection,
+    setIsVdiConnectionOpen,
     postRequestVdi,
     createOrUpdateConnection,
     getConnection,
@@ -82,7 +82,7 @@ const DesktopDeploymentPage: React.FC = () => {
   };
 
   const handleConnect = () => {
-    setOpenVdiConnection(true);
+    setIsVdiConnectionOpen(true);
   };
 
   const handleReload = () => {
@@ -97,7 +97,7 @@ const DesktopDeploymentPage: React.FC = () => {
         description={t('desktopdeployment.description')}
         iconSrc={DesktopDeploymentIcon}
       />
-      {openVdiConnection && <VDIFrame />}
+      {isVdiConnectionOpen && <VDIFrame />}
       <div className={cn('flex gap-10', isMobileView ? 'flex-col' : 'flex-row')}>
         {osConfigs.map(({ os, title }) => (
           <VdiCard

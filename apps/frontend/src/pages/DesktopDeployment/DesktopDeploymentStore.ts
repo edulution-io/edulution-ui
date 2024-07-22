@@ -1,36 +1,13 @@
 import { create } from 'zustand';
-import { AxiosError } from 'axios';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import eduApi from '@/api/eduApi';
-import { Connections, GuacRequest, VdiConnectionRequest, VirtualMachines } from '@libs/desktopdeployment/types';
-
-interface DesktopDeploymentStore {
-  connectionEnabled: boolean;
-  vdiIp: string;
-  guacToken: string;
-  dataSource: string;
-  isLoading: boolean;
-  error: AxiosError | null;
-  connections: Connections | null;
-  isVdiConnectionMinimized: boolean;
-  openVdiConnection: boolean;
-  guacId: string;
-  virtualMachines: VirtualMachines | null;
-  setError: (error: AxiosError | null) => void;
-  setIsVdiConnectionMinimized: (isVdiConnectionMinimized: boolean) => void;
-  setOpenVdiConnection: (openVdiConnection: boolean) => void;
-  setGuacToken: (guacToken: string) => void;
-  setIsLoading: (isLoading: boolean) => void;
-  setGuacId: (guacId: string) => void;
-  setVirtualMachines: (virtualMachines: VirtualMachines) => void;
-  authenticate: () => Promise<void>;
-  getConnection: () => Promise<void>;
-  postRequestVdi: (group: string) => Promise<void>;
-  getVirtualMachines: (isSilent: boolean) => Promise<void>;
-  createOrUpdateConnection: () => Promise<void>;
-  reset: () => void;
-}
+import {
+  DesktopDeploymentStore,
+  GuacRequest,
+  VdiConnectionRequest,
+  VirtualMachines,
+} from '@libs/desktopdeployment/types';
 
 const initialState = {
   connectionEnabled: false,
@@ -41,7 +18,7 @@ const initialState = {
   error: null,
   connections: null,
   isVdiConnectionMinimized: false,
-  openVdiConnection: false,
+  isVdiConnectionOpen: false,
   guacId: '',
   virtualMachines: null,
 };
@@ -56,7 +33,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setGuacToken: (guacToken) => set({ guacToken }),
   setIsVdiConnectionMinimized: (isVdiConnectionMinimized) => set({ isVdiConnectionMinimized }),
-  setOpenVdiConnection: (openVdiConnection) => set({ openVdiConnection }),
+  setIsVdiConnectionOpen: (isVdiConnectionOpen) => set({ isVdiConnectionOpen }),
   setGuacId: (guacId) => set({ guacId }),
   setVirtualMachines: (virtualMachines) => set({ virtualMachines }),
 
@@ -66,9 +43,8 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const response = await eduApi.get<GuacRequest>(EDU_API_VDI_ENDPOINT);
 
       const { authToken, dataSource } = response.data;
-      set({ isLoading: false, guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
+      set({ guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
     } catch (error) {
-      set({ error: error as AxiosError });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
@@ -76,16 +52,16 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   },
 
   createOrUpdateConnection: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, connectionEnabled: false });
     try {
+      const { guacToken, vdiIp, dataSource } = get();
       await eduApi.post(`${EDU_API_VDI_ENDPOINT}/sessions`, {
-        dataSource: get().dataSource,
-        authToken: get().guacToken,
-        hostname: get().vdiIp,
+        dataSource,
+        authToken: guacToken,
+        hostname: vdiIp,
       });
-      set({ isLoading: false, connectionEnabled: true });
+      set({ connectionEnabled: true });
     } catch (error) {
-      set({ isLoading: false, connectionEnabled: false, error: error as AxiosError });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
@@ -99,9 +75,8 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
         dataSource: get().dataSource,
         authToken: get().guacToken,
       });
-      set({ isLoading: false, guacId: response.data });
+      set({ guacId: response.data });
     } catch (error) {
-      set({ error: error as AxiosError });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
@@ -118,9 +93,8 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
 
     try {
       const response = await eduApi.post<VdiConnectionRequest>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
-      set({ isLoading: false, vdiIp: response.data.data.ip });
+      set({ vdiIp: response.data.data.ip });
     } catch (error) {
-      set({ error: error as AxiosError });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
@@ -131,9 +105,8 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     set({ isLoading: !isSilent });
     try {
       const response = await eduApi.get<VirtualMachines>(`${EDU_API_VDI_ENDPOINT}/virtualmachines`);
-      set({ isLoading: false, virtualMachines: response?.data });
+      set({ virtualMachines: response.data });
     } catch (error) {
-      set({ error: error as AxiosError });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });

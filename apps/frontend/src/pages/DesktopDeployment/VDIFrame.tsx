@@ -21,9 +21,9 @@ const VDIFrame = () => {
     dataSource,
     isVdiConnectionMinimized,
     guacId,
-    openVdiConnection,
+    isVdiConnectionOpen,
     setIsVdiConnectionMinimized,
-    setOpenVdiConnection,
+    setIsVdiConnectionOpen,
   } = useDesktopDeploymentStore();
   const [clientState, setClientState] = useState(0);
 
@@ -31,7 +31,7 @@ const VDIFrame = () => {
     if (guacRef.current) {
       guacRef.current.disconnect();
     }
-    setOpenVdiConnection(false);
+    setIsVdiConnectionOpen(false);
   };
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const VDIFrame = () => {
     return () => {
       handleDisconnect();
     };
-  }, [guacToken, openVdiConnection]);
+  }, [guacToken, isVdiConnectionOpen]);
 
   useEffect(() => {
     const handleResize = () => {
