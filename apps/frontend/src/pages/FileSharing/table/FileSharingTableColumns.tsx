@@ -6,7 +6,7 @@ import {
   getElapsedTime,
   getFileCategorie,
   parseDate,
-} from '@/pages/FileSharing/utilities/fileManagerUtilities';
+} from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';

@@ -5,7 +5,7 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 
 type FileSharingStore = {
   files: DirectoryFile[];
@@ -25,6 +25,8 @@ type FileSharingStore = {
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFile[];
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFile[]) => void;
 };
 
@@ -36,6 +38,7 @@ const initialState = {
   selectedRows: {},
   mountPoints: [],
   directorys: [],
+  isLoading: false,
 };
 
 type PersistedFileManagerStore = (
@@ -66,8 +69,13 @@ const useFileSharingStore = create<FileSharingStore>(
         set({ directorys });
       },
 
+      setIsLoading: (isLoading: boolean) => {
+        set({ isLoading });
+      },
+
       fetchFiles: async (path: string = '/') => {
         try {
+          set({ isLoading: true });
           const directoryFiles = await eduApi.get(
             `${FileSharingApiEndpoints.FILESHARING_ROUTE}/${clearPathFromWebdav(path)}`,
           );
@@ -79,15 +87,20 @@ const useFileSharingStore = create<FileSharingStore>(
           });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       fetchMountPoints: async () => {
         try {
+          set({ isLoading: true });
           const resp = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ROUTE}/`);
           set({ mountPoints: resp.data as DirectoryFile[] });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 

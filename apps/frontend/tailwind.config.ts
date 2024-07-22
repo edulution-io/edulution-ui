@@ -129,7 +129,7 @@ module.exports = {
         h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
-        pan: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
+        span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
       });
     }),
   ],

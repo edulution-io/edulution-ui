@@ -10,9 +10,17 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 const FileSharingPage = () => {
-  const { fetchFiles, files, currentPath, setPathToRestoreSession, pathToRestoreSession } = useFileSharingStore();
+  const {
+    fetchFiles,
+    files,
+    currentPath,
+    setPathToRestoreSession,
+    pathToRestoreSession,
+    isLoading: isFileProcessing,
+  } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,9 +51,8 @@ const FileSharingPage = () => {
 
   return (
     <div className="w-full overflow-x-auto">
-      {isLoading && <LoadingIndicator isOpen={isLoading} />}
       <div className="flex-1 overflow-auto">
-        <div className="flex w-full flex-col  justify-between space-x-2 pb-3 pt-3">
+        <div className="flex w-full flex-row  justify-between space-x-2 pb-3 pt-3">
           <DirectoryBreadcrumb
             path={currentPath}
             onNavigate={(filenamePath) => {
@@ -54,6 +61,12 @@ const FileSharingPage = () => {
             }}
             style={{ color: 'white' }}
           />
+          <div className="flex items-center justify-end pr-8">
+            {isFileProcessing && <CircleLoader className="h-4 w-4" />}
+          </div>
+        </div>
+        <div className="flex w-full flex-col  justify-between space-x-2 pb-3 pt-3">
+          <LoadingIndicator isOpen={isLoading} />
         </div>
         <div
           className="w-full md:w-auto md:max-w-7xl xl:max-w-full"
@@ -65,7 +78,7 @@ const FileSharingPage = () => {
           />
         </div>
 
-        <div className="fixed bottom-8 flex flex-row space-x-24 bg-opacity-90">
+        <div className="fixed bottom-8 mt-10 flex flex-row space-x-24 bg-opacity-90">
           <ActionContentDialog />
           <FileSharingFloatingButtonsBar />
         </div>

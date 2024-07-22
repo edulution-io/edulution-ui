@@ -12,7 +12,7 @@ import { DirectoryFile } from '@libs/filesharing/filesystem';
 import FileAction from '@libs/filesharing/FileAction';
 import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
-import { FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FileSharingFormValues } from '@libs/filesharing/FilesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;

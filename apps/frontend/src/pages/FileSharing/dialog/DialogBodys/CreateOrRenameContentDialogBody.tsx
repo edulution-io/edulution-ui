@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
-import { FilesharingDialogProps } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps } from '@libs/filesharing/FilesharingDialogProps';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => (
   <Form {...form}>

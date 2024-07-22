@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { AES, enc } from 'crypto-js';
 import { DirectoryFile } from '@libs/filesharing/filesystem';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
@@ -11,6 +10,7 @@ import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import { WebdavStatusReplay } from './filesharing.types';
 import { User } from '../users/user.schema';
+import getDecryptedPassword from '../../../../libs/src/common/utils/getDecryptedPassword';
 
 @Injectable()
 class FilesharingService {
@@ -62,19 +62,9 @@ class FilesharingService {
     return user;
   }
 
-  private static decryptPassword(encryptedPassword: string, encryptionKey: string): string {
-    const decrypted = AES.decrypt(encryptedPassword, encryptionKey).toString(enc.Utf8);
-    if (!decrypted) {
-      throw new CustomHttpException(FileSharingErrorMessage.DbAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, {
-        message: 'Failed to decrypt password',
-      });
-    }
-    return decrypted;
-  }
-
   private async initializeClient(username: string): Promise<void> {
     const user = await this.ensureValidUser(username);
-    const password = FilesharingService.decryptPassword(user?.password as string, this.eduEncrytionKey);
+    const password = getDecryptedPassword(user?.password as string, this.eduEncrytionKey);
 
     const client = WebdavClientFactory.createWebdavClient(this.baseurl, username, password);
     const timeout = this.setCacheTimeout(username);

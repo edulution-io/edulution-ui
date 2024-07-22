@@ -11,10 +11,10 @@ import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
 import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import { HttpMethodes } from '@libs/common/types/http-methods';
 import FileAction from '@libs/filesharing/FileAction';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { t } from 'i18next';
 import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
-import { FilesharingDialogProps, FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/FilesharingDialogProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
