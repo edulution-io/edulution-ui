@@ -47,6 +47,7 @@ describe('AppConfigService', () => {
             url: 'test/path',
             apiKey: '123456789',
           },
+          accessGroups: ['group1', 'group2'],
         },
       ];
       await service.insertConfig(appConfigs);
@@ -65,6 +66,7 @@ describe('AppConfigService', () => {
             url: 'test/path',
             apiKey: '123456789',
           },
+          accessGroups: ['group1', 'group2'],
         },
       ];
       await service.updateConfig(appConfigs);

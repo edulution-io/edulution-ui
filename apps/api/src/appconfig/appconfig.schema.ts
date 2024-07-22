@@ -15,6 +15,9 @@ export class AppConfig extends Document {
 
   @Prop({ type: Object, default: {} })
   options: AppConfigOptions;
+
+  @Prop({ type: Object, default: {} })
+  accessGroups: string[];
 }
 
 export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);

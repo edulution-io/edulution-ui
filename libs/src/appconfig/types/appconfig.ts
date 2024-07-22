@@ -6,4 +6,5 @@ export type AppConfigDto = {
   icon: string;
   appType: AppIntegrationType;
   options: AppConfigOptions;
+  accessGroups: string[];
 };

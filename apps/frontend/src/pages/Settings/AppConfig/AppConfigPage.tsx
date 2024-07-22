@@ -87,6 +87,7 @@ const AppConfigPage: React.FC = () => {
               acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
               return acc;
             }, {} as AppConfigOptions) || {},
+          accessGroups: [''],
         };
 
         const updatedConfig = appConfigs.map((entry) => {

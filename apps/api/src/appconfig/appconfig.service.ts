@@ -29,6 +29,7 @@ class AppConfigService {
               icon: appConfig.icon,
               appType: appConfig.appType,
               options: appConfig.options,
+              accessGroups: appConfig.accessGroups,
             },
           },
           upsert: true,

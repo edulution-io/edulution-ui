@@ -21,7 +21,7 @@ type PersistedAppConfigsStore = (
 ) => StateCreator<AppConfigsStore>;
 
 const initialState = {
-  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
+  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {}, accessGroups: [] }],
   isLoading: false,
   error: null,
 };

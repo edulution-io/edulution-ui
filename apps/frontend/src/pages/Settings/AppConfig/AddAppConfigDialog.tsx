@@ -53,6 +53,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
         icon: optionsConfig.icon,
         appType: AppIntegrationType.FORWARDED,
         options: {},
+        accessGroups: [''],
       };
       const updatedConfig = [...appConfigs, newConfig];
 

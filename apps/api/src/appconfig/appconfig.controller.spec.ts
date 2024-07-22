@@ -54,6 +54,7 @@ describe('AppConfigController', () => {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
           },
+          accessGroups: ['group1', 'group2'],
         },
       ];
       controller.createConfig(appConfigDto);
@@ -72,6 +73,7 @@ describe('AppConfigController', () => {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
           },
+          accessGroups: ['group1', 'group2'],
         },
       ];
       controller.updateConfig(appConfigDto);
