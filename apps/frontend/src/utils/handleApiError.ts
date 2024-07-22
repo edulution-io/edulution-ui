@@ -17,7 +17,7 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
 
     const errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
 
-    toast.error(errorMessage);
+    toast.error(errorMessage || i18n.t('errors.unexpectedError'));
     set({ [errorName]: errorMessage });
   } else {
     console.error((error as Error).message);

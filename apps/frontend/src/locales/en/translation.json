@@ -120,8 +120,28 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop Deployment",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "reload": "Reload",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients available",
+    "client": "Client available",
+    "errors": {
+      "GuacamoleNotResponding": "RDP service not available.",
+      "GuacamoleUserNotFound": "Username or password could not be found.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
+      "SessionNotFound": "Session not found."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -235,7 +255,9 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
-    "clearSelection": "Clear selection"
+    "clearSelection": "Clear selection",
+    "start": "Start",
+    "close": "Close"
   },
   "form": {
     "path": "Path",
