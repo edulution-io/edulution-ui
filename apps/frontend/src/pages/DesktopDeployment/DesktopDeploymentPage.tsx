@@ -3,16 +3,13 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import cn from '@/lib/utils';
 import useUserStore from '@/store/UserStore/UserStore';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import { useInterval } from 'usehooks-ts';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
-import VDIFrame from './VDIFrame';
 import VdiCard from './components/VdiCard';
 import FloatingButtonsBar from './components/FloatingButtonsBar';
 
@@ -29,7 +26,6 @@ const DesktopDeploymentPage: React.FC = () => {
     guacToken,
     connectionEnabled,
     vdiIp,
-    isVdiConnectionOpen,
     isLoading,
     virtualMachines,
     authenticate,
@@ -39,7 +35,6 @@ const DesktopDeploymentPage: React.FC = () => {
     getConnection,
     getVirtualMachines,
   } = useDesktopDeploymentStore();
-  const isMobileView = useIsMobileView();
 
   useEffect(() => {
     if (!guacToken) {
@@ -97,8 +92,7 @@ const DesktopDeploymentPage: React.FC = () => {
         description={t('desktopdeployment.description')}
         iconSrc={DesktopDeploymentIcon}
       />
-      {isVdiConnectionOpen && <VDIFrame />}
-      <div className={cn('flex gap-10', isMobileView ? 'flex-col' : 'flex-row')}>
+      <div className="flex flex-col gap-10 md:flex-row">
         {osConfigs.map(({ os, title }) => (
           <VdiCard
             key={os}

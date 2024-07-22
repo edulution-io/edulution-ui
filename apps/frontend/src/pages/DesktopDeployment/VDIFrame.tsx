@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import Guacamole from 'guacamole-common-js';
 import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
-import cn from '@/lib/utils';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -132,18 +131,17 @@ const VDIFrame = () => {
     };
   }, [guacRef.current]);
 
+  if (!isVdiConnectionOpen) {
+    return null;
+  }
+
   const style = isVdiConnectionMinimized ? { width: 0 } : {};
 
   return createPortal(
     !error ? (
       <>
         {clientState < 3 && <LoadingIndicator isOpen />}
-        <div
-          className={cn(
-            'fixed -top-1 left-1/2 z-[99] -translate-x-1/2 transform',
-            isMobileView && 'flex items-center space-x-4',
-          )}
-        >
+        <div className="fixed -top-1 left-1/2 z-[99] -translate-x-1/2 transform md:flex md:items-center md:space-x-4">
           <button
             type="button"
             className="mr-1 rounded bg-ciLightBlue px-4 hover:bg-ciDarkBlue"
@@ -163,7 +161,7 @@ const VDIFrame = () => {
         <div
           id="display"
           ref={displayRef}
-          className="z-1 absolute inset-y-0 left-0 ml-0 mr-14 w-screen overflow-hidden md:w-[calc(100%-var(--sidebar-width))]"
+          className="z-1 absolute inset-y-0 left-0 ml-0 w-screen overflow-hidden md:w-[calc(100%-var(--sidebar-width))]"
           style={style}
         />
       </>

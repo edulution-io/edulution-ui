@@ -15,6 +15,7 @@ import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -29,7 +30,7 @@ const pageSwitch = (page: string) => {
     case APPS.WHITEBOARD:
       return <FramePlaceholder />;
     case APPS.DESKTOP_DEPLOYMENT:
-      return <FramePlaceholder />;
+      return <DesktopDeploymentPage />;
     default:
       return (
         <Navigate
