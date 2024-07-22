@@ -17,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetTokenDecorator from '../common/decorators/getToken.decorator';
 
 @Controller('filesharing')
 class FilesharingController {
@@ -65,6 +66,11 @@ class FilesharingController {
   @Delete(':filePath(*)')
   async deleteFile(@Param('filePath') filePath: string, @GetCurrentUsername() username: string) {
     return this.filesharingService.deleteFileAtPath(username, filePath);
+  }
+
+  @Post('oftoken')
+  getOnlyofficeToken(@GetTokenDecorator() token: string, @Body() payload: string) {
+    return this.filesharingService.getOnlyofficeToken(token, payload);
   }
 
   @Put('name')

@@ -18,6 +18,7 @@ import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
 import HashAlgorithm from '@libs/algorithm/hashAlgorithm';
 import { HttpService } from '@nestjs/axios';
+import * as jwt from 'jsonwebtoken';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import EduApiUtility from '../utilits/eduApiUtility';
@@ -39,6 +40,7 @@ class FilesharingService {
     private readonly httpService: HttpService,
     private readonly userService: UsersService,
   ) {
+    this.downloadLinkLocation = process.env.EDUI_DOWNLOAD_DEV_DIR as string;
     this.baseurl = process.env.EDUI_WEBDAV_URL as string;
     this.eduEncrytionKey = process.env.EDUI_ENCRYPTION_KEY as string;
     this.eduApiUtilits = new EduApiUtility(this.userService, this.eduEncrytionKey);
@@ -358,6 +360,12 @@ class FilesharingService {
       return resp;
     }
     return resp.data;
+  }
+
+  getOnlyofficeToken(token: string, payload: string) {
+    if (!token) return '';
+    const secret = process.env.EDUI_ONLYOFFICE_SECRET as string;
+    return jwt.sign(payload, secret, { noTimestamp: true });
   }
 }
 

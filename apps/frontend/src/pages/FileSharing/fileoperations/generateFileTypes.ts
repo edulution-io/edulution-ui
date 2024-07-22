@@ -6,6 +6,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 interface GenerateFile {
   [key: string]: (title: string) => Promise<File> | File;
+
   docx: (title: string) => Promise<File>;
   txt: (title: string) => File;
   drawio: (title: string) => File;
@@ -70,12 +71,15 @@ const generateFile: GenerateFile = {
   },
 
   xlsx: async function createExcelFile(title: string): Promise<File> {
+    const fileName = `${title}.xlsx`;
     const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(title);
+    worksheet.name = title;
     const buffer = await workbook.xlsx.writeBuffer();
     const fileBlob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
-    return new File([fileBlob], `${title}.xlsx`, { type: fileBlob.type });
+    return new File([fileBlob], fileName, { type: fileBlob.type });
   },
 
   pptx: async function createPowerPointFile(title: string): Promise<File> {

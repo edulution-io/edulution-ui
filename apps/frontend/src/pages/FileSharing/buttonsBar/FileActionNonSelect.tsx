@@ -6,31 +6,36 @@ import { HiOutlineFolderAdd } from 'react-icons/hi';
 import { FiUpload } from 'react-icons/fi';
 import React, { FC } from 'react';
 import { t } from 'i18next';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 
 interface FileActionNonSelectProps {
   openDialog: (action: FileAction) => void;
 }
 
-const FileActionNonSelect: FC<FileActionNonSelectProps> = ({ openDialog }) => (
-  <>
-    <FloatingActionButton
-      variant="dropdown"
-      icon={MdFilePresent}
-      text={t('tooltip.create.file')}
-      onClick={() => openDialog(FileAction.CREATE_FILE)}
-      options={FileTypesConfiguration}
-    />
-    <FloatingActionButton
-      icon={HiOutlineFolderAdd}
-      text={t('tooltip.create.folder')}
-      onClick={() => openDialog(FileAction.CREATE_FOLDER)}
-    />
-    <FloatingActionButton
-      icon={FiUpload}
-      text={t('tooltip.upload')}
-      onClick={() => openDialog(FileAction.UPLOAD_FILE)}
-    />
-  </>
-);
+const FileActionNonSelect: FC<FileActionNonSelectProps> = ({ openDialog }) => {
+  const { setSelectedFileType } = useFileSharingDialogStore();
+  return (
+    <>
+      <FloatingActionButton
+        variant="dropdown"
+        icon={MdFilePresent}
+        text={t('tooltip.create.file')}
+        onClick={() => openDialog(FileAction.CREATE_FILE)}
+        onSelectFileSelect={setSelectedFileType}
+        options={FileTypesConfiguration}
+      />
+      <FloatingActionButton
+        icon={HiOutlineFolderAdd}
+        text={t('tooltip.create.folder')}
+        onClick={() => openDialog(FileAction.CREATE_FOLDER)}
+      />
+      <FloatingActionButton
+        icon={FiUpload}
+        text={t('tooltip.upload')}
+        onClick={() => openDialog(FileAction.UPLOAD_FILE)}
+      />
+    </>
+  );
+};
 
 export default FileActionNonSelect;
