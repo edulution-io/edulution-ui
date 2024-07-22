@@ -10,23 +10,14 @@ interface SaveSurveyDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
   isOpenSaveSurveyDialog: boolean;
-  openSaveSurveyDialog: () => void;
-  closeSaveSurveyDialog: () => void;
+  setIsOpenSaveSurveyDialog: (state: boolean) => void;
   commitSurvey: () => void;
   isCommitting: boolean;
   trigger?: React.ReactNode;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const {
-    trigger,
-    form,
-    commitSurvey,
-    isCommitting,
-    isOpenSaveSurveyDialog,
-    openSaveSurveyDialog,
-    closeSaveSurveyDialog,
-  } = props;
+  const { trigger, form, commitSurvey, isCommitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
 
   const { t } = useTranslation();
 
@@ -54,7 +45,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     <AdaptiveDialog
       isOpen={isOpenSaveSurveyDialog}
       trigger={trigger}
-      handleOpenChange={isOpenSaveSurveyDialog ? closeSaveSurveyDialog : openSaveSurveyDialog}
+      handleOpenChange={() => setIsOpenSaveSurveyDialog(!isOpenSaveSurveyDialog)}
       title={t('surveys.saveDialog.title')}
       body={getDialogBody()}
       footer={getFooter()}

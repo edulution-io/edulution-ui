@@ -26,8 +26,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
-    openSaveSurveyDialog,
-    closeSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
 
     updateOrCreateSurvey,
     isLoading,
@@ -103,8 +102,8 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       canSubmitMultipleAnswers,
     });
 
-    closeSaveSurveyDialog();
-    await updateUsersSurveys();
+    void updateUsersSurveys();
+    setIsOpenSaveSurveyDialog(false);
   };
 
   const formulaWatcher = form.watch('formula');
@@ -133,7 +132,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
           <FloatingActionButton
             icon={AiOutlineSave}
             text={t('common.save')}
-            onClick={openSaveSurveyDialog}
+            onClick={() => setIsOpenSaveSurveyDialog(true)}
           />
           <FloatingActionButton
             icon={FiFilePlus}
@@ -152,8 +151,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-        openSaveSurveyDialog={openSaveSurveyDialog}
-        closeSaveSurveyDialog={closeSaveSurveyDialog}
+        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
         commitSurvey={saveSurvey}
         isCommitting={isLoading}
       />
