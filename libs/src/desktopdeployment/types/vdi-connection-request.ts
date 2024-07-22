@@ -1,4 +1,4 @@
-type VdiConnectionRequest = {
+type LmnVdiResponse = {
   status: string;
   data: {
     ip: string;
@@ -6,4 +6,4 @@ type VdiConnectionRequest = {
   };
 };
 
-export default VdiConnectionRequest;
+export default LmnVdiResponse;

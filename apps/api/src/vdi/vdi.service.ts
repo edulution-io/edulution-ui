@@ -6,7 +6,7 @@ import {
   LmnVdiRequest,
   GuacamoleConnections,
   GuacRequest,
-  VdiConnectionRequest,
+  LmnVdiResponse,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -158,7 +158,7 @@ class VdiService {
 
   async requestVdi(body: LmnVdiRequest) {
     try {
-      const response = await this.lmnVdiApi.post<VdiConnectionRequest>('/connection/request', body);
+      const response = await this.lmnVdiApi.post<LmnVdiResponse>('/connection/request', body);
       return response.data;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);

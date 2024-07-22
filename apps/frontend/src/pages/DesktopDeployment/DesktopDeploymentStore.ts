@@ -2,12 +2,7 @@ import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
 import eduApi from '@/api/eduApi';
-import {
-  DesktopDeploymentStore,
-  GuacRequest,
-  VdiConnectionRequest,
-  VirtualMachines,
-} from '@libs/desktopdeployment/types';
+import { DesktopDeploymentStore, GuacRequest, LmnVdiResponse, VirtualMachines } from '@libs/desktopdeployment/types';
 
 const initialState = {
   connectionEnabled: false,
@@ -92,7 +87,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
     };
 
     try {
-      const response = await eduApi.post<VdiConnectionRequest>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
+      const response = await eduApi.post<LmnVdiResponse>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
       set({ vdiIp: response.data.data.ip });
     } catch (error) {
       handleApiError(error, set);

@@ -6,14 +6,7 @@ const DESKTOP_DEPLOYMENT_MENUBAR_CONFIG: MenuBarEntryProps = {
   icon: DesktopDeploymentIcon,
   disabled: true,
   color: 'hover:bg-ciLightBlue',
-  menuItems: [
-    {
-      id: 'desktop',
-      label: 'desktopdeployment.sidebar',
-      icon: DesktopDeploymentIcon,
-      action: () => {},
-    },
-  ],
+  menuItems: [],
 };
 
 export default DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;

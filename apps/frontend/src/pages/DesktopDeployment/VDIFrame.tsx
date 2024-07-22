@@ -105,7 +105,7 @@ const VDIFrame = () => {
         4: 'DISCONNECTING',
         5: 'DISCONNECTED',
       };
-      console.info(stateMap[state]);
+      console.info(`Guacamole changed the state to ${stateMap[state]}`);
       setClientState(state);
 
       if (state === 5) {

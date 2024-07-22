@@ -1,4 +1,7 @@
 /* eslint-disable */
+
+// This DTO is based on a third-party object definition from apache/guacamole.
+// Any modifications should be carefully reviewed to ensure compatibility with the source.
 export class Parameters {
   port: string = '3389';
   'read-only': string = '';
