@@ -7,6 +7,7 @@ import cn from '@/lib/utils';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import { SIDEBAR_WIDTH } from '@libs/ui/constants';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
@@ -46,7 +47,7 @@ const VDIFrame = () => {
       GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
-      GUAC_WIDTH: window.innerWidth - 56,
+      GUAC_WIDTH: window.innerWidth - SIDEBAR_WIDTH,
       GUAC_HEIGHT: window.innerHeight,
       GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
@@ -65,28 +66,21 @@ const VDIFrame = () => {
     });
     guac.connect(params);
 
-    const mouse: Guacamole.Mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
-    // @ts-expect-error due to readability
-    mouse.onmousedown = guac.sendMouseState.bind(guac);
-    // @ts-expect-error due to readability
-    mouse.onmouseup = guac.sendMouseState.bind(guac);
-    // @ts-expect-error due to readability
-    mouse.onmousemove = guac.sendMouseState.bind(guac);
+    const guacSendMouseState = guac.sendMouseState.bind(guac);
 
-    const touchscreen = new Guacamole.Mouse.Touchscreen(guac.getDisplay().getElement());
-    // @ts-expect-error due to readability
-    touchscreen.onmousedown = guac.sendMouseState.bind(guac);
-    // @ts-expect-error due to readability
-    touchscreen.onmouseup = guac.sendMouseState.bind(guac);
-    // @ts-expect-error due to readability
-    touchscreen.onmousemove = guac.sendMouseState.bind(guac);
+    const mouse = new Guacamole.Mouse(displayElement);
+    mouse.onmousedown = guacSendMouseState;
+    mouse.onmouseup = guacSendMouseState;
+    mouse.onmousemove = guacSendMouseState;
 
-    const touch = new Guacamole.Touch(guac.getDisplay().getElement());
-    // @ts-expect-error due to readability
+    const touchscreen = new Guacamole.Mouse.Touchscreen(displayElement);
+    touchscreen.onmousedown = guacSendMouseState;
+    touchscreen.onmouseup = guacSendMouseState;
+    touchscreen.onmousemove = guacSendMouseState;
+
+    const touch = new Guacamole.Touch(displayElement);
     touch.ontouchstart = guac.sendTouchState.bind(guac);
-    // @ts-expect-error due to readability
     touch.ontouchend = guac.sendTouchState.bind(guac);
-    // @ts-expect-error due to readability
     touch.ontouchmove = guac.sendTouchState.bind(guac);
 
     const keyboard = new Guacamole.Keyboard(document);
@@ -127,18 +121,18 @@ const VDIFrame = () => {
   useEffect(() => {
     const handleResize = () => {
       if (guacRef.current) {
-        guacRef.current.sendSize(window.innerWidth, window.innerHeight);
+        guacRef.current.sendSize(window.innerWidth - SIDEBAR_WIDTH, window.innerHeight);
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [guacRef.current, isVdiConnectionMinimized]);
+  }, [guacRef.current]);
 
-  const style = isVdiConnectionMinimized ? { width: 0 } : { width: isMobileView ? '100%' : 'calc(100% - 56px)' };
+  const style = isVdiConnectionMinimized ? { width: 0 } : {};
 
   return createPortal(
     !error ? (
@@ -169,7 +163,7 @@ const VDIFrame = () => {
         <div
           id="display"
           ref={displayRef}
-          className="z-1 absolute inset-y-0 left-0 w-screen overflow-hidden"
+          className="z-1 absolute inset-y-0 left-0 ml-0 mr-14 w-screen overflow-hidden md:w-[calc(100%-var(--sidebar-width))]"
           style={style}
         />
       </>
