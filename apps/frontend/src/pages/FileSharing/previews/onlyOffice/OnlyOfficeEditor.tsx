@@ -1,6 +1,7 @@
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditorConfig';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 
 interface OnlyOfficeEditorProps {
   isPreview?: boolean;
@@ -9,37 +10,54 @@ interface OnlyOfficeEditorProps {
     key: string;
     documentType: string;
   };
+  mode: 'view' | 'edit';
   documentServerURL: string;
   editorConfig: OnlyOfficeEditorConfig;
+  filePath: string;
+  fileName: string;
 }
 
-const onDocumentReady = () => {};
+const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
+  isPreview,
+  fileName,
+  filePath,
+  mode,
+  editorType,
+  documentServerURL,
+  editorConfig,
+}) => {
+  const { setCurrentlyEditingFile } = useFileSharingStore();
 
-const onLoadComponentError = (errorCode: number) => {
-  switch (errorCode) {
-    case -1:
-      break;
+  const handleDocumentReady = useCallback(() => {}, [mode, fileName, filePath, setCurrentlyEditingFile]);
 
-    case -2:
-      break;
+  const handleLoadComponentError = (errorCode: number) => {
+    switch (errorCode) {
+      case -1:
+        console.error('Error: Document Server not available');
+        break;
+      case -2:
+        console.error('Error: Invalid document key');
+        break;
+      case -3:
+        console.error('Error: Unsupported document type');
+        break;
+      default:
+        console.error(`Error: Unknown error code ${errorCode}`);
+    }
+  };
 
-    case -3:
-      break;
-    default:
-  }
+  return (
+    <div className={`relative ${isPreview ? 'h-[75vh]' : 'h-[100vh]'}`}>
+      <DocumentEditor
+        key={editorType.key}
+        id={editorType.id}
+        documentServerUrl={documentServerURL}
+        config={editorConfig}
+        events_onDocumentReady={handleDocumentReady}
+        onLoadComponentError={handleLoadComponentError}
+      />
+    </div>
+  );
 };
-
-const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({ isPreview, editorType, documentServerURL, editorConfig }) => (
-  <div className={`relative ${isPreview ? 'h-[75vh]' : 'h-[100vh]'}`}>
-    <DocumentEditor
-      key={editorType.key}
-      id={editorType.id}
-      documentServerUrl={documentServerURL}
-      config={editorConfig}
-      events_onDocumentReady={onDocumentReady}
-      onLoadComponentError={onLoadComponentError}
-    />
-  </div>
-);
 
 export default OnlyOfficeEditor;

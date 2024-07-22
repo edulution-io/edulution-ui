@@ -31,7 +31,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ currentlyEditingF
           data-testid="test-id-file-preview"
         >
           <FilePreviewOptionsBar />
-          <FileViewer file={currentlyEditingFile} />
+          <FileViewer mode="view" />
         </div>
       )}
     </div>

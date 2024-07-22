@@ -15,6 +15,8 @@ import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import EmptyLayout from '@/components/layout/EmptyLayout';
+import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -59,6 +61,12 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
         </Route>
       ) : (
         <>
+          <Route element={<EmptyLayout />}>
+            <Route
+              path="/of"
+              element={<FileViewer mode="edit" />}
+            />
+          </Route>
           <Route element={<MainLayout />}>
             <Route
               path="/"

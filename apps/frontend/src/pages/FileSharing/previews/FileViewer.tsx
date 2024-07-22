@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { FC } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
 import FileContentLoadingIndicator from '@/components/shared/FileContentLoadingIndicator';
 import VideoComponent from '@/components/ui/VideoComponent';
 import { t } from 'i18next';
 import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
 import OnlyOffice from '@/pages/FileSharing/previews/onlyOffice/OnlyOffice';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 
 interface FileViewerProps {
-  file: DirectoryFile;
+  mode: 'view' | 'edit';
 }
 
-const FileViewer: React.FC<FileViewerProps> = ({ file }) => {
-  const { downloadLinkURL, publicDownloadLink, isLoading, isError } = useDownloadLinks(file);
-  const fileExtension = file.filename?.split('.').pop()?.toLowerCase();
+const FileViewer: FC<FileViewerProps> = ({ mode }) => {
+  const { currentlyEditingFile } = useFileSharingStore();
+  if (!currentlyEditingFile) return null;
+  const { downloadLinkURL, publicDownloadLink, isLoading, isError } = useDownloadLinks(currentlyEditingFile);
+  const fileExtension = currentlyEditingFile.filename?.split('.').pop()?.toLowerCase();
 
   const renderComponent = () => {
     if (isLoading || isError || !downloadLinkURL) {
@@ -41,9 +43,9 @@ const FileViewer: React.FC<FileViewerProps> = ({ file }) => {
         return publicDownloadLink ? (
           <OnlyOffice
             url={publicDownloadLink}
-            fileName={file.basename}
-            filePath={file.filename}
-            mode="view"
+            fileName={currentlyEditingFile.basename}
+            filePath={currentlyEditingFile.filename}
+            mode={mode}
             type="desktop"
           />
         ) : (

@@ -160,6 +160,7 @@ const useFileSharingStore = create<FileSharingStore>(
         files: state.files,
         currentPath: state.currentPath,
         mountPoints: state.mountPoints,
+        currentlyEditingFile: state.currentlyEditingFile,
       }),
     } as PersistOptions<FileSharingStore>,
   ),
