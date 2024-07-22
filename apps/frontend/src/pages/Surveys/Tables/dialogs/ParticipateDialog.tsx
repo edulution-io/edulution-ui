@@ -1,121 +1,55 @@
-import mongoose from 'mongoose';
 import React from 'react';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { CompleteEvent } from 'survey-core';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { zodResolver } from '@hookform/resolvers/zod';
-import SurveyDto from '@libs/survey/types/survey.dto';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
 
-interface ParticipateDialogFormData {
-  answer: JSON | undefined;
-  options: CompleteEvent | undefined;
-}
+const ParticipateDialog = () => {
+  const { selectedSurvey: survey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-interface ParticipateDialogProps {
-  survey: SurveyDto;
-
-  isOpenParticipateSurveyDialog: boolean;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
-  commitAnswer: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  isLoading: boolean;
-  error: Error | null;
-
-  updateOpenSurveys: () => void;
-  updateAnsweredSurveys: () => void;
-
-  trigger?: React.ReactNode;
-}
-
-const ParticipateDialog = (props: ParticipateDialogProps) => {
   const {
-    survey,
-
     isOpenParticipateSurveyDialog,
     setIsOpenParticipateSurveyDialog,
-    commitAnswer,
+    answer,
+    setAnswer,
+    answerSurvey,
     isLoading,
-    error,
-
-    updateOpenSurveys,
-    updateAnsweredSurveys,
-
-    trigger,
-  } = props;
+  } = useParticipateDialogStore();
 
   const { t } = useTranslation();
 
-  const initialFormValues: ParticipateDialogFormData = {
-    answer: undefined,
-    options: undefined,
-  };
-
-  const formSchema = z.object({
-    answer: z.any(),
-    options: z.any(),
-  });
-
-  const form = useForm<ParticipateDialogFormData>({
-    mode: 'onChange',
-    resolver: zodResolver(formSchema),
-    defaultValues: initialFormValues,
-  });
-
-  const onSubmit = async () => {
-    const { answer, options } = form.getValues();
-
-    if (!answer || answer === ({} as JSON)) {
-      toast.error(t('surveys.errors.noAnswerForSubmission'));
-      return;
-    }
-
-    try {
-      await commitAnswer(survey.id, survey.saveNo, answer, options);
-      setIsOpenParticipateSurveyDialog(false);
-      updateOpenSurveys();
-      updateAnsweredSurveys();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : '');
-    }
-  };
-
-  const handleFormSubmit = form.handleSubmit(onSubmit);
-
   const getDialogBody = () => {
     if (!survey) return null;
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
-      <>
-        <ParticipateDialogBody
-          formula={survey.formula}
-          handleFormSubmit={handleFormSubmit}
-          form={form}
-        />
-        {error ? toast.error(t(error.message)) : null}
-      </>
+      <ParticipateDialogBody
+        surveyId={survey.id}
+        saveNo={survey.saveNo}
+        formula={survey.formula}
+        answer={answer}
+        setAnswer={setAnswer}
+        commitAnswer={answerSurvey}
+        updateOpenSurveys={updateOpenSurveys}
+        updateAnsweredSurveys={updateAnsweredSurveys}
+        setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
+      />
     );
   };
 
-  if (!isOpenParticipateSurveyDialog) return null;
-
   return (
-    <AdaptiveDialog
-      isOpen={isOpenParticipateSurveyDialog}
-      trigger={trigger}
-      handleOpenChange={() => setIsOpenParticipateSurveyDialog(!isOpenParticipateSurveyDialog)}
-      title={t('surveys.participateDialog.title')}
-      body={getDialogBody()}
-      desktopContentClassName="max-w-[75%]"
-    />
+    <>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isOpenParticipateSurveyDialog ? (
+        <AdaptiveDialog
+          isOpen={isOpenParticipateSurveyDialog}
+          handleOpenChange={() => setIsOpenParticipateSurveyDialog(!isOpenParticipateSurveyDialog)}
+          title={t('surveys.participateDialog.title')}
+          body={getDialogBody()}
+          desktopContentClassName="max-w-[75%]"
+        />
+      ) : null}
+    </>
   );
 };
 

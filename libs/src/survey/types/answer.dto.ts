@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
-interface GetAnswerDto {
+interface AnswerDto {
   surveyId: mongoose.Types.ObjectId;
 
   attendee?: string;
 }
 
-export default GetAnswerDto;
+export default AnswerDto;

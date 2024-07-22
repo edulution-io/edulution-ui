@@ -1,32 +1,57 @@
 import React from 'react';
-import { Model } from 'survey-core';
-import * as SurveyThemes from 'survey-core/themes';
+import mongoose from 'mongoose';
 import { Survey } from 'survey-react-ui';
-import { UseFormReturn } from 'react-hook-form';
+import { CompleteEvent, Model } from 'survey-core';
+import * as SurveyThemes from 'survey-core/themes';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/default2.min.css';
 
 interface ParticipateDialogBodyProps {
+  surveyId: mongoose.Types.ObjectId;
+  saveNo: number;
   formula: JSON;
-  handleFormSubmit: () => Promise<void>;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  answer: JSON;
+  setAnswer: (answer: JSON) => void;
+  commitAnswer: (
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+    options?: CompleteEvent,
+  ) => Promise<void>;
+
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+
+  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
 }
 
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
-  const { formula, handleFormSubmit, form } = props;
+  const {
+    surveyId,
+    saveNo,
+    formula,
+    answer,
+    setAnswer,
+    commitAnswer,
+    updateOpenSurveys,
+    updateAnsweredSurveys,
+    setIsOpenParticipateSurveyDialog,
+  } = props;
 
   const surveyModel = new Model(formula);
-
   surveyModel.applyTheme(SurveyThemes.FlatDark);
 
-  // TODO: NIEDUUI-211: Add the functionality to stop answering and to continue with that later
+  // TODO: NIEDUUI-211: Add the functionality to stop answering and to continue with that later (persistent store?)
+  surveyModel.data = answer;
+  surveyModel.onValueChanged.add(() => setAnswer(surveyModel.data as JSON));
+  surveyModel.onCurrentPageChanged.add(() => setAnswer(surveyModel.data as JSON));
 
-  surveyModel.onComplete.add(async (sender, options) => {
-    form.setValue('answer', sender.data);
-    form.setValue('options', options);
-    await handleFormSubmit();
+  surveyModel.onComplete.add(async (_sender, options) => {
+    await commitAnswer(surveyId, saveNo, answer, options);
+    updateOpenSurveys();
+    updateAnsweredSurveys();
+    setIsOpenParticipateSurveyDialog(false);
   });
 
   return (

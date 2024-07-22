@@ -169,10 +169,10 @@
       "title": "Participate in the survey"
     },
     "resultChartDialog": {
-      "title": "Results (Chart)"
+      "title": "Results - Chart"
     },
     "resultTableDialog": {
-      "title": "Results (Table)"
+      "title": "Results - Table"
     }
   },
   "printer": {
@@ -304,6 +304,7 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
+    "select": "Select...",
     "clearSelection": "Clear selection",
     "edit": "Edit",
     "delete": "Delete",
