@@ -385,8 +385,8 @@
     "sidebar": "Licenses",
     "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well.",
     "communityLicenseDialog": {
-      "title": "Community license",
-      "description": "The Community License is a free license provided by edulution.io. It allows the use of the edulution.io platform for non-commercial purposes."
+      "title": "Community version",
+      "description": "The Community version allows a license free usage for some parts of the 'edulution.io' software."
     }
   },
   "license": {

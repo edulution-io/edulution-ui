@@ -27,7 +27,7 @@ const CommunityLicenseBanner = () => {
   }
 
   return (
-    <div className="rounded-xl bg-ciLightRed p-4 text-black md:right-[--sidebar-width]">
+    <div className="mx-40 rounded-xl bg-ciLightRed p-2 text-black md:right-[--sidebar-width]">
       <h4 className="text-ciRed">{t('licensing.communityLicenseDialog.title')}</h4>
       <p>{t('licensing.communityLicenseDialog.description')}</p>
     </div>

@@ -41,7 +41,8 @@ const LicenseInfoList = () => {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: handleRowSelectionChange,
-    getRowId: (originalRow: LicenseInfoDto) => (originalRow.id ? `${originalRow.id.toHexString()}` : 'not-available'),
+    getRowId: (originalRow: LicenseInfoDto) =>
+      originalRow.id && typeof originalRow.id != 'string' ? `${originalRow.id.toHexString()}` : originalRow.id,
     state: {
       sorting,
       rowSelection: selectedRows,
@@ -83,7 +84,7 @@ const LicenseInfoList = () => {
               ))}
             </TableHeader>
             <TableBody className="container">
-              {table.getRowModel().rows.length ? (
+              {table.getRowModel().rows.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
