@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { toast } from 'sonner';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
@@ -16,7 +15,7 @@ import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SurveyDto from '@libs/survey/types/survey.dto';
 
 const SurveyEditorForm = () => {
-  const { updateOrCreateSurvey, isLoading, error } = useSurveyEditorFormStore();
+  const { updateOrCreateSurvey, isLoading } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
 
@@ -94,7 +93,6 @@ const SurveyEditorForm = () => {
         form={form}
         formula={formulaWatcher}
         saveNumber={saveNoWatcher}
-        error={error}
       />
     ),
     [formulaWatcher, saveNoWatcher],
@@ -104,10 +102,7 @@ const SurveyEditorForm = () => {
   return (
     <>
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ScrollArea className="overflow-y-auto overflow-x-hidden">
-          {getSurveyEditor}
-          {error ? toast.error(t(error.message)) : null}
-        </ScrollArea>
+        <ScrollArea className="overflow-y-auto overflow-x-hidden">{getSurveyEditor}</ScrollArea>
       </div>
       <TooltipProvider>
         <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
