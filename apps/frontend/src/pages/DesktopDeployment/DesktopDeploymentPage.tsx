@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import useFrameStore from '@/components/framing/FrameStore';
-import { APPS } from '@libs/appconfig/types';
 import cn from '@/lib/utils';
 import useUserStore from '@/store/UserStore/UserStore';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
@@ -31,7 +29,6 @@ const DesktopDeploymentPage: React.FC = () => {
     guacToken,
     connectionEnabled,
     vdiIp,
-    error,
     openVdiConnection,
     isLoading,
     virtualMachines,
@@ -42,13 +39,7 @@ const DesktopDeploymentPage: React.FC = () => {
     getConnection,
     getVirtualMachines,
   } = useDesktopDeploymentStore();
-  const { activeFrame } = useFrameStore();
   const isMobileView = useIsMobileView();
-
-  const getStyle = () => (activeFrame === APPS.DESKTOP_DEPLOYMENT ? 'block' : 'hidden');
-
-  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
-  const [isSilent, setIsSilent] = useState(false);
 
   useEffect(() => {
     if (!guacToken) {
@@ -75,28 +66,12 @@ const DesktopDeploymentPage: React.FC = () => {
   }, [connectionEnabled]);
 
   useEffect(() => {
-    void getVirtualMachines();
+    void getVirtualMachines(false);
   }, []);
 
   useInterval(() => {
-    const updateVirtualMachines = async () => {
-      setIsSilent(true);
-      try {
-        await getVirtualMachines();
-      } catch (e) {
-        // do nothing
-      } finally {
-        setIsSilent(true);
-      }
-    };
-    void updateVirtualMachines();
+    void getVirtualMachines(true);
   }, VDI_SYNC_TIME_INTERVAL);
-
-  useEffect(() => {
-    if (error) {
-      setIsErrorDialogOpen(true);
-    }
-  }, [error]);
 
   const getAvailableClients = (osType: VirtualMachineOs, vms: VirtualMachines | null): number => {
     if (vms && vms.data[osType]) {
@@ -116,21 +91,13 @@ const DesktopDeploymentPage: React.FC = () => {
   };
 
   return (
-    <div className={cn('absolute inset-y-0 left-0 ml-0 mr-14 w-screen p-5 lg:pr-20', getStyle())}>
+    <div className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen p-5 lg:pr-20">
       <NativeAppHeader
         title={t('desktopdeployment.topic')}
         description={t('desktopdeployment.description')}
         iconSrc={DesktopDeploymentIcon}
       />
-
       {openVdiConnection && <VDIFrame />}
-      {error && (
-        <ConnectionErrorDialog
-          isErrorDialogOpen={isErrorDialogOpen}
-          setIsErrorDialogOpen={setIsErrorDialogOpen}
-          handleReload={handleReload}
-        />
-      )}
       <div className={cn('flex gap-10', isMobileView ? 'flex-col' : 'flex-row')}>
         {osConfigs.map(({ os, title }) => (
           <VdiCard
@@ -147,7 +114,8 @@ const DesktopDeploymentPage: React.FC = () => {
         handleConnect={handleConnect}
         handleReload={handleReload}
       />
-      <LoadingIndicator isOpen={isLoading && !isSilent} />
+      <ConnectionErrorDialog handleReload={handleReload} />
+      <LoadingIndicator isOpen={isLoading} />
     </div>
   );
 };

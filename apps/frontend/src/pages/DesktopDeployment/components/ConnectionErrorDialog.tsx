@@ -2,20 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import useDesktopDeploymentStore from '../DesktopDeploymentStore';
 
 type ConnectionErrorProps = {
-  isErrorDialogOpen: boolean;
-  setIsErrorDialogOpen: (isErrorDialogOpen: boolean) => void;
   handleReload: () => void;
-  trigger?: React.ReactNode;
 };
-const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({
-  isErrorDialogOpen,
-  setIsErrorDialogOpen,
-  handleReload,
-  trigger,
-}) => {
+const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({ handleReload }) => {
   const { t } = useTranslation();
+  const { error, setError } = useDesktopDeploymentStore();
 
   const getDialogBody = () => <p className="text-foreground">{t('desktopdeployment.error.description')}</p>;
 
@@ -33,7 +27,7 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({
         variant="btn-collaboration"
         size="lg"
         type="button"
-        onClick={() => setIsErrorDialogOpen(false)}
+        onClick={() => setError(null)}
       >
         {t('common.close')}
       </Button>
@@ -42,9 +36,8 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({
 
   return (
     <AdaptiveDialog
-      isOpen={isErrorDialogOpen}
-      trigger={trigger}
-      handleOpenChange={() => setIsErrorDialogOpen(false)}
+      isOpen={!!error}
+      handleOpenChange={() => setError(null)}
       title={t('desktopdeployment.error.title')}
       body={getDialogBody()}
       desktopContentClassName="w-1/3"
