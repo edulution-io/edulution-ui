@@ -5,7 +5,6 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
-import LoggerEnum from '../types/logger';
 import JWTUser from '../types/JWTUser';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
@@ -44,7 +43,7 @@ class AuthenticationGuard implements CanActivate {
 
       return true;
     } catch (e) {
-      Logger.warn(e, LoggerEnum.AUTH);
+      Logger.warn(e, AuthenticationGuard.name);
       throw new CustomHttpException(AuthErrorMessages.TokenExpired, HttpStatus.UNAUTHORIZED);
     }
   }

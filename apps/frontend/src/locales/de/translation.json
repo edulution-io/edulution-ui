@@ -179,6 +179,11 @@
         "success": "App wurde angelegt",
         "failed": "App anlegen fehlgeschlagen"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "App speichern fehlgeschlagen",
+      "ReadAppConfigFailed": "App lesen fehlgeschlagen",
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
     }
   },
   "usersettings": {

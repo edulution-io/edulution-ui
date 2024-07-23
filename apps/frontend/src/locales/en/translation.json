@@ -176,6 +176,11 @@
         "success": "App created",
         "failed": "App creation failed"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "Save app failed",
+      "ReadAppConfigFailed": "Read app failed",
+      "DisableAppConfigFailed": "Disable app failed"
     }
   },
   "usersettings": {
