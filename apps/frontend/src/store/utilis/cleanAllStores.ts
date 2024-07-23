@@ -7,6 +7,7 @@ import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
+import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 
 const cleanAllStores = () => {
@@ -22,6 +23,7 @@ const cleanAllStores = () => {
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
+  useDesktopDeploymentStore.getState().reset();
 };
 
 export default cleanAllStores;

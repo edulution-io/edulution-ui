@@ -73,6 +73,19 @@ export default defineConfig({
           Origin: 'https://ui.schulung.multi.schule',
         },
       },
+      '/guacamole': {
+        rewrite: (path) => path.replace(/^\/guacamole/, ''),
+        target: 'http://localhost:8081/guacamole',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        headers: {
+          Origin: 'https://ui.schulung.multi.schule',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      },
       //TODO docs
     },
   },

@@ -83,13 +83,20 @@ class FilesharingService {
 
   private static async executeWebdavRequest<T>(
     client: AxiosInstance,
-    config: { method: string; url?: string; data?: any; headers?: any },
+    config: {
+      method: string;
+      url?: string;
+      // eslint-disable-next-line
+      data?: string | Record<string, any> | Buffer;
+      headers?: Record<string, string | number>;
+    },
     fileSharingErrorMessage: ErrorMessage,
+    // eslint-disable-next-line
     transformer?: (data: any) => T,
   ): Promise<T | WebdavStatusReplay> {
     try {
       const response = await client(config);
-      FilesharingService.handleWebDAVError(response); // Ensuring only successful responses proceed
+      FilesharingService.handleWebDAVError(response);
 
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
@@ -97,7 +104,6 @@ class FilesharingService {
     }
   }
 
-  // Generate the WebDAV XML for requests
   private readonly webdavXML: string =
     '<?xml version="1.0"?>\n' +
     '<d:propfind xmlns:d="DAV:">\n' +
