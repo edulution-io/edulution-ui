@@ -5,12 +5,12 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import { HttpMethodes, HttpMethodesWebDav } from '@libs/common/types/http-methods';
+import { getDecryptedPassword } from '@libs/common/utils';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import { WebdavStatusReplay } from './filesharing.types';
 import { User } from '../users/user.schema';
-import getDecryptedPassword from '../../../../libs/src/common/utils/getDecryptedPassword';
 
 @Injectable()
 class FilesharingService {

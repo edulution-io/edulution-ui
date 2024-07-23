@@ -60,7 +60,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
           })}
         </div>
       ) : (
-        <div className="flex-1 text-sm text-background text-muted-foreground">&nbsp;</div>
+        <div className="flex-1 text-sm">&nbsp;</div>
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
