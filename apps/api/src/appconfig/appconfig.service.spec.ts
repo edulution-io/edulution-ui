@@ -82,10 +82,30 @@ describe('AppConfigService', () => {
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
           options: {},
+          accessGroups: ['group1', 'group2'],
         },
       ];
+      const ldapGroups = ['group1', 'group2'];
       mockAppConfigService.getAppConfigs.mockResolvedValue(expectedConfigs);
-      const configs = await service.getAppConfigs();
+      const configs = await service.getAppConfigs(ldapGroups);
+      expect(configs).toEqual(expectedConfigs);
+    });
+  });
+
+  describe('getAppConfigByName', () => {
+    it('should return a app config', async () => {
+      const appConfigName = 'Test';
+      const expectedConfigs = [
+        {
+          name: appConfigName,
+          icon: 'icon-path',
+          appType: AppIntegrationType.EMBEDDED,
+          options: {},
+          accessGroups: ['group1', 'group2'],
+        },
+      ];
+      mockAppConfigService.getAppConfigByName.mockResolvedValue(expectedConfigs);
+      const configs = await service.getAppConfigByName(appConfigName);
       expect(configs).toEqual(expectedConfigs);
     });
   });

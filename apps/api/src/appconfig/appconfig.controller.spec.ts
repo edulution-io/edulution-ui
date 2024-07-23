@@ -82,8 +82,9 @@ describe('AppConfigController', () => {
   });
 
   describe('getAppConfigs', () => {
+    const ldapGroups = ['group1', 'group2'];
     it('should call getAppConfigs method of appConfigService', async () => {
-      await controller.getAppConfigs();
+      await controller.getAppConfigs(ldapGroups);
       expect(service.getAppConfigs).toHaveBeenCalled();
     });
   });

@@ -4,11 +4,12 @@ import { Model } from 'mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import GroupRoles from '@libs/user/types/groups/group-roles.enum';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
 class AppConfigService {
-  constructor(@InjectModel('AppConfig') private readonly appConfigModel: Model<AppConfig>) {}
+  constructor(@InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>) {}
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
     try {
@@ -51,10 +52,16 @@ class AppConfigService {
     }
   }
 
-  async getAppConfigs(): Promise<AppConfig[]> {
+  async getAppConfigs(ldapGroups: string[]): Promise<AppConfig[]> {
     try {
-      const appConfig = await this.appConfigModel.find();
-      Logger.log('Get settings appConfig from mongoDB', AppConfigService.name);
+      let appConfig;
+      if (ldapGroups.includes(`${GroupRoles.SUPER_ADMIN}`)) {
+        appConfig = await this.appConfigModel.find();
+      } else {
+        appConfig = await this.appConfigModel.find({
+          accessGroups: { $in: ldapGroups },
+        });
+      }
       return appConfig;
     } catch (e) {
       throw new CustomHttpException(

@@ -18,4 +18,12 @@ export const GetCurrentUsername = createParamDecorator((_data: unknown, ctx: Exe
   return request.user.preferred_username;
 });
 
+export const GetCurrentUserGroups = createParamDecorator((_data: unknown, ctx: ExecutionContext): string[] => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  if (!request.user?.ldapGroups) {
+    throw new UnauthorizedException('ldapGroups in JWT is missing');
+  }
+  return request.user.ldapGroups;
+});
+
 export default GetCurrentUser;

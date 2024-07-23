@@ -3,6 +3,7 @@ import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from '@nestjs
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
 import AppConfigService from './appconfig.service';
+import { GetCurrentUserGroups } from '../common/decorators/getUser.decorator';
 
 @ApiBearerAuth()
 @Controller('appconfig')
@@ -20,8 +21,8 @@ class AppConfigController {
   }
 
   @Get()
-  getAppConfigs() {
-    return this.appConfigService.getAppConfigs();
+  getAppConfigs(@GetCurrentUserGroups() ldapGroups: string[]) {
+    return this.appConfigService.getAppConfigs(ldapGroups);
   }
 
   @Delete(':name')
