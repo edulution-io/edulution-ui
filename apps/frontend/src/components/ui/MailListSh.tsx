@@ -1,5 +1,10 @@
-import { ComponentProps } from 'react';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+import React, { ComponentProps } from 'react';
+// import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 import cn from '@/lib/utils';
 import MailDto from '@libs/dashboard/types/mail.dto';
@@ -20,10 +25,11 @@ function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>
 
 interface MailListSHProps {
   items: MailDto[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useMail: any;
 }
 
-export function MailListSH({ items, useMail }: MailListSHProps) {
+const MailListSH = ({ items, useMail }: MailListSHProps) => {
   const [mail, setMail] = useMail();
 
   return (
@@ -31,6 +37,7 @@ export function MailListSH({ items, useMail }: MailListSHProps) {
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
           <button
+            type="button"
             key={item.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
@@ -55,7 +62,7 @@ export function MailListSH({ items, useMail }: MailListSHProps) {
                     mail.selected === item.id ? 'text-foreground' : 'text-muted-foreground',
                   )}
                 >
-                  {formatDistanceToNow.formatDistanceToNow(new Date(item.date), { addSuffix: true })}
+                  {/* {formatDistanceToNow.formatDistanceToNow(new Date(item.date), { addSuffix: true })} */}
                 </div>
               </div>
               <div className="text-xs font-medium">{item.subject}</div>
@@ -78,4 +85,6 @@ export function MailListSH({ items, useMail }: MailListSHProps) {
       </div>
     </ScrollArea>
   );
-}
+};
+
+export default MailListSH;

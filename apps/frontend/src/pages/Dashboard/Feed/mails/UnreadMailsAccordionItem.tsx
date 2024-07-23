@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-// import { useInterval } from 'usehooks-ts';
+import { useInterval } from 'usehooks-ts';
 import { MailIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
-// import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
+import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
-import { MailList } from '@/components/shared/MailList';
+import MailList from '@/components/shared/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailStore from '@/pages/Dashboard/Feed/mails/MailStore';
@@ -17,9 +17,9 @@ const UnreadMailsAccordionItem = () => {
 
   const { t } = useTranslation();
 
-  // useInterval(() => {
-  //   void getMails();
-  // }, FEED_PULL_TIME_INTERVAL_SLOW);
+  useInterval(() => {
+    void getMails();
+  }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
     void getMails();
