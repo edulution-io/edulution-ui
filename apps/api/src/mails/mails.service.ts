@@ -7,7 +7,13 @@ import mockedMails from './mockedMails';
 
 @Injectable()
 class MailsService {
-  static async mailRoutine(user: JwtUser): Promise<FetchMessageObject[] | MailDto[]> {
+  private imapFlowGetMailsClient: ImapFlowGetMailsClient;
+
+  constructor() {
+    this.imapFlowGetMailsClient = new ImapFlowGetMailsClient();
+  }
+
+  async mailRoutine(user: JwtUser): Promise<FetchMessageObject[] | MailDto[]> {
     Logger.log(`Getting mails for user ${user.preferred_username}`, MailsService.name);
 
     const host = 'localhost'; // 'mail.schulung.multi.schule';
@@ -15,15 +21,14 @@ class MailsService {
     const username = 'yukigrun';
     const password = 'DemoMuster!';
 
-    let imapFlowGetMailsClient: ImapFlowGetMailsClient | null = new ImapFlowGetMailsClient();
     try {
-      imapFlowGetMailsClient.createClient(host, port, username, password);
+      this.imapFlowGetMailsClient.createClient(host, port, username, password);
     } catch (error) {
       Logger.error(`Unable to create client \n Error: ${error}`, MailsService.name);
       return mockedMails;
     }
     try {
-      await imapFlowGetMailsClient.connect();
+      await this.imapFlowGetMailsClient.connect();
     } catch (error) {
       Logger.error(`Unable to connect \n Error: ${error}`, MailsService.name);
       return mockedMails;
@@ -31,19 +36,18 @@ class MailsService {
 
     let mails: FetchMessageObject[] | MailDto[] = [];
     try {
-      mails = await imapFlowGetMailsClient.getMails();
+      mails = await this.imapFlowGetMailsClient.getMails();
     } catch (error) {
       Logger.error(`Unable to fetch mails \n Error: ${error}`, MailsService.name);
       return mockedMails;
     }
 
     try {
-      await imapFlowGetMailsClient.disconnect();
+      await this.imapFlowGetMailsClient.disconnect();
     } catch (error) {
       Logger.error(`Unable to disconnect \n Error: ${error}`, MailsService.name);
       return mockedMails;
     }
-    imapFlowGetMailsClient = null;
 
     return mails;
   }

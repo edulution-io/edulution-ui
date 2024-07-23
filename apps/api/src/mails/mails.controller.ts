@@ -5,11 +5,11 @@ import GetCurrentUser from '../common/decorators/getUser.decorator';
 
 @Controller('mails')
 class MailsController {
-  // constructor(private readonly mailsService: MailsService) {}
+  constructor(private readonly mailsService: MailsService) {}
 
   @Get()
-  static update(@GetCurrentUser() user: JwtUser) {
-    return MailsService.mailRoutine(user);
+  update(@GetCurrentUser() user: JwtUser) {
+    return this.mailsService.mailRoutine(user);
   }
 }
 
