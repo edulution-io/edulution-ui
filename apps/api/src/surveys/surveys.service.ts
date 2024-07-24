@@ -49,6 +49,21 @@ class SurveysService {
     );
     return createdSurvey;
   }
+
+  async updateOrCreateSurvey(survey: Survey): Promise<Survey | null> {
+    const updatedSurvey = await this.updateSurvey(survey);
+    if (updatedSurvey == null) {
+      const createdSurvey = await this.createSurvey(survey);
+      if (createdSurvey == null) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      return createdSurvey;
+    }
+    return updatedSurvey;
+  }
 }
 
 export default SurveysService;

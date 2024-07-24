@@ -98,10 +98,10 @@ class SurveyAnswersService {
       }
     }
 
-    const hasAlreadyAnswered = survey.participatedAttendees.find(
+    const hasParticipated = survey.participatedAttendees.find(
       (participant: Attendee) => participant.username === username,
     );
-    if (hasAlreadyAnswered && !canSubmitMultipleAnswers && !canUpdateFormerAnswer) {
+    if (hasParticipated && !canSubmitMultipleAnswers && !canUpdateFormerAnswer) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError,
         HttpStatus.FORBIDDEN,

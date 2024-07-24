@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Query, Get, Patch, Post, Param, HttpStatus, Logger } from '@nestjs/common';
+import { Body, Controller, Delete, Query, Get, Patch, Post, Param } from '@nestjs/common';
 import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import GetAnswerDto from '@libs/survey/types/get-answer.dto';
@@ -50,30 +48,14 @@ class SurveysController {
       created,
     };
 
-    const updatedSurvey = await this.surveyService.updateSurvey(survey);
-    if (updatedSurvey == null) {
-      const createdSurvey = await this.surveyService.createSurvey(survey);
-      if (createdSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      return createdSurvey;
-    }
-    return updatedSurvey;
+    return this.surveyService.updateOrCreateSurvey(survey);
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    try {
-      await this.surveyService.deleteSurveys(surveyIds);
-      await this.surveyAnswerService.onSurveyRemoval(surveyIds);
-    } catch (e) {
-      Logger.log(e);
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
-    }
+    await this.surveyService.deleteSurveys(surveyIds);
+    await this.surveyAnswerService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()

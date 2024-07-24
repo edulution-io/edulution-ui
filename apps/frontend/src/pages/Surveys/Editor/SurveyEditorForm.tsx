@@ -21,8 +21,8 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageSt
 const SurveyEditorForm = () => {
   const { user } = useUserStore();
 
-  if (!user?.username) {
-    throw new Error('Users username has to be defined');
+  if (!user || !user.username) {
+    throw new Error('The user and his username have to be defined');
   }
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -38,28 +38,19 @@ const SurveyEditorForm = () => {
 
   const { t } = useTranslation();
 
+  const creator: AttendeeDto = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    value: user.username,
+    label: `${user.firstName} ${user.lastName}`,
+  };
+  const emptyFormValues: SurveyDto = new EmptySurveyForm(creator);
+
   const initialFormValues: SurveyDto = useMemo(
-    () =>
-      new InitialSurveyForm(
-        {
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-          username: user?.username,
-          value: user?.username,
-          label: `${user?.firstName} ${user?.lastName}`,
-        },
-        selectedSurvey,
-      ),
+    () => (editMode && selectedSurvey ? new InitialSurveyForm(creator, selectedSurvey) : emptyFormValues),
     [selectedSurvey],
   );
-
-  const emptyFormValues: SurveyDto = new EmptySurveyForm({
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-    username: user?.username,
-    value: user?.username,
-    label: `${user?.firstName} ${user?.lastName}`,
-  });
 
   const formSchema = z.object({
     id: z.number(),
