@@ -1,8 +1,8 @@
 import { t } from 'i18next';
 import { SiDiagramsdotnet } from 'react-icons/si';
 import { FaFileAlt, FaFileExcel, FaFilePowerpoint, FaFileWord } from 'react-icons/fa';
-import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
-import { DropdownOption } from '@libs/ui/types/filesharing/fileCreationDropDownOptions';
+import { DropdownOption } from '@libs/filesharing/fileCreationDropDownOptions';
+import AVAILABLE_FILE_TYPES from './types/availableFileTypes';
 
 const FileTypesConfiguration: DropdownOption[] = [
   {

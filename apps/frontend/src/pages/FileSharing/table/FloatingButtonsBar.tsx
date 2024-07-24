@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import { FiUpload } from 'react-icons/fi';
-import FileAction from '@libs/filesharing/FileAction';
-import FileTypesConfiguration from '@libs/ui/types/filesharing/FileTypesConfiguration';
+import FileActionType from '@libs/filesharing/types/fileActionType';
+import FileTypesConfiguration from '@libs/filesharing/fileTypesConfiguration';
 
 const FileSharingFloatingButtonsBar = () => {
   const { selectedItems } = useFileSharingStore();
@@ -27,19 +27,19 @@ const FileSharingFloatingButtonsBar = () => {
             variant="dropdown"
             icon={MdFilePresent}
             text={t('tooltip.create.file')}
-            onClick={() => openDialog(FileAction.CREATE_FILE)}
+            onClick={() => openDialog(FileActionType.CREATE_FILE)}
             options={FileTypesConfiguration}
             onSelectFileSelect={setSelectedFileType}
           />
           <FloatingActionButton
             icon={HiOutlineFolderAdd}
             text={t('tooltip.create.folder')}
-            onClick={() => openDialog(FileAction.CREATE_FOLDER)}
+            onClick={() => openDialog(FileActionType.CREATE_FOLDER)}
           />
           <FloatingActionButton
             icon={FiUpload}
             text={t('tooltip.upload')}
-            onClick={() => openDialog(FileAction.UPLOAD_FILE)}
+            onClick={() => openDialog(FileActionType.UPLOAD_FILE)}
           />
         </>
       )}
@@ -48,7 +48,7 @@ const FileSharingFloatingButtonsBar = () => {
         <FloatingActionButton
           icon={MdDriveFileRenameOutline}
           text={t('tooltip.rename')}
-          onClick={() => openDialog(FileAction.RENAME)}
+          onClick={() => openDialog(FileActionType.RENAME)}
         />
       )}
 
@@ -57,12 +57,12 @@ const FileSharingFloatingButtonsBar = () => {
           <FloatingActionButton
             icon={MdOutlineDeleteOutline}
             text={t('tooltip.delete')}
-            onClick={() => openDialog(FileAction.DELETE)}
+            onClick={() => openDialog(FileActionType.DELETE)}
           />
           <FloatingActionButton
             icon={MdOutlineDriveFileMove}
             text={t('tooltip.move')}
-            onClick={() => openDialog(FileAction.MOVE)}
+            onClick={() => openDialog(FileActionType.MOVE)}
           />
         </>
       )}

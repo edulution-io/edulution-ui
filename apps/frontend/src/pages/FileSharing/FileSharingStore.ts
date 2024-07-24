@@ -1,11 +1,11 @@
 import { RowSelectionState } from '@tanstack/react-table';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
 import eduApi from '@/api/eduApi';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import { DirectoryFile } from '@libs/filesharing/types/filesystem';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 type FileSharingStore = {
   files: DirectoryFile[];

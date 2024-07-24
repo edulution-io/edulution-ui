@@ -1,21 +1,20 @@
 import { AxiosError } from 'axios';
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
 import React from 'react';
-import FileAction from '@libs/filesharing/FileAction';
-
 import handleApiError from '@/utils/handleApiError';
-import { WebDavActionResult } from '@libs/filesharing/FileActionStatus';
 import { t } from 'i18next';
 import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
-import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
 import { HttpMethodes } from '@libs/common/types/http-methods';
+import FileActionType from '@libs/filesharing/types/fileActionType';
+import { DirectoryFile } from '@libs/filesharing/types/filesystem';
+import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
+import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
-  openDialog: (action: FileAction) => void;
+  openDialog: (action: FileActionType) => void;
   closeDialog: () => void;
   isLoading: boolean;
   userInput: string;
@@ -32,14 +31,14 @@ interface FileSharingDialogStore {
   reset: () => void;
   setSelectedFileType: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
   handleItemAction: (
-    action: FileAction,
+    action: FileActionType,
     endpoint: string,
     httpMethod: HttpMethodes,
     data: Record<string, string> | Record<string, string>[] | FormData,
   ) => Promise<void>;
   setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
-  action: FileAction;
-  setAction: (action: FileAction) => void;
+  action: FileActionType;
+  setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean, message: string, status: number) => void;
 }
@@ -70,7 +69,7 @@ const handleArrayActions = async (data: Record<string, string>[], endpoint: stri
 
 const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => ({
   ...(initialState as FileSharingDialogStore),
-  openDialog: (action: FileAction) =>
+  openDialog: (action: FileActionType) =>
     set(() => ({
       isDialogOpen: true,
       action,
@@ -102,7 +101,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         if (httpMethod === HttpMethodes.DELETE) {
           await handleDeleteItems(data, endpoint, httpMethod);
           get().setFileOperationResult(true, t('response.files_deleted_successfully'), 200);
-        } else if (action === FileAction.MOVE || action === FileAction.UPLOAD_FILE) {
+        } else if (action === FileActionType.MOVE || action === FileActionType.UPLOAD_FILE) {
           await handleArrayActions(data, endpoint, httpMethod);
           get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
         }

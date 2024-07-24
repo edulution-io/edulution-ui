@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import { HttpMethodes, HttpMethodesWebDav } from '@libs/common/types/http-methods';
 import { getDecryptedPassword } from '@libs/common/utils';
+import { DirectoryFile } from '@libs/filesharing/types/filesystem';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
