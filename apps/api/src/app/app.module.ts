@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
+import VdiModule from '../vdi/vdi.module';
+import LoggingInterceptor from '../logging/logging.interceptor';
 import SurveysModule from '../surveys/surveys.module';
 
 @Module({
@@ -18,6 +18,7 @@ import SurveysModule from '../surveys/surveys.module';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    VdiModule,
     SurveysModule,
     JwtModule.register({
       global: true,
