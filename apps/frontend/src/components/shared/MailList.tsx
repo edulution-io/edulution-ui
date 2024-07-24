@@ -4,18 +4,16 @@ import MailDto from '@libs/dashboard/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 
-function getBadgeVariantFromLabel(
-  label: string
-): ComponentProps<typeof BadgeSH>["variant"] {
-  if (["work"].includes(label.toLowerCase())) {
-    return "default"
+function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
+  if (['work'].includes(label.toLowerCase())) {
+    return 'default';
   }
 
-  if (["personal"].includes(label.toLowerCase())) {
-    return "outline"
+  if (['personal'].includes(label.toLowerCase())) {
+    return 'outline';
   }
 
-  return "secondary"
+  return 'secondary';
 }
 
 interface MailListProps {
@@ -24,11 +22,10 @@ interface MailListProps {
 }
 
 const MailList = ({ items, className }: MailListProps) => {
-
   const renderLabelBadges = (item: MailDto) => {
-    const shouldShowBadges = !!(item.labels?.size && item.labels.size > 0)
+    const shouldShowBadges = !!(item.labels?.size && item.labels.size > 0);
 
-    const badges: React.ReactNode[] = []
+    const badges: React.ReactNode[] = [];
     if (shouldShowBadges) {
       // eslint-disable-next-line no-restricted-syntax, guard-for-in
       for (const label in item.labels) {
@@ -38,20 +35,13 @@ const MailList = ({ items, className }: MailListProps) => {
             variant={getBadgeVariantFromLabel(label)}
           >
             {label}
-          </BadgeSH>
-        )
+          </BadgeSH>,
+        );
       }
     }
 
-    return (
-      shouldShowBadges && badges.length > 0
-      ? (
-        <div className="flex items-center gap-2">
-          {badges}
-        </div>
-      ) : null
-    )
-  }
+    return shouldShowBadges && badges.length > 0 ? <div className="flex items-center gap-2">{badges}</div> : null;
+  };
 
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
@@ -68,18 +58,18 @@ const MailList = ({ items, className }: MailListProps) => {
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">{item.from?.value[0].name || item.from?.value[0].address}</div>
-                  <span className="flex h-2 w-2 rounded-full bg-blue-600"/>
+                  <span className="flex h-2 w-2 rounded-full bg-ciLightGreen" />
                 </div>
               </div>
               <div className="text-xs font-medium">{item.subject}</div>
             </div>
             <div className="line-clamp-2 text-xs text-muted-foreground">{item.text?.substring(0, 300)}</div>
-            { renderLabelBadges(item) }
+            {renderLabelBadges(item)}
           </button>
         ))}
       </div>
     </ScrollArea>
   );
-}
+};
 
 export default MailList;

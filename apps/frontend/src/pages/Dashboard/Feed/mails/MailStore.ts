@@ -8,23 +8,24 @@ interface MailStore {
   mails: MailDto[];
   getMails: () => Promise<MailDto[]>;
   isLoading: boolean;
-
+  fetchedNewMails: boolean;
   reset: () => void;
 }
 
 const initialState: Partial<MailStore> = {
   mails: [],
   isLoading: false,
+  fetchedNewMails: false,
 };
 
 const useMailStore = create<MailStore>((set) => ({
   ...(initialState as MailStore),
   getMails: async (): Promise<MailDto[]> => {
-    set({ isLoading: true });
+    set({ isLoading: true, fetchedNewMails: false });
     try {
       const response = await eduApi.get<MailDto[]>(MAIL_ENDPOINT);
       const mails = response.data;
-      set({ mails });
+      set({ mails, fetchedNewMails: mails.length > 0 });
       return mails;
     } catch (error) {
       handleApiError(error, set);
