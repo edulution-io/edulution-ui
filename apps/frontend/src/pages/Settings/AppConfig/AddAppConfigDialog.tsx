@@ -1,5 +1,4 @@
 import React from 'react';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownMenu } from '@/components';
@@ -11,23 +10,16 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 
 interface AddAppConfigDialogProps {
-  isOpen: boolean;
   option: string;
   setOption: (option: string) => void;
   filteredAppOptions: () => { id: string; name: string }[];
-  setSearchParams: (params: URLSearchParams | ((prevParams: URLSearchParams) => URLSearchParams)) => void;
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
-  isOpen,
-  option,
-  setOption,
-  filteredAppOptions,
-  setSearchParams,
-}) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, filteredAppOptions }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, updateAppConfig, isLoading, error } = useAppConfigsStore();
+  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
+    useAppConfigsStore();
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
@@ -53,14 +45,14 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
         icon: optionsConfig.icon,
         appType: AppIntegrationType.FORWARDED,
         options: {},
-        accessGroups: [''],
+        accessGroups: [],
       };
       const updatedConfig = [...appConfigs, newConfig];
 
       await updateAppConfig(updatedConfig);
       if (!error) {
+        setIsAddAppConfigDialogOpen(false);
         navigate(`/settings/${selectedOption}`);
-        toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`);
       }
     }
   };
@@ -80,8 +72,8 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
 
   return (
     <AdaptiveDialog
-      isOpen={isOpen}
-      handleOpenChange={() => setSearchParams(new URLSearchParams(''))}
+      isOpen={isAddAppConfigDialogOpen}
+      handleOpenChange={() => setIsAddAppConfigDialogOpen(false)}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
       footer={dialogFooter}

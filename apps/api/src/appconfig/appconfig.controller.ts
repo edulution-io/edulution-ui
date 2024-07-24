@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards } from '@nestjs/common';
 
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
 import AppConfigService from './appconfig.service';
 import { GetCurrentUserGroups } from '../common/decorators/getUser.decorator';
+import AppConfigGuard from './appconfig.guard';
 
 @ApiBearerAuth()
 @Controller('appconfig')
@@ -11,11 +12,13 @@ class AppConfigController {
   constructor(private readonly appConfigService: AppConfigService) {}
 
   @Post()
+  @UseGuards(AppConfigGuard)
   createConfig(@Body() appConfigDto: AppConfigDto[]) {
     this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.log(e, AppConfigController.name));
   }
 
   @Put()
+  @UseGuards(AppConfigGuard)
   updateConfig(@Body() appConfigDto: AppConfigDto[]) {
     this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.log(e, AppConfigController.name));
   }
@@ -26,6 +29,7 @@ class AppConfigController {
   }
 
   @Delete(':name')
+  @UseGuards(AppConfigGuard)
   deleteConfig(@Param('name') name: string) {
     this.appConfigService.deleteConfig(name).catch((e) => Logger.log(e, AppConfigController.name));
   }

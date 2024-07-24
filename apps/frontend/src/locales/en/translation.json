@@ -18,7 +18,12 @@
     }
   },
   "auth": {
-    "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged off in less than a minute." }
+    "errors": {
+      "TokenExpired": "Session expired",
+      "SessionExpiring": "You will be logged off in less than a minute.",
+      "Unauthorized": "You are not authorized.",
+      "Unknown": "User not found"
+    }
   },
   "ticketsystem": {
     "title": "TICKET SYSTEM",

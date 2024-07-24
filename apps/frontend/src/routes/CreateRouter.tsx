@@ -15,6 +15,8 @@ import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import GroupRoles from '@libs/user/types/groups/group-roles.enum';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -38,8 +40,11 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
-  createBrowserRouter(
+const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
+  const ldapGroups = useLdapGroups();
+  const isSuperAdmin = ldapGroups.includes(`${GroupRoles.SUPER_ADMIN}`);
+
+  return createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
         <Route element={<BlankLayout />}>
@@ -77,18 +82,20 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
                 element={<UserSettingsSecurityPage />}
               />
             </Route>
-            <Route
-              path="settings"
-              element={<AppConfigPage />}
-            >
-              {appConfig.map((item) => (
-                <Route
-                  key={item.name}
-                  path={item.name}
-                  element={<AppConfigPage />}
-                />
-              ))}
-            </Route>
+            {isSuperAdmin ? (
+              <Route
+                path="settings"
+                element={<AppConfigPage />}
+              >
+                {appConfig.map((item) => (
+                  <Route
+                    key={item.name}
+                    path={item.name}
+                    element={<AppConfigPage />}
+                  />
+                ))}
+              </Route>
+            ) : null}
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.NATIVE ? (
                 <Route
@@ -136,5 +143,6 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
       ),
     ),
   );
+};
 
 export default createRouter;

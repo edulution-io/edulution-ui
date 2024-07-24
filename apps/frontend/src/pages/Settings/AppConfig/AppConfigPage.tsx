@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -26,9 +25,7 @@ const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const mode = searchParams.get('mode');
-  const { appConfigs, updateAppConfig, deleteAppConfigEntry, error } = useAppConfigsStore();
+  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
@@ -128,9 +125,6 @@ const AppConfigPage: React.FC = () => {
       });
 
       await updateAppConfig(updatedConfig);
-      if (!error) {
-        toast.success(`${t(`${settingLocation}.sidebar`)} - ${t('settings.appconfig.update.success')}`);
-      }
     }
   };
 
@@ -217,11 +211,7 @@ const AppConfigPage: React.FC = () => {
     setSettingLocation('');
     navigate(`/settings`);
 
-    await deleteAppConfigEntry(deleteOptionName).then(() => {
-      toast.success(`${t(`${deleteOptionName}.sidebar`)} - ${t('settings.appconfig.delete.success')}`, {
-        description: new Date().toLocaleString(),
-      });
-    });
+    await deleteAppConfigEntry(deleteOptionName);
   };
 
   return (
@@ -250,11 +240,9 @@ const AppConfigPage: React.FC = () => {
         </div>
       ) : null}
       <AddAppConfigDialog
-        isOpen={mode === 'add'}
         option={option}
         setOption={setOption}
         filteredAppOptions={filteredAppOptions}
-        setSearchParams={setSearchParams}
       />
     </>
   );

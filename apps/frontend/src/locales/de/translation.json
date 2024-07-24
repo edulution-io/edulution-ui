@@ -20,7 +20,9 @@
   "auth": {
     "errors": {
       "TokenExpired": "Sitzung abgelaufen",
-      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet."
+      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet.",
+      "Unauthorized": "Du bist nicht autorisiert.",
+      "Unknown": "Nutzer nicht gefunden."
     }
   },
   "ticketsystem": {

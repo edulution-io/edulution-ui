@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
 import { CanActivate, ExecutionContext, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
@@ -31,7 +31,7 @@ class AuthenticationGuard implements CanActivate {
 
     try {
       const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
-      const pubKey = fs.readFileSync(pubKeyPath, 'utf8');
+      const pubKey = readFileSync(pubKeyPath, 'utf8');
 
       const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(token, {
         publicKey: pubKey,
