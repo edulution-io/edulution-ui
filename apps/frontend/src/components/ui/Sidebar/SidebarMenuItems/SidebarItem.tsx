@@ -26,10 +26,10 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
   }, [translate, size]);
 
   const showStar = useMemo(() => {
-    if (menuItem.link !== `/${APPS.MAIL}`) {
-      return false;
+    if (menuItem.link === `/${APPS.MAIL}`) {
+      return fetchedNewMails;
     }
-    return fetchedNewMails;
+    return false;
   }, [menuItem, fetchedNewMails]);
 
   return (

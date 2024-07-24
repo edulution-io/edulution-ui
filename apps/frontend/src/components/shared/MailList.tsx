@@ -1,5 +1,7 @@
 import React, { ComponentProps } from 'react';
+import { NavLink } from 'react-router-dom';
 import cn from '@/lib/utils';
+import { APPS } from '@libs/appconfig/types';
 import MailDto from '@libs/dashboard/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { BadgeSH } from '@/components/ui/BadgeSH';
@@ -39,16 +41,18 @@ const MailList = ({ items, className }: MailListProps) => {
         );
       }
     }
-
     return shouldShowBadges && badges.length > 0 ? <div className="flex items-center gap-2">{badges}</div> : null;
   };
 
+  // TODO: Discuss
+  //     EITHER: Add logic to open the right mail inside of SOGO
+  //     OR:     Add a dialog to show the mail content (only if added smtp to directly send mails?)
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
-          <button
-            type="button"
+          <NavLink
+            to={`/${APPS.MAIL}`}
             key={item.messageId}
             className={cn(
               'w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
@@ -65,7 +69,7 @@ const MailList = ({ items, className }: MailListProps) => {
             </div>
             <div className="line-clamp-2 text-xs text-muted-foreground">{item.text?.substring(0, 300)}</div>
             {renderLabelBadges(item)}
-          </button>
+          </NavLink>
         ))}
       </div>
     </ScrollArea>
