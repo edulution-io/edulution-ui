@@ -172,10 +172,10 @@
       "title": "An der Umfrage teilnehmen"
     },
     "resultChartDialog": {
-      "title": "Ergebnisse (Schaubild)"
+      "title": "Ergebnisse - Schaubild"
     },
     "resultTableDialog": {
-      "title": "Ergebnisse (Tabelle)"
+      "title": "Ergebnisse - Tabelle"
     }
   },
   "printer": {
@@ -307,6 +307,7 @@
     "create": "Erstellen",
     "icon": "Icon",
     "groups": "Gruppen",
+    "select": "Wählen...",
     "clearSelection": "Auswahl löschen",
     "edit": "Bearbeiten",
     "delete": "Löschen",

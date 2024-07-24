@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
-import { FiFilePlus, FiFileMinus } from 'react-icons/fi';
+import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyDto from '@libs/survey/types/survey.dto';
@@ -17,8 +17,15 @@ import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormSto
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
-const SurveyEditorForm = () => {
+interface SurveyEditorFormProps {
+  editMode?: boolean;
+}
+
+const SurveyEditorForm = (props: SurveyEditorFormProps) => {
+  const { editMode = false } = props;
+
   const { user } = useUserStore();
 
   if (!user || !user.username) {
@@ -28,27 +35,25 @@ const SurveyEditorForm = () => {
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
-    openSaveSurveyDialog,
-    closeSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
 
     updateOrCreateSurvey,
     isLoading,
-    error,
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
 
-  const creator: AttendeeDto = {
+  const surveyCreator: AttendeeDto = {
     firstName: user.firstName,
     lastName: user.lastName,
     username: user.username,
     value: user.username,
     label: `${user.firstName} ${user.lastName}`,
   };
-  const emptyFormValues: SurveyDto = new EmptySurveyForm(creator);
+  const emptyFormValues: SurveyDto = new EmptySurveyForm(surveyCreator);
 
   const initialFormValues: SurveyDto = useMemo(
-    () => (editMode && selectedSurvey ? new InitialSurveyForm(creator, selectedSurvey) : emptyFormValues),
+    () => (editMode && selectedSurvey ? new InitialSurveyForm(surveyCreator, selectedSurvey) : emptyFormValues),
     [selectedSurvey],
   );
 
@@ -105,7 +110,7 @@ const SurveyEditorForm = () => {
   const form = useForm<SurveyDto>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
-    defaultValues: selectedSurvey ? initialFormValues : emptyFormValues,
+    defaultValues: initialFormValues,
   });
 
   const saveSurvey = async () => {
@@ -141,8 +146,8 @@ const SurveyEditorForm = () => {
       canSubmitMultipleAnswers,
     });
 
-    closeSaveSurveyDialog();
     void updateUsersSurveys();
+    setIsOpenSaveSurveyDialog(false);
   };
 
   const formulaWatcher = form.watch('formula');
@@ -155,7 +160,6 @@ const SurveyEditorForm = () => {
         form={form}
         formula={formulaWatcher}
         saveNumber={saveNoWatcher}
-        error={error}
       />
     ),
     [formulaWatcher, saveNoWatcher],
@@ -172,25 +176,26 @@ const SurveyEditorForm = () => {
           <FloatingActionButton
             icon={AiOutlineSave}
             text={t('common.save')}
-            onClick={openSaveSurveyDialog}
+            onClick={() => setIsOpenSaveSurveyDialog(true)}
           />
           <FloatingActionButton
             icon={FiFilePlus}
             text={t('survey.editor.new')}
             onClick={() => form.reset(emptyFormValues)}
           />
-          <FloatingActionButton
-            icon={FiFileMinus}
-            text={t('survey.editor.abort')}
-            onClick={() => form.reset(initialFormValues)}
-          />
+          {editMode ? (
+            <FloatingActionButton
+              icon={FiFileMinus}
+              text={t('survey.editor.abort')}
+              onClick={() => form.reset(initialFormValues)}
+            />
+          ) : null}
         </div>
       </TooltipProvider>
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-        openSaveSurveyDialog={openSaveSurveyDialog}
-        closeSaveSurveyDialog={closeSaveSurveyDialog}
+        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
         commitSurvey={saveSurvey}
         isCommitting={isLoading}
       />

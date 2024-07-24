@@ -30,10 +30,6 @@ interface SurveysTablesPageStore {
   isFetchingAnsweredSurveys: boolean;
   errorFetchingAnsweredSurveys: Error | null;
 
-  patchSurvey: (survey: SurveyDto) => Promise<SurveyDto>;
-  isPosting: boolean;
-  errorPostingSurvey: Error | null;
-
   reset: () => void;
 }
 
@@ -50,9 +46,6 @@ const initialState: Partial<SurveysTablesPageStore> = {
   openSurveys: [],
   isFetchingOpenSurveys: false,
   errorFetchingOpenSurveys: null,
-
-  isPosting: false,
-  errorPostingSurvey: null,
 };
 
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
@@ -112,19 +105,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
         isFetchingAnsweredSurveys: false,
       });
       handleApiError(error, set, 'errorFetchingAnsweredSurveys');
-    }
-  },
-
-  patchSurvey: async (survey: SurveyDto): Promise<SurveyDto> => {
-    set({ errorPostingSurvey: null, isPosting: true });
-    try {
-      const response = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, { ...survey });
-      set({ isPosting: false });
-      return response.data;
-    } catch (error) {
-      set({ errorPostingSurvey: error instanceof AxiosError ? error : null, isPosting: false });
-      handleApiError(error, set, 'errorPostingSurvey');
-      throw error;
     }
   },
 }));

@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
-import { AxiosError } from 'axios';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
@@ -10,6 +9,9 @@ import handleApiError from '@/utils/handleApiError';
 interface ParticipateDialogStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
+
+  answer: JSON;
+  setAnswer: (answer: JSON | undefined) => void;
 
   isOpenParticipateSurveyDialog: boolean;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
@@ -20,16 +22,15 @@ interface ParticipateDialogStore {
     options?: CompleteEvent,
   ) => Promise<void>;
   isLoading: boolean;
-  error: Error | null;
 
   reset: () => void;
 }
 
 const initialState: Partial<ParticipateDialogStore> = {
   selectedSurvey: undefined,
+  answer: {} as JSON,
   isOpenParticipateSurveyDialog: false,
   isLoading: false,
-  error: null,
 };
 
 const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
@@ -37,6 +38,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
   reset: () => set(initialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  setAnswer: (answer: JSON | undefined) => set({ answer }),
 
   setIsOpenParticipateSurveyDialog: (state: boolean) => set({ isOpenParticipateSurveyDialog: state }),
   answerSurvey: async (
@@ -45,7 +47,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
     answer: JSON,
     options?: CompleteEvent,
   ): Promise<void> => {
-    set({ error: null, isLoading: true });
+    set({ isLoading: true });
     try {
       // Display the "Saving..." message (pass a string value to display a custom message)
       options?.showSaveInProgress();
@@ -57,13 +59,12 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
 
       // Display the "Success" message (pass a string value to display a custom message)
       options?.showSaveSuccess();
-
-      set({ isLoading: false });
     } catch (error) {
       // Display the "Error" message (pass a string value to display a custom message)
       options?.showSaveError();
-      set({ error: error instanceof AxiosError ? error : null, isLoading: false });
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));
