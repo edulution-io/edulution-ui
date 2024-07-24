@@ -6,15 +6,15 @@ import UploadContentBody from '@/pages/FileSharing/dialog/DialogBodys/UploadCont
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
-import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
+import FileSharingApiEndpoints from '@libs/filesharing/FileSharingApiEndpoints';
 import { HttpMethodes } from '@libs/common/types/http-methods';
 import FileAction from '@libs/filesharing/FileAction';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { t } from 'i18next';
 import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
-import { FilesharingDialogProps, FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/FilesharingDialogProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -27,8 +27,8 @@ interface DialogBodyConfigurationBase {
     form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
     inputValues: {
-      selectedItems?: DirectoryFile[];
-      moveItemsToPath?: DirectoryFile;
+      selectedItems?: DirectoryFileDTO[];
+      moveItemsToPath?: DirectoryFileDTO;
       selectedFileType?: { extension: string; generate: string };
       filesToUpload?: File[];
     },

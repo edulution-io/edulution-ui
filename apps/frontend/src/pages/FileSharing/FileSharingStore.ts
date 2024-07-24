@@ -1,32 +1,34 @@
 import { RowSelectionState } from '@tanstack/react-table';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import eduApi from '@/api/eduApi';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import FileSharingApiEndpoints from '@libs/filesharing/fileSharingApiEndpoints';
 import handleApiError from '@/utils/handleApiError';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
+import FileSharingApiEndpoints from '@libs/filesharing/FileSharingApiEndpoints';
 
 type FileSharingStore = {
-  files: DirectoryFile[];
-  selectedItems: DirectoryFile[];
+  files: DirectoryFileDTO[];
+  selectedItems: DirectoryFileDTO[];
   currentPath: string;
   pathToRestoreSession: string;
-  setDirectorys: (files: DirectoryFile[]) => void;
-  directorys: DirectoryFile[];
+  setDirectorys: (files: DirectoryFileDTO[]) => void;
+  directorys: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
-  setFiles: (files: DirectoryFile[]) => void;
-  setSelectedItems: (items: DirectoryFile[]) => void;
+  setFiles: (files: DirectoryFileDTO[]) => void;
+  setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (path?: string) => Promise<void>;
   fetchMountPoints: () => Promise<void>;
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
-  mountPoints: DirectoryFile[];
-  setMountPoints: (mountPoints: DirectoryFile[]) => void;
+  mountPoints: DirectoryFileDTO[];
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   downloadFile: (filePath: string) => Promise<string | undefined>;
 };
@@ -40,6 +42,7 @@ const initialState = {
   selectedRows: {},
   mountPoints: [],
   directorys: [],
+  isLoading: false,
 };
 
 type PersistedFileManagerStore = (
@@ -58,75 +61,96 @@ const useFileSharingStore = create<FileSharingStore>(
       setPathToRestoreSession: (path: string) => {
         set({ pathToRestoreSession: path });
       },
-      setFiles: (files: DirectoryFile[]) => {
+      setFiles: (files: DirectoryFileDTO[]) => {
         set({ files });
       },
 
-      setMountPoints: (mountPoints: DirectoryFile[]) => {
+      setMountPoints: (mountPoints: DirectoryFileDTO[]) => {
         set({ mountPoints });
       },
 
-      setDirectorys: (directorys: DirectoryFile[]) => {
+      setDirectorys: (directorys: DirectoryFileDTO[]) => {
         set({ directorys });
+      },
+
+      setIsLoading: (isLoading: boolean) => {
+        set({ isLoading });
       },
 
       fetchFiles: async (path: string = '/') => {
         try {
+          set({ isLoading: true });
           const directoryFiles = await eduApi.get(
-            `${FileSharingApiEndpoints.FILESHARING_ROUTE}/${clearPathFromWebdav(path)}`,
+            `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILES_ENDPOINT}${clearPathFromWebdav(path)}`,
           );
           set({
             currentPath: path,
-            files: directoryFiles.data as DirectoryFile[],
+            files: directoryFiles.data as DirectoryFileDTO[],
             selectedItems: [],
             selectedRows: {},
           });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       getDownloadLinkURL: async (filePath: string, filename: string) => {
         try {
-          const response = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ACTIONS}/downloadLink`, {
-            params: {
-              filePath,
-              fileName: filename,
+          set({ isLoading: true });
+          const response = await eduApi.get<WebdavStatusReplay>(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+            {
+              params: {
+                filePath,
+                fileName: filename,
+              },
             },
-          });
-          const { data, success } = response.data as WebdavStatusReplay;
-          if (success) {
+          );
+          const { data, success } = response.data;
+          if (success && data) {
             return data;
           }
-          console.error('Failed to get the download link URL', response.status);
-          throw new Error('Failed to get the download link URL');
+          return '';
         } catch (error) {
-          console.error('Error getting the download link URL', error);
-          throw error;
+          handleApiError(error, set);
+          return '';
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       downloadFile: async (filePath: string) => {
         try {
-          const response = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ACTIONS}/fileStream`, {
-            params: { filePath },
-            responseType: 'blob',
-          });
+          set({ isLoading: true });
+          const fileStreamResponse = await eduApi.get<Blob>(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
+            {
+              params: { filePath },
+              responseType: 'blob',
+            },
+          );
 
-          const blob = new Blob([response.data], { type: response.headers['content-type'] as string });
-          return window.URL.createObjectURL(blob);
+          const fileStream = fileStreamResponse.data;
+          return window.URL.createObjectURL(fileStream);
         } catch (error) {
-          console.error('Error downloading the file:', error);
-          throw error;
+          handleApiError(error, set);
+          return '';
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       fetchMountPoints: async () => {
         try {
-          const resp = await eduApi.get(`${FileSharingApiEndpoints.FILESHARING_ROUTE}/`);
-          set({ mountPoints: resp.data as DirectoryFile[] });
+          set({ isLoading: true });
+          const resp = await eduApi.get(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILES_ENDPOINT}`);
+          set({ mountPoints: resp.data as DirectoryFileDTO[] });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
@@ -135,14 +159,14 @@ const useFileSharingStore = create<FileSharingStore>(
           const directoryFiles = await eduApi.get(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/dirs/${clearPathFromWebdav(path)}`,
           );
-          set({ directorys: directoryFiles.data as DirectoryFile[] });
+          set({ directorys: directoryFiles.data as DirectoryFileDTO[] });
         } catch (error) {
           handleApiError(error, set);
         }
       },
 
       setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
-      setSelectedItems: (items: DirectoryFile[]) => set({ selectedItems: items }),
+      setSelectedItems: (items: DirectoryFileDTO[]) => set({ selectedItems: items }),
 
       reset: () => set({ ...initialState }),
     }),

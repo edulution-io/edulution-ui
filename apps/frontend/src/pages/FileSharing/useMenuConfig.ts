@@ -12,6 +12,8 @@ import {
   TeacherIcon,
 } from '@/assets/icons';
 import userStore from '@/store/UserStore/UserStore';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -47,13 +49,15 @@ const useFileSharingMenuConfig = () => {
   );
 
   useEffect(() => {
-    const items = mountPoints.map((mountPoint) => ({
-      id: mountPoint.basename,
-      label: mountPoint.basename,
-      icon: findCorrespondingMountPointIcon(mountPoint.filename),
-      color: 'hover:bg-ciGreenToBlue',
-      action: () => handlePathChange(mountPoint.filename.replace('/webdav', '')),
-    }));
+    const items: MenuItem[] = mountPoints
+      .map((mountPoint: DirectoryFileDTO) => ({
+        id: mountPoint.basename,
+        label: mountPoint.basename,
+        icon: findCorrespondingMountPointIcon(mountPoint.filename),
+        color: 'hover:bg-ciGreenToBlue',
+        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filename)),
+      }))
+      .filter((item) => item !== null);
     setMenuItems(items);
   }, [mountPoints]);
 

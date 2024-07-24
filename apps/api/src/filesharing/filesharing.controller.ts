@@ -15,35 +15,37 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
+import FileSharingPaths from '@libs/filesharing/FileSharingApiEndpoints';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
-@Controller('filesharing')
+@Controller(FileSharingPaths.BASE)
 class FilesharingController {
   constructor(private readonly filesharingService: FilesharingService) {}
 
-  @Get('mountpoints')
+  @Get(FileSharingPaths.MOUNTPOINTS)
   async getMountPoints(@GetCurrentUsername() username: string) {
     return this.filesharingService.getMountPoints(username);
   }
 
-  @Get('files/*')
+  @Get(FileSharingPaths.FILES)
   async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
     Logger.log(`Getting files at path ${path}`, FilesharingController.name);
     return this.filesharingService.getFilesAtPath(username, path);
   }
 
-  @Get('dirs/*')
+  @Get(FileSharingPaths.DIRECTORIES)
   async getDirectoriesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
     return this.filesharingService.getDirAtPath(username, path);
   }
 
-  @Put('createFolder')
+  @Put(FileSharingPaths.CREATE_FOLDER)
   async createFolder(@Body() body: { path: string; folderName: string }, @GetCurrentUsername() username: string) {
     return this.filesharingService.createFolder(username, body.path, body.folderName);
   }
 
-  @Put('createFile')
+  @Put(FileSharingPaths.CREATE_FILE)
   async createFile(
     @Body() body: { path: string; fileName: string; content: string },
     @GetCurrentUsername() username: string,
@@ -51,7 +53,7 @@ class FilesharingController {
     return this.filesharingService.createFile(username, body.path, body.fileName, body.content);
   }
 
-  @Post('uploadFile')
+  @Post(FileSharingPaths.UPLOAD_FILE)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
@@ -62,23 +64,23 @@ class FilesharingController {
     return this.filesharingService.uploadFile(username, path, file, name);
   }
 
-  @Delete(':filePath(*)')
+  @Delete(FileSharingPaths.DELETE_FILES)
   async deleteFile(@Param('filePath') filePath: string, @GetCurrentUsername() username: string) {
     return this.filesharingService.deleteFileAtPath(username, filePath);
   }
 
-  @Put('name')
+  @Put(FileSharingPaths.RENAME_RESOURCE)
   async renameResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
     return this.filesharingService.renameFile(username, body.originPath, body.newPath);
   }
 
-  @Put('locations')
+  @Put(FileSharingPaths.MOVE_RESOURCE)
   async moveResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
     return this.filesharingService.moveItems(username, body.originPath, body.newPath);
   }
 
-  @Get('downloadLink')
-  async downloadFile(
+  @Get(FileSharingPaths.GET_DOWNLOAD_LINK)
+  async getDownloadLink(
     @Query('filePath') filePath: string,
     @Query('fileName') fileName: string,
     @GetCurrentUsername() username: string,
@@ -86,23 +88,18 @@ class FilesharingController {
     return this.filesharingService.downloadLink(username, filePath, fileName);
   }
 
-  @Get('fileStream')
-  @Header('Content-Type', 'application/octet-stream')
+  @Get(FileSharingPaths.FILE_STREAM)
+  @Header('Content-Type', RequestResponseContentType.APPLICATION_OCET_STREAM as string)
   async webDavFileStream(
     @Query('filePath') filePath: string,
     @GetCurrentUsername() username: string,
   ): Promise<StreamableFile> {
-    try {
-      const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
-      const fileName = filePath.split('/').pop(); // Extract the filename from the filePath
+    const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+    const fileName = filePath.split('/').pop();
 
-      return new StreamableFile(stream, {
-        disposition: `attachment; filename="${fileName}"`,
-      });
-    } catch (error) {
-      Logger.error(`Error in webDavFileStream: ${error}`);
-      throw new Error('An error occurred while fetching the file stream.');
-    }
+    return new StreamableFile(stream, {
+      disposition: `attachment; filename="${fileName}"`,
+    });
   }
 }
 

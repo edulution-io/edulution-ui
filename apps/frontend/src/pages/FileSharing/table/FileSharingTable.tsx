@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,7 +46,9 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   });
 
   useEffect(() => {
-    const selectedItemFilenames = table.getFilteredSelectedRowModel().rows.map((row) => row.original as DirectoryFile);
+    const selectedItemFilenames = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original as DirectoryFileDTO);
     setSelectedItems(selectedItemFilenames);
   }, [table.getFilteredSelectedRowModel().rows]);
 
@@ -60,11 +62,11 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
           })}
         </div>
       ) : (
-        <div className="flex-1 text-sm text-background text-muted-foreground">&nbsp;</div>
+        <div className="flex-1 text-sm">&nbsp;</div>
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[80vh] overflow-auto">
+        <ScrollArea className="max-h-[75vh] overflow-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

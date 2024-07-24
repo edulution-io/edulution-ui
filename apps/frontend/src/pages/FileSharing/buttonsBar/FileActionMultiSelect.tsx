@@ -3,12 +3,9 @@ import React, { FC } from 'react';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { MdOutlineDeleteOutline, MdOutlineDriveFileMove } from 'react-icons/md';
 import { t } from 'i18next';
+import FileActionButtonProps from '@libs/filesharing/FileActionButtonProps';
 
-interface FileActionMultiSelectProps {
-  openDialog: (action: FileAction) => void;
-}
-
-const FileActionMultiSelect: FC<FileActionMultiSelectProps> = ({ openDialog }) => (
+const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => (
   <>
     <FloatingActionButton
       icon={MdOutlineDeleteOutline}

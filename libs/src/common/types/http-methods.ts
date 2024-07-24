@@ -26,4 +26,5 @@ export enum RequestResponseContentType {
   APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded',
   TEXT_PLAIN = 'text/plain',
   MULTIPART_FORM_DATA = 'multipart/form-data',
+  APPLICATION_OCET_STREAM = 'application/octet-stream',
 }

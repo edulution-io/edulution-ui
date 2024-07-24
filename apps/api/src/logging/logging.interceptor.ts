@@ -7,7 +7,7 @@ import { Request, Response } from 'express';
 class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     if (context.getType() === 'http') {
       return this.logHttpCall(context, next);
     }

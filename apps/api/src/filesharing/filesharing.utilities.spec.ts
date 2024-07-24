@@ -107,7 +107,7 @@ describe('webdav.utils', () => {
           filename: '/path/to/file1',
           lastmod: 'Mon, 01 Jan 2023 00:00:00 GMT',
           size: 1234,
-          type: 'file',
+          type: 'FILE',
         },
         {
           basename: 'Folder 1',
@@ -129,7 +129,7 @@ describe('webdav.utils', () => {
           filename: '/path/to/file1',
           lastmod: 'Mon, 01 Jan 2023 00:00:00 GMT',
           size: 1234,
-          type: 'file',
+          type: 'FILE',
         },
       ]);
     });
@@ -148,7 +148,7 @@ describe('webdav.utils', () => {
           filename: '/path/to/file1',
           lastmod: 'Mon, 01 Jan 2023 00:00:00 GMT',
           size: 1234,
-          type: 'file',
+          type: 'FILE',
         },
       ]);
     });

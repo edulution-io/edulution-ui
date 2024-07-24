@@ -1,4 +1,4 @@
-import { ContentType, DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { Button } from '@/components/shared/Button';
 import { ArrowRightIcon } from 'lucide-react';
@@ -10,6 +10,7 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcr
 import useLmnApiStore from '@/store/lmnApiStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
+import ContentType from '@libs/filesharing/ContentType';
 
 const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
   const { t } = useTranslation();
@@ -26,8 +27,8 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
     setCurrentPath(path);
   };
 
-  const handleNextFolder = (nextItem: DirectoryFile) => {
-    if (nextItem.type === ContentType.directory) {
+  const handleNextFolder = (nextItem: DirectoryFileDTO) => {
+    if (nextItem.type === ContentType.DIRECTORY) {
       let newCurrentPath = currentPath;
       if (!newCurrentPath.endsWith('/')) {
         newCurrentPath += '/';
@@ -41,7 +42,7 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
     }
   };
 
-  const renderTableRow = (row: DirectoryFile) => (
+  const renderTableRow = (row: DirectoryFileDTO) => (
     <TableRow
       key={row.filename}
       onClick={(e) => {

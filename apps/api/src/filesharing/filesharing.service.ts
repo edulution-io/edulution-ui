@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
+import FileSharingErrorMessage from '@libs/filesharing/FileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import {
   HttpMethodes,
@@ -10,18 +10,22 @@ import {
   RequestResponseContentType,
   ResponseType,
 } from '@libs/common/types/http-methods';
-import * as crypto from 'crypto';
-import * as pathLib from 'path';
+import { createHash } from 'crypto';
+import { extname, join, resolve } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { firstValueFrom } from 'rxjs';
 import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
-import HashAlgorithm from '@libs/algorithm/hashAlgorithm';
 import { HttpService } from '@nestjs/axios';
+import { getDecryptedPassword } from '@libs/common/utils';
+import saveFileStream from '@libs/filesharing/utils/saveFileStream';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import getProtocol from '@libs/common/utils/getProtocol';
+import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
+import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
-import EduApiUtility from '../utilits/eduApiUtility';
-import UsersService from '../users/users.service';
+import { User } from '../users/user.schema';
 
 @Injectable()
 class FilesharingService {
@@ -31,17 +35,15 @@ class FilesharingService {
 
   private downloadLinkLocation: string;
 
-  private readonly eduApiUtilits: EduApiUtility;
-
   private readonly eduEncrytionKey: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly userService: UsersService,
   ) {
+    this.downloadLinkLocation = process.env.EDUI_DOWNLOAD_DEV_DIR as string;
     this.baseurl = process.env.EDUI_WEBDAV_URL as string;
     this.eduEncrytionKey = process.env.EDUI_ENCRYPTION_KEY as string;
-    this.eduApiUtilits = new EduApiUtility(this.userService, this.eduEncrytionKey);
   }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -67,34 +69,23 @@ class FilesharingService {
     return client;
   }
 
+  private async getUserByUsername(username: string): Promise<User> {
+    const user = await this.userService.findOne(username);
+    if (!user || !user.password) {
+      throw new CustomHttpException(FileSharingErrorMessage.DbAccessFailed, HttpStatus.NOT_FOUND, {
+        message: 'User not found or password missing',
+      });
+    }
+    return user;
+  }
+
   private async initializeClient(username: string): Promise<void> {
-    const user = await this.eduApiUtilits.ensureValidUser(username);
-    const password = EduApiUtility.decryptPassword(user?.password as string, this.eduEncrytionKey);
+    const user = await this.getUserByUsername(username);
+    const password = getDecryptedPassword(user?.password as string, this.eduEncrytionKey);
 
     const client = WebdavClientFactory.createWebdavClient(this.baseurl, username, password);
     const timeout = this.setCacheTimeout(username);
     this.clientCache.set(username, { client, timeout });
-  }
-
-  private async fetchFileStream(
-    username: string,
-    url: string,
-    streamFetching = false,
-  ): Promise<AxiosResponse<Readable> | Readable> {
-    try {
-      const password = await this.eduApiUtilits.getPasswordForUser(username);
-      const authContents = `${username}:${password}`;
-      const protocol = url.startsWith('https') ? 'https' : 'http';
-      const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
-
-      const response = this.httpService.get<Readable>(authenticatedUrl, {
-        responseType: ResponseType.STREAM,
-      });
-
-      return await firstValueFrom(response).then((res) => (streamFetching ? res : res.data));
-    } catch (error) {
-      throw new Error(`Failed to fetch file stream from ${url}: ${error}`);
-    }
   }
 
   private static handleWebDAVError(response: AxiosResponse) {
@@ -109,8 +100,15 @@ class FilesharingService {
 
   private static async executeWebdavRequest<T>(
     client: AxiosInstance,
-    config: { method: string; url?: string; data?: any; headers?: any },
+    config: {
+      method: string;
+      url?: string;
+      // eslint-disable-next-line
+      data?: string | Record<string, any> | Buffer;
+      headers?: Record<string, string | number>;
+    },
     fileSharingErrorMessage: ErrorMessage,
+    // eslint-disable-next-line
     transformer?: (data: any) => T,
   ): Promise<T | WebdavStatusReplay> {
     try {
@@ -123,7 +121,6 @@ class FilesharingService {
     }
   }
 
-  // Generate the WebDAV XML for requests
   private readonly webdavXML: string =
     '<?xml version="1.0"?>\n' +
     '<d:propfind xmlns:d="DAV:">\n' +
@@ -137,9 +134,30 @@ class FilesharingService {
     '  </d:prop>\n' +
     '</d:propfind>\n';
 
-  getMountPoints = async (username: string): Promise<DirectoryFile[]> => {
+  private async fetchFileStream(
+    user: User,
+    url: string,
+    streamFetching = false,
+  ): Promise<AxiosResponse<Readable> | Readable> {
+    try {
+      const password = getDecryptedPassword(user?.password as string, this.eduEncrytionKey);
+      const authContents = `${user?.username}:${password}`;
+      const protocol = getProtocol(url);
+      const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
+
+      const fileStream = this.httpService.get<Readable>(authenticatedUrl, {
+        responseType: ResponseType.STREAM,
+      });
+
+      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
+
+  getMountPoints = async (username: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
-    return (await FilesharingService.executeWebdavRequest<DirectoryFile[]>(
+    return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodesWebDav.PROPFIND,
@@ -147,37 +165,37 @@ class FilesharingService {
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_XML },
       },
       FileSharingErrorMessage.MountPointsNotFound,
-    )) as DirectoryFile[];
+    )) as DirectoryFileDTO[];
   };
 
-  getFilesAtPath = async (username: string, path: string): Promise<DirectoryFile[]> => {
+  getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
 
-    return (await FilesharingService.executeWebdavRequest<DirectoryFile[]>(
+    return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodesWebDav.PROPFIND,
-        url: this.baseurl + EduApiUtility.getPathWithoutWebdav(path),
+        url: this.baseurl + getPathWithoutWebdav(path),
         data: this.webdavXML,
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
-    )) as DirectoryFile[];
+    )) as DirectoryFileDTO[];
   };
 
-  getDirAtPath = async (username: string, path: string): Promise<DirectoryFile[]> => {
+  getDirAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
-    return (await FilesharingService.executeWebdavRequest<DirectoryFile[]>(
+    return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodesWebDav.PROPFIND,
-        url: this.baseurl + EduApiUtility.getPathWithoutWebdav(path),
+        url: this.baseurl + getPathWithoutWebdav(path),
         data: this.webdavXML,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
-    )) as DirectoryFile[];
+    )) as DirectoryFileDTO[];
   };
 
   createFolder = async (username: string, path: string, folderName: string): Promise<WebdavStatusReplay> => {
@@ -206,7 +224,7 @@ class FilesharingService {
     content: string = '',
   ): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
-    const fullPath = `${this.baseurl}${EduApiUtility.getPathWithoutWebdav(path)}/${fileName}`;
+    const fullPath = `${this.baseurl}${getPathWithoutWebdav(path)}/${fileName}`;
 
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
@@ -324,20 +342,21 @@ class FilesharingService {
   };
 
   async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
-    const outputFolder = pathLib.resolve(__dirname, '..', 'public', 'downloads');
-    const url = `${this.baseurl}${EduApiUtility.getPathWithoutWebdav(filePath)}`;
+    const outputFolder = resolve(__dirname, '..', 'public', 'downloads');
+    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
     if (!existsSync(outputFolder)) {
       mkdirSync(outputFolder, { recursive: true });
     }
 
     try {
-      const responseStream = await this.fetchFileStream(username, `${url}`);
-      const hash = crypto.createHash(HashAlgorithm).update(filePath).digest('hex');
-      const extension = pathLib.extname(filename);
+      const user = await this.getUserByUsername(username);
+      const responseStream = await this.fetchFileStream(user, `${url}`);
+      const hash = createHash(HashAlgorithm).update(filePath).digest('hex');
+      const extension = extname(filename);
       const hashedFilename = `${hash}${extension}`;
-      const outputFilePath = pathLib.join(outputFolder, hashedFilename);
+      const outputFilePath = join(outputFolder, hashedFilename);
 
-      await EduApiUtility.saveFileStream(responseStream, outputFilePath);
+      await saveFileStream(responseStream, outputFilePath);
 
       const publicUrl = `${this.downloadLinkLocation}${hashedFilename}`;
 
@@ -352,12 +371,17 @@ class FilesharingService {
   }
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
-    const url = `${this.baseurl}${EduApiUtility.getPathWithoutWebdav(filePath)}`;
-    const resp = await this.fetchFileStream(username, url);
-    if (resp instanceof Readable) {
-      return resp;
+    try {
+      const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
+      const user = await this.getUserByUsername(username);
+      const resp = await this.fetchFileStream(user, url);
+      if (resp instanceof Readable) {
+        return resp;
+      }
+      return resp.data;
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
-    return resp.data;
   }
 }
 

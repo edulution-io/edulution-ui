@@ -6,6 +6,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 interface GenerateFile {
   [key: string]: (title: string) => Promise<File> | File;
+
   docx: (title: string) => Promise<File>;
   txt: (title: string) => File;
   drawio: (title: string) => File;
@@ -25,8 +26,7 @@ const generateFile: GenerateFile = {
   },
 
   txt: function createTextFile(title: string): File {
-    const content = '';
-    const blob = new Blob([content], { type: RequestResponseContentType.TEXT_PLAIN });
+    const blob = new Blob([''], { type: RequestResponseContentType.TEXT_PLAIN });
     return new File([blob], `${title}.txt`, { type: blob.type });
   },
 

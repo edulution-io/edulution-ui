@@ -7,6 +7,7 @@ import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-e
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
+import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
@@ -40,6 +41,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.LINUXMUSTER: {
         return LINUXMUSTER_MENUBAR_CONFIG;
+      }
+      case APPS.DESKTOP_DEPLOYMENT: {
+        return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

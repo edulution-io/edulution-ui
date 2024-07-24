@@ -6,26 +6,27 @@ import {
   getElapsedTime,
   getFileCategorie,
   parseDate,
-} from '@/pages/FileSharing/utilities/fileManagerUtilities';
+} from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { ContentType, DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
+import ContentType from '@libs/filesharing/ContentType';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
-const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
+const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
   {
     id: 'select-filename',
 
     header: ({ table, column }) => (
-      <SortableHeader<DirectoryFile, unknown>
+      <SortableHeader<DirectoryFileDTO, unknown>
         titleTranslationId="fileSharingTable.filename"
         table={table}
         column={column}
@@ -36,13 +37,13 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
       const handleFilenameClick = (filenamePath: string) => {
-        if (row.original.type === ContentType.directory) {
+        if (row.original.type === ContentType.DIRECTORY) {
           searchParams.set('path', filenamePath);
           setSearchParams(searchParams);
         }
       };
-      const renderFileIcon = (item: DirectoryFile) => {
-        if (row.original.type === ContentType.file) {
+      const renderFileIcon = (item: DirectoryFileDTO) => {
+        if (row.original.type === ContentType.FILE) {
           return (
             <FileIconComponent
               filename={item.filename}
@@ -75,7 +76,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'lastmod',
     header: function Header({ column }) {
       return (
-        <SortableHeader<DirectoryFile, unknown>
+        <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.lastModified"
           column={column}
@@ -110,7 +111,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'size',
     header: function Header({ column }) {
       return (
-        <SortableHeader<DirectoryFile, unknown>
+        <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.size"
           column={column}
@@ -134,7 +135,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
     accessorKey: 'type',
     header: function Header({ column }) {
       return (
-        <SortableHeader<DirectoryFile, unknown>
+        <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.type"
           column={column}
@@ -142,8 +143,8 @@ const FileSharingTableColumns: ColumnDef<DirectoryFile>[] = [
       );
     },
     cell: function Cell({ row }) {
-      const renderFileCategorize = (item: DirectoryFile) => {
-        if (row.original.type === ContentType.file) {
+      const renderFileCategorize = (item: DirectoryFileDTO) => {
+        if (row.original.type === ContentType.FILE) {
           return translateKey(`fileCategory.${getFileCategorie(item.filename)}`);
         }
         return translateKey('fileCategory.folder');

@@ -8,11 +8,11 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import FileAction from '@libs/filesharing/FileAction';
 import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
-import { FileSharingFormValues } from '@libs/ui/types/filesharing/FilesharingDialogProps';
+import { FileSharingFormValues } from '@libs/filesharing/FilesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -48,7 +48,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
-    setMoveItemsToPath({} as DirectoryFile);
+    setMoveItemsToPath({} as DirectoryFileDTO);
     setSelectedFileType({} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]);
     setFilesToUpload([]);
   };

@@ -1,5 +1,5 @@
 interface WebDAVResourceType {
-  'd:collection'?: any;
+  'd:collection'?: string;
 }
 
 interface WebDAVProperty {
@@ -25,6 +25,12 @@ export interface WebDAVMultiStatus {
   'd:multistatus': {
     'd:response': WebDAVResponse[];
   };
+}
+
+export interface WebdavStatusReplay {
+  success: boolean;
+  status: number;
+  filename?: string;
 }
 
 export enum XMLAttributes {

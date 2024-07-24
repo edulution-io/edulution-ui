@@ -1,14 +1,14 @@
 import { AxiosError } from 'axios';
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import { DirectoryFile } from '@libs/filesharing/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import React from 'react';
 import FileAction from '@libs/filesharing/FileAction';
 
 import handleApiError from '@/utils/handleApiError';
 import { WebDavActionResult } from '@libs/filesharing/FileActionStatus';
 import { t } from 'i18next';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/fileManagerUtilities';
+import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
 import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
 import { HttpMethodes } from '@libs/common/types/http-methods';
@@ -20,9 +20,9 @@ interface FileSharingDialogStore {
   isLoading: boolean;
   userInput: string;
   filesToUpload: File[];
-  moveItemsToPath: DirectoryFile;
+  moveItemsToPath: DirectoryFileDTO;
   selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
-  setMoveItemsToPath: (item: DirectoryFile) => void;
+  setMoveItemsToPath: (item: DirectoryFileDTO) => void;
   setUserInput: (userInput: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -43,12 +43,13 @@ interface FileSharingDialogStore {
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean, message: string, status: number) => void;
 }
+
 const initialState: Partial<FileSharingDialogStore> = {
   isDialogOpen: false,
   isLoading: false,
   error: null,
   userInput: '',
-  moveItemsToPath: {} as DirectoryFile,
+  moveItemsToPath: {} as DirectoryFileDTO,
   selectedFileType: {} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey],
   filesToUpload: [],
 };

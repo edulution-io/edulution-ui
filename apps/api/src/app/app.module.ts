@@ -3,19 +3,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import * as path from 'path';
+import { resolve } from 'path';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
+import VdiModule from '../vdi/vdi.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import FilesharingModule from '../filesharing/filesharing.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, '..', 'public', 'downloads'),
+      rootPath: resolve(__dirname, '..', 'public', 'downloads'),
       serveRoot: '/edu-api/downloads',
     }),
     AppConfigModule,
@@ -24,6 +25,7 @@ import FilesharingModule from '../filesharing/filesharing.module';
     ClassManagementModule,
     ConferencesModule,
     FilesharingModule,
+    VdiModule,
     JwtModule.register({
       global: true,
     }),
