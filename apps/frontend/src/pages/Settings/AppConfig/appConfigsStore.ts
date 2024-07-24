@@ -46,7 +46,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
           handleApiError(e, set);
           return false;
         } finally {
-          set({isLoading: false});
+          set({ isLoading: false });
         }
       },
 
@@ -77,7 +77,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
     }),
     {
       name: 'appConfig-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ appConfigs: state.appConfigs }),
     },
   ),

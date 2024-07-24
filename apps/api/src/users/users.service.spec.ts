@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Query } from 'mongoose';
-import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cache-ttl';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 
@@ -121,11 +121,6 @@ describe(UsersService.name, () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CacheModule.register({
-          ttl: DEFAULT_CACHE_TTL_MS,
-        }),
-      ],
       providers: [
         UsersService,
         {

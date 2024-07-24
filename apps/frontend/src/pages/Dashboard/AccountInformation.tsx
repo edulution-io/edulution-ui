@@ -1,22 +1,11 @@
-import React, { useEffect } from 'react';
-import waitForToken from '@/api/common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import useLmnApiStore from '@/store/lmnApiStore';
 
 const AccountInformation = () => {
-  const { user, getUserData } = useLmnApiStore();
-
-  useEffect(() => {
-    if (!user) {
-      const getUserDataQuery = async () => {
-        await waitForToken();
-        getUserData().catch(console.error);
-      };
-      getUserDataQuery().catch(console.error);
-    }
-  }, [user]);
+  const { user } = useLmnApiStore();
 
   const { t } = useTranslation();
   const userInfoFields = [

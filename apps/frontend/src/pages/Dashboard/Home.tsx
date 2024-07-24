@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
@@ -8,11 +8,19 @@ import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
 import Groups from './Groups';
+import useLmnApiStore from '@/store/lmnApiStore';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const auth = useAuth();
+  const { user, lmnApiToken, getOwnUser } = useLmnApiStore();
+
+  useEffect(() => {
+    if (lmnApiToken && !user) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken, user]);
 
   return (
     <>

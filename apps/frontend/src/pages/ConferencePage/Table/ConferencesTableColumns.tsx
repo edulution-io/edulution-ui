@@ -158,8 +158,13 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
     ),
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
+      const attendeeCount = row.original.invitedAttendees.length;
+      const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'conferences.attendee' : 'conferences.attendees')}`;
+      const groupsCount = row.original.invitedGroups?.length;
+      const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
@@ -170,7 +175,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
                 }
               : undefined
           }
-          text={`${row.original.invitedAttendees.length || '-'}`}
+          text={`${attendeeText} ${groupsText}`}
         />
       );
     },

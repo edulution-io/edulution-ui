@@ -8,7 +8,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useClassManagementStore from '@/pages/ClassManagement/classManagementStore';
+import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 

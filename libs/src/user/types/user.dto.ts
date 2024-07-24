@@ -1,4 +1,4 @@
-import LdapGroups from './groups/ldapGroups';
+import LdapGroups from '@libs/groups/types/ldapGroups';
 
 class UserDto {
   _id?: string;

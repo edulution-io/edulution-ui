@@ -8,7 +8,7 @@ export interface AsyncMultiSelectProps<T> {
   placeholder: string;
   delay?: number;
   onSearch: (value: string) => Promise<T[]>;
-  onChange: (options: MultipleSelectorOptionSH[]) => void;
+  onChange: (options: (T & MultipleSelectorOptionSH)[]) => void;
   showRemoveIconInBadge?: boolean;
   badgeClassName?: string;
 }
@@ -27,6 +27,10 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
   const loadingIndicator = <p className="leading-1 py-2 text-center text-muted">{t('search.loading')}...</p>;
   const emptyIndicator = <p className="leading-1 w-full py-2 text-center text-muted">{t('search.no-results')}</p>;
 
+  const handleChange = (options: MultipleSelectorOptionSH[]) => {
+    onChange(options as (T & MultipleSelectorOptionSH)[]);
+  };
+
   return (
     <MultipleSelectorSH
       value={value}
@@ -36,7 +40,7 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
       delay={delay}
       badgeClassName={badgeClassName || 'text-base font-normal'}
       className="rounded-lg py-1"
-      onChange={onChange}
+      onChange={handleChange}
       onSearch={onSearch}
       inputProps={{ className: 'text-base m-0' }}
       showRemoveIconInBadge={showRemoveIconInBadge}

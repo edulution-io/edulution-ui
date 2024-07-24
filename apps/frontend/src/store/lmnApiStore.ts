@@ -1,18 +1,21 @@
 import { create, StateCreator } from 'zustand';
-import UserLmnInfo from '@/datatypes/userInfo';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import lmnApi from '@/api/lmnApi';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
-import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
-import userStore from '@/store/UserStore/UserStore';
+import eduApi from '@/api/eduApi';
+
+import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 
 interface LmnApiStore {
   lmnApiToken: string;
   user: UserLmnInfo | null;
   isLoading: boolean;
+  isGetUserLoading: boolean;
   error: Error | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
-  getUserData: () => Promise<void>;
+  getOwnUser: () => Promise<void>;
+  fetchUser: (name: string) => Promise<UserLmnInfo | null>;
   reset: () => void;
 }
 
@@ -20,6 +23,7 @@ const initialState = {
   lmnApiToken: '',
   user: null,
   isLoading: false,
+  isGetUserLoading: false,
   error: null,
 };
 
@@ -30,34 +34,48 @@ type PersistedUserLmnInfoStore = (
 
 const useLmnApiStore = create<LmnApiStore>(
   (persist as PersistedUserLmnInfoStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
 
       setLmnApiToken: async (username, password): Promise<void> => {
-        set({ isLoading: true });
+        set({ isLoading: true, error: null });
 
         try {
           lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
-          set({ isLoading: false, error: null, lmnApiToken: response.data });
+          set({ lmnApiToken: response.data });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
-      getUserData: async () => {
-        set({ isLoading: true });
+      getOwnUser: async () => {
+        if (get().isGetUserLoading) return;
+        set({ isGetUserLoading: true, error: null });
         try {
-          const response = await lmnApi.get<UserLmnInfo>(
-            `${EDU_API_USERS_ENDPOINT}/${userStore.getState().user?.username}`,
-          );
-          set({
-            user: response.data,
-            isLoading: false,
-            error: null,
-          });
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.post<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, { lmnApiToken });
+          set({ user: response.data });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isGetUserLoading: false });
+        }
+      },
+
+      fetchUser: async (username): Promise<UserLmnInfo | null> => {
+        set({ error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.post<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, { lmnApiToken, username });
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isGetUserLoading: false });
         }
       },
 
@@ -65,7 +83,7 @@ const useLmnApiStore = create<LmnApiStore>(
     }),
     {
       name: 'lmn-user-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         lmnApiToken: state.lmnApiToken,
         user: state.user,

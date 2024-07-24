@@ -10,17 +10,7 @@ import { X } from 'lucide-react';
 import cn from '@/lib/utils';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
-
-export interface MultipleSelectorOptionSH {
-  value: string;
-  label: string;
-  disable?: boolean;
-  /** fixed option that can't be removed. */
-  fixed?: boolean;
-
-  /** Group the options by providing key. */
-  [key: string]: string | boolean | undefined;
-}
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];

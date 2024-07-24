@@ -4,13 +4,13 @@ import React from 'react';
 
 interface ActionTooltipProps {
   trigger: React.ReactNode;
-  onAction: () => void;
+  onAction?: () => void;
   tooltipText: string;
 }
 
 const ActionTooltip: React.FC<ActionTooltipProps> = ({ trigger, onAction, tooltipText }) => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if ((event.key === 'Enter' || event.key === ' ') && onAction) {
       onAction();
     }
   };

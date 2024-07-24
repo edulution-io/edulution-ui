@@ -13,18 +13,12 @@ import JWT_EXPIRE_IN_MS from '@libs/common/contants/jwt-expire-ms';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import GroupDto from '@libs/groups/types/group.dto';
 import JWTUser from '../types/JWTUser';
-import processLdapGroups from '@libs/user/utils/processLdapGroups';
-import UserGroupsDto from '@libs/groups/types/userGroups.dto';
 import LdapUserWithGroups from '@libs/groups/types/ldapUserWithGroups';
 import { ALL_GROUPS_CACHE_KEY, GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
-import LmnApiService from '../lmnApi/lmnApi.service';
 
 @Injectable()
 class GroupsService implements OnModuleInit {
-  constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly lmnApiService: LmnApiService,
-  ) {}
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   private keycloakAccessToken: string;
 
@@ -98,16 +92,6 @@ class GroupsService implements OnModuleInit {
       groupPaths.map(async (path) => await this.cacheManager.get<GroupDto>(`${GROUPS_WITH_MEMBERS_CACHE_KEY}-${path}`)),
     );
     return groups.filter((group): group is GroupDto => !!group);
-  }
-
-  async getUserGroups(user: JWTUser, lmnApiToken: string): Promise<UserGroupsDto> {
-    const ldapGroups = processLdapGroups(user.ldapGroups);
-
-    const classes = await this.getFilteredGroupsByPaths(ldapGroups.classPaths);
-    const projects = await this.getFilteredGroupsByPaths(ldapGroups.projectPaths);
-    const sessions = await this.lmnApiService.getUserSessions(lmnApiToken, user.preferred_username);
-
-    return { projects, classes, sessions };
   }
 
   private sanitizeGroup(group: Group) {

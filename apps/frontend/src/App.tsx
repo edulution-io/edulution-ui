@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AppRouter from '@/routes/AppRouter';
+import AppRouter from '@/router/AppRouter';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';

@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { CacheModule } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import UserDto from '@libs/user/types/user.dto';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import UpdateUserDto from './dto/update-user.dto';
 
 const mockUserModel = {
@@ -42,11 +40,6 @@ describe(UsersController.name, () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CacheModule.register({
-          ttl: DEFAULT_CACHE_TTL_MS,
-        }),
-      ],
       controllers: [UsersController],
       providers: [
         {
