@@ -16,7 +16,6 @@ import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import GroupRoles from '@libs/user/types/groups/group-roles.enum';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -41,8 +40,7 @@ const pageSwitch = (page: string) => {
 };
 
 const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
-  const ldapGroups = useLdapGroups();
-  const isSuperAdmin = ldapGroups.includes(`${GroupRoles.SUPER_ADMIN}`);
+  const { isSuperAdmin } = useLdapGroups();
 
   return createBrowserRouter(
     createRoutesFromElements(
