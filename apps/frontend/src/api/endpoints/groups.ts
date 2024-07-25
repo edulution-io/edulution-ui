@@ -1,3 +1,0 @@
-const EDU_API_GROUPS_SEARCH_ENDPOINT = '/groups';
-
-export default EDU_API_GROUPS_SEARCH_ENDPOINT;

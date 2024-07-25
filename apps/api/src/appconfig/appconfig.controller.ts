@@ -2,12 +2,13 @@ import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards } fr
 
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
+import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
 import AppConfigService from './appconfig.service';
 import { GetCurrentUserGroups } from '../common/decorators/getUser.decorator';
 import AppConfigGuard from './appconfig.guard';
 
 @ApiBearerAuth()
-@Controller('appconfig')
+@Controller(EDU_API_CONFIG_ENDPOINT)
 class AppConfigController {
   constructor(private readonly appConfigService: AppConfigService) {}
 

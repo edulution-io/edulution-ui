@@ -3,7 +3,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { Group } from '@libs/user/types/groups/group';
 import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
-import EDU_API_GROUPS_SEARCH_ENDPOINT from '@/api/endpoints/groups';
+import EDU_API_GROUPS_SEARCH_ENDPOINT from '@libs/user/constants/groups/groups-endpoints';
 
 type GroupStore = {
   searchGroupsIsLoading: boolean;

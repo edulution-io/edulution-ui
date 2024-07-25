@@ -2,7 +2,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import EDU_API_CONFIG_ENDPOINT from '@/api/endpoints/appconfig';
+import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
