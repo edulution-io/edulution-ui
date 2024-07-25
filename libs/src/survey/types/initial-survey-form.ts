@@ -1,20 +1,24 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/user/types/groups/group';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class InitialSurveyForm implements SurveyDto {
-  // ADDITIONAL
-  invitedAttendees: AttendeeDto[];
-
-  invitedGroups: Group[];
-
-  // SURVEY
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
   saveNo: number;
+
+  creator: AttendeeDto;
+
+  invitedAttendees: AttendeeDto[];
+
+  invitedGroups: Group[];
+
+  participatedAttendees: AttendeeDto[];
+
+  answers: mongoose.Types.ObjectId[];
 
   created: Date;
 
@@ -30,14 +34,16 @@ class InitialSurveyForm implements SurveyDto {
 
   canShowResultsChart: boolean;
 
-  constructor(selectedSurvey?: SurveyDto) {
-    this.invitedAttendees = selectedSurvey?.invitedAttendees || [];
-    this.invitedGroups = [];
-
+  constructor(creator: AttendeeDto, selectedSurvey?: SurveyDto) {
     const time = new Date().getTime();
     this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(time);
     this.formula = selectedSurvey?.formula || ({} as JSON);
     this.saveNo = selectedSurvey?.saveNo || 0;
+    this.creator = creator;
+    this.invitedAttendees = selectedSurvey?.invitedAttendees || [];
+    this.invitedGroups = [];
+    this.participatedAttendees = selectedSurvey?.participatedAttendees || [];
+    this.answers = selectedSurvey?.answers || [];
     this.created = selectedSurvey?.created || new Date();
     this.expirationDate = selectedSurvey?.expirationDate || undefined;
     this.expirationTime = selectedSurvey?.expirationTime || undefined;

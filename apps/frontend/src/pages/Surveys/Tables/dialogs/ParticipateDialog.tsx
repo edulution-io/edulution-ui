@@ -25,6 +25,7 @@ const ParticipateDialog = () => {
     return (
       <ParticipateDialogBody
         surveyId={survey.id}
+        saveNo={survey.saveNo}
         formula={survey.formula}
         answer={answer}
         setAnswer={setAnswer}

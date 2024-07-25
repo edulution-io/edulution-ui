@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
 import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
@@ -8,6 +9,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import useUserStore from '@/store/UserStore/UserStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -23,6 +26,9 @@ interface SurveyEditorFormProps {
 
 const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { editMode = false } = props;
+
+  const { user } = useUserStore();
+
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
@@ -34,25 +40,40 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
 
   const { t } = useTranslation();
 
-  const emptyFormValues: SurveyDto = new EmptySurveyForm();
+  if (!user || !user.username) {
+    toast.error(t('auth.errors.UserNotFound'));
+    return null;
+  }
+
+  const surveyCreator: AttendeeDto = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    value: user.username,
+    label: `${user.firstName} ${user.lastName}`,
+  };
+  const emptyFormValues: SurveyDto = new EmptySurveyForm(surveyCreator);
 
   const initialFormValues: SurveyDto = useMemo(
-    () => (editMode && selectedSurvey ? new InitialSurveyForm(selectedSurvey) : emptyFormValues),
+    () => (editMode && selectedSurvey ? new InitialSurveyForm(surveyCreator, selectedSurvey) : emptyFormValues),
     [selectedSurvey],
   );
 
   const formSchema = z.object({
-    // SURVEY
     id: z.number(),
     formula: z.any(),
     saveNo: z.number().optional(),
-    created: z.date().optional(),
-    expirationDate: z.date().optional(),
-    expirationTime: z.string().optional(),
-    isAnonymous: z.boolean().optional(),
-    canSubmitMultipleAnswers: z.boolean().optional(),
-
-    // ADDITIONAL
+    creator: z.intersection(
+      z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        username: z.string(),
+      }),
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      }),
+    ),
     invitedAttendees: z.array(
       z.intersection(
         z.object({
@@ -67,6 +88,25 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       ),
     ),
     invitedGroups: z.array(z.object({})),
+    participatedAttendees: z.array(
+      z.intersection(
+        z.object({
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+          username: z.string(),
+        }),
+        z.object({
+          value: z.string(),
+          label: z.string(),
+        }),
+      ),
+    ),
+    answers: z.any(),
+    created: z.date().optional(),
+    expirationDate: z.date().optional(),
+    expirationTime: z.string().optional(),
+    isAnonymous: z.boolean().optional(),
+    canSubmitMultipleAnswers: z.boolean().optional(),
   });
 
   const form = useForm<SurveyDto>({
@@ -77,11 +117,14 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
 
   const saveSurvey = async () => {
     const {
-      invitedAttendees,
-      invitedGroups,
       id,
       formula,
       saveNo,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
       created,
       expirationDate,
       expirationTime,
@@ -90,11 +133,14 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     } = form.getValues();
 
     await updateOrCreateSurvey({
-      invitedAttendees,
-      invitedGroups,
       id,
       formula,
       saveNo,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
       created,
       expirationDate,
       expirationTime,

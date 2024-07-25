@@ -22,9 +22,9 @@ class SurveysService {
   async updateSurvey(survey: Survey): Promise<Survey | null> {
     try {
       const updatedSurvey = await this.surveyModel
-        .findOneAndUpdate<Survey>(
+        .findByIdAndUpdate<Survey>(
           // eslint-disable-next-line no-underscore-dangle
-          { _id: survey._id },
+          survey._id,
           { ...survey },
         )
         .exec();
@@ -48,6 +48,21 @@ class SurveysService {
       SurveysService.name,
     );
     return createdSurvey;
+  }
+
+  async updateOrCreateSurvey(survey: Survey): Promise<Survey | null> {
+    const updatedSurvey = await this.updateSurvey(survey);
+    if (updatedSurvey == null) {
+      const createdSurvey = await this.createSurvey(survey);
+      if (createdSurvey == null) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      return createdSurvey;
+    }
+    return updatedSurvey;
   }
 }
 

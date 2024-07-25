@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Query, Get, Patch, Post, Param, HttpStatus, Logger } from '@nestjs/common';
+import { Body, Controller, Delete, Query, Get, Patch, Post, Param } from '@nestjs/common';
 import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import AnswerDto from '@libs/survey/types/answer.dto';
@@ -11,22 +9,19 @@ import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
-import UsersSurveysService from './users-surveys.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import JWTUser from '../types/JWTUser';
 
 @Controller(SURVEYS)
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
-    private readonly usersSurveysService: UsersSurveysService,
   ) {}
 
   @Get()
   async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
-    Logger.log(`status: ${status} username: ${username}`, SurveysController.name);
-
-    return this.usersSurveysService.findUserSurveys(status, username);
+    return this.surveyAnswerService.findUserSurveys(status, username);
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
@@ -36,59 +31,37 @@ class SurveysController {
 
   @Post(ANSWER_ENDPOINT)
   async getCommittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, attendee = username } = getAnswerDto;
-    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee);
+    const { surveyId, attendee } = getAnswerDto;
+    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUsername() username: string) {
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
     // first extrude the additional info fields from the remaining survey object
-    const { invitedAttendees, invitedGroups, ...surveyData } = surveyDto;
-    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
+    const { invitedGroups, ...surveyData } = surveyDto;
+    const { id, created = new Date() } = surveyData;
 
     const survey: Survey = {
       ...surveyData,
       _id: id,
       id,
-      saveNo,
       created,
-      isAnonymous,
-      canSubmitMultipleAnswers,
     };
 
-    const updatedSurvey = await this.surveyService.updateSurvey(survey);
-    if (updatedSurvey == null) {
-      const createdSurvey = await this.surveyService.createSurvey(survey);
-      if (createdSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      await this.usersSurveysService.addToCreatedSurveys(username, id);
-      await this.usersSurveysService.populateSurvey(invitedAttendees, id);
-      return createdSurvey;
-    }
-    return updatedSurvey;
+    return this.surveyService.updateOrCreateSurvey(survey);
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    try {
-      await this.surveyService.deleteSurveys(surveyIds);
-      await this.surveyAnswerService.onSurveyRemoval(surveyIds);
-      await this.usersSurveysService.updateUsersOnSurveyRemoval(surveyIds);
-    } catch (e) {
-      Logger.log(e);
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToDeleteSurveyError, HttpStatus.NOT_MODIFIED, e);
-    }
+    await this.surveyService.deleteSurveys(surveyIds);
+    await this.surveyAnswerService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, answer, username);
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
+    const { surveyId, saveNo, answer } = pushAnswerDto;
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, user, answer);
   }
 }
 

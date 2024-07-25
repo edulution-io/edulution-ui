@@ -8,11 +8,17 @@ import '@/pages/Surveys/theme/default2.min.css';
 
 interface ParticipateDialogBodyProps {
   surveyId: mongoose.Types.ObjectId;
+  saveNo: number;
   formula: JSON;
 
   answer: JSON;
   setAnswer: (answer: JSON) => void;
-  commitAnswer: (surveyId: mongoose.Types.ObjectId, answer: JSON, options?: CompleteEvent) => Promise<void>;
+  commitAnswer: (
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+    options?: CompleteEvent,
+  ) => Promise<void>;
 
   updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
@@ -23,6 +29,7 @@ interface ParticipateDialogBodyProps {
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   const {
     surveyId,
+    saveNo,
     formula,
     answer,
     setAnswer,
@@ -41,7 +48,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onCurrentPageChanged.add(() => setAnswer(surveyModel.data as JSON));
 
   surveyModel.onComplete.add(async (_sender, options) => {
-    await commitAnswer(surveyId, answer, options);
+    await commitAnswer(surveyId, saveNo, answer, options);
     updateOpenSurveys();
     updateAnsweredSurveys();
     setIsOpenParticipateSurveyDialog(false);

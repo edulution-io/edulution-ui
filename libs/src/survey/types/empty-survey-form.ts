@@ -1,18 +1,24 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/user/types/groups/group';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/survey.dto';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class EmptySurveyForm implements SurveyDto {
-  invitedAttendees: AttendeeDto[];
-
-  invitedGroups: Group[];
-
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
   saveNo: number;
+
+  creator: AttendeeDto;
+
+  invitedAttendees: AttendeeDto[];
+
+  invitedGroups: Group[];
+
+  participatedAttendees: AttendeeDto[];
+
+  answers: mongoose.Types.ObjectId[];
 
   created: Date;
 
@@ -28,14 +34,16 @@ class EmptySurveyForm implements SurveyDto {
 
   canShowResultsChart: boolean;
 
-  constructor() {
-    this.invitedAttendees = [];
-    this.invitedGroups = [];
-
+  constructor(creator: AttendeeDto) {
     const time = new Date().getTime();
     this.id = mongoose.Types.ObjectId.createFromTime(time);
     this.formula = {} as JSON;
     this.saveNo = 0;
+    this.creator = creator;
+    this.invitedAttendees = [];
+    this.invitedGroups = [];
+    this.participatedAttendees = [];
+    this.answers = [];
     this.created = new Date();
     this.expirationDate = undefined;
     this.expirationTime = undefined;
