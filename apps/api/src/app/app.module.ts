@@ -9,7 +9,7 @@ import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
 import VdiModule from '../vdi/vdi.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
-
+import FilesharingModule from '../filesharing/filesharing.module';
 
 @Module({
   imports: [
@@ -18,6 +18,7 @@ import LoggingInterceptor from '../logging/logging.interceptor';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    FilesharingModule,
     VdiModule,
     JwtModule.register({
       global: true,
