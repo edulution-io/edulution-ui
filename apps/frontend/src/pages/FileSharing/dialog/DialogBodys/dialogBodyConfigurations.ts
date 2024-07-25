@@ -128,7 +128,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'fileRenameContent.rename',
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.RENAME}`,
-    httpMethod: HttpMethodes.PUT,
+    httpMethod: HttpMethodes.PATCH,
     requiresForm: true,
     getData: async (form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;

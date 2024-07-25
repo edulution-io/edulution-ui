@@ -5,6 +5,7 @@ import {
   Get,
   Header,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -66,7 +67,7 @@ class FilesharingController {
     return this.filesharingService.deleteFileAtPath(username, filePath);
   }
 
-  @Put(FileSharingPaths.RENAME_RESOURCE)
+  @Patch(FileSharingPaths.RENAME_RESOURCE)
   async renameResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
     return this.filesharingService.renameFile(username, body.originPath, body.newPath);
   }

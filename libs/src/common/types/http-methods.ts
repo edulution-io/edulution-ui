@@ -9,6 +9,7 @@ export enum HttpMethodes {
   POST = 'post',
   DELETE = 'delete',
   GET = 'get',
+  PATCH = 'patch',
 }
 
 export enum ResponseType {
