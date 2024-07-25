@@ -4,6 +4,7 @@ enum ConferencesErrorMessage {
   BbbUnauthorized = 'conferences.errors.BbbUnauthorized',
   AppNotProperlyConfigured = 'conferences.errors.AppNotProperlyConfigured',
   YouAreNotTheCreator = 'conferences.errors.YouAreNotTheCreator',
+  AlreadyInAnotherMeeting = 'conferences.errors.AlreadyInAnotherMeeting',
 }
 
 export default ConferencesErrorMessage;

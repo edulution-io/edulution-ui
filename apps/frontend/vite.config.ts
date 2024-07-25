@@ -2,11 +2,15 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { resolve } from 'path';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
 
 export default defineConfig({
   // Exception needed for excalidraw
   define: {
     'process.env': {},
+    APP_VERSION: JSON.stringify(pkg.version),
   },
   test: {
     globals: true,
@@ -71,6 +75,19 @@ export default defineConfig({
         secure: false,
         headers: {
           Origin: 'https://ui.schulung.multi.schule',
+        },
+      },
+      '/guacamole': {
+        rewrite: (path) => path.replace(/^\/guacamole/, ''),
+        target: 'http://localhost:8081/guacamole',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        headers: {
+          Origin: 'https://ui.schulung.multi.schule',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
       },
       //TODO docs

@@ -12,8 +12,7 @@
     "@typescript-eslint/class-methods-use-this": "warn",
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   },
   "overrides": [
     {
@@ -22,6 +21,13 @@
       "plugins": ["@typescript-eslint"],
       "parserOptions": {
         "project": ["apps/api/tsconfig.eslint.json"]
+      }
+    },
+    {
+      "files": ["*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/unbound-method": "off"
       }
     }
   ]

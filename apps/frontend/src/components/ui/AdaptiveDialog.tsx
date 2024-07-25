@@ -1,7 +1,14 @@
 /* eslint-disable react/require-default-props */
 import React, { FC } from 'react';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/Dialog';
 import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface AdaptiveDialogProps {
@@ -11,9 +18,20 @@ interface AdaptiveDialogProps {
   trigger?: React.ReactNode;
   body: React.ReactNode;
   footer?: React.ReactNode;
+  mobileContentClassName?: string;
+  desktopContentClassName?: string;
 }
 
-const AdaptiveDialog: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, title, trigger, body, footer }) => {
+const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
+  isOpen,
+  handleOpenChange,
+  title,
+  trigger,
+  body,
+  footer,
+  mobileContentClassName,
+  desktopContentClassName,
+}) => {
   const isMobileView = useIsMobileView();
 
   return isMobileView ? (
@@ -22,7 +40,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, tit
       onOpenChange={handleOpenChange}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent side="bottom">
+      <SheetContent
+        side="bottom"
+        className={mobileContentClassName}
+      >
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
@@ -36,10 +57,11 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({ isOpen, handleOpenChange, tit
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className={desktopContentClassName}>
         <DialogTitle>{title}</DialogTitle>
         {body}
         <DialogFooter>{footer}</DialogFooter>
+        <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>
   );

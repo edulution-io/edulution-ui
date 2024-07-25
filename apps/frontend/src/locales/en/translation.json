@@ -17,7 +17,9 @@
       "downloadApp": "Download the edulution-io app here:"
     }
   },
-  "auth": { "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged out in 1 minute." } },
+  "auth": {
+    "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged off in less than a minute." }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -40,7 +42,8 @@
       "BbbServerNotReachable": "The external BBB is not reachable",
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
-      "YouAreNotTheCreator": "You are not the creator of the conference"
+      "YouAreNotTheCreator": "You are not the creator of the conference",
+      "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one."
     },
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
@@ -92,11 +95,6 @@
     "title": "FORUMS",
     "sidebar": "Forums"
   },
-  "roombooking": {
-    "title": "ROOM BOOKING",
-    "sidebar": "Room Booking",
-    "rooms": "Rooms"
-  },
   "learningmanagement": {
     "title": "LEARNING MANAGEMENT",
     "sidebar": "Learning Management"
@@ -122,8 +120,28 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop Deployment",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "reload": "Reload",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients available",
+    "client": "Client available",
+    "errors": {
+      "GuacamoleNotResponding": "RDP service not available.",
+      "GuacamoleUserNotFound": "Username or password could not be found.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
+      "SessionNotFound": "Session not found."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -177,13 +195,33 @@
     }
   },
   "usersettings": {
-    "title": "USER",
-    "sidebar": "Settings",
-    "security": "Security",
+    "title": "USER SETTINGS",
+    "sidebar": "User settings",
+    "split-title": "USER SETTINGS",
+    "description": "Here you can view all your user-defined settings and adjust them if necessary.",
+    "security": {
+      "title": "Security",
+      "sidebar": "Security",
+      "description": "Configure here the security settings of your account",
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "confirm": "Change Password"
+      }
+    },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": { "mfa": "Setup Two-Factor-Authentication" },
-    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
+    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "confirmPasswordRequired": "Repeat the new password for the confirmation",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 8 characters long"
+    }
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
@@ -215,13 +253,14 @@
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
-    "close": "Close",
     "icon": "Icon",
     "groups": "Groups",
     "clearSelection": "Clear selection",
+    "selected": "Selected",
+    "start": "Start",
+    "close": "Close",
     "active": "Active",
-    "inactive": "Inactive",
-    "selected": "Selected"
+    "inactive": "Inactive"
   },
   "form": {
     "path": "Path",

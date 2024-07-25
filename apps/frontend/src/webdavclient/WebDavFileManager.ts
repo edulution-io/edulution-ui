@@ -1,25 +1,24 @@
 import { createClient } from 'webdav';
 import JSZip from 'jszip';
-import { decryptPassword, translateKey } from '@/utils/common';
+import { translateKey } from '@/utils/common';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
+import { getDecryptedPassword } from '@libs/common/utils';
 import { IWebDavFileManager } from './IWebDavFileManager';
 import { DirectoryFile } from '../datatypes/filesystem';
 
-type UserDataConfig = { state: { username: string; webdavKey: string; isAuthenticated: boolean } };
+type UserDataConfig = { state: { user: { username: string }; webdavKey: string; isAuthenticated: boolean } };
 
 export const createWebdavClient = () => {
   const userStorageString: string | null = localStorage.getItem('user-storage');
 
   const userStorage = JSON.parse(userStorageString as string) as UserDataConfig;
-  const { username, webdavKey } = userStorage.state;
+  const { user, webdavKey } = userStorage.state;
+  const { username } = user;
 
   return createClient(`${window.location.origin}/webdav`, {
     username,
-    password: decryptPassword({
-      data: webdavKey,
-      key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-    }),
+    password: getDecryptedPassword(webdavKey, `${import.meta.env.VITE_WEBDAV_KEY}`),
   });
 };
 
@@ -200,11 +199,12 @@ const uploadFile: IWebDavFileManager['uploadFile'] = (
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-    const { username, webdavKey } = userStorage.state;
+    const { user, webdavKey } = userStorage.state;
+    const { username } = user;
 
     xhr.setRequestHeader(
       'Authorization',
-      `Basic ${btoa(`${username}:${decryptPassword({ data: webdavKey, key: 'b0ijDqLs3YJYq5VvCNJv94vxvQzUTMHb' })}`)}`,
+      `Basic ${btoa(`${username}:${getDecryptedPassword(webdavKey, `${import.meta.env.VITE_WEBDAV_KEY}`)}`)}`,
     );
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
 

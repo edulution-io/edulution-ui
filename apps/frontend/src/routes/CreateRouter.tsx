@@ -1,6 +1,7 @@
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, Outlet } from 'react-router-dom';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
+import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
@@ -9,10 +10,12 @@ import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
 import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
-import RoomBookingPage from '@/pages/RoomBookingPage/RoomBookingPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import LicenseInfoPage from '@/pages/Licensing/LicenseInfoPage';
 
 const pageSwitch = (page: string) => {
@@ -21,14 +24,14 @@ const pageSwitch = (page: string) => {
       return <ConferencePage />;
     case APPS.FILE_SHARING:
       return <FileSharing />;
-    case APPS.ROOM_BOOKING:
-      return <RoomBookingPage />;
     case APPS.MAIL:
       return <FramePlaceholder />;
     case APPS.LINUXMUSTER:
       return <FramePlaceholder />;
     case APPS.WHITEBOARD:
       return <FramePlaceholder />;
+    case APPS.DESKTOP_DEPLOYMENT:
+      return <DesktopDeploymentPage />;
     case APPS.LICENSING:
       return <LicenseInfoPage />;
     default:
@@ -67,7 +70,19 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
               path="/"
               element={<HomePage />}
             />
-
+            <Route
+              path={USER_SETTINGS_PATH}
+              element={<Outlet />}
+            >
+              <Route
+                path=""
+                element={<UserSettingsDefaultPage />}
+              />
+              <Route
+                path={SECURITY_PATH}
+                element={<UserSettingsSecurityPage />}
+              />
+            </Route>
             <Route
               path="settings"
               element={<AppConfigPage />}
