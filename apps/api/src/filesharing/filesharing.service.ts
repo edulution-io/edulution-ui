@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import FileSharingErrorMessage from '@libs/filesharing/FileSharingErrorMessage';
+import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import {
   HttpMethodes,
@@ -18,6 +18,7 @@ import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
 import { HttpService } from '@nestjs/axios';
 import { getDecryptedPassword } from '@libs/common/utils';
+import CustomFile from '@libs/filesharing/types/CustomFile';
 import saveFileStream from '@libs/filesharing/utils/saveFileStream';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getProtocol from '@libs/common/utils/getProtocol';
@@ -243,12 +244,7 @@ class FilesharingService {
     );
   };
 
-  uploadFile = async (
-    username: string,
-    path: string,
-    file: Express.Multer.File,
-    name: string,
-  ): Promise<WebdavStatusReplay> => {
+  uploadFile = async (username: string, path: string, file: CustomFile, name: string): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${name}`;
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(

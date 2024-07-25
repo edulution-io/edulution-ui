@@ -7,9 +7,9 @@ import {
   DropdownMenuTrigger as Trigger,
 } from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
-import { DropdownOption } from '@libs/ui/types/filesharing/fileCreationDropDownOptions';
-import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
-import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
+import { DropdownOption } from '@libs/filesharing/fileCreationDropDownOptions';
+import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
+import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 
 interface FloatingActionButtonProps {
   icon: IconType;

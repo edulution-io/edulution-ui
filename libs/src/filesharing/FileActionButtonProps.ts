@@ -1,8 +1,8 @@
-import FileAction from '@libs/filesharing/FileAction';
 import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 
 interface FileActionButtonProps {
-  openDialog: (action: FileAction) => void;
+  openDialog: (action: FileActionType) => void;
   selectedItem?: DirectoryFileDTO;
 }
 

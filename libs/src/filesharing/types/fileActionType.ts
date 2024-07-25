@@ -1,4 +1,4 @@
-enum FileAction {
+enum FileActionType {
   RENAME = 'name',
   CREATE_FOLDER = 'createFolder',
   CREATE_FILE = 'createFile',
@@ -7,4 +7,4 @@ enum FileAction {
   MOVE = 'locations',
 }
 
-export default FileAction;
+export default FileActionType;

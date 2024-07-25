@@ -1,6 +1,6 @@
-// import 'multer' //if the the test failes on your side because of the Express.Multer.File type comment it out
 import { Test, TestingModule } from '@nestjs/testing';
 import FilesharingService from './filesharing.service';
+import mockFile from './filesharing.service.mock';
 
 describe('FilesharingService', () => {
   let service: FilesharingService;
@@ -80,7 +80,7 @@ describe('FilesharingService', () => {
   it('should call uploadFile on FileSharingService', async () => {
     const token = 'test-token';
     const path = '/test-path';
-    const file = { buffer: Buffer.from('test') } as Express.Multer.File;
+    const file = mockFile;
     const name = 'test-file';
     const result = await service.uploadFile(token, path, file, name);
     expect(service.uploadFile).toHaveBeenCalledWith(token, path, file, name);

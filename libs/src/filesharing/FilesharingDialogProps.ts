@@ -1,6 +1,6 @@
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import fileSharingFromSchema from '@libs/ui/types/filesharing/FileSharingFromSchema';
+import fileSharingFromSchema from '@libs/filesharing/fileSharingFromSchema';
 
 export type FileSharingFormValues = z.infer<typeof fileSharingFromSchema>;
 

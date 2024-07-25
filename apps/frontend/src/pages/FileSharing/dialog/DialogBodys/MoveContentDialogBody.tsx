@@ -9,8 +9,8 @@ import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import useLmnApiStore from '@/store/lmnApiStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
-import EmptyDialogProps from '@libs/ui/types/filesharing/FilesharingEmptyProps';
 import ContentType from '@libs/filesharing/ContentType';
+import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 
 const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
   const { t } = useTranslation();

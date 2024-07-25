@@ -1,6 +1,6 @@
 import React from 'react';
-import AVAILABLE_FILE_TYPES from '@libs/ui/types/filesharing/AvailableFileTypes';
-import { FileTypeKey } from '@libs/ui/types/filesharing/FileTypeKey';
+import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
+import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 
 export interface DropdownOption {
   extension: string;

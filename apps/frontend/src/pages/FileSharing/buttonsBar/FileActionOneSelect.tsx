@@ -1,4 +1,3 @@
-import FileAction from '@libs/filesharing/FileAction';
 import React, { FC } from 'react';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { MdDownload, MdDriveFileRenameOutline } from 'react-icons/md';
@@ -6,6 +5,7 @@ import { t } from 'i18next';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import ContentType from '@libs/filesharing/ContentType';
 import FileActionButtonProps from '@libs/filesharing/FileActionButtonProps';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileSharingStore();
@@ -33,7 +33,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
       <FloatingActionButton
         icon={MdDriveFileRenameOutline}
         text={t('tooltip.rename')}
-        onClick={() => openDialog(FileAction.RENAME)}
+        onClick={() => openDialog(FileActionType.RENAME)}
       />
       {selectedItem?.type === ContentType.FILE && (
         <FloatingActionButton
