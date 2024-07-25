@@ -42,9 +42,10 @@ class FilesharingService {
     private readonly httpService: HttpService,
     private readonly userService: UsersService,
   ) {
-    this.downloadLinkLocation = process.env.EDUI_DOWNLOAD_DEV_DIR as string;
-    this.baseurl = process.env.EDUI_WEBDAV_URL as string;
-    this.eduEncrytionKey = process.env.EDUI_ENCRYPTION_KEY as string;
+    const { EDUI_DOWNLOAD_DIR, EDUI_WEBDAV_URL, EDUI_ENCRYPTION_KEY } = process.env;
+    this.downloadLinkLocation = EDUI_DOWNLOAD_DIR as string;
+    this.baseurl = EDUI_WEBDAV_URL as string;
+    this.eduEncrytionKey = EDUI_ENCRYPTION_KEY as string;
   }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {

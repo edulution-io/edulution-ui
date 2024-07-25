@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Header,
-  Logger,
   Param,
   Post,
   Put,
@@ -14,7 +13,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
 import FileSharingPaths from '@libs/filesharing/FileSharingApiEndpoints';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import FilesharingService from './filesharing.service';
@@ -29,23 +27,22 @@ class FilesharingController {
     return this.filesharingService.getMountPoints(username);
   }
 
-  @Get(FileSharingPaths.FILES)
+  @Get(`${FileSharingPaths.FILES}*`)
   async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
-    Logger.log(`Getting files at path ${path}`, FilesharingController.name);
     return this.filesharingService.getFilesAtPath(username, path);
   }
 
-  @Get(FileSharingPaths.DIRECTORIES)
+  @Get(`${FileSharingPaths.DIRECTORIES}*`)
   async getDirectoriesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
     return this.filesharingService.getDirAtPath(username, path);
   }
 
-  @Put(FileSharingPaths.CREATE_FOLDER)
+  @Post(FileSharingPaths.CREATE_FOLDER)
   async createFolder(@Body() body: { path: string; folderName: string }, @GetCurrentUsername() username: string) {
     return this.filesharingService.createFolder(username, body.path, body.folderName);
   }
 
-  @Put(FileSharingPaths.CREATE_FILE)
+  @Post(FileSharingPaths.CREATE_FILE)
   async createFile(
     @Body() body: { path: string; fileName: string; content: string },
     @GetCurrentUsername() username: string,

@@ -11,21 +11,17 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
   const { downloadFile } = useFileSharingStore();
 
   const startDownload = async (filePath: string, filename: string) => {
-    try {
-      const downloadLinkURL = await downloadFile(filePath);
-      if (!downloadLinkURL) throw new Error('No download link URL');
-      const link = document.createElement('a');
-      link.href = downloadLinkURL;
-      link.setAttribute('download', filename);
+    const downloadLinkURL = await downloadFile(filePath);
+    if (!downloadLinkURL) return;
+    const link = document.createElement('a');
+    link.href = downloadLinkURL;
+    link.setAttribute('download', filename);
 
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-      window.URL.revokeObjectURL(downloadLinkURL);
-    } catch (error) {
-      console.error('Error getting the download link URL', error);
-    }
+    window.URL.revokeObjectURL(downloadLinkURL);
   };
 
   return (

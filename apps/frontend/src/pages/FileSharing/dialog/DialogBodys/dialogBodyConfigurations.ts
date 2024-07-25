@@ -73,7 +73,7 @@ const initialFormValues: FileSharingFormValues = {
 };
 
 const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
-  createFolder: {
+  folder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.folderNameRequired')),
@@ -82,7 +82,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.CREATE_FOLDER}`,
-    httpMethod: HttpMethodes.PUT,
+    httpMethod: HttpMethodes.POST,
     requiresForm: true,
     getData: (form, currentPath: string) => {
       const filename = String(form.getValues('filename'));
@@ -90,7 +90,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       return Promise.resolve({ path: cleanedPath, folderName: filename });
     },
   },
-  createFile: {
+  file: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
@@ -163,7 +163,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  uploadFile: {
+  item: {
     Component: UploadContentBody,
     titleKey: 'filesharingUpload.title',
     submitKey: 'filesharingUpload.upload',

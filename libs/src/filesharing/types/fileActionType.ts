@@ -1,9 +1,9 @@
 enum FileActionType {
   RENAME = 'name',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
+  CREATE_FOLDER = 'folder',
+  CREATE_FILE = 'file',
   DELETE = '',
-  UPLOAD_FILE = 'uploadFile',
+  UPLOAD_FILE = 'item',
   MOVE = 'locations',
 }
 

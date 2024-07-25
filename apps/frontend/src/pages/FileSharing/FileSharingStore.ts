@@ -81,7 +81,7 @@ const useFileSharingStore = create<FileSharingStore>(
         try {
           set({ isLoading: true });
           const directoryFiles = await eduApi.get(
-            `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILES_ENDPOINT}${clearPathFromWebdav(path)}`,
+            `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILES}/${clearPathFromWebdav(path)}`,
           );
           set({
             currentPath: path,
@@ -145,7 +145,7 @@ const useFileSharingStore = create<FileSharingStore>(
       fetchMountPoints: async () => {
         try {
           set({ isLoading: true });
-          const resp = await eduApi.get(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILES_ENDPOINT}`);
+          const resp = await eduApi.get(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILES}/`);
           set({ mountPoints: resp.data as DirectoryFileDTO[] });
         } catch (error) {
           handleApiError(error, set);
