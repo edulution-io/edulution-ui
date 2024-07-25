@@ -166,7 +166,7 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
-    "delete": "Löschen",
+    "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": {
