@@ -32,21 +32,12 @@ import { User } from '../users/user.schema';
 class FilesharingService {
   private clientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
-  private readonly baseurl: string;
-
-  private downloadLinkLocation: string;
-
-  private readonly eduEncrytionKey: string;
+  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly userService: UsersService,
-  ) {
-    const { EDUI_DOWNLOAD_DIR, EDUI_WEBDAV_URL, EDUI_ENCRYPTION_KEY } = process.env;
-    this.downloadLinkLocation = EDUI_DOWNLOAD_DIR as string;
-    this.baseurl = EDUI_WEBDAV_URL as string;
-    this.eduEncrytionKey = EDUI_ENCRYPTION_KEY as string;
-  }
+  ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
@@ -83,7 +74,7 @@ class FilesharingService {
 
   private async initializeClient(username: string): Promise<void> {
     const user = await this.getUserByUsername(username);
-    const password = getDecryptedPassword(user?.password as string, this.eduEncrytionKey);
+    const password = getDecryptedPassword(user?.password as string, process.env.EDUI_ENCRYPTION_KEY as string);
 
     const client = WebdavClientFactory.createWebdavClient(this.baseurl, username, password);
     const timeout = this.setCacheTimeout(username);
@@ -142,7 +133,7 @@ class FilesharingService {
     streamFetching = false,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const password = getDecryptedPassword(user?.password as string, this.eduEncrytionKey);
+      const password = getDecryptedPassword(user?.password as string, process.env.EDUI_ENCRYPTION_KEY as string);
       const authContents = `${user?.username}:${password}`;
       const protocol = getProtocol(url);
       const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
@@ -355,7 +346,7 @@ class FilesharingService {
 
       await saveFileStream(responseStream, outputFilePath);
 
-      const publicUrl = `${this.downloadLinkLocation}${hashedFilename}`;
+      const publicUrl = `${process.env.EDUI_DOWNLOAD_DIR as string}${hashedFilename}`;
 
       return {
         success: true,

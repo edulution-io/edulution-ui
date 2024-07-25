@@ -73,7 +73,7 @@ const initialFormValues: FileSharingFormValues = {
 };
 
 const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
-  folder: {
+  createFolder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.folderNameRequired')),
@@ -90,7 +90,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       return Promise.resolve({ path: cleanedPath, folderName: filename });
     },
   },
-  file: {
+  createFile: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
@@ -119,7 +119,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       ];
     },
   },
-  name: {
+  rename: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
@@ -163,7 +163,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  item: {
+  upload: {
     Component: UploadContentBody,
     titleKey: 'filesharingUpload.title',
     submitKey: 'filesharingUpload.upload',
@@ -186,7 +186,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  locations: {
+  move: {
     Component: MoveContentDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',

@@ -1,10 +1,10 @@
 enum FileActionType {
-  RENAME = 'name',
-  CREATE_FOLDER = 'folder',
-  CREATE_FILE = 'file',
+  RENAME = 'rename',
+  CREATE_FOLDER = 'createFolder',
+  CREATE_FILE = 'createFile',
   DELETE = '',
-  UPLOAD_FILE = 'item',
-  MOVE = 'locations',
+  UPLOAD_FILE = 'upload',
+  MOVE = 'move',
 }
 
 export default FileActionType;

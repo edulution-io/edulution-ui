@@ -27,12 +27,12 @@ class FilesharingController {
     return this.filesharingService.getMountPoints(username);
   }
 
-  @Get(`${FileSharingPaths.FILES}*`)
+  @Get(`${FileSharingPaths.FILES}/*`)
   async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
     return this.filesharingService.getFilesAtPath(username, path);
   }
 
-  @Get(`${FileSharingPaths.DIRECTORIES}*`)
+  @Get(`${FileSharingPaths.DIRECTORIES}/*`)
   async getDirectoriesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
     return this.filesharingService.getDirAtPath(username, path);
   }
