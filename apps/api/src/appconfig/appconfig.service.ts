@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
@@ -14,7 +14,6 @@ class AppConfigService {
   async insertConfig(appConfigDto: AppConfigDto[]) {
     try {
       await this.appConfigModel.insertMany(appConfigDto);
-      Logger.log(`Wrote appConfig to mongoDB`, AppConfigService.name);
     } catch (e) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
@@ -41,8 +40,6 @@ class AppConfigService {
         },
       }));
       await this.appConfigModel.bulkWrite(bulkOperations);
-
-      Logger.log(`Updated settings appConfig at mongoDB`, AppConfigService.name);
     } catch (e) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
@@ -52,17 +49,29 @@ class AppConfigService {
     }
   }
 
-  async getAppConfigs(ldapGroups: string[]): Promise<AppConfig[]> {
+  async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      let appConfig;
+      let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(`${GroupRoles.SUPER_ADMIN}`)) {
-        appConfig = await this.appConfigModel.find();
+        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups');
       } else {
-        appConfig = await this.appConfigModel.find({
-          accessGroups: { $in: ldapGroups },
-        });
+        const appConfigObjects = await this.appConfigModel.find(
+          {
+            accessGroups: { $in: ldapGroups },
+          },
+          'name icon appType options',
+        );
+
+        appConfigDto = appConfigObjects.map((config) => ({
+          name: config.name,
+          icon: config.icon,
+          appType: config.appType as AppConfigDto['appType'],
+          options: { url: config.options.url ?? '' },
+          accessGroups: [],
+        }));
       }
-      return appConfig;
+
+      return appConfigDto;
     } catch (e) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
@@ -78,7 +87,6 @@ class AppConfigService {
       if (!appConfig) {
         throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
       }
-      Logger.log(`Get ${name} appConfig from mongoDB`, AppConfigService.name);
       return appConfig;
     } catch (e) {
       throw new CustomHttpException(
@@ -92,7 +100,6 @@ class AppConfigService {
   async deleteConfig(configName: string) {
     try {
       await this.appConfigModel.deleteOne({ name: configName });
-      Logger.log(`Delete ${configName} entry in apps collection`, AppConfigService.name);
     } catch (e) {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
