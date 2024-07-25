@@ -6,6 +6,7 @@ import ErrorMessage from '@libs/error/errorMessage';
 import { HttpMethodes, HttpMethodesWebDav } from '@libs/common/types/http-methods';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { DirectoryFile } from '@libs/filesharing/types/filesystem';
+import CustomFile from '@libs/filesharing/types/CustomFile';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
@@ -205,12 +206,7 @@ class FilesharingService {
     );
   };
 
-  uploadFile = async (
-    username: string,
-    path: string,
-    file: Express.Multer.File,
-    name: string,
-  ): Promise<WebdavStatusReplay> => {
+  uploadFile = async (username: string, path: string, file: CustomFile, name: string): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${name}`;
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(

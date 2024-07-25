@@ -1,10 +1,11 @@
 import { Readable } from 'stream';
+import CustomFile from '@libs/filesharing/types/CustomFile';
 
 const fileStream = new Readable();
 fileStream.push(Buffer.from('file content'));
 fileStream.push(null);
 
-const mockFile = {
+const mockFile: CustomFile = {
   buffer: Buffer.from('test content'),
   stream: fileStream,
   fieldname: 'uploadedFile',
