@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
 import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
@@ -8,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -17,7 +19,6 @@ import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormSto
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -27,10 +28,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { editMode = false } = props;
 
   const { user } = useUserStore();
-
-  if (!user || !user.username) {
-    throw new Error('The user and his username have to be defined');
-  }
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
@@ -42,6 +39,11 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   } = useSurveyEditorFormStore();
 
   const { t } = useTranslation();
+
+  if (!user || !user.username) {
+    toast.error(t('auth.errors.UserNotFound'));
+    return null;
+  }
 
   const surveyCreator: AttendeeDto = {
     firstName: user.firstName,
