@@ -384,6 +384,7 @@
     "title": "LICENSES",
     "sidebar": "Licenses",
     "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well.",
+    "notAdmin": "You have to be an administrator to view view the licenses.",
     "communityLicenseDialog": {
       "title": "Community version",
       "description": "The Community version allows a license free usage for some parts of the 'edulution.io' software."

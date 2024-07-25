@@ -1,23 +1,14 @@
 import mongoose from 'mongoose';
 
-type CreateLicenseDto = {
-  readonly _id: mongoose.Types.ObjectId;
-
+interface CreateLicenseDto {
   id: mongoose.Types.ObjectId;
-
   publicKey: string;
-
   signature: string;
-
   userId: string;
-
   platformFrontendUrl: string;
-
   platformOwnerAddress: string;
-
   validFromUtc: Date;
-
   validToUtc: Date;
-};
+}
 
 export default CreateLicenseDto;

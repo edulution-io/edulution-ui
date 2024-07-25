@@ -31,8 +31,6 @@ class LicenseServerService {
     this.licenseObjectSchema = z.object({
       platformFrontendUrl: z.string(),
       platformOwnerAddress: z.string(),
-      licensingDeviceType: z.string(),
-      deviceCount: z.number(),
       validFromUtc: z.object({ date: z.date(), time: z.string() }),
       validToUtc: z.object({ date: z.date(), time: z.string() }),
       signature: z.string(),

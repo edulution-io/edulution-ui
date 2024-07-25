@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import useUserStore from '@/store/UserStore/UserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
-import useUserStore from '@/store/UserStore/UserStore';
 import useUsersLicenseStore from '@/pages/Licensing/CommunityLicense/useUsersLicenseStore';
 
 interface CommunityLicenseDialogProps {
@@ -48,10 +48,10 @@ const CommunityLicenseDialog = ({ trigger }: CommunityLicenseDialogProps) => {
   if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
   return (
     <AdaptiveDialog
+      title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
       trigger={trigger}
       handleOpenChange={close}
-      title={t('licensing.communityLicenseDialog.title')}
       body={getDialogBody()}
       footer={getFooter()}
     />

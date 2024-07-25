@@ -8,6 +8,7 @@ import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
+import useUsersLicenseStore from '@/pages/Licensing/CommunityLicense/useUsersLicenseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -21,6 +22,7 @@ const cleanAllStores = () => {
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
+  useUsersLicenseStore.getState().reset();
   useLicenseInfoStore.getState().reset();
 };
 

@@ -14,11 +14,14 @@ interface LmnApiStore {
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getUserData: () => Promise<void>;
   reset: () => void;
+
+  isAdmin: boolean;
 }
 
 const initialState = {
   lmnApiToken: '',
   user: null,
+  isAdmin: false,
   isLoading: false,
   error: null,
 };
@@ -55,6 +58,7 @@ const useLmnApiStore = create<LmnApiStore>(
             user: response.data,
             isLoading: false,
             error: null,
+            isAdmin: false, // response.data.isAdmin || false,
           });
         } catch (error) {
           handleApiError(error, set);

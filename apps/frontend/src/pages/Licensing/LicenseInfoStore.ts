@@ -14,7 +14,7 @@ interface LicenseInfoStore {
   showOnlyActiveLicenses: boolean;
   setShowOnlyActiveLicenses: (showOnlyActive: boolean) => void;
   isLicenseActive: boolean;
-  getLicenses: (isLoading?: boolean) => Promise<void>;
+  getLicenses: () => Promise<void>;
   removeLicense: (licenses: LicenseInfoDto[]) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
@@ -38,8 +38,8 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set) => ({
   setShowOnlyActiveLicenses: (showOnlyActive: boolean) => set({ showOnlyActiveLicenses: showOnlyActive }),
   setSelectedLicense: (selectedLicense: LicenseInfoDto | undefined) => set({ selectedLicense }),
 
-  getLicenses: async (isLoading = true) => {
-    set({ isLoading, error: null });
+  getLicenses: async () => {
+    set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_MANAGEMENT_PATH);
       set({ licenses: response.data });

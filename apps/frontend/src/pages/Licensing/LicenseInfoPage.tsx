@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
 import { license01 } from '@/assets/icons';
+import useLmnApiStore from '@/store/lmnApiStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
@@ -12,8 +13,9 @@ import LicenseInfoList from '@/pages/Licensing/LicenseInfoList';
  * A component that displays the overview of the licensing of the platform and allows the user to add licenses.
  */
 const LicenseInfoPage = () => {
-
   const { t } = useTranslation();
+
+  const { isAdmin } = useLmnApiStore();
 
   const {
     setSelectedLicense,
@@ -25,7 +27,9 @@ const LicenseInfoPage = () => {
   } = useLicenseInfoStore();
 
   useEffect(() => {
-    void getLicenses();
+    if (isAdmin) {
+      void getLicenses();
+    }
   }, []);
 
   if (isLoading) {
@@ -39,7 +43,6 @@ const LicenseInfoPage = () => {
         description={t('licensing.description')}
         iconSrc={license01}
       />
-
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <LicenseInfoList />
       </div>
@@ -53,12 +56,15 @@ const LicenseInfoPage = () => {
             setSelectedLicense(undefined);
             setSelectedRows({});
           }}
-          className={cn({'bg-gray-900': showOnlyActiveLicenses},
-            {'bg-gray-1000': !showOnlyActiveLicenses},
-            'text-xs px-3 py-2 h-fit w-fit'
+          className={cn(
+            { 'bg-gray-900': showOnlyActiveLicenses },
+            { 'bg-gray-1000': !showOnlyActiveLicenses },
+            'h-fit w-fit px-3 py-2 text-xs',
           )}
         >
-          {t(showOnlyActiveLicenses ? 'license.info.showOnlyActiveLicensesOn' : 'license.info.showOnlyActiveLicensesOff')}
+          {t(
+            showOnlyActiveLicenses ? 'license.info.showOnlyActiveLicensesOn' : 'license.info.showOnlyActiveLicensesOff',
+          )}
         </Button>
       </div>
     </div>

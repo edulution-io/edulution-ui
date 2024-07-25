@@ -7,6 +7,7 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import LicenseDto from '@libs/license/types/license.dto';
 import LicenseErrorMessages from '@libs/license/license-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
+import LicenseInfoDto from '@libs/license/types/license-info.dto';
 import { License, LicenseDocument } from './license.schema';
 import { mockedLicenses } from './license.mock';
 import licenseValidationPublicKeyPEM from './licenseValidationPublicKeyPEM';
@@ -41,8 +42,6 @@ class LicenseService {
     this.licenseObjectSchema = z.object({
       platformFrontendUrl: z.string(),
       platformOwnerAddress: z.string(),
-      licensingDeviceType: z.string(),
-      deviceCount: z.number(),
       validFromUtc: z.object({ date: z.date(), time: z.string() }),
       validToUtc: z.object({ date: z.date(), time: z.string() }),
       signature: z.string(),
@@ -70,7 +69,7 @@ class LicenseService {
    * does not match the frontend URL of the platform.
    * @throws LicenseAlreadyAddedError The specified license has already been added.
    */
-  public addLicense = async (license: License): Promise<void> => {
+  public addLicense = async (license: LicenseDto): Promise<void> => {
     if (!this.licenseValidationPublicKey) {
       throw new CustomHttpException(
         LicenseErrorMessages.LicenseValidationPublicKeyMissingError,
@@ -78,15 +77,20 @@ class LicenseService {
       );
     }
 
-    if (!this.verifyLicenseSignature(license)) {
+    const newLicense = {
+      _id: license.id,
+      ...license,
+    };
+
+    if (!this.verifyLicenseSignature(newLicense)) {
       throw new CustomHttpException(LicenseErrorMessages.InvalidLicenseSignatureError, HttpStatus.BAD_REQUEST);
     }
 
-    await this.licenseModel.findOne({ signature: license.signature }).then(async (existingLicense) => {
+    await this.licenseModel.findOne({ signature: newLicense.signature }).then(async (existingLicense) => {
       if (existingLicense) {
         throw new CustomHttpException(LicenseErrorMessages.LicenseAlreadyAddedError, HttpStatus.BAD_REQUEST);
       }
-      return this.licenseModel.create(license);
+      return this.licenseModel.create(newLicense);
     });
   };
 
@@ -145,7 +149,7 @@ class LicenseService {
       }
     }
 
-    const licenseInfo = licenses.map((license) => ({
+    const licenseInfo: LicenseInfoDto[] = licenses.map((license: LicenseDto) => ({
       id: license.id,
       validFromUtc: license.validFromUtc,
       validToUtc: license.validToUtc,
@@ -153,8 +157,8 @@ class LicenseService {
     }));
 
     return sort(licenseInfo).by([
-      { desc: (license) => license.validFromUtc },
-      { asc: (license) => license.validToUtc },
+      { desc: (license: LicenseInfoDto) => license.validFromUtc },
+      { asc: (license: LicenseInfoDto) => license.validToUtc },
     ]);
   };
 }

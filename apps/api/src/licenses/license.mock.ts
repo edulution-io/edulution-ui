@@ -10,7 +10,6 @@ export const idLicense04 = new mongoose.Types.ObjectId(4);
 export const idLicense05 = new mongoose.Types.ObjectId(5);
 
 export const license01: LicenseDto = {
-  _id: idLicense01,
   id: idLicense01,
   userId: 'agy-netzint-teacher',
   publicKey: licenseValidationPublicKeyPEM,
@@ -28,7 +27,6 @@ export const licenseInfo01: LicenseInfoDto = {
 };
 
 export const license02: LicenseDto = {
-  _id: idLicense02,
   id: idLicense02,
   userId: 'agy-netzint1',
   publicKey: licenseValidationPublicKeyPEM,
@@ -46,7 +44,6 @@ export const licenseInfo02: LicenseInfoDto = {
 };
 
 export const license03: LicenseDto = {
-  _id: idLicense03,
   id: idLicense03,
   userId: 'userId',
   publicKey: licenseValidationPublicKeyPEM,
@@ -64,7 +61,6 @@ export const licenseInfo03: LicenseInfoDto = {
 };
 
 export const license04: LicenseDto = {
-  _id: idLicense04,
   id: idLicense04,
   userId: 'userId',
   publicKey: licenseValidationPublicKeyPEM,
@@ -82,7 +78,6 @@ export const licenseInfo04: LicenseInfoDto = {
 };
 
 export const license05: LicenseDto = {
-  _id: idLicense05,
   id: idLicense05,
   userId: 'userId',
   publicKey: licenseValidationPublicKeyPEM,

@@ -10,17 +10,20 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
+import useLmnApiStore from '@/store/lmnApiStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
 import LicenseInfoTableColumns from '@/pages/Licensing/table/LicenseInfoTableColumns';
+import { useInterval } from 'usehooks-ts';
 
 const LicenseInfoList = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const { t } = useTranslation();
 
+  const { isAdmin } = useLmnApiStore();
   const { selectedRows, setSelectedRows, licenses, showOnlyActiveLicenses, getLicenses, isLoading } =
     useLicenseInfoStore();
 
@@ -49,18 +52,63 @@ const LicenseInfoList = () => {
     },
   });
 
+  // Interval fetch every 10s
+  useInterval(() => {
+    if (isAdmin) {
+      void getLicenses();
+    }
+  }, 10000);
+
   useEffect(() => {
-    const fetchLicenses = async () => getLicenses(false);
+    if (isAdmin) {
+      void getLicenses();
+    }
+  }, []);
 
-    fetchLicenses().catch((e) => console.error(e));
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const intervalId = setInterval(fetchLicenses, 500000); // TODO: 10000
+  const tableContent = useMemo(() => {
+    if (!isAdmin) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={LicenseInfoTableColumns.length}
+            className="h-24 text-center text-white"
+          >
+            {t('licensing.notAdmin')}
+          </TableCell>
+        </TableRow>
+      );
+    }
 
-    return () => {
-      clearInterval(intervalId);
-      setSelectedRows({});
-    };
-  }, [getLicenses, setSelectedRows]);
+    if (!table.getRowModel().rows.length || table.getRowModel().rows.length === 0) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={LicenseInfoTableColumns.length}
+            className="h-24 text-center text-white"
+          >
+            {t('table.noDataAvailable')}
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return table.getRowModel().rows.map((row) => (
+      <TableRow
+        key={row.id}
+        data-state={row.getIsSelected() ? 'selected' : undefined}
+        onClick={() => row.toggleSelected()}
+      >
+        {row.getVisibleCells().map((cell) => (
+          <TableCell
+            key={cell.id}
+            className="text-white"
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  }, [isAdmin, table.getRowModel().rows]);
 
   return (
     <>
@@ -83,35 +131,7 @@ const LicenseInfoList = () => {
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    onClick={() => row.toggleSelected()}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-white"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={licenses.length}
-                    className="h-24 text-center text-white"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
+            <TableBody className="container">{tableContent}</TableBody>
           </Table>
         </ScrollArea>
       </div>

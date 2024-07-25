@@ -6,6 +6,7 @@ import handleApiError from '@/utils/handleApiError';
 
 export interface UsersLicenseStore {
   checkForActiveUserLicenses: () => Promise<void>;
+  isChecking: boolean;
   isLoading: boolean;
   error: Error | null;
 
@@ -34,7 +35,10 @@ const useUsersLicenseStore = create<UsersLicenseStore>((set, get) => ({
   close: () => set({ isOpen: false, wasViewedAlready: true }),
 
   checkForActiveUserLicenses: async () => {
-    const { wasViewedAlready } = get();
+    const { isLoading, wasViewedAlready } = get();
+    if (isLoading) {
+      return;
+    }
     if (wasViewedAlready) {
       set({ isOpen: false });
       return;
