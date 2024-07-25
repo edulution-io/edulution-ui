@@ -8,12 +8,12 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import { FileSharingFormValues } from '@libs/filesharing/filesharingDialogProps';
 import { DirectoryFile } from '@libs/filesharing/types/filesystem';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import getFileSharingFormSchema from '@/pages/FileSharing/formSchema';
+import FileSharingFormValues from '@libs/filesharing/types/filesharingForm';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -43,7 +43,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     getDialogBodySetup(action);
 
   const form = useForm<FileSharingFormValues>({
-    resolver: zodResolver(getFileSharingFormSchema(t)),
+    resolver: schema ? zodResolver(getFileSharingFormSchema(t)) : undefined,
     mode: 'onChange',
     defaultValues: initialValues || {},
   });
@@ -95,6 +95,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const title =
     action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
+
   return (
     <AdaptiveDialog
       isOpen={isDialogOpen}

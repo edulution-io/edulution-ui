@@ -1,2 +1,3 @@
-type EmptyDialogProps = object;
+interface EmptyDialogProps {}
+
 export default EmptyDialogProps;

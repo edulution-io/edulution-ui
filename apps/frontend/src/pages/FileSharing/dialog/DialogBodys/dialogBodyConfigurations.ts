@@ -14,7 +14,8 @@ import { DirectoryFile } from '@libs/filesharing/types/filesystem';
 import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/filesharingDialogProps';
+import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
+import FileSharingFormValues from '@libs/filesharing/types/filesharingForm';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -33,6 +34,7 @@ interface DialogBodyConfigurationBase {
       filesToUpload?: File[];
     },
   ) => Promise<Record<string, string> | Record<string, string>[] | { path: string; name: string; file: File }[]>;
+  requiresForm?: boolean;
 }
 
 interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase {
@@ -82,6 +84,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.CREATE_FOLDER}`,
     httpMethod: HttpMethodes.PUT,
+    requiresForm: true,
     getData: (form, currentPath: string) => {
       const filename = String(form.getValues('filename'));
       const cleanedPath = clearPathFromWebdav(currentPath);
@@ -98,6 +101,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.UPLOAD_FILE}`,
     httpMethod: HttpMethodes.POST,
+    requiresForm: true,
     getData: async (form, currentPath, inputValues) => {
       const { selectedFileType } = inputValues;
       const fileType = selectedFileType?.extension || '';
@@ -126,6 +130,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.RENAME}`,
     httpMethod: HttpMethodes.PUT,
+    requiresForm: true,
     getData: async (form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
@@ -144,6 +149,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'deleteDialog.continue',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.DELETE}`,
     httpMethod: HttpMethodes.DELETE,
+    requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
@@ -164,6 +170,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'filesharingUpload.upload',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.UPLOAD_FILE}`,
     httpMethod: HttpMethodes.POST,
+    requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
       const { filesToUpload } = inputValues;
       const cleanedPath = clearPathFromWebdav(currentPath);
@@ -186,6 +193,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'moveItemDialog.move',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileActionType.MOVE}`,
     httpMethod: HttpMethodes.PUT,
+    requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
       const { moveItemsToPath, selectedItems } = inputValues;
       if (!moveItemsToPath || !selectedItems) {
