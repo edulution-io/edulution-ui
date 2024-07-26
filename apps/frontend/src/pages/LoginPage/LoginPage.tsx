@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,13 +15,22 @@ import useLmnApiStore from '@/store/lmnApiStore';
 import UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@/utils/processLdapGroups';
 
+type LocationState = {
+  from: string;
+};
+
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { from } = location.state as LocationState;
+  const toLocation = from === '/login' ? '/' : from;
   const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
+  const [loginComplete, setLoginComplete] = useState(false);
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -68,7 +78,6 @@ const LoginPage: React.FC = () => {
       ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
       password: webdavKey,
     };
-
     void createOrUpdateUser(newUser);
   };
 
@@ -77,9 +86,26 @@ const LoginPage: React.FC = () => {
     if (isLoginPrevented) {
       return;
     }
-    void setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
-    void handleRegisterUser();
+
+    const registerUser = async () => {
+      try {
+        handleRegisterUser();
+        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      } catch (error) {
+        // Error is handled in the store
+      } finally {
+        setLoginComplete(true);
+      }
+    };
+
+    void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
+
+  useEffect(() => {
+    if (loginComplete) {
+      navigate(toLocation, { replace: true });
+    }
+  }, [loginComplete]);
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
     <FormFieldSH

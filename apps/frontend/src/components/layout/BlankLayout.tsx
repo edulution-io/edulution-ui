@@ -8,12 +8,12 @@ import { Sidebar } from '@/components';
 const BlankLayout: React.FC<PropsWithChildren> = () => {
   const auth = useAuth();
   const { pathname } = useLocation();
-  const isMainPage = pathname === '/';
+  const showHeadingText = pathname === '/' || pathname === '/login';
 
   return (
     <div className="flex">
       <div className="flex min-h-[100vh] w-full flex-col px-5 lg:pr-20">
-        {!isMainPage ? <Header hideHeadingText /> : null}
+        {!showHeadingText ? <Header hideHeadingText /> : null}
         <main className="flex-1">
           <Outlet />
         </main>
