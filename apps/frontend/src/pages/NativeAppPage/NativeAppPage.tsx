@@ -1,10 +1,10 @@
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import { APPS } from '@libs/appconfig/types';
-import React from 'react';
-import { Navigate } from 'react-router-dom';
 
 const pages: Partial<Record<APPS, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -15,7 +15,11 @@ const pages: Partial<Record<APPS, JSX.Element>> = {
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
 };
 
-const useGetNativePage = (page: APPS): JSX.Element =>
+type NativeAppPageProps = {
+  page: APPS;
+};
+
+const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) =>
   pages[page] || (
     <Navigate
       replace
@@ -23,4 +27,4 @@ const useGetNativePage = (page: APPS): JSX.Element =>
     />
   );
 
-export default useGetNativePage;
+export default NativeAppPage;

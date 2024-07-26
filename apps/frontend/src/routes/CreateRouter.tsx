@@ -12,7 +12,7 @@ import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import useGetNativePage from './useGetNativePage';
+import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 
 const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
   createBrowserRouter(
@@ -41,8 +41,8 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
             }
           />
         </Route>
-        {isAuthenticated && (
-          <Route>
+        {isAuthenticated ? (
+          <>
             <Route element={<MainLayout />}>
               <Route
                 path="/"
@@ -78,7 +78,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
                   <Route
                     key={item.name}
                     path={item.name}
-                    element={useGetNativePage(item.name as APPS)}
+                    element={<NativeAppPage page={item.name as APPS} />}
                   />
                 ) : null,
               )}
@@ -107,8 +107,8 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
                 ) : null,
               )}
             </Route>
-          </Route>
-        )}
+          </>
+        ) : null}
       </>,
     ),
   );

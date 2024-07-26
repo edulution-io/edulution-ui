@@ -24,9 +24,9 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { from } = location.state as LocationState;
+  const { from } = (location?.state as LocationState) ?? { from: '/' };
   const toLocation = from === '/login' ? '/' : from;
-  const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
+  const { isAuthenticated, eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
@@ -86,20 +86,21 @@ const LoginPage: React.FC = () => {
     if (isLoginPrevented) {
       return;
     }
-
     const registerUser = async () => {
       try {
-        handleRegisterUser();
-        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+        if (!isAuthenticated) {
+          handleRegisterUser();
+          await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+        }
       } catch (error) {
-        // Error is handled in the store
+        // Error is handeled in the store
       } finally {
         setLoginComplete(true);
       }
     };
 
     void registerUser();
-  }, [auth.isAuthenticated, eduApiToken]);
+  }, [auth.isAuthenticated, eduApiToken, isAuthenticated]);
 
   useEffect(() => {
     if (loginComplete) {
