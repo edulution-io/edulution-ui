@@ -1,6 +1,6 @@
 enum ContentType {
   FILE = 'FILE',
-  DIRECTORY = 'collection',
+  DIRECTORY = 'COLLECTION',
 }
 
 export default ContentType;

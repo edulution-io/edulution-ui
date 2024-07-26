@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Header,
-  Param,
   Patch,
   Post,
   Put,
@@ -14,70 +13,86 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import FileSharingPaths from '@libs/filesharing/FileSharingApiEndpoints';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import ContentType from '@libs/filesharing/ContentType';
+import CustomFile from '@libs/filesharing/types/CustomFile';
+import FileSharingApiEndpoints from '@libs/filesharing/FileSharingApiEndpoints';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
-@Controller(FileSharingPaths.BASE)
+@Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   constructor(private readonly filesharingService: FilesharingService) {}
 
-  @Get(FileSharingPaths.MOUNTPOINTS)
-  async getMountPoints(@GetCurrentUsername() username: string) {
-    return this.filesharingService.getMountPoints(username);
-  }
-
-  @Get(`${FileSharingPaths.FILES}/*`)
-  async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
-    return this.filesharingService.getFilesAtPath(username, path);
-  }
-
-  @Get(`${FileSharingPaths.DIRECTORIES}/*`)
-  async getDirectoriesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
+  @Get()
+  async getFilesAtPath(
+    @Query('type') type: string,
+    @Query('path') path: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    if (type.toUpperCase() === ContentType.FILE.valueOf()) {
+      return this.filesharingService.getFilesAtPath(username, path);
+    }
     return this.filesharingService.getDirAtPath(username, path);
   }
 
-  @Post(FileSharingPaths.CREATE_FOLDER)
-  async createFolder(@Body() body: { path: string; folderName: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.createFolder(username, body.path, body.folderName);
-  }
-
-  @Post(FileSharingPaths.CREATE_FILE)
-  async createFile(
-    @Body() body: { path: string; fileName: string; content: string },
+  @Post()
+  async createFileFolder(
+    @Query('path') path: string,
+    @Query('type') type: string,
+    @Body()
+    body: {
+      name: string;
+    },
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.createFile(username, body.path, body.fileName, body.content);
+    if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
+      return this.filesharingService.createFolder(username, path, body.name);
+    }
+    return this.filesharingService.createFile(username, path, body.name, '');
   }
 
-  @Post(FileSharingPaths.UPLOAD_FILE)
+  @Put()
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('path') path: string,
+    @UploadedFile() file: CustomFile,
+    @Query('path') path: string,
     @Body('name') name: string,
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.uploadFile(username, path, file, name);
   }
 
-  @Delete(FileSharingPaths.DELETE_FILES)
-  async deleteFile(@Param('filePath') filePath: string, @GetCurrentUsername() username: string) {
-    return this.filesharingService.deleteFileAtPath(username, filePath);
+  @Delete()
+  async deleteFile(@Query('path') path: string, @GetCurrentUsername() username: string) {
+    return this.filesharingService.deleteFileAtPath(username, path);
   }
 
-  @Patch(FileSharingPaths.RENAME_RESOURCE)
-  async renameResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.renameFile(username, body.originPath, body.newPath);
+  @Patch()
+  async renameResource(
+    @Query('path') path: string,
+    @Body()
+    body: {
+      newPath: string;
+    },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.renameFile(username, path, body.newPath);
   }
 
-  @Put(FileSharingPaths.MOVE_RESOURCE)
-  async moveResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.moveItems(username, body.originPath, body.newPath);
+  @Put(FileSharingApiEndpoints.DESTINATION)
+  async moveResource(
+    @Query('path') path: string,
+    @Body()
+    body: {
+      newPath: string;
+    },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.moveItems(username, path, body.newPath);
   }
 
-  @Get(FileSharingPaths.GET_DOWNLOAD_LINK)
+  @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
   async getDownloadLink(
     @Query('filePath') filePath: string,
     @Query('fileName') fileName: string,
@@ -86,7 +101,7 @@ class FilesharingController {
     return this.filesharingService.downloadLink(username, filePath, fileName);
   }
 
-  @Get(FileSharingPaths.FILE_STREAM)
+  @Get(FileSharingApiEndpoints.GET_FILE_STREAM)
   @Header('Content-Type', RequestResponseContentType.APPLICATION_OCET_STREAM as string)
   async webDavFileStream(
     @Query('filePath') filePath: string,

@@ -35,13 +35,6 @@ describe('FilesharingService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should call getMountPoints on FileSharingService', async () => {
-    const token = 'test-token';
-    const result = await service.getMountPoints(token);
-    expect(service.getMountPoints).toHaveBeenCalledWith(token);
-    expect(result).toEqual([{ id: '1', name: 'MountPoint1' }]);
-  });
-
   it('should call getFilesAtPath on FileSharingService', async () => {
     const token = 'test-token';
     const path = '/test-path';

@@ -39,7 +39,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
 
-  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, getData } =
+  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
     getDialogBodySetup(action);
 
   const form = useForm<FileSharingFormValues>({
@@ -61,7 +61,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
 
     const data = await getData(form, currentPath, { selectedItems, moveItemsToPath, selectedFileType, filesToUpload });
-
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {
@@ -69,14 +68,15 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           formData.append('file', item.file);
           formData.append('path', item.path);
           formData.append('name', item.name);
-          return handleItemAction(action, endpoint, httpMethod, formData);
+          formData.append('currentPath', currentPath);
+          return handleItemAction(action, endpoint, httpMethod, type, formData);
         }
         return Promise.resolve();
       });
 
       await Promise.all(uploadPromises);
     } else {
-      await handleItemAction(action, endpoint, httpMethod, data as Record<string, string>);
+      await handleItemAction(action, endpoint, httpMethod, type, data as Record<string, string>);
     }
 
     clearAllSelectedItems();

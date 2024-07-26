@@ -148,19 +148,6 @@ class FilesharingService {
     }
   }
 
-  getMountPoints = async (username: string): Promise<DirectoryFileDTO[]> => {
-    const client = await this.getClient(username);
-    return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
-      client,
-      {
-        method: HttpMethodesWebDav.PROPFIND,
-        data: this.webdavXML,
-        headers: { 'Content-Type': RequestResponseContentType.APPLICATION_XML },
-      },
-      FileSharingErrorMessage.MountPointsNotFound,
-    )) as DirectoryFileDTO[];
-  };
-
   getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
 

@@ -29,7 +29,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
       <FloatingActionButton
         icon={MdDriveFileRenameOutline}
         text={t('tooltip.rename')}
-        onClick={() => openDialog(FileActionType.RENAME)}
+        onClick={() => openDialog(FileActionType.RENAME_FILE_FOLDER)}
       />
       {selectedItem?.type === ContentType.FILE && (
         <FloatingActionButton

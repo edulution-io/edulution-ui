@@ -20,12 +20,12 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newFiles = acceptedFiles.filter((file) => !files.some((f) => f.name === file.name));
-      if (newFiles.length) {
-        setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-      }
+      setFiles((prevFiles) => {
+        const newFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
+        return [...prevFiles, ...newFiles];
+      });
     },
-    [files, setFiles],
+    [setFiles],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });

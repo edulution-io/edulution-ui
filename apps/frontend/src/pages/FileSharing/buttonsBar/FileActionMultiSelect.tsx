@@ -10,12 +10,12 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => (
     <FloatingActionButton
       icon={MdOutlineDeleteOutline}
       text={t('tooltip.delete')}
-      onClick={() => openDialog(FileActionType.DELETE)}
+      onClick={() => openDialog(FileActionType.DELETE_FILE_FOLDER)}
     />
     <FloatingActionButton
       icon={MdOutlineDriveFileMove}
       text={t('tooltip.move')}
-      onClick={() => openDialog(FileActionType.MOVE)}
+      onClick={() => openDialog(FileActionType.MOVE_FILE_FOLDER)}
     />
   </>
 );

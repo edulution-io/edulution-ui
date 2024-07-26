@@ -7,11 +7,14 @@ import React from 'react';
 import handleApiError from '@/utils/handleApiError';
 import { WebDavActionResult } from '@libs/filesharing/FileActionStatus';
 import { t } from 'i18next';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { HttpMethodes } from '@libs/common/types/http-methods';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import ContentType from '@libs/filesharing/ContentType';
+import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
+import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -35,6 +38,7 @@ interface FileSharingDialogStore {
     action: FileActionType,
     endpoint: string,
     httpMethod: HttpMethodes,
+    type: ContentType,
     data: Record<string, string> | Record<string, string>[] | FormData,
   ) => Promise<void>;
   setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
@@ -56,15 +60,15 @@ const initialState: Partial<FileSharingDialogStore> = {
 
 const handleDeleteItems = async (data: Record<string, string>[], endpoint: string, httpMethod: HttpMethodes) => {
   const promises = data
-    .map((item) => clearPathFromWebdav(item.path))
+    .map((item) => getPathWithoutWebdav(item.path))
     .filter((filename) => filename !== undefined)
-    .map((filename) => eduApi[httpMethod](`${endpoint}/${filename}`));
+    .map((filename) => eduApi[httpMethod](`${buildApiFilePathUrl(endpoint, filename)}`));
 
   return Promise.all(promises);
 };
 
 const handleArrayActions = async (data: Record<string, string>[], endpoint: string, httpMethod: HttpMethodes) => {
-  const promises = data.map((item) => eduApi[httpMethod](endpoint, item));
+  const promises = data.map((item) => eduApi[httpMethod](buildApiFilePathUrl(endpoint, item.path), item));
   return Promise.all(promises);
 };
 
@@ -95,20 +99,41 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     set({ fileOperationStatus: status });
   },
 
-  handleItemAction: async (action, endpoint, httpMethod, data) => {
+  handleItemAction: async (action, endpoint, httpMethod, type, data) => {
     set({ isLoading: true });
     try {
-      if (Array.isArray(data)) {
-        if (httpMethod === HttpMethodes.DELETE) {
+      if (action === FileActionType.DELETE_FILE_FOLDER) {
+        if (Array.isArray(data)) {
           await handleDeleteItems(data, endpoint, httpMethod);
           get().setFileOperationResult(true, t('response.files_deleted_successfully'), 200);
-        } else if (action === FileActionType.MOVE || action === FileActionType.UPLOAD_FILE) {
-          await handleArrayActions(data, endpoint, httpMethod);
-          get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
         }
-      } else {
-        await eduApi[httpMethod](endpoint, data as Record<string, string>);
-        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+      }
+      if (action === FileActionType.CREATE_FOLDER) {
+        const a = data as { path: string; name: string };
+        await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, a.path), a);
+        get().setFileOperationResult(true, t('response.fileOperationSuccessful'), 200);
+      }
+
+      if (action === FileActionType.RENAME_FILE_FOLDER) {
+        const a = data as { path: string; newPath: string };
+        await eduApi[httpMethod](buildApiFilePathUrl(endpoint, a.path), a);
+        get().setFileOperationResult(true, t('response.fileOperationSuccessful'), 200);
+      }
+
+      if (action === FileActionType.MOVE_FILE_FOLDER) {
+        if (Array.isArray(data)) {
+          await handleArrayActions(data, endpoint, httpMethod);
+          get().setFileOperationResult(true, t('response.files_deleted_successfully'), 200);
+        }
+      }
+
+      if (action === FileActionType.UPLOAD_FILE || action === FileActionType.CREATE_FILE) {
+        const formData = data as FormData;
+        await eduApi[httpMethod](
+          buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(formData.get('path') as string)),
+          formData,
+        );
+        get().setFileOperationResult(true, t('response.fileOperationSuccessful'), 200);
       }
     } catch (error) {
       handleApiError(error, set);

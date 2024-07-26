@@ -53,10 +53,6 @@ export function getFileNameFromPath(path: string): string {
   return segments[segments.length - 1];
 }
 
-export function clearPathFromWebdav(path: string): string {
-  return path.replace('/webdav', '');
-}
-
 export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return '0 Bytes';
 
