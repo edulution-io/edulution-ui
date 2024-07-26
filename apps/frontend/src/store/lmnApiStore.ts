@@ -58,7 +58,7 @@ const useLmnApiStore = create<LmnApiStore>(
             user: response.data,
             isLoading: false,
             error: null,
-            isAdmin: false, // response.data.isAdmin || false,
+            isAdmin: response.data.isAdmin || false,
           });
         } catch (error) {
           handleApiError(error, set);

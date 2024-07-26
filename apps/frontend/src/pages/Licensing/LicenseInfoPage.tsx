@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
 import { license01 } from '@/assets/icons';
-import useLmnApiStore from '@/store/lmnApiStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
 import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
 import LicenseInfoList from '@/pages/Licensing/LicenseInfoList';
@@ -15,26 +13,7 @@ import LicenseInfoList from '@/pages/Licensing/LicenseInfoList';
 const LicenseInfoPage = () => {
   const { t } = useTranslation();
 
-  const { isAdmin } = useLmnApiStore();
-
-  const {
-    setSelectedLicense,
-    setSelectedRows,
-    showOnlyActiveLicenses,
-    setShowOnlyActiveLicenses,
-    getLicenses,
-    isLoading,
-  } = useLicenseInfoStore();
-
-  useEffect(() => {
-    if (isAdmin) {
-      void getLicenses();
-    }
-  }, []);
-
-  if (isLoading) {
-    return <LoadingIndicator isOpen={isLoading} />;
-  }
+  const { clearSelection, showOnlyActiveLicenses, setShowOnlyActiveLicenses } = useLicenseInfoStore();
 
   return (
     <div className="p-5 lg:pr-20">
@@ -53,8 +32,7 @@ const LicenseInfoPage = () => {
           variant="btn-outline"
           onClick={() => {
             setShowOnlyActiveLicenses(!showOnlyActiveLicenses);
-            setSelectedLicense(undefined);
-            setSelectedRows({});
+            clearSelection();
           }}
           className={cn(
             { 'bg-gray-900': showOnlyActiveLicenses },

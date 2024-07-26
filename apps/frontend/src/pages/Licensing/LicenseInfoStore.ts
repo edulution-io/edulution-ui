@@ -10,6 +10,7 @@ interface LicenseInfoStore {
   setSelectedRows: (selectedRows: RowSelectionState) => void;
   selectedLicense: LicenseInfoDto | undefined;
   setSelectedLicense: (selectedLicense: LicenseInfoDto | undefined) => void;
+  clearSelection: () => void;
   licenses: LicenseInfoDto[];
   showOnlyActiveLicenses: boolean;
   setShowOnlyActiveLicenses: (showOnlyActive: boolean) => void;
@@ -31,14 +32,20 @@ const initialValues = {
   error: null,
 };
 
-const useLicenseInfoStore = create<LicenseInfoStore>((set) => ({
+const useLicenseInfoStore = create<LicenseInfoStore>((set, get) => ({
   ...initialValues,
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
   setShowOnlyActiveLicenses: (showOnlyActive: boolean) => set({ showOnlyActiveLicenses: showOnlyActive }),
   setSelectedLicense: (selectedLicense: LicenseInfoDto | undefined) => set({ selectedLicense }),
 
+  clearSelection: () => set({ selectedLicense: undefined, selectedRows: {} }),
+
   getLicenses: async () => {
+    const { isLoading } = get();
+    if (isLoading) {
+      return;
+    }
     set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_MANAGEMENT_PATH);
