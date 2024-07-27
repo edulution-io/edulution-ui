@@ -17,8 +17,8 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import FilesharingService from './filesharing.service';
 
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
@@ -92,6 +92,15 @@ class FilesharingController {
     return new StreamableFile(stream, {
       disposition: `attachment; filename="${fileName}"`,
     });
+  }
+
+  @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
+  async getDownloadLink(
+    @Query('filePath') filePath: string,
+    @Query('fileName') fileName: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.downloadLink(username, filePath, fileName);
   }
 }
 

@@ -16,11 +16,15 @@ import handleSingleData from '@/pages/FileSharing/dialog/handleFileAction/handle
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
+import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import eduApi from '@/api/eduApi';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
   openDialog: (action: FileActionType) => void;
   closeDialog: () => void;
+  downloadLinkURL: string;
   isLoading: boolean;
   userInput: string;
   filesToUpload: File[];
@@ -30,7 +34,7 @@ interface FileSharingDialogStore {
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
   fileOperationStatus: boolean | undefined;
-
+  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   setError: (error: AxiosError) => void;
   reset: () => void;
   setSelectedFileType: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
@@ -105,6 +109,31 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
       handleApiError(error, set);
     } finally {
       set({ isLoading: false, isDialogOpen: false, error: null });
+    }
+  },
+  getDownloadLinkURL: async (filePath: string, filename: string) => {
+    try {
+      set({ isLoading: true });
+      const response = await eduApi.get<WebdavStatusReplay>(
+        `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+        {
+          params: {
+            filePath,
+            fileName: filename,
+          },
+        },
+      );
+      const { data, success } = response.data;
+      if (success && data) {
+        set({ downloadLinkURL: data });
+        return data;
+      }
+      return '';
+    } catch (error) {
+      handleApiError(error, set);
+      return '';
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

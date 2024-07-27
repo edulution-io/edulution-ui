@@ -378,6 +378,10 @@
     "rename": "Umbenennen",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
+  "filesharingShareableLink": {
+    "title": "Link teilen",
+    "copy": "Link kopieren"
+  },
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",
@@ -416,6 +420,7 @@
       "file": "Datei erstellen",
       "folder": "Ordner erstellen"
     },
+    "share": "Teilen",
     "rename": "Umbenennen",
     "move": "Verschieben",
     "delete": "Löschen",

@@ -5,6 +5,7 @@ enum FileActionType {
   DELETE_FILE_FOLDER = 'deleteFileFolder',
   UPLOAD_FILE = 'uploadFile',
   RENAME_FILE_FOLDER = 'renameFileFolder',
+  SHARABLE_LINK = 'shareableLink',
 }
 
 export default FileActionType;

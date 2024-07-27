@@ -19,6 +19,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
+import SharableLinkDialogBody from '@/pages/FileSharing/dialog/DialogBodys/SharableLinkDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -65,13 +66,18 @@ interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<EmptyDialogProps>;
 }
 
+interface SharableLinkDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType<EmptyDialogProps>;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | DeleteDialogBodyConfiguration
   | UploadFileDialogBodyConfiguration
-  | MoveDialogBodyConfiguration;
+  | MoveDialogBodyConfiguration
+  | SharableLinkDialogBodyConfiguration;
 
 const initialFormValues: FileSharingFormValues = {
   filename: '',
@@ -221,6 +227,16 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
         })),
       );
     },
+  },
+  shareableLink: {
+    Component: SharableLinkDialogBody,
+    titleKey: 'filesharingShareableLink.title',
+    submitKey: 'filesharingShareableLink.copy',
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+    httpMethod: HttpMethodes.GET,
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    requiresForm: false,
+    getData: (_form, _inputValues) => Promise.resolve([]),
   },
 };
 

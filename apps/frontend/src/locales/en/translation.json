@@ -391,6 +391,10 @@
     "unknownErrorOccurred": "An unknown error occurred",
     "selectedItem": "Ausgewählter Ordner"
   },
+  "filesharingShareableLink": {
+    "title": "Shareable Link",
+    "copy": "Copy Link"
+  },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
     "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",
@@ -419,7 +423,8 @@
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
-    "download": "Download"
+    "download": "Download",
+    "share": "Share"
   },
   "response": {
     "successfully": "Action was successful",
