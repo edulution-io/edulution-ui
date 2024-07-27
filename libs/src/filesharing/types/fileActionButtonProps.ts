@@ -1,4 +1,4 @@
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
 interface FileActionButtonProps {

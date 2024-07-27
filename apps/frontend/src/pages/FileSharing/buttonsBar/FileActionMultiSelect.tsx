@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { MdOutlineDeleteOutline, MdOutlineDriveFileMove } from 'react-icons/md';
 import { t } from 'i18next';
-import FileActionButtonProps from '@libs/filesharing/FileActionButtonProps';
+import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => (

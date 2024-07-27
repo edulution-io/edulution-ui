@@ -3,8 +3,8 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { MdDownload, MdDriveFileRenameOutline } from 'react-icons/md';
 import { t } from 'i18next';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import ContentType from '@libs/filesharing/ContentType';
-import FileActionButtonProps from '@libs/filesharing/FileActionButtonProps';
+import ContentType from '@libs/filesharing/types/contentType';
+import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {

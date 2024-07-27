@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import {
   HttpMethodes,
@@ -15,10 +15,10 @@ import { extname, join, resolve } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { firstValueFrom } from 'rxjs';
 import { Readable } from 'stream';
-import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
+import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import { HttpService } from '@nestjs/axios';
 import { getDecryptedPassword } from '@libs/common/utils';
-import CustomFile from '@libs/filesharing/types/CustomFile';
+import CustomFile from '@libs/filesharing/types/customFile';
 import saveFileStream from '@libs/filesharing/utils/saveFileStream';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getProtocol from '@libs/common/utils/getProtocol';
@@ -264,7 +264,7 @@ class FilesharingService {
     );
   };
 
-  renameFile = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
+  moveOrRenameResource = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullOriginPath = `${this.baseurl}${originPath}`;
     const fullNewPath = `${this.baseurl}${newPath}`;
@@ -284,35 +284,6 @@ class FilesharingService {
         success: response.status >= 200 && response.status < 300,
         status: response.status,
       }),
-    );
-  };
-
-  moveItems = async (
-    username: string,
-    originPath: string,
-    newPath: string | undefined,
-  ): Promise<WebdavStatusReplay> => {
-    const client = await this.getClient(username);
-    const fullOriginPath = `${this.baseurl}${originPath}`;
-    const fullNewPath = `${this.baseurl}${newPath}`;
-
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
-      client,
-      {
-        method: HttpMethodesWebDav.MOVE,
-        url: fullOriginPath,
-        headers: {
-          Destination: fullNewPath,
-          'Content-Type': RequestResponseContentType.APPLICATION_JSON,
-        },
-      },
-
-      FileSharingErrorMessage.MoveFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response.status >= 200 && response.status < 300,
-          status: response.status,
-        }) as WebdavStatusReplay,
     );
   };
 

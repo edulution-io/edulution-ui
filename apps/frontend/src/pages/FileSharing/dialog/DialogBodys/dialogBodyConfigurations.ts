@@ -5,17 +5,20 @@ import UploadContentBody from '@/pages/FileSharing/dialog/DialogBodys/UploadCont
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
-import FileSharingApiEndpoints from '@libs/filesharing/FileSharingApiEndpoints';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { HttpMethodes } from '@libs/common/types/http-methods';
 import { t } from 'i18next';
 
-import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/FilesharingDialogProps';
+import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
-import ContentType from '@libs/filesharing/ContentType';
+import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
+import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -34,7 +37,7 @@ interface DialogBodyConfigurationBase {
       selectedFileType?: { extension: string; generate: string };
       filesToUpload?: File[];
     },
-  ) => Promise<Record<string, string> | Record<string, string>[] | { path: string; name: string; file: File }[]>;
+  ) => Promise<PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[]>;
   requiresForm?: boolean;
 }
 
@@ -90,7 +93,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     getData: (form, currentPath: string) => {
       const filename = String(form.getValues('filename'));
       const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve({ path: cleanedPath, name: filename });
+      return Promise.resolve({ path: cleanedPath, newPath: filename });
     },
   },
   createFile: {
@@ -123,6 +126,29 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       ];
     },
   },
+
+  deleteFileFolder: {
+    Component: DeleteContentDialogBody,
+    titleKey: 'deleteDialog.deleteFiles',
+    submitKey: 'deleteDialog.continue',
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    httpMethod: HttpMethodes.DELETE,
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    requiresForm: false,
+    getData: (_form, currentPath, inputValues) => {
+      const { selectedItems } = inputValues;
+      if (!selectedItems || selectedItems.length === 0) {
+        return Promise.resolve([]);
+      }
+      const cleanedPath = getPathWithoutWebdav(currentPath);
+      return Promise.resolve(
+        selectedItems.map((item) => ({
+          path: `${cleanedPath}/${item.basename}`,
+        })),
+      );
+    },
+  },
+
   renameFileFolder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
@@ -146,28 +172,6 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
         path: `${cleanedPath}/${selectedItems[0]?.basename}`,
         newPath: `${cleanedPath}/${filename}`,
       });
-    },
-  },
-
-  deleteFileFolder: {
-    Component: DeleteContentDialogBody,
-    titleKey: 'deleteDialog.deleteFiles',
-    submitKey: 'deleteDialog.continue',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.DELETE,
-    type: ContentType.FILE || ContentType.DIRECTORY,
-    requiresForm: false,
-    getData: (_form, currentPath, inputValues) => {
-      const { selectedItems } = inputValues;
-      if (!selectedItems || selectedItems.length === 0) {
-        return Promise.resolve([]);
-      }
-      const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve(
-        selectedItems.map((item) => ({
-          path: `${cleanedPath}/${item.basename}`,
-        })),
-      );
     },
   },
 
@@ -199,8 +203,8 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: MoveContentDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.DESTINATION}`,
-    httpMethod: HttpMethodes.PUT,
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    httpMethod: HttpMethodes.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {

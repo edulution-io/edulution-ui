@@ -4,10 +4,10 @@ import { HiOutlineFolderAdd } from 'react-icons/hi';
 import { FiUpload } from 'react-icons/fi';
 import React, { FC } from 'react';
 import { t } from 'i18next';
-import FileActionButtonProps from '@libs/filesharing/FileActionButtonProps';
+import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import FileTypesConfiguration from '@libs/filesharing/fileTypesConfiguration';
+import FileTypesConfiguration from '@libs/filesharing/types/fileTypesConfiguration';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const { setSelectedFileType } = useFileSharingDialogStore();

@@ -1,12 +1,12 @@
 import { RowSelectionState } from '@tanstack/react-table';
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import eduApi from '@/api/eduApi';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
-import { WebdavStatusReplay } from '@libs/filesharing/FileOperationResult';
-import FileSharingApiEndpoints from '@libs/filesharing/FileSharingApiEndpoints';
-import ContentType from '@libs/filesharing/ContentType';
+import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 type FileSharingStore = {
@@ -149,7 +149,7 @@ const useFileSharingStore = create<FileSharingStore>(
       fetchMountPoints: async () => {
         try {
           set({ isLoading: true });
-          const resp = await eduApi.get(`${buildFileSharingUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, '/')}`);
+          const resp = await eduApi.get(`${buildFileSharingUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, '')}`);
           set({ mountPoints: resp.data as DirectoryFileDTO[] });
         } catch (error) {
           handleApiError(error, set);

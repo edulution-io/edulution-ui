@@ -13,8 +13,7 @@ describe('FilesharingService', () => {
     createFile: jest.fn().mockResolvedValue({ success: true }),
     uploadFile: jest.fn().mockResolvedValue({ success: true }),
     deleteFileAtPath: jest.fn().mockResolvedValue({ success: true }),
-    renameFile: jest.fn().mockResolvedValue({ success: true }),
-    moveItems: jest.fn().mockResolvedValue({ success: true }),
+    moveOrRenameResource: jest.fn().mockResolvedValue({ success: true }),
   };
 
   beforeEach(async () => {
@@ -92,17 +91,8 @@ describe('FilesharingService', () => {
     const token = 'test-token';
     const path = '/test-path';
     const newName = 'new-test-file';
-    const result = await service.renameFile(token, path, newName);
-    expect(service.renameFile).toHaveBeenCalledWith(token, path, newName);
-    expect(result).toEqual({ success: true });
-  });
-
-  it('should call moveItems on FileSharingService', async () => {
-    const token = 'test-token';
-    const originPath = '/origin-path';
-    const newPath = '/new-path';
-    const result = await service.moveItems(token, originPath, newPath);
-    expect(service.moveItems).toHaveBeenCalledWith(token, originPath, newPath);
+    const result = await service.moveOrRenameResource(token, path, newName);
+    expect(service.moveOrRenameResource).toHaveBeenCalledWith(token, path, newName);
     expect(result).toEqual({ success: true });
   });
 });

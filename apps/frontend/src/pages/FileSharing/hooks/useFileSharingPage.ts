@@ -20,20 +20,22 @@ const useFileSharingPage = () => {
   const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
 
   useEffect(() => {
-    if (path === '/') {
-      if (pathToRestoreSession !== '/') {
-        setSearchParams(pathToRestoreSession);
+    if (!isFileProcessing) {
+      if (path === '/') {
+        if (pathToRestoreSession !== '/') {
+          setSearchParams(pathToRestoreSession);
+        } else {
+          void fetchFiles(homePath);
+        }
       } else {
-        void fetchFiles(homePath);
+        void fetchFiles(path);
+        setPathToRestoreSession(path);
       }
-    } else {
-      void fetchFiles(path);
-      setPathToRestoreSession(path);
     }
-  }, [path, fetchFiles, pathToRestoreSession, setSearchParams, homePath, setPathToRestoreSession]);
+  }, [path, pathToRestoreSession, setSearchParams, homePath, setPathToRestoreSession]);
 
   useEffect(() => {
-    if (fileOperationResult !== undefined && !isLoading) {
+    if (fileOperationResult && !isLoading) {
       if (fileOperationResult.success) {
         toast.success(fileOperationResult.message);
         void fetchFiles(currentPath);

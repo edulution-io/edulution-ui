@@ -8,8 +8,8 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import { FileSharingFormValues } from '@libs/filesharing/FilesharingDialogProps';
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
@@ -76,7 +76,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
 
       await Promise.all(uploadPromises);
     } else {
-      await handleItemAction(action, endpoint, httpMethod, type, data as Record<string, string>);
+      await handleItemAction(action, endpoint, httpMethod, type, data);
     }
 
     clearAllSelectedItems();

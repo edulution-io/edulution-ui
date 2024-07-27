@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger as Trigger,
 } from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
-import { DropdownOption } from '@libs/filesharing/fileCreationDropDownOptions';
+import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 

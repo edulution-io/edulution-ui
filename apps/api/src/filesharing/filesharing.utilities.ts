@@ -1,8 +1,8 @@
 import { XMLParser } from 'fast-xml-parser';
 import he from 'he';
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { Logger } from '@nestjs/common';
-import ContentType from '@libs/filesharing/ContentType';
+import ContentType from '@libs/filesharing/types/contentType';
 import { WebDAVMultiStatus, WebDAVResponse, XMLAttributes as XA } from './filesharing.types';
 
 const xmlOptions = {

@@ -11,7 +11,7 @@ import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/Floati
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const files = useFileSharingStore((state) => state.files);
+  const { files } = useFileSharingStore();
   return (
     <div className="w-full overflow-x-auto">
       <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">

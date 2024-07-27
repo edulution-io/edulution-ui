@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
-import { DirectoryFileDTO } from '@libs/filesharing/DirectoryFileDTO';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

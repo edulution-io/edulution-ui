@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import ContentType from '@libs/filesharing/ContentType';
-import CustomFile from '@libs/filesharing/types/CustomFile';
-import FileSharingApiEndpoints from '@libs/filesharing/FileSharingApiEndpoints';
+import ContentType from '@libs/filesharing/types/contentType';
+import CustomFile from '@libs/filesharing/types/customFile';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
@@ -42,14 +42,14 @@ class FilesharingController {
     @Query('type') type: string,
     @Body()
     body: {
-      name: string;
+      newPath: string;
     },
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.filesharingService.createFolder(username, path, body.name);
+      return this.filesharingService.createFolder(username, path, body.newPath);
     }
-    return this.filesharingService.createFile(username, path, body.name, '');
+    return this.filesharingService.createFile(username, path, body.newPath, '');
   }
 
   @Put()
@@ -69,7 +69,7 @@ class FilesharingController {
   }
 
   @Patch()
-  async renameResource(
+  async moveOrRenameResource(
     @Query('path') path: string,
     @Body()
     body: {
@@ -77,19 +77,7 @@ class FilesharingController {
     },
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.renameFile(username, path, body.newPath);
-  }
-
-  @Put(FileSharingApiEndpoints.DESTINATION)
-  async moveResource(
-    @Query('path') path: string,
-    @Body()
-    body: {
-      newPath: string;
-    },
-    @GetCurrentUsername() username: string,
-  ) {
-    return this.filesharingService.moveItems(username, path, body.newPath);
+    return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
   }
 
   @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
