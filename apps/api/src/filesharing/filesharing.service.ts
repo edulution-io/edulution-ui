@@ -10,19 +10,14 @@ import {
   RequestResponseContentType,
   ResponseType,
 } from '@libs/common/types/http-methods';
-import { createHash } from 'crypto';
-import { extname, join, resolve } from 'path';
-import { existsSync, mkdirSync } from 'fs';
 import { firstValueFrom } from 'rxjs';
 import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import { HttpService } from '@nestjs/axios';
 import { getDecryptedPassword } from '@libs/common/utils';
 import CustomFile from '@libs/filesharing/types/customFile';
-import saveFileStream from '@libs/filesharing/utils/saveFileStream';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getProtocol from '@libs/common/utils/getProtocol';
-import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
@@ -286,35 +281,6 @@ class FilesharingService {
       }),
     );
   };
-
-  async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
-    const outputFolder = resolve(__dirname, '..', 'public', 'downloads');
-    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-    if (!existsSync(outputFolder)) {
-      mkdirSync(outputFolder, { recursive: true });
-    }
-
-    try {
-      const user = await this.getUserByUsername(username);
-      const responseStream = await this.fetchFileStream(user, `${url}`);
-      const hash = createHash(HashAlgorithm).update(filePath).digest('hex');
-      const extension = extname(filename);
-      const hashedFilename = `${hash}${extension}`;
-      const outputFilePath = join(outputFolder, hashedFilename);
-
-      await saveFileStream(responseStream, outputFilePath);
-
-      const publicUrl = `${process.env.EDUI_DOWNLOAD_DIR as string}${hashedFilename}`;
-
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        data: publicUrl,
-      } as WebdavStatusReplay;
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
-  }
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {

@@ -4,7 +4,6 @@ import eduApi from '@/api/eduApi';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -30,7 +29,6 @@ type FileSharingStore = {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
-  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   downloadFile: (filePath: string) => Promise<string | undefined>;
 };
 
@@ -95,31 +93,6 @@ const useFileSharingStore = create<FileSharingStore>(
           });
         } catch (error) {
           handleApiError(error, set);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      getDownloadLinkURL: async (filePath: string, filename: string) => {
-        try {
-          set({ isLoading: true });
-          const response = await eduApi.get<WebdavStatusReplay>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
-            {
-              params: {
-                filePath,
-                fileName: filename,
-              },
-            },
-          );
-          const { data, success } = response.data;
-          if (success && data) {
-            return data;
-          }
-          return '';
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
         } finally {
           set({ isLoading: false });
         }

@@ -80,15 +80,6 @@ class FilesharingController {
     return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
   }
 
-  @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
-  async getDownloadLink(
-    @Query('filePath') filePath: string,
-    @Query('fileName') fileName: string,
-    @GetCurrentUsername() username: string,
-  ) {
-    return this.filesharingService.downloadLink(username, filePath, fileName);
-  }
-
   @Get(FileSharingApiEndpoints.GET_FILE_STREAM)
   @Header('Content-Type', RequestResponseContentType.APPLICATION_OCET_STREAM as string)
   async webDavFileStream(
