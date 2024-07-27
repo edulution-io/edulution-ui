@@ -86,8 +86,10 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           {files.map((file, i) => (
             <li
               key={file.name}
-              className="truncate-ellipsis flex w-full items-center justify-between rounded bg-white p-2 shadow"
-            >{`${i + 1}. ${file.name}`}</li>
+              className="flex w-full items-center justify-between rounded bg-white p-2 shadow"
+            >
+              <span className="w-full truncate">{`${i + 1}. ${file.name}`}</span>
+            </li>
           ))}
         </ol>
       </ScrollArea>

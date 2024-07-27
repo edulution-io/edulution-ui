@@ -26,7 +26,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     closeDialog,
     moveItemsToPath,
     openDialog,
-    setUserInput,
     isLoading,
     error,
     action,
@@ -55,11 +54,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   };
 
   const onSubmit = async () => {
-    if (schema) {
-      const filename = form.getValues('filename');
-      setUserInput(filename);
-    }
-
     const data = await getData(form, currentPath, { selectedItems, moveItemsToPath, selectedFileType, filesToUpload });
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
