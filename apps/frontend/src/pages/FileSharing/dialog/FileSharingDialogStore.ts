@@ -27,7 +27,6 @@ interface FileSharingDialogStore {
   moveItemsToPath: DirectoryFileDTO;
   selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
   setMoveItemsToPath: (item: DirectoryFileDTO) => void;
-  setUserInput: (userInput: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
   fileOperationStatus: boolean | undefined;
@@ -70,7 +69,6 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
-  setUserInput: (userInput) => set({ userInput }),
   setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
   setMoveItemsToPath: (path) => set({ moveItemsToPath: path }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),

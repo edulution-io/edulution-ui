@@ -22,6 +22,9 @@ type FormFieldProps<T extends FieldValues> = {
   labelTranslationId: string;
   type?: 'password';
   defaultValue?: PathValue<T, Path<T>> | string;
+  readonly?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
@@ -32,6 +35,9 @@ const FormField = <T extends FieldValues>({
   type,
   variant,
   defaultValue,
+  readonly = false,
+  value,
+  onChange,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -51,6 +57,12 @@ const FormField = <T extends FieldValues>({
               type={type}
               disabled={isLoading}
               variant={variant}
+              readOnly={readonly}
+              value={value}
+              onChange={(e) => {
+                field.onChange(e);
+                if (onChange) onChange(e);
+              }}
             />
           </FormControl>
           <FormMessage className={cn('text-p', variants({ variant }))} />
