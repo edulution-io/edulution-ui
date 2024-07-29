@@ -15,13 +15,13 @@ class AppConfigController {
   @Post()
   @UseGuards(AppConfigGuard)
   createConfig(@Body() appConfigDto: AppConfigDto[]) {
-    this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.log(e, AppConfigController.name));
+    this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.error(e, AppConfigController.name));
   }
 
   @Put()
   @UseGuards(AppConfigGuard)
   updateConfig(@Body() appConfigDto: AppConfigDto[]) {
-    this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.log(e, AppConfigController.name));
+    this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.error(e, AppConfigController.name));
   }
 
   @Get()
@@ -32,7 +32,7 @@ class AppConfigController {
   @Delete(':name')
   @UseGuards(AppConfigGuard)
   deleteConfig(@Param('name') name: string) {
-    this.appConfigService.deleteConfig(name).catch((e) => Logger.log(e, AppConfigController.name));
+    this.appConfigService.deleteConfig(name).catch((e) => Logger.error(e, AppConfigController.name));
   }
 }
 

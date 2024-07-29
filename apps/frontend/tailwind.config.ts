@@ -15,7 +15,7 @@ module.exports = {
       text: 'text-white',
     },
     extend: {
-      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt' },
+      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt', span: '0.875rem' },
       colors: {
         ciDarkBlue: 'hsla(var(--primary))',
         ciLightBlue: '#66B2DF',
@@ -130,6 +130,7 @@ module.exports = {
         h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
+        span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
       });
     }),
   ],
