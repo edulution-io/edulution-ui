@@ -382,6 +382,13 @@
     "title": "Link teilen",
     "copy": "Link kopieren"
   },
+  "time_options": {
+    "one_hour": "1 Stunde",
+    "one_day": "1 Tag",
+    "one_week": "1 Woche",
+    "one_month": "1 Monat",
+    "one_year": "1 Jahr"
+  },
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",

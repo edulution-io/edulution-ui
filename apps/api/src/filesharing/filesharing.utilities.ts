@@ -3,6 +3,10 @@ import he from 'he';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { Logger } from '@nestjs/common';
 import ContentType from '@libs/filesharing/types/contentType';
+import ValidTime from '@libs/filesharing/types/validTime';
+import { addDays, addHours, addMonths, addWeeks, addYears } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
+import DE_TZ from '@libs/common/contants/timeZone';
 import { WebDAVMultiStatus, WebDAVResponse, XMLAttributes as XA } from './filesharing.types';
 
 const xmlOptions = {
@@ -16,6 +20,25 @@ const xmlOptions = {
 };
 
 const xmlParser = new XMLParser(xmlOptions);
+
+export function getExpirationDate(validTime: ValidTime): Date {
+  const now = toZonedTime(new Date(), DE_TZ);
+  Logger.log(validTime);
+  switch (validTime) {
+    case ValidTime.ONE_HOUR:
+      return addHours(now, 1);
+    case ValidTime.ONE_DAY:
+      return addDays(now, 1);
+    case ValidTime.ONE_WEEK:
+      return addWeeks(now, 1);
+    case ValidTime.ONE_MONTH:
+      return addMonths(now, 1);
+    case ValidTime.ONE_YEAR:
+      return addYears(now, 1);
+    default:
+      return now;
+  }
+}
 
 function parseWebDAVResponse(response: WebDAVResponse): DirectoryFileDTO {
   const propstatArray = Array.isArray(response[XA.PropStat]) ? response[XA.PropStat] : [response[XA.PropStat]];

@@ -40,6 +40,7 @@ interface DialogBodyConfigurationBase {
     },
   ) => Promise<PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[]>;
   requiresForm?: boolean;
+  submitFrom?: boolean;
 }
 
 interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase {
@@ -96,6 +97,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethodes.POST,
     type: ContentType.DIRECTORY,
     requiresForm: true,
+    submitFrom: true,
     getData: (form, currentPath: string) => {
       const filename = String(form.getValues('filename'));
       const cleanedPath = getPathWithoutWebdav(currentPath);
@@ -114,6 +116,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethodes.PUT,
     type: ContentType.FILE,
     requiresForm: true,
+    submitFrom: true,
     getData: async (form, currentPath, inputValues) => {
       const { selectedFileType } = inputValues;
       const fileType = selectedFileType?.extension || '';
@@ -141,6 +144,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethodes.DELETE,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
+    submitFrom: true,
     getData: (_form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
@@ -167,6 +171,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethodes.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: true,
+    submitFrom: true,
     getData: async (form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
@@ -189,6 +194,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethodes.PUT,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
+    submitFrom: true,
     getData: (_form, currentPath, inputValues) => {
       const { filesToUpload } = inputValues;
       const cleanedPath = getPathWithoutWebdav(currentPath);
@@ -213,30 +219,39 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethodes.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
+    submitFrom: true,
     getData: (_form, currentPath, inputValues) => {
       const { moveItemsToPath, selectedItems } = inputValues;
       if (!moveItemsToPath || !selectedItems) {
         return Promise.resolve([]);
       }
-      const newCleanedPath = getPathWithoutWebdav(moveItemsToPath.filename);
       const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve(
-        selectedItems.map((item) => ({
-          path: `${cleanedPath}/${item.basename}`,
-          newPath: `${newCleanedPath}/${item.basename}`,
-        })),
-      );
+      return Promise.resolve({
+        newPath: `${selectedItems[0]?.basename}`,
+        path: `${cleanedPath}/${selectedItems[0]?.basename}`,
+      });
     },
   },
   shareableLink: {
     Component: SharableLinkDialogBody,
     titleKey: 'filesharingShareableLink.title',
     submitKey: 'filesharingShareableLink.copy',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+    submitFrom: false,
     httpMethod: HttpMethodes.GET,
-    type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
-    getData: (_form, _inputValues) => Promise.resolve([]),
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+    getData: (_form, _currentPath, inputValues) => {
+      const { selectedItems } = inputValues;
+      if (!selectedItems || selectedItems.length === 0) {
+        return Promise.resolve([]);
+      }
+      const cleanedPath = getPathWithoutWebdav(selectedItems[0].filename);
+      return Promise.resolve({
+        path: `${cleanedPath}`,
+        newPath: `${selectedItems[0].basename}`,
+      });
+    },
   },
 };
 

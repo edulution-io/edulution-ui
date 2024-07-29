@@ -17,8 +17,7 @@ import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateP
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
-import eduApi from '@/api/eduApi';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import ValidTime from '@libs/filesharing/types/validTime';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -26,7 +25,9 @@ interface FileSharingDialogStore {
   closeDialog: () => void;
   downloadLinkURL: string;
   isLoading: boolean;
+  selectedValidLinkTime: ValidTime;
   userInput: string;
+  operationsResult: WebdavStatusReplay | undefined;
   filesToUpload: File[];
   moveItemsToPath: DirectoryFileDTO;
   selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
@@ -34,7 +35,6 @@ interface FileSharingDialogStore {
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
   fileOperationStatus: boolean | undefined;
-  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   setError: (error: AxiosError) => void;
   reset: () => void;
   setSelectedFileType: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
@@ -50,6 +50,7 @@ interface FileSharingDialogStore {
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean, message: string, status: number) => void;
+  setValidLinkTime: (time: ValidTime) => void;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -60,6 +61,8 @@ const initialState: Partial<FileSharingDialogStore> = {
   moveItemsToPath: {} as DirectoryFileDTO,
   selectedFileType: {} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey],
   filesToUpload: [],
+  operationsResult: undefined,
+  selectedValidLinkTime: ValidTime.ONE_HOUR,
 };
 
 const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => ({
@@ -76,6 +79,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
   setMoveItemsToPath: (path) => set({ moveItemsToPath: path }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),
+  setValidLinkTime: (time) => set({ selectedValidLinkTime: time }),
   setFileOperationResult: (success, message = t('unknownErrorOccurred'), status = 500) => {
     const result: WebDavActionResult = { success, message, status };
     set({ fileOperationResult: result });
@@ -102,38 +106,18 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         await handleArrayData(action, endpoint, httpMethod, data as PathChangeOrCreateProps[]);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       } else {
-        await handleSingleData(action, endpoint, httpMethod, type, data);
+        const resp = await handleSingleData(action, endpoint, httpMethod, type, data, get().selectedValidLinkTime);
+        set({ operationsResult: resp?.data as WebdavStatusReplay });
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       }
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isLoading: false, isDialogOpen: false, error: null });
-    }
-  },
-  getDownloadLinkURL: async (filePath: string, filename: string) => {
-    try {
-      set({ isLoading: true });
-      const response = await eduApi.get<WebdavStatusReplay>(
-        `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
-        {
-          params: {
-            filePath,
-            fileName: filename,
-          },
-        },
-      );
-      const { data, success } = response.data;
-      if (success && data) {
-        set({ downloadLinkURL: data });
-        return data;
+      if (get().action === FileActionType.SHARABLE_LINK) {
+        set({ isLoading: false, error: null });
+      } else {
+        set({ isLoading: false, isDialogOpen: false, error: null });
       }
-      return '';
-    } catch (error) {
-      handleApiError(error, set);
-      return '';
-    } finally {
-      set({ isLoading: false });
     }
   },
 }));

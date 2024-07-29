@@ -41,7 +41,9 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
           <FloatingActionButton
             icon={MdShare}
             text={t('tooltip.share')}
-            onClick={() => openDialog(FileActionType.SHARABLE_LINK)}
+            onClick={() => {
+              openDialog(FileActionType.SHARABLE_LINK);
+            }}
           />
         </>
       )}

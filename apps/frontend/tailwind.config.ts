@@ -94,6 +94,10 @@ module.exports = {
       flex: {
         '2': '2 1 0%',
       },
+      flexGrow: {
+        '3': 3,
+        '1': 1,
+      },
     },
   },
   plugins: [

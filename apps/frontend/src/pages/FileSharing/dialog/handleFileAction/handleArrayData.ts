@@ -26,10 +26,12 @@ const handleArrayData = async (
   data: PathChangeOrCreateProps[],
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
-    await handleDeleteItems(data, endpoint, httpMethod);
-  } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await handleArrayActions(data, endpoint, httpMethod);
+    return handleDeleteItems(data, endpoint, httpMethod);
   }
+  if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
+    return handleArrayActions(data, endpoint, httpMethod);
+  }
+  return undefined;
 };
 
 export default handleArrayData;

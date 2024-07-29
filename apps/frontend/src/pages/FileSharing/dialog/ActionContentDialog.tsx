@@ -54,7 +54,13 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   };
 
   const onSubmit = async () => {
-    const data = await getData(form, currentPath, { selectedItems, moveItemsToPath, selectedFileType, filesToUpload });
+    const data = await getData(form, currentPath, {
+      selectedItems,
+      moveItemsToPath,
+      selectedFileType,
+      filesToUpload,
+    });
+
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {

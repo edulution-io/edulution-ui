@@ -23,9 +23,12 @@ import { extname, join, resolve } from 'path';
 import { createHash } from 'crypto';
 import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
 import saveFileStream from '@libs/filesharing/utils/saveFileStream';
+import ValidTime from '@libs/filesharing/types/validTime';
+import { format } from 'date-fns-tz';
+import DE_TZ from '@libs/common/contants/timeZone';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
+import { getExpirationDate, mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import { User } from '../users/user.schema';
 
 @Injectable()
@@ -301,7 +304,12 @@ class FilesharingService {
     }
   }
 
-  async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+  async downloadLink(
+    username: string,
+    filePath: string,
+    filename: string,
+    validTime: ValidTime,
+  ): Promise<WebdavStatusReplay> {
     const outputFolder = resolve(__dirname, '..', 'public', 'downloads');
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
     if (!existsSync(outputFolder)) {
@@ -313,12 +321,15 @@ class FilesharingService {
       const responseStream = await this.fetchFileStream(user, `${url}`);
       const hash = createHash(HashAlgorithm).update(filePath).digest('hex');
       const extension = extname(filename);
-      const hashedFilename = `${hash}${extension}`;
-      const outputFilePath = join(outputFolder, hashedFilename);
 
+      const expirationDate = getExpirationDate(validTime);
+      const formattedExpirationDate = format(expirationDate, 'yyyyMMddHHmmss', { timeZone: DE_TZ });
+      const filenameWithExpiration = `${hash}_valid_until${formattedExpirationDate}${extension}`;
+
+      const outputFilePath = join(outputFolder, filenameWithExpiration);
       await saveFileStream(responseStream, outputFilePath);
 
-      const publicUrl = `${process.env.EDUI_DOWNLOAD_DIR as string}${hashedFilename}`;
+      const publicUrl = `${process.env.EDUI_DOWNLOAD_DIR as string}${filenameWithExpiration}`;
 
       return {
         success: true,

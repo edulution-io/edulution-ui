@@ -395,6 +395,13 @@
     "title": "Shareable Link",
     "copy": "Copy Link"
   },
+  "time_options": {
+    "one_hour": "1 Hour",
+    "one_day": "1 Day",
+    "one_week": "1 Week",
+    "one_month": "1 Month",
+    "one_year": "1 Year"
+  },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
     "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",

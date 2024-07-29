@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Header,
+  Logger,
   Patch,
   Post,
   Put,
@@ -17,6 +18,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import ValidTime from '@libs/filesharing/types/validTime';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import FilesharingService from './filesharing.service';
 
@@ -96,11 +98,13 @@ class FilesharingController {
 
   @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
   async getDownloadLink(
-    @Query('filePath') filePath: string,
-    @Query('fileName') fileName: string,
+    @Query('path') filePath: string,
+    @Query('newPath') newPath: string,
+    @Query('validTimeSlot') validTime: ValidTime,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.downloadLink(username, filePath, fileName);
+    Logger.log(`Getting download link for ${filePath} with valid time slot ${validTime}`);
+    return this.filesharingService.downloadLink(username, filePath, newPath, validTime);
   }
 }
 

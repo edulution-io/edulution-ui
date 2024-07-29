@@ -13,11 +13,12 @@ const handleFileOrCreateFile = async (
   formData: FormData,
 ) => {
   if (action === FileActionType.UPLOAD_FILE || action === FileActionType.CREATE_FILE) {
-    await eduApi[httpMethod](
+    return eduApi[httpMethod](
       buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(formData.get('path') as string)),
       formData,
     );
   }
+  return undefined;
 };
 
 export default handleFileOrCreateFile;
