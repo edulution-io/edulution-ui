@@ -93,6 +93,20 @@ class FilesharingController {
       disposition: `attachment; filename="${fileName}"`,
     });
   }
+
+  @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
+  async getDownloadLink(
+    @Query('filePath') filePath: string,
+    @Query('fileName') fileName: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.downloadLink(username, filePath, fileName);
+  }
+
+  @Post(FileSharingApiEndpoints.GET_ONLY_OFFICE_TOKEN)
+  getOnlyofficeToken(@Body() payload: string) {
+    return this.filesharingService.getOnlyOfficeToken(payload);
+  }
 }
 
 export default FilesharingController;

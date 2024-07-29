@@ -3,6 +3,7 @@
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "preparing": "Vorbereiten...",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",

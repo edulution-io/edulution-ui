@@ -1,21 +1,22 @@
 import React from 'react';
 import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
-import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
-import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
 import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FloatingButtonsBar';
+import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const { files } = useFileSharingStore();
+  const { files, currentlyEditingFile } = useFileSharingStore();
+
   return (
     <div className="w-full overflow-x-auto">
+      {isLoading && <LoadingIndicator isOpen={isLoading} />}
       <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
-        <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
+        <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2">
           <DirectoryBreadcrumb
             path={currentPath}
             onNavigate={(filenamePath) => {
@@ -31,12 +32,12 @@ const FileSharingPage = () => {
         </div>
         <LoadingIndicator isOpen={isLoading} />
         <div
-          className="w-full md:w-auto md:max-w-7xl xl:max-w-full"
+          className="max-h[75vh] w-full md:w-auto md:max-w-7xl xl:max-w-full"
           data-testid="test-id-file-sharing-page-data-table"
         >
-          <FileSharingTable
-            columns={FileSharingTableColumns}
-            data={files}
+          <FileSharingLayout
+            currentlyEditingFile={currentlyEditingFile}
+            files={files}
           />
         </div>
       </div>

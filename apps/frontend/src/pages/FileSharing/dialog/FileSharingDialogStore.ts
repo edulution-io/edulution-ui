@@ -103,6 +103,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
       }
     } catch (error) {
       handleApiError(error, set);
+      set({ isLoading: false, isDialogOpen: false });
     } finally {
       set({ isLoading: false, isDialogOpen: false, error: null });
     }

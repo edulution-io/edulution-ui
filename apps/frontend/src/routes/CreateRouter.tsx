@@ -16,6 +16,8 @@ import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
+import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import EmptyLayout from '@/components/layout/EmptyLayout';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -62,6 +64,13 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
         </Route>
       ) : (
         <>
+          <Route element={<EmptyLayout />}>
+            <Route
+              path="/onlyOffice"
+              element={<FileViewer mode="edit" />}
+            />
+          </Route>
+
           <Route element={<MainLayout />}>
             <Route
               path="/"

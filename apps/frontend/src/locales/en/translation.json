@@ -3,6 +3,7 @@
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "preparing": "preparing...",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",

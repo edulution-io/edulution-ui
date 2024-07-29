@@ -7,11 +7,13 @@ import handleApiError from '@/utils/handleApiError';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 
 type FileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
+  currentlyEditingFile: DirectoryFileDTO | null;
   pathToRestoreSession: string;
   setDirectorys: (files: DirectoryFileDTO[]) => void;
   directorys: DirectoryFileDTO[];
@@ -28,8 +30,10 @@ type FileSharingStore = {
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
+  setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   downloadFile: (filePath: string) => Promise<string | undefined>;
+  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
 };
 
 const initialState = {
@@ -39,6 +43,7 @@ const initialState = {
   pathToRestoreSession: `/`,
   downloadLinkURL: '',
   selectedRows: {},
+  currentlyEditingFile: null,
   mountPoints: [],
   directorys: [],
   isLoading: false,
@@ -58,6 +63,10 @@ const useFileSharingStore = create<FileSharingStore>(
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
+      },
+
+      setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
+        set({ currentlyEditingFile: fileToPreview });
       },
 
       setPathToRestoreSession: (path: string) => {
@@ -111,6 +120,31 @@ const useFileSharingStore = create<FileSharingStore>(
 
           const fileStream = fileStreamResponse.data;
           return window.URL.createObjectURL(fileStream);
+        } catch (error) {
+          handleApiError(error, set);
+          return '';
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      getDownloadLinkURL: async (filePath: string, filename: string) => {
+        try {
+          set({ isLoading: true });
+          const response = await eduApi.get<WebdavStatusReplay>(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+            {
+              params: {
+                filePath,
+                fileName: filename,
+              },
+            },
+          );
+          const { data, success } = response.data;
+          if (success && data) {
+            return data;
+          }
+          return '';
         } catch (error) {
           handleApiError(error, set);
           return '';

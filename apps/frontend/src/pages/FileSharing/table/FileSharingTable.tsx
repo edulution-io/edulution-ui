@@ -55,7 +55,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <div className="flex-1 text-sm text-background text-muted-foreground">
+        <div className="flex-1 text-sm text-background">
           {t('table.rowsSelected', {
             selected: table.getFilteredSelectedRowModel().rows.length,
             total: table.getFilteredRowModel().rows.length,
