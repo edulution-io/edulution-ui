@@ -135,10 +135,10 @@ const useFileSharingStore = create<FileSharingStore>(
 
       fetchDirs: async (path: string) => {
         try {
-          const directoryFiles = await eduApi.get(
+          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
             `${buildFileSharingUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
           );
-          set({ directorys: directoryFiles.data as DirectoryFileDTO[] });
+          set({ directorys: directoryFiles.data });
         } catch (error) {
           handleApiError(error, set);
         }
