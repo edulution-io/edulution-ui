@@ -20,7 +20,7 @@ class SurveysService {
   }
 
   async updateSurvey(survey: Survey): Promise<Survey | null> {
-    return await this.surveyModel
+    return this.surveyModel
       .findByIdAndUpdate<Survey>(
         // eslint-disable-next-line no-underscore-dangle
         survey._id,
