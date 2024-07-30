@@ -9,10 +9,10 @@ interface FilePreviewOptionsBarProps {}
 const FilePreviewOptionsBar: FC<FilePreviewOptionsBarProps> = () => {
   const { setCurrentlyEditingFile } = useFileSharingStore();
   return (
-    <div className="flex w-full justify-end space-x-2">
+    <div className="flex flex-col">
       <Button
         variant="btn-small"
-        className="hover:bg-grey-700 mr-1 rounded bg-white px-4 text-white "
+        className="hover:bg-grey-700 rounded bg-white text-white "
         onClick={() => setCurrentlyEditingFile(null)}
       >
         <IoMdArrowForward className="inline text-black" />
