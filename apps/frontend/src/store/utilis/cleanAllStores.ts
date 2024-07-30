@@ -8,6 +8,8 @@ import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -22,6 +24,8 @@ const cleanAllStores = () => {
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useSurveyTablesPageStore.getState().reset();
+  useSurveyEditorFormStore.getState().reset();
 };
 
 export default cleanAllStores;
