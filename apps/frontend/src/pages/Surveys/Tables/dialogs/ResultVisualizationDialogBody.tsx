@@ -30,7 +30,9 @@ const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps
   }
 
   if (visuPanel == null && survey != null) {
-    const visualizationPanel = new VisualizationPanel(survey.getAllQuestions(), result, visuPanelOptions);
+    const questions = survey.getAllQuestions() || [];
+    const answers = result || [];
+    const visualizationPanel = new VisualizationPanel(questions, answers, visuPanelOptions);
     visualizationPanel.locale = i18next.language;
     visualizationPanel.showToolbar = false;
     setVisuPanel(visualizationPanel);

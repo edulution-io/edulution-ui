@@ -23,7 +23,8 @@ const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
   }
 
   if (visuTable == null && survey != null) {
-    const surveyVisuTable = new Tabulator(survey, result);
+    const answers = result || [];
+    const surveyVisuTable = new Tabulator(survey, answers);
     surveyVisuTable.locale = i18next.language;
     setVisuTable(surveyVisuTable);
   }

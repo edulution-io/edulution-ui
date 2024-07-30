@@ -88,8 +88,7 @@ class SurveyAnswersService {
     const { expirationDate, expirationTime, canUpdateFormerAnswer, canSubmitMultipleAnswers } = survey;
 
     if (expirationDate && expirationTime) {
-      const expirationDateAndTime = new Date(`${expirationDate.toDateString()}T${expirationTime.toString()}`);
-      const isExpired = expirationDateAndTime < new Date();
+      const isExpired = expirationDate < new Date();
       if (isExpired) {
         throw new CustomHttpException(
           SurveyErrorMessages.NotAbleToParticipateSurveyExpiredError,

@@ -25,7 +25,7 @@ const initialState: Partial<DeleteSurveyStore> = {
   error: null,
 };
 
-const useDeleteStore = create<DeleteSurveyStore>((set) => ({
+const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   ...(initialState as DeleteSurveyStore),
   reset: () => set(initialState),
 
@@ -44,4 +44,4 @@ const useDeleteStore = create<DeleteSurveyStore>((set) => ({
   },
 }));
 
-export default useDeleteStore;
+export default useDeleteSurveyStore;

@@ -60,6 +60,7 @@ const ResultVisualizationDialog = () => {
         handleOpenChange={() => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog)}
         title={t('surveys.resultChartDialog.title')}
         body={getDialogBody()}
+        desktopContentClassName="max-h-[75vh] max-w-[85%]"
       />
     </>
   ) : null;
