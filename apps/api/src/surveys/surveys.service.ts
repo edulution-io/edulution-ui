@@ -20,7 +20,7 @@ class SurveysService {
   }
 
   async updateSurvey(survey: Survey): Promise<Survey | null> {
-    const updatedSurvey = await this.surveyModel
+    return await this.surveyModel
       .findByIdAndUpdate<Survey>(
         // eslint-disable-next-line no-underscore-dangle
         survey._id,
@@ -30,27 +30,14 @@ class SurveysService {
       .catch((error) => {
         throw new CustomHttpException(UserErrorMessages.DatabaseOfflineError, HttpStatus.INTERNAL_SERVER_ERROR, error);
       });
-
-    Logger.log(
-      updatedSurvey == null ? SurveyErrorMessages.NotAbleToUpdateSurveyError : 'Updated survey successfully',
-      SurveysService.name,
-    );
-
-    return updatedSurvey;
   }
 
   async createSurvey(survey: Survey): Promise<Survey | null> {
-    let createdSurvey;
     try {
-      createdSurvey = await this.surveyModel.create(survey);
+      return await this.surveyModel.create(survey);
     } catch (error) {
       throw new CustomHttpException(UserErrorMessages.DatabaseOfflineError, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
-    Logger.log(
-      createdSurvey == null ? SurveyErrorMessages.NotAbleToCreateSurveyError : 'Created the new survey successfully',
-      SurveysService.name,
-    );
-    return createdSurvey;
   }
 
   async updateOrCreateSurvey(survey: Survey): Promise<Survey | null> {
