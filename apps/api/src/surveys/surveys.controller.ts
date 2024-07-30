@@ -38,6 +38,7 @@ class SurveysController {
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
     // first extrude the additional info fields from the remaining survey object
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { invitedGroups, ...surveyData } = surveyDto;
     const { id, created = new Date() } = surveyData;
 

@@ -92,7 +92,26 @@
   },
   "filesharing": {
     "title": "FILESHARING",
-    "sidebar": "Filesharing"
+    "sidebar": "Filesharing",
+    "errors": {
+      "FileNotFound": "Datei nicht gefunden",
+      "MountPointsNotFound": "Laufwerke nicht gefunden",
+      "FolderNotFound": "Ordner nicht gefunden",
+      "UploadFailed": "Datei konnte nicht hinzugefügt werden",
+      "DeletionFailed": "Löschen fehlgeschlagen",
+      "RenameFailed": "Umbenennen fehlgeschlagen",
+      "MoveFailed": "Verschieben fehlgeschlagen",
+      "CreationFailed": "Erstellen fehlgeschlagen",
+      "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "WebDavError": "Dateiserver nicht erreichbar",
+      "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
+    },
+    "tooltips": {
+      "folderNameRequired": "Ordnername ist erforderlich",
+      "FileNameRequired": "Dateiname ist erforderlich",
+      "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
+      "NameRequired": "Name erforderlich"
+    }
   },
   "forums": {
     "title": "FOREN",
@@ -284,8 +303,13 @@
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
-    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
-    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" },
+    "config": {
+      "mfa": "Zweifaktorauthentifizierung aktivieren"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
+    },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
       "newPasswordRequired": "Neues Passwort ist erforderlich",
@@ -367,7 +391,8 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
-    "filesToUpload": "Dateien zum Hochladen"
+    "filesToUpload": "Dateien zum Hochladen",
+    "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -396,15 +421,30 @@
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Präsentation",
+    "spreadsheet": "Tabelle",
+    "vector": "Diagramm"
   },
   "fileCreateNewContent": {
+    "documentFile": "Erstelle ein neues Dokument",
+    "spreadsheetFile": "Erstelle eine neue Tabelle",
+    "presentationFile": "Erstelle eine neue Präsentation",
+    "textFile": "Erstelle eine neue Textdatei",
+    "drawIoFile": "Erstelle eine neue Draw.io-Datei",
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
-    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+    "newFileFromType": {
+      "drawIoFile": "Neue Draw.io-Datei",
+      "textFile": "Neue Textdatei",
+      "spreadsheetFile": "Neue Tabelle",
+      "presentationFile": "Neue Präsentation",
+      "documentFile": "Neues Dokument"
+    }
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",
@@ -470,6 +510,7 @@
     "directory_created_successfully": "Verzeichnis {{directoryName}} erfolgreich erstellt",
     "file_created_successfully": "Datei {{fileName}} erfolgreich erstellt",
     "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
+    "files_deleted_successfully": "Dateien erfolgreich gelöscht",
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
   },

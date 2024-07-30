@@ -33,6 +33,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         {row ? (
           <Checkbox
             checked={isChecked}
+            onClick={(e) => e.stopPropagation()}
             onCheckedChange={(checked) => {
               row.toggleSelected(!!checked);
             }}

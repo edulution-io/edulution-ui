@@ -3,6 +3,7 @@ import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMes
 import VdiErrorMessages from '@libs/desktopdeployment/types/vdiErrorMessages';
 import UserErrorMessages from '@libs/user/user-error-messages';
 import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
+import FileSharingErrorMessage from '@libs/filesharing/fileSharingErrorMessage';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
 
@@ -12,6 +13,7 @@ type ErrorMessage =
   | GroupsErrorMessage
   | VdiErrorMessages
   | ConferencesErrorMessage
+  | FileSharingErrorMessage
   | SurveyErrorMessages
   | SurveyAnswerErrorMessages;
 
