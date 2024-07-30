@@ -44,7 +44,7 @@ const generateOnlyOfficeConfig = ({
     mode,
     customization: {
       anonymous: {
-        request: true,
+        request: false,
         label: 'Guest',
       },
       autosave: true,
@@ -59,7 +59,7 @@ const generateOnlyOfficeConfig = ({
       integrationMode: 'embed',
       macros: true,
       macrosMode: 'Warn',
-      mentionShare: true,
+      mentionShare: false,
       mobileForceView: true,
       plugins: true,
       toolbarHideFileName: false,

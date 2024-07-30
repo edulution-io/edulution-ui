@@ -24,7 +24,6 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }
   useEffect(() => {
     setLocalLoading(true);
     return () => {
-      // Cleanup function to reset any side effects
       setLocalLoading(false);
     };
   }, [url, filePath, fileName, mode, type]);
@@ -40,16 +39,14 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }
   }
 
   return (
-    <div>
-      <OnlyOfficeEditor
-        documentServerURL={documentServerURL}
-        editorType={editorType}
-        mode={mode}
-        editorConfig={editorsConfig}
-        filePath={filePath}
-        fileName={fileName}
-      />
-    </div>
+    <OnlyOfficeEditor
+      documentServerURL={documentServerURL}
+      editorType={editorType}
+      mode={mode}
+      editorConfig={editorsConfig}
+      filePath={filePath}
+      fileName={fileName}
+    />
   );
 };
 

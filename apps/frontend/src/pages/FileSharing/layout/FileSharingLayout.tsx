@@ -24,7 +24,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ currentlyEditingF
 
   return (
     <div className={`flex ${isMidSizeView ? 'flex-col' : 'w-full flex-row'}`}>
-      <div className={`${currentlyEditingFile && !isMidSizeView ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}>
+      <div className={`${!showEditor && !isMidSizeView ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}>
         <FileSharingTable
           columns={FileSharingTableColumns}
           data={files}

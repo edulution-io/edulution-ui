@@ -4,7 +4,6 @@ import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/Only
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 
 interface OnlyOfficeEditorProps {
-  isPreview?: boolean;
   editorType: {
     id: string;
     key: string;
@@ -18,7 +17,6 @@ interface OnlyOfficeEditorProps {
 }
 
 const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
-  isPreview,
   fileName,
   filePath,
   mode,
@@ -46,7 +44,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   };
 
   return (
-    <div className={`relative ${isPreview ? 'h-[75vh]' : 'h-[100vh]'}`}>
+    <div className="relative h-[75vh]">
       {editorType ? (
         <DocumentEditor
           key={editorType.key}

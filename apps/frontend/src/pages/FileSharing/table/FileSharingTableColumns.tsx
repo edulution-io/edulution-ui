@@ -46,8 +46,10 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
           searchParams.set('path', filenamePath);
           setSearchParams(searchParams);
           setShowEditor(false);
+          setCurrentlyEditingFile(null);
         } else {
           setShowEditor(false);
+          setCurrentlyEditingFile(null);
           setCurrentlyEditingFile(row.original);
         }
       };
