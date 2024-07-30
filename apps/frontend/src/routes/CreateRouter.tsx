@@ -1,12 +1,12 @@
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route, Outlet } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import HomePage from '@/pages/Home/HomePage';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
-import FileSharing from '@/pages/FileSharing/FileSharing';
+import FileSharing from '@/pages/FileSharing/FileSharingPage';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import SurveysPage from '@/pages/Surveys/SurveysPage';
 import LoginPage from '@/pages/LoginPage/LoginPage';

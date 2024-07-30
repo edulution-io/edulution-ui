@@ -9,6 +9,7 @@ import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
 import VdiModule from '../vdi/vdi.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
+import FilesharingModule from '../filesharing/filesharing.module';
 import SurveysModule from '../surveys/surveys.module';
 
 @Module({
@@ -18,6 +19,7 @@ import SurveysModule from '../surveys/surveys.module';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    FilesharingModule,
     VdiModule,
     SurveysModule,
     JwtModule.register({
