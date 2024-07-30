@@ -31,11 +31,10 @@ class SurveysService {
         throw new CustomHttpException(UserErrorMessages.DatabaseOfflineError, HttpStatus.INTERNAL_SERVER_ERROR, error);
       });
 
-    if (updatedSurvey == null) {
-      Logger.log(SurveyErrorMessages.NotAbleToUpdateSurveyError, SurveysService.name);
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.NOT_MODIFIED);
-    }
-    Logger.log('Updated survey successfully', SurveysService.name);
+    Logger.log(
+      updatedSurvey == null ? SurveyErrorMessages.NotAbleToUpdateSurveyError : 'Updated survey successfully',
+      SurveysService.name,
+    );
 
     return updatedSurvey;
   }
@@ -59,10 +58,7 @@ class SurveysService {
     try {
       updatedSurvey = await this.updateSurvey(survey);
     } catch (error) {
-      Logger.log(
-        error instanceof Error ? error.message : SurveyErrorMessages.NotAbleToUpdateSurveyError,
-        SurveysService.name,
-      );
+      // Do nothing
     }
     if (updatedSurvey != null) {
       return updatedSurvey;
@@ -72,10 +68,7 @@ class SurveysService {
     try {
       createdSurvey = await this.createSurvey(survey);
     } catch (error) {
-      Logger.log(
-        error instanceof Error ? error.message : SurveyErrorMessages.NotAbleToCreateSurveyError,
-        SurveysService.name,
-      );
+      // Do nothing
     }
     if (createdSurvey != null) {
       return createdSurvey;
