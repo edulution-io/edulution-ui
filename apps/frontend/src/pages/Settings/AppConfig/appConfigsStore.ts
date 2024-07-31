@@ -78,9 +78,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
           await eduApi.delete(`${EDU_API_CONFIG_ENDPOINT}/${name}`);
           const newAppConfigs = get().appConfigs.filter((item) => item.name !== name);
           set({ appConfigs: newAppConfigs });
-          toast.success(`${i18n.t(`${name}.sidebar`)} - ${i18n.t('settings.appconfig.delete.success')}`, {
-            description: new Date().toLocaleString(),
-          });
+          toast.success(`${i18n.t(`${name}.sidebar`)} - ${i18n.t('settings.appconfig.delete.success')}`);
         } catch (e) {
           handleApiError(e, set);
         } finally {

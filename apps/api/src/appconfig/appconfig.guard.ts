@@ -17,7 +17,7 @@ class AppConfigGuard implements CanActivate {
 
     const ldapGroups = user.ldapGroups || [];
 
-    if (ldapGroups.includes(`${GroupRoles.SUPER_ADMIN}`)) {
+    if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return true;
     }
     throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED);

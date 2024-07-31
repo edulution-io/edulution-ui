@@ -52,7 +52,7 @@ class AppConfigService {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
-      if (ldapGroups.includes(`${GroupRoles.SUPER_ADMIN}`)) {
+      if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
         appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups');
       } else {
         const appConfigObjects = await this.appConfigModel.find(
@@ -65,7 +65,7 @@ class AppConfigService {
         appConfigDto = appConfigObjects.map((config) => ({
           name: config.name,
           icon: config.icon,
-          appType: config.appType as AppConfigDto['appType'],
+          appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
         }));

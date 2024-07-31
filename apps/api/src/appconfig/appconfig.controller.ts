@@ -4,7 +4,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
 import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
 import AppConfigService from './appconfig.service';
-import { GetCurrentUserGroups } from '../common/decorators/getUser.decorator';
+import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
 
 @ApiBearerAuth()

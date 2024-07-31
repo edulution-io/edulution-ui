@@ -10,8 +10,8 @@ export class AppConfig extends Document {
   @Prop({ required: true })
   icon: string;
 
-  @Prop({ required: true, enum: Object.values(AppIntegrationType) })
-  appType: string;
+  @Prop({ required: true, type: String })
+  appType: AppIntegrationType;
 
   @Prop({ type: Object, default: {} })
   options: AppConfigOptions;

@@ -62,10 +62,13 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const newAccessGroups: MultipleSelectorOptionSH[] = currentConfig.accessGroups?.map((item) => ({
-      value: item,
-      label: item,
-    }));
+    const newAccessGroups = currentConfig.accessGroups.map(
+      (item) =>
+        ({
+          value: item,
+          label: item,
+        }) as MultipleSelectorOptionSH,
+    );
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups || []);
@@ -88,44 +91,42 @@ const AppConfigPage: React.FC = () => {
     const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
       newGroups.some((newGroup) => newGroup.value === currentGroup.value),
     );
-
     const combinedGroups = [
       ...filteredCurrentGroups,
       ...newGroups.filter(
         (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
       ),
     ];
-
     setValue(`${fieldName}`, combinedGroups, { shouldValidate: true });
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
-    if (selectedOption) {
-      const newConfig = {
-        name: settingLocation,
-        icon: selectedOption.icon,
-        appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
-        options:
-          selectedOption.options?.reduce((acc, o) => {
-            acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
-            return acc;
-          }, {} as AppConfigOptions) || {},
-        accessGroups:
-          ((getValues(`${settingLocation}.accessGroups`) as MultipleSelectorOptionSH[]).map(
-            (item) => item.path,
-          ) as string[]) || [],
-      };
-
-      const updatedConfig = appConfigs.map((entry) => {
-        if (entry.name === settingLocation) {
-          return newConfig;
-        }
-        return entry;
-      });
-
-      await updateAppConfig(updatedConfig);
+    if (!selectedOption) {
+      return;
     }
+
+    const newConfig = {
+      name: settingLocation,
+      icon: selectedOption.icon,
+      appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
+      options:
+        selectedOption.options?.reduce((acc, o) => {
+          acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
+          return acc;
+        }, {} as AppConfigOptions) || {},
+      accessGroups:
+        (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorOptionSH[]).map((item) => item.label) || [],
+    };
+
+    const updatedConfig = appConfigs.map((entry) => {
+      if (entry.name === settingLocation) {
+        return newConfig;
+      }
+      return entry;
+    });
+
+    await updateAppConfig(updatedConfig);
   };
 
   const settingsForm = () => {
