@@ -46,7 +46,7 @@ const initialState = {
 
 type PersistedFileManagerStore = (
   fileManagerData: StateCreator<FileSharingStore>,
-  options: PersistOptions<FileSharingStore>,
+  options: PersistOptions<Partial<FileSharingStore>>,
 ) => StateCreator<FileSharingStore>;
 
 const buildFileSharingUrl = (base: string, type: ContentType, path: string): string =>
@@ -153,11 +153,9 @@ const useFileSharingStore = create<FileSharingStore>(
       name: 'filesharing-storage',
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
-        files: state.files,
-        currentPath: state.currentPath,
         mountPoints: state.mountPoints,
       }),
-    } as PersistOptions<FileSharingStore>,
+    },
   ),
 );
 
