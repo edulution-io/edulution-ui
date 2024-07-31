@@ -1,3 +1,4 @@
+import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
 import AppIntegrationType from './appIntegrationType';
 import { AppConfigOptions } from './appConfigOptions';
 
@@ -6,5 +7,5 @@ export type AppConfigDto = {
   icon: string;
   appType: AppIntegrationType;
   options: AppConfigOptions;
-  accessGroups: string[];
+  accessGroups: MultipleSelectorGroup[];
 };

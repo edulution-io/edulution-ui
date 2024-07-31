@@ -62,16 +62,16 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const newAccessGroups = currentConfig.accessGroups.map(
-      (item) =>
-        ({
-          value: item,
-          label: item,
-        }) as MultipleSelectorOptionSH,
-    );
+    const newAccessGroups = currentConfig.accessGroups.map((item) => ({
+      id: item.id,
+      name: item.name,
+      path: item.path,
+      value: item.value,
+      label: item.label,
+    }));
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
-    setValue(`${settingLocation}.accessGroups`, newAccessGroups || []);
+    setValue(`${settingLocation}.accessGroups`, newAccessGroups);
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
@@ -86,7 +86,7 @@ const AppConfigPage: React.FC = () => {
   }, [areSettingsVisible, settingLocation, appConfigs, setValue]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorOptionSH[], fieldName: string) => {
-    const currentGroups = (getValues(`${fieldName}`) as MultipleSelectorOptionSH[]) || [];
+    const currentGroups = (getValues(fieldName) as MultipleSelectorOptionSH[]) || [];
 
     const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
       newGroups.some((newGroup) => newGroup.value === currentGroup.value),
@@ -97,7 +97,7 @@ const AppConfigPage: React.FC = () => {
         (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
       ),
     ];
-    setValue(`${fieldName}`, combinedGroups, { shouldValidate: true });
+    setValue(fieldName, combinedGroups, { shouldValidate: true });
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
@@ -115,8 +115,7 @@ const AppConfigPage: React.FC = () => {
           acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
           return acc;
         }, {} as AppConfigOptions) || {},
-      accessGroups:
-        (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorOptionSH[]).map((item) => item.label) || [],
+      accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
     };
 
     const updatedConfig = appConfigs.map((entry) => {
@@ -217,7 +216,7 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-hidden">
+      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={t('settings.description')}

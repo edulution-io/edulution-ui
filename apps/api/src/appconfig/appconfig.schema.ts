@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AppConfigOptions, AppIntegrationType } from '@libs/appconfig/types';
+import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
 
 @Schema({ timestamps: true, strict: true })
 export class AppConfig extends Document {
@@ -17,7 +18,7 @@ export class AppConfig extends Document {
   options: AppConfigOptions;
 
   @Prop({ type: Object, default: {} })
-  accessGroups: string[];
+  accessGroups: MultipleSelectorGroup[];
 }
 
 export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
