@@ -39,6 +39,7 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/mongoose": "^10.0.6",
     "@nestjs/platform-express": "^10.0.2",
+    "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.3.1",
     "@onlyoffice/document-editor-react": "^1.4.1",
     "@radix-ui/react-accordion": "^1.2.0",

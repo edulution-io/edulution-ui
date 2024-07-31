@@ -104,6 +104,7 @@
       "CreationFailed": "Erstellen fehlgeschlagen",
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
+      "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
     },
     "tooltips": {
@@ -310,6 +311,8 @@
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
     "title": "Dateien hochladen",
+    "dataLimitExceeded": "Datenlimit von 50MB überschritten",
+    "fileSize": "Dateigröße",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",

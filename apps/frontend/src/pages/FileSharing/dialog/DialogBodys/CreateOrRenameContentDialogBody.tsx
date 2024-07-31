@@ -17,6 +17,7 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
         labelTranslationId=""
         isLoading={false}
         variant="default"
+        defaultValue=""
       />
     </form>
   </Form>
