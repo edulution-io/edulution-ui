@@ -105,7 +105,7 @@ class FilesharingService {
 
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

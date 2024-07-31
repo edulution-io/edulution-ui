@@ -35,6 +35,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSelectedFileType,
     setMoveItemsToPath,
     setFilesToUpload,
+    isSubmitButtonInActive,
+    setSubmitButtonIsInActive,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
 
@@ -70,6 +72,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
 
       await Promise.all(uploadPromises);
     } else {
+      setSubmitButtonIsInActive(false);
       await handleItemAction(action, endpoint, httpMethod, type, data);
     }
 
@@ -80,6 +83,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const handelOpenChange = () => {
     if (isDialogOpen) {
       closeDialog();
+      setSubmitButtonIsInActive(false);
       form.reset();
     } else {
       openDialog(action);
@@ -114,7 +118,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <Button
                 variant="btn-collaboration"
-                disabled={isLoading}
+                disabled={isLoading || isSubmitButtonInActive}
                 size="lg"
                 type="submit"
                 onClick={handleFormSubmit}
