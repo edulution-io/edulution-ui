@@ -102,21 +102,11 @@ class UsersService {
     }
 
     const existingUser = await this.userModel.findOne({ username });
-    if (!existingUser) {
+    if (!existingUser || !existingUser.password) {
       throw new CustomHttpException(UserErrorMessages.NotAbleToGetUserError, HttpStatus.NOT_FOUND);
     }
-    if (!existingUser.password) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToGetUserPasswordError, HttpStatus.NOT_FOUND);
-    }
 
-    let decryptedPassword = '';
-    try {
-      decryptedPassword = getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
-    } catch (error) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToDecryptPasswordError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    return decryptedPassword;
+    return getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
   }
 }
 

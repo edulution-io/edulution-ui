@@ -469,9 +469,7 @@
   },
   "users": {
     "errors": {
-      "NotAbleToGetUserError": "User does not exist",
-      "NotAbleToGetUserPasswordError": "Database access failed",
-      "NotAbleToDecryptPasswordError": "Access failed"
+      "NotAbleToGetUserError": "User does not exist"
     }
   }
 }

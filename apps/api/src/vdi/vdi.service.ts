@@ -101,8 +101,8 @@ class VdiService {
 
   async createSession(guacamoleDto: GuacamoleDto, username: string) {
     const { dataSource, authToken, hostname } = guacamoleDto;
-    const password = await this.usersService.getPassword(username);
     try {
+      const password = await this.usersService.getPassword(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,

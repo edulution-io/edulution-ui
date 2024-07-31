@@ -469,9 +469,7 @@
   },
   "users": {
     "errors": {
-      "NotAbleToGetUserError": "Benutzer existiert nicht",
-      "NotAbleToGetUserPasswordError": "Datenbankzugriff fehlgeschlagen",
-      "NotAbleToDecryptPasswordError": "Zugriff fehlgeschlagen"
+      "NotAbleToGetUserError": "Benutzer existiert nicht"
     }
   }
 }
