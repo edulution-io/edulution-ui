@@ -37,7 +37,7 @@ const RadioGroupFormField = ({
       name={name}
       render={({ field }) => (
         <FormItem className={cn('space-y-3', formClassname)}>
-          <p className={labelClassname}>{t(titleTranslationId)}</p>
+          <h4 className={labelClassname}>{t(titleTranslationId)}</h4>
           <FormControl>
             <RadioGroupSH
               onValueChange={field.onChange}
