@@ -8,6 +8,7 @@ import cn from '@/lib/utils';
 export interface RadioGroupItem {
   value: string;
   translationId: string;
+  disabled: boolean;
 }
 
 interface RadioGroupProps {
@@ -48,7 +49,10 @@ const RadioGroupFormField = ({
                 <FormItem key={`${item.value}`}>
                   <FormLabel className="flex cursor-pointer items-center space-x-3 space-y-0 text-base">
                     <FormControl>
-                      <RadioGroupItemSH value={item.value} />
+                      <RadioGroupItemSH
+                        value={item.value}
+                        disabled={item.disabled}
+                      />
                     </FormControl>
                     <span>{t(item.translationId)}</span>
                   </FormLabel>
