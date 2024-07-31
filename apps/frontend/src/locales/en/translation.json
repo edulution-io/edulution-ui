@@ -214,7 +214,10 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
-    "clearSelection": "Clear selection"
+    "clearSelection": "Clear selection",
+    "errors": {
+      "NotAbleToReadEnvironmentVariablesError": "Not able to read environment variables"
+    }
   },
   "form": {
     "path": "Path",
@@ -372,5 +375,20 @@
       "CouldNotSearchGroups": "Could not search for groups"
     },
     "classes": "Classes"
+  },
+  "imap": {
+    "errors": {
+      "NotAbleToConnectClientError": "Could not connect to the imap server",
+      "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
+      "NotAbleToFetchMailsError": "Could not fetch mails",
+      "NotValidPortTypeError": "The port must be specified as a number"
+    }
+  },
+  "users": {
+    "errors": {
+      "NotAbleToGetUserError": "User could not be found",
+      "NotAbleToGetUserPasswordError": "User password could not be found",
+      "NotAbleToDecryptPasswordError": "Password could not be decrypted"
+    }
   }
 }

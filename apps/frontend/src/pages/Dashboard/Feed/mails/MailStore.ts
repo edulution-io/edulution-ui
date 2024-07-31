@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import MAIL_ENDPOINT from '@libs/dashboard/constants/mail-endpoint';
+import MAIL_PATH from '@libs/dashboard/constants/mail-endpoint';
 import MailDto from '@libs/dashboard/types/mail.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -23,7 +23,7 @@ const useMailStore = create<MailStore>((set) => ({
   getMails: async (): Promise<MailDto[]> => {
     set({ isLoading: true, fetchedNewMails: false });
     try {
-      const response = await eduApi.get<MailDto[]>(MAIL_ENDPOINT);
+      const response = await eduApi.get<MailDto[]>(MAIL_PATH);
       const mails = response.data;
       set({ mails, fetchedNewMails: mails.length > 0 });
       return mails;

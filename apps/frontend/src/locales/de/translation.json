@@ -216,7 +216,10 @@
     "create": "Erstellen",
     "icon": "Icon",
     "groups": "Gruppen",
-    "clearSelection": "Auswahl löschen"
+    "clearSelection": "Auswahl löschen",
+    "errors": {
+      "NotAbleToReadEnvironmentVariablesError": "Konnte Umgebungsvariablen nicht lesen"
+    }
   },
   "form": {
     "path": "Link",
@@ -374,5 +377,20 @@
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
     },
     "classes": "Klassen"
+  },
+  "imap": {
+    "errors": {
+      "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
+      "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
+      "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
+      "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden"
+    }
+  },
+  "users": {
+    "errors": {
+      "NotAbleToGetUserError": "Benutzer konnte nicht gefunden werden",
+      "NotAbleToGetUserPasswordError": "Benutzerpasswort konnte nicht gefunden werden",
+      "NotAbleToDecryptPasswordError": "Passwort konnte nicht entschlüsselt werden"
+    }
   }
 }

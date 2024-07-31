@@ -1,3 +1,5 @@
-const MAIL_ENDPOINT = 'mails/';
+export const MAIL_ENDPOINT = 'mails';
 
-export default MAIL_ENDPOINT;
+const MAIL_PATH = 'mails/';
+
+export default MAIL_PATH;
