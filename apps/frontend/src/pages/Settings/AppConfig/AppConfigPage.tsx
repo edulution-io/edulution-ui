@@ -19,6 +19,7 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
@@ -29,6 +30,7 @@ const AppConfigPage: React.FC = () => {
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
+  const isMobileView = useIsMobileView();
 
   useEffect(() => {
     setSettingLocation(pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '');
@@ -134,7 +136,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column w-2/3 space-y-6"
+            className="column space-y-6 md:w-2/3"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
@@ -219,7 +221,7 @@ const AppConfigPage: React.FC = () => {
       <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
-          description={t('settings.description')}
+          description={!isMobileView ? t('settings.description') : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
         {settingsForm()}
