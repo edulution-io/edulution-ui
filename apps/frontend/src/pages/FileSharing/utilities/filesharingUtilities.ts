@@ -65,6 +65,11 @@ export function formatBytes(bytes: number, decimals = 2): string {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
+export function bytesToMegabytes(bytes: number): number {
+  const bytesPerMB = 1048576;
+  return bytes / bytesPerMB;
+}
+
 export function getElapsedTime(dateParam: Date): string {
   if (!dateParam) {
     return translateKey('timeAgo.invalidDate');
