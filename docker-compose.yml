@@ -15,46 +15,35 @@ services:
     restart: always
     environment:
       EDUI_PORT: 3000
-      EDUI_TOTP_SECRET: JBSWY3DPEHPK3PXP
+      EDUI_TOTP_SECRET: <SECRET>
 
-      LMN_VDI_API_URL: http://10.0.0.1:5555
-      LMN_VDI_API_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      LMN_VDI_API_URL: <LMNVDIURL>
+      LMN_VDI_API_SECRET: <LMNVDISECRET>
 
-      GUACAMOLE_API_URL: http://localhost:8081
-      GUACAMOLE_API_USER: 'admin'
-      GUACAMOLE_API_PASSWORD: 'DemoMuster123!'
+      GUACAMOLE_API_URL: <GUACAMOLEURL>
+      GUACAMOLE_API_USER: <GUACAMOLEUSER>
+      GUACAMOLE_API_PASSWORD: <GUACAMOLEPASSWORD>
 
-      PUBLIC_KEY_FILE_PATH: public.pem
+      PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
 
       EDUI_CORS_URL: '*'
 
       MONGODB_DATABASE_NAME: edulution
-      MONGODB_USERNAME: root
-      MONGODB_PASSWORD: example
-      MONGODB_SERVER_URL: mongodb://root:example@mongoEdu:27017/
+      MONGODB_USERNAME: <DBUSER>
+      MONGODB_PASSWORD: <DBPASSWORD>
+      MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
 
-      KEYCLOAK_API: https://auth.schulung.multi.schule/auth/admin/realms/edulution/
+      KEYCLOAK_API: <KEYCLOAKURL>
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
+      - ./public/downloads:/opt/edulution/public/downloads
 
   mongoEdu:
     container_name: mongoEdu
-    image: mongo
+    image: mongo:7
     restart: always
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
-  # A simole web frontend for mongoDB
-  # mongoEdu-express:
-  #   image: mongo-express
-  #   restart: always
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: <DBUSER>
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: <DBPASSWORD>
-  #     ME_CONFIG_MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
-  #     ME_CONFIG_BASICAUTH: false
+      MONGO_INITDB_ROOT_USERNAME: <DBUSER>
+      MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>

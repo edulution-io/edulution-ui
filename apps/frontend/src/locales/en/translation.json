@@ -17,7 +17,12 @@
       "downloadApp": "Download the edulution-io app here:"
     }
   },
-  "auth": { "errors": { "TokenExpired": "Session expired", "SessionExpiring": "You will be logged out in 1 minute." } },
+  "auth": {
+    "errors": {
+      "TokenExpired": "Session expired",
+      "SessionExpiring": "You will be logged off in less than a minute."
+    }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
@@ -88,7 +93,26 @@
   },
   "filesharing": {
     "title": "FILE SHARING",
-    "sidebar": "File Sharing"
+    "sidebar": "File Sharing",
+    "errors": {
+      "FileNotFound": "File not found",
+      "MountPointsNotFound": "Mount points not found",
+      "FolderNotFound": "Folder not found",
+      "UploadFailed": "File could not be added",
+      "DeletionFailed": "Deletion failed",
+      "RenameFailed": "Rename failed",
+      "MoveFailed": "Move failed",
+      "CreationFailed": "Creation failed",
+      "DbAccessFailed": "Database access failed",
+      "WebDavError": "Data server access failed",
+      "FolderCreationFailed": "Folder creation failed"
+    },
+    "tooltips": {
+      "folderNameRequired": "Folder name is required",
+      "FileNameRequired": "File name is required",
+      "NewFileNameRequired": "New file name is required",
+      "NameRequired": "Name is required"
+    }
   },
   "forums": {
     "title": "FORUMS",
@@ -119,8 +143,28 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop Deployment",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "reload": "Reload",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients available",
+    "client": "Client available",
+    "errors": {
+      "GuacamoleNotResponding": "RDP service not available.",
+      "GuacamoleUserNotFound": "Username or password could not be found.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
+      "SessionNotFound": "Session not found."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -174,13 +218,38 @@
     }
   },
   "usersettings": {
-    "title": "USER",
-    "sidebar": "Settings",
-    "security": "Security",
+    "title": "USER SETTINGS",
+    "sidebar": "User settings",
+    "split-title": "USER SETTINGS",
+    "description": "Here you can view all your user-defined settings and adjust them if necessary.",
+    "security": {
+      "title": "Security",
+      "sidebar": "Security",
+      "description": "Configure here the security settings of your account",
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "confirm": "Change Password"
+      }
+    },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
-    "config": { "mfa": "Setup Two-Factor-Authentication" },
-    "addTotp": { "title": "QR-Code", "description": "Please scan the QR-Code and enter the TOTP:" }
+    "config": {
+      "mfa": "Setup Two-Factor-Authentication"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Please scan the QR-Code and enter the TOTP:"
+    },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "confirmPasswordRequired": "Repeat the new password for the confirmation",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 8 characters long"
+    }
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
@@ -200,6 +269,9 @@
     "remember_me": "Remember me"
   },
   "common": {
+    "errors": {
+      "NotAbleToReadEnvironmentVariablesError": "Not able to read environment variables"
+    },
     "add": "Add",
     "reload": "Reload",
     "logout": "Logout",
@@ -215,9 +287,8 @@
     "icon": "Icon",
     "groups": "Groups",
     "clearSelection": "Clear selection",
-    "errors": {
-      "NotAbleToReadEnvironmentVariablesError": "Not able to read environment variables"
-    }
+    "start": "Start",
+    "close": "Close"
   },
   "form": {
     "path": "Path",
@@ -235,7 +306,7 @@
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
-    "filename": "File Name",
+    "filename": "Filename",
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type"
@@ -246,7 +317,8 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
-    "filesToUpload": "Files to upload"
+    "filesToUpload": "Files to upload",
+    "limitExceeded": "Reached the limit of 5 files"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -275,15 +347,30 @@
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Presentation",
+    "spreadsheet": "Table",
+    "vector": "Diagram"
   },
   "fileCreateNewContent": {
+    "documentFile": "Create a new document",
+    "spreadsheetFile": "Create a new table",
+    "presentationFile": "Create a new presentation",
+    "textFile": "Create a new textfile",
+    "drawIoFile": "Create a new Draw.io-File",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
-    "unknownErrorOccurred": "An unknown error occurred"
+    "unknownErrorOccurred": "An unknown error occurred",
+    "newFileFromType": {
+      "drawIoFile": "New Draw.io-File",
+      "textFile": "New Textfile",
+      "spreadsheetFile": "New Table",
+      "presentationFile": "New Presentation",
+      "documentFile": "New Document"
+    }
   },
   "fileRenameContent": {
     "placeholder": "Enter new name",
@@ -350,6 +437,7 @@
     "directory_created_successfully": "Directory {{directoryName}} created successfully",
     "file_created_successfully": "File {{fileName}} created successfully",
     "file_was_deleted_successfully": "File {{fileName}} was deleted successfully",
+    "files_deleted_successfully": "File was deleted successfully",
     "all_items_moved_successfully": "All items moved successfully",
     "destination_path_is_undefined": "Destination path is undefined"
   },

@@ -17,5 +17,6 @@ import GroupsModule from '../groups/groups.module';
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export default class UsersModule {}

@@ -23,7 +23,7 @@ const RunningConferencesAccordionItem = () => {
   }, FEED_PULL_TIME_INTERVAL);
 
   useEffect(() => {
-      void getConferences();
+    void getConferences();
   }, []);
 
   // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
