@@ -469,9 +469,9 @@
   },
   "users": {
     "errors": {
-      "NotAbleToGetUserError": "User could not be found",
-      "NotAbleToGetUserPasswordError": "User password could not be found",
-      "NotAbleToDecryptPasswordError": "Password could not be decrypted"
+      "NotAbleToGetUserError": "User does not exist",
+      "NotAbleToGetUserPasswordError": "Database access failed",
+      "NotAbleToDecryptPasswordError": "Access failed"
     }
   }
 }
