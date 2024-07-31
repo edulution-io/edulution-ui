@@ -147,7 +147,7 @@ const useFileSharingStore = create<FileSharingStore>(
       setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
       setSelectedItems: (items: DirectoryFileDTO[]) => set({ selectedItems: items }),
 
-      reset: () => set({ ...initialState }),
+      reset: () => set(initialState),
     }),
     {
       name: 'filesharing-storage',
