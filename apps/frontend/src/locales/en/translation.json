@@ -269,6 +269,10 @@
     "remember_me": "Remember me"
   },
   "common": {
+    "errors": {
+      "NotAbleToReadFromDataBaseError": "Database access failed",
+      "NotAbleToReadEnvironmentVariablesError": "Not able to read environment variables"
+    },
     "add": "Add",
     "reload": "Reload",
     "logout": "Logout",
@@ -462,5 +466,12 @@
       "CouldNotSearchGroups": "Could not search for groups"
     },
     "classes": "Classes"
+  },
+  "users": {
+    "errors": {
+      "NotAbleToGetUserError": "User could not be found",
+      "NotAbleToGetUserPasswordError": "User password could not be found",
+      "NotAbleToDecryptPasswordError": "Password could not be decrypted"
+    }
   }
 }

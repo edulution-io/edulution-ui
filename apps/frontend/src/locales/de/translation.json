@@ -269,6 +269,10 @@
     "remember_me": "Merken"
   },
   "common": {
+    "errors": {
+      "NotAbleToReadFromDataBaseError": "Datenbankzugriff fehlgeschlagen",
+      "NotAbleToReadEnvironmentVariablesError": "Konnte Umgebungsvariablen nicht lesen"
+    },
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -462,5 +466,12 @@
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
     },
     "classes": "Klassen"
+  },
+  "users": {
+    "errors": {
+      "NotAbleToGetUserError": "Benutzer konnte nicht gefunden werden",
+      "NotAbleToGetUserPasswordError": "Benutzerpasswort konnte nicht gefunden werden",
+      "NotAbleToDecryptPasswordError": "Passwort konnte nicht entschlüsselt werden"
+    }
   }
 }

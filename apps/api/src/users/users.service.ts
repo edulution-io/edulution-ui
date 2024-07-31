@@ -1,8 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { getDecryptedPassword } from '@libs/common/utils';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import UserErrorMessages from '@libs/user/user-error-messages';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import CreateUserDto from './dto/create-user.dto';
@@ -85,6 +89,34 @@ class UsersService {
           user.username?.toLowerCase().includes(searchString),
       )
       .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
+  }
+
+  async getPassword(username: string): Promise<string> {
+    const { EDUI_ENCRYPTION_KEY } = process.env;
+
+    if (!EDUI_ENCRYPTION_KEY) {
+      throw new CustomHttpException(
+        CommonErrorMessages.NotAbleToReadEnvironmentVariablesError,
+        HttpStatus.FAILED_DEPENDENCY,
+      );
+    }
+
+    const existingUser = await this.userModel.findOne({ username });
+    if (!existingUser) {
+      throw new CustomHttpException(UserErrorMessages.NotAbleToGetUserError, HttpStatus.NOT_FOUND);
+    }
+    if (!existingUser.password) {
+      throw new CustomHttpException(UserErrorMessages.NotAbleToGetUserPasswordError, HttpStatus.NOT_FOUND);
+    }
+
+    let decryptedPassword = '';
+    try {
+      decryptedPassword = getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
+    } catch (error) {
+      throw new CustomHttpException(UserErrorMessages.NotAbleToDecryptPasswordError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return decryptedPassword;
   }
 }
 
