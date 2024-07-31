@@ -8,6 +8,7 @@ import { HiDocument, HiXMark } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import Progress from '@/components/ui/Progress';
 import { MAX_FILE_UPLOAD_SIZE, MAX_FILE_UPLOAD_SIZE_UNIT } from '@libs/ui/constants/maxFileUploadSize';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 
 interface DropZoneProps {
   files: File[];
@@ -17,6 +18,7 @@ interface DropZoneProps {
 const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   const { t } = useTranslation();
   const [fileUploadSize, setFileUploadSize] = useState(0);
+  const { setSubmitButtonIsInActive } = useFileSharingDialogStore();
 
   const removeFile = (name: string) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
@@ -25,6 +27,11 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   useEffect(() => {
     const totalSize = files.reduce((total, file) => total + bytesToMegabytes(file.size), 0);
     setFileUploadSize(totalSize);
+    if (totalSize > MAX_FILE_UPLOAD_SIZE || totalSize === 0) {
+      setSubmitButtonIsInActive(true);
+    } else {
+      setSubmitButtonIsInActive(false);
+    }
   }, [files]);
 
   const onDrop = useCallback(
@@ -48,13 +55,13 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         <input {...getInputProps()} />
         {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
           <div className="flex flex-col items-center justify-center space-y-2">
-            <p className="font-semibold text-gray-700">
+            <p className="font-semibold text-foreground">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <p className="font-bold">
+          <p className="font-bold text-red-500">
             {fileUploadSize > MAX_FILE_UPLOAD_SIZE
               ? t('filesharingUpload.dataLimitExceeded')
               : t('filesharingUpload.limitExceeded')}
@@ -64,7 +71,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
       <div>
         <Progress value={(fileUploadSize / MAX_FILE_UPLOAD_SIZE) * 100} />
         <div className="flex flex-row justify-between text-foreground">
-          <p>{t('filesharingUpload.fileSize')}:</p>
+          <p>{t('filesharingUpload.fileSize')}</p>
           <p>
             {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}
             {MAX_FILE_UPLOAD_SIZE_UNIT}
