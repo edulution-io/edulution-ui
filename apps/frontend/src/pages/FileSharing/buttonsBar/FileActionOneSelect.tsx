@@ -6,6 +6,8 @@ import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
+import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import { MAX_FILE_UPLOAD_SIZE } from '@libs/ui/constants/maxFileUploadSize';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileSharingStore();
@@ -31,7 +33,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         text={t('tooltip.rename')}
         onClick={() => openDialog(FileActionType.RENAME_FILE_FOLDER)}
       />
-      {selectedItem?.type === ContentType.FILE && (
+      {selectedItem?.type === ContentType.FILE && bytesToMegabytes(selectedItem?.size || 0) < MAX_FILE_UPLOAD_SIZE && (
         <FloatingActionButton
           icon={MdDownload}
           text={t('tooltip.download')}

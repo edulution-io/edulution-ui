@@ -1,10 +1,13 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiDocument, HiXMark } from 'react-icons/hi2';
+import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import Progress from '@/components/ui/Progress';
+import { MAX_FILE_UPLOAD_SIZE, MAX_FILE_UPLOAD_SIZE_UNIT } from '@libs/ui/constants/maxFileUploadSize';
 
 interface DropZoneProps {
   files: File[];
@@ -13,10 +16,16 @@ interface DropZoneProps {
 
 const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   const { t } = useTranslation();
+  const [fileUploadSize, setFileUploadSize] = useState(0);
 
   const removeFile = (name: string) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
+
+  useEffect(() => {
+    const totalSize = files.reduce((total, file) => total + bytesToMegabytes(file.size), 0);
+    setFileUploadSize(totalSize);
+  }, [files]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -37,7 +46,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
     <form>
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-        {files.length < 5 ? (
+        {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
           <div className="flex flex-col items-center justify-center space-y-2">
             <p className="font-semibold text-gray-700">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
@@ -45,8 +54,22 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <p className="font-bold text-red-700">{t('filesharingUpload.limitExceeded')}</p>
+          <p className="font-bold">
+            {fileUploadSize > MAX_FILE_UPLOAD_SIZE
+              ? t('filesharingUpload.dataLimitExceeded')
+              : t('filesharingUpload.limitExceeded')}
+          </p>
         )}
+      </div>
+      <div>
+        <Progress value={(fileUploadSize / MAX_FILE_UPLOAD_SIZE) * 100} />
+        <div className="flex flex-row justify-between text-foreground">
+          <p>{t('filesharingUpload.fileSize')}:</p>
+          <p>
+            {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}
+            {MAX_FILE_UPLOAD_SIZE_UNIT}
+          </p>
+        </div>
       </div>
 
       <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
