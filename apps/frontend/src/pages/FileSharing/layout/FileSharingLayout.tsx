@@ -27,7 +27,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ currentlyEditingF
           data={files}
         />
       </div>
-      {currentlyEditingFile && (
+      {currentlyEditingFile && showEditor && (
         <div
           className="w-full md:w-1/2 lg:w-1/3"
           data-testid="test-id-file-preview"

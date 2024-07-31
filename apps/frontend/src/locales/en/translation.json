@@ -312,6 +312,8 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
+    "dataLimitExceeded": "Data limit from 50 MB exceeded",
+    "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
