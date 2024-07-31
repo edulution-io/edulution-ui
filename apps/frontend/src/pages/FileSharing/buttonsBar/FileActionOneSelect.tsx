@@ -7,7 +7,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import { MAX_FILE_UPLOAD_SIZE } from '@libs/ui/constants/maxFileUploadSize';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileSharingStore();

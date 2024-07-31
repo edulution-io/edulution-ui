@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { HiDocument, HiXMark } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import Progress from '@/components/ui/Progress';
-import { MAX_FILE_UPLOAD_SIZE, MAX_FILE_UPLOAD_SIZE_UNIT } from '@libs/ui/constants/maxFileUploadSize';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 
 interface DropZoneProps {
@@ -55,13 +55,13 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         <input {...getInputProps()} />
         {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
           <div className="flex flex-col items-center justify-center space-y-2">
-            <p className="font-semibold text-foreground">
+            <p className="font-semibold text-ciLightGrey">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
             <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
           </div>
         ) : (
-          <p className="font-bold text-red-500">
+          <p className="font-bold text-ciRed">
             {fileUploadSize > MAX_FILE_UPLOAD_SIZE
               ? t('filesharingUpload.dataLimitExceeded')
               : t('filesharingUpload.limitExceeded')}
@@ -73,8 +73,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         <div className="flex flex-row justify-between text-foreground">
           <p>{t('filesharingUpload.fileSize')}</p>
           <p>
-            {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}
-            {MAX_FILE_UPLOAD_SIZE_UNIT}
+            {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}MB
           </p>
         </div>
       </div>
