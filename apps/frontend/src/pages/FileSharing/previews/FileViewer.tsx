@@ -7,7 +7,7 @@ import OnlyOffice from '@/pages/FileSharing/previews/onlyOffice/OnlyOffice';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
-import FilePreviewOptionsBar from '@/pages/FileSharing/buttonsBar/FilePreviewOptionsBar';
+import FileViewerLayout from '@/pages/FileSharing/previews/FileViewerLayout';
 
 interface FileViewerProps {
   mode: 'view' | 'edit';
@@ -79,11 +79,10 @@ const FileViewer: FC<FileViewerProps> = ({ mode }) => {
   };
 
   return (
-    <div className="flex w-full flex-row">
-      <FilePreviewOptionsBar />
-      <div className="flex-grow">{renderComponent()}</div>
-      <FilePreviewOptionsBar />
-    </div>
+    <FileViewerLayout
+      isLoading={isLoading}
+      renderComponent={renderComponent}
+    />
   );
 };
 

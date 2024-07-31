@@ -26,7 +26,7 @@ const useDownloadLinks = (file: DirectoryFileDTO) => {
 
         if (isOnlyOfficeDocument(file.filename)) {
           const publicLink = await getDownloadLinkURL(file.filename, file.basename);
-          setPublicDownloadLink(publicLink || '');
+          setPublicDownloadLink(publicLink || ' ');
         }
 
         setIsLoading(false);
