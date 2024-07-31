@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
@@ -19,12 +18,6 @@ type NativeAppPageProps = {
   page: APPS;
 };
 
-const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) =>
-  pages[page] || (
-    <Navigate
-      replace
-      to="/"
-    />
-  );
+const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) => pages[page];
 
 export default NativeAppPage;
