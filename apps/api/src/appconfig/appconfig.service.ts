@@ -57,7 +57,7 @@ class AppConfigService {
       } else {
         const appConfigObjects = await this.appConfigModel.find(
           {
-            accessGroups: { $in: ldapGroups },
+            'accessGroups.path': { $in: ldapGroups },
           },
           'name icon appType options',
         );
