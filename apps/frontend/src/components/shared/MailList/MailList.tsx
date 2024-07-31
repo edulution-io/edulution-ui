@@ -1,22 +1,11 @@
-import React, { ComponentProps } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import cn from '@/lib/utils';
 import { APPS } from '@libs/appconfig/types';
 import MailDto from '@libs/dashboard/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { BadgeSH } from '@/components/ui/BadgeSH';
-
-function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
-  if (['work'].includes(label.toLowerCase())) {
-    return 'default';
-  }
-
-  if (['personal'].includes(label.toLowerCase())) {
-    return 'outline';
-  }
-
-  return 'secondary';
-}
+import { getBadgeVariantFromLabel } from '@/components/shared/MailList/mail-list-get-badge-variant-from-label';
 
 interface MailListProps {
   items: MailDto[];
@@ -25,23 +14,20 @@ interface MailListProps {
 
 const MailList = ({ items, className }: MailListProps) => {
   const renderLabelBadges = (item: MailDto) => {
-    const shouldShowBadges = !!(item.labels?.size && item.labels.size > 0);
-
-    const badges: React.ReactNode[] = [];
-    if (shouldShowBadges) {
-      // eslint-disable-next-line no-restricted-syntax, guard-for-in
-      for (const label in item.labels) {
-        badges.push(
-          <BadgeSH
-            key={label}
-            variant={getBadgeVariantFromLabel(label)}
-          >
-            {label}
-          </BadgeSH>,
-        );
-      }
+    if (!item.labels || item.labels.size === 0) {
+      return null;
     }
-    return shouldShowBadges && badges.length > 0 ? <div className="flex items-center gap-2">{badges}</div> : null;
+
+    const badges = Array.from(item.labels).map((label) => (
+      <BadgeSH
+        key={label}
+        variant={getBadgeVariantFromLabel(label)}
+      >
+        {label}
+      </BadgeSH>
+    ));
+
+    return <div className="flex items-center gap-2">{badges}</div>;
   };
 
   // TODO: Discuss
@@ -59,11 +45,9 @@ const MailList = ({ items, className }: MailListProps) => {
             )}
           >
             <div className="flex w-full flex-col gap-1">
-              <div className="flex items-center">
-                <div className="flex items-center gap-2">
-                  <div className="font-semibold">{item.from?.value[0].name || item.from?.value[0].address}</div>
-                  <span className="flex h-2 w-2 rounded-full bg-ciLightGreen" />
-                </div>
+              <div className="flex items-center gap-2 font-semibold">
+                <>{item.from?.value[0].name || item.from?.value[0].address}</>
+                <span className="flex h-2 w-2 rounded-full bg-ciLightGreen" />
               </div>
               <div className="text-xs font-medium">{item.subject}</div>
             </div>

@@ -88,8 +88,8 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Es wurden keine laufenden Konferenzen gefunden",
-    "noMails": "Es konnten keine ungelesenen Mails gefunden/geladen werden"
+    "noConferences": "Keine laufende Konferenz",
+    "noMails": "Keine ungelesenen Mails"
   },
   "filesharing": {
     "title": "FILESHARING",
@@ -270,6 +270,7 @@
   },
   "common": {
     "errors": {
+      "NotAbleToReadFromDataBaseError": "Datenbankzugriff fehlgeschlagen",
       "NotAbleToReadEnvironmentVariablesError": "Konnte Umgebungsvariablen nicht lesen"
     },
     "add": "Hinzufügen",

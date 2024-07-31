@@ -12,8 +12,6 @@ import {
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
-import { getDecryptedPassword } from '@libs/common/utils';
-import UsersService from '../users/users.service';
 
 const {
   LMN_VDI_API_SECRET,
@@ -21,7 +19,6 @@ const {
   GUACAMOLE_API_URL,
   GUACAMOLE_API_PASSWORD,
   GUACAMOLE_API_USER,
-  EDUI_ENCRYPTION_KEY,
 } = process.env;
 
 @Injectable()
@@ -32,7 +29,7 @@ class VdiService {
 
   private vdiId = '';
 
-  constructor(private usersService: UsersService) {
+  constructor() {
     this.guacamoleApi = axios.create({
       baseURL: `${GUACAMOLE_API_URL}/guacamole/api`,
     });
@@ -98,26 +95,16 @@ class VdiService {
     }
   }
 
-  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string) {
+  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
     const identifier = await this.getConnection(guacamoleDto, username);
     if (identifier != null) {
-      return this.updateSession(guacamoleDto, username);
+      return this.updateSession(guacamoleDto, username, password);
     }
-    return this.createSession(guacamoleDto, username);
+    return this.createSession(guacamoleDto, username, password);
   }
 
-  async findPwByUsername(username: string) {
-    const user = await this.usersService.findOne(username);
-    if (!user || !user.password || !EDUI_ENCRYPTION_KEY)
-      throw new CustomHttpException(VdiErrorMessages.GuacamoleUserNotFound, HttpStatus.BAD_GATEWAY);
-    const encryptedPassword = user.password;
-    const password = getDecryptedPassword(encryptedPassword, EDUI_ENCRYPTION_KEY);
-    return password;
-  }
-
-  async createSession(guacamoleDto: GuacamoleDto, username: string) {
+  async createSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
     const { dataSource, authToken, hostname } = guacamoleDto;
-    const password = await this.findPwByUsername(username);
     try {
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
@@ -135,10 +122,9 @@ class VdiService {
     }
   }
 
-  async updateSession(guacamoleDto: GuacamoleDto, username: string) {
+  async updateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
     try {
       const { dataSource, authToken, hostname } = guacamoleDto;
-      const password = await this.findPwByUsername(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,

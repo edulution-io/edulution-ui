@@ -5,24 +5,32 @@ import { MailIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
 import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
-import MailList from '@/components/shared/MailList';
+import MailList from '@/components/shared/MailList/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailStore from '@/pages/Dashboard/Feed/mails/MailStore';
+import useNotificationStore from "@/store/useNotificationStore";
 
-const UnreadMailsAccordionItem = () => {
+const MailsAccordionItem = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const { mails, getMails } = useMailStore();
+  const { updateAppData, resetAppData } = useNotificationStore();
 
   const { t } = useTranslation();
 
   useInterval(() => {
-    void getMails();
+
+    console.log('intervall to fetch mails')
+
+    void getMails(updateAppData, resetAppData);
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
-    void getMails();
+
+    console.log('initial mail fetch')
+
+    void getMails(updateAppData, resetAppData);
   }, []);
 
   // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
@@ -56,4 +64,4 @@ const UnreadMailsAccordionItem = () => {
   );
 };
 
-export default UnreadMailsAccordionItem;
+export default MailsAccordionItem;

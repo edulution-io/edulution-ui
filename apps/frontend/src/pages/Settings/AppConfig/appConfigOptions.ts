@@ -31,6 +31,7 @@ type AppConfigOption = {
   icon: string;
   color: string;
   options?: AppConfigOptionType[];
+  allowNotifications?: boolean;
 };
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
@@ -40,7 +41,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
   },
-  { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url'] },
+  { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url'], allowNotifications: true },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url'] },
   {
     id: APPS.CONFERENCES,
