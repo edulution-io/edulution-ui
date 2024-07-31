@@ -17,6 +17,8 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
 import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
 import useUserStore from '@/store/UserStore/UserStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -35,9 +37,12 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const { user } = useUserStore();
   const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
   const filteredSegment = filterSegments(segments);
-
+  const { setShowEditor } = useFileEditorStore();
+  const { setCurrentlyEditingFile } = useFileSharingStore();
   const handleSegmentClick = (segment: string) => {
     const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
+    setShowEditor(false);
+    setCurrentlyEditingFile(null);
     onNavigate(pathTo);
   };
 

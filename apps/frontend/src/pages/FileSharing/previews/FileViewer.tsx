@@ -79,9 +79,9 @@ const FileViewer: FC<FileViewerProps> = ({ mode }) => {
   };
 
   return (
-    <div className="grid-rows-0 grid">
-      <p>p</p>
-      {renderComponent()}
+    <div className="flex w-full flex-row">
+      <FilePreviewOptionsBar />
+      <div className="flex-grow">{renderComponent()}</div>
       <FilePreviewOptionsBar />
     </div>
   );

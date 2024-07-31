@@ -9,16 +9,17 @@ interface FilePreviewOptionsBarProps {}
 const FilePreviewOptionsBar: FC<FilePreviewOptionsBarProps> = () => {
   const { setCurrentlyEditingFile } = useFileSharingStore();
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-2">
       <Button
         variant="btn-small"
-        className="hover:bg-grey-700 rounded bg-white text-white "
+        className="hover:bg-grey-700 rounded bg-white p-1 text-white"
         onClick={() => setCurrentlyEditingFile(null)}
       >
         <IoMdArrowForward className="inline text-black" />
       </Button>
       <Button
         variant="btn-small"
+        className="p-1"
         onClick={() => {
           window.open('onlyoffice');
         }}
@@ -28,4 +29,5 @@ const FilePreviewOptionsBar: FC<FilePreviewOptionsBarProps> = () => {
     </div>
   );
 };
+
 export default FilePreviewOptionsBar;
