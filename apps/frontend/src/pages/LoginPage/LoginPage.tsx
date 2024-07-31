@@ -64,7 +64,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleRegisterUser = () => {
+  const handleRegisterUser = async () => {
     const profile = auth.user?.profile;
     if (!profile) {
       return;
@@ -76,7 +76,7 @@ const LoginPage: React.FC = () => {
       ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
       password: webdavKey,
     };
-    void createOrUpdateUser(newUser);
+    await createOrUpdateUser(newUser);
   };
 
   useEffect(() => {
@@ -85,14 +85,9 @@ const LoginPage: React.FC = () => {
       return;
     }
     const registerUser = async () => {
-      try {
-        handleRegisterUser();
-        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
-      } catch (error) {
-        // Error is handeled in the store
-      } finally {
-        setLoginComplete(true);
-      }
+      await handleRegisterUser();
+      await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      setLoginComplete(true);
     };
 
     void registerUser();
@@ -100,7 +95,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (loginComplete) {
-      const { from } = (location?.state as LocationState) ?? { from: '/' };
+      const { from } = (location?.state ?? { from: '/' }) as LocationState;
       const toLocation = from === '/login' ? '/' : from;
       navigate(toLocation, {
         replace: true,

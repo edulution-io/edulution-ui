@@ -7,12 +7,13 @@ const useLogout = () => {
   const { logout } = useUserStore();
 
   const handleLogout = async () => {
-    await auth.removeUser();
     await logout();
-    cleanAllStores();
+    await auth.removeUser().then(() => {
+      cleanAllStores();
+    });
   };
 
-  return { handleLogout };
+  return handleLogout;
 };
 
 export default useLogout;

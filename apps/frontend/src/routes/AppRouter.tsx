@@ -14,7 +14,7 @@ const AppRouter: React.FC = () => {
   const { isAuthenticated } = useUserStore();
   const { t } = useTranslation();
   const [tokenIsExpiring, setTokenIsExpiring] = useState(false);
-  const { handleLogout } = useLogout();
+  const handleLogout = useLogout();
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {

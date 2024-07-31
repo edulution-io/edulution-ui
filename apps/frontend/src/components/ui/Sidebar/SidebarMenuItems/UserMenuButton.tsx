@@ -18,7 +18,7 @@ const UserMenuButton: React.FC = () => {
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
   const auth = useAuth();
-  const { handleLogout } = useLogout();
+  const handleLogout = useLogout();
 
   const handleUserSettingsClick = () => {
     navigate(USER_SETTINGS_PATH);
