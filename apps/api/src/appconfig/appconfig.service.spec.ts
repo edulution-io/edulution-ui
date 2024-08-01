@@ -47,6 +47,10 @@ describe('AppConfigService', () => {
             url: 'test/path',
             apiKey: '123456789',
           },
+          accessGroups: [
+            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+          ],
         },
       ];
       await service.insertConfig(appConfigs);
@@ -65,6 +69,10 @@ describe('AppConfigService', () => {
             url: 'test/path',
             apiKey: '123456789',
           },
+          accessGroups: [
+            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+          ],
         },
       ];
       await service.updateConfig(appConfigs);
@@ -80,10 +88,36 @@ describe('AppConfigService', () => {
           icon: 'icon-path',
           appType: AppIntegrationType.EMBEDDED,
           options: {},
+          accessGroups: [
+            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+          ],
         },
       ];
+      const ldapGroups = ['group1', 'group2'];
       mockAppConfigService.getAppConfigs.mockResolvedValue(expectedConfigs);
-      const configs = await service.getAppConfigs();
+      const configs = await service.getAppConfigs(ldapGroups);
+      expect(configs).toEqual(expectedConfigs);
+    });
+  });
+
+  describe('getAppConfigByName', () => {
+    it('should return a app config', async () => {
+      const appConfigName = 'Test';
+      const expectedConfigs = [
+        {
+          name: appConfigName,
+          icon: 'icon-path',
+          appType: AppIntegrationType.EMBEDDED,
+          options: {},
+          accessGroups: [
+            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+          ],
+        },
+      ];
+      mockAppConfigService.getAppConfigByName.mockResolvedValue(expectedConfigs);
+      const configs = await service.getAppConfigByName(appConfigName);
       expect(configs).toEqual(expectedConfigs);
     });
   });

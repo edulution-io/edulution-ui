@@ -5,8 +5,7 @@ import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 
 interface AppConfigTypeSelectProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+  control: Control;
   settingLocation: string;
   appConfig: AppConfigDto[];
 }

@@ -1,3 +1,4 @@
+import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import VdiErrorMessages from '@libs/desktopdeployment/types/vdiErrorMessages';
@@ -9,6 +10,7 @@ type ErrorMessage =
   | GroupsErrorMessage
   | AuthErrorMessages
   | VdiErrorMessages
+  | AppConfigErrorMessages
   | FileSharingErrorMessage;
 
 export default ErrorMessage;
