@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
-import { DirectoryFile } from '@libs/filesharing/types/filesystem';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -22,7 +22,7 @@ interface DataTableProps<TData, TValue> {
 
 const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { setSelectedItems } = useFileSharingStore();
+  const setSelectedItems = useFileSharingStore((state) => state.setSelectedItems);
   const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -46,7 +46,9 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   });
 
   useEffect(() => {
-    const selectedItemFilenames = table.getFilteredSelectedRowModel().rows.map((row) => row.original as DirectoryFile);
+    const selectedItemFilenames = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original as DirectoryFileDTO);
     setSelectedItems(selectedItemFilenames);
   }, [table.getFilteredSelectedRowModel().rows]);
 

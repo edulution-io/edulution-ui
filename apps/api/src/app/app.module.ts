@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { resolve } from 'path';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
@@ -13,6 +15,10 @@ import FilesharingModule from '../filesharing/filesharing.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: resolve(__dirname, '..', 'public', 'downloads'),
+      serveRoot: '/edu-api/downloads',
+    }),
     AppConfigModule,
     UsersModule,
     GroupsModule,

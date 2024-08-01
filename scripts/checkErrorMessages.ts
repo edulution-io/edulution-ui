@@ -1,12 +1,11 @@
 import ts from 'typescript';
 import * as fs from 'fs';
-import * as path from 'path';
+import { join, resolve } from 'path';
 
-// Paths
 const errorMessageFilePath = 'libs/src/error/errorMessage.ts';
 const localesDir = 'apps/frontend/src/locales/';
-const deTranslationFilePath = path.join(localesDir, 'de/translation.json');
-const enTranslationFilePath = path.join(localesDir, 'en/translation.json');
+const deTranslationFilePath = join(localesDir, 'de/translation.json');
+const enTranslationFilePath = join(localesDir, 'en/translation.json');
 
 // Helper function to read and parse JSON files
 const readJsonFile = (filePath: string) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -42,7 +41,7 @@ const parseErrorMessageFile = (filePath: string): string[] => {
     }
   });
 
-  return importPaths.map((importPath) => path.resolve(importPath.replace('@libs', 'libs/src') + '.ts'));
+  return importPaths.map((importPath) => resolve(importPath.replace('@libs', 'libs/src') + '.ts'));
 };
 
 // Function to compare enum full paths with JSON keys
