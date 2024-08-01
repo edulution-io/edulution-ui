@@ -20,8 +20,10 @@
   },
   "auth": {
     "errors": {
-      "TokenExpired": "Session expired",
-      "SessionExpiring": "You will be logged off in less than a minute."
+      "TokenExpired": "Session expired.",
+      "SessionExpiring": "You will be logged off in less than a minute.",
+      "Unauthorized": "You are not authorized.",
+      "Unknown": "User not found."
     }
   },
   "ticketsystem": {
@@ -198,6 +200,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Room booking"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -205,6 +210,7 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
+    "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": {
@@ -219,6 +225,11 @@
         "success": "App created",
         "failed": "App creation failed"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "Save app failed",
+      "ReadAppConfigFailed": "Read app failed",
+      "DisableAppConfigFailed": "Disable app failed"
     }
   },
   "usersettings": {
@@ -466,5 +477,9 @@
       "CouldNotSearchGroups": "Could not search for groups"
     },
     "classes": "Classes"
+  },
+  "permission": {
+    "groups": "User groups",
+    "selectGroupsDescription": "Select the user groups that should have access to the app."
   }
 }

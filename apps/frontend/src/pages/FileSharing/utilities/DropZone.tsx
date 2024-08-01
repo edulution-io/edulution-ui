@@ -50,7 +50,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   }`;
 
   return (
-    <form>
+    <form className="overflow-auto">
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
         {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
@@ -115,9 +115,9 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           {files.map((file, i) => (
             <li
               key={file.name}
-              className="flex w-full items-center justify-between rounded bg-white p-2 shadow"
+              className="flex w-full items-center justify-between overflow-hidden rounded bg-white p-2 shadow"
             >
-              <span className="w-full truncate">{`${i + 1}. ${file.name}`}</span>
+              <span className="w-full overflow-hidden truncate whitespace-nowrap">{`${i + 1}. ${file.name}`}</span>
             </li>
           ))}
         </ol>
