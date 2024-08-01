@@ -2,13 +2,12 @@ import { PlusIcon, SettingsIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
-  const [, setSearchParams] = useSearchParams();
-  const { appConfigs } = useAppConfigsStore();
+  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen } = useAppConfigsStore();
 
   const settingsMenuBarEntry: MenuBarEntryProps = {
     title: 'settings.title',
@@ -37,7 +36,7 @@ const useAppConfigPageMenu = () => {
       ),
       ...settingsMenuBarEntry.menuItems.map((item) => ({
         ...item,
-        action: () => setSearchParams({ mode: 'add' }),
+        action: () => setIsAddAppConfigDialogOpen(!isAddAppConfigDialogOpen),
       })),
     ],
   });

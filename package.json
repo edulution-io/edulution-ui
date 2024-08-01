@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "0.1.27",
+  "version": "0.1.30",
   "scripts": {
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test",
@@ -72,7 +72,7 @@
     "crypto-js": "^4.2.0",
     "docx": "^8.5.0",
     "exceljs": "^4.4.0",
-    "fast-xml-parser": "^4.4.0",
+    "fast-xml-parser": "^4.4.1",
     "framer-motion": "^11.0.3",
     "he": "^1.2.0",
     "guacamole-common-js": "^1.5.0",

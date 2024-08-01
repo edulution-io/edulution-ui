@@ -19,8 +19,10 @@
   },
   "auth": {
     "errors": {
-      "TokenExpired": "Sitzung abgelaufen",
-      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet."
+      "TokenExpired": "Sitzung abgelaufen.",
+      "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
+      "Unauthorized": "Du bist nicht autorisiert.",
+      "Unknown": "Nutzer nicht gefunden."
     }
   },
   "ticketsystem": {
@@ -194,6 +196,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Raumbuchung"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -201,6 +206,7 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
@@ -215,6 +221,11 @@
         "success": "App wurde angelegt",
         "failed": "App anlegen fehlgeschlagen"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "App speichern fehlgeschlagen",
+      "ReadAppConfigFailed": "App lesen fehlgeschlagen",
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
     }
   },
   "usersettings": {
@@ -471,5 +482,9 @@
     "errors": {
       "notFoundError": "Benutzer existiert nicht"
     }
+  },
+  "permission": {
+    "groups": "Nutzergruppen",
+    "selectGroupsDescription": "Wähle die Nutzergruppen aus, die Zugriff auf die App bekommen sollen."
   }
 }

@@ -16,6 +16,7 @@ import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -41,8 +42,10 @@ const pageSwitch = (page: string) => {
   }
 };
 
-const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
-  createBrowserRouter(
+const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
+  const { isSuperAdmin } = useLdapGroups();
+
+  return createBrowserRouter(
     createRoutesFromElements(
       !isAuthenticated ? (
         <Route element={<BlankLayout />}>
@@ -80,18 +83,20 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
                 element={<UserSettingsSecurityPage />}
               />
             </Route>
-            <Route
-              path="settings"
-              element={<AppConfigPage />}
-            >
-              {appConfig.map((item) => (
-                <Route
-                  key={item.name}
-                  path={item.name}
-                  element={<AppConfigPage />}
-                />
-              ))}
-            </Route>
+            {isSuperAdmin ? (
+              <Route
+                path="settings"
+                element={<AppConfigPage />}
+              >
+                {appConfig.map((item) => (
+                  <Route
+                    key={item.name}
+                    path={item.name}
+                    element={<AppConfigPage />}
+                  />
+                ))}
+              </Route>
+            ) : null}
             {appConfig.map((item) =>
               item.appType === AppIntegrationType.NATIVE ? (
                 <Route
@@ -139,5 +144,6 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) =>
       ),
     ),
   );
+};
 
 export default createRouter;
