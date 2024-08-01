@@ -1,12 +1,11 @@
-import React, { PropsWithChildren } from 'react';
 import { Outlet } from 'react-router-dom';
+import React from 'react';
 
-const EmptyLayout: React.FC<PropsWithChildren> = () => (
-  <div className="flex">
+const EmptyLayout = () => (
+  <div>
     <main className="flex-1">
       <Outlet />
     </main>
   </div>
 );
-
 export default EmptyLayout;

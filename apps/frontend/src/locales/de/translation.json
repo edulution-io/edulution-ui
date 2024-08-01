@@ -94,6 +94,9 @@
   "filesharing": {
     "title": "FILESHARING",
     "sidebar": "Filesharing",
+    "previewTitle": "Dateivorschau",
+    "saveFile": "Datei speichern",
+    "closeEditor": "Editor schließen",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",

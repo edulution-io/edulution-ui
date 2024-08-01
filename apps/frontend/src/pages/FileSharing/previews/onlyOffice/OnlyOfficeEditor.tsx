@@ -44,7 +44,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   };
 
   return (
-    <div className="relative h-[75vh]">
+    <div className={mode === 'view' ? 'relative h-[75vh]' : 'relative h-[95vh]'}>
       {editorType ? (
         <DocumentEditor
           key={editorType.key}

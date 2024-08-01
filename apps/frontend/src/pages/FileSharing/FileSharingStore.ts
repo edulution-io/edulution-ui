@@ -188,8 +188,7 @@ const useFileSharingStore = create<FileSharingStore>(
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
         files: state.files,
-        currentPath: state.currentPath,
-        mountPoints: state.mountPoints,
+        currentlyEditingFile: state.currentlyEditingFile,
       }),
     } as PersistOptions<FileSharingStore>,
   ),

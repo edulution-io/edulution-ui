@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import OnlyOfficeEditor from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditor';
 import useOnlyOffice from '@/pages/FileSharing/hooks/useOnlyOffice';
 
@@ -19,22 +19,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }
     mode,
   });
 
-  const [localLoading, setLocalLoading] = useState(true);
-
-  useEffect(() => {
-    setLocalLoading(true);
-    return () => {
-      setLocalLoading(false);
-    };
-  }, [url, filePath, fileName, mode, type]);
-
-  useEffect(() => {
-    if (!isLoading && editorsConfig && editorType) {
-      setLocalLoading(false);
-    }
-  }, [isLoading, editorsConfig, editorType]);
-
-  if (localLoading || !editorsConfig) {
+  if (isLoading || !editorsConfig) {
     return <div>Loading document...</div>;
   }
 
