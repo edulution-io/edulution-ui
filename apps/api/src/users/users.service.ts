@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { getDecryptedPassword } from '@libs/common/utils';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import UserErrorMessages from '@libs/user/user-error-messages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import CreateUserDto from './dto/create-user.dto';
