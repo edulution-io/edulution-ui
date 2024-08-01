@@ -17,7 +17,7 @@ const useFileSharingPage = () => {
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
+  const homePath = `${user?.ldapGroups.roles[0]}s/${user?.username}`;
   useEffect(() => {
     if (!isFileProcessing) {
       if (path === '/') {

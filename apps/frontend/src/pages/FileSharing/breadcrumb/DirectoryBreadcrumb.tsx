@@ -33,7 +33,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
+  const homePath = `${user?.ldapGroups.roles[0]}s/${user?.username}`;
   const filteredSegment = filterSegments(segments);
 
   const handleSegmentClick = (segment: string) => {
