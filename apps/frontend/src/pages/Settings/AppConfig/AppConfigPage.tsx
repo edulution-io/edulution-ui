@@ -60,7 +60,7 @@ const AppConfigPage: React.FC = () => {
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig) {
+    if (!currentConfig || !currentConfig.accessGroups) {
       return;
     }
 

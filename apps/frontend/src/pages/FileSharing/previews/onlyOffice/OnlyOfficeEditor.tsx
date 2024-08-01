@@ -2,6 +2,8 @@ import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import React, { FC, useCallback } from 'react';
 import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditorConfig';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
+import { useTranslation } from 'react-i18next';
 
 interface OnlyOfficeEditorProps {
   editorType: {
@@ -25,7 +27,11 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   editorConfig,
 }) => {
   const { setCurrentlyEditingFile } = useFileSharingStore();
-  const handleDocumentReady = useCallback(() => {}, [mode, fileName, filePath, setCurrentlyEditingFile]);
+  const { deleteFileAfterEdit } = useFileEditorStore();
+  const { t } = useTranslation();
+  const handleDocumentReady = useCallback(() => {
+    void deleteFileAfterEdit(editorConfig.document.url);
+  }, [mode, fileName, filePath, setCurrentlyEditingFile]);
 
   const handleLoadComponentError = (errorCode: number) => {
     switch (errorCode) {
@@ -55,7 +61,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
           onLoadComponentError={handleLoadComponentError}
         />
       ) : (
-        <div>Loading document...</div>
+        <div>{t('filesharing.loadingDocument')}</div>
       )}
     </div>
   );

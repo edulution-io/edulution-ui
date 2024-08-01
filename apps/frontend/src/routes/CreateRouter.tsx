@@ -16,9 +16,9 @@ import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {

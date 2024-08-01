@@ -99,6 +99,7 @@
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "closeEditor": "Editor schließen",
+    "loadingDocument": "Dokument wird geladen...",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",

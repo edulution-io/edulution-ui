@@ -2,12 +2,16 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditorConfig';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import CleanUpApiEndpoints from '@libs/cleanUp/types/CleanUpApiEndpoints';
+import buildApiCleanPath from '@libs/cleanUp/utilits/buildApiCleanPath';
+import getLastPartOfUrl from '@libs/cleanUp/utilits/getLastPartOfUrl';
 
 type FileEditorStore = {
   closeOnlyOfficeDocEditor: () => void;
   showEditor: boolean;
   setShowEditor: (show: boolean) => void;
   getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
+  deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
 };
 
@@ -20,6 +24,7 @@ const initialState: Omit<
   | 'setShowEditor'
   | 'closeOnlyOfficeDocEditor'
   | 'getOnlyOfficeJwtToken'
+  | 'deleteFileAfterEdit'
 > = {
   showEditor: false,
 };
@@ -31,6 +36,17 @@ const useFileEditorStore = create<FileEditorStore>((set, get) => ({
   closeOnlyOfficeDocEditor: () => {
     get().setShowEditor(false);
   },
+
+  deleteFileAfterEdit: async (url: string) => {
+    try {
+      await eduApi.delete(buildApiCleanPath(CleanUpApiEndpoints.BASE, getLastPartOfUrl(url)));
+    } catch (error) {
+      console.error('Error deleting file after editing:', error);
+      throw error;
+    }
+    return Promise.resolve();
+  },
+
   getOnlyOfficeJwtToken: async (config: OnlyOfficeEditorConfig) => {
     try {
       const response = await eduApi.post(

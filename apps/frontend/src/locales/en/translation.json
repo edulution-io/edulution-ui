@@ -98,6 +98,7 @@
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
     "saveFile": "Save file",
+    "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
     "errors": {
       "FileNotFound": "File not found",
