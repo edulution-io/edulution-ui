@@ -181,7 +181,7 @@
       "title": "Speichern und Benutzern zuweisen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen?"
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
