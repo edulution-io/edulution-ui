@@ -35,8 +35,8 @@ const useMailStore = create<MailStore>((set) => ({
       const mails = response.data;
       updateAppData(APPS.MAIL, {
         show: mails.length > 0,
-        iconColor: 'text-ciLightGreen',
         icon: FaStarOfLife,
+        iconColor: 'text-ciLightGreen',
         iconSize: 13,
         count: mails.length,
       });

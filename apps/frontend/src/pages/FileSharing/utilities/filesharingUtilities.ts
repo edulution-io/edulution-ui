@@ -53,10 +53,6 @@ export function getFileNameFromPath(path: string): string {
   return segments[segments.length - 1];
 }
 
-export function clearPathFromWebdav(path: string): string {
-  return path.replace('/webdav', '');
-}
-
 export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return '0 Bytes';
 
@@ -67,6 +63,11 @@ export function formatBytes(bytes: number, decimals = 2): string {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+}
+
+export function bytesToMegabytes(bytes: number): number {
+  const bytesPerMB = 1048576;
+  return bytes / bytesPerMB;
 }
 
 export function getElapsedTime(dateParam: Date): string {

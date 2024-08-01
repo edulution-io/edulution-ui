@@ -19,8 +19,10 @@
   },
   "auth": {
     "errors": {
-      "TokenExpired": "Sitzung abgelaufen",
-      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet."
+      "TokenExpired": "Sitzung abgelaufen.",
+      "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
+      "Unauthorized": "Du bist nicht autorisiert.",
+      "Unknown": "Nutzer nicht gefunden."
     }
   },
   "ticketsystem": {
@@ -105,6 +107,7 @@
       "CreationFailed": "Erstellen fehlgeschlagen",
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
+      "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
     },
     "tooltips": {
@@ -194,6 +197,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Raumbuchung"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -201,6 +207,7 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
@@ -215,6 +222,11 @@
         "success": "App wurde angelegt",
         "failed": "App anlegen fehlgeschlagen"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "App speichern fehlgeschlagen",
+      "ReadAppConfigFailed": "App lesen fehlgeschlagen",
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
     }
   },
   "usersettings": {
@@ -270,8 +282,8 @@
   },
   "common": {
     "errors": {
-      "NotAbleToReadFromDataBaseError": "Datenbankzugriff fehlgeschlagen",
-      "NotAbleToReadEnvironmentVariablesError": "Konnte Umgebungsvariablen nicht lesen"
+      "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
     "add": "Hinzufügen",
     "reload": "Neu laden",
@@ -287,9 +299,9 @@
     "create": "Erstellen",
     "icon": "Icon",
     "groups": "Gruppen",
+    "clearSelection": "Auswahl löschen",
     "start": "Starten",
-    "close": "Schließen",
-    "clearSelection": "Auswahl löschen"
+    "close": "Schließen"
   },
   "form": {
     "path": "Link",
@@ -315,6 +327,8 @@
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
     "title": "Dateien hochladen",
+    "dataLimitExceeded": "Datenlimit von 50MB überschritten",
+    "fileSize": "Dateigröße",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
@@ -465,19 +479,21 @@
     },
     "classes": "Klassen"
   },
+  "users": {
+    "errors": {
+      "notFoundError": "Benutzer existiert nicht"
+    }
+  },
+  "permission": {
+    "groups": "Nutzergruppen",
+    "selectGroupsDescription": "Wähle die Nutzergruppen aus, die Zugriff auf die App bekommen sollen."
+  },
   "imap": {
     "errors": {
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
       "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden"
-    }
-  },
-  "users": {
-    "errors": {
-      "NotAbleToGetUserError": "Benutzer konnte nicht gefunden werden",
-      "NotAbleToGetUserPasswordError": "Benutzerpasswort konnte nicht gefunden werden",
-      "NotAbleToDecryptPasswordError": "Passwort konnte nicht entschlüsselt werden"
     }
   }
 }

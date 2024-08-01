@@ -1,7 +1,8 @@
 import { XMLParser } from 'fast-xml-parser';
 import he from 'he';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { Logger } from '@nestjs/common';
-import { ContentType, DirectoryFile } from '@libs/filesharing/types/filesystem';
+import ContentType from '@libs/filesharing/types/contentType';
 import { WebDAVMultiStatus, WebDAVResponse, XMLAttributes as XA } from './filesharing.types';
 
 const xmlOptions = {
@@ -16,12 +17,12 @@ const xmlOptions = {
 
 const xmlParser = new XMLParser(xmlOptions);
 
-function parseWebDAVResponse(response: WebDAVResponse): DirectoryFile {
+function parseWebDAVResponse(response: WebDAVResponse): DirectoryFileDTO {
   const propstatArray = Array.isArray(response[XA.PropStat]) ? response[XA.PropStat] : [response[XA.PropStat]];
   const props = propstatArray.find((ps) => ps[XA.Status].includes('200 OK'))?.[XA.Prop];
 
   if (!props) {
-    return {} as DirectoryFile;
+    return {} as DirectoryFileDTO;
   }
 
   const {
@@ -40,8 +41,12 @@ function parseWebDAVResponse(response: WebDAVResponse): DirectoryFile {
     filename: response[XA.Href],
     lastmod,
     size: contentLength ? parseInt(contentLength, 10) : undefined,
-    type: isCollection ? ContentType.directory : ContentType.file,
+    type: isCollection ? ContentType.DIRECTORY : ContentType.FILE,
   };
+}
+
+export function fromBase64(str: string): string {
+  return Buffer.from(str, 'base64').toString('utf-8');
 }
 
 function parseWebDAVMultiStatus(xmlData: string) {
@@ -56,7 +61,7 @@ function parseWebDAVMultiStatus(xmlData: string) {
   return responses;
 }
 
-export function mapToDirectoryFiles(xmlData: string): DirectoryFile[] {
+export function mapToDirectoryFiles(xmlData: string): DirectoryFileDTO[] {
   try {
     const responses = parseWebDAVMultiStatus(xmlData);
     return responses.map(parseWebDAVResponse).filter((file) => file && file.basename !== '');
@@ -66,16 +71,16 @@ export function mapToDirectoryFiles(xmlData: string): DirectoryFile[] {
   }
 }
 
-export function mapToDirectories(xmlData: string): DirectoryFile[] {
+export function mapToDirectories(xmlData: string): DirectoryFileDTO[] {
   try {
     const responses = parseWebDAVMultiStatus(xmlData);
     return responses
       .map(parseWebDAVResponse)
-      .filter((file) => file && file.type === ContentType.directory && file.basename !== '');
+      .filter((file) => file && file.type === ContentType.DIRECTORY && file.basename !== '');
   } catch (error) {
     Logger.error('Error parsing XML data:', error);
     return [];
   }
 }
 
-export default { mapToDirectoryFiles, mapToDirectories };
+export default { mapToDirectoryFiles, mapToDirectories, fromBase64 };

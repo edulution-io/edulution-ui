@@ -54,8 +54,8 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       // const runningConferences = conferences.filter((c) => c.isRunning);
       updateAppData(APPS.CONFERENCES, {
         show: /* runningC */ conferences.length > 0,
-        color: 'text-ciRed',
         icon: FaCircle,
+        iconColor: 'text-ciRed',
         iconSize: 12,
         count: /* runningC */ conferences.length,
       });

@@ -5,6 +5,7 @@ import { APPS } from '@libs/appconfig/types';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarNotificationStore from '@/store/useSidebarNotificationStore';
 import DesktopSidebar from './DesktopSidebar';
@@ -13,6 +14,7 @@ import MobileSidebar from './MobileSidebar';
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
+  const { isSuperAdmin } = useLdapGroups();
   const { notifications, getAppData } = useSidebarNotificationStore();
   const isMobileView = useIsMobileView();
 
@@ -20,9 +22,6 @@ const Sidebar: React.FC = () => {
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => {
       const appNotification =
         item.allowNotifications && item.id in notifications ? getAppData(item.id as APPS) : undefined;
-      // if (item.allowNotifications) {
-      //   console.log(`notification.${item.id} := ${JSON.stringify(appNotification, null, 2)}`);
-      // }
 
       return {
         title: t(`${item.id}.sidebar`),
@@ -32,12 +31,16 @@ const Sidebar: React.FC = () => {
         notifications: appNotification,
       };
     }),
-    {
-      title: t('settings.sidebar'),
-      link: '/settings',
-      icon: SettingsIcon,
-      color: 'bg-ciGreenToBlue',
-    },
+    ...(isSuperAdmin
+      ? [
+          {
+            title: t('settings.sidebar'),
+            link: '/settings',
+            icon: SettingsIcon,
+            color: 'bg-ciGreenToBlue',
+          },
+        ]
+      : []),
   ];
 
   const sidebarProps = {

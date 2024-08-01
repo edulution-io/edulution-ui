@@ -3,15 +3,11 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import VdiService from './vdi.service';
-import UsersService from '../users/users.service';
 
 @ApiBearerAuth()
 @Controller('vdi')
 class VdiController {
-  constructor(
-    private readonly vdiService: VdiService,
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly vdiService: VdiService) {}
 
   @Get()
   authVdi() {
@@ -25,8 +21,7 @@ class VdiController {
 
   @Post('sessions')
   async createOrUpdateSession(@Body() guacamoleDto: GuacamoleDto, @GetCurrentUsername() username: string) {
-    const password = await this.userService.getPassword(username);
-    return this.vdiService.createOrUpdateSession(guacamoleDto, username, password);
+    return this.vdiService.createOrUpdateSession(guacamoleDto, username);
   }
 
   @Post()

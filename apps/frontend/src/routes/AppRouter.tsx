@@ -4,29 +4,24 @@ import { useAuth } from 'react-oidc-context';
 import createRouter from '@/routes/CreateRouter';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import useLogout from '@/hooks/useLogout';
 
 const AppRouter: React.FC = () => {
   const auth = useAuth();
   const { appConfigs, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, logout } = useUserStore();
+  const { isAuthenticated } = useUserStore();
   const { t } = useTranslation();
   const [tokenIsExpiring, setTokenIsExpiring] = useState(false);
-
-  const handleLogout = async () => {
-    await auth.removeUser();
-    await logout();
-    cleanAllStores();
-    setTokenIsExpiring(false);
-  };
+  const handleLogout = useLogout();
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {
       const isApiResponding = await getAppConfigs();
       if (!isApiResponding) {
         void handleLogout();
+        setTokenIsExpiring(false);
       }
     };
 
@@ -45,6 +40,7 @@ const AppRouter: React.FC = () => {
 
         if (auth.user?.expired) {
           void handleLogout();
+          setTokenIsExpiring(false);
           toast.error(t('auth.errors.TokenExpired'));
         }
       };

@@ -1,5 +1,6 @@
 enum CommonErrorMessages {
-  NotAbleToReadEnvironmentVariablesError = 'common.errors.NotAbleToReadEnvironmentVariablesError',
+  DBAccessFailed = 'common.errors.dbAccessFailed',
+  EnvAccessError = 'common.errors.envAccessError',
 }
 
 export default CommonErrorMessages;

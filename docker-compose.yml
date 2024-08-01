@@ -15,14 +15,13 @@ services:
     restart: always
     environment:
       EDUI_PORT: 3000
-      EDUI_TOTP_SECRET: <SECRET>
 
-      LMN_VDI_API_URL: <LMNVDIURL>
-      LMN_VDI_API_SECRET: <LMNVDISECRET>
+      LMN_VDI_API_URL: <LMN_VDI_URL>
+      LMN_VDI_API_SECRET: <LMN_VDI_SECRET>
 
-      GUACAMOLE_API_URL: <GUACAMOLEURL>
-      GUACAMOLE_API_USER: <GUACAMOLEUSER>
-      GUACAMOLE_API_PASSWORD: <GUACAMOLEPASSWORD>
+      GUACAMOLE_API_URL: http://localhost:8081
+      GUACAMOLE_API_USER: <GUAC_ADMIN>
+      GUACAMOLE_API_PASSWORD: <GUAC_PW>
 
       PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
 
@@ -32,8 +31,6 @@ services:
       MONGODB_USERNAME: <DBUSER>
       MONGODB_PASSWORD: <DBPASSWORD>
       MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
-
-      KEYCLOAK_API: <KEYCLOAKURL>
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
       - ./public/downloads:/opt/edulution/public/downloads

@@ -13,10 +13,7 @@ class ImapService {
     const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = process.env;
 
     if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
-      throw new CustomHttpException(
-        CommonErrorMessages.NotAbleToReadEnvironmentVariablesError,
-        HttpStatus.FAILED_DEPENDENCY,
-      );
+      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
     if (Number.isNaN(Number(MAIL_IMAP_PORT))) {
       throw new CustomHttpException(ImapErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
