@@ -285,6 +285,10 @@
     "remember_me": "Merken"
   },
   "common": {
+    "errors": {
+      "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
+    },
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -306,7 +310,7 @@
   "form": {
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
-    "apptype": "Verknüpfungsart",
+    "apptype": "Art der Anwendung",
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
@@ -478,6 +482,11 @@
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
     },
     "classes": "Klassen"
+  },
+  "users": {
+    "errors": {
+      "notFoundError": "Benutzer existiert nicht"
+    }
   },
   "permission": {
     "groups": "Nutzergruppen",

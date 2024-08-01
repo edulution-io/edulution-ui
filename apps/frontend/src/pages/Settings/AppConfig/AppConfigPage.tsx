@@ -167,6 +167,7 @@ const AppConfigPage: React.FC = () => {
                       control={control}
                       settingLocation={settingLocation}
                       appConfig={appConfigs}
+                      isNativeApp={item.isNativeApp}
                     />
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}

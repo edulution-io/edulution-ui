@@ -14,7 +14,6 @@ import { firstValueFrom } from 'rxjs';
 import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import { HttpService } from '@nestjs/axios';
-import { getDecryptedPassword } from '@libs/common/utils';
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getProtocol from '@libs/common/utils/getProtocol';
@@ -24,10 +23,9 @@ import { createHash } from 'crypto';
 import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
 import saveFileStream from 'libs/src/filesharing/utils/saveFileStream';
 import signJwtContent from '@libs/common/utils/signJwtContent';
-import { User } from '../users/user.schema';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
-import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
+import WebdavClientFactory from './webdav.client.factory';
 
 @Injectable()
 class FilesharingService {
@@ -63,20 +61,8 @@ class FilesharingService {
     return client;
   }
 
-  private async getUserByUsername(username: string): Promise<User> {
-    const user = await this.userService.findOne(username);
-    if (!user || !user.password) {
-      throw new CustomHttpException(FileSharingErrorMessage.DbAccessFailed, HttpStatus.NOT_FOUND, {
-        message: 'User not found or password missing',
-      });
-    }
-    return user;
-  }
-
   private async initializeClient(username: string): Promise<void> {
-    const user = await this.getUserByUsername(username);
-    const password = getDecryptedPassword(user?.password as string, process.env.EDUI_ENCRYPTION_KEY as string);
-
+    const password = await this.userService.getPassword(username);
     const client = WebdavClientFactory.createWebdavClient(this.baseurl, username, password);
     const timeout = this.setCacheTimeout(username);
     this.clientCache.set(username, { client, timeout });
@@ -129,13 +115,13 @@ class FilesharingService {
     '</d:propfind>\n';
 
   private async fetchFileStream(
-    user: User,
+    username: string,
     url: string,
     streamFetching = false,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const password = getDecryptedPassword(user?.password as string, process.env.EDUI_ENCRYPTION_KEY as string);
-      const authContents = `${user?.username}:${password}`;
+      const password = await this.userService.getPassword(username);
+      const authContents = `${username}:${password}`;
       const protocol = getProtocol(url);
       const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
 
@@ -291,8 +277,7 @@ class FilesharingService {
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const user = await this.getUserByUsername(username);
-      const resp = await this.fetchFileStream(user, url);
+      const resp = await this.fetchFileStream(username, url);
       if (resp instanceof Readable) {
         return resp;
       }
@@ -310,8 +295,11 @@ class FilesharingService {
     }
 
     try {
-      const user = await this.getUserByUsername(username);
-      const responseStream = await this.fetchFileStream(user, `${url}`);
+      const user = await this.userService.findOne(username);
+      if (!user) {
+        return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusReplay;
+      }
+      const responseStream = await this.fetchFileStream(user?.username, `${url}`);
       const hash = createHash(HashAlgorithm).update(filePath).digest('hex');
       const extension = extname(filename);
       const hashedFilename = `${hash}${extension}`;

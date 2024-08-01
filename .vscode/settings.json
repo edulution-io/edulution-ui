@@ -4,9 +4,9 @@
   "[svg]": {
     "editor.defaultFormatter": "jock.svg"
   },
+  "editor.inlineSuggest.enabled": true,
   "files.associations": {
     "*.scss": "tailwindcss"
   },
-  "eslint.workingDirectories": [{ "pattern": "libs" }],
-  "CodeGPT.apiKey": "Ollama"
+  "eslint.workingDirectories": [{ "pattern": "libs" }]
 }
