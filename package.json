@@ -68,7 +68,7 @@
     "cache-manager": "^5.5.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "cmdk": "^1.0.0",
+    "cmdk": "^0.2.0",
     "crypto-js": "^4.2.0",
     "docx": "^8.5.0",
     "exceljs": "^4.4.0",
