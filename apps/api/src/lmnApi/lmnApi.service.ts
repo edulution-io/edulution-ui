@@ -186,36 +186,6 @@ class LmnApiService {
     }
   }
 
-  public async getUserProjects(lmnApiToken: string): Promise<LmnApiProject[]> {
-    try {
-      const response = await this.enqueue<LmnApiProject[]>(() =>
-        this.lmnApi.get<LmnApiProject[]>(PROJECTS_LMN_API_ENDPOINT, {
-          headers: { 'x-api-key': lmnApiToken },
-        }),
-      );
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        LmnApiErrorMessage.GetUserProjectsFailed,
-        HttpStatus.BAD_GATEWAY,
-        LmnApiService.name,
-      );
-    }
-  }
-
-  public async getProject(lmnApiToken: string, projectName: string): Promise<LmnApiProjectWithMembers> {
-    try {
-      const response = await this.enqueue<LmnApiProjectWithMembers>(() =>
-        this.lmnApi.get<LmnApiProjectWithMembers>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}?all_members=true`, {
-          headers: { 'x-api-key': lmnApiToken },
-        }),
-      );
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.GetProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
-    }
-  }
-
   public async getUserSession(lmnApiToken: string, sessionSid: string, username: string): Promise<LmnApiSession> {
     try {
       const response = await this.enqueue<LmnApiSession>(() =>
@@ -365,6 +335,36 @@ class LmnApiService {
     proxyAddresses: [],
     school: formValues.school || DEFAULT_SCHOOL,
   });
+
+  public async getUserProjects(lmnApiToken: string): Promise<LmnApiProject[]> {
+    try {
+      const response = await this.enqueue<LmnApiProject[]>(() =>
+        this.lmnApi.get<LmnApiProject[]>(PROJECTS_LMN_API_ENDPOINT, {
+          headers: { 'x-api-key': lmnApiToken },
+        }),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUserProjectsFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getProject(lmnApiToken: string, projectName: string): Promise<LmnApiProjectWithMembers> {
+    try {
+      const response = await this.enqueue<LmnApiProjectWithMembers>(() =>
+        this.lmnApi.get<LmnApiProjectWithMembers>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}?all_members=true`, {
+          headers: { 'x-api-key': lmnApiToken },
+        }),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(LmnApiErrorMessage.GetProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+    }
+  }
 
   public async createProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
     try {

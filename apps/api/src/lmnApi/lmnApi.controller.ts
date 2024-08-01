@@ -10,7 +10,7 @@ import LmnApiService from './lmnApi.service';
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
-  @Post('printPasswords')
+  @Post('passwords/print')
   async printPasswords(@Body() body: { lmnApiToken: string; options: PrintPasswordsRequest }, @Res() res: Response) {
     const apiResponse = await this.lmnApiService.printPasswords(body.lmnApiToken, body.options);
     res.setHeader('Content-Type', 'application/pdf');
@@ -18,44 +18,29 @@ export class LmnApiController {
     res.send(Buffer.from(apiResponse.data as ArrayBuffer));
   }
 
-  @Post('startExamMode')
+  @Post('examMode/start')
   async startExamMode(@Body() body: { lmnApiToken: string; users: string[] }) {
     return this.lmnApiService.startExamMode(body.lmnApiToken, body.users);
   }
 
-  @Post('stopExamMode')
+  @Post('examMode/stop')
   async stopExamMode(@Body() body: { lmnApiToken: string; users: string[]; groupType: string; groupName: string }) {
     return this.lmnApiService.stopExamMode(body.lmnApiToken, body.users, body.groupType, body.groupName);
   }
 
-  @Post('addManagementGroup')
+  @Post('managementGroup/add')
   async addManagementGroup(@Body() body: { lmnApiToken: string; group: string; users: string[] }) {
     return this.lmnApiService.addManagementGroup(body.lmnApiToken, body.group, body.users);
   }
 
-  @Post('removeManagementGroup')
+  @Post('managementGroup/remove')
   async removeManagementGroup(@Body() body: { lmnApiToken: string; group: string; users: string[] }) {
     return this.lmnApiService.removeManagementGroup(body.lmnApiToken, body.group, body.users);
   }
 
-  @Post('userSchoolClass')
+  @Post('schoolClass/user')
   async getSchoolClass(@Body() body: { lmnApiToken: string; schoolClassName: string }) {
     return this.lmnApiService.getSchoolClass(body.lmnApiToken, body.schoolClassName);
-  }
-
-  @Post('userSchoolClasses')
-  async getUserSchoolClasses(@Body() body: { lmnApiToken: string }) {
-    return this.lmnApiService.getUserSchoolClasses(body.lmnApiToken);
-  }
-
-  @Post('userProjects')
-  async getUserProjects(@Body() body: { lmnApiToken: string }) {
-    return this.lmnApiService.getUserProjects(body.lmnApiToken);
-  }
-
-  @Post('project')
-  async getProject(@Body() body: { lmnApiToken: string; projectName: string }) {
-    return this.lmnApiService.getProject(body.lmnApiToken, body.projectName);
   }
 
   @Post('room')
@@ -63,7 +48,7 @@ export class LmnApiController {
     return this.lmnApiService.getCurrentUserRoom(body.lmnApiToken, username);
   }
 
-  @Post('userSession')
+  @Post('session/user')
   async getUserSession(
     @Body() body: { lmnApiToken: string; sessionSid: string },
     @GetCurrentUsername() username: string,
@@ -71,7 +56,7 @@ export class LmnApiController {
     return this.lmnApiService.getUserSession(body.lmnApiToken, body.sessionSid, username);
   }
 
-  @Post('addUserSession')
+  @Post('session/user/add')
   async addUserSession(
     @Body() body: { lmnApiToken: string; formValues: GroupForm },
     @GetCurrentUsername() username: string,
@@ -79,7 +64,7 @@ export class LmnApiController {
     return this.lmnApiService.addUserSession(body.lmnApiToken, body.formValues, username);
   }
 
-  @Post('removeUserSession')
+  @Post('session/user/remove')
   async removeUserSession(
     @Body() body: { lmnApiToken: string; sessionId: string },
     @GetCurrentUsername() username: string,
@@ -87,7 +72,7 @@ export class LmnApiController {
     return this.lmnApiService.removeUserSession(body.lmnApiToken, body.sessionId, username);
   }
 
-  @Post('updateUserSession')
+  @Post('session/user/update')
   async updateUserSession(
     @Body() body: { lmnApiToken: string; formValues: GroupForm },
     @GetCurrentUsername() username: string,
@@ -95,14 +80,24 @@ export class LmnApiController {
     return this.lmnApiService.updateUserSession(body.lmnApiToken, body.formValues, username);
   }
 
-  @Post('userSessions')
+  @Post('user')
+  async getUser(@Body() body: { lmnApiToken: string; username?: string }, @GetCurrentUsername() username: string) {
+    return this.lmnApiService.getUser(body.lmnApiToken, body.username || username);
+  }
+
+  @Post('user/sessions')
   async getUserSessions(@Body() body: { lmnApiToken: string }, @GetCurrentUsername() username: string) {
     return this.lmnApiService.getUserSessions(body.lmnApiToken, username);
   }
 
-  @Post('user')
-  async getUser(@Body() body: { lmnApiToken: string; username?: string }, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getUser(body.lmnApiToken, body.username || username);
+  @Post('user/projects')
+  async getUserProjects(@Body() body: { lmnApiToken: string }) {
+    return this.lmnApiService.getUserProjects(body.lmnApiToken);
+  }
+
+  @Post('user/schoolClasses')
+  async getUserSchoolClasses(@Body() body: { lmnApiToken: string }) {
+    return this.lmnApiService.getUserSchoolClasses(body.lmnApiToken);
   }
 
   @Post('search')
@@ -110,7 +105,7 @@ export class LmnApiController {
     return this.lmnApiService.searchUsersOrGroups(body.lmnApiToken, body.searchQuery);
   }
 
-  @Post('createProject')
+  @Post('project/create')
   async createProject(
     @Body() body: { lmnApiToken: string; formValues: GroupForm },
     @GetCurrentUsername() username: string,
@@ -118,7 +113,7 @@ export class LmnApiController {
     return this.lmnApiService.createProject(body.lmnApiToken, body.formValues, username);
   }
 
-  @Post('updateProject')
+  @Post('project/update')
   async updateProject(
     @Body() body: { lmnApiToken: string; formValues: GroupForm },
     @GetCurrentUsername() username: string,
@@ -126,9 +121,14 @@ export class LmnApiController {
     return this.lmnApiService.updateProject(body.lmnApiToken, body.formValues, username);
   }
 
-  @Post('removeProject')
+  @Post('project/remove')
   async removeProject(@Body() body: { lmnApiToken: string; projectName: string }) {
     return this.lmnApiService.removeProject(body.lmnApiToken, body.projectName);
+  }
+
+  @Post('project')
+  async getProject(@Body() body: { lmnApiToken: string; projectName: string }) {
+    return this.lmnApiService.getProject(body.lmnApiToken, body.projectName);
   }
 }
 
