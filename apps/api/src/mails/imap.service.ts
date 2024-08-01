@@ -1,6 +1,6 @@
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
-import {HttpStatus, Injectable, Logger} from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import ImapErrorMessages from '@libs/dashboard/constants/imap-error-messages';
@@ -10,7 +10,7 @@ import MailDto from '@libs/dashboard/types/mail.dto';
 class ImapService {
   static getMails = async (username: string, password: string): Promise<MailDto[]> => {
     // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    const {MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED} = process.env;
+    const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = process.env;
 
     if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
       throw new CustomHttpException(
@@ -41,14 +41,19 @@ class ImapService {
     });
 
     await client.connect().catch((err) => {
-      throw new CustomHttpException(ImapErrorMessages.NotAbleToConnectClientError, HttpStatus.INTERNAL_SERVER_ERROR, err);
+      throw new CustomHttpException(
+        ImapErrorMessages.NotAbleToConnectClientError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        err,
+      );
     });
 
     const mailboxLock: MailboxLockObject = await client.getMailboxLock('INBOX');
     const mails: MailDto[] = [];
     try {
       const fetchMail: AsyncGenerator<FetchMessageObject> = client.fetch(
-        '1:*', // {or: [{new: true}, {seen: false}, {recent: true}]},
+        // {or: [{new: true}, {seen: false}, {recent: true}]},
+        '1:*',
         {
           source: true,
           envelope: true,
@@ -63,6 +68,7 @@ class ImapService {
         const parsedMail: ParsedMail = await simpleParser(mail.source);
         const mailDto: MailDto = {
           ...parsedMail,
+          id: mail.uid,
           flags: mail.flags,
           labels: mail.labels,
         };
@@ -76,11 +82,7 @@ class ImapService {
     await client.logout();
     client.close();
 
-    Logger.log(`getMails() fetched ${mails.length} mails`, ImapService.name);
-    if (mails.length === 0) {
-      throw new CustomHttpException(ImapErrorMessages.NotAbleToFetchMailsError, HttpStatus.NOT_FOUND);
-    }
-
+    Logger.log(`Feed (Mails): ${mails.length} new mails were fetched`, ImapService.name);
     return mails;
   };
 }

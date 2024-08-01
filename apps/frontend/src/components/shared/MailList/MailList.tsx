@@ -20,7 +20,7 @@ const MailList = ({ items, className }: MailListProps) => {
 
     const badges = Array.from(item.labels).map((label) => (
       <BadgeSH
-        key={label}
+        key={`NavLink-${item.id}-BadgeSH-${label}`}
         variant={getBadgeVariantFromLabel(label)}
       >
         {label}
@@ -39,14 +39,14 @@ const MailList = ({ items, className }: MailListProps) => {
         {items.map((item) => (
           <NavLink
             to={`/${APPS.MAIL}`}
-            key={item.messageId}
+            key={`NavLink-${item.id}`}
             className={cn(
               'w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
             )}
           >
             <div className="flex w-full flex-col gap-1">
               <div className="flex items-center gap-2 font-semibold">
-                <>{item.from?.value[0].name || item.from?.value[0].address}</>
+                {item.from?.value[0].name || item.from?.value[0].address}
                 <span className="flex h-2 w-2 rounded-full bg-ciLightGreen" />
               </div>
               <div className="text-xs font-medium">{item.subject}</div>

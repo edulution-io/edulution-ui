@@ -1,13 +1,19 @@
 import { create } from 'zustand';
+import { FaStarOfLife } from 'react-icons/fa';
 import MAIL_PATH from '@libs/dashboard/constants/mail-endpoint';
 import MailDto from '@libs/dashboard/types/mail.dto';
+import { APPS } from '@libs/appconfig/types';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { APPS } from "@libs/appconfig/types";
+
+import { SidebarNotification } from '@libs/dashboard/types/sidebar-notification';
 
 interface MailStore {
   mails: MailDto[];
-  getMails: (updateAppData: (apps: APPS, notification: Notification) => void, resetAppData: (apps: APPS) => void) => Promise<void>;
+  getMails: (
+    updateAppData: (apps: APPS, notification: SidebarNotification) => void,
+    resetAppData: (apps: APPS) => void,
+  ) => Promise<void>;
   isLoading: boolean;
   reset: () => void;
 }
@@ -19,20 +25,25 @@ const initialState: Partial<MailStore> = {
 
 const useMailStore = create<MailStore>((set) => ({
   ...(initialState as MailStore),
-  getMails: async (updateAppData: (apps: APPS, notification: Notification) => void, resetAppData: (apps: APPS) => void): Promise<void> => {
+  getMails: async (
+    updateAppData: (apps: APPS, notification: SidebarNotification) => void,
+    resetAppData: (apps: APPS) => void,
+  ): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<MailDto[]>(MAIL_PATH)
-        .then((res) => {
-          console.log(res)
-          return res;
-        });
+      const response = await eduApi.get<MailDto[]>(MAIL_PATH);
       const mails = response.data;
+      updateAppData(APPS.MAIL, {
+        show: mails.length > 0,
+        iconColor: 'text-ciLightGreen',
+        icon: FaStarOfLife,
+        iconSize: 13,
+        count: mails.length,
+      });
       set({ mails });
-      updateAppData(APPS.MAIL, { active: true, count: mails.length });
     } catch (error) {
-      set({ mails: [] });
       resetAppData(APPS.MAIL);
+      set({ mails: [] });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });

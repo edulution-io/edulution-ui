@@ -48,6 +48,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: ConferencesIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey'],
+    allowNotifications: true,
   },
   {
     id: APPS.KNOWLEDGE_BASE,

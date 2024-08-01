@@ -1,12 +1,12 @@
-import React, { useEffect /* , useMemo */, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
-import { FaStarOfLife } from 'react-icons/fa';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
+  const { title, icon, color, link, notifications } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
@@ -21,39 +21,48 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     setIsInView(rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT);
   }, [translate, size]);
 
+  const SidebarNotification = useMemo(() => {
+    if (!notifications || !notifications.show) {
+      return null;
+    }
+    const { icon: NotificationIcon, iconColor: notificationColor, iconSize = 12 } = notifications;
+    return (
+      <NotificationIcon
+        size={iconSize}
+        className={`absolute right-1 top-1 ${notificationColor}`}
+      />
+    );
+  }, [notifications]);
+
   return (
     <div
-      key={menuItem.title}
+      key={title}
       className="relative"
       ref={buttonRef}
     >
       <NavLink
-        to={menuItem.link}
+        to={link}
         className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
-        <p className="md:hidden">{menuItem.title}</p>
+        <p className="md:hidden">{title}</p>
         <>
           <img
-            src={menuItem.icon}
+            src={icon}
             width={SIDEBAR_ICON_WIDTH}
             className="relative z-0"
-            alt={`${menuItem.title}-icon`}
+            alt={`${title}-icon`}
           />
-          { menuItem.showNotifications ? (
-            <FaStarOfLife
-              className="width-4px h-4px absolute right-1 top-1 text-ciLightGreen"
-            />
-          ) : null}
+          {SidebarNotification}
         </>
         {isInView ? (
           <div
-            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
-            <p className="whitespace-nowrap font-bold">{menuItem.title}</p>
+            <p className="whitespace-nowrap font-bold">{title}</p>
             <img
-              src={menuItem.icon}
+              src={icon}
               width={SIDEBAR_ICON_WIDTH}
-              alt={`${menuItem.title}-icon`}
+              alt={`${title}-icon`}
             />
           </div>
         ) : null}

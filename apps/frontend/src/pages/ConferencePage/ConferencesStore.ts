@@ -1,17 +1,25 @@
 import { create } from 'zustand';
+import { FaCircle } from 'react-icons/fa6';
 import { RowSelectionState } from '@tanstack/react-table';
-import handleApiError from '@/utils/handleApiError';
-import eduApi from '@/api/eduApi';
-import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 import Conference from '@libs/conferences/types/conference.dto';
+import { APPS } from '@libs/appconfig/types';
+import { SidebarNotification } from '@libs/dashboard/types/sidebar-notification';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
+import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
   setSelectedRows: (selectedRows: RowSelectionState) => void;
   conferences: Conference[];
+  runningConferences: Conference[];
   isLoading: boolean;
   error: Error | null;
-  getConferences: (isLoading?: boolean) => Promise<void>;
+  getConferences: (
+    isLoading?: boolean,
+    updateAppData?: (apps: APPS, notification: SidebarNotification) => void,
+    resetAppData?: (apps: APPS) => void,
+  ) => Promise<void>;
   deleteConferences: (conferences: Conference[]) => Promise<void>;
   isDeleteConferencesDialogOpen: boolean;
   setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
@@ -23,6 +31,7 @@ interface ConferencesStore {
 
 const initialValues = {
   conferences: [],
+  runningConferences: [],
   isLoading: false,
   error: null,
   selectedRows: {},
@@ -36,13 +45,25 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
-  getConferences: async (isLoading = true) => {
+  getConferences: async (isLoading = true, updateAppData = () => {}, resetAppData = () => {}) => {
     set({ isLoading, error: null });
     try {
       const response = await eduApi.get<Conference[]>(apiEndpoint);
-      set({ conferences: response.data });
+      const conferences = response.data;
+      // // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
+      // const runningConferences = conferences.filter((c) => c.isRunning);
+      updateAppData(APPS.CONFERENCES, {
+        show: /* runningC */ conferences.length > 0,
+        color: 'text-ciRed',
+        icon: FaCircle,
+        iconSize: 12,
+        count: /* runningC */ conferences.length,
+      });
+      set({ conferences, runningConferences: /* runningC */ conferences });
     } catch (error) {
+      resetAppData(APPS.CONFERENCES);
       handleApiError(error, set);
+      set({ conferences: [], runningConferences: [] });
     } finally {
       set({ isLoading: false });
     }

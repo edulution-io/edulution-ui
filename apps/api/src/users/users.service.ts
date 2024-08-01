@@ -1,19 +1,19 @@
 import { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import {HttpStatus, Inject, Injectable} from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { LDAPUser } from '@libs/user/types/groups/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/user-error-messages';
+import { getDecryptedPassword } from '@libs/common/utils';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsService from '../groups/groups.service';
-import { getDecryptedPassword } from '@libs/common/utils';
 
 @Injectable()
 class UsersService {
@@ -101,7 +101,7 @@ class UsersService {
       );
     }
 
-    const existingUser = await this.userModel.findOne({ username: username });
+    const existingUser = await this.userModel.findOne({ username });
     if (!existingUser) {
       throw new CustomHttpException(UserErrorMessages.NotAbleToGetUserError, HttpStatus.NOT_FOUND);
     }

@@ -9,35 +9,33 @@ import MailList from '@/components/shared/MailList/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailStore from '@/pages/Dashboard/Feed/mails/MailStore';
-import useNotificationStore from "@/store/useNotificationStore";
+import useSidebarNotificationStore from '@/store/useSidebarNotificationStore';
 
 const MailsAccordionItem = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const { mails, getMails } = useMailStore();
-  const { updateAppData, resetAppData } = useNotificationStore();
+  const { updateAppData, resetAppData } = useSidebarNotificationStore();
 
   const { t } = useTranslation();
-
-  useInterval(() => {
-
-    console.log('intervall to fetch mails')
-
-    void getMails(updateAppData, resetAppData);
-  }, FEED_PULL_TIME_INTERVAL_SLOW);
-
-  useEffect(() => {
-
-    console.log('initial mail fetch')
-
-    void getMails(updateAppData, resetAppData);
-  }, []);
 
   // TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
   const isMailAppActivated = useMemo(
     () => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.MAIL.toString()),
     [appConfigs],
   );
+
+  useInterval(() => {
+    if (isMailAppActivated) {
+      void getMails(updateAppData, resetAppData);
+    }
+  }, FEED_PULL_TIME_INTERVAL_SLOW);
+
+  useEffect(() => {
+    if (isMailAppActivated) {
+      void getMails(updateAppData, resetAppData);
+    }
+  }, []);
 
   if (!isMailAppActivated) {
     return null;

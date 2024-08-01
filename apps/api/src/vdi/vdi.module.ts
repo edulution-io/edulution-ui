@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import {MongooseModule} from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CacheModule } from '@nestjs/cache-manager';
 import VdiController from './vdi.controller';
 import VdiService from './vdi.service';
-import {User, UserSchema} from '../users/user.schema';
+import { User, UserSchema } from '../users/user.schema';
 import UsersModule from '../users/users.module';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersService from '../users/users.service';
-import {CacheModule} from "@nestjs/cache-manager";
-import DEFAULT_CACHE_TTL_MS from "../app/cache-ttl";
-import GroupsModule from "../groups/groups.module";
+import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
+import GroupsModule from '../groups/groups.module';
 
 @Module({
   imports: [
