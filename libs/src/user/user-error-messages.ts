@@ -1,5 +1,5 @@
 enum UserErrorMessages {
-  NotAbleToGetUserError = 'users.errors.NotAbleToGetUserError',
+  NotFoundError = 'users.errors.notFoundError',
 }
 
 export default UserErrorMessages;

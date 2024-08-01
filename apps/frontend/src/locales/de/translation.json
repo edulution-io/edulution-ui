@@ -270,8 +270,8 @@
   },
   "common": {
     "errors": {
-      "NotAbleToReadFromDataBaseError": "Datenbankzugriff fehlgeschlagen",
-      "NotAbleToReadEnvironmentVariablesError": "Konnte Umgebungsvariablen nicht lesen"
+      "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
     "add": "Hinzufügen",
     "reload": "Neu laden",
@@ -469,7 +469,7 @@
   },
   "users": {
     "errors": {
-      "NotAbleToGetUserError": "Benutzer existiert nicht"
+      "notFoundError": "Benutzer existiert nicht"
     }
   }
 }

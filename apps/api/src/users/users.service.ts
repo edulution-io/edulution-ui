@@ -95,15 +95,12 @@ class UsersService {
     const { EDUI_ENCRYPTION_KEY } = process.env;
 
     if (!EDUI_ENCRYPTION_KEY) {
-      throw new CustomHttpException(
-        CommonErrorMessages.NotAbleToReadEnvironmentVariablesError,
-        HttpStatus.FAILED_DEPENDENCY,
-      );
+      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
 
     const existingUser = await this.userModel.findOne({ username });
     if (!existingUser || !existingUser.password) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToGetUserError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
     return getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);

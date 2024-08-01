@@ -270,8 +270,8 @@
   },
   "common": {
     "errors": {
-      "NotAbleToReadFromDataBaseError": "Database access failed",
-      "NotAbleToReadEnvironmentVariablesError": "Not able to read environment variables"
+      "dbAccessFailed": "Database access failed",
+      "envAccessError": "Not able to read environment variables"
     },
     "add": "Add",
     "reload": "Reload",
@@ -469,7 +469,7 @@
   },
   "users": {
     "errors": {
-      "NotAbleToGetUserError": "User does not exist"
+      "notFoundError": "User does not exist"
     }
   }
 }
