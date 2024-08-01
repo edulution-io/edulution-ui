@@ -13,6 +13,7 @@ import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/cl
 import { useTranslation } from 'react-i18next';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
 import { FaAddressCard } from 'react-icons/fa';
+import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
@@ -32,7 +33,7 @@ const LessonPage = () => {
       case UserGroups.Projects: {
         const project = await fetchProject(groupName);
         if (project?.members) {
-          setMember(project.members);
+          setMember(getUniqueValues([...project.members, ...project.admins]));
         }
         break;
       }
@@ -42,7 +43,7 @@ const LessonPage = () => {
       case UserGroups.Classes: {
         const schoolClass = await fetchSchoolClass(groupName);
         if (schoolClass?.members) {
-          setMember(schoolClass.members);
+          setMember(getUniqueValues([...schoolClass.members]));
         }
         break;
       }

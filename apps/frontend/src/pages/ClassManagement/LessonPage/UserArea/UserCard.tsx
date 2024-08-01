@@ -21,7 +21,11 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
+  const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
+
   const onCardClick = () => {
+    if (!isStudent) return;
+
     setSelectedMember((prevState) => {
       if (isSelected) {
         setIsSelected(false);
@@ -37,28 +41,30 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
   return (
     <Card
       variant="security"
-      className={cn('my-2 ml-1 mr-4 flex h-64 w-64 min-w-64 cursor-pointer', isActive ? 'opacity-90' : '')}
+      className={cn('my-2 ml-1 mr-4 flex h-64 w-64 min-w-64 cursor-pointer', isActive && 'opacity-90')}
       onClick={onCardClick}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
     >
       <CardContent className="flex w-full flex-row p-0">
-        <div className="m-0 flex w-5/6 flex-col justify-between">
+        <div className={cn('m-0 flex flex-col justify-between', isStudent ? 'w-5/6' : 'w-full')}>
           <div className="flew-row flex h-8">
-            <Checkbox
-              className="ml-2 rounded-lg"
-              checked={isSelected}
-              onCheckedChange={onCardClick}
-              aria-label="Select row"
-            />
-            <div className="text-md ml-2 mt-1 h-8 w-44 font-bold">{displayName}</div>
+            {isStudent ? (
+              <Checkbox
+                className="ml-2 rounded-lg"
+                checked={isSelected}
+                onCheckedChange={onCardClick}
+                aria-label="Select row"
+              />
+            ) : null}
+            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isStudent && 'ml-2')}>{displayName}</div>
           </div>
 
           <div className="-mt-1 ml-2 flex justify-between">
             <div className={cn('mt-1 h-[26px] rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
               {sophomorixAdminClass}
             </div>
-            <div className="flex flex-col text-xs">
+            <div className={cn('flex flex-col text-xs', !isStudent && 'mr-2')}>
               <div>{name}</div>
               <div>{school}</div>
             </div>
@@ -81,7 +87,7 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
             )}
           </button>
         </div>
-        {user.sophomorixRole === SOPHOMORIX_STUDENT ? (
+        {isStudent ? (
           <div className="mt-0.5 flex w-1/6 flex-col items-center justify-around">
             <UserCardButtonBar
               user={user}

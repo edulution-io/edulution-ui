@@ -13,7 +13,7 @@ const Checkbox = React.forwardRef<
     label?: string;
   }
 >(({ className, onCheckboxClick = () => {}, label, ...props }, ref) => (
-  <>
+  <div className="flex items-center space-x-2">
     <CheckboxPrimitive.Root
       ref={ref}
       id={label}
@@ -28,13 +28,10 @@ const Checkbox = React.forwardRef<
         <CheckIcon className="h-4 w-4" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
-    <label
-      className="flex items-center space-x-2"
-      htmlFor={label}
-    >
+    <label htmlFor={label}>
       {label && <span className="cursor-pointer select-none text-foreground">{label}</span>}
     </label>
-  </>
+  </div>
 ));
 Checkbox.defaultProps = {
   onCheckboxClick: () => {},

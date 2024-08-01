@@ -4,10 +4,7 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { useTranslation } from 'react-i18next';
-import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import { useParams } from 'react-router-dom';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import {
@@ -15,6 +12,7 @@ import {
   SOPHOMORIX_SCHOOL_CLASS,
   SOPHOMORIX_STUDENT,
 } from '@libs/lmnApi/constants/sophomorixRoles';
+import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 
 const UserProjectOrSchoolClassSearch = () => {
   const { t } = useTranslation();
@@ -36,11 +34,6 @@ const UserProjectOrSchoolClassSearch = () => {
       [SOPHOMORIX_SCHOOL_CLASS, SOPHOMORIX_STUDENT, SOPHOMORIX_PROJECT].includes(r.type) &&
       !!(r.displayName || r.cn);
     return result.filter(isValidSearchResult);
-  };
-
-  const getUniqueValues = <T extends UserLmnInfo | LmnApiSchoolClass | LmnApiProject>(values: T[]): T[] => {
-    const uniqueValuesSet = new Set<string>(values.map((obj) => JSON.stringify(obj)));
-    return Array.from(uniqueValuesSet).map((str) => JSON.parse(str) as T);
   };
 
   const onUserProjectOrSchoolClassSelect = async (selected: (MultipleSelectorOptionSH & LmnApiSearchResult)[]) => {

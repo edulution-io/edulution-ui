@@ -1,7 +1,7 @@
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -15,24 +15,34 @@ const variants = cva([], {
   },
 });
 
-type FormFieldProps = {
-  form: UseFormReturn;
+type FormFieldProps<T extends FieldValues> = {
+  form: UseFormReturn<T>;
   disabled?: boolean;
-  name: string;
+  name: Path<T> | string;
   isLoading: boolean;
   labelTranslationId: string;
   type?: 'password';
+  defaultValue?: PathValue<T, Path<T>> | string;
 } & VariantProps<typeof variants>;
 
-const FormField = ({ form, disabled, name, isLoading, labelTranslationId, type, variant }: FormFieldProps) => {
+const FormField = <T extends FieldValues>({
+  form,
+  disabled,
+  name,
+  isLoading,
+  labelTranslationId,
+  type,
+  variant,
+  defaultValue,
+}: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
   return (
     <FormFieldSH
       control={form.control}
       disabled={disabled}
-      name={name}
-      defaultValue=""
+      name={name as Path<T>}
+      defaultValue={defaultValue as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
           <FormLabel className={cn(variants({ variant }))}>

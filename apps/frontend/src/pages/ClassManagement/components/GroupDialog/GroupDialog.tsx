@@ -137,6 +137,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const onClose = () => {
     setOpenDialogType(null);
     setUserGroupToEdit(null);
+    form.reset();
   };
 
   const updateGroupsAndCloseDialog = async () => {

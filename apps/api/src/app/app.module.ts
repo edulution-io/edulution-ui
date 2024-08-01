@@ -5,22 +5,32 @@ import { JwtModule } from '@nestjs/jwt';
 import { redisStore } from 'cache-manager-redis-yet';
 import type { RedisClientOptions } from 'redis';
 
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { resolve } from 'path';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import LmnApiModule from '../lmnApi/lmnApi.module';
+import VdiModule from '../vdi/vdi.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
+import FilesharingModule from '../filesharing/filesharing.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: resolve(__dirname, '..', 'public', 'downloads'),
+      serveRoot: '/edu-api/downloads',
+    }),
     AppConfigModule,
     UsersModule,
     GroupsModule,
     LmnApiModule,
     ConferencesModule,
+    FilesharingModule,
+    VdiModule,
     JwtModule.register({
       global: true,
     }),

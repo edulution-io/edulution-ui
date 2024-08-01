@@ -1,11 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import useLmnApiStore from '@/store/useLmnApiStore';
 
 const AccountInformation = () => {
   const { user } = useLmnApiStore();
+  const navigate = useNavigate();
 
   const { t } = useTranslation();
   const userInfoFields = [
@@ -36,16 +39,14 @@ const AccountInformation = () => {
               </p>
             </div>
           ))}
-
           <Button
             variant="btn-collaboration"
-            className="mt-4"
             size="sm"
+            onClick={() => navigate(USER_SETTINGS_SECURITY_PATH)}
           >
             {t('accountData.change_password')}
           </Button>
         </div>
-
         <div className="mt-6">
           <h4 className="font-bold">{t('accountData.my_information')}</h4>
           {user?.mail && user?.mail.length > 1 && (

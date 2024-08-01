@@ -1,18 +1,22 @@
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route } from 'react-router-dom';
+import MainLayout from '@/components/layout/MainLayout';
+import BlankLayout from '@/components/layout/BlankLayout';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 
-import FileSharing from '@/pages/FileSharing/FileSharing';
+import FileSharing from '@/pages/FileSharing/FileSharingPage';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
-import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
-import BlankLayout from '@/components/layout/BlankLayout';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import MainLayout from '@/components/layout/MainLayout';
 import { HomePage } from '@/pages/Home';
+import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import getEmbeddedRoutes from './routes/EmbeddedRoutes';
-import getForwardedRoutes from './routes/ForwardedRoutes';
+import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
+import getForwardedRoutes from './routes/ForwardedRoutes';
+import getEmbeddedRoutes from './routes/EmbeddedRoutes';
 
 const pageSwitch = (page: string) => {
   switch (page as APPS) {
@@ -26,6 +30,8 @@ const pageSwitch = (page: string) => {
       return <FramePlaceholder />;
     case APPS.WHITEBOARD:
       return <FramePlaceholder />;
+    case APPS.DESKTOP_DEPLOYMENT:
+      return <DesktopDeploymentPage />;
     case APPS.CLASS_MANAGEMENT:
       return <Outlet />;
     default:
@@ -67,6 +73,19 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
               path="/"
               element={<HomePage />}
             />
+            <Route
+              path={USER_SETTINGS_PATH}
+              element={<Outlet />}
+            >
+              <Route
+                path=""
+                element={<UserSettingsDefaultPage />}
+              />
+              <Route
+                path={SECURITY_PATH}
+                element={<UserSettingsSecurityPage />}
+              />
+            </Route>
             {appConfigs
               .filter((item) => item.appType === AppIntegrationType.NATIVE)
               .map((item) => (

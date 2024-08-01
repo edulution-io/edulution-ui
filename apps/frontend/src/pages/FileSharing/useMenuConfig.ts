@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import useFileManagerStoreOLD from '@/store/fileManagerStoreOLD';
-import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
-import { DirectoryFile } from '@/datatypes/filesystem';
+import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import { MenuItem } from '@/datatypes/types';
 import {
   FileSharingIcon,
   IsoIcon,
@@ -11,77 +11,66 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
+import userStore from '@/store/UserStore/UserStore';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const findCorrespondingMountPointIcon = (mounts: DirectoryFile) => {
-  if (mounts.filename.includes('teachers')) {
-    return TeacherIcon;
-  }
-  if (mounts.filename.includes('projects')) {
-    return ProjectIcon;
-  }
-  if (mounts.filename.includes('iso')) {
-    return IsoIcon;
-  }
-  if (mounts.filename.includes('programs')) {
-    return ProgrammIcon;
-  }
-  if (mounts.filename.includes('share')) {
-    return ShareIcon;
-  }
-  if (mounts.filename.includes('students')) {
-    return StudentsIcon;
-  }
-  return FileSharingIcon;
+const iconMap = {
+  teachers: TeacherIcon,
+  projects: ProjectIcon,
+  iso: IsoIcon,
+  programs: ProgrammIcon,
+  share: ShareIcon,
+  students: StudentsIcon,
+};
+
+const findCorrespondingMountPointIcon = (filename: string) => {
+  const key = Object.keys(iconMap).find((k) => filename.includes(k));
+  return key ? iconMap[key as keyof typeof iconMap] : FileSharingIcon;
 };
 
 const useFileSharingMenuConfig = () => {
-  const { fetchMountPoints, fetchFiles } = useFileManagerStoreOLD();
+  const { mountPoints, fetchMountPoints } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-
-  function constructFilePath(mountPoint: DirectoryFile, username: string) {
-    return mountPoint.filename.includes('teachers') ? `${mountPoint.filename}/${username}` : mountPoint.filename;
-  }
-
-  type UserDataConfig = { state: { user: string; webdavKey: string; isAuthenticated: boolean } };
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { user } = userStore();
 
   useEffect(() => {
-    const fetchAndPrepareMenuItems = async () => {
-      try {
-        const userStorageString: string | null = localStorage.getItem('user-storage');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const userStorage: UserDataConfig = JSON.parse(userStorageString as string);
-        const { user } = userStorage.state;
+    void fetchMountPoints();
+  }, [user?.username]);
 
-        const mounts: DirectoryFile[] = await fetchMountPoints();
-        const items = mounts.map((mountPoint) => ({
-          id: mountPoint.basename,
-          label: mountPoint.filename.includes('teachers') ? 'home' : mountPoint.basename,
-          icon: findCorrespondingMountPointIcon(mountPoint),
-          action: async () => {
-            try {
-              await fetchFiles(constructFilePath(mountPoint, user));
-            } catch (error) {
-              console.error('Error fetching files:', error);
-            }
-          },
-        }));
-        setMenuItems(items);
-      } catch (error) {
-        console.error('Error fetching mount points:', error);
-      }
-    };
+  const handlePathChange = useCallback(
+    (newPath: string) => {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('path', newPath);
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams],
+  );
 
-    fetchAndPrepareMenuItems().catch(() => {});
-  }, []);
+  useEffect(() => {
+    const items: MenuItem[] = mountPoints
+      .map((mountPoint: DirectoryFileDTO) => ({
+        id: mountPoint.basename,
+        label:
+          mountPoint.filename.includes(`${user?.ldapGroups?.role}s`) &&
+          mountPoint.filename.includes(`${user?.username}`)
+            ? 'home'
+            : mountPoint.basename,
+        icon: findCorrespondingMountPointIcon(mountPoint.filename),
+        color: 'hover:bg-ciGreenToBlue',
+        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filename)),
+      }))
+      .filter((item) => item !== null);
+    setMenuItems(items);
+  }, [mountPoints, user?.ldapGroups?.role, user?.ldapGroups?.school, searchParams, setSearchParams]);
 
-  const fileSharingMenuConfig = (): MenuBarEntryProps => ({
+  return {
     menuItems,
     title: 'filesharing.title',
     icon: FileSharingIcon,
-    color: 'hover:bg-ciDarkBlue',
-  });
-
-  return fileSharingMenuConfig();
+    color: 'hover:bg-ciGreenToBlue',
+  };
 };
 
 export default useFileSharingMenuConfig;

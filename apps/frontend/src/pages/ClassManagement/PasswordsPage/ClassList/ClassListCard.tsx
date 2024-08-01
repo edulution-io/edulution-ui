@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/shared/Card';
 import cn from '@/lib/utils';
 import Checkbox from '@/components/ui/Checkbox';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 import { FaFileCsv, FaRegFilePdf } from 'react-icons/fa6';
 import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
 

@@ -30,7 +30,7 @@ class LmnApiService {
 
   private lmnApi: AxiosInstance;
 
-  private queue: Promise<any> = Promise.resolve();
+  private queue: Promise<unknown> = Promise.resolve();
 
   constructor() {
     const httpsAgent = new https.Agent({
@@ -42,12 +42,12 @@ class LmnApiService {
     });
   }
 
-  private enqueue<T>(fn: () => Promise<AxiosResponse<any>>): Promise<AxiosResponse<T>> {
+  private enqueue<T>(fn: () => Promise<AxiosResponse<unknown>>): Promise<AxiosResponse<T>> {
     this.queue = this.queue
       .then(
         () =>
           new Promise<T>((resolve) => {
-            setTimeout(resolve, 100);
+            setTimeout(resolve, 10);
           }),
       )
       .then(fn);
@@ -316,7 +316,6 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      console.error(error);
       throw new CustomHttpException(LmnApiErrorMessage.GetUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
   }
@@ -330,7 +329,6 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      console.error(error);
       throw new CustomHttpException(
         LmnApiErrorMessage.GetCurrentUserRoomFailed,
         HttpStatus.BAD_GATEWAY,

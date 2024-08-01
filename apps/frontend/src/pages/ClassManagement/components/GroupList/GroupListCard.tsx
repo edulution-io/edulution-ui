@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/shared/Card';
 import cn from '@/lib/utils';
 import Checkbox from '@/components/ui/Checkbox';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 import { MdLock } from 'react-icons/md';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
@@ -66,7 +66,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   };
 
   const isActive = isSelected || isHovered;
-  const titleIcon = isEnrolEnabled ? <MdLock className="-mr-1 ml-2 mt-1 h-5 w-5" /> : null;
+  const titleIcon = isEnrolEnabled ? <MdLock className="ml-2 mt-1 h-5 w-5" /> : null;
   const cardContentIcon = isHovered ? <FaCog /> : icon;
   const cardContentText = isHovered ? (
     <div className="flex h-10 items-center">{t('details')}</div>
@@ -101,7 +101,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
           <div className="flew-row flex ">
             {sophomorixJoinable && isEnrolEnabled ? (
               <Checkbox
-                className="ml-2 rounded-lg"
+                className="-mr-1 ml-2 rounded-lg"
                 checked={isSelected}
                 onCheckedChange={onSelect}
                 aria-label="Select"

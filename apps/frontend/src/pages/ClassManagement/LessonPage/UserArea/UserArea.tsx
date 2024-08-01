@@ -27,7 +27,7 @@ const UserArea = ({ fetchData }: UserAreaProps) => {
   return (
     <div className="mt-3">
       <h3 className="mb-2 text-center">
-        {member.length} {t('classmanagement.studentsInThisSession')}
+        {member.length} {t('classmanagement.usersInThisSession')}
         {groupName ? `: ${groupName}` : ''}
         {selectedMember.length ? (
           <span className="ml-4 text-lg">

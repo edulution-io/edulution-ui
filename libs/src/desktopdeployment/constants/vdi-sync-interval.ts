@@ -1,0 +1,3 @@
+const VDI_SYNC_TIME_INTERVAL = 10000;
+
+export default VDI_SYNC_TIME_INTERVAL;

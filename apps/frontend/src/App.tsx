@@ -11,6 +11,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Sonner';
+import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -36,6 +37,7 @@ const App = () => {
   return (
     <AuthProvider {...oidcConfig}>
       <BBBFrame />
+      <VDIFrame />
       <AppRouter />
       <EmbeddedIframes />
       <NativeFrames />

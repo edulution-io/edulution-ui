@@ -114,7 +114,27 @@
   },
   "filesharing": {
     "title": "FILESHARING",
-    "sidebar": "Filesharing"
+    "sidebar": "Filesharing",
+    "errors": {
+      "FileNotFound": "Datei nicht gefunden",
+      "MountPointsNotFound": "Laufwerke nicht gefunden",
+      "FolderNotFound": "Ordner nicht gefunden",
+      "UploadFailed": "Datei konnte nicht hinzugefügt werden",
+      "DeletionFailed": "Löschen fehlgeschlagen",
+      "RenameFailed": "Umbenennen fehlgeschlagen",
+      "MoveFailed": "Verschieben fehlgeschlagen",
+      "CreationFailed": "Erstellen fehlgeschlagen",
+      "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "WebDavError": "Dateiserver nicht erreichbar",
+      "DownloadFailed": "Herunterladen fehlgeschlagen",
+      "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
+    },
+    "tooltips": {
+      "folderNameRequired": "Ordnername ist erforderlich",
+      "FileNameRequired": "Dateiname ist erforderlich",
+      "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
+      "NameRequired": "Name erforderlich"
+    }
   },
   "forums": {
     "title": "FOREN",
@@ -158,7 +178,7 @@
     "hide": "Anderen Nutzern nicht anzeigen",
     "typeToSearchUsersGroupsProjects": "Tippen um Schüler, Klassen oder Projekte hinzuzufügen",
     "typeToSearchUsersGroupsProjectsToNewSession": "Tippen um Schüler, Klassen oder Projekte zu einer neuen Sitzung hinzuzufügen",
-    "studentsInThisSession": "Schüler in dieser Sitzung",
+    "usersInThisSession": "Nutzer in dieser Sitzung",
     "webfilter": "Web Filter",
     "internet": "Internet",
     "wifi": "Wifi",
@@ -216,8 +236,28 @@
     "sidebar": "Standortverbindung"
   },
   "desktopdeployment": {
-    "title": "DESKTOP-BEREITSTELLUNG",
-    "sidebar": "Desktop-Bereitstellung"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
+    "sidebar": "Desktop",
+    "connect": "Verbinden",
+    "reload": "Neu laden",
+    "close": "Verbindung schließen",
+    "error": {
+      "title": "Verbindungsfehler",
+      "description": "Bitte prüfe deine Netzwerkverbindung und versuche es erneut."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients verfügbar",
+    "client": "Client verfügbar",
+    "errors": {
+      "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
+      "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
+      "SessionNotFound": "Session nicht gefunden."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -271,13 +311,38 @@
     }
   },
   "usersettings": {
-    "title": "BENUTZER",
-    "sidebar": "Einstellungen",
-    "security": "Sicherheit",
+    "title": "BENUTZEREINSTELLUNGEN",
+    "sidebar": "Benutzereinstellungen",
+    "split-title": "BENUTZER- EINSTELLUNGEN",
+    "description": "Hier können Sie alle ihre Benutzer definierten Einstellungen einsehen und gegebenfalls anpassen.",
+    "security": {
+      "title": "Sicherheit",
+      "sidebar": "Sicherheit",
+      "description": "Konfigurieren Sie hier die Sicherheitseinstellungen des Accounts",
+      "changePassword": {
+        "title": "Passwort ändern",
+        "currentPassword": "Aktuelles Passwort",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Passwort bestätigen",
+        "confirm": "Passwort ändern"
+      }
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
-    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
-    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+    "config": {
+      "mfa": "Zweifaktorauthentifizierung aktivieren"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
+    },
+    "errors": {
+      "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
+      "newPasswordRequired": "Neues Passwort ist erforderlich",
+      "confirmPasswordRequired": "Erneute Eingabe des Passwortes ist erforderlich zur Bestätigung",
+      "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein"
+    }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
@@ -303,7 +368,6 @@
     "reload": "Neu laden",
     "logout": "Abmelden",
     "save": "Speichern",
-    "start": "Starten",
     "stop": "Stoppen",
     "selected": "ausgewählt",
     "successful": "Erfolgreich",
@@ -317,7 +381,6 @@
     "icon": "Icon",
     "group": "Gruppe",
     "groups": "Gruppen",
-    "clearSelection": "Auswahl löschen",
     "min_chars": "Mindestens {{count}} Zeichen",
     "max_chars": "Maximal {{count}} Zeichen",
     "groupAdmins": "Gruppenadministratoren",
@@ -335,7 +398,10 @@
     "creationDate": "Erstelldatum",
     "schoolName": "Schulname",
     "mailList": "Email Verteiler",
-    "invalid_chars": "Enthält ungültige Zeichen"
+    "invalid_chars": "Enthält ungültige Zeichen",
+    "clearSelection": "Auswahl löschen",
+    "start": "Starten",
+    "close": "Schließen"
   },
   "form": {
     "path": "Link",
@@ -361,11 +427,14 @@
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
     "title": "Dateien hochladen",
+    "dataLimitExceeded": "Datenlimit von 50MB überschritten",
+    "fileSize": "Dateigröße",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
-    "filesToUpload": "Dateien zum Hochladen"
+    "filesToUpload": "Dateien zum Hochladen",
+    "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -394,15 +463,30 @@
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Präsentation",
+    "spreadsheet": "Tabelle",
+    "vector": "Diagramm"
   },
   "fileCreateNewContent": {
+    "documentFile": "Erstelle ein neues Dokument",
+    "spreadsheetFile": "Erstelle eine neue Tabelle",
+    "presentationFile": "Erstelle eine neue Präsentation",
+    "textFile": "Erstelle eine neue Textdatei",
+    "drawIoFile": "Erstelle eine neue Draw.io-Datei",
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
-    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+    "newFileFromType": {
+      "drawIoFile": "Neue Draw.io-Datei",
+      "textFile": "Neue Textdatei",
+      "spreadsheetFile": "Neue Tabelle",
+      "presentationFile": "Neue Präsentation",
+      "documentFile": "Neues Dokument"
+    }
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",
@@ -468,6 +552,7 @@
     "directory_created_successfully": "Verzeichnis {{directoryName}} erfolgreich erstellt",
     "file_created_successfully": "Datei {{fileName}} erfolgreich erstellt",
     "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
+    "files_deleted_successfully": "Dateien erfolgreich gelöscht",
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
   },

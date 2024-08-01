@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/shared/Card';
-import ActionTooltip from '@/pages/FileSharing/utilities/ActionTooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { FaCog } from 'react-icons/fa';
 import UserGroups from '@libs/groups/types/userGroups.enum';
@@ -31,7 +31,7 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
   }
 
   const member =
-    (group as LmnApiSchoolClass | LmnApiProject).member || (group as LmnApiSession).members.map((m) => m.dn);
+    (group as LmnApiSession).members?.map((m) => m.dn) || (group as LmnApiSchoolClass | LmnApiProject).member;
   const memberCount = member.filter((m) => STUDENTS_REGEX.test(m))?.length || 0;
 
   const onEditHover = (event: React.KeyboardEvent | React.FocusEvent | React.MouseEvent) => {
