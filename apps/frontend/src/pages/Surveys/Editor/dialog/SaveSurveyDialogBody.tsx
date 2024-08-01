@@ -91,7 +91,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         isGetGroupMembersLoading={isGetGroupMembersLoading}
       />
 
-      <p className={cn('text-m font-bold', 'text-foreground')}>{t('survey.expirationDate')}</p>
+      <p className="text-m font-bold text-foreground">{t('survey.expirationDate')}</p>
       <div className="flex items-center text-foreground">
         {t('common.date')}
         <div className="ml-2">
@@ -115,7 +115,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
           )}
         />
       </div>
-      <p className={cn('text-m font-bold', 'text-foreground')}>{t('surveys.saveDialog.settingsFlags')}</p>
+      <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>
       <div className="flex items-center text-foreground">
         <Checkbox
           checked={isAnonymousWatched}

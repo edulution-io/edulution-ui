@@ -13,8 +13,8 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageSt
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogStore';
-import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/DeleteStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
+import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/DeleteSurveyStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultDialogStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();

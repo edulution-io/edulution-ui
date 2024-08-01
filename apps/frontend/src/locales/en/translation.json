@@ -141,18 +141,14 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "neitherAbleToUpdateNorToCreateSurveyError": "Neither able to update a survey nor to create a new one",
-      "notAbleToCreateSurveyError": "Not able to create the survey",
-      "notAbleToDeleteSurveyError": "Not able to delete the surveys",
-      "notAbleToFindSurveyError": "Survey not found",
-      "notAbleToFindSurveysError": "Did not find a single survey",
-      "notAbleToFindSurveyParameterError": "In order to find a survey you have to provide at least one surveyId",
-      "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
-      "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
-      "notAbleToParticipateSurveyExpiredError": "Survey has already expired",
-      "notAbleToUpdateSurveyError": "Not able to update the survey",
-      "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id",
-      "noAnswerForSubmission": "Please, provide an answer for the submission"
+      "updateOrCreateError": "Neither able to update a survey nor to create a new one",
+      "deleteError": "Not able to delete the surveys",
+      "notFoundError": "Survey not found",
+      "participationErrorUserNotAssigned": "User is no participant of the survey",
+      "participationErrorAlreadyParticipated": "User has already participated in the survey",
+      "participationErrorSurveyExpired": "Survey has already expired",
+      "idTypeError": "The survey id must convertable into a valid mongo id",
+      "missingAnswerError": "Please, provide an answer for the submission"
     }
   },
   "survey-answer": {

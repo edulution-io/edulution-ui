@@ -141,18 +141,14 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "neitherAbleToUpdateNorToCreateSurveyError": "Umfrage konnte weder aktualisiert noch erstellt werden",
-      "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyError": "Die Umfragen konnten nicht gelöscht werden",
-      "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
-      "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
-      "notAbleToFindSurveyParameterError": "Es wurde keine Survey-Id übergeben",
-      "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
-      "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
-      "notAbleToParticipateSurveyExpiredError": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
-      "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
-      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID",
-      "noAnswerForSubmission": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "deleteError": "Die Umfragen konnten nicht gelöscht werden",
+      "notFoundError": "Umfrage konnte nicht gefunden werden",
+      "participationErrorUserNotAssigned": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
+      "participationErrorAlreadyParticipated": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "participationErrorSurveyExpired": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
+      "idTypeError": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID",
+      "missingAnswerError": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
     }
   },
   "survey-answer": {
@@ -185,7 +181,7 @@
       "title": "Speichern und Benutzern zuweisen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der status auf offen?"
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen?"
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"

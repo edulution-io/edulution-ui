@@ -45,10 +45,12 @@ const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) =
       const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
-      set({ answer, isLoading: false });
+      set({ answer });
     } catch (error) {
-      set({ answer: undefined, isLoading: false });
+      set({ answer: undefined });
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import { AxiosError } from 'axios';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
@@ -14,7 +13,6 @@ interface DeleteSurveyStore {
 
   deleteSurvey: (surveyIds: mongoose.Types.ObjectId[]) => Promise<void>;
   isLoading: boolean;
-  error: Error | null;
 
   reset: () => void;
 }
@@ -22,7 +20,6 @@ interface DeleteSurveyStore {
 const initialState: Partial<DeleteSurveyStore> = {
   selectedSurvey: undefined,
   isLoading: false,
-  error: null,
 };
 
 const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
@@ -32,14 +29,13 @@ const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   deleteSurvey: async (surveyIds: mongoose.Types.ObjectId[]): Promise<void> => {
-    set({ error: null, isLoading: true });
+    set({ isLoading: true });
     try {
       await eduApi.delete(SURVEYS_ENDPOINT, { data: { surveyIds } });
-      set({ isLoading: false });
     } catch (error) {
-      set({ error: error instanceof AxiosError ? error : null, isLoading: false });
       handleApiError(error, set);
-      throw error;
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

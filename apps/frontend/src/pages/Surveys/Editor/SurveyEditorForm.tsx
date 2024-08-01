@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSave } from 'react-icons/ai';
 import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
@@ -41,7 +40,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { t } = useTranslation();
 
   if (!user || !user.username) {
-    toast.error(t('auth.errors.UserNotFound'));
     return null;
   }
 

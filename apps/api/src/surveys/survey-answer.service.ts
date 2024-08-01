@@ -72,10 +72,7 @@ class SurveyAnswersService {
     answer: JSON,
   ): Promise<SurveyAnswer | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
     const username = user.preferred_username;
@@ -83,17 +80,14 @@ class SurveyAnswersService {
 
     const survey = await this.surveyModel.findById<Survey>(surveyId).exec();
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
     const { expirationDate, expirationTime, canUpdateFormerAnswer, canSubmitMultipleAnswers } = survey;
 
     if (expirationDate && expirationTime) {
       const isExpired = expirationDate < new Date();
       if (isExpired) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NotAbleToParticipateSurveyExpiredError,
-          HttpStatus.UNAUTHORIZED,
-        );
+        throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
       }
     }
 
@@ -101,20 +95,14 @@ class SurveyAnswersService {
       (participant: Attendee) => participant.username === username,
     );
     if (hasParticipated && !canSubmitMultipleAnswers && !canUpdateFormerAnswer) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError,
-        HttpStatus.FORBIDDEN,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorAlreadyParticipated, HttpStatus.FORBIDDEN);
     }
 
     const isCreator = survey.creator.username === username;
     const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
     const canParticipate = isCreator || isAttendee;
     if (!canParticipate) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError,
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
     }
 
     const idExistingUsersAnswer = await this.surveyAnswerModel
@@ -164,10 +152,7 @@ class SurveyAnswersService {
 
   async getPrivateAnswer(surveyId: mongoose.Types.ObjectId, username: string): Promise<SurveyAnswer> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
     const usersSurveyAnswer = await this.surveyAnswerModel
       .findOne<SurveyAnswer>({ $and: [{ 'attendee.username': username }, { surveyId }] })
@@ -181,10 +166,7 @@ class SurveyAnswersService {
 
   async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId }).exec();
     if (surveyAnswers.length === 0) {

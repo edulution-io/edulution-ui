@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/DeleteStore';
+import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/DeleteSurveyStore';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 

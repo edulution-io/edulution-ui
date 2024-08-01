@@ -6,7 +6,7 @@ import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'rea
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultDialogStore';
 import DeleteSurveyButton from '@/pages/Surveys/Tables/components/DeleteSurveyButton';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { TooltipProvider } from '@/components/ui/Tooltip';

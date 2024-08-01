@@ -5,6 +5,7 @@ import { SurveyModel } from 'survey-core/typings/survey';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
+import './ResultTableDialogBody.css';
 
 interface ResultTableDialogBodyProps {
   formula: JSON;
@@ -41,7 +42,7 @@ const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
   }, [visuTable]);
 
   return (
-    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-foreground">
+    <div className="max-h-[75vh] rounded bg-ciLightGrey px-4 pb-4 text-foreground">
       <div id="surveyDashboardContainer" />
     </div>
   );
