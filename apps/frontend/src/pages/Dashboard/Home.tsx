@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 
 import useIsMobileView from '@/hooks/useIsMobileView';
 import Feed from '@/pages/Dashboard/Feed/Feed';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
@@ -13,6 +14,13 @@ const Home: React.FC = () => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const auth = useAuth();
+  const { user, lmnApiToken, getOwnUser } = useLmnApiStore();
+
+  useEffect(() => {
+    if (lmnApiToken && !user) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken, user]);
 
   return (
     <>

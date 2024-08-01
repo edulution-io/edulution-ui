@@ -52,7 +52,6 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ userIsLoading: true });
     try {
       const response = await eduApi.get<UserDto>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}`);
-      console.log(`response.data ${JSON.stringify(response.data.ldapGroups, null, 2)}`);
       set({ user: response.data });
     } catch (e) {
       handleApiError(e, set, 'userError');

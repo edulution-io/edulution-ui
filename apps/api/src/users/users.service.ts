@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsService from '../groups/groups.service';
 
 @Injectable()
@@ -67,7 +67,7 @@ class UsersService {
       return cachedUsers;
     }
 
-    const fetchedUsers = await this.groupsService.fetchUsers(token);
+    const fetchedUsers = await this.groupsService.fetchAllUsers(token);
 
     await this.cacheManager.set('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     return fetchedUsers;

@@ -1,4 +1,4 @@
-import useLmnApiStore from '@/store/lmnApiStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import useFileManagerStore from '@/store/fileManagerStoreOLD';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
@@ -7,6 +7,9 @@ import UserStore from '@/store/UserStore/UserStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
+import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -20,6 +23,9 @@ const cleanAllStores = () => {
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
+  useClassManagementStore.getState().reset();
+  useLessonStore.getState().reset();
+  usePrintPasswordsStore.getState().reset();
 };
 
 export default cleanAllStores;

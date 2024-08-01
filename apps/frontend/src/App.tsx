@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AppRouter from '@/routes/AppRouter';
+import AppRouter from '@/router/AppRouter';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
@@ -7,7 +7,7 @@ import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
 import NativeFrames from '@/components/framing/NativeFrames';
-import useLmnApiStore from '@/store/lmnApiStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Sonner';

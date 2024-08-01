@@ -1,5 +1,5 @@
-import UserDto from '../user.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserDto from '../user.dto';
 
 type UserSlice = {
   isAuthenticated: boolean;

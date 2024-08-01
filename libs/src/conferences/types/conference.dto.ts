@@ -1,4 +1,5 @@
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 class Conference {
   name: string;
@@ -12,6 +13,8 @@ class Conference {
   isRunning: boolean;
 
   invitedAttendees: AttendeeDto[];
+
+  invitedGroups: MultipleSelectorGroup[];
 
   joinedAttendees: AttendeeDto[];
 }

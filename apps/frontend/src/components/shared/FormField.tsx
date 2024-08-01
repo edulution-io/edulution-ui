@@ -17,18 +17,20 @@ const variants = cva([], {
 
 type FormFieldProps = {
   form: UseFormReturn;
+  disabled?: boolean;
   name: string;
   isLoading: boolean;
   labelTranslationId: string;
   type?: 'password';
 } & VariantProps<typeof variants>;
 
-const FormField = ({ form, name, isLoading, labelTranslationId, type, variant }: FormFieldProps) => {
+const FormField = ({ form, disabled, name, isLoading, labelTranslationId, type, variant }: FormFieldProps) => {
   const { t } = useTranslation();
 
   return (
     <FormFieldSH
       control={form.control}
+      disabled={disabled}
       name={name}
       defaultValue=""
       render={({ field }) => (
@@ -40,7 +42,7 @@ const FormField = ({ form, name, isLoading, labelTranslationId, type, variant }:
             <Input
               {...field}
               type={type}
-              disabled={isLoading}
+              disabled={disabled || isLoading}
               variant={variant}
             />
           </FormControl>

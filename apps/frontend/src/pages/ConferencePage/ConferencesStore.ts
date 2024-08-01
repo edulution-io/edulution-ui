@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
-import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
+import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import Conference from '@libs/conferences/types/conference.dto';
 
 interface ConferencesStore {
@@ -39,7 +39,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   getConferences: async (isLoading = true) => {
     set({ isLoading, error: null });
     try {
-      const response = await eduApi.get<Conference[]>(apiEndpoint);
+      const response = await eduApi.get<Conference[]>(CONFERENCES_EDU_API_ENDPOINT);
       set({ conferences: response.data });
     } catch (error) {
       handleApiError(error, set);
@@ -52,7 +52,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   deleteConferences: async (conferences: Conference[]) => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.delete<Conference[]>(apiEndpoint, {
+      const response = await eduApi.delete<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, {
         data: conferences.map((c) => c.meetingID),
       });
       set({ conferences: response.data, selectedRows: {} });
@@ -65,7 +65,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   toggleConferenceRunningState: async (meetingID) => {
     set({ toggleConferenceRunningStateIsLoading: true });
     try {
-      const response = await eduApi.put<Conference[]>(apiEndpoint, { meetingID });
+      const response = await eduApi.put<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, { meetingID });
       set({ conferences: response.data });
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');

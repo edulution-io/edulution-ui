@@ -10,17 +10,7 @@ import { X } from 'lucide-react';
 import cn from '@/lib/utils';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
-
-export interface MultipleSelectorOptionSH {
-  value: string;
-  label: string;
-  disable?: boolean;
-  /** fixed option that can't be removed. */
-  fixed?: boolean;
-
-  /** Group the options by providing key. */
-  [key: string]: string | boolean | undefined;
-}
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -369,7 +359,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            'group rounded-md border border-input p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
             className,
           )}
         >
@@ -383,7 +373,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                   badgeClassName,
                 )}
                 data-fixed={option.fixed}
-                data-disabled={disabled}
+                data-disabled={disabled ? true : undefined}
               >
                 {option.label}
                 {showRemoveIconInBadge && (
@@ -432,7 +422,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             />
           </div>
         </div>
-        <div className="relative mt-2">
+        <div className="relative">
           {open && (
             <CommandList className="absolute top-0 z-50 w-full rounded-md border bg-popover bg-white text-popover-foreground shadow-md outline-none animate-in">
               {isLoading ? (

@@ -12,7 +12,9 @@ interface SearchUsersOrGroupsProps {
   onSearch: (value: string) => Promise<AttendeeDto[]>;
   groups: MultipleSelectorGroup[];
   onGroupSearch: (value: string) => Promise<MultipleSelectorGroup[]>;
-  onGroupsChange: (options: MultipleSelectorOptionSH[]) => void;
+  onGroupsChange: (options: MultipleSelectorGroup[]) => void;
+  disabled?: boolean;
+  hideGroupSearch?: boolean;
 }
 
 const SearchUsersOrGroups = ({
@@ -22,6 +24,8 @@ const SearchUsersOrGroups = ({
   groups,
   onGroupsChange,
   onGroupSearch,
+  disabled,
+  hideGroupSearch,
 }: SearchUsersOrGroupsProps) => {
   const { t } = useTranslation();
 
@@ -30,12 +34,13 @@ const SearchUsersOrGroups = ({
       <p className="text-m font-bold text-foreground">{t('conferences.attendees')}</p>
       <AsyncMultiSelect<AttendeeDto>
         value={users}
+        disabled={disabled}
         onSearch={onSearch}
         onChange={onUserChange}
-        placeholder={t('search.type-to-search')}
+        placeholder={disabled ? '' : t('search.type-to-search')}
       />
-      {users?.length && users.length > 1 ? (
-        <div className="flex justify-end">
+      {users?.length && users.length > 1 && !disabled ? (
+        <div className="mt-2 flex justify-end">
           <Button
             variant="btn-collaboration"
             size="lg"
@@ -49,13 +54,18 @@ const SearchUsersOrGroups = ({
           </Button>
         </div>
       ) : null}
-      <p className="text-m font-bold text-foreground">{t('common.groups')}</p>
-      <AsyncMultiSelect<MultipleSelectorGroup>
-        value={groups}
-        onSearch={onGroupSearch}
-        onChange={onGroupsChange}
-        placeholder={t('search.type-to-search')}
-      />
+      {hideGroupSearch ? null : (
+        <>
+          <p className="text-m font-bold text-foreground">{t('common.groups')}</p>
+          <AsyncMultiSelect<MultipleSelectorGroup>
+            value={groups}
+            disabled={disabled}
+            onSearch={onGroupSearch}
+            onChange={onGroupsChange}
+            placeholder={disabled ? '' : t('search.type-to-search')}
+          />
+        </>
+      )}
     </div>
   );
 };

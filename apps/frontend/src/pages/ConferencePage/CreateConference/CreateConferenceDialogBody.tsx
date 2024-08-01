@@ -8,7 +8,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useClassManagementStore from '@/pages/ClassManagement/classManagementStore';
+import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 
@@ -21,7 +21,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
   const { setValue, watch } = form;
   const { user, searchAttendees } = useUserStore();
   const { isLoading } = useCreateConferenceDialogStore();
-  const { searchGroups, searchGroupsIsLoading } = useClassManagementStore();
+  const { searchGroups, isSearchGroupsLoading } = useClassManagementStore();
   const { t } = useTranslation();
 
   if (isLoading) return <CircleLoader className="mx-auto" />;
@@ -35,7 +35,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
     return result.filter((r) => r.username !== user?.username);
   };
 
-  const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
+  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
@@ -51,7 +51,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           name="name"
           form={form}
           labelTranslationId={t('conferences.name')}
-          isLoading={searchGroupsIsLoading}
+          isLoading={isSearchGroupsLoading}
           variant="default"
         />
         <SearchUsersOrGroups
@@ -67,7 +67,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"
-          isLoading={searchGroupsIsLoading}
+          isLoading={isSearchGroupsLoading}
           variant="default"
         />
       </form>

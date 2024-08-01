@@ -5,7 +5,7 @@ import { ConferencesIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
 import Conference from '@libs/conferences/types/conference.dto';
 import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
-import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
+import { AccordionContent, AccordionItem } from '@/components/ui/AccordionSH';
 import RunningConferencesList from '@/pages/Dashboard/Feed/conferences/RunningConferencesList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
@@ -23,7 +23,7 @@ const RunningConferencesAccordionItem = () => {
   }, FEED_PULL_TIME_INTERVAL);
 
   useEffect(() => {
-      void getConferences();
+    void getConferences();
   }, []);
 
   // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
