@@ -51,15 +51,15 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
       const response = await eduApi.get<Conference[]>(apiEndpoint);
       const conferences = response.data;
       // // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
-      // const runningConferences = conferences.filter((c) => c.isRunning);
+      const runningConferences = conferences.filter((c) => c.isRunning);
       updateAppData(APPS.CONFERENCES, {
-        show: /* runningC */ conferences.length > 0,
+        show: runningConferences.length > 0,
         icon: FaCircle,
         iconColor: 'text-ciRed',
         iconSize: 12,
-        count: /* runningC */ conferences.length,
+        count: runningConferences.length,
       });
-      set({ conferences, runningConferences: /* runningC */ conferences });
+      set({ conferences, runningConferences });
     } catch (error) {
       resetAppData(APPS.CONFERENCES);
       handleApiError(error, set);

@@ -30,9 +30,6 @@ const MailList = ({ items, className }: MailListProps) => {
     return <div className="flex items-center gap-2">{badges}</div>;
   };
 
-  // TODO: Discuss
-  //     EITHER: Add logic to open the right mail inside of SOGO
-  //     OR:     Add a dialog to show the mail content (only if added smtp to directly send mails?)
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
       <div className="flex flex-col gap-2 p-4 pt-0">

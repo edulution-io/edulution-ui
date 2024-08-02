@@ -49,8 +49,7 @@ class ImapService {
     const mails: MailDto[] = [];
     try {
       const fetchMail: AsyncGenerator<FetchMessageObject> = client.fetch(
-        // {or: [{new: true}, {seen: false}, {recent: true}]},
-        '1:*',
+        { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
           envelope: true,
