@@ -19,7 +19,8 @@ const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
     useClassManagementStore();
   const { groupType, groupName } = useParams();
-  const { isLoading, setOpenDialogType, setUserGroupToEdit, openDialogType, member, setMember } = useLessonStore();
+  const { isLoading, setOpenDialogType, setUserGroupToEdit, member, setMember } = useLessonStore();
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -65,6 +66,7 @@ const LessonPage = () => {
   };
 
   const onSaveSessionsButtonClick = () => {
+    setIsDialogOpen(true);
     setOpenDialogType(UserGroups.Sessions);
     setUserGroupToEdit(userSessions.find((session) => session.name === groupName) || null);
   };
@@ -124,9 +126,9 @@ const LessonPage = () => {
       </div>
       <div>
         {groupName || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
-        {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+        {isLoading && <LoadingIndicator isOpen={isLoading} />}
       </div>
-      {openDialogType ? <GroupDialog item={sessionToSave} /> : null}
+      {isDialogOpen && <GroupDialog item={sessionToSave} />}
     </div>
   );
 };

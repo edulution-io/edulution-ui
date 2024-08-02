@@ -19,8 +19,10 @@
   },
   "auth": {
     "errors": {
-      "TokenExpired": "Session expired",
-      "SessionExpiring": "You will be logged off in less than a minute."
+      "TokenExpired": "Session expired.",
+      "SessionExpiring": "You will be logged off in less than a minute.",
+      "Unauthorized": "You are not authorized.",
+      "Unknown": "User not found."
     }
   },
   "lmnApi": {
@@ -286,6 +288,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Room booking"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -293,6 +298,7 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
+    "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": {
@@ -307,6 +313,11 @@
         "success": "App created",
         "failed": "App creation failed"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "Save app failed",
+      "ReadAppConfigFailed": "Read app failed",
+      "DisableAppConfigFailed": "Disable app failed"
     }
   },
   "usersettings": {
@@ -363,6 +374,10 @@
   },
   "edit": "Edit",
   "common": {
+    "errors": {
+      "dbAccessFailed": "Database access failed",
+      "envAccessError": "Not able to read environment variables"
+    },
     "and": "and",
     "add": "Add",
     "reload": "Reload",
@@ -406,7 +421,7 @@
   "form": {
     "path": "Path",
     "pathDescription": "Please enter a valid URL.",
-    "apptype": "Link Type",
+    "apptype": "App type",
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
@@ -578,5 +593,14 @@
       "CouldNotSearchGroups": "Could not search for groups"
     },
     "classes": "Classes"
+  },
+  "users": {
+    "errors": {
+      "notFoundError": "User does not exist"
+    }
+  },
+  "permission": {
+    "groups": "User groups",
+    "selectGroupsDescription": "Select the user groups that should have access to the app."
   }
 }

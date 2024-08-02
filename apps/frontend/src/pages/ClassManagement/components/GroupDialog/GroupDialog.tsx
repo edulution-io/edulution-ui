@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +28,7 @@ interface GroupDialogProps {
 
 const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
+  const [isFetching, setIsFetching] = useState(false);
   const { t } = useTranslation();
 
   const {
@@ -112,6 +113,9 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     }
 
     const fetchData = async () => {
+      if (isFetching) return;
+      setIsFetching(true);
+
       let fetchedGroup;
       switch (openDialogType) {
         case UserGroups.Projects:
@@ -130,9 +134,10 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
       }
 
       setFormInitialValues(fetchedGroup);
+      setIsFetching(false);
     };
     void fetchData();
-  }, [userGroupToEdit]);
+  }, [userGroupToEdit?.name]);
 
   const onClose = () => {
     setOpenDialogType(null);
@@ -141,6 +146,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   };
 
   const updateGroupsAndCloseDialog = async () => {
+    onClose();
     switch (openDialogType) {
       case UserGroups.Projects:
         await fetchUserProjects();
@@ -153,7 +159,6 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         break;
       default:
     }
-    onClose();
   };
 
   const onSubmit = async () => {

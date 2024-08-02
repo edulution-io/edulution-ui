@@ -2,105 +2,104 @@ import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
 import BlankLayout from '@/components/layout/BlankLayout';
-import FramePlaceholder from '@/components/framing/FramePlaceholder';
-
-import FileSharing from '@/pages/FileSharing/FileSharingPage';
-import ConferencePage from '@/pages/ConferencePage/ConferencePage';
-import LoginPage from '@/pages/LoginPage/LoginPage';
 import { HomePage } from '@/pages/Home';
+import LoginPage from '@/pages/LoginPage/LoginPage';
+
+import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
+import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
 
-const pageSwitch = (page: string) => {
-  switch (page as APPS) {
-    case APPS.CONFERENCES:
-      return <ConferencePage />;
-    case APPS.FILE_SHARING:
-      return <FileSharing />;
-    case APPS.MAIL:
-      return <FramePlaceholder />;
-    case APPS.LINUXMUSTER:
-      return <FramePlaceholder />;
-    case APPS.WHITEBOARD:
-      return <FramePlaceholder />;
-    case APPS.DESKTOP_DEPLOYMENT:
-      return <DesktopDeploymentPage />;
-    case APPS.CLASS_MANAGEMENT:
-      return <Outlet />;
-    default:
-      return (
-        <Navigate
-          replace
-          to="/"
-        />
-      );
-  }
-};
+const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
+  const { isSuperAdmin } = useLdapGroups();
 
-const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
-  createBrowserRouter(
+  return createBrowserRouter(
     createRoutesFromElements(
-      !isAuthenticated ? (
+      <>
         <Route element={<BlankLayout />}>
           <Route
-            path="/"
+            path="/login"
             element={<LoginPage />}
           />
           <Route
             path="*"
             element={
-              <Navigate
-                replace
-                to="/"
-              />
+              isAuthenticated ? (
+                <Navigate
+                  replace
+                  to="/"
+                />
+              ) : (
+                <Navigate
+                  replace
+                  to="/login"
+                  state={{ from: window.location.pathname }}
+                />
+              )
             }
           />
         </Route>
-      ) : (
-        <>
-          {getForwardedRoutes(appConfigs)}
-          {getEmbeddedRoutes(appConfigs)}
+        {isAuthenticated ? (
+          <>
+            {getForwardedRoutes(appConfigs)}
+            {getEmbeddedRoutes(appConfigs)}
 
-          <Route element={<MainLayout />}>
-            <Route
-              path="/"
-              element={<HomePage />}
-            />
-            <Route
-              path={USER_SETTINGS_PATH}
-              element={<Outlet />}
-            >
+            <Route element={<MainLayout />}>
               <Route
-                path=""
-                element={<UserSettingsDefaultPage />}
+                path="/"
+                element={<HomePage />}
               />
               <Route
-                path={SECURITY_PATH}
-                element={<UserSettingsSecurityPage />}
-              />
-            </Route>
-            {appConfigs
-              .filter((item) => item.appType === AppIntegrationType.NATIVE)
-              .map((item) => (
+                path={USER_SETTINGS_PATH}
+                element={<Outlet />}
+              >
                 <Route
-                  key={item.name}
-                  path={item.name}
-                  element={pageSwitch(item.name)}
+                  path=""
+                  element={<UserSettingsDefaultPage />}
                 />
-              ))}
-            {getClassManagementRoutes()}
-            {getSettingsRoutes(appConfigs)}
-          </Route>
-        </>
-      ),
+                <Route
+                  path={SECURITY_PATH}
+                  element={<UserSettingsSecurityPage />}
+                />
+              </Route>
+              {isSuperAdmin ? (
+                <Route
+                  path="settings"
+                  element={<AppConfigPage />}
+                >
+                  {appConfigs.map((item) => (
+                    <Route
+                      key={item.name}
+                      path={item.name}
+                      element={<AppConfigPage />}
+                    />
+                  ))}
+                </Route>
+              ) : null}
+              {appConfigs.map((item) =>
+                item.appType === AppIntegrationType.NATIVE ? (
+                  <Route
+                    key={item.name}
+                    path={item.name}
+                    element={<NativeAppPage page={item.name as APPS} />}
+                  />
+                ) : null,
+              )}
+              {getClassManagementRoutes()}
+              {getSettingsRoutes(appConfigs)}
+            </Route>
+          </>
+        ) : null}
+      </>,
     ),
   );
+};
 
 export default createRouter;

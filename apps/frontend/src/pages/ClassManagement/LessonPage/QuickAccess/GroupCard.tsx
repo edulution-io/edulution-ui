@@ -18,9 +18,10 @@ interface GroupCardProps {
   icon?: ReactElement;
   type: UserGroups;
   group: LmnApiSession | LmnApiProject | LmnApiSchoolClass;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const GroupCard = ({ icon, type, group }: GroupCardProps) => {
+const GroupCard = ({ icon, type, group, setIsDialogOpen }: GroupCardProps) => {
   const { t } = useTranslation();
   const { setOpenDialogType, setUserGroupToEdit } = useLessonStore();
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -41,6 +42,7 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
 
   const onEditClick = (event: React.KeyboardEvent | React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
+    setIsDialogOpen(true);
     setUserGroupToEdit(group);
     setOpenDialogType(type);
   };

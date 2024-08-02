@@ -32,6 +32,7 @@ import sortGroups from '@libs/groups/utils/sortGroups';
 import sortByName from '@libs/common/utils/sortByName';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
 import { EDU_API_GROUPS_SEARCH_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
+import minimizeFormValues from '@libs/groups/utils/minimizeFormValues';
 
 const initialState = {
   isLoading: false,
@@ -84,7 +85,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           const formValues = form.getValues();
           await eduApi.post(LMN_API_CREATE_PROJECT_EDU_API_ENDPOINT, {
             lmnApiToken,
-            formValues,
+            formValues: minimizeFormValues(formValues),
           });
         } catch (error) {
           handleApiError(error, set);
@@ -100,7 +101,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           const formValues = form.getValues();
           await eduApi.post(LMN_API_UPDATE_PROJECT_EDU_API_ENDPOINT, {
             lmnApiToken,
-            formValues,
+            formValues: minimizeFormValues(formValues),
           });
         } catch (error) {
           handleApiError(error, set);
@@ -167,7 +168,7 @@ const useClassManagementStore = create<ClassManagementStore>(
 
           await eduApi.post(LMN_API_ADD_USER_SESSION_EDU_API_ENDPOINT, {
             lmnApiToken,
-            formValues,
+            formValues: minimizeFormValues(formValues),
           });
         } catch (error) {
           handleApiError(error, set);
@@ -184,7 +185,7 @@ const useClassManagementStore = create<ClassManagementStore>(
 
           await eduApi.post(LMN_API_UPDATE_USER_SESSION_EDU_API_ENDPOINT, {
             lmnApiToken,
-            formValues,
+            formValues: minimizeFormValues(formValues),
           });
         } catch (error) {
           handleApiError(error, set);

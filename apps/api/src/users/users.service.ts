@@ -1,8 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { getDecryptedPassword } from '@libs/common/utils';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
@@ -85,6 +89,21 @@ class UsersService {
           user.username?.toLowerCase().includes(searchString),
       )
       .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
+  }
+
+  async getPassword(username: string): Promise<string> {
+    const { EDUI_ENCRYPTION_KEY } = process.env;
+
+    if (!EDUI_ENCRYPTION_KEY) {
+      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
+    }
+
+    const existingUser = await this.userModel.findOne({ username });
+    if (!existingUser || !existingUser.password) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    return getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
   }
 }
 

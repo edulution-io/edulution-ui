@@ -47,7 +47,7 @@ class LmnApiService {
       .then(
         () =>
           new Promise<T>((resolve) => {
-            setTimeout(resolve, 10);
+            setTimeout(resolve, 30);
           }),
       )
       .then(fn);
@@ -205,7 +205,7 @@ class LmnApiService {
 
   public async addUserSession(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiSession> {
     try {
-      const data = { users: formValues.members.map((m) => m.value) };
+      const data = { users: formValues.members };
 
       const response = await this.enqueue<LmnApiSession>(() =>
         this.lmnApi.post<LmnApiSession>(`${SESSIONS_LMN_API_ENDPOINT}/${username}/${formValues.name}`, data, {
@@ -324,14 +324,14 @@ class LmnApiService {
     }
   }
 
-  private static getDataFromForm = (formValues: GroupForm, username: string) => ({
-    admins: Array.from(new Set([...formValues.admins.map((m) => m.value), username])),
-    admingroups: formValues.admingroups.map((m) => m.value),
+  private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
+    admins: Array.from(new Set([...formValues.admins, username])),
+    admingroups: formValues.admingroups,
     description: formValues.description,
     join: formValues.join,
     hide: formValues.hide,
-    members: Array.from(new Set([...formValues.members.map((m) => m.value), username])),
-    membergroups: formValues.membergroups.map((m) => m.value),
+    members: Array.from(new Set([...formValues.members, username])),
+    membergroups: formValues.membergroups,
     proxyAddresses: [],
     school: formValues.school || DEFAULT_SCHOOL,
   });
@@ -368,7 +368,7 @@ class LmnApiService {
 
   public async createProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
     try {
-      const data = LmnApiService.getDataFromForm(formValues, username);
+      const data = LmnApiService.getProjectFromForm(formValues, username);
 
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.post<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {
@@ -383,7 +383,7 @@ class LmnApiService {
 
   public async updateProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
     try {
-      const data = LmnApiService.getDataFromForm(formValues, username);
+      const data = LmnApiService.getProjectFromForm(formValues, username);
 
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.patch<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {

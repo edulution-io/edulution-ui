@@ -14,6 +14,7 @@ const GroupsColumn = ({ column }: GroupsColumnProps) => {
   const { t } = useTranslation();
   const { user } = useUserStore();
   const { name, translationId, icon, groups, isLoading } = column;
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   if (!groups || !Array.isArray(groups)) {
     return null;
@@ -25,6 +26,7 @@ const GroupsColumn = ({ column }: GroupsColumnProps) => {
       key={user!.username + group.name}
       group={group}
       icon={icon}
+      setIsDialogOpen={setIsDialogOpen}
     />
   ));
 
@@ -43,7 +45,7 @@ const GroupsColumn = ({ column }: GroupsColumnProps) => {
       <p className="mb-4 text-center text-2xl">{t(`classmanagement.${translationId}`)}</p>
       <div className="flex flex-wrap justify-center gap-4">{getContent()}</div>
       <div className="mt-1 flex justify-center" />
-      <GroupDialog item={column} />
+      {isDialogOpen && <GroupDialog item={column} />}
     </>
   );
 };
