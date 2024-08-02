@@ -306,7 +306,7 @@
   "form": {
     "path": "Path",
     "pathDescription": "Please enter a valid URL.",
-    "apptype": "Link Type",
+    "apptype": "App type",
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",

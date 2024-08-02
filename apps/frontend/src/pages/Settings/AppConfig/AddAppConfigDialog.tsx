@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownMenu } from '@/components';
@@ -20,6 +20,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const navigate = useNavigate();
   const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
     useAppConfigsStore();
+  const selectedOption = option.toLowerCase().split('.')[0];
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
@@ -36,7 +37,9 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   };
 
   const onSubmit = async () => {
-    const selectedOption = option.toLowerCase().split('.')[0];
+    if (!selectedOption) {
+      return;
+    }
     const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
 
     if (optionsConfig) {
@@ -52,10 +55,15 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       await updateAppConfig(updatedConfig);
       if (!error) {
         setIsAddAppConfigDialogOpen(false);
-        navigate(`/settings/${selectedOption}`);
       }
     }
   };
+
+  useEffect(() => {
+    if (!isAddAppConfigDialogOpen) {
+      navigate(selectedOption ? `/settings/${selectedOption}` : '/settings', { replace: true });
+    }
+  }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
 
   const dialogFooter = (
     <div className="mt-4 flex justify-end">
@@ -64,6 +72,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         variant="btn-collaboration"
         size="lg"
         onClick={onSubmit}
+        disabled={isLoading || !selectedOption}
       >
         {t('common.add')}
       </Button>

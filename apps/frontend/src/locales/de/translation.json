@@ -306,7 +306,7 @@
   "form": {
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
-    "apptype": "Verknüpfungsart",
+    "apptype": "Art der Anwendung",
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
