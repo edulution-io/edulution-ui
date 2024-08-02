@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { t } from 'i18next';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSettingsPageStore';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 interface PasswordChangeFormInputs {
   currentPassword: string;
@@ -16,15 +18,19 @@ const PasswordChangeForm: FC = () => {
     handleSubmit,
     watch,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<PasswordChangeFormInputs>();
+  const { changePassword, isLoading } = useUserSettingsPageStore();
 
-  const onSubmit = () => {
-    reset();
+  const onSubmit = async () => {
+    const success = await changePassword(getValues('currentPassword'), getValues('newPassword'));
+    if (success) reset();
   };
 
   return (
     <div className="mb-4 pt-5 sm:pt-0">
+      <LoadingIndicator isOpen={isLoading} />
       <h3>{t('usersettings.security.changePassword.title')}</h3>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -87,7 +93,7 @@ const PasswordChangeForm: FC = () => {
           <Button
             variant="btn-collaboration"
             size="sm"
-            onClick={() => onSubmit()}
+            type="submit"
           >
             {t('usersettings.security.changePassword.confirm')}
           </Button>

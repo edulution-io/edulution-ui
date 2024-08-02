@@ -153,6 +153,14 @@ export class LmnApiController {
   async getUserProjects(@Headers('x-api-key') lmnApiToken: string) {
     return this.lmnApiService.getUserProjects(lmnApiToken);
   }
+
+  @Post('password/change')
+  async changePassword(
+    @Body() body: { lmnApiToken: string; oldPassword: string; newPassword: string },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.lmnApiService.changePassword(body.lmnApiToken, username, body.oldPassword, body.newPassword);
+  }
 }
 
 export default LmnApiController;
