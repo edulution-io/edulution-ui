@@ -229,9 +229,9 @@
     }
   },
   "usersettings": {
-    "title": "BENUTZEREINSTELLUNGEN",
-    "sidebar": "Benutzereinstellungen",
-    "split-title": "BENUTZER- EINSTELLUNGEN",
+    "title": "BENUTZER-EINSTELLUNGEN",
+    "sidebar": "Benutzer-einstellungen",
+    "split-title": "BENUTZER-EINSTELLUNGEN",
     "description": "Hier können Sie alle ihre Benutzer definierten Einstellungen einsehen und gegebenfalls anpassen.",
     "security": {
       "title": "Sicherheit",
