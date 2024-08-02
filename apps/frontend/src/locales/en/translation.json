@@ -147,7 +147,7 @@
       "participationErrorUserNotAssigned": "User is no participant of the survey",
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
       "participationErrorSurveyExpired": "Survey has already expired",
-      "idTypeError": "The survey id must convertable into a valid mongo id",
+      "idTypeError": "Missing survey id",
       "missingAnswerError": "Please, provide an answer for the submission"
     }
   },

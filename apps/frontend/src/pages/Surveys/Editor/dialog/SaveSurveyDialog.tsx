@@ -28,7 +28,12 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
 
   const getFooter = () => (
     <div className="mt-4 flex justify-end">
-      <form onSubmit={commitSurvey}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          commitSurvey();
+        }}
+      >
         <Button
           type="submit"
           variant="btn-collaboration"

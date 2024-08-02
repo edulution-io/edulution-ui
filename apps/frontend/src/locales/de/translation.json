@@ -147,7 +147,7 @@
       "participationErrorUserNotAssigned": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
       "participationErrorAlreadyParticipated": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
       "participationErrorSurveyExpired": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
-      "idTypeError": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID",
+      "idTypeError": "Ungültige Umfrage-ID",
       "missingAnswerError": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
     }
   },
