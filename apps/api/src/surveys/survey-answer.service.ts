@@ -2,12 +2,12 @@ import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import UserErrorMessages from '@libs/user/user-error-messages';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
 import { User, UserDocument } from '../users/user.schema';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 
 @Injectable()
 class SurveyAnswersService {
@@ -121,7 +121,7 @@ class SurveyAnswersService {
 
     const existingUser = await this.userModel.findOne<User>({ username: participant }).exec();
     if (!existingUser) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
     const idExistingUsersAnswer = await this.surveyAnswerModel

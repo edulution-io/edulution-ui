@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import CustomFile from '@libs/filesharing/types/CustomFile';
+import CustomFile from '@libs/filesharing/types/customFile';
 
 const fileStream = new Readable();
 fileStream.push(Buffer.from('file content'));

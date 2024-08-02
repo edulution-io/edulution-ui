@@ -1,16 +1,21 @@
 import { AxiosError } from 'axios';
 import { create } from 'zustand';
-import eduApi from '@/api/eduApi';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import React from 'react';
 import handleApiError from '@/utils/handleApiError';
+import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
-import { clearPathFromWebdav } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { HttpMethodes } from '@libs/common/types/http-methods';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import { DirectoryFile } from '@libs/filesharing/types/filesystem';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
-import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
+import ContentType from '@libs/filesharing/types/contentType';
+import handleFileOrCreateFile from '@/pages/FileSharing/dialog/handleFileAction/handleFileOrCreateFile';
+import handleArrayData from '@/pages/FileSharing/dialog/handleFileAction/handleArrayData';
+import handleSingleData from '@/pages/FileSharing/dialog/handleFileAction/handleSingleData';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
+import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -19,14 +24,13 @@ interface FileSharingDialogStore {
   isLoading: boolean;
   userInput: string;
   filesToUpload: File[];
-  moveItemsToPath: DirectoryFile;
+  moveItemsToPath: DirectoryFileDTO;
   selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
-  setMoveItemsToPath: (item: DirectoryFile) => void;
-  setUserInput: (userInput: string) => void;
+  setMoveItemsToPath: (item: DirectoryFileDTO) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
   fileOperationStatus: boolean | undefined;
-
+  isSubmitButtonInActive: boolean;
   setError: (error: AxiosError) => void;
   reset: () => void;
   setSelectedFileType: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
@@ -34,13 +38,15 @@ interface FileSharingDialogStore {
     action: FileActionType,
     endpoint: string,
     httpMethod: HttpMethodes,
-    data: Record<string, string> | Record<string, string>[] | FormData,
+    type: ContentType,
+    data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
   setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
   action: FileActionType;
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean, message: string, status: number) => void;
+  setSubmitButtonIsInActive: (isSubmitButtonActive: boolean) => void;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -48,23 +54,10 @@ const initialState: Partial<FileSharingDialogStore> = {
   isLoading: false,
   error: null,
   userInput: '',
-  moveItemsToPath: {} as DirectoryFile,
+  moveItemsToPath: {} as DirectoryFileDTO,
   selectedFileType: {} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey],
   filesToUpload: [],
-};
-
-const handleDeleteItems = async (data: Record<string, string>[], endpoint: string, httpMethod: HttpMethodes) => {
-  const promises = data
-    .map((item) => clearPathFromWebdav(item.path))
-    .filter((filename) => filename !== undefined)
-    .map((filename) => eduApi[httpMethod](`${endpoint}/${filename}`));
-
-  return Promise.all(promises);
-};
-
-const handleArrayActions = async (data: Record<string, string>[], endpoint: string, httpMethod: HttpMethodes) => {
-  const promises = data.map((item) => eduApi[httpMethod](endpoint, item));
-  return Promise.all(promises);
+  isSubmitButtonInActive: false,
 };
 
 const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => ({
@@ -78,9 +71,9 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
-  setUserInput: (userInput) => set({ userInput }),
   setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
   setMoveItemsToPath: (path) => set({ moveItemsToPath: path }),
+  setSubmitButtonIsInActive: (isSubmitButtonInActive) => set({ isSubmitButtonInActive }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),
   setFileOperationResult: (success, message = t('unknownErrorOccurred'), status = 500) => {
     const result: WebDavActionResult = { success, message, status };
@@ -90,23 +83,25 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
       set({ fileOperationResult: undefined });
     }, 4000);
   },
-  setFileOperationStatus: (status: boolean | undefined) => {
-    set({ fileOperationStatus: status });
-  },
 
-  handleItemAction: async (action, endpoint, httpMethod, data) => {
+  handleItemAction: async (
+    action: FileActionType,
+    endpoint: string,
+    httpMethod: HttpMethodes,
+    type: ContentType,
+    data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+  ) => {
     set({ isLoading: true });
+
     try {
-      if (Array.isArray(data)) {
-        if (httpMethod === HttpMethodes.DELETE) {
-          await handleDeleteItems(data, endpoint, httpMethod);
-          get().setFileOperationResult(true, t('response.files_deleted_successfully'), 200);
-        } else if (action === FileActionType.MOVE || action === FileActionType.UPLOAD_FILE) {
-          await handleArrayActions(data, endpoint, httpMethod);
-          get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
-        }
+      if (data instanceof FormData) {
+        await handleFileOrCreateFile(action, endpoint, httpMethod, type, data);
+        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+      } else if (Array.isArray(data)) {
+        await handleArrayData(action, endpoint, httpMethod, data as PathChangeOrCreateProps[]);
+        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       } else {
-        await eduApi[httpMethod](endpoint, data as Record<string, string>);
+        await handleSingleData(action, endpoint, httpMethod, type, data);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       }
     } catch (error) {

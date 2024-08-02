@@ -9,4 +9,23 @@ export enum HttpMethodes {
   POST = 'post',
   DELETE = 'delete',
   GET = 'get',
+  PATCH = 'patch',
+}
+
+export enum ResponseType {
+  ARRAYBUFFER = 'arraybuffer',
+  BLOB = 'blob',
+  DOCUMENT = 'document',
+  JSON = 'json',
+  STREAM = 'stream',
+  TEXT = 'text',
+}
+
+export enum RequestResponseContentType {
+  APPLICATION_JSON = 'application/json',
+  APPLICATION_XML = 'application/xml',
+  APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded',
+  TEXT_PLAIN = 'text/plain',
+  MULTIPART_FORM_DATA = 'multipart/form-data',
+  APPLICATION_OCET_STREAM = 'application/octet-stream',
 }

@@ -19,8 +19,10 @@
   },
   "auth": {
     "errors": {
-      "TokenExpired": "Sitzung abgelaufen",
-      "SessionExpiring": "Sie werden in weniger als einer Minute abgemeldet."
+      "TokenExpired": "Sitzung abgelaufen.",
+      "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
+      "Unauthorized": "Du bist nicht autorisiert.",
+      "Unknown": "Nutzer nicht gefunden."
     }
   },
   "ticketsystem": {
@@ -104,6 +106,7 @@
       "CreationFailed": "Erstellen fehlgeschlagen",
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
+      "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
     },
     "tooltips": {
@@ -230,6 +233,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Raumbuchung"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -237,6 +243,7 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
@@ -251,6 +258,11 @@
         "success": "App wurde angelegt",
         "failed": "App anlegen fehlgeschlagen"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "App speichern fehlgeschlagen",
+      "ReadAppConfigFailed": "App lesen fehlgeschlagen",
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
     }
   },
   "usersettings": {
@@ -305,6 +317,10 @@
     "remember_me": "Merken"
   },
   "common": {
+    "errors": {
+      "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
+    },
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -326,7 +342,7 @@
   "form": {
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
-    "apptype": "Verknüpfungsart",
+    "apptype": "Art der Anwendung",
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
@@ -347,6 +363,8 @@
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
     "title": "Dateien hochladen",
+    "dataLimitExceeded": "Datenlimit von 50MB überschritten",
+    "fileSize": "Dateigröße",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
@@ -499,8 +517,12 @@
   },
   "users": {
     "errors": {
-      "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
-      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"
+      "notFoundError": "Benutzer existiert nicht",
+      "updateError": "Benutzer konnte nicht aktualisiert werden"
     }
+  },
+  "permission": {
+    "groups": "Nutzergruppen",
+    "selectGroupsDescription": "Wähle die Nutzergruppen aus, die Zugriff auf die App bekommen sollen."
   }
 }

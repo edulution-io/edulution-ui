@@ -3,15 +3,15 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcr
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
-import FileSharingFloatingButtonsBar from '@/pages/FileSharing/table/FloatingButtonsBar';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
+import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FloatingButtonsBar';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const files = useFileSharingStore((state) => state.files);
+  const { files } = useFileSharingStore();
   return (
     <div className="w-full overflow-x-auto">
       <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
