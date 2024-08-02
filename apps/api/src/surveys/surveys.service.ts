@@ -2,8 +2,8 @@ import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import UserErrorMessages from '@libs/user/user-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
 
 @Injectable()
@@ -28,7 +28,7 @@ class SurveysService {
       )
       .exec()
       .catch((error) => {
-        throw new CustomHttpException(UserErrorMessages.DatabaseOfflineError, HttpStatus.INTERNAL_SERVER_ERROR, error);
+        throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
       });
   }
 
@@ -36,7 +36,7 @@ class SurveysService {
     try {
       return await this.surveyModel.create(survey);
     } catch (error) {
-      throw new CustomHttpException(UserErrorMessages.DatabaseOfflineError, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
   }
 

@@ -1,66 +1,97 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header,
+  Patch,
+  Post,
+  Put,
+  Query,
+  StreamableFile,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import ContentType from '@libs/filesharing/types/contentType';
+import CustomFile from '@libs/filesharing/types/customFile';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
-@Controller('filesharing')
+@Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   constructor(private readonly filesharingService: FilesharingService) {}
 
-  @Get('mountpoints')
-  async getMountPoints(@GetCurrentUsername() username: string) {
-    return this.filesharingService.getMountPoints(username);
-  }
-
-  @Get('files/*')
-  async getFilesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
-    Logger.log(`Getting files at path ${path}`, FilesharingController.name);
-    return this.filesharingService.getFilesAtPath(username, path);
-  }
-
-  @Get('dirs/*')
-  async getDirectoriesAtPath(@Param('0') path: string, @GetCurrentUsername() username: string) {
+  @Get()
+  async getFilesAtPath(
+    @Query('type') type: string,
+    @Query('path') path: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    if (type.toUpperCase() === ContentType.FILE.valueOf()) {
+      return this.filesharingService.getFilesAtPath(username, path);
+    }
     return this.filesharingService.getDirAtPath(username, path);
   }
 
-  @Put('createFolder')
-  async createFolder(@Body() body: { path: string; folderName: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.createFolder(username, body.path, body.folderName);
-  }
-
-  @Put('createFile')
-  async createFile(
-    @Body() body: { path: string; fileName: string; content: string },
+  @Post()
+  async createFileFolder(
+    @Query('path') path: string,
+    @Query('type') type: string,
+    @Body()
+    body: {
+      newPath: string;
+    },
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.createFile(username, body.path, body.fileName, body.content);
+    if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
+      return this.filesharingService.createFolder(username, path, body.newPath);
+    }
+    return this.filesharingService.createFile(username, path, body.newPath, '');
   }
 
-  @Post('uploadFile')
+  @Put()
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('path') path: string,
+    @UploadedFile() file: CustomFile,
+    @Query('path') path: string,
     @Body('name') name: string,
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.uploadFile(username, path, file, name);
   }
 
-  @Delete(':filePath(*)')
-  async deleteFile(@Param('filePath') filePath: string, @GetCurrentUsername() username: string) {
-    return this.filesharingService.deleteFileAtPath(username, filePath);
+  @Delete()
+  async deleteFile(@Query('path') path: string, @GetCurrentUsername() username: string) {
+    return this.filesharingService.deleteFileAtPath(username, path);
   }
 
-  @Put('name')
-  async renameResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.renameFile(username, body.originPath, body.newPath);
+  @Patch()
+  async moveOrRenameResource(
+    @Query('path') path: string,
+    @Body()
+    body: {
+      newPath: string;
+    },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
   }
 
-  @Put('locations')
-  async moveResource(@Body() body: { originPath: string; newPath: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.moveItems(username, body.originPath, body.newPath);
+  @Get(FileSharingApiEndpoints.GET_FILE_STREAM)
+  @Header('Content-Type', RequestResponseContentType.APPLICATION_OCET_STREAM as string)
+  async webDavFileStream(
+    @Query('filePath') filePath: string,
+    @GetCurrentUsername() username: string,
+  ): Promise<StreamableFile> {
+    const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+    const fileName = filePath.split('/').pop();
+
+    return new StreamableFile(stream, {
+      disposition: `attachment; filename="${fileName}"`,
+    });
   }
 }
 

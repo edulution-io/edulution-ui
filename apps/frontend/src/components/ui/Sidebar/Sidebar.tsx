@@ -5,6 +5,7 @@ import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -12,6 +13,7 @@ const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const isMobileView = useIsMobileView();
+  const { isSuperAdmin } = useLdapGroups();
 
   const sidebarItems = [
     ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => ({
@@ -20,12 +22,16 @@ const Sidebar: React.FC = () => {
       icon: item.icon,
       color: 'bg-ciGreenToBlue',
     })),
-    {
-      title: t('settings.sidebar'),
-      link: '/settings',
-      icon: SettingsIcon,
-      color: 'bg-ciGreenToBlue',
-    },
+    ...(isSuperAdmin
+      ? [
+          {
+            title: t('settings.sidebar'),
+            link: '/settings',
+            icon: SettingsIcon,
+            color: 'bg-ciGreenToBlue',
+          },
+        ]
+      : []),
   ];
 
   const sidebarProps = {

@@ -7,14 +7,15 @@ import {
   DropdownMenuTrigger as Trigger,
 } from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
+import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
-import { DropdownOption } from '@libs/filesharing/fileCreationDropDownOptions';
 
 interface FloatingActionButtonProps {
   icon: IconType;
   text: string;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
   options?: DropdownOption[];
   onSelectFileSelect?: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
@@ -24,6 +25,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   icon: Icon,
   text,
   onClick,
+  type = 'button',
   variant = 'button',
   options = [],
   onSelectFileSelect,
@@ -70,7 +72,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
     }
     return (
       <Button
-        type="button"
+        type={type}
         variant="btn-hexagon"
         className="bg-opacity-90 p-4"
         onClick={onClick}

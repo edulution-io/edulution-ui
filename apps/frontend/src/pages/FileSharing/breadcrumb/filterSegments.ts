@@ -1,4 +1,4 @@
-import HiddenAttributesBreadcrumb from '@libs/filesharing/types/hiddenAttributesBreadcrumb';
+import HiddenAttributesBreadcrumb from '@libs/ui/types/HiddenAttributesBreadcrumb';
 
 const filterSegments = (segments: string[]): string[] =>
   segments

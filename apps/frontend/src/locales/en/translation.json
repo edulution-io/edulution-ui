@@ -19,8 +19,10 @@
   },
   "auth": {
     "errors": {
-      "TokenExpired": "Session expired",
-      "SessionExpiring": "You will be logged off in less than a minute."
+      "TokenExpired": "Session expired.",
+      "SessionExpiring": "You will be logged off in less than a minute.",
+      "Unauthorized": "You are not authorized.",
+      "Unknown": "User not found."
     }
   },
   "ticketsystem": {
@@ -104,6 +106,7 @@
       "CreationFailed": "Creation failed",
       "DbAccessFailed": "Database access failed",
       "WebDavError": "Data server access failed",
+      "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed"
     },
     "tooltips": {
@@ -257,6 +260,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Room booking"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -264,6 +270,7 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
+    "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
       "update": {
@@ -278,6 +285,11 @@
         "success": "App created",
         "failed": "App creation failed"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "Save app failed",
+      "ReadAppConfigFailed": "Read app failed",
+      "DisableAppConfigFailed": "Disable app failed"
     }
   },
   "usersettings": {
@@ -332,6 +344,10 @@
     "remember_me": "Remember me"
   },
   "common": {
+    "errors": {
+      "dbAccessFailed": "Database access failed",
+      "envAccessError": "Not able to read environment variables"
+    },
     "title": "Title",
     "add": "Add",
     "reload": "Reload",
@@ -347,10 +363,10 @@
     "create": "Create",
     "icon": "Icon",
     "groups": "Groups",
+    "clearSelection": "Clear selection",
     "start": "Start",
     "close": "Close",
     "select": "Select...",
-    "clearSelection": "Clear selection",
     "edit": "Edit",
     "delete": "Delete",
     "participate": "Participate",
@@ -362,7 +378,7 @@
   "form": {
     "path": "Path",
     "pathDescription": "Please enter a valid URL.",
-    "apptype": "Link Type",
+    "apptype": "App type",
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
@@ -383,6 +399,8 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
+    "dataLimitExceeded": "Data limit from 50 MB exceeded",
+    "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
@@ -535,9 +553,12 @@
   },
   "users": {
     "errors": {
-      "notAbleToFindUserError": "User not found",
-      "notAbleToUpdateUserError": "Not able to update the user",
-      "databaseOfflineError": "Database seems to be offline"
+      "notFoundError": "User does not exist",
+      "updateError": "Not able to update the user"
     }
+  },
+  "permission": {
+    "groups": "User groups",
+    "selectGroupsDescription": "Select the user groups that should have access to the app."
   }
 }

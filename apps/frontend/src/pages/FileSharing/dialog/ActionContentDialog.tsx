@@ -8,12 +8,12 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import { DirectoryFile } from '@libs/filesharing/types/filesystem';
+import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
-import FileActionType from '@libs/filesharing/types/fileActionType';
-import getFileSharingFormSchema from '@/pages/FileSharing/formSchema';
-import FileSharingFormValues from '@libs/filesharing/types/filesharingForm';
+import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -26,7 +26,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     closeDialog,
     moveItemsToPath,
     openDialog,
-    setUserInput,
     isLoading,
     error,
     action,
@@ -36,10 +35,12 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSelectedFileType,
     setMoveItemsToPath,
     setFilesToUpload,
+    isSubmitButtonInActive,
+    setSubmitButtonIsInActive,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
 
-  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, getData } =
+  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
     getDialogBodySetup(action);
 
   const form = useForm<FileSharingFormValues>({
@@ -49,19 +50,13 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
-    setMoveItemsToPath({} as DirectoryFile);
+    setMoveItemsToPath({} as DirectoryFileDTO);
     setSelectedFileType({} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]);
     setFilesToUpload([]);
   };
 
   const onSubmit = async () => {
-    if (schema) {
-      const filename = form.getValues('filename');
-      setUserInput(filename);
-    }
-
     const data = await getData(form, currentPath, { selectedItems, moveItemsToPath, selectedFileType, filesToUpload });
-
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {
@@ -69,14 +64,16 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           formData.append('file', item.file);
           formData.append('path', item.path);
           formData.append('name', item.name);
-          return handleItemAction(action, endpoint, httpMethod, formData);
+          formData.append('currentPath', currentPath);
+          return handleItemAction(action, endpoint, httpMethod, type, formData);
         }
         return Promise.resolve();
       });
 
       await Promise.all(uploadPromises);
     } else {
-      await handleItemAction(action, endpoint, httpMethod, data as Record<string, string>);
+      setSubmitButtonIsInActive(false);
+      await handleItemAction(action, endpoint, httpMethod, type, data);
     }
 
     clearAllSelectedItems();
@@ -86,6 +83,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const handelOpenChange = () => {
     if (isDialogOpen) {
       closeDialog();
+      setSubmitButtonIsInActive(false);
       form.reset();
     } else {
       openDialog(action);
@@ -111,7 +109,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <Button
                 variant="btn-collaboration"
-                disabled={isLoading}
+                disabled={isLoading || isSubmitButtonInActive}
                 size="lg"
                 type="submit"
                 onClick={handleFormSubmit}

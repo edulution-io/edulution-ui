@@ -2,9 +2,9 @@ import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import UserErrorMessages from '@libs/user/user-error-messages';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -134,7 +134,7 @@ class SurveyAnswersService {
         })
         .exec();
       if (updateSurvey == null) {
-        throw new CustomHttpException(UserErrorMessages.NotAbleToUpdateUserError, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       return newSurveyAnswer;
