@@ -3,6 +3,7 @@ import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import VdiController from './vdi.controller';
 import VdiService from './vdi.service';
+import UsersService from '../users/users.service';
 
 const mockVdiServices = {
   authenticateVdi: jest.fn(),
@@ -15,6 +16,7 @@ const mockVdiServices = {
 describe('VdiController', () => {
   let vdiController: VdiController;
   let vdiService: VdiService;
+  let usersService: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,11 +26,16 @@ describe('VdiController', () => {
           provide: VdiService,
           useValue: mockVdiServices,
         },
+        {
+          provide: UsersService,
+          useValue: jest.fn(),
+        },
       ],
     }).compile();
 
     vdiController = module.get<VdiController>(VdiController);
     vdiService = module.get<VdiService>(VdiService);
+    usersService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -57,6 +64,8 @@ describe('VdiController', () => {
 
   describe('createOrUpdateSession', () => {
     it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
+      const password = 'testword';
+      usersService.getPassword = jest.fn().mockReturnValue(password);
       const guacamoleDto: GuacamoleDto = {
         dataSource: 'mysql',
         authToken: 'ABC123',
@@ -64,7 +73,7 @@ describe('VdiController', () => {
       };
       const username = 'testuser';
       await vdiController.createOrUpdateSession(guacamoleDto, username);
-      expect(vdiService.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username);
+      expect(vdiService.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username, password);
     });
   });
 

@@ -12,7 +12,6 @@ import {
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
-import UsersService from '../users/users.service';
 
 const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, GUACAMOLE_API_URL, GUACAMOLE_API_PASSWORD, GUACAMOLE_API_USER } =
   process.env;
@@ -25,7 +24,7 @@ class VdiService {
 
   private vdiId = '';
 
-  constructor(private usersService: UsersService) {
+  constructor() {
     this.guacamoleApi = axios.create({
       baseURL: `${GUACAMOLE_API_URL}/guacamole/api`,
     });
@@ -91,18 +90,17 @@ class VdiService {
     }
   }
 
-  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string) {
+  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
     const identifier = await this.getConnection(guacamoleDto, username);
     if (identifier != null) {
-      return this.updateSession(guacamoleDto, username);
+      return this.updateSession(guacamoleDto, username, password);
     }
-    return this.createSession(guacamoleDto, username);
+    return this.createSession(guacamoleDto, username, password);
   }
 
-  async createSession(guacamoleDto: GuacamoleDto, username: string) {
+  async createSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
     const { dataSource, authToken, hostname } = guacamoleDto;
     try {
-      const password = await this.usersService.getPassword(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,
@@ -119,10 +117,9 @@ class VdiService {
     }
   }
 
-  async updateSession(guacamoleDto: GuacamoleDto, username: string) {
+  async updateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
     try {
       const { dataSource, authToken, hostname } = guacamoleDto;
-      const password = await this.usersService.getPassword(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,
