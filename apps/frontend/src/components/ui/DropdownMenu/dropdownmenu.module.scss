@@ -22,6 +22,16 @@
   border-width: 0 5px 5px;
 }
 
+.dropdown .arrow.up {
+  border-color: transparent transparent #999;
+  border-width: 0 5px 5px;
+}
+
+.dropdown .arrow.up.open {
+  border-color: #999 transparent transparent;
+  border-width: 5px 5px 0;
+}
+
 .dropdown .selected-value input {
   line-height: 1.5;
   font-size: 1rem;
@@ -50,6 +60,12 @@
   width: 100%;
   z-index: 1000;
   -webkit-overflow-scrolling: touch;
+}
+
+.dropdown .options.up {
+  top: auto;
+  bottom: 100%;
+  margin-bottom: -1px;
 }
 
 .dropdown .options.open {

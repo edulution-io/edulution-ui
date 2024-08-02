@@ -1,17 +1,20 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import SurveySchema, { SurveyModel } from './survey.schema';
 import { User, UserSchema } from '../users/user.schema';
-import SurveysController from './surveys.controller';
+import SurveySchema, { Survey } from './survey.schema';
+import SurveyAnswerSchema, { SurveyAnswer } from './survey-answer.schema';
 import SurveysService from './surveys.service';
+import SurveysController from './surveys.controller';
 import UsersSurveysService from './users-surveys.service';
+import SurveyAnswersService from './survey-answer.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: SurveyModel.name, schema: SurveySchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Survey.name, schema: SurveySchema }]),
+    MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswerSchema }]),
   ],
   controllers: [SurveysController],
-  providers: [SurveysService, UsersSurveysService],
+  providers: [SurveysService, UsersSurveysService, SurveyAnswersService],
 })
 export default class SurveysModule {}

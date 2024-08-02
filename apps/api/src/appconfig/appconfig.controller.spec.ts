@@ -2,9 +2,9 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { AppIntegrationType } from '@libs/appconfig/types';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
-import { AppIntegrationType } from './appconfig.types';
 import mockAppConfigService from './appconfig.service.mock';
 import { AppConfig } from './appconfig.schema';
 

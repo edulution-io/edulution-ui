@@ -1,14 +1,16 @@
 import mongoose from 'mongoose';
-import SurveyEditorFormData from '@libs/survey/types/survey-editor-form-data';
+import { Group } from '@libs/user/types/groups/group';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import SurveyDto from '@libs/survey/types/survey.dto';
 
-class EmptySurveyForm implements SurveyEditorFormData {
+class EmptySurveyForm implements SurveyDto {
+  invitedAttendees: AttendeeDto[];
+
+  invitedGroups: Group[];
+
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
-
-  participants: [];
-
-  participated: [];
 
   saveNo: number;
 
@@ -27,11 +29,12 @@ class EmptySurveyForm implements SurveyEditorFormData {
   canShowResultsChart: boolean;
 
   constructor() {
+    this.invitedAttendees = [];
+    this.invitedGroups = [];
+
     const time = new Date().getTime();
     this.id = mongoose.Types.ObjectId.createFromTime(time);
     this.formula = {} as JSON;
-    this.participants = [];
-    this.participated = [];
     this.saveNo = 0;
     this.created = new Date();
     this.expirationDate = undefined;

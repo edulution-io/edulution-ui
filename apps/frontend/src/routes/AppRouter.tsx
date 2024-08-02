@@ -1,42 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import createRouter from '@/routes/CreateRouter';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import cleanAllStores from '@/store/utilis/cleanAllStores';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 const AppRouter: React.FC = () => {
   const auth = useAuth();
   const { appConfigs, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setIsLoggedInInEduApi } = useUserStore();
+  const { isAuthenticated, logout } = useUserStore();
+  const { t } = useTranslation();
+  const [tokenIsExpiring, setTokenIsExpiring] = useState(false);
+
+  const handleLogout = async () => {
+    await auth.removeUser();
+    await logout();
+    cleanAllStores();
+    setTokenIsExpiring(false);
+  };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          await getAppConfigs();
-        } catch (e) {
-          console.error('Error fetching data:', e);
-        }
-      };
+    const handleGetAppConfigs = async () => {
+      const isApiResponding = await getAppConfigs();
+      if (!isApiResponding) {
+        void handleLogout();
+      }
+    };
 
-      // eslint-disable-next-line no-void
-      void fetchData();
+    if (isAuthenticated) {
+      void handleGetAppConfigs();
     }
   }, [isAuthenticated]);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
-      auth.events.addAccessTokenExpiring(() => {
+    if (isAuthenticated || auth.isAuthenticated) {
+      const handleTokenExpired = () => {
         if (auth.user?.expired) {
-          console.info('Session expired');
-          auth.removeUser().catch((e) => console.error('Error fetching data:', e));
-          setIsLoggedInInEduApi(false);
-          sessionStorage.clear();
-          localStorage.clear();
+          void handleLogout();
+          toast.error(t('auth.errors.TokenExpired'));
         }
-      });
+      };
+
+      if (!tokenIsExpiring) {
+        setTokenIsExpiring(true);
+        toast.error(t('auth.errors.SessionExpiring'));
+      }
+
+      auth.events.addAccessTokenExpiring(handleTokenExpired);
+
+      return () => {
+        auth.events.removeAccessTokenExpiring(handleTokenExpired);
+      };
     }
+    return () => {};
   }, [auth.events, auth.isAuthenticated]);
 
   return <RouterProvider router={createRouter(isAuthenticated, appConfigs)} />;

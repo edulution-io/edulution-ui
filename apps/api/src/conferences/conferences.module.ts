@@ -3,15 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceSchema } from './conference.schema';
 import ConferencesController from './conferences.controller';
-import AppConfigService from '../appconfig/appconfig.service';
-import { AppConfig, AppConfigSchema } from '../appconfig/appconfig.schema';
+import AppConfigModule from '../appconfig/appconfig.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }]),
-    MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }]), AppConfigModule],
   controllers: [ConferencesController],
-  providers: [ConferencesService, AppConfigService],
+  providers: [ConferencesService],
 })
 export default class ConferencesModule {}

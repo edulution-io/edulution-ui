@@ -39,10 +39,10 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     <div className="mt-4 flex justify-end">
       <form onSubmit={commitSurvey}>
         <Button
+          type="submit"
           variant="btn-collaboration"
           disabled={isCommitting}
           size="lg"
-          type="submit"
         >
           {t('common.save')}
         </Button>

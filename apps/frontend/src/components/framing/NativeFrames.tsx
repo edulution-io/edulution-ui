@@ -1,11 +1,12 @@
 import React from 'react';
-import { AppConfig, AppIntegrationType, APPS } from '@/datatypes/types';
 import MailPage from '@/pages/Mail/MailPage';
-import useAppConfigsStore from '@/store/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard';
+import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 
-const isActiveNativeFrame = (appConfig: AppConfig, loadedFrames: string[]) => {
+const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
   if (appType !== AppIntegrationType.NATIVE) return false;
   return loadedFrames.includes(appConfig.name);
@@ -23,6 +24,8 @@ const NativeFrames = () => {
           return <MailPage key={appConfig.name} />;
         case APPS.LINUXMUSTER:
           return <LinuxmusterPage key={appConfig.name} />;
+        case APPS.WHITEBOARD:
+          return <Whiteboard key={appConfig.name} />;
         default:
           return null;
       }

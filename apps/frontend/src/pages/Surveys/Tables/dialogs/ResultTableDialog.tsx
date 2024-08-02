@@ -1,21 +1,21 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import mongoose from 'mongoose';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import Survey from '@libs/survey/types/survey';
-import Attendee from '@libs/survey/types/attendee';
+import SurveyDto from '@libs/survey/types/survey.dto';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/shared/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 
 interface ShowSurveyResultsTableDialogProps {
-  survey: Survey;
+  survey: SurveyDto;
 
   isOpenPublicResultsTableDialog: boolean;
   openPublicResultsTableDialog: () => void;
   closePublicResultsTableDialog: () => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: Attendee[]) => Promise<JSON[] | undefined>;
+  getSurveyResult: (surveyId: mongoose.Types.ObjectId, participants: AttendeeDto[]) => Promise<JSON[] | undefined>;
   result: JSON[];
   isLoading: boolean;
   error: Error | null;
@@ -39,20 +39,13 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
 
   const { t } = useTranslation();
 
-  const getResult = useCallback(() => {
-    if (!survey) {
-      return;
-    }
-    void getSurveyResult(survey.id, survey.participants);
-  }, []);
-
   useEffect((): void => {
-    getResult();
-  }, []);
+    if (survey && isOpenPublicResultsTableDialog) {
+      void getSurveyResult(survey.id, survey.invitedAttendees);
+    }
+  }, [isOpenPublicResultsTableDialog, survey]);
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
-
     if (!survey?.formula) {
       return (
         <div className="rounded-xl bg-red-400 py-3 text-center text-black">
@@ -80,6 +73,8 @@ const ResultTableDialog = (props: ShowSurveyResultsTableDialogProps) => {
   };
 
   if (!isOpenPublicResultsTableDialog) return null;
+
+  if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
 
   return (
     <AdaptiveDialog

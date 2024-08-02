@@ -10,7 +10,7 @@ import cn from '@/lib/utils';
 const variants = cva([], {
   variants: {
     variant: {
-      default: 'text-black',
+      default: 'text-foreground',
     },
   },
 });

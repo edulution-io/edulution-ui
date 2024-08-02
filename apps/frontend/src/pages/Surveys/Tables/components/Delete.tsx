@@ -31,7 +31,7 @@ const Delete = () => {
         icon={FiDelete}
         text={t('common.delete')}
         onClick={async () => {
-          await deleteSurvey(survey.id);
+          await deleteSurvey([survey.id]);
           await updateOpenSurveys();
           await updateCreatedSurveys();
           await updateAnsweredSurveys();

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import UsersSurveys from 'libs/src/survey/types/users-surveys';
 
 class CreateUserDto {
   username: string;
@@ -9,14 +9,7 @@ class CreateUserDto {
 
   roles: string[];
 
-  usersSurveys?: {
-    openSurveys?: mongoose.Types.ObjectId[];
-    createdSurveys?: mongoose.Types.ObjectId[];
-    answeredSurveys?: {
-      surveyId: mongoose.Types.ObjectId;
-      answer?: JSON;
-    }[];
-  };
+  usersSurveys?: UsersSurveys;
 }
 
 export default CreateUserDto;
