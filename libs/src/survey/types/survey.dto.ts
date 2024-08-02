@@ -1,32 +1,22 @@
 import mongoose from 'mongoose';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import { Group } from '@libs/user/types/groups/group';
+import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 interface SurveyDto {
-  // ADDITIONAL;
-  invitedAttendees: AttendeeDto[];
-
-  invitedGroups: Group[];
-
-  // SURVEY
   id: mongoose.Types.ObjectId;
-
   formula: JSON;
-
   saveNo: number;
-
+  creator: AttendeeDto;
+  invitedAttendees: AttendeeDto[];
+  invitedGroups: Group[];
+  participatedAttendees: AttendeeDto[];
+  answers: mongoose.Types.ObjectId[];
   created?: Date;
-
   expirationDate?: Date;
-
   expirationTime?: string;
-
   isAnonymous?: boolean;
-
   canShowResultsTable?: boolean;
-
   canShowResultsChart?: boolean;
-
   canSubmitMultipleAnswers?: boolean;
 }
 

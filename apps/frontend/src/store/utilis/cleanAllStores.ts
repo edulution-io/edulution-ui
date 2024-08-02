@@ -9,6 +9,12 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
+import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogStore';
+import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/DeleteSurveyStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultDialogStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -24,6 +30,12 @@ const cleanAllStores = () => {
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useSurveyEditorFormStore.getState().reset();
+  useSurveyTablesPageStore.getState().reset();
+  useDeleteSurveyStore.getState().reset();
+  useParticipateDialogStore.getState().reset();
+  useCommitedAnswersDialogStore.getState().reset();
+  useResultDialogStore.getState().reset();
 };
 
 export default cleanAllStores;

@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Patch, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Delete, Query, Get, Patch, Post, Param } from '@nestjs/common';
+import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
+import AnswerDto from '@libs/survey/types/answer.dto';
 import PushAnswerDto from '@libs/survey/types/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/delete-survey.dto';
-import FindSurveyDto from '@libs/survey/types/find-survey.dto';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import { RESULT_ENDPOINT, SURVEYS } from '@libs/survey/surveys-endpoint';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import JWTUser from '../types/JWTUser';
 
 @Controller(SURVEYS)
 class SurveysController {
@@ -20,12 +20,8 @@ class SurveysController {
   ) {}
 
   @Get()
-  async findSurveys(@Body() findSurveyDto: FindSurveyDto) {
-    const { surveyIds = [] } = findSurveyDto;
-    if (surveyIds.length > 0) {
-      return this.surveyService.findSurveys(surveyIds);
-    }
-    throw new HttpException(SurveyErrorMessages.notAbleToFindSurveyParameterError, HttpStatus.BAD_REQUEST);
+  async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
+    return this.surveyAnswerService.findUserSurveys(status, username);
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
@@ -33,49 +29,36 @@ class SurveysController {
     return this.surveyAnswerService.getPublicAnswers(surveyId);
   }
 
+  @Post(ANSWER_ENDPOINT)
+  async getCommittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
+    const { surveyId, attendee } = getAnswerDto;
+    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
+  }
+
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
-    // first extrude the additional info fields from the remaining survey object
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { invitedAttendees, ...surveyData } = surveyDto;
-    const { id, saveNo = 0, created = new Date(), isAnonymous, canSubmitMultipleAnswers } = surveyData;
+    const { id, created = new Date() } = surveyDto;
 
     const survey: Survey = {
-      ...surveyData,
+      ...surveyDto,
       _id: id,
-      id,
-      saveNo,
       created,
-      isAnonymous,
-      canSubmitMultipleAnswers,
     };
 
-    const updatedSurvey = await this.surveyService.updateSurvey(survey);
-    if (updatedSurvey == null) {
-      const createdSurvey = await this.surveyService.createSurvey(survey);
-      if (createdSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NeitherAbleToUpdateNorToCreateSurveyError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      // TODO: NIEDUUI-254: add user functionality to manage surveys
-
-      return createdSurvey;
-    }
-    return updatedSurvey;
+    return this.surveyService.updateOrCreateSurvey(survey);
   }
 
   @Delete()
-  deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
-    return this.surveyService.deleteSurveys(deleteSurveyDto.surveyIds);
+  async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
+    const { surveyIds } = deleteSurveyDto;
+    await this.surveyService.deleteSurveys(surveyIds);
+    await this.surveyAnswerService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, answer, username);
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
+    const { surveyId, saveNo, answer } = pushAnswerDto;
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, user, answer);
   }
 }
 

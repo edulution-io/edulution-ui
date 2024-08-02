@@ -4883,7 +4883,7 @@ _:future,
 }
 
 .svc-toolbox__tool:not(.sv-dots) {
-  display: flex;
+  /* display: flex; */
   width: auto;
 }
 
