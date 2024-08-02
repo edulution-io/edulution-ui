@@ -4,10 +4,10 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { User, UserDocument } from '../users/user.schema';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
-import UserErrorMessages from '@libs/user/constants/user-error-messages';
 
 @Injectable()
 class SurveyAnswersService {
