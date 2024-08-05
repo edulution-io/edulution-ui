@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ResultVisualizationDialogBody from '@/pages/Surveys/Tables/dialogs/survey-result/ResultVisualizationDialogBody';
@@ -43,12 +42,10 @@ const ResultVisualizationDialog = () => {
     }
 
     return (
-      <ScrollArea>
-        <ResultVisualizationDialogBody
-          formula={survey.formula}
-          result={result}
-        />
-      </ScrollArea>
+      <ResultVisualizationDialogBody
+        formula={survey.formula}
+        result={result}
+      />
     );
   };
 

@@ -50,7 +50,7 @@ const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps
   }, [visuPanel]);
 
   return (
-    <div className="max-h-[75vh] rounded bg-ciLightGrey">
+    <div className="rounded bg-ciLightGrey">
       <div id="surveyVisuPanel" />
     </div>
   );
