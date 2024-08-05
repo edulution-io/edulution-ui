@@ -229,8 +229,8 @@
     }
   },
   "usersettings": {
-    "title": "PROFILE",
-    "sidebar": "Profile",
+    "title": "MY PROFILE",
+    "sidebar": "My Profile",
     "security": {
       "title": "Security",
       "sidebar": "Security",
