@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import UsersService from './users.service';
@@ -7,6 +7,7 @@ import { User, UserSchema } from './user.schema';
 import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsModule from '../groups/groups.module';
 
+@Global()
 @Module({
   imports: [
     CacheModule.register({
