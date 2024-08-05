@@ -6,25 +6,11 @@ import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import handleApiError from '@/utils/handleApiError';
 import SurveysTablesPageStore from '@/pages/Surveys/Tables/surveysTablePageStore';
-
-const initialState: Partial<SurveysTablesPageStore> = {
-  selectedPageView: SurveysPageView.OPEN,
-
-  selectedSurvey: undefined,
-
-  answeredSurveys: [],
-  isFetchingAnsweredSurveys: false,
-
-  createdSurveys: [],
-  isFetchingCreatedSurveys: false,
-
-  openSurveys: [],
-  isFetchingOpenSurveys: false,
-};
+import SurveysTablesPageStoreInitialState from '@/pages/Surveys/Tables/surveysTablePageStoreInitialState';
 
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
-  ...(initialState as SurveysTablesPageStore),
-  reset: () => set(initialState),
+  ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
+  reset: () => set(SurveysTablesPageStoreInitialState),
 
   updateSelectedPageView: (pageView: SurveysPageView) => set({ selectedPageView: pageView }),
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
