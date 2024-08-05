@@ -31,7 +31,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
       >
         <div
           ref={sidebarRef}
-          className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-ciGrey bg-black bg-opacity-90 md:bg-none"
+          className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-ciLightGrey bg-black bg-opacity-90 md:bg-none"
         >
           <div className="relative right-0 top-0 h-14 bg-black pr-4 pt-4" />
           <div className="h-[calc(100%-56px)] overflow-auto">

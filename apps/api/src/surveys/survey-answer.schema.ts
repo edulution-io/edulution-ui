@@ -1,6 +1,5 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import Attendee from '../conferences/attendee.schema';
 
 export type SurveyAnswerDocument = SurveyAnswer & Document;
 
@@ -13,13 +12,10 @@ export class SurveyAnswer {
   id: mongoose.Types.ObjectId;
 
   @Prop({ required: true })
-  surveyId: mongoose.Types.ObjectId;
+  user: string;
 
   @Prop({ required: true })
-  saveNo: number;
-
-  @Prop({ required: true })
-  attendee: Attendee;
+  survey: mongoose.Types.ObjectId;
 
   @Prop({ type: JSON, required: true })
   answer: JSON;

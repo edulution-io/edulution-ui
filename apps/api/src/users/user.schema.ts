@@ -1,5 +1,5 @@
-import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 import LdapGroups from '@libs/user/types/groups/ldapGroups';
 
 export type UserDocument = User & Document;

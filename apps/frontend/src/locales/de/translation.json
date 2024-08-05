@@ -133,25 +133,23 @@
     "sidebar": "Schulverwaltung"
   },
   "survey": {
-    "creationDate": "Erstellungsdatum",
-    "expirationDate": "Ablaufdatum",
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
     "editor": {
       "new": "Neu (Leer)",
-      "abort": "Alle Änderungen verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
-      "deleteError": "Die Umfragen konnten nicht gelöscht werden",
-      "notFoundError": "Umfrage konnte nicht gefunden werden",
-      "participationErrorUserNotAssigned": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
-      "participationErrorAlreadyParticipated": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
-      "participationErrorSurveyExpired": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
-      "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
+      "neitherAbleToUpdateNorToCreateSurveyError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
+      "notAbleToDeleteSurveyError": "Die Umfragen konnten nicht gelöscht werden",
+      "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
+      "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
+      "notAbleToFindSurveyParameterError": "Es wurde keine Survey-Id übergeben",
+      "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
+      "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "notAbleToParticipateSurveyExpiredError": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
+      "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
+      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
     }
   },
   "survey-answer": {
@@ -166,34 +164,9 @@
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
+    "description": "Hier können Sie eigene Umfragen erstellen und verwalten oder an den Umfragen anderer teilnehmen.",
     "view": {
-      "open": "Offene Umfragen",
-      "created": "Eigene Umfragen",
-      "answered": "Schon beantwortet",
       "editor": "Neue erstellen"
-    },
-    "actions": {
-      "showResultsChart": "Resultat (Schaubild)",
-      "showResultsTable": "Resultat (Tabelle)",
-      "showCommittedAnswers": "Verfügbare Abgaben"
-    },
-    "commitedAnswersDialog": {
-      "title": "Eingereichte Abgabe des Nutzers"
-    },
-    "saveDialog": {
-      "title": "Speichern und Benutzern zuweisen",
-      "settingsFlags": "Einstellungen",
-      "isAnonymous": "Soll die Umfrage anonym sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
-    },
-    "participateDialog": {
-      "title": "An der Umfrage teilnehmen"
-    },
-    "resultChartDialog": {
-      "title": "Ergebnisse - Schaubild"
-    },
-    "resultTableDialog": {
-      "title": "Ergebnisse - Tabelle"
     }
   },
   "printer": {
@@ -348,7 +321,6 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
-    "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -365,15 +337,7 @@
     "groups": "Gruppen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
-    "close": "Schließen",
-    "select": "Wählen...",
-    "edit": "Bearbeiten",
-    "delete": "Löschen",
-    "participate": "Teilnehmen",
-    "participated": "Teilgenommen",
-    "not-available": "'Nicht verfügbar'",
-    "date": "Datum",
-    "time": "Uhrzeit"
+    "close": "Schließen"
   },
   "form": {
     "path": "Link",

@@ -10,7 +10,7 @@ const DownButton: React.FC<SidebarArrowButtonProps> = ({ onClick }) => {
     <div key="down">
       <button
         type="button"
-        className="absolute bottom-[58px] right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2"
+        className="absolute bottom-[58px] right-0 z-[99] w-full cursor-pointer items-center justify-end border-y-2 border-ciLightGrey bg-black px-4 py-2 hover:bg-stone-900 md:block md:px-2"
         onClick={onClick}
       >
         <div className="absolute inset-0 flex items-center justify-center">

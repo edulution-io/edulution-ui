@@ -133,25 +133,23 @@
     "sidebar": "School Management"
   },
   "survey": {
-    "creationDate": "Creation date",
-    "expirationDate": "Expiration date",
-    "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available",
     "editor": {
       "new": "New (blank)",
-      "abort": "Revert all changes",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "updateOrCreateError": "Neither able to update a survey nor to create a new one",
-      "deleteError": "Not able to delete the surveys",
-      "notFoundError": "Survey not found",
-      "participationErrorUserNotAssigned": "User is no participant of the survey",
-      "participationErrorAlreadyParticipated": "User has already participated in the survey",
-      "participationErrorSurveyExpired": "Survey has already expired",
-      "idTypeError": "Missing survey id",
-      "missingAnswerError": "Please, provide an answer for the submission"
+      "neitherAbleToUpdateNorToCreateSurveyError": "Neither able to update a survey nor to create a new one",
+      "notAbleToCreateSurveyError": "Not able to create the survey",
+      "notAbleToDeleteSurveyError": "Not able to delete the surveys",
+      "notAbleToFindSurveyError": "Survey not found",
+      "notAbleToFindSurveysError": "Did not find a single survey",
+      "notAbleToFindSurveyParameterError": "In order to find a survey you have to provide at least one surveyId",
+      "notAbleToParticipateNotAnParticipantError": "User is no participant of the survey",
+      "notAbleToParticipateAlreadyParticipatedError": "User has already participated in the survey",
+      "notAbleToParticipateSurveyExpiredError": "Survey has already expired",
+      "notAbleToUpdateSurveyError": "Not able to update the survey",
+      "notValidSurveyIdIsNoMongooseObjectId": "The survey id must convertable into a valid mongo id"
     }
   },
   "survey-answer": {
@@ -166,34 +164,9 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
+    "description": "Here you can create and manage surveys or to participate on surveys of the others",
     "view": {
-      "open": "Open Surveys",
-      "created": "Owned Surveys",
-      "answered": "Answered Surveys",
       "editor": "Create new"
-    },
-    "actions": {
-      "showResultsChart": "Result (Chart)",
-      "showResultsTable": "Result (Table)",
-      "showCommittedAnswers": "Commited Answers"
-    },
-    "commitedAnswersDialog": {
-      "title": "Commited survey answer"
-    },
-    "saveDialog": {
-      "title": "Save and assign to participants",
-      "settingsFlags": "Options",
-      "isAnonymous": "Should the survey be anonymous?",
-      "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
-    },
-    "participateDialog": {
-      "title": "Participate in the survey"
-    },
-    "resultChartDialog": {
-      "title": "Results - Chart"
-    },
-    "resultTableDialog": {
-      "title": "Results - Table"
     }
   },
   "printer": {
@@ -348,7 +321,6 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
-    "title": "Title",
     "add": "Add",
     "reload": "Reload",
     "logout": "Logout",
@@ -365,15 +337,7 @@
     "groups": "Groups",
     "clearSelection": "Clear selection",
     "start": "Start",
-    "close": "Close",
-    "select": "Select...",
-    "edit": "Edit",
-    "delete": "Delete",
-    "participate": "Participate",
-    "participated": "Participated",
-    "not-available": "'Not available'",
-    "date": "Date",
-    "time": "Time"
+    "close": "Close"
   },
   "form": {
     "path": "Path",

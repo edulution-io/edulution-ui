@@ -1,11 +1,15 @@
 enum SurveyErrorMessages {
-  UpdateOrCreateError = 'survey.errors.updateOrCreateError',
-  DeleteError = 'survey.errors.deleteError',
-  NotFoundError = 'survey.errors.notFoundError',
-  IdTypeError = 'survey.errors.idTypeError',
-  ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',
-  ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
-  ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
+  NeitherAbleToUpdateNorToCreateSurveyError = 'survey.errors.neitherAbleToUpdateNorToCreateSurveyError',
+  NotAbleToCreateSurveyError = 'survey.errors.notAbleToCreateSurveyError',
+  NotAbleToDeleteSurveyError = 'survey.errors.notAbleToDeleteSurveyError',
+  NotAbleToFindSurveyError = 'survey.errors.notAbleToFindSurveyError',
+  NotAbleToFindSurveysError = 'survey.errors.notAbleToFindSurveysError',
+  notAbleToFindSurveyParameterError = 'survey.errors.notAbleToFindSurveyParameterError',
+  NotAbleToParticipateNotAnParticipantError = 'survey.errors.notAbleToParticipateNotAnParticipantError',
+  NotAbleToParticipateAlreadyParticipatedError = 'survey.errors.notAbleToParticipateAlreadyParticipatedError',
+  NotAbleToUpdateSurveyError = 'survey.errors.notAbleToUpdateSurveyError',
+  NotValidSurveyIdIsNoMongooseObjectId = 'survey.errors.notValidSurveyIdIsNoMongooseObjectId',
+  NotAbleToParticipateSurveyExpiredError = 'survey.errors.notAbleToParticipateSurveyExpiredError',
 }
 
 export default SurveyErrorMessages;
