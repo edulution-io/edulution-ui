@@ -95,21 +95,23 @@ const LessonPage = () => {
   return (
     <div>
       <LoadingIndicator isOpen={isPageLoading} />
-      <div className="mt-2 flex flex-row">
+      <div className="my-2 flex flex-col gap-2 md:flex-row">
         <UserProjectOrSchoolClassSearch />
-        <div className="mx-5 w-1/3">
-          <DropdownMenu
-            options={sessionOptions}
-            selectedVal={groupName || t('classmanagement.selectSavedSession')}
-            handleChange={handleSessionSelect}
-          />
-        </div>
+        {sessionOptions && (
+          <div className="md:w-1/3">
+            <DropdownMenu
+              options={sessionOptions}
+              selectedVal={groupName || t('classmanagement.selectSavedSession')}
+              handleChange={handleSessionSelect}
+            />
+          </div>
+        )}
         {groupName || member.length ? (
-          <>
+          <div className="flex flex-row justify-between gap-2">
             <button
               type="button"
               onClick={onSaveSessionsButtonClick}
-              className="flex h-[41px] cursor-pointer items-center rounded-md bg-background text-foreground"
+              className="flex h-[41px] cursor-pointer items-center rounded-md bg-background text-foreground hover:opacity-90"
             >
               <span className="text-nowrap px-4">{t('classmanagement.saveSession')}</span>
               <MdSave className="ml-auto inline-block h-[32px] w-[32px] pr-2" />
@@ -117,11 +119,12 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={closeSession}
-              className="ml-5 flex h-[41px] cursor-pointer items-center rounded-md bg-background text-foreground"
+              className="flex h-[41px] cursor-pointer items-center rounded-md bg-background text-foreground hover:opacity-90"
             >
+              <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
               <MdClose className="ml-auto inline-block h-[32px] w-[32px] px-2" />
             </button>
-          </>
+          </div>
         ) : null}
       </div>
       <div>

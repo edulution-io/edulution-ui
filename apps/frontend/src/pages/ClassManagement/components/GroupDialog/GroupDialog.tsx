@@ -176,7 +176,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
 
   const isDialogLoading = isProjectLoading || isSchoolClassLoading || isSessionLoading;
   const getDialogBody = () => {
-    if (isDialogLoading) return <CircleLoader className="mx-auto" />;
+    if (isDialogLoading || isFetching) return <CircleLoader className="mx-auto" />;
     return (
       <GroupDialogBody
         form={form}

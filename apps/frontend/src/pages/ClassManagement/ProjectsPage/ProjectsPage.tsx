@@ -44,7 +44,7 @@ const ProjectsPage = () => {
   ];
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-scroll">
       <LoadingIndicator isOpen={isLoading} />
       {groupRows.map((row) => (
         <div

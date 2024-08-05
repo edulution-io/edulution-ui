@@ -4,10 +4,8 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import {
-  LMN_API_ADD_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
-  LMN_API_REMOVE_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
-  LMN_API_START_EXAM_MODE_EDU_API_ENDPOINT,
-  LMN_API_STOP_EXAM_MODE_EDU_API_ENDPOINT,
+  LMN_API_EXAM_MODE_EDU_API_ENDPOINT,
+  LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
 } from '@libs/lmnApi/types/eduApiEndpoints';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LessonStore from '@libs/classManagement/types/store/lessonStore';
@@ -38,11 +36,16 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post(LMN_API_ADD_MANAGEMENT_GROUPS_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            group,
-            users,
-          });
+          await eduApi.post(
+            LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
+            {
+              group,
+              users,
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -54,10 +57,12 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post(LMN_API_REMOVE_MANAGEMENT_GROUPS_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            group,
-            users,
+          await eduApi.delete(LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT, {
+            data: {
+              group,
+              users,
+            },
+            headers: { 'x-api-key': lmnApiToken },
           });
         } catch (error) {
           handleApiError(error, set);
@@ -70,10 +75,15 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post<LmnApiSession>(LMN_API_START_EXAM_MODE_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            users,
-          });
+          await eduApi.post<LmnApiSession>(
+            `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/start`,
+            {
+              users,
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -85,12 +95,17 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post<LmnApiSession>(LMN_API_STOP_EXAM_MODE_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            users,
-            groupName,
-            groupType,
-          });
+          await eduApi.post<LmnApiSession>(
+            `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/stop`,
+            {
+              users,
+              groupName,
+              groupType,
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {

@@ -31,6 +31,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
           options={filteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
+          openToTop
         />
       </div>
     );

@@ -56,7 +56,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
         set({ isGetUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, { lmnApiToken });
+          const response = await eduApi.get<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, {
+            headers: { 'x-api-key': lmnApiToken },
+          });
           set({ user: response.data });
         } catch (error) {
           handleApiError(error, set);
@@ -69,7 +71,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
         set({ error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, { lmnApiToken, username });
+          const response = await eduApi.get<UserLmnInfo>(`${LMN_API_USER_EDU_API_ENDPOINT}/${username}`, {
+            headers: { 'x-api-key': lmnApiToken },
+          });
           return response.data;
         } catch (error) {
           handleApiError(error, set);

@@ -19,15 +19,19 @@ const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
 
   return (
     <div className="flex flex-row flex-wrap">
-      {row.groups.map((group) => (
-        <GroupListCard
-          key={(group as LmnApiProject | LmnApiSchoolClass).dn}
-          group={group as LmnApiProject | LmnApiSchoolClass}
-          type={row.name}
-          icon={row.icon}
-          isEnrolEnabled={isEnrolEnabled}
-        />
-      ))}
+      {row.groups.length ? (
+        row.groups.map((group) => (
+          <GroupListCard
+            key={(group as LmnApiProject | LmnApiSchoolClass).dn}
+            group={group as LmnApiProject | LmnApiSchoolClass}
+            type={row.name}
+            icon={row.icon}
+            isEnrolEnabled={isEnrolEnabled}
+          />
+        ))
+      ) : (
+        <div className="mt-3">{t('classmanagement.noGroupsToShow')}</div>
+      )}
       {isEnrolEnabled ? null : (
         <CreateGroupButton
           title={t(`classmanagement.create${row.translationId}`)}

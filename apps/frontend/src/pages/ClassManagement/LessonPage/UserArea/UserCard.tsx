@@ -3,8 +3,6 @@ import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@/lib/utils';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
-import CircleLoader from '@/components/ui/CircleLoader';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
 
@@ -16,7 +14,6 @@ interface UserCardProps {
 
 const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
-  const { isLoading } = useLessonStore();
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
@@ -77,14 +74,8 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
             )}
             onClick={(event) => event.stopPropagation()}
           >
-            {isLoading ? (
-              <CircleLoader />
-            ) : (
-              <>
-                {givenName.slice(0, 1)}
-                {surname.slice(0, 1)}
-              </>
-            )}
+            {givenName.slice(0, 1)}
+            {surname.slice(0, 1)}
           </button>
         </div>
         {isStudent ? (

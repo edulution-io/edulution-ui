@@ -21,10 +21,10 @@ const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
       const response = await eduApi.post<Blob>(
         LMN_API_PRINT_PASSWORDS_EDU_API_ENDPOINT,
         {
-          lmnApiToken,
           options,
         },
         {
+          headers: { 'x-api-key': lmnApiToken },
           responseType: 'blob',
         },
       );

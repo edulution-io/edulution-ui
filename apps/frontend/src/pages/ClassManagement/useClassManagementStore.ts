@@ -8,19 +8,10 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import {
-  LMN_API_ADD_USER_SESSION_EDU_API_ENDPOINT,
-  LMN_API_CREATE_PROJECT_EDU_API_ENDPOINT,
   LMN_API_EDU_API_PROJECT_ENDPOINT,
-  LMN_API_EDU_API_SCHOOL_CLASS_ENDPOINT,
   LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT,
-  LMN_API_REMOVE_PROJECT_EDU_API_ENDPOINT,
-  LMN_API_REMOVE_USER_SESSION_EDU_API_ENDPOINT,
   LMN_API_ROOM_EDU_API_ENDPOINT,
   LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT,
-  LMN_API_UPDATE_PROJECT_EDU_API_ENDPOINT,
-  LMN_API_UPDATE_USER_SESSION_EDU_API_ENDPOINT,
-  LMN_API_USER_PROJECTS_EDU_API_ENDPOINT,
-  LMN_API_USER_SESSION_EDU_API_ENDPOINT,
   LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
 } from '@libs/lmnApi/types/eduApiEndpoints';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
@@ -64,10 +55,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isProjectLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiProjectWithMembers>(LMN_API_EDU_API_PROJECT_ENDPOINT, {
-            lmnApiToken,
-            projectName,
-          });
+          const response = await eduApi.get<LmnApiProjectWithMembers>(
+            `${LMN_API_EDU_API_PROJECT_ENDPOINT}/${projectName}`,
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
 
           return response.data;
         } catch (error) {
@@ -83,10 +76,15 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const formValues = form.getValues();
-          await eduApi.post(LMN_API_CREATE_PROJECT_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            formValues: minimizeFormValues(formValues),
-          });
+          await eduApi.post(
+            LMN_API_EDU_API_PROJECT_ENDPOINT,
+            {
+              formValues: minimizeFormValues(formValues),
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -99,10 +97,15 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const formValues = form.getValues();
-          await eduApi.post(LMN_API_UPDATE_PROJECT_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            formValues: minimizeFormValues(formValues),
-          });
+          await eduApi.patch(
+            LMN_API_EDU_API_PROJECT_ENDPOINT,
+            {
+              formValues: minimizeFormValues(formValues),
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -115,9 +118,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
 
-          await eduApi.post(LMN_API_REMOVE_PROJECT_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            projectName,
+          await eduApi.delete(`${LMN_API_EDU_API_PROJECT_ENDPOINT}/${projectName}`, {
+            headers: { 'x-api-key': lmnApiToken },
           });
         } catch (error) {
           handleApiError(error, set);
@@ -130,8 +132,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiProject[]>(LMN_API_USER_PROJECTS_EDU_API_ENDPOINT, {
-            lmnApiToken,
+          const response = await eduApi.get<LmnApiProject[]>(LMN_API_EDU_API_PROJECT_ENDPOINT, {
+            headers: { 'x-api-key': lmnApiToken },
           });
 
           set({ userProjects: sortGroups<LmnApiProject>(response.data) });
@@ -146,9 +148,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSessionLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiSession>(LMN_API_USER_SESSION_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            sessionSid,
+          const response = await eduApi.get<LmnApiSession>(`${LMN_API_USER_SESSIONS_EDU_API_ENDPOINT}/${sessionSid}`, {
+            headers: { 'x-api-key': lmnApiToken },
           });
 
           return response.data;
@@ -166,10 +167,15 @@ const useClassManagementStore = create<ClassManagementStore>(
           const { lmnApiToken } = useLmnApiStore.getState();
           const formValues = form.getValues();
 
-          await eduApi.post(LMN_API_ADD_USER_SESSION_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            formValues: minimizeFormValues(formValues),
-          });
+          await eduApi.post(
+            LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
+            {
+              formValues: minimizeFormValues(formValues),
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -183,10 +189,15 @@ const useClassManagementStore = create<ClassManagementStore>(
           const { lmnApiToken } = useLmnApiStore.getState();
           const formValues = form.getValues();
 
-          await eduApi.post(LMN_API_UPDATE_USER_SESSION_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            formValues: minimizeFormValues(formValues),
-          });
+          await eduApi.patch(
+            LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
+            {
+              formValues: minimizeFormValues(formValues),
+            },
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -198,9 +209,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSessionLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post(LMN_API_REMOVE_USER_SESSION_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            sessionId,
+          await eduApi.delete(`${LMN_API_USER_SESSIONS_EDU_API_ENDPOINT}/${sessionId}`, {
+            headers: { 'x-api-key': lmnApiToken },
           });
         } catch (error) {
           handleApiError(error, set);
@@ -213,8 +223,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiSession[]>(LMN_API_USER_SESSIONS_EDU_API_ENDPOINT, {
-            lmnApiToken,
+          const response = await eduApi.get<LmnApiSession[]>(LMN_API_USER_SESSIONS_EDU_API_ENDPOINT, {
+            headers: { 'x-api-key': lmnApiToken },
           });
 
           set({ userSessions: response.data.sort(sortByName) });
@@ -229,10 +239,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSchoolClassLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiSchoolClassWithMembers>(LMN_API_EDU_API_SCHOOL_CLASS_ENDPOINT, {
-            lmnApiToken,
-            schoolClassName,
-          });
+          const response = await eduApi.get<LmnApiSchoolClassWithMembers>(
+            `${LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT}/${schoolClassName}`,
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
 
           return response.data;
         } catch (error) {
@@ -247,8 +259,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiSchoolClass[]>(LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT, {
-            lmnApiToken,
+          const response = await eduApi.get<LmnApiSchoolClass[]>(LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT, {
+            headers: { 'x-api-key': lmnApiToken },
           });
 
           set({ userSchoolClasses: sortGroups<LmnApiSchoolClass>(response.data) });
@@ -263,8 +275,8 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isRoomLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiRoom>(LMN_API_ROOM_EDU_API_ENDPOINT, {
-            lmnApiToken,
+          const response = await eduApi.get<LmnApiRoom>(LMN_API_ROOM_EDU_API_ENDPOINT, {
+            headers: { 'x-api-key': lmnApiToken },
           });
 
           set({ userRoom: response.data });
@@ -279,10 +291,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ searchGroupsError: null, isSearchGroupsLoading: true });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<LmnApiSearchResult[]>(LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT, {
-            lmnApiToken,
-            searchQuery,
-          });
+          const response = await eduApi.get<LmnApiSearchResult[]>(
+            `${LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT}/${searchQuery}`,
+            {
+              headers: { 'x-api-key': lmnApiToken },
+            },
+          );
 
           if (!Array.isArray(response.data)) {
             return [];
@@ -309,7 +323,7 @@ const useClassManagementStore = create<ClassManagementStore>(
       searchGroups: async (searchParam) => {
         set({ searchGroupsError: null, isSearchGroupsLoading: true });
         try {
-          const response = await eduApi.get<Group[]>(`${EDU_API_GROUPS_SEARCH_ENDPOINT}${searchParam}`);
+          const response = await eduApi.get<Group[]>(`${EDU_API_GROUPS_SEARCH_ENDPOINT}/${searchParam}`);
 
           if (!Array.isArray(response.data)) {
             return [];

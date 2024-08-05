@@ -47,10 +47,12 @@ class LmnApiService {
       .then(
         () =>
           new Promise<T>((resolve) => {
-            setTimeout(resolve, 30);
+            setTimeout(resolve, 5);
           }),
       )
-      .then(fn);
+      .then(fn)
+      .catch(() => Promise.resolve());
+
     return this.queue as Promise<AxiosResponse<T>>;
   }
 
@@ -226,7 +228,7 @@ class LmnApiService {
     try {
       await this.removeUserSession(lmnApiToken, formValues.id, username);
 
-      const data = { users: formValues.members.map((m) => m.value) };
+      const data = { users: formValues.members };
 
       const response = await this.enqueue<LmnApiSession>(() =>
         this.lmnApi.post<LmnApiSession>(`${SESSIONS_LMN_API_ENDPOINT}/${username}/${formValues.name}`, data, {
@@ -369,7 +371,6 @@ class LmnApiService {
   public async createProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
     try {
       const data = LmnApiService.getProjectFromForm(formValues, username);
-
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.post<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {
           headers: { 'x-api-key': lmnApiToken },
@@ -399,7 +400,7 @@ class LmnApiService {
   public async removeProject(lmnApiToken: string, projectName: string): Promise<LmnApiProject> {
     try {
       const response = await this.enqueue<LmnApiProject>(() =>
-        this.lmnApi.post<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}`, {
+        this.lmnApi.delete<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}`, {
           headers: { 'x-api-key': lmnApiToken },
         }),
       );

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
@@ -10,125 +10,148 @@ import LmnApiService from './lmnApi.service';
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
-  @Post('passwords/print')
-  async printPasswords(@Body() body: { lmnApiToken: string; options: PrintPasswordsRequest }, @Res() res: Response) {
-    const apiResponse = await this.lmnApiService.printPasswords(body.lmnApiToken, body.options);
+  @Post('passwords')
+  async printPasswords(
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { options: PrintPasswordsRequest },
+    @Res() res: Response,
+  ) {
+    const apiResponse = await this.lmnApiService.printPasswords(lmnApiToken, body.options);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', apiResponse.headers['content-disposition'] as string);
     res.send(Buffer.from(apiResponse.data as ArrayBuffer));
   }
 
-  @Post('examMode/start')
-  async startExamMode(@Body() body: { lmnApiToken: string; users: string[] }) {
-    return this.lmnApiService.startExamMode(body.lmnApiToken, body.users);
+  @Post('examMode/:state')
+  async startExamMode(
+    @Param() params: { state: string },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { users: string[]; groupType: string; groupName: string },
+  ) {
+    if (params.state === 'start') {
+      return this.lmnApiService.startExamMode(lmnApiToken, body.users);
+    }
+    return this.lmnApiService.stopExamMode(lmnApiToken, body.users, body.groupType, body.groupName);
   }
 
-  @Post('examMode/stop')
-  async stopExamMode(@Body() body: { lmnApiToken: string; users: string[]; groupType: string; groupName: string }) {
-    return this.lmnApiService.stopExamMode(body.lmnApiToken, body.users, body.groupType, body.groupName);
+  @Post('managementGroups')
+  async addManagementGroup(
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { group: string; users: string[] },
+  ) {
+    return this.lmnApiService.addManagementGroup(lmnApiToken, body.group, body.users);
   }
 
-  @Post('managementGroup/add')
-  async addManagementGroup(@Body() body: { lmnApiToken: string; group: string; users: string[] }) {
-    return this.lmnApiService.addManagementGroup(body.lmnApiToken, body.group, body.users);
+  @Delete('managementGroups')
+  async removeManagementGroup(
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { group: string; users: string[] },
+  ) {
+    return this.lmnApiService.removeManagementGroup(lmnApiToken, body.group, body.users);
   }
 
-  @Post('managementGroup/remove')
-  async removeManagementGroup(@Body() body: { lmnApiToken: string; group: string; users: string[] }) {
-    return this.lmnApiService.removeManagementGroup(body.lmnApiToken, body.group, body.users);
+  @Get('schoolClasses/:schoolClassName')
+  async getSchoolClass(@Param() params: { schoolClassName: string }, @Headers('x-api-key') lmnApiToken: string) {
+    return this.lmnApiService.getSchoolClass(lmnApiToken, params.schoolClassName);
   }
 
-  @Post('schoolClass/user')
-  async getSchoolClass(@Body() body: { lmnApiToken: string; schoolClassName: string }) {
-    return this.lmnApiService.getSchoolClass(body.lmnApiToken, body.schoolClassName);
+  @Get('schoolClasses')
+  async getUserSchoolClasses(@Headers('x-api-key') lmnApiToken: string) {
+    return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
 
-  @Post('room')
-  async getCurrentUserRoom(@Body() body: { lmnApiToken: string }, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getCurrentUserRoom(body.lmnApiToken, username);
+  @Get('room')
+  async getCurrentUserRoom(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
+    return this.lmnApiService.getCurrentUserRoom(lmnApiToken, username);
   }
 
-  @Post('session/user')
+  @Get('sessions:sessionId')
   async getUserSession(
-    @Body() body: { lmnApiToken: string; sessionSid: string },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { sessionSid: string },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.getUserSession(body.lmnApiToken, body.sessionSid, username);
+    return this.lmnApiService.getUserSession(lmnApiToken, body.sessionSid, username);
   }
 
-  @Post('session/user/add')
+  @Post('sessions')
   async addUserSession(
-    @Body() body: { lmnApiToken: string; formValues: GroupForm },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.addUserSession(body.lmnApiToken, body.formValues, username);
+    return this.lmnApiService.addUserSession(lmnApiToken, body.formValues, username);
   }
 
-  @Post('session/user/remove')
+  @Delete('sessions:sessionId')
   async removeUserSession(
-    @Body() body: { lmnApiToken: string; sessionId: string },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Param() params: { sessionId: string },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.removeUserSession(body.lmnApiToken, body.sessionId, username);
+    return this.lmnApiService.removeUserSession(lmnApiToken, params.sessionId, username);
   }
 
-  @Post('session/user/update')
+  @Patch('sessions')
   async updateUserSession(
-    @Body() body: { lmnApiToken: string; formValues: GroupForm },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.updateUserSession(body.lmnApiToken, body.formValues, username);
+    return this.lmnApiService.updateUserSession(lmnApiToken, body.formValues, username);
   }
 
-  @Post('user')
-  async getUser(@Body() body: { lmnApiToken: string; username?: string }, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getUser(body.lmnApiToken, body.username || username);
+  @Get('sessions')
+  async getUserSessions(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
+    return this.lmnApiService.getUserSessions(lmnApiToken, username);
   }
 
-  @Post('user/sessions')
-  async getUserSessions(@Body() body: { lmnApiToken: string }, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getUserSessions(body.lmnApiToken, username);
+  @Get('user')
+  async getCurrentUser(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() currentUsername: string) {
+    return this.lmnApiService.getUser(lmnApiToken, currentUsername);
   }
 
-  @Post('user/projects')
-  async getUserProjects(@Body() body: { lmnApiToken: string }) {
-    return this.lmnApiService.getUserProjects(body.lmnApiToken);
+  @Get('user/:username')
+  async getUser(@Headers('x-api-key') lmnApiToken: string, @Param() params: { username: string }) {
+    return this.lmnApiService.getUser(lmnApiToken, params.username);
   }
 
-  @Post('user/schoolClasses')
-  async getUserSchoolClasses(@Body() body: { lmnApiToken: string }) {
-    return this.lmnApiService.getUserSchoolClasses(body.lmnApiToken);
+  @Get('search/:searchQuery')
+  async searchUsersOrGroups(@Headers('x-api-key') lmnApiToken: string, @Param() params: { searchQuery: string }) {
+    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, params.searchQuery);
   }
 
-  @Post('search')
-  async searchUsersOrGroups(@Body() body: { lmnApiToken: string; searchQuery: string }) {
-    return this.lmnApiService.searchUsersOrGroups(body.lmnApiToken, body.searchQuery);
-  }
-
-  @Post('project/create')
+  @Post('projects')
   async createProject(
-    @Body() body: { lmnApiToken: string; formValues: GroupForm },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.createProject(body.lmnApiToken, body.formValues, username);
+    return this.lmnApiService.createProject(lmnApiToken, body.formValues, username);
   }
 
-  @Post('project/update')
+  @Patch('projects')
   async updateProject(
-    @Body() body: { lmnApiToken: string; formValues: GroupForm },
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.updateProject(body.lmnApiToken, body.formValues, username);
+    return this.lmnApiService.updateProject(lmnApiToken, body.formValues, username);
   }
 
-  @Post('project/remove')
-  async removeProject(@Body() body: { lmnApiToken: string; projectName: string }) {
-    return this.lmnApiService.removeProject(body.lmnApiToken, body.projectName);
+  @Delete('projects/:projectName')
+  async removeProject(@Headers('x-api-key') lmnApiToken: string, @Param() params: { projectName: string }) {
+    return this.lmnApiService.removeProject(lmnApiToken, params.projectName);
   }
 
-  @Post('project')
-  async getProject(@Body() body: { lmnApiToken: string; projectName: string }) {
-    return this.lmnApiService.getProject(body.lmnApiToken, body.projectName);
+  @Get('projects/:projectName')
+  async getProject(@Headers('x-api-key') lmnApiToken: string, @Param() params: { projectName: string }) {
+    return this.lmnApiService.getProject(lmnApiToken, params.projectName);
+  }
+
+  @Get('projects')
+  async getUserProjects(@Headers('x-api-key') lmnApiToken: string) {
+    return this.lmnApiService.getUserProjects(lmnApiToken);
   }
 }
 
