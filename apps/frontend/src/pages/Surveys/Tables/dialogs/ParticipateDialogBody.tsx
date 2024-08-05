@@ -44,6 +44,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
 
   // TODO: NIEDUUI-211: Add the functionality to stop answering and to continue with that later (persistent store?)
   surveyModel.data = answer;
+  surveyModel.onValueChanging.add(() => setAnswer(surveyModel.data as JSON));
   surveyModel.onValueChanged.add(() => setAnswer(surveyModel.data as JSON));
   surveyModel.onCurrentPageChanged.add(() => setAnswer(surveyModel.data as JSON));
 

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toDate } from 'date-fns';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
@@ -16,6 +17,7 @@ const SURVEY_TABLE_HEADERS: string[] = [
   'survey.creationDate',
   'survey.expirationDate',
   'common.participated',
+  'survey.canSubmitMultiple',
 ];
 
 const SurveyTable = (props: SurveyTableProps) => {
@@ -56,10 +58,18 @@ const SurveyTable = (props: SurveyTableProps) => {
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             <TableCell className="text-white">{surveyObj?.title || t('common.not-available')}</TableCell>
             <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : t('common.not-available')}
+              {survey?.created ? toDate(survey?.created).toDateString() : t('common.not-available')}
             </TableCell>
             <TableCell className="text-white">
-              {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
+              {survey?.expires ? toDate(survey?.expires).toDateString() : t('common.not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.invitedAttendees && survey?.participatedAttendees
+                ? `${survey?.participatedAttendees.length || 0}/${survey?.invitedAttendees.length || 0}`
+                : t('common.not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.canSubmitMultipleAnswers ? survey?.canSubmitMultipleAnswers.toString() : t('false')}
             </TableCell>
           </TableRow>
         );

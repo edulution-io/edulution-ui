@@ -82,10 +82,10 @@ class SurveyAnswersService {
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
-    const { expirationDate, expirationTime, canUpdateFormerAnswer, canSubmitMultipleAnswers } = survey;
+    const { expires, canUpdateFormerAnswer, canSubmitMultipleAnswers } = survey;
 
-    if (expirationDate && expirationTime) {
-      const isExpired = expirationDate < new Date();
+    if (expires) {
+      const isExpired = expires < new Date();
       if (isExpired) {
         throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
       }

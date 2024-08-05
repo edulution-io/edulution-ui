@@ -12,8 +12,7 @@ interface SurveyDto {
   participatedAttendees: AttendeeDto[];
   answers: mongoose.Types.ObjectId[];
   created?: Date;
-  expirationDate?: Date;
-  expirationTime?: string;
+  expires?: Date;
   isAnonymous?: boolean;
   canShowResultsTable?: boolean;
   canShowResultsChart?: boolean;

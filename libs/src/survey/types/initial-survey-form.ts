@@ -22,9 +22,7 @@ class InitialSurveyForm implements SurveyDto {
 
   created: Date;
 
-  expirationDate: Date | undefined;
-
-  expirationTime: string | undefined;
+  expires: Date | undefined;
 
   isAnonymous: boolean;
 
@@ -45,8 +43,7 @@ class InitialSurveyForm implements SurveyDto {
     this.participatedAttendees = selectedSurvey?.participatedAttendees || [];
     this.answers = selectedSurvey?.answers || [];
     this.created = selectedSurvey?.created || new Date();
-    this.expirationDate = selectedSurvey?.expirationDate || undefined;
-    this.expirationTime = selectedSurvey?.expirationTime || undefined;
+    this.expires = selectedSurvey?.expires || undefined;
     this.isAnonymous = selectedSurvey?.isAnonymous || false;
     this.canSubmitMultipleAnswers = selectedSurvey?.canSubmitMultipleAnswers || false;
 

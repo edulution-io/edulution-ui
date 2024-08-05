@@ -137,6 +137,7 @@
     "expirationDate": "Ablaufdatum",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
+import { setHours, setMinutes, getHours, getMinutes } from 'date-fns';
 import cn from '@/lib/utils';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
@@ -26,6 +27,11 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
     useCreateConferenceDialogStore();
   const { t } = useTranslation();
+
+  const [expirationTime, setExpirationTime] = useState<string>(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    `${getHours(getValues().expires) || '00'}:${getMinutes(getValues().expires) || '00'}`,
+  );
 
   if (isLoading) return <CircleLoader className="mx-auto" />;
 
@@ -69,15 +75,24 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups);
   };
 
-  const expirationDateWatched = watch('expirationDate') as Date;
-  const expirationTimeWatched = watch('expirationTime') as string[];
+  const expiresWatched = watch('expires') as Date;
   const isAnonymousWatched = watch('isAnonymous') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
-  const handleExpirationDateChange = (value: Date | undefined) =>
-    setValue('expirationDate', value /* , { shouldValidate: true } */);
-  const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValue('expirationTime', e.target.value /* , { shouldValidate: true } */);
+  const handleExpirationDateChange = (value: Date | undefined) => {
+    setValue('expires', value /* , { shouldValidate: true } */);
+  };
+  const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setExpirationTime(e.target.value);
+    const time = e.target.value.split(':');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    let { expires } = getValues();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    expires = setHours(expires, Number(time[0]));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    expires = setMinutes(expires, Number(time[1]));
+    setValue('expires', expires);
+  };
 
   return (
     <>
@@ -96,7 +111,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         {t('common.date')}
         <div className="ml-2">
           <DatePicker
-            selected={expirationDateWatched}
+            selected={expiresWatched}
             onSelect={handleExpirationDateChange}
           />
         </div>
@@ -105,14 +120,12 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         {t('common.time')}
         <Input
           type="time"
-          value={expirationTimeWatched || '00:00'}
+          value={expirationTime}
           onChange={handleExpirationTimeChange}
           variant="default"
-          className={cn(
-            'ml-2',
-            { 'text-gray-300': !expirationTimeWatched },
-            { 'text-foreground': expirationTimeWatched },
-          )}
+          className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          disabled={!getValues().expires}
         />
       </div>
       <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>

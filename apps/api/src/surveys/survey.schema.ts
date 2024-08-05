@@ -1,5 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Group } from '@libs/user/types/groups/group';
 import Attendee from '../conferences/attendee.schema';
 
 export type SurveyDocument = Survey & Document;
@@ -25,6 +26,9 @@ export class Survey {
   invitedAttendees: Attendee[];
 
   @Prop({ required: true })
+  invitedGroups: Group[];
+
+  @Prop({ required: true })
   participatedAttendees: Attendee[];
 
   @Prop({ required: true })
@@ -34,10 +38,7 @@ export class Survey {
   created?: Date;
 
   @Prop({ type: Date, required: false })
-  expirationDate?: Date;
-
-  @Prop({ required: false })
-  expirationTime?: string;
+  expires?: Date;
 
   @Prop({ required: false })
   isAnonymous?: boolean;

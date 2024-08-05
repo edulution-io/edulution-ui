@@ -137,6 +137,7 @@
     "expirationDate": "Expiration date",
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
+    "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes",
