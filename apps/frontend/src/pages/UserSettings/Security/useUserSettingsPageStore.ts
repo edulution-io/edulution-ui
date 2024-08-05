@@ -20,11 +20,16 @@ const useUserSettingsPageStore = create<UserSettingsPageStore>((set) => ({
     set({ error: null, isLoading: true });
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
-      await eduApi.post<LmnApiSession>(LMN_API_CHANGE_PASSWORD_EDU_API_ENDPOINT, {
-        lmnApiToken,
-        oldPassword,
-        newPassword,
-      });
+      await eduApi.put<LmnApiSession>(
+        LMN_API_CHANGE_PASSWORD_EDU_API_ENDPOINT,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          headers: { 'x-api-key': lmnApiToken },
+        },
+      );
 
       toast.success(i18n.t('usersettings.security.changePassword.passwordChangedSuccessfully'));
       return true;

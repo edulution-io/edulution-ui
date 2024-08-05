@@ -46,7 +46,7 @@
       "UpdateProjectFailed": "Update project failed",
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
       "GetProjectFailed": "Get project failed",
-      "PasswordMismatch": "The old password does not match",
+      "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed"
     }
   },
