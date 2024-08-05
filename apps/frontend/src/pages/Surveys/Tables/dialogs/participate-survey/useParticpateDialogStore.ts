@@ -5,37 +5,12 @@ import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-
-interface ParticipateDialogStore {
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  answer: JSON;
-  setAnswer: (answer: JSON | undefined) => void;
-
-  isOpenParticipateSurveyDialog: boolean;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
-  answerSurvey: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-const initialState: Partial<ParticipateDialogStore> = {
-  selectedSurvey: undefined,
-  answer: {} as JSON,
-  isOpenParticipateSurveyDialog: false,
-  isLoading: false,
-};
+import ParticipateDialogStoreInitialState from '@/pages/Surveys/Tables/dialogs/participate-survey/participateDialogStoreInitialState';
+import ParticipateDialogStore from './participateDialogStore';
 
 const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
-  ...(initialState as ParticipateDialogStore),
-  reset: () => set(initialState),
+  ...(ParticipateDialogStoreInitialState as ParticipateDialogStore),
+  reset: () => set(ParticipateDialogStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
   setAnswer: (answer: JSON | undefined) => set({ answer }),

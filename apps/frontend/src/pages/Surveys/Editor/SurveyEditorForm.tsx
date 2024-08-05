@@ -14,10 +14,10 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
+import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;

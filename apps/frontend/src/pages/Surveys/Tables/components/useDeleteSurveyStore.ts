@@ -1,30 +1,15 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-
-interface DeleteSurveyStore {
-  updateSelectedPageView: (pageView: SurveysPageView) => void;
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  deleteSurvey: (surveyIds: mongoose.Types.ObjectId[]) => Promise<void>;
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-const initialState: Partial<DeleteSurveyStore> = {
-  selectedSurvey: undefined,
-  isLoading: false,
-};
+import DeleteSurveyStore from '@/pages/Surveys/Tables/components/deleteSurveyStore';
+import DeleteSurveyStoreInitialState from '@/pages/Surveys/Tables/components/deleteSurveyStoreInitialState';
 
 const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
-  ...(initialState as DeleteSurveyStore),
-  reset: () => set(initialState),
+  ...(DeleteSurveyStoreInitialState as DeleteSurveyStore),
+  reset: () => set(DeleteSurveyStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
