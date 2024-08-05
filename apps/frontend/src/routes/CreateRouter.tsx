@@ -10,7 +10,6 @@ import LoginPage from '@/pages/LoginPage/LoginPage';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
-import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -57,7 +56,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
               >
                 <Route
                   path=""
-                  element={<UserSettingsDefaultPage />}
+                  element={<UserSettingsSecurityPage />}
                 />
                 <Route
                   path={SECURITY_PATH}
