@@ -1,39 +1,16 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/page-view';
 import SurveyDto from '@libs/survey/types/survey.dto';
 import SurveyAnswerDto from '@libs/survey/types/survey-answer.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-
-interface CommitedAnswersDialogStore {
-  updateSelectedPageView: (pageView: SurveysPageView) => void;
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  isOpenCommitedAnswersDialog: boolean;
-  setIsOpenCommitedAnswersDialog: (state: boolean) => void;
-  getCommittedSurveyAnswers: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<void>;
-  user: string | undefined;
-  selectUser: (user: string) => void;
-  answer: JSON | undefined;
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-const initialState: Partial<CommitedAnswersDialogStore> = {
-  selectedSurvey: undefined,
-  isOpenCommitedAnswersDialog: false,
-  user: undefined,
-  answer: undefined,
-  isLoading: false,
-};
+import CommitedAnswersDialogStoreInitialState from '@/pages/Surveys/Tables/dialogs/commited-answers/commitedAnswersDialogStoreInitialState';
+import CommitedAnswersDialogStore from './commitedAnswersDialogStore';
 
 const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) => ({
-  ...(initialState as CommitedAnswersDialogStore),
-  reset: () => set(initialState),
+  ...(CommitedAnswersDialogStoreInitialState as CommitedAnswersDialogStore),
+  reset: () => set(CommitedAnswersDialogStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 

@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { AiOutlineUpSquare } from 'react-icons/ai';
 import { FiEdit } from 'react-icons/fi';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultDialogStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/survey-result/useResultDialogStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/participate-survey/useParticpateDialogStore';
+import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/commited-answers/useCommitedAnswersDialogStore';
 import DeleteSurveyButton from '@/pages/Surveys/Tables/components/DeleteSurveyButton';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { TooltipProvider } from '@/components/ui/Tooltip';
@@ -28,9 +28,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   const canShowResultsTable = canShowResults && (survey?.canShowResultsTable || true);
   const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
 
-  const { setIsOpenPublicResultsTableDialog } = useResultDialogStore();
-
-  const { setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
+  const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
 
   const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
 

@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultDialogStore';
+import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/survey-result/ResultTableDialogBody';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/survey-result/useResultDialogStore';
 
 const ResultTableDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();

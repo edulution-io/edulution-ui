@@ -4,33 +4,12 @@ import SurveyDto from '@libs/survey/types/survey.dto';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-
-interface ResultDialogStore {
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  isOpenPublicResultsTableDialog: boolean;
-  setIsOpenPublicResultsTableDialog: (state: boolean) => void;
-  isOpenPublicResultsVisualisationDialog: boolean;
-  setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<void>;
-  result: JSON[];
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-const initialState: Partial<ResultDialogStore> = {
-  selectedSurvey: undefined,
-  isOpenPublicResultsTableDialog: false,
-  isOpenPublicResultsVisualisationDialog: false,
-  result: undefined,
-  isLoading: false,
-};
+import ResultDialogStoreInitialState from '@/pages/Surveys/Tables/dialogs/survey-result/resultDialogStoreInitialState';
+import ResultDialogStore from './resultDialogStore';
 
 const useResultDialogStore = create<ResultDialogStore>((set) => ({
-  ...(initialState as ResultDialogStore),
-  reset: () => set(initialState),
+  ...(ResultDialogStoreInitialState as ResultDialogStore),
+  reset: () => set(ResultDialogStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 

@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import CommitedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogStore';
+import CommitedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/commited-answers/CommitedAnswersDialogBody';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/commited-answers/useCommitedAnswersDialogStore';
 
 const CommitedAnswersDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();

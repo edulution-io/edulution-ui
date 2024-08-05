@@ -2,9 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/ParticipateDialogStore';
+import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/participate-survey/ParticipateDialogBody';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/participate-survey/useParticpateDialogStore';
 
 const ParticipateDialog = () => {
   const { selectedSurvey: survey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();

@@ -6,10 +6,10 @@ import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys';
 import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys';
 import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
-import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
-import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
-import CommitedAnswersDialog from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialog';
+import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/survey-result/ResultTableDialog';
+import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/survey-result/ResultVisualizationDialog';
+import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/participate-survey/ParticipateDialog';
+import CommitedAnswersDialog from '@/pages/Surveys/Tables/dialogs/commited-answers/CommitedAnswersDialog';
 
 const SurveysPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
