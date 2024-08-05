@@ -42,11 +42,18 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(SurveyThemes.FlatDark);
 
-  // TODO: NIEDUUI-211: Add the functionality to stop answering and to continue with that later (persistent store?)
+  if (surveyModel.pages.length > 1) {
+    surveyModel.showProgressBar = 'top';
+  }
+
   surveyModel.data = answer;
-  surveyModel.onValueChanging.add(() => setAnswer(surveyModel.data as JSON));
-  surveyModel.onValueChanged.add(() => setAnswer(surveyModel.data as JSON));
-  surveyModel.onCurrentPageChanged.add(() => setAnswer(surveyModel.data as JSON));
+
+  // TODO: NIEDUUI-211: Add the functionality to stop answering and to continue with that later (persistent store?)
+  const saveSurvey = () => setAnswer(surveyModel.data as JSON);
+  surveyModel.onValueChanged.add(saveSurvey);
+  surveyModel.onDynamicPanelItemValueChanged.add(saveSurvey);
+  surveyModel.onMatrixCellValueChanged.add(saveSurvey);
+  surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, options) => {
     await commitAnswer(surveyId, saveNo, answer, options);
