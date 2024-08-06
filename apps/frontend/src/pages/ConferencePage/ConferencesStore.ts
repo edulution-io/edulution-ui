@@ -1,9 +1,6 @@
 import { create } from 'zustand';
-import { FaCircle } from 'react-icons/fa6';
 import { RowSelectionState } from '@tanstack/react-table';
 import Conference from '@libs/conferences/types/conference.dto';
-import { APPS } from '@libs/appconfig/types';
-import { SidebarNotification } from '@libs/dashboard/types/sidebar-notification';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
@@ -15,11 +12,7 @@ interface ConferencesStore {
   runningConferences: Conference[];
   isLoading: boolean;
   error: Error | null;
-  getConferences: (
-    isLoading?: boolean,
-    updateAppData?: (apps: APPS, notification: SidebarNotification) => void,
-    resetAppData?: (apps: APPS) => void,
-  ) => Promise<void>;
+  getConferences: (isLoading?: boolean) => Promise<void>;
   deleteConferences: (conferences: Conference[]) => Promise<void>;
   isDeleteConferencesDialogOpen: boolean;
   setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
@@ -45,23 +38,15 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
-  getConferences: async (isLoading = true, updateAppData = () => {}, resetAppData = () => {}) => {
+  getConferences: async (isLoading = true) => {
     set({ isLoading, error: null });
     try {
       const response = await eduApi.get<Conference[]>(apiEndpoint);
       const conferences = response.data;
       // // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
       const runningConferences = conferences.filter((c) => c.isRunning);
-      updateAppData(APPS.CONFERENCES, {
-        show: runningConferences.length > 0,
-        icon: FaCircle,
-        iconColor: 'text-ciRed',
-        iconSize: 12,
-        count: runningConferences.length,
-      });
       set({ conferences, runningConferences });
     } catch (error) {
-      resetAppData(APPS.CONFERENCES);
       handleApiError(error, set);
       set({ conferences: [], runningConferences: [] });
     } finally {

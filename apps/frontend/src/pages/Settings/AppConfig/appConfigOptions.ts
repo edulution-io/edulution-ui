@@ -31,7 +31,6 @@ type AppConfigOption = {
   icon: string;
   color: string;
   isNativeApp: boolean;
-  allowNotifications?: boolean;
   options?: AppConfigOptionType[];
 };
 
@@ -49,7 +48,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
     isNativeApp: true,
-    allowNotifications: true,
   },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {
@@ -58,7 +56,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey'],
     isNativeApp: true,
-    allowNotifications: true,
   },
   {
     id: APPS.KNOWLEDGE_BASE,

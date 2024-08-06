@@ -16,7 +16,7 @@ services:
     environment:
       EDUI_PORT: 3000
 
-      LMN_VDI_API_URL: <LMN_VDI_URL>
+      LMN_VDI_API_URL: http://localhost:5555
       LMN_VDI_API_SECRET: <LMN_VDI_SECRET>
 
       GUACAMOLE_API_URL: http://localhost:8081

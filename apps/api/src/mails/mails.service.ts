@@ -3,7 +3,7 @@ import { ParsedMail, simpleParser } from 'mailparser';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import ImapErrorMessages from '@libs/dashboard/feed/mails/constants/imap-error-messages';
+import MailsErrorMessages from '@libs/dashboard/feed/mails/constants/mails-error-messages';
 import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
 
 @Injectable()
@@ -16,7 +16,7 @@ class MailsService {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
     if (Number.isNaN(Number(MAIL_IMAP_PORT))) {
-      throw new CustomHttpException(ImapErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
+      throw new CustomHttpException(MailsErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
     }
 
     const client = new ImapFlow({
@@ -39,7 +39,7 @@ class MailsService {
 
     await client.connect().catch((err) => {
       throw new CustomHttpException(
-        ImapErrorMessages.NotAbleToConnectClientError,
+        MailsErrorMessages.NotAbleToConnectClientError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         err,
       );
@@ -49,7 +49,8 @@ class MailsService {
     const mails: MailDto[] = [];
     try {
       const fetchMail: AsyncGenerator<FetchMessageObject> = client.fetch(
-        { or: [{ new: true }, { seen: false }, { recent: true }] },
+        // { or: [{ new: true }, { seen: false }, { recent: true }] },
+        '1:*',
         {
           source: true,
           envelope: true,
@@ -71,14 +72,14 @@ class MailsService {
         mails.push(mailDto);
       }
     } catch (err) {
-      throw new CustomHttpException(ImapErrorMessages.NotAbleToFetchMailsError, HttpStatus.INTERNAL_SERVER_ERROR, err);
+      throw new CustomHttpException(MailsErrorMessages.NotAbleToFetchMailsError, HttpStatus.INTERNAL_SERVER_ERROR, err);
     }
 
     mailboxLock?.release();
     await client.logout();
     client.close();
 
-    Logger.log(`Feed (Mails): ${mails.length} new mails were fetched`, MailsService.name);
+    Logger.log(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;
   };
 }

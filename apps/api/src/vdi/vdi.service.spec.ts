@@ -54,53 +54,16 @@ describe('VdiService', () => {
     });
   });
 
-  describe('createOrUpdateSession -> updateSession', () => {
+  describe('createOrUpdateSession', () => {
     it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
-      const actualService = new VdiService();
-
-      service.createOrUpdateSession = jest
-        .fn()
-        .mockImplementation((guacamoleDto: GuacamoleDto, username: string, password: string) =>
-          actualService.createOrUpdateSession(guacamoleDto, username, password),
-        );
-      actualService.getConnection = jest.fn().mockReturnValue('identifier');
-      actualService.updateSession = jest.fn();
-
       const guacamoleDto: GuacamoleDto = {
         dataSource: 'mysql',
         authToken: 'ABC123',
         hostname: '10.0.0.1',
       };
       const username = 'testuser';
-      const password = 'testword';
-      await service.createOrUpdateSession(guacamoleDto, username, password);
-      expect(actualService.updateSession).toHaveBeenCalledWith(guacamoleDto, username, password);
-      expect(service.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username, password);
-    });
-  });
-
-  describe('createOrUpdateSession -> createSession', () => {
-    it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
-      const actualService = new VdiService();
-
-      service.createOrUpdateSession = jest
-        .fn()
-        .mockImplementation((guacamoleDto: GuacamoleDto, username: string, password: string) =>
-          actualService.createOrUpdateSession(guacamoleDto, username, password),
-        );
-      actualService.getConnection = jest.fn().mockReturnValue(null);
-      actualService.createSession = jest.fn();
-
-      const guacamoleDto: GuacamoleDto = {
-        dataSource: 'mysql',
-        authToken: 'ABC123',
-        hostname: '10.0.0.1',
-      };
-      const username = 'testuser';
-      const password = 'testword';
-      await service.createOrUpdateSession(guacamoleDto, username, password);
-      expect(actualService.createSession).toHaveBeenCalledWith(guacamoleDto, username, password);
-      expect(service.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username, password);
+      await service.createOrUpdateSession(guacamoleDto, username);
+      expect(service.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username);
     });
   });
 

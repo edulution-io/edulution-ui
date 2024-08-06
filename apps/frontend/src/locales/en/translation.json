@@ -486,7 +486,7 @@
     "groups": "User groups",
     "selectGroupsDescription": "Select the user groups that should have access to the app."
   },
-  "imap": {
+  "mails": {
     "errors": {
       "NotAbleToConnectClientError": "Could not connect to the imap server",
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",

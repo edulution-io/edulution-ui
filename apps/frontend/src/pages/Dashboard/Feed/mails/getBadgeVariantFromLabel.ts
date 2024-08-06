@@ -1,9 +1,9 @@
-import {ComponentProps} from 'react';
-import {BadgeSH} from '@/components/ui/BadgeSH';
+import { ComponentProps } from 'react';
+import { BadgeSH } from '@/components/ui/BadgeSH';
 import BadgeLabels from '@libs/dashboard/feed/mails/badge-labels.enum';
 import BadgeVariant from '@libs/dashboard/feed/mails/badge-variant.enum';
 
-export function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
+function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
   if ([BadgeLabels.WORK as string].includes(label.toLowerCase())) {
     return BadgeVariant.DEFAULT;
   }
@@ -14,3 +14,5 @@ export function getBadgeVariantFromLabel(label: string): ComponentProps<typeof B
 
   return BadgeVariant.SECONDARY;
 }
+
+export default getBadgeVariantFromLabel;

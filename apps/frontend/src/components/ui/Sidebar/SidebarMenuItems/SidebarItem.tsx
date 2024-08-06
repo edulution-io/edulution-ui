@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
+import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
-  const { title, icon, color, link, notifications } = menuItem;
+  const { title, icon, color, link, notificationCounter } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
@@ -20,19 +21,6 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     const rect = buttonRef.current.getBoundingClientRect();
     setIsInView(rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT);
   }, [translate, size]);
-
-  const SidebarNotification = useMemo(() => {
-    if (!notifications || !notifications.show) {
-      return null;
-    }
-    const { icon: NotificationIcon, iconColor: notificationColor, iconSize = 12 } = notifications;
-    return (
-      <NotificationIcon
-        size={iconSize}
-        className={`absolute right-1 top-1 ${notificationColor}`}
-      />
-    );
-  }, [notifications]);
 
   return (
     <div
@@ -52,7 +40,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
             className="relative z-0"
             alt={`${title}-icon`}
           />
-          {SidebarNotification}
+          <SidebarItemNotification notificationCounter={notificationCounter} />
         </>
         {isInView ? (
           <div
