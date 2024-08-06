@@ -37,9 +37,7 @@ const MailList = ({ items, className }: MailListProps) => {
           <NavLink
             to={`${APPS.MAIL}`}
             key={item.id}
-            className={cn(
-              'w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-ciDarkGrey',
-            )}
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-ciDarkGrey"
           >
             <div className="flex w-full flex-col gap-1">
               <div className="flex items-center gap-2 font-semibold">
