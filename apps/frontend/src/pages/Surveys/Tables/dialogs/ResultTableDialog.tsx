@@ -30,11 +30,17 @@ const ResultTableDialog = () => {
 
   if (!survey?.formula) {
     toast.error(t(SurveyErrorMessages.NoFormula));
+    setIsOpenPublicResultsTableDialog(false);
     return null;
   }
 
-  if (!result || result.length === 0) {
+  if (!result) {
+    return null;
+  }
+
+  if (result && result.length === 0) {
     toast.error(t(SurveyErrorMessages.NoAnswers));
+    setIsOpenPublicResultsTableDialog(false);
     return null;
   }
 

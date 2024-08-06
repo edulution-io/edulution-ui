@@ -21,10 +21,12 @@ const useResultDialogStore = create<ResultDialogStore>((set) => ({
     try {
       const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('base64')}`);
       const result = response.data;
-      set({ result, isLoading: false });
+      set({ result });
     } catch (error) {
       handleApiError(error, set);
-      set({ result: undefined, isLoading: false });
+      set({ result: [] });
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

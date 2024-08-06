@@ -14,8 +14,8 @@ const visuPanelOptions = {
 };
 
 interface ResultVisualizationDialogBodyProps {
-  formula: JSON;
-  result: JSON[];
+  formula?: JSON;
+  result?: JSON[];
 }
 
 const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps) => {

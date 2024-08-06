@@ -10,7 +10,7 @@ interface ResultDialogStore {
   isOpenPublicResultsVisualisationDialog: boolean;
   setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
   getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<void>;
-  result: JSON[];
+  result: JSON[] | undefined;
   isLoading: boolean;
 
   reset: () => void;
