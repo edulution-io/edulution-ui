@@ -18,6 +18,8 @@ enum LmnApiErrorMessage {
   UpdateProjectFailed = 'lmnApi.errors.UpdateProjectFailed',
   SearchUsersOrGroupsFailed = 'lmnApi.errors.SearchUsersOrGroupsFailed',
   GetProjectFailed = 'lmnApi.errors.GetProjectFailed',
+  PasswordMismatch = 'lmnApi.errors.PasswordMismatch',
+  PasswordChangeFailed = 'lmnApi.errors.PasswordChangeFailed',
 }
 
 export default LmnApiErrorMessage;

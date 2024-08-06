@@ -23,6 +23,7 @@ import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsReq
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
+import UsersService from '../users/users.service';
 
 @Injectable()
 class LmnApiService {
@@ -32,7 +33,7 @@ class LmnApiService {
 
   private queue: Promise<unknown> = Promise.resolve();
 
-  constructor() {
+  constructor(private readonly userService: UsersService) {
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
@@ -403,6 +404,37 @@ class LmnApiService {
         this.lmnApi.delete<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}`, {
           headers: { 'x-api-key': lmnApiToken },
         }),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(LmnApiErrorMessage.RemoveProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+    }
+  }
+
+  public async changePassword(
+    lmnApiToken: string,
+    username: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<null> {
+    const password = await this.userService.getPassword(username);
+
+    if (oldPassword !== password) {
+      throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
+    }
+
+    try {
+      const response = await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(
+          `${USERS_LMN_API_ENDPOINT}/${username}/set-current-password`,
+          {
+            password: newPassword,
+            set_first: false,
+          },
+          {
+            headers: { 'x-api-key': lmnApiToken },
+          },
+        ),
       );
       return response.data;
     } catch (error) {

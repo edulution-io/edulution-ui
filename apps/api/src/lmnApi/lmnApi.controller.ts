@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
@@ -152,6 +152,15 @@ export class LmnApiController {
   @Get('projects')
   async getUserProjects(@Headers('x-api-key') lmnApiToken: string) {
     return this.lmnApiService.getUserProjects(lmnApiToken);
+  }
+
+  @Put('password')
+  async changePassword(
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { oldPassword: string; newPassword: string },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.lmnApiService.changePassword(lmnApiToken, username, body.oldPassword, body.newPassword);
   }
 }
 

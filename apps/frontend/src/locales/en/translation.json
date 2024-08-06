@@ -45,7 +45,9 @@
       "RemoveProjectFailed": "Remove project failed",
       "UpdateProjectFailed": "Update project failed",
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
-      "GetProjectFailed": "Get project failed"
+      "GetProjectFailed": "Get project failed",
+      "PasswordMismatch": "The current password is wrong",
+      "PasswordChangeFailed": "Password change failed"
     }
   },
   "ticketsystem": {
@@ -337,7 +339,8 @@
         "currentPassword": "Current password",
         "newPassword": "New Password",
         "confirmPassword": "Confirm Password",
-        "confirm": "Change Password"
+        "confirm": "Change Password",
+        "passwordChangedSuccessfully": "Password changed successfully"
       }
     },
     "faq": "FAQ",

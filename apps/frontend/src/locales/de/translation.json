@@ -45,7 +45,9 @@
       "RemoveProjectFailed": "Entfernen des Projekts fehlgeschlagen",
       "UpdateProjectFailed": "Aktualisierung des Projekts fehlgeschlagen",
       "SearchUsersOrGroupsFailed": "Suche nach Benutzern oder Gruppen fehlgeschlagen",
-      "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen"
+      "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
+      "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
+      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -338,7 +340,8 @@
         "currentPassword": "Aktuelles Passwort",
         "newPassword": "Neues Passwort",
         "confirmPassword": "Passwort bestätigen",
-        "confirm": "Passwort ändern"
+        "confirm": "Passwort ändern",
+        "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
       }
     },
     "faq": "FAQ",
