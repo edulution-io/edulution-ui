@@ -58,7 +58,7 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
           </div>
 
           <div className="-mt-1 ml-2 flex justify-between">
-            <div className={cn('mt-1 h-[26px] rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
+            <div className={cn('mt-1 h-6 rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
               {sophomorixAdminClass}
             </div>
             <div className={cn('flex flex-col text-xs', !isStudent && 'mr-2')}>
@@ -70,7 +70,7 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
             type="button"
             className={cn(
               'mt-1 flex flex-grow items-center justify-center rounded-xl text-2xl',
-              isActive ? 'bg-gray-500' : 'bg-gray-800',
+              isActive ? 'bg-ciGrey' : 'bg-ciDarkGrey',
             )}
             onClick={(event) => event.stopPropagation()}
           >

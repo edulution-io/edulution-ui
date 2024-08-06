@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
 
@@ -17,12 +18,12 @@ export class LmnApiController {
     @Res() res: Response,
   ) {
     const apiResponse = await this.lmnApiService.printPasswords(lmnApiToken, body.options);
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', apiResponse.headers['content-disposition'] as string);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_PDF as string);
+    res.setHeader(HTTP_HEADERS.ContentDisposition, apiResponse.headers['content-disposition'] as string);
     res.send(Buffer.from(apiResponse.data as ArrayBuffer));
   }
 
-  @Post('examMode/:state')
+  @Put('exam-mode/:state')
   async startExamMode(
     @Param() params: { state: string },
     @Headers('x-api-key') lmnApiToken: string,
@@ -34,7 +35,7 @@ export class LmnApiController {
     return this.lmnApiService.stopExamMode(lmnApiToken, body.users, body.groupType, body.groupName);
   }
 
-  @Post('managementGroups')
+  @Post('management-groups')
   async addManagementGroup(
     @Headers('x-api-key') lmnApiToken: string,
     @Body() body: { group: string; users: string[] },
@@ -42,7 +43,7 @@ export class LmnApiController {
     return this.lmnApiService.addManagementGroup(lmnApiToken, body.group, body.users);
   }
 
-  @Delete('managementGroups')
+  @Delete('management-groups')
   async removeManagementGroup(
     @Headers('x-api-key') lmnApiToken: string,
     @Body() body: { group: string; users: string[] },
@@ -50,12 +51,12 @@ export class LmnApiController {
     return this.lmnApiService.removeManagementGroup(lmnApiToken, body.group, body.users);
   }
 
-  @Get('schoolClasses/:schoolClassName')
+  @Get('school-classes/:schoolClassName')
   async getSchoolClass(@Param() params: { schoolClassName: string }, @Headers('x-api-key') lmnApiToken: string) {
     return this.lmnApiService.getSchoolClass(lmnApiToken, params.schoolClassName);
   }
 
-  @Get('schoolClasses')
+  @Get('school-classes')
   async getUserSchoolClasses(@Headers('x-api-key') lmnApiToken: string) {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
@@ -68,10 +69,15 @@ export class LmnApiController {
   @Get('sessions:sessionId')
   async getUserSession(
     @Headers('x-api-key') lmnApiToken: string,
-    @Body() body: { sessionSid: string },
+    @Param() params: { sessionSid: string },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.getUserSession(lmnApiToken, body.sessionSid, username);
+    return this.lmnApiService.getUserSession(lmnApiToken, params.sessionSid, username);
+  }
+
+  @Get('sessions')
+  async getUserSessions(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
+    return this.lmnApiService.getUserSessions(lmnApiToken, username);
   }
 
   @Post('sessions')
@@ -101,11 +107,6 @@ export class LmnApiController {
     return this.lmnApiService.updateUserSession(lmnApiToken, body.formValues, username);
   }
 
-  @Get('sessions')
-  async getUserSessions(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getUserSessions(lmnApiToken, username);
-  }
-
   @Get('user')
   async getCurrentUser(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() currentUsername: string) {
     return this.lmnApiService.getUser(lmnApiToken, currentUsername);
@@ -116,9 +117,9 @@ export class LmnApiController {
     return this.lmnApiService.getUser(lmnApiToken, params.username);
   }
 
-  @Get('search/:searchQuery')
-  async searchUsersOrGroups(@Headers('x-api-key') lmnApiToken: string, @Param() params: { searchQuery: string }) {
-    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, params.searchQuery);
+  @Get('search')
+  async searchUsersOrGroups(@Headers('x-api-key') lmnApiToken: string, @Query('searchQuery') searchQuery: string) {
+    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, searchQuery);
   }
 
   @Post('projects')
@@ -140,8 +141,8 @@ export class LmnApiController {
   }
 
   @Delete('projects/:projectName')
-  async removeProject(@Headers('x-api-key') lmnApiToken: string, @Param() params: { projectName: string }) {
-    return this.lmnApiService.removeProject(lmnApiToken, params.projectName);
+  async deleteProject(@Headers('x-api-key') lmnApiToken: string, @Param() params: { projectName: string }) {
+    return this.lmnApiService.deleteProject(lmnApiToken, params.projectName);
   }
 
   @Get('projects/:projectName')

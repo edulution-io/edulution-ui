@@ -41,7 +41,7 @@ const EnrolPage: React.FC = () => {
   ];
 
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-scroll">
+    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
       <div className="text-lg">{t('classmanagement.enrolPageDescription')}</div>
       <LoadingIndicator isOpen={isLoading} />
       {groupRows.map((row) => (

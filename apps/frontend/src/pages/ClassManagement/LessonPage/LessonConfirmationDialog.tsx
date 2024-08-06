@@ -25,7 +25,7 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   disableText,
 }) => {
   const getDialogBody = () => (
-    <div className="text-black">
+    <div className="text-foreground">
       <p className="mb-3">{t(`classmanagement.${title}Description`, { count: member.length })}:</p>
       <p className="p-2">{member.map((m) => m.displayName).join(', ')}</p>
     </div>
@@ -35,14 +35,14 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     <div className="mt-4 flex justify-between space-x-4">
       <button
         type="button"
-        className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+        className="hover:ciRed rounded-md bg-ciLightRed px-4 py-2 text-foreground"
         onClick={disableAction}
       >
         {t(disableText || 'classmanagement.deactivate')}
       </button>
       <button
         type="button"
-        className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+        className="hover:ciGreen rounded-md bg-ciLightGreen px-4 py-2 text-foreground"
         onClick={enableAction}
       >
         {t(enableText || 'classmanagement.activate')}

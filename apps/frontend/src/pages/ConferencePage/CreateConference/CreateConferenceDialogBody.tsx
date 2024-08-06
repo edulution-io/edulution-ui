@@ -8,9 +8,9 @@ import useUserStore from '@/store/UserStore/UserStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import useGroupStore from '@/store/GroupStore';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +21,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
   const { setValue, watch } = form;
   const { user, searchAttendees } = useUserStore();
   const { isLoading } = useCreateConferenceDialogStore();
-  const { searchGroups, isSearchGroupsLoading } = useClassManagementStore();
+  const { searchGroups, searchGroupsIsLoading } = useGroupStore();
   const { t } = useTranslation();
 
   if (isLoading) return <CircleLoader className="mx-auto" />;
@@ -51,7 +51,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           name="name"
           form={form}
           labelTranslationId={t('conferences.name')}
-          isLoading={isSearchGroupsLoading}
+          isLoading={searchGroupsIsLoading}
           variant="default"
         />
         <SearchUsersOrGroups
@@ -67,7 +67,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"
-          isLoading={isSearchGroupsLoading}
+          isLoading={searchGroupsIsLoading}
           variant="default"
         />
       </form>

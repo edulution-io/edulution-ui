@@ -14,6 +14,7 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import GroupPropertiesTable from '@/pages/ClassManagement/components/GroupDialog/GroupPropertiesTable';
 import UserGroups from '@libs/groups/types/userGroups.enum';
+import useGroupStore from '@/store/GroupStore';
 
 interface GroupDialogBodyProps {
   form: UseFormReturn<GroupForm>;
@@ -25,8 +26,8 @@ interface GroupDialogBodyProps {
 const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBodyProps) => {
   const { setValue, watch } = form;
   const { user, searchAttendees } = useUserStore();
-  const { searchGroups, isSearchGroupsLoading, isSessionLoading, isSchoolClassLoading, isProjectLoading } =
-    useClassManagementStore();
+  const { searchGroups, searchGroupsIsLoading } = useGroupStore();
+  const { isSessionLoading, isSchoolClassLoading, isProjectLoading } = useClassManagementStore();
   const { t } = useTranslation();
 
   const isDialogLoading = isProjectLoading || isSchoolClassLoading || isSessionLoading;
@@ -76,7 +77,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           form={form as UseFormReturn<any>}
           labelTranslationId={t('classmanagement.name')}
-          isLoading={isSearchGroupsLoading}
+          isLoading={searchGroupsIsLoading}
           variant="default"
         />
 

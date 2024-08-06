@@ -4,9 +4,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import GroupListCard from '@/pages/ClassManagement/components/GroupList/GroupListCard';
-import CreateGroupButton from '@/pages/ClassManagement/components/CreateGroupButton';
 import { useTranslation } from 'react-i18next';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 
 interface GroupListProps {
   row: GroupColumn;
@@ -14,7 +12,6 @@ interface GroupListProps {
 }
 
 const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
-  const { setOpenDialogType } = useLessonStore();
   const { t } = useTranslation();
 
   return (
@@ -31,12 +28,6 @@ const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
         ))
       ) : (
         <div className="mt-3">{t('classmanagement.noGroupsToShow')}</div>
-      )}
-      {isEnrolEnabled ? null : (
-        <CreateGroupButton
-          title={t(`classmanagement.create${row.translationId}`)}
-          handleButtonClick={() => setOpenDialogType(row.name)}
-        />
       )}
       <GroupDialog item={row} />
     </div>

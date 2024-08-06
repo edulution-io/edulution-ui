@@ -38,7 +38,7 @@ const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ select
       <TooltipProvider>
         <div className="flex flex-row items-center space-x-8">
           {buttons.map((button) => (
-            <>
+            <div key={button.text}>
               <FloatingActionButton
                 icon={button.icon}
                 text={t(`classmanagement.${button.text}`)}
@@ -51,7 +51,7 @@ const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ select
                   onClose={() => setIsDialogOpen(null)}
                 />
               ) : null}
-            </>
+            </div>
           ))}
         </div>
       </TooltipProvider>

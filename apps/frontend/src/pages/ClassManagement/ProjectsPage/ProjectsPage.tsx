@@ -7,6 +7,7 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FaUsersGear } from 'react-icons/fa6';
+import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ const ProjectsPage = () => {
   const {
     createProject,
     updateProject,
-    removeProject,
+    deleteProject,
     userProjects,
     fetchUserProjects,
     fetchUserSchoolClasses,
@@ -37,14 +38,14 @@ const ProjectsPage = () => {
       translationId: 'myProjects',
       createFunction: createProject,
       updateFunction: updateProject,
-      removeFunction: removeProject,
+      removeFunction: deleteProject,
       icon: <FaUsersGear className="h-5 w-7" />,
       groups: userProjects.filter((p) => p.sophomorixAdmins.includes(user.cn)),
     },
   ];
 
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-scroll">
+    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
       <LoadingIndicator isOpen={isLoading} />
       {groupRows.map((row) => (
         <div
@@ -55,6 +56,7 @@ const ProjectsPage = () => {
           <GroupList row={row} />
         </div>
       ))}
+      <ProjectsFloatingButtonsBar />
     </div>
   );
 };

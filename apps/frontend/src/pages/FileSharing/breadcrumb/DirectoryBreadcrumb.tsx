@@ -82,7 +82,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <span className="text-gray-500">{segments[segments.length - 1]}</span>
+              <span className="text-ciGrey">{segments[segments.length - 1]}</span>
             </BreadcrumbItem>
           </>
         ) : (
@@ -91,7 +91,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {index === segments.length - 1 ? (
-                  <span className="text-gray-500">{segment}</span>
+                  <span className="text-ciGrey">{segment}</span>
                 ) : (
                   <BreadcrumbLink
                     href="#"

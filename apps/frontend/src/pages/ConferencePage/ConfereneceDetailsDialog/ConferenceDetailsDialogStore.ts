@@ -49,7 +49,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
         return;
       }
 
-      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}${meetingID}`);
+      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}/${meetingID}`);
       set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);

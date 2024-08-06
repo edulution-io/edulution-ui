@@ -1,9 +1,7 @@
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
-import BlankLayout from '@/components/layout/BlankLayout';
 import { HomePage } from '@/pages/Home';
-import LoginPage from '@/pages/LoginPage/LoginPage';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
@@ -13,6 +11,7 @@ import UserSettingsDefaultPage from '@/pages/UserSettings/UserSettingsDefaultPag
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import getAuthRoutes from '@/router/routes/AuthRoutes';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -23,29 +22,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route element={<BlankLayout />}>
-          <Route
-            path="/login"
-            element={<LoginPage />}
-          />
-          <Route
-            path="*"
-            element={
-              isAuthenticated ? (
-                <Navigate
-                  replace
-                  to="/"
-                />
-              ) : (
-                <Navigate
-                  replace
-                  to="/login"
-                  state={{ from: window.location.pathname }}
-                />
-              )
-            }
-          />
-        </Route>
+        {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>
             {getForwardedRoutes(appConfigs)}

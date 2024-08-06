@@ -24,8 +24,14 @@ export enum ResponseType {
 export enum RequestResponseContentType {
   APPLICATION_JSON = 'application/json',
   APPLICATION_XML = 'application/xml',
+  APPLICATION_PDF = 'application/pdf',
   APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded',
   TEXT_PLAIN = 'text/plain',
   MULTIPART_FORM_DATA = 'multipart/form-data',
   APPLICATION_OCET_STREAM = 'application/octet-stream',
 }
+
+export const HTTP_HEADERS: { [key: string]: string } = {
+  ContentDisposition: 'Content-Disposition',
+  ContentType: 'Content-Type',
+} as const;

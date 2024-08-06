@@ -3,7 +3,6 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { Group } from '@libs/groups/types/group';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
@@ -22,7 +21,6 @@ import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWi
 import sortGroups from '@libs/groups/utils/sortGroups';
 import sortByName from '@libs/common/utils/sortByName';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
-import { EDU_API_GROUPS_SEARCH_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
 import minimizeFormValues from '@libs/groups/utils/minimizeFormValues';
 
 const initialState = {
@@ -113,7 +111,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         }
       },
 
-      removeProject: async (projectName) => {
+      deleteProject: async (projectName) => {
         set({ isProjectLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -144,7 +142,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         }
       },
 
-      fetchSession: async (sessionSid: string) => {
+      fetchUserSession: async (sessionSid: string) => {
         set({ isSessionLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -292,7 +290,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           set({ searchGroupsError: null, isSearchGroupsLoading: true });
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiSearchResult[]>(
-            `${LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT}/${searchQuery}`,
+            `${LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT}?searchQuery=${searchQuery}`,
             {
               headers: { 'x-api-key': lmnApiToken },
             },
@@ -309,30 +307,6 @@ const useClassManagementStore = create<ClassManagementStore>(
             label: `${d.displayName} (${d.cn})`,
             name: d.cn,
             path: d.cn,
-          }));
-
-          return result;
-        } catch (error) {
-          handleApiError(error, set, 'searchGroupsError');
-          return [];
-        } finally {
-          set({ isSearchGroupsLoading: false });
-        }
-      },
-
-      searchGroups: async (searchParam) => {
-        set({ searchGroupsError: null, isSearchGroupsLoading: true });
-        try {
-          const response = await eduApi.get<Group[]>(`${EDU_API_GROUPS_SEARCH_ENDPOINT}/${searchParam}`);
-
-          if (!Array.isArray(response.data)) {
-            return [];
-          }
-
-          const result: MultipleSelectorGroup[] = response.data.map((d) => ({
-            ...d,
-            value: d.id,
-            label: d.name,
           }));
 
           return result;

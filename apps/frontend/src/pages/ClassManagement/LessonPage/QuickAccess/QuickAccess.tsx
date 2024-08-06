@@ -18,7 +18,7 @@ const QuickAccess = () => {
   const {
     createProject,
     updateProject,
-    removeProject,
+    deleteProject,
     userRoom,
     fetchRoom,
     fetchUserSessions,
@@ -75,7 +75,7 @@ const QuickAccess = () => {
       translationId: 'myProjects',
       createFunction: createProject,
       updateFunction: updateProject,
-      removeFunction: removeProject,
+      removeFunction: deleteProject,
       icon: <FaUsersGear className="h-5 w-7" />,
       isLoading,
       groups: userProjects.filter((group) => group.member?.find((member) => userRegex.test(member))),
@@ -83,7 +83,7 @@ const QuickAccess = () => {
   ];
 
   return (
-    <div className="max-h-[calc(100vh-70px)] overflow-scroll">
+    <div className="max-h-[calc(100vh-70px)] overflow-y-auto">
       <h3 className="mt-2 text-center">{t('quickAccess')}</h3>
       <div className="my-4 flex flex-wrap">
         {groupColumns.map((item) => (

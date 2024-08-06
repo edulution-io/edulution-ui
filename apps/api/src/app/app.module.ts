@@ -9,6 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { resolve } from 'path';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import { ScheduleModule } from '@nestjs/schedule';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
@@ -38,6 +39,8 @@ import FilesharingModule from '../filesharing/filesharing.module';
       dbName: process.env.MONGODB_DATABASE_NAME,
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
     }),
+
+    ScheduleModule.forRoot(),
 
     CacheModule.register<RedisClientOptions>({
       isGlobal: true,

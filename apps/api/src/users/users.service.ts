@@ -20,7 +20,6 @@ class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly groupsService: GroupsService,
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -71,7 +70,7 @@ class UsersService {
       return cachedUsers;
     }
 
-    const fetchedUsers = await this.groupsService.fetchAllUsers(token);
+    const fetchedUsers = await GroupsService.fetchAllUsers(token);
 
     await this.cacheManager.set('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     return fetchedUsers;

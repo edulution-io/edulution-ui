@@ -67,9 +67,9 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
 
   const isActive = isSelected || isHovered;
   const titleIcon = isEnrolEnabled ? <MdLock className="ml-2 mt-1 h-5 w-5" /> : null;
-  const cardContentIcon = isHovered ? <FaCog /> : icon;
+  const cardContentIcon = isHovered ? <FaCog className="ml-2 h-7" /> : icon;
   const cardContentText = isHovered ? (
-    <div className="flex h-10 items-center">{t('details')}</div>
+    <div>{t('details')}</div>
   ) : (
     <>
       {type === UserGroups.Projects ? (

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Interval, SchedulerRegistry } from '@nestjs/schedule';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -7,39 +8,47 @@ import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
 import { GROUPS_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import executeNowAndRepeatedly from '@libs/common/utils/executeNowAndRepeatedly';
-import KEYCLOAK_JWT_EXPIRE_IN_MS from '@libs/common/contants/keycloakJwtExpireMs';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import { ALL_GROUPS_CACHE_KEY, GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { readFileSync } from 'fs';
+import { JwtService } from '@nestjs/jwt';
+import JWTUser from '../types/JWTUser';
+
+const { KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET, PUBLIC_KEY_FILE_PATH } =
+  process.env as {
+    [key: string]: string;
+  };
 
 @Injectable()
-class GroupsService implements OnModuleInit {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+class GroupsService {
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private jwtService: JwtService,
+    private schedulerRegistry: SchedulerRegistry,
+  ) {
+    this.scheduleTokenRefresh();
+  }
+
+  private accessTokenRefreshInterval: number = 5000;
+
+  scheduleTokenRefresh() {
+    const callback = () => {
+      void this.obtainAccessToken();
+    };
+
+    const interval = setInterval(callback, this.accessTokenRefreshInterval);
+    this.schedulerRegistry.addInterval('accessTokenRefresh', interval);
+  }
 
   private keycloakAccessToken: string;
 
-  onModuleInit() {
-    void this.scheduleCacheUpdates();
-  }
-
-  private async scheduleCacheUpdates() {
-    await executeNowAndRepeatedly(() => this.obtainAccessToken(), KEYCLOAK_JWT_EXPIRE_IN_MS * 0.9);
-    await executeNowAndRepeatedly(() => this.updateGroupsAndMembersInCache(), GROUPS_CACHE_TTL_MS * 0.5);
-  }
-
-  private keycloakEduApiBaseUrl = process.env.KEYCLOAK_EDU_API as string;
-
-  private keycloakEduApiClientId = process.env.KEYCLOAK_EDU_API_CLIENT_ID as string;
-
-  private keycloakEduApiClientSecret = process.env.KEYCLOAK_EDU_API_CLIENT_SECRET as string;
-
   async obtainAccessToken() {
-    const tokenEndpoint = `${this.keycloakEduApiBaseUrl}protocol/openid-connect/token`;
+    const tokenEndpoint = `${KEYCLOAK_API}/realms/edulution/protocol/openid-connect/token`;
 
     const params = new URLSearchParams({
       grant_type: 'client_credentials',
-      client_id: this.keycloakEduApiClientId,
-      client_secret: this.keycloakEduApiClientSecret,
+      client_id: KEYCLOAK_EDU_API_CLIENT_ID,
+      client_secret: KEYCLOAK_EDU_API_CLIENT_SECRET,
     });
 
     try {
@@ -47,21 +56,37 @@ class GroupsService implements OnModuleInit {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
+      const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+
+      const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(response.data.access_token, {
+        publicKey: pubKey,
+        algorithms: ['RS256'],
+      });
+
       this.keycloakAccessToken = response.data.access_token;
+
+      const newInterval = (decoded.exp - decoded.iat) * 1000 * 0.9;
+      if (newInterval !== this.accessTokenRefreshInterval) {
+        this.accessTokenRefreshInterval = newInterval;
+        this.updateTokenRefreshInterval();
+      }
     } catch (error) {
       Logger.error(error, GroupsService.name);
     }
   }
 
-  private keycloakBaseUrl = process.env.KEYCLOAK_API as string;
+  updateTokenRefreshInterval() {
+    this.schedulerRegistry.deleteInterval('accessTokenRefresh');
+    this.scheduleTokenRefresh();
+  }
 
-  private async makeAuthorizedRequest<T>(
+  private static async makeAuthorizedRequest<T>(
     method: string,
     urlPath: string,
     token: string,
     queryParams: string = '',
   ): Promise<T> {
-    const url = `${this.keycloakBaseUrl}${urlPath}?${queryParams}`;
+    const url = `${KEYCLOAK_API}/admin/realms/edulution/${urlPath}?${queryParams}`;
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: `Bearer ${token}`,
@@ -77,9 +102,9 @@ class GroupsService implements OnModuleInit {
     return response.data;
   }
 
-  async fetchAllUsers(token: string): Promise<LDAPUser[]> {
+  static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
     try {
-      return await this.makeAuthorizedRequest<LDAPUser[]>('get', 'users', token);
+      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>('get', 'users', token);
     } catch (e) {
       throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
     }
@@ -99,13 +124,14 @@ class GroupsService implements OnModuleInit {
     }));
   }
 
+  @Interval(GROUPS_CACHE_TTL_MS * 0.5)
   async updateGroupsAndMembersInCache() {
     try {
-      const groups = await this.fetchAllGroups(this.keycloakAccessToken);
+      const groups = await GroupsService.fetchAllGroups(this.keycloakAccessToken);
       await this.cacheManager.set(ALL_GROUPS_CACHE_KEY, groups, GROUPS_CACHE_TTL_MS);
 
       const promises = groups.map(async (group) => {
-        const members = await this.fetchGroupMembers(this.keycloakAccessToken, group.id);
+        const members = await GroupsService.fetchGroupMembers(this.keycloakAccessToken, group.id);
         const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
         const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
@@ -127,17 +153,18 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private static flattenGroups(groups: Group[]) {
+  private static flattenGroups(groups: Group[]): Group[] {
     const flatGroups: Group[] = [];
 
-    function traverseSubGroups(group: Group) {
+    function traverseSubGroups(group: Group): Group {
       flatGroups.push(group);
 
       if (group.subGroups && group.subGroups.length > 0) {
-        group.subGroups.forEach((subGroup) => traverseSubGroups(subGroup));
-        // eslint-disable-next-line no-param-reassign
-        group.subGroups = [];
+        const updatedSubGroups = group.subGroups.map((subGroup) => traverseSubGroups(subGroup));
+        return { ...group, subGroups: updatedSubGroups };
       }
+
+      return group;
     }
 
     groups.forEach((group) => traverseSubGroups(group));
@@ -145,18 +172,18 @@ class GroupsService implements OnModuleInit {
     return flatGroups;
   }
 
-  async fetchAllGroups(token: string): Promise<Group[]> {
+  static async fetchAllGroups(token: string): Promise<Group[]> {
     try {
-      const groups = await this.makeAuthorizedRequest<Group[]>('get', 'groups', token, 'search');
+      const groups = await GroupsService.makeAuthorizedRequest<Group[]>('get', 'groups', token, 'search');
       return GroupsService.flattenGroups(groups);
     } catch (e) {
       throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
-  async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[]> {
+  static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[]> {
     try {
-      return await this.makeAuthorizedRequest<LDAPUser[]>(
+      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
         'get',
         `groups/${groupId}/members`,
         token,

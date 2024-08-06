@@ -1,5 +1,4 @@
-import { create, StateCreator } from 'zustand';
-import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -18,111 +17,95 @@ const initialState = {
   member: [],
 };
 
-type PersistentLessonStore = (
-  lessonData: StateCreator<LessonStore>,
-  options: PersistOptions<LessonStore>,
-) => StateCreator<LessonStore>;
+const useLessonStore = create<LessonStore>((set) => ({
+  ...initialState,
 
-const useLessonStore = create<LessonStore>(
-  (persist as PersistentLessonStore)(
-    (set) => ({
-      ...initialState,
+  setMember: (member) => set({ member }),
+  setOpenDialogType: (type) => set({ openDialogType: type }),
+  setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
 
-      setMember: (member) => set({ member }),
-      setOpenDialogType: (type) => set({ openDialogType: type }),
-      setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
+  addManagementGroup: async (group: string, users: string[]) => {
+    set({ error: null, isLoading: true });
+    try {
+      const { lmnApiToken } = useLmnApiStore.getState();
+      await eduApi.post(
+        LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
+        {
+          group,
+          users,
+        },
+        {
+          headers: { 'x-api-key': lmnApiToken },
+        },
+      );
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 
-      addManagementGroup: async (group: string, users: string[]) => {
-        set({ error: null, isLoading: true });
-        try {
-          const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post(
-            LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
-            {
-              group,
-              users,
-            },
-            {
-              headers: { 'x-api-key': lmnApiToken },
-            },
-          );
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+  removeManagementGroup: async (group: string, users: string[]) => {
+    set({ error: null, isLoading: true });
+    try {
+      const { lmnApiToken } = useLmnApiStore.getState();
+      await eduApi.delete(LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT, {
+        data: {
+          group,
+          users,
+        },
+        headers: { 'x-api-key': lmnApiToken },
+      });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 
-      removeManagementGroup: async (group: string, users: string[]) => {
-        set({ error: null, isLoading: true });
-        try {
-          const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.delete(LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT, {
-            data: {
-              group,
-              users,
-            },
-            headers: { 'x-api-key': lmnApiToken },
-          });
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+  startExamMode: async (users: string[]) => {
+    set({ error: null, isLoading: true });
+    try {
+      const { lmnApiToken } = useLmnApiStore.getState();
+      await eduApi.put<LmnApiSession>(
+        `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/start`,
+        {
+          users,
+        },
+        {
+          headers: { 'x-api-key': lmnApiToken },
+        },
+      );
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 
-      startExamMode: async (users: string[]) => {
-        set({ error: null, isLoading: true });
-        try {
-          const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post<LmnApiSession>(
-            `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/start`,
-            {
-              users,
-            },
-            {
-              headers: { 'x-api-key': lmnApiToken },
-            },
-          );
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+  stopExamMode: async (users: string[], groupName?: string, groupType?: string) => {
+    set({ error: null, isLoading: true });
+    try {
+      const { lmnApiToken } = useLmnApiStore.getState();
+      await eduApi.put<LmnApiSession>(
+        `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/stop`,
+        {
+          users,
+          groupName,
+          groupType,
+        },
+        {
+          headers: { 'x-api-key': lmnApiToken },
+        },
+      );
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 
-      stopExamMode: async (users: string[], groupName?: string, groupType?: string) => {
-        set({ error: null, isLoading: true });
-        try {
-          const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post<LmnApiSession>(
-            `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/stop`,
-            {
-              users,
-              groupName,
-              groupType,
-            },
-            {
-              headers: { 'x-api-key': lmnApiToken },
-            },
-          );
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      reset: () => set({ ...initialState }),
-    }),
-    {
-      name: 'class-management',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        isLoading: state.isLoading,
-      }),
-    } as PersistOptions<LessonStore>,
-  ),
-);
+  reset: () => set({ ...initialState }),
+}));
 
 export default useLessonStore;

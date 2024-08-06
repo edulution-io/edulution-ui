@@ -84,6 +84,10 @@ const fetchedUsers: LDAPUser[] = [
   },
 ];
 
+jest.mock('../groups/groups.service', () => ({
+  fetchAllUsers: jest.fn(() => fetchedUsers),
+}));
+
 const userModelMock = {
   create: jest.fn().mockResolvedValue(mockUser),
 
@@ -256,7 +260,7 @@ describe(UsersService.name, () => {
 
       const result = await service.findAllCachedUsers(mockToken);
       expect(result).toEqual(fetchedUsers);
-      expect(mockGroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
+      expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
       expect(cacheManagerMock.set).toHaveBeenCalledWith('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     });
   });

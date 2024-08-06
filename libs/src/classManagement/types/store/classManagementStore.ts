@@ -27,18 +27,17 @@ interface ClassManagementState {
 interface ClassManagementActions {
   reset: () => void;
   searchGroupsOrUsers: (searchQuery: string) => Promise<(MultipleSelectorGroup & LmnApiSearchResult)[]>;
-  searchGroups: (searchQuery: string) => Promise<MultipleSelectorGroup[]>;
   createSession: (form: UseFormReturn<GroupForm>) => Promise<void>;
   updateSession: (form: UseFormReturn<GroupForm>) => Promise<void>;
   removeSession: (sessionId: string) => Promise<void>;
   createProject: (form: UseFormReturn<GroupForm>) => Promise<void>;
   updateProject: (form: UseFormReturn<GroupForm>) => Promise<void>;
-  removeProject: (id: string) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
   fetchSchoolClass: (name: string) => Promise<LmnApiSchoolClassWithMembers | null>;
   fetchUserSchoolClasses: () => Promise<void>;
   fetchProject: (name: string) => Promise<LmnApiProjectWithMembers | null>;
   fetchUserProjects: () => Promise<void>;
-  fetchSession: (name: string) => Promise<LmnApiSession | null>;
+  fetchUserSession: (name: string) => Promise<LmnApiSession | null>;
   fetchUserSessions: () => Promise<void>;
   fetchRoom: () => Promise<void>;
 }

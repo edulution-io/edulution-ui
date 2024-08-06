@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 import { CLASS_MANAGEMENT_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import LessonPage from '@/pages/ClassManagement/LessonPage/LessonPage';
 import EnrolPage from '@/pages/ClassManagement/EnrolPage/EnrolPage';
@@ -13,7 +13,7 @@ const getClassManagementRoutes = () => [
   >
     <Route
       path=""
-      element={<LessonPage />}
+      element={<Navigate to="lesson" />}
     />
     <Route
       path="lesson"

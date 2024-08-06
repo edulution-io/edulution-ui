@@ -3,25 +3,33 @@ import { Navigate, Route } from 'react-router-dom';
 import BlankLayout from '@/components/layout/BlankLayout';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
-const AuthRoutes = [
+const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
-    key="loginRoute"
+    key="auth"
     element={<BlankLayout />}
   >
     <Route
-      path="/"
+      path="/login"
       element={<LoginPage />}
     />
     <Route
       path="*"
       element={
-        <Navigate
-          replace
-          to="/"
-        />
+        isAuthenticated ? (
+          <Navigate
+            replace
+            to="/"
+          />
+        ) : (
+          <Navigate
+            replace
+            to="/login"
+            state={{ from: window.location.pathname }}
+          />
+        )
       }
     />
   </Route>,
 ];
 
-export default AuthRoutes;
+export default getAuthRoutes;

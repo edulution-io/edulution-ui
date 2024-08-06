@@ -34,7 +34,7 @@ const PrintPasswordsPage: React.FC = () => {
   ];
 
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-scroll">
+    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
       {groupRows.map((row) => (
         <div key={row.name}>
           <h4>{t(`classmanagement.printPasswords`)}</h4>

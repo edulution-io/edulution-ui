@@ -398,7 +398,7 @@ class LmnApiService {
     }
   }
 
-  public async removeProject(lmnApiToken: string, projectName: string): Promise<LmnApiProject> {
+  public async deleteProject(lmnApiToken: string, projectName: string): Promise<LmnApiProject> {
     try {
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.delete<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}`, {

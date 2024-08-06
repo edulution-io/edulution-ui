@@ -92,14 +92,14 @@ const UserCardButtonBar = ({ user, fetchData }: UserCardButtonBarProps) => {
         type="button"
         className={cn(
           'relative z-10 rounded-full p-1.5',
-          'group-hover:bg-gray-200 group-hover:text-foreground',
-          button.defaultColor || (button.value ? 'bg-green-600' : 'bg-red-600'),
+          'group-hover:bg-ciDarkGrey group-hover:text-foreground',
+          button.defaultColor || (button.value ? 'bg-ciGreen text-foreground' : 'bg-ciRed'),
         )}
         title={t(button.title)}
         onClick={(e) => onButtonClick(e, button)}
       >
         <button.icon className="text-lg" />
-        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-gray-200 px-3 text-foreground group-hover:flex">
+        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-ciDarkGrey px-3 text-background group-hover:flex">
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>
