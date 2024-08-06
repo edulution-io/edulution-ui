@@ -1,4 +1,4 @@
-import DeleteSurveyStore from '@/pages/Surveys/Tables/components/deleteSurveyStore';
+import DeleteSurveyStore from '@libs/survey/types/tables/deleteSurveyStore';
 
 const DeleteSurveyStoreInitialState: Partial<DeleteSurveyStore> = {
   selectedSurvey: undefined,

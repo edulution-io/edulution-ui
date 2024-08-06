@@ -4,8 +4,8 @@ import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import DeleteSurveyStore from '@/pages/Surveys/Tables/components/deleteSurveyStore';
-import DeleteSurveyStoreInitialState from '@/pages/Surveys/Tables/components/deleteSurveyStoreInitialState';
+import DeleteSurveyStore from '@libs/survey/types/tables/deleteSurveyStore';
+import DeleteSurveyStoreInitialState from '@libs/survey/types/tables/deleteSurveyStoreInitialState';
 
 const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   ...(DeleteSurveyStoreInitialState as DeleteSurveyStore),
