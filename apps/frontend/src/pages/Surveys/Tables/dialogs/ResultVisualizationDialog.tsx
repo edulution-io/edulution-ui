@@ -27,6 +27,10 @@ const ResultVisualizationDialog = () => {
     }
   }, [isOpenPublicResultsVisualisationDialog, survey]);
 
+  if (!isOpenPublicResultsVisualisationDialog) {
+    return null;
+  }
+
   if (!survey?.formula) {
     toast.error(t(SurveyErrorMessages.NoFormula));
     return null;
