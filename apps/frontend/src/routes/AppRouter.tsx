@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import createRouter from '@/routes/CreateRouter';
@@ -11,17 +11,22 @@ import useLogout from '@/hooks/useLogout';
 const AppRouter: React.FC = () => {
   const auth = useAuth();
   const { appConfigs, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated, setEduApiToken } = useUserStore();
   const { t } = useTranslation();
-  const [tokenIsExpiring, setTokenIsExpiring] = useState(false);
   const handleLogout = useLogout();
+
+  const handleTokenExpired = useRef(() => {
+    if (auth.user?.expired) {
+      void handleLogout();
+      toast.error(t('auth.errors.TokenExpired'));
+    }
+  });
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {
       const isApiResponding = await getAppConfigs();
       if (!isApiResponding) {
         void handleLogout();
-        setTokenIsExpiring(false);
       }
     };
 
@@ -31,24 +36,19 @@ const AppRouter: React.FC = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    if (auth.user?.access_token) {
+      setEduApiToken(auth.user?.access_token);
+    }
+  }, [auth.user?.access_token]);
+
+  useEffect(() => {
     if (isAuthenticated) {
-      const handleTokenExpired = () => {
-        if (!tokenIsExpiring) {
-          setTokenIsExpiring(true);
-          toast.error(t('auth.errors.SessionExpiring'));
-        }
-
-        if (auth.user?.expired) {
-          void handleLogout();
-          setTokenIsExpiring(false);
-          toast.error(t('auth.errors.TokenExpired'));
-        }
-      };
-
-      auth.events.addAccessTokenExpiring(handleTokenExpired);
+      auth.events.addSilentRenewError(handleLogout);
+      auth.events.addAccessTokenExpiring(handleTokenExpired.current);
 
       return () => {
-        auth.events.removeAccessTokenExpiring(handleTokenExpired);
+        auth.events.removeSilentRenewError(handleLogout);
+        auth.events.removeAccessTokenExpiring(handleTokenExpired.current);
       };
     }
     return () => {};
