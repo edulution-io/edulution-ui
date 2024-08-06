@@ -1,16 +1,7 @@
-import { ComponentProps } from 'react';
-import { BadgeSH } from '@/components/ui/BadgeSH';
-
-export enum BadgeLabels {
-  WORK = 'work',
-  PERSONAL = 'personal',
-}
-
-export enum BadgeVariant {
-  DEFAULT = 'default',
-  OUTLINE = 'outline',
-  SECONDARY = 'secondary',
-}
+import {ComponentProps} from 'react';
+import {BadgeSH} from '@/components/ui/BadgeSH';
+import BadgeLabels from '@libs/dashboard/feed/mails/badge-labels.enum';
+import BadgeVariant from '@libs/dashboard/feed/mails/badge-variant.enum';
 
 export function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
   if ([BadgeLabels.WORK as string].includes(label.toLowerCase())) {

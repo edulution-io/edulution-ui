@@ -3,11 +3,11 @@ import { ParsedMail, simpleParser } from 'mailparser';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import ImapErrorMessages from '@libs/dashboard/constants/imap-error-messages';
-import MailDto from '@libs/dashboard/types/mail.dto';
+import ImapErrorMessages from '@libs/dashboard/feed/mails/constants/imap-error-messages';
+import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
 
 @Injectable()
-class ImapService {
+class MailsService {
   static getMails = async (username: string, password: string): Promise<MailDto[]> => {
     // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
     const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = process.env;
@@ -33,7 +33,7 @@ class ImapService {
       logger: false,
     });
     client.on('error', (err: Error): void => {
-      Logger.error(`IMAP-Error: ${err.message}`, ImapService.name);
+      Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
       void client.logout().then(() => client.close());
     });
 
@@ -78,9 +78,9 @@ class ImapService {
     await client.logout();
     client.close();
 
-    Logger.log(`Feed (Mails): ${mails.length} new mails were fetched`, ImapService.name);
+    Logger.log(`Feed (Mails): ${mails.length} new mails were fetched`, MailsService.name);
     return mails;
   };
 }
 
-export default ImapService;
+export default MailsService;

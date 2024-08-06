@@ -12,9 +12,15 @@ import {
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
+import UsersService from '../users/users.service';
 
-const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, GUACAMOLE_API_URL, GUACAMOLE_API_PASSWORD, GUACAMOLE_API_USER } =
-  process.env;
+const {
+  LMN_VDI_API_SECRET,
+  LMN_VDI_API_URL,
+  GUACAMOLE_API_URL,
+  GUACAMOLE_API_PASSWORD,
+  GUACAMOLE_API_USER,
+} = process.env;
 
 @Injectable()
 class VdiService {
@@ -24,7 +30,7 @@ class VdiService {
 
   private vdiId = '';
 
-  constructor() {
+  constructor(private usersService: UsersService) {
     this.guacamoleApi = axios.create({
       baseURL: `${GUACAMOLE_API_URL}/guacamole/api`,
     });
@@ -90,8 +96,9 @@ class VdiService {
     }
   }
 
-  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
+  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string) {
     const identifier = await this.getConnection(guacamoleDto, username);
+    const password = await this.usersService.getPassword(username);
     if (identifier != null) {
       return this.updateSession(guacamoleDto, username, password);
     }

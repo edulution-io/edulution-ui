@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { FaStarOfLife } from 'react-icons/fa';
-import MAIL_PATH from '@libs/dashboard/constants/mail-endpoint';
-import MailDto from '@libs/dashboard/types/mail.dto';
+import MAIL_ENDPOINT from '@libs/dashboard/feed/mails/constants/mail-endpoint';
+import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
 import { APPS } from '@libs/appconfig/types';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -31,7 +31,7 @@ const useMailStore = create<MailStore>((set) => ({
   ): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<MailDto[]>(MAIL_PATH);
+      const response = await eduApi.get<MailDto[]>(MAIL_ENDPOINT);
       const mails = response.data;
       updateAppData(APPS.MAIL, {
         show: mails.length > 0,

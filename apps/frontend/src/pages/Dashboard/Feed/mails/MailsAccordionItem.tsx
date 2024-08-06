@@ -5,7 +5,7 @@ import { MailIcon } from '@/assets/icons';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
 import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
-import MailList from '@/components/shared/MailList/MailList';
+import MailList from '@/pages/Dashboard/Feed/mails/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailStore from '@/pages/Dashboard/Feed/mails/MailStore';
