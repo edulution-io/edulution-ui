@@ -3,8 +3,8 @@ import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
-import CommitedAnswersDialogStoreInitialState from '@libs/survey/types/tables/Dialogs/commitedAnswersDialogStoreInitialState';
-import CommitedAnswersDialogStore from '@libs/survey/types/tables/Dialogs/commitedAnswersDialogStore';
+import CommitedAnswersDialogStoreInitialState from '@libs/survey/types/tables/dialogs/commitedAnswersDialogStoreInitialState';
+import CommitedAnswersDialogStore from '@libs/survey/types/tables/dialogs/commitedAnswersDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
