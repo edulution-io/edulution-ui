@@ -3,11 +3,11 @@ import MAIL_ENDPOINT from '@libs/dashboard/feed/mails/constants/mail-endpoint';
 import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import MailStore from '@libs/dashboard/feed/mails/types/mailsStore';
+import MailsStore from '@libs/dashboard/feed/mails/types/mailsStore';
 import MailStoreInitialState from '@libs/dashboard/feed/mails/types/mailsStoreInitialState';
 
-const useMailsStore = create<MailStore>((set) => ({
-  ...(MailStoreInitialState as MailStore),
+const useMailsStore = create<MailsStore>((set) => ({
+  ...(MailStoreInitialState as MailsStore),
   reset: () => set(MailStoreInitialState),
 
   getMails: async (): Promise<void> => {
