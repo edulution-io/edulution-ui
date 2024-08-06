@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
+import SurveyEditorFormStore from '@libs/survey/types/editor/surveyEditorFormStore';
+import SurveyEditorFormStoreInitialState from '@libs/survey/types/editor/surveyEditorFormStoreInitialState';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import SurveyEditorFormStore from '@/pages/Surveys/Editor/surveyEditorFormStore';
-import SurveyEditorFormStoreInitialState from '@/pages/Surveys/Editor/surveyEditorFormStoreInitialState';
 
 const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   ...SurveyEditorFormStoreInitialState,

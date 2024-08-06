@@ -1,5 +1,5 @@
-import SurveysPageView from '@libs/survey/types/page-view';
-import SurveysTablesPageStore from '@/pages/Surveys/Tables/surveysTablePageStore';
+import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
 
 const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
   selectedPageView: SurveysPageView.OPEN,

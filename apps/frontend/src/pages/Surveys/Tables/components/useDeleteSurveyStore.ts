@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import DeleteSurveyStore from '@/pages/Surveys/Tables/components/deleteSurveyStore';

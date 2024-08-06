@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { CompleteEvent } from 'survey-core';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface ParticipateDialogStore {
   selectedSurvey: SurveyDto | undefined;

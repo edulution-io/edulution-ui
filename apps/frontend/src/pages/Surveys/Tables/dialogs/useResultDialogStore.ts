@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/surveys-endpoint';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import ResultDialogStoreInitialState from '@libs/survey/types/tables/Dialogs/resultDialogStoreInitialState';
+import ResultDialogStore from '@libs/survey/types/tables/Dialogs/resultDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import ResultDialogStoreInitialState from '@/pages/Surveys/Tables/dialogs/survey-result/resultDialogStoreInitialState';
-import ResultDialogStore from './resultDialogStore';
 
 const useResultDialogStore = create<ResultDialogStore>((set) => ({
   ...(ResultDialogStoreInitialState as ResultDialogStore),

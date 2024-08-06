@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .sa-commercial {
   visibility: hidden;
   height: 0px;
@@ -5,11 +9,11 @@
 
 .sa-table__entries-label,
 .sa-table__entries-label--right {
-  color: rgb(155, 155, 155) !important;
+  color: theme("colors.foreground") !important;
 }
 
 .sa-table select {
-  color: rgb(0, 0, 0) !important;
+  color: theme("colors.foreground") !important;
 }
 
 .surveyDashboardContainer {

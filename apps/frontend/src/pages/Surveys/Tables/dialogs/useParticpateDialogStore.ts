@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import ParticipateDialogStoreInitialState from '@libs/survey/types/tables/Dialogs/participateDialogStoreInitialState';
+import ParticipateDialogStore from '@libs/survey/types/tables/Dialogs/participateDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import ParticipateDialogStoreInitialState from '@/pages/Surveys/Tables/dialogs/participate-survey/participateDialogStoreInitialState';
-import ParticipateDialogStore from './participateDialogStore';
 
 const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
   ...(ParticipateDialogStoreInitialState as ParticipateDialogStore),

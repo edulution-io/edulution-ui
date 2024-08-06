@@ -12,9 +12,9 @@ import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDia
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/survey-result/useResultDialogStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/participate-survey/useParticpateDialogStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/commited-answers/useCommitedAnswersDialogStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
+import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();

@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/survey-result/ResultTableDialogBody';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/survey-result/useResultDialogStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import './resultTableDialog.css';
 
 const ResultTableDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
@@ -21,31 +24,24 @@ const ResultTableDialog = () => {
     }
   }, [isOpenPublicResultsTableDialog, survey]);
 
-  const getDialogBody = () => {
-    if (!survey?.formula) {
-      return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
-          <div>{t('survey.noFormula')}</div>
-        </div>
-      );
-    }
-    if (!result || result.length === 0) {
-      return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
-          <div>{t('survey.noAnswer')}</div>
-        </div>
-      );
-    }
+  if (!survey?.formula) {
+    toast.error(t(SurveyErrorMessages.NoFormula));
+    return null;
+  }
 
-    return (
-      <ScrollArea className="overflow-x-auto overflow-y-auto">
-        <ResultTableDialogBody
-          formula={survey.formula}
-          result={result}
-        />
-      </ScrollArea>
-    );
-  };
+  if (!result || result.length === 0) {
+    toast.error(t(SurveyErrorMessages.NoAnswers));
+    return null;
+  }
+
+  const getDialogBody = () => (
+    <ScrollArea className="overflow-x-auto overflow-y-auto">
+      <ResultTableDialogBody
+        formula={survey.formula}
+        result={result}
+      />
+    </ScrollArea>
+  );
 
   return isOpenPublicResultsTableDialog ? (
     <>

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/user/types/groups/group';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 
 class EmptySurveyForm implements SurveyDto {

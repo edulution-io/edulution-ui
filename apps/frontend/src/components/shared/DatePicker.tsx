@@ -2,12 +2,10 @@
 
 import * as React from 'react';
 import { format } from 'date-fns';
-import { enUS, de, fr } from 'date-fns/locale';
-import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Calendar as CalendarIcon } from 'lucide-react';
-
 import cn from '@/lib/utils';
+import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Calendar } from '@/components/ui/Calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
@@ -22,17 +20,7 @@ const DatePicker = (props: DatePickerProps) => {
 
   const { t } = useTranslation();
 
-  const getLocaleFormat = () => {
-    switch (i18next.language) {
-      case 'de':
-        return de;
-      case 'fr':
-        return fr;
-      default:
-        return enUS;
-    }
-  };
-  const locale = getLocaleFormat();
+  const locale = getLocaleDateFormat();
 
   return (
     <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto text-gray-900">

@@ -29,8 +29,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const { t } = useTranslation();
 
   const [expirationTime, setExpirationTime] = useState<string>(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    `${getHours(getValues().expires) || '00'}:${getMinutes(getValues().expires) || '00'}`,
+    `${getHours(getValues('expires')) || '00'}:${getMinutes(getValues('expires')) || '00'}`,
   );
 
   if (isLoading) return <CircleLoader className="mx-auto" />;
@@ -85,13 +84,10 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExpirationTime(e.target.value);
     const time = e.target.value.split(':');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    let { expires } = getValues();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    expires = setHours(expires, Number(time[0]));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    expires = setMinutes(expires, Number(time[1]));
-    setValue('expires', expires);
+    let updateExpiration = getValues('expires') as Date;
+    updateExpiration = setHours(updateExpiration, Number(time[0]));
+    updateExpiration = setMinutes(updateExpiration, Number(time[1]));
+    setValue('expires', updateExpiration);
   };
 
   return (
@@ -124,8 +120,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
           onChange={handleExpirationTimeChange}
           variant="default"
           className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          disabled={!getValues().expires}
+          disabled={!getValues('expires')}
         />
       </div>
       <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>

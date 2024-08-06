@@ -6,8 +6,8 @@ import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 
 type ErrorMessage =
   | CommonErrorMessages

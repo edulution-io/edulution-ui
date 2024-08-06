@@ -147,6 +147,8 @@
     "errors": {
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden",
+      "noAnswerError": "Es sind noch keine Antworten vorhanden",
+      "noFormulaError": "Das Formular der Umfrage ist nicht lesbar",
       "notFoundError": "Umfrage konnte nicht gefunden werden",
       "participationErrorUserNotAssigned": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
       "participationErrorAlreadyParticipated": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
@@ -349,6 +351,8 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "yes": "Ja",
+    "no": "Nein",
     "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",

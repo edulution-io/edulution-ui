@@ -1,5 +1,5 @@
-import SurveyDto from '@libs/survey/types/survey.dto';
-import SurveysPageView from '@libs/survey/types/page-view';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveysPageView from '@libs/survey/types/api/page-view';
 
 interface SurveysTablesPageStore {
   selectedPageView: SurveysPageView;

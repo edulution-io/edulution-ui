@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface ResultDialogStore {
   selectedSurvey: SurveyDto | undefined;

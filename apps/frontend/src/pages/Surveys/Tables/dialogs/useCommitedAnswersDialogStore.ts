@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/surveys-endpoint';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import SurveyAnswerDto from '@libs/survey/types/survey-answer.dto';
+import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
+import CommitedAnswersDialogStoreInitialState from '@libs/survey/types/tables/Dialogs/commitedAnswersDialogStoreInitialState';
+import CommitedAnswersDialogStore from '@libs/survey/types/tables/Dialogs/commitedAnswersDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import CommitedAnswersDialogStoreInitialState from '@/pages/Surveys/Tables/dialogs/commited-answers/commitedAnswersDialogStoreInitialState';
-import CommitedAnswersDialogStore from './commitedAnswersDialogStore';
 
 const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) => ({
   ...(CommitedAnswersDialogStoreInitialState as CommitedAnswersDialogStore),

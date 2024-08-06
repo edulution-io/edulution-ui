@@ -33,7 +33,7 @@ const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps
     const questions = survey.getAllQuestions() || [];
     const answers = result || [];
     const visualizationPanel = new VisualizationPanel(questions, answers, visuPanelOptions);
-    visualizationPanel.locale = i18next.language;
+    visualizationPanel.locale = i18next.options.lng || 'en';
     visualizationPanel.showToolbar = false;
     setVisuPanel(visualizationPanel);
   }

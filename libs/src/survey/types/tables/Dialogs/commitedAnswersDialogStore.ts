@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import SurveysPageView from '@libs/survey/types/page-view';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface CommitedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
