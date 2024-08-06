@@ -24,15 +24,7 @@ import {
   WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
-import { AppConfigOptionType, APPS } from '@libs/appconfig/types';
-
-type AppConfigOption = {
-  id: string;
-  icon: string;
-  color: string;
-  options?: AppConfigOptionType[];
-  isNativeApp: boolean;
-};
+import { AppConfigOption, APPS } from '@libs/appconfig/types';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -42,7 +34,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url'],
     isNativeApp: false,
   },
-  { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: true },
+  { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url', 'mails'], isNativeApp: true },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {
     id: APPS.CONFERENCES,

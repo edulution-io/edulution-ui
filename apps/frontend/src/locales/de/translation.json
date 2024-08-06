@@ -243,6 +243,9 @@
         "confirm": "Passwort ändern"
       }
     },
+    "mails": {
+      "title": "E-Mail"
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
     "config": {

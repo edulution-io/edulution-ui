@@ -21,6 +21,7 @@ import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
+import MailsConfig from './mails/MailsConfig';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -145,24 +146,28 @@ const AppConfigPage: React.FC = () => {
               >
                 {settingLocation === item.id ? (
                   <div className="space-y-10">
-                    {item.options?.map((itemOption) => (
-                      <FormFieldSH
-                        key={`${item.id}.${itemOption}`}
-                        control={control}
-                        name={`${item.id}.${itemOption}`}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <h4>{t(`form.${itemOption}`)}</h4>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <p>{t(`form.${itemOption}Description`)}</p>
-                            <FormMessage className="text-p" />
-                          </FormItem>
-                        )}
-                      />
-                    ))}
+                    {item.options?.map(
+                      (itemOption) =>
+                        ['url', 'apiKey'].includes(itemOption) && (
+                          <FormFieldSH
+                            key={`${item.id}.${itemOption}`}
+                            control={control}
+                            name={`${item.id}.${itemOption}`}
+                            defaultValue=""
+                            render={({ field }) => (
+                              <FormItem>
+                                <h4>{t(`form.${itemOption}`)}</h4>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <p>{t(`form.${itemOption}Description`)}</p>
+                                <FormMessage className="text-p" />
+                              </FormItem>
+                            )}
+                          />
+                        ),
+                    )}
+
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
@@ -190,6 +195,7 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {item.options?.includes('mails') && <MailsConfig item={item} />}
                   </div>
                 ) : null}
               </div>
