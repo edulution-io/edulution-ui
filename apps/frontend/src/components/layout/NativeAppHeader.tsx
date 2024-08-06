@@ -10,7 +10,7 @@ interface NativeAppHeaderProps {
 const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
   return (
-    <div className="flex scale-75 md:scale-100">
+    <div className="mr-2 flex">
       <img
         src={iconSrc}
         alt={`${title} ${t('common.icon')}`}
