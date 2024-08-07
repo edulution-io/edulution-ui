@@ -195,7 +195,14 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {item.options?.includes('mails') && <MailsConfig item={item} />}
+                    <div>
+                      {item.options?.includes('mails') && (
+                        <MailsConfig
+                          item={item}
+                          form={form}
+                        />
+                      )}
+                    </div>
                   </div>
                 ) : null}
               </div>

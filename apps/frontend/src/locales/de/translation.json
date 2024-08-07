@@ -244,7 +244,8 @@
       }
     },
     "mails": {
-      "title": "E-Mail"
+      "title": "E-Mail",
+      "importer": { "title": "E-Mail Importer" }
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
@@ -301,7 +302,8 @@
     "groups": "Gruppen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
-    "close": "Schließen"
+    "close": "Schließen",
+    "custom": "Benutzerdefiniert"
   },
   "form": {
     "path": "Link",

@@ -1,12 +1,15 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import MAIL_ENDPOINT from '@libs/mails/constants/mails-endpoints';
+import MailProviderConfigDto from '@libs/mails/types/mailProviderConfig.dto';
+import MailsService from './mails.service';
 
 @Controller(MAIL_ENDPOINT)
 class MailsController {
-  @Post()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  postMailsConfig() {
-    return 'Hello World!';
+  constructor(private readonly mailsService: MailsService) {}
+
+  @Get('provider-config')
+  async getExternalMailProviderConfig(): Promise<MailProviderConfigDto[]> {
+    return this.mailsService.getExternalMailProviderConfig();
   }
 }
 

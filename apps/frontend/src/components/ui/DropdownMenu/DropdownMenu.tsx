@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
-
+import cn from '@/lib/utils';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import styles from './dropdownmenu.module.scss';
 
@@ -15,9 +15,10 @@ interface DropdownProps {
   options: DropdownOptions[];
   selectedVal: string;
   handleChange: (value: string) => void;
+  classname?: string;
 }
 
-const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange }) => {
+const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange, classname }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -52,7 +53,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
 
   return (
     <div
-      className={styles.dropdown}
+      className={cn(styles.dropdown, classname)}
       ref={dropdownRef}
     >
       <div>
