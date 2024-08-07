@@ -299,7 +299,9 @@
     "groups": "Gruppen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
-    "close": "Schließen"
+    "close": "Schließen",
+    "delete": "Löschen",
+    "connect": "Verbinden"
   },
   "form": {
     "path": "Link",

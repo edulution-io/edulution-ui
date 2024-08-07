@@ -11,7 +11,7 @@ import { useInterval } from 'usehooks-ts';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VdiCard from './components/VdiCard';
-import FloatingButtonsBar from './components/FloatingButtonsBar';
+import DesktopDeploymentFloatingButtons from './components/DesktopDeploymentFloatingButtons';
 
 const osConfigs = [
   { os: VirtualMachineOs.WIN10, title: 'desktopdeployment.win10' },
@@ -104,7 +104,7 @@ const DesktopDeploymentPage: React.FC = () => {
           />
         ))}
       </div>
-      <FloatingButtonsBar
+      <DesktopDeploymentFloatingButtons
         handleConnect={handleConnect}
         handleReload={handleReload}
       />

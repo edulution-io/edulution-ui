@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
+import cn from '@/lib/utils';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
+import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 
 type FloatingButtonsBarProps = {
   config: FloatingButtonsBarConfig;
@@ -9,6 +11,8 @@ type FloatingButtonsBarProps = {
 const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
   const { config } = props;
   const { buttons, keyPrefix } = config;
+
+  const menuBar = useMenuBarConfig();
 
   const floatingButtons = useMemo(
     () =>
@@ -29,7 +33,13 @@ const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
   );
 
   return (
-    <div className="fixed bottom-8 left-0 right-[var(--sidebar-width)] p-4">
+    <div
+      className={cn(
+        'fixed bottom-8 right-[var(--sidebar-width)] p-4',
+        { 'left-0': menuBar.disabled },
+        { 'left-[256px]': !menuBar.disabled },
+      )}
+    >
       <div className="flex-basis-0 flex flex-grow-0 flex-wrap justify-start overflow-y-auto">{floatingButtons}</div>
     </div>
   );

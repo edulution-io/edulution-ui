@@ -299,7 +299,9 @@
     "groups": "Groups",
     "clearSelection": "Clear selection",
     "start": "Start",
-    "close": "Close"
+    "close": "Close",
+    "delete": "Delete",
+    "connect": "Connect"
   },
   "form": {
     "path": "Path",
