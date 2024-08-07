@@ -326,10 +326,8 @@
     }
   },
   "usersettings": {
-    "title": "USER SETTINGS",
-    "sidebar": "User settings",
-    "split-title": "USER SETTINGS",
-    "description": "Here you can view all your user-defined settings and adjust them if necessary.",
+    "title": "MY PROFILE",
+    "sidebar": "My Profile",
     "security": {
       "title": "Security",
       "sidebar": "Security",
