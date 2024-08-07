@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import cn from '@/lib/utils';
 import { APPS } from '@libs/appconfig/types';
-import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
+import MailDto from '@libs/mail/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import getBadgeVariantFromLabel from '@/pages/Dashboard/Feed/mails/getBadgeVariantFromLabel';

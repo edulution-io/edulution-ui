@@ -1,4 +1,4 @@
-import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
+import MailDto from '@libs/mail/types/mail.dto';
 
 interface MailsStore {
   mails: MailDto[];

@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
-import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
+import MailDto from '@libs/mail/types/mail.dto';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';

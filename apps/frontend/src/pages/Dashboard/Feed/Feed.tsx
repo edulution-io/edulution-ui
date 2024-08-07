@@ -24,8 +24,8 @@ const Feed = () => {
               type="multiple"
               defaultValue={[APPS.MAIL, APPS.CONFERENCES]}
             >
-              <MailsFeed />
               <ConferencesFeed />
+              <MailsFeed />
             </Accordion>
           </ScrollArea>
         </div>

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
-import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
+import MailDto from '@libs/mail/types/mail.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MailsStore from '@libs/mail/types/mailsStore';

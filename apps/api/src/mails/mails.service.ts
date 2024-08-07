@@ -4,7 +4,7 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
-import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
+import MailDto from '@libs/mail/types/mail.dto';
 
 @Injectable()
 class MailsService {
@@ -49,8 +49,7 @@ class MailsService {
     const mails: MailDto[] = [];
     try {
       const fetchMail: AsyncGenerator<FetchMessageObject> = client.fetch(
-        // { or: [{ new: true }, { seen: false }, { recent: true }] },
-        '1:*',
+        { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
           envelope: true,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useInterval } from 'usehooks-ts';
 import FEED_PULL_TIME_INTERVAL, { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import SidebarNotifications from '@libs/dashboard/feed/common/types/sidebarNotfications';
@@ -15,31 +15,27 @@ const useNotifications = (): SidebarNotifications => {
   const isConferenceAppActivated = useIsConferenceActive();
 
   useInterval(() => {
+    if (isConferenceAppActivated) {
+      void getConferences(undefined);
+    }
+  }, FEED_PULL_TIME_INTERVAL);
+  useInterval(() => {
     if (isMailsAppActivated) {
       void getMails();
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
+    if (isConferenceAppActivated) {
+      void getConferences(undefined);
+    }
     if (isMailsAppActivated) {
       void getMails();
     }
   }, []);
 
-  useInterval(() => {
-    if (isConferenceAppActivated) {
-      void getConferences(undefined);
-    }
-  }, FEED_PULL_TIME_INTERVAL);
-
-  useEffect(() => {
-    if (isConferenceAppActivated) {
-      void getConferences(undefined);
-    }
-  }, []);
-
-  const mailsNotificationCounter = useMemo(() => mails.length || 0, [mails]);
-  const runningConferencesNotificationCounter = useMemo(() => runningConferences.length || 0, [runningConferences]);
+  const mailsNotificationCounter = mails.length || 0;
+  const runningConferencesNotificationCounter = runningConferences.length || 0;
 
   return {
     mailsNotificationCounter,
