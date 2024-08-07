@@ -47,9 +47,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         variant={variant}
         className={mobileContentClassName}
       >
-        <SheetHeader
-          variant={variant}
-        >
+        <SheetHeader variant={variant}>
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
         {body}
@@ -62,7 +60,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className={desktopContentClassName}>
+      <DialogContent
+        variant={variant}
+        className={desktopContentClassName}
+      >
         <DialogTitle>{title}</DialogTitle>
         {body}
         <DialogFooter>{footer}</DialogFooter>
