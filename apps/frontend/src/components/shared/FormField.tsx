@@ -18,7 +18,7 @@ const variants = cva([], {
 type FormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
   name: Path<T> | string;
-  isLoading: boolean;
+  disabled: boolean;
   labelTranslationId: string;
   type?: 'password';
   defaultValue?: PathValue<T, Path<T>> | string;
@@ -30,7 +30,7 @@ type FormFieldProps<T extends FieldValues> = {
 const FormField = <T extends FieldValues>({
   form,
   name,
-  isLoading,
+  disabled,
   labelTranslationId,
   type,
   variant,
@@ -55,7 +55,7 @@ const FormField = <T extends FieldValues>({
             <Input
               {...field}
               type={type}
-              disabled={isLoading}
+              disabled={disabled}
               variant={variant}
               readOnly={readonly}
               value={value}

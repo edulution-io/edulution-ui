@@ -1,28 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import Input from '@/components/shared/Input';
+import ContentType from '@libs/filesharing/types/contentType';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems } = useFileSharingStore();
-  const [filename, setFilename] = useState('');
-  const [extension, setExtension] = useState('');
 
-  useEffect(() => {
+  const initializeState = () => {
     if (isRenaming && selectedItems.length === 1) {
-      const { basename } = selectedItems[0];
-      const dotIndex = basename.lastIndexOf('.');
-      const name = dotIndex > 0 ? basename.substring(0, dotIndex) : basename;
-      const ext = dotIndex > 0 ? basename.substring(dotIndex) : '';
-      setFilename(name);
-      setExtension(ext);
-      form.setValue('extension', ext);
-    } else {
-      setFilename('');
-      setExtension('');
+      const { basename, type } = selectedItems[0];
+      if (type === ContentType.FILE) {
+        const dotIndex = basename.lastIndexOf('.');
+        const name = dotIndex > 0 ? basename.substring(0, dotIndex) : basename;
+        const ext = dotIndex > 0 ? basename.substring(dotIndex) : '';
+        form.setValue('extension', ext);
+        return { filename: name, extension: ext };
+      }
+      return { filename: basename, extension: '' };
     }
-  }, [isRenaming, selectedItems]);
+    return { filename: '', extension: '' };
+  };
+
+  const { filename: initialFilename, extension: initialExtension } = initializeState();
+  const [filename, setFilename] = useState(initialFilename);
+  const [extension] = useState(initialExtension);
 
   return (
     <Form {...form}>
@@ -32,28 +36,28 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
           event.preventDefault();
         }}
       >
-        <div className={isRenaming && extension ? 'flex w-full' : ''}>
+        <div
+          className={
+            isRenaming && extension && selectedItems[0].type === ContentType.FILE ? 'flex w-full items-center' : ''
+          }
+        >
           <div className="flex-grow">
             <FormField
               name="filename"
               form={form}
               labelTranslationId=""
-              isLoading={false}
+              disabled={false}
               variant="default"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
             />
           </div>
-          {isRenaming && extension && (
-            <div className="w-1/16">
-              <FormField
-                name="extension"
-                form={form}
-                labelTranslationId=""
-                isLoading={false}
-                variant="default"
+          {isRenaming && extension && selectedItems[0].type === ContentType.FILE && (
+            <div className="w-16 pt-2 text-center">
+              <Input
+                type="text"
                 value={extension}
-                readonly
+                variant="default"
               />
             </div>
           )}
