@@ -226,11 +226,12 @@ class FilesharingService {
         data: file.buffer,
       },
       FileSharingErrorMessage.UploadFailed,
-      (response: WebdavStatusReplay) => ({
-        success: response.status === 201 || response.status === 200,
-        filename: file.originalname,
-        status: response.status,
-      }),
+      (response: WebdavStatusReplay) =>
+        ({
+          success: response.status === 201 || response.status === 200,
+          filename: file.originalname,
+          status: response.status,
+        }) as WebdavStatusReplay,
     );
   };
 
