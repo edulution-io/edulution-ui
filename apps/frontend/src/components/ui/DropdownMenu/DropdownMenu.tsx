@@ -16,7 +16,7 @@ interface DropdownProps {
   openToTop?: boolean;
 }
 
-const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange, openToTop }) => {
+const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange, openToTop = false }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);

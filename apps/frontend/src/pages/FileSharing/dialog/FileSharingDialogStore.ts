@@ -5,7 +5,7 @@ import React from 'react';
 import handleApiError from '@/utils/handleApiError';
 import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
-import { HttpMethodes } from '@libs/common/types/http-methods';
+import { HttpMethods } from '@libs/common/types/http-methods';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
@@ -37,7 +37,7 @@ interface FileSharingDialogStore {
   handleItemAction: (
     action: FileActionType,
     endpoint: string,
-    httpMethod: HttpMethodes,
+    httpMethod: HttpMethods,
     type: ContentType,
     data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
@@ -87,7 +87,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   handleItemAction: async (
     action: FileActionType,
     endpoint: string,
-    httpMethod: HttpMethodes,
+    httpMethod: HttpMethods,
     type: ContentType,
     data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => {

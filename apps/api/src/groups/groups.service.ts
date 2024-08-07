@@ -12,6 +12,7 @@ import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import { ALL_GROUPS_CACHE_KEY, GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
+import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JWTUser from '../types/JWTUser';
 
 const { KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET, PUBLIC_KEY_FILE_PATH } =
@@ -53,7 +54,7 @@ class GroupsService {
 
     try {
       const response = await axios.post<{ access_token: string }>(tokenEndpoint, params.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       });
 
       const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
@@ -81,18 +82,18 @@ class GroupsService {
   }
 
   private static async makeAuthorizedRequest<T>(
-    method: string,
+    method: HttpMethods,
     urlPath: string,
     token: string,
     queryParams: string = '',
   ): Promise<T> {
     const url = `${KEYCLOAK_API}/admin/realms/edulution/${urlPath}?${queryParams}`;
     const headers = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Bearer ${token}`,
+      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
+      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
     };
     const config = {
-      method,
+      method: method as string,
       url,
       headers,
       maxBodyLength: Infinity,
@@ -104,7 +105,7 @@ class GroupsService {
 
   static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
     try {
-      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>('get', 'users', token);
+      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
     } catch (e) {
       throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
     }
@@ -174,7 +175,7 @@ class GroupsService {
 
   static async fetchAllGroups(token: string): Promise<Group[]> {
     try {
-      const groups = await GroupsService.makeAuthorizedRequest<Group[]>('get', 'groups', token, 'search');
+      const groups = await GroupsService.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', token, 'search');
       return GroupsService.flattenGroups(groups);
     } catch (e) {
       throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
@@ -184,7 +185,7 @@ class GroupsService {
   static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[]> {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
-        'get',
+        HttpMethods.GET,
         `groups/${groupId}/members`,
         token,
         'briefRepresentation=true',

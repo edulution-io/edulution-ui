@@ -1,11 +1,11 @@
-import { HttpMethodes } from '@libs/common/types/http-methods';
+import { HttpMethods } from '@libs/common/types/http-methods';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 
-const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethodes) => {
+const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
   const promises = data
     .map((item) => getPathWithoutWebdav(item.path))
     .filter((filename) => filename !== undefined)
@@ -14,7 +14,7 @@ const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: stri
   return Promise.all(promises);
 };
 
-const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethodes) => {
+const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
   const promises = data.map((item) => eduApi[httpMethod](buildApiFilePathUrl(endpoint, item.path), item));
   return Promise.all(promises);
 };
@@ -22,7 +22,7 @@ const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: str
 const handleArrayData = async (
   action: FileActionType,
   endpoint: string,
-  httpMethod: HttpMethodes,
+  httpMethod: HttpMethods,
   data: PathChangeOrCreateProps[],
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
