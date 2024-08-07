@@ -3,7 +3,7 @@ import { ParsedMail, simpleParser } from 'mailparser';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import MailsErrorMessages from '@libs/dashboard/feed/mails/constants/mails-error-messages';
+import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
 
 @Injectable()

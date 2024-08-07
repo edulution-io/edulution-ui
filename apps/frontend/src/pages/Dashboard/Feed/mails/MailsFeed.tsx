@@ -5,8 +5,8 @@ import { APPS } from '@libs/appconfig/types';
 import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
 import MailList from '@/pages/Dashboard/Feed/mails/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
-import useMailsStore from '@/pages/Dashboard/Feed/mails/useMailsStore';
-import useIsMailsActive from '@/pages/Dashboard/Feed/mails/useIsMailsActive';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import useIsMailsActive from '@/pages/Mail/useIsMailsActive';
 
 const MailsFeed = () => {
   const { mails } = useMailsStore();

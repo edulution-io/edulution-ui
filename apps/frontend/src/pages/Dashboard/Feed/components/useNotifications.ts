@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react';
 import { useInterval } from 'usehooks-ts';
 import FEED_PULL_TIME_INTERVAL, { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import SidebarNotifications from '@libs/dashboard/feed/common/types/sidebarNotfications';
-import useIsMailsActive from '@/pages/Dashboard/Feed/mails/useIsMailsActive';
+import useIsMailsActive from '@/pages/Mail/useIsMailsActive';
 import useIsConferenceActive from '@/pages/Dashboard/Feed/conferences/useIsConferenceActive';
-import useMailsStore from '@/pages/Dashboard/Feed/mails/useMailsStore';
+import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 
 const useNotifications = (): SidebarNotifications => {

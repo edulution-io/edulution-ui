@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import MAIL_ENDPOINT from '@libs/dashboard/feed/mails/constants/mail-endpoint';
+import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import MailDto from '@libs/dashboard/feed/mails/types/mail.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import MailsStore from '@libs/dashboard/feed/mails/types/mailsStore';
-import MailStoreInitialState from '@libs/dashboard/feed/mails/types/mailsStoreInitialState';
+import MailsStore from '@libs/mail/types/mailsStore';
+import MailStoreInitialState from '@libs/mail/constants/mailsStoreInitialState';
 
 const useMailsStore = create<MailsStore>((set) => ({
   ...(MailStoreInitialState as MailsStore),

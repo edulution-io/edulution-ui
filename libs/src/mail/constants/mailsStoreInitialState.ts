@@ -1,4 +1,4 @@
-import MailsStore from '@libs/dashboard/feed/mails/types/mailsStore';
+import MailsStore from '@libs/mail/types/mailsStore';
 
 const MailStoreInitialState: Partial<MailsStore> = {
   mails: [],
