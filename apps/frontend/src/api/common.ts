@@ -3,7 +3,7 @@ type UserDataConfig = { state: { lmnApiToken: string } };
 const waitForToken = () =>
   new Promise<void>((resolve) => {
     const checkToken = () => {
-      const lmnUserStorageString = sessionStorage.getItem('lmn-user-storage') as string;
+      const lmnUserStorageString = localStorage.getItem('lmn-user-storage') as string;
       const lmnUserStorage = JSON.parse(lmnUserStorageString) as UserDataConfig;
       const { lmnApiToken } = lmnUserStorage.state;
       if (lmnApiToken) {
