@@ -40,14 +40,11 @@ const ConferencesTable = () => {
     },
   });
 
-  // TODO: NIEDUUI-285 use SSE to update the conferences list (will replace the useInterval which fetches the conferences every 10seconds and notifies the user about running conferences (sidebar (useNotifications)))
+  // TODO: NIEDUUI-285 use SSE to update the conferences list and the selection (THIS will replace the useInterval
+  //       which fetches every 5seconds and notifies the user about running conferences (Sidebar.tsx (useNotifications.ts)))
   useEffect(() => {
     void getConferences(undefined);
   }, []);
-
-  useEffect(() => {
-    setSelectedRows({});
-  }, [conferences]);
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 
