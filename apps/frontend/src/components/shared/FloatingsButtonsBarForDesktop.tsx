@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import FloatingButtonsBarConfig from '@/components/shared/FloatingButtons/floating-buttons-bar-config';
+import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
 
 type FloatingButtonsBarProps = {
   config: FloatingButtonsBarConfig;
 };
 
-const FloatingButtonsBar = (props: FloatingButtonsBarProps) => {
+const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
   const { config } = props;
   const { buttons, keyPrefix } = config;
 
@@ -29,12 +29,12 @@ const FloatingButtonsBar = (props: FloatingButtonsBarProps) => {
   );
 
   return (
-    <div className="w-65% relative max-w-[65%]">
-      <div className="flex-basis-0 no-wrap fixed bottom-8 flex max-w-[inherit] flex-grow-0 overflow-y-scroll">
+    <div className="fixed bottom-8 left-0 right-[var(--sidebar-width)]">
+      <div className="flex-basis-0 flex-wrap flex flex-grow-0 justify-center overflow-y-auto">
         {floatingButtons}
       </div>
     </div>
   );
 };
 
-export default FloatingButtonsBar;
+export default FloatingButtonsBarForDesktop;

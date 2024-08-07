@@ -282,6 +282,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "actions": "Actions",
     "add": "Add",
     "reload": "Reload",
     "logout": "Logout",

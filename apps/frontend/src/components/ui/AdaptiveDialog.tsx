@@ -18,6 +18,7 @@ interface AdaptiveDialogProps {
   trigger?: React.ReactNode;
   body: React.ReactNode;
   footer?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
 }
@@ -29,6 +30,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   trigger,
   body,
   footer,
+  variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
 }) => {
@@ -42,9 +44,12 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent
         side="bottom"
+        variant={variant}
         className={mobileContentClassName}
       >
-        <SheetHeader>
+        <SheetHeader
+          variant={variant}
+        >
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
         {body}
