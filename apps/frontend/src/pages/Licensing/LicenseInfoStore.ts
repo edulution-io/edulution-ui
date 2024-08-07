@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
-import { LICENSE_MANAGEMENT_PATH } from '@libs/license/types/license-endpoints';
+import { LICENSE_MANAGEMENT_ENDPOINT, LICENSE_SERVER_ENDPOINT } from '@libs/license/types/license-endpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -15,6 +15,7 @@ interface LicenseInfoStore {
   showOnlyActiveLicenses: boolean;
   setShowOnlyActiveLicenses: (showOnlyActive: boolean) => void;
   isLicenseActive: boolean;
+  addLicense: (license: LicenseInfoDto) => Promise<void>;
   getLicenses: () => Promise<void>;
   removeLicense: (licenses: LicenseInfoDto[]) => Promise<void>;
   isLoading: boolean;
@@ -41,6 +42,18 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set, get) => ({
 
   clearSelection: () => set({ selectedLicense: undefined, selectedRows: {} }),
 
+  addLicense: async (license: LicenseInfoDto) => {
+    set({ isLoading: true });
+    try {
+      const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_SERVER_ENDPOINT, license);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   getLicenses: async () => {
     const { isLoading } = get();
     if (isLoading) {
@@ -48,7 +61,7 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set, get) => ({
     }
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_MANAGEMENT_PATH);
+      const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_MANAGEMENT_ENDPOINT);
       set({ licenses: response.data });
     } catch (error) {
       handleApiError(error, set);
@@ -60,7 +73,7 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set, get) => ({
   removeLicense: async (licenses: LicenseInfoDto[]) => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.delete<LicenseInfoDto[]>(LICENSE_MANAGEMENT_PATH, {
+      const response = await eduApi.delete<LicenseInfoDto[]>(LICENSE_MANAGEMENT_ENDPOINT, {
         data: licenses,
       });
       set({ licenses: response.data, selectedRows: {} });

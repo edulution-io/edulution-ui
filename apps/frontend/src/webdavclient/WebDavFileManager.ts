@@ -1,7 +1,6 @@
 import { createClient } from 'webdav';
 import JSZip from 'jszip';
 import { translateKey } from '@/utils/common';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/fileManagerCommon';
 import ApiResponseHandler from '@/utils/ApiResponseHandler';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { IWebDavFileManager } from './IWebDavFileManager';

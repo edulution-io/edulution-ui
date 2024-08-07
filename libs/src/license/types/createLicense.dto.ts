@@ -5,8 +5,12 @@ interface CreateLicenseDto {
   publicKey: string;
   signature: string;
   userId: string;
+  platformOrganizationName: string;
   platformFrontendUrl: string;
-  platformOwnerAddress: string;
+  platformOwnerAddressPLZ: string;
+  platformOwnerAddressCity: string;
+  platformOwnerAddressStreet: string;
+  platformOwnerAddressStreetNumber: string;
   validFromUtc: Date;
   validToUtc: Date;
 }

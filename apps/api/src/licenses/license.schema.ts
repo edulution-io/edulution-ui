@@ -21,10 +21,22 @@ export class License {
   signature: string;
 
   @Prop({ type: String, required: true })
+  platformOrganizationName: string;
+
+  @Prop({ type: String, required: true })
   platformFrontendUrl: string;
 
   @Prop({ type: String, required: true })
-  platformOwnerAddress: string;
+  platformOwnerAddressPLZ: string;
+
+  @Prop({ type: String, required: true })
+  platformOwnerAddressCity: string;
+
+  @Prop({ type: String, required: true })
+  platformOwnerAddressStreet: string;
+
+  @Prop({ type: String, required: true })
+  platformOwnerAddressStreetNumber: string;
 
   @Prop({ type: Date, required: true })
   validFromUtc: Date;

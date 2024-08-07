@@ -45,6 +45,26 @@ const LicenseInfoPage = () => {
           )}
         </Button>
       </div>
+
+      <div className="absolute bottom-8 right-1/2 flex flex-row items-center space-x-8 bg-opacity-90">
+        <Button
+          type="button"
+          variant="btn-hexagon"
+          onClick={() => {
+            setShowOnlyActiveLicenses(!showOnlyActiveLicenses);
+            clearSelection();
+          }}
+          className={cn(
+            { 'bg-gray-900': showOnlyActiveLicenses },
+            { 'bg-gray-1000': !showOnlyActiveLicenses },
+            'h-fit w-fit px-3 py-2 text-xs',
+          )}
+        >
+          {t(
+            showOnlyActiveLicenses ? 'license.info.showOnlyActiveLicensesOn' : 'license.info.showOnlyActiveLicensesOff',
+          )}
+        </Button>
+      </div>
     </div>
   );
 };

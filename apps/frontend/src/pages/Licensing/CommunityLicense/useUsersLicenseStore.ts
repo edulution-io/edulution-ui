@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
-import { LICENSES_PATH } from '@libs/license/types/license-endpoints';
+import { LICENSE_ENDPOINT } from '@libs/license/types/license-endpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -46,7 +46,7 @@ const useUsersLicenseStore = create<UsersLicenseStore>((set, get) => ({
 
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<LicenseInfoDto[]>(LICENSES_PATH);
+      const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_ENDPOINT);
       const licenses = response.data;
 
       if (!licenses || licenses.length === 0) {

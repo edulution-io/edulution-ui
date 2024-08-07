@@ -1,5 +1,5 @@
 export const LICENSE_ENDPOINT = 'licenses';
-export const LICENSES_PATH = `${LICENSE_ENDPOINT}/`;
 
-export const LICENSE_MANAGEMENT_ENDPOINT = 'management';
-export const LICENSE_MANAGEMENT_PATH = `${LICENSE_ENDPOINT}/${LICENSE_MANAGEMENT_ENDPOINT}`;
+export const LICENSE_SERVER_ENDPOINT = 'license-server';
+
+export const LICENSE_MANAGEMENT_ENDPOINT = `${LICENSE_ENDPOINT}/management}`;

@@ -8,7 +8,6 @@ import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import HomePage from '@/pages/Home/HomePage';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 
-import FileSharing from '@/pages/FileSharing/FileSharing';
 import ConferencePage from '@/pages/ConferencePage/ConferencePage';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 
@@ -22,8 +21,6 @@ const pageSwitch = (page: string) => {
   switch (page as APPS) {
     case APPS.CONFERENCES:
       return <ConferencePage />;
-    case APPS.FILE_SHARING:
-      return <FileSharing />;
     case APPS.MAIL:
       return <FramePlaceholder />;
     case APPS.LINUXMUSTER:
