@@ -29,8 +29,12 @@ class LicenseServerService {
     this.serverPublicKey = fs.readFileSync('server_public_key.pem', 'utf8');
 
     this.licenseObjectSchema = z.object({
+      platformOrganizationName: z.string(),
       platformFrontendUrl: z.string(),
-      platformOwnerAddress: z.string(),
+      platformOwnerAddressPLZ: z.string(),
+      platformOwnerAddressCity: z.string(),
+      platformOwnerAddressStreet: z.string(),
+      platformOwnerAddressStreetNumber: z.string(),
       validFromUtc: z.object({ date: z.date(), time: z.string() }),
       validToUtc: z.object({ date: z.date(), time: z.string() }),
       signature: z.string(),
