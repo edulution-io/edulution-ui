@@ -29,10 +29,8 @@ const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
   );
 
   return (
-    <div className="fixed bottom-8 left-0 right-[var(--sidebar-width)]">
-      <div className="flex-basis-0 flex-wrap flex flex-grow-0 justify-center overflow-y-auto">
-        {floatingButtons}
-      </div>
+    <div className="fixed bottom-8 left-0 right-[var(--sidebar-width)] p-4">
+      <div className="flex-basis-0 flex flex-grow-0 flex-wrap justify-start overflow-y-auto">{floatingButtons}</div>
     </div>
   );
 };

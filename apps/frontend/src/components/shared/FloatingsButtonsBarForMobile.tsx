@@ -35,11 +35,7 @@ const FloatingButtonsBarForMobile = (props: FloatingButtonsBarProps) => {
     [config],
   );
 
-  const getDialogBody = () => (
-    <div className="flex flex-wrap justify-center">
-      {floatingButtons}
-    </div>
-  );
+  const getDialogBody = () => <div className="flex flex-wrap justify-center p-4">{floatingButtons}</div>;
 
   return (
     <>
@@ -47,7 +43,7 @@ const FloatingButtonsBarForMobile = (props: FloatingButtonsBarProps) => {
         type="button"
         variant="btn-hexagon"
         onClick={() => setIsOpen(!isOpen)}
-        className={'fixed bottom-8 left-1/2 -translate-x-1/2'}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2"
       >
         {t('common.actions')}
       </Button>
@@ -61,7 +57,6 @@ const FloatingButtonsBarForMobile = (props: FloatingButtonsBarProps) => {
       />
     </>
   );
-
 };
 
 export default FloatingButtonsBarForMobile;
