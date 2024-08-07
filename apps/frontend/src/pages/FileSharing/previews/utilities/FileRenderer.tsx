@@ -19,7 +19,7 @@ interface FileRendererProps {
   mode: 'view' | 'edit';
   isMobile: boolean;
   editWindow: boolean;
-  currentlyEditingFile: DirectoryFileDTO;
+  currentlyEditingFile: DirectoryFileDTO | null;
 }
 
 const FileRenderer: FC<FileRendererProps> = ({
@@ -40,6 +40,10 @@ const FileRenderer: FC<FileRendererProps> = ({
         <p>{t('preparing')}</p>
       </div>
     );
+  }
+
+  if (!currentlyEditingFile) {
+    return <p>{t('loadingIndicator.unsupportedFile')}</p>;
   }
 
   if (isImageExtension(fileExtension)) {

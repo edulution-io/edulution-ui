@@ -12,7 +12,7 @@ interface OnlyOfficeEditorConfig {
   token: string;
   editorConfig: {
     mode: 'view' | 'edit';
-    callBackUrl: string;
+    callbackUrl: string;
     customization: {
       mentionShare: boolean;
       macros: boolean;

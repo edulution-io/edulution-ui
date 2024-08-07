@@ -6,31 +6,34 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useIsMidSizeView from '@/hooks/useIsMidSizeView';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
 import ContentType from '@libs/filesharing/types/contentType';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 
 interface FileSharingLayoutProps {
-  currentlyEditingFile: DirectoryFileDTO | null;
   files: DirectoryFileDTO[];
 }
 
-const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ currentlyEditingFile, files }) => {
+const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   const isMidSizeView = useIsMidSizeView();
   const { setShowEditor, showEditor } = useFileEditorStore();
+  const { currentlyEditingFile } = useFileSharingStore();
 
   useEffect(() => {
     setShowEditor(true);
   }, [currentlyEditingFile]);
 
+  useEffect(() => {}, []);
+
   return (
     <div className={`flex ${isMidSizeView ? 'flex-col' : 'w-full flex-row'}`}>
       <div
-        className={`${showEditor && !isMidSizeView && currentlyEditingFile ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}
+        className={`${showEditor && !isMidSizeView && currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}
       >
         <FileSharingTable
           columns={FileSharingTableColumns}
           data={files}
         />
       </div>
-      {currentlyEditingFile?.type === ContentType.FILE && (
+      {currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && (
         <div
           className="w-full md:w-1/2 lg:w-1/3"
           data-testid="test-id-file-preview"

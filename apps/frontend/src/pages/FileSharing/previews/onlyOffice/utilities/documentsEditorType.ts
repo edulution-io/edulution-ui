@@ -1,4 +1,4 @@
-import OnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeConfig';
+import OnlyOfficeConfig from '@libs/filesharing/types/OnlyOfficeConfig';
 
 const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
   switch (fileType) {

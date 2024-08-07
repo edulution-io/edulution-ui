@@ -18,14 +18,19 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getProtocol from '@libs/common/utils/getProtocol';
 import { extname, join, resolve } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync } from 'fs';
 import { createHash } from 'crypto';
+import { decode, verify } from 'jsonwebtoken';
 import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
 import saveFileStream from 'libs/src/filesharing/utils/saveFileStream';
 import signJwtContent from '@libs/common/utils/signJwtContent';
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
+import process from 'node:process';
+import { Request } from 'express';
+import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import { mapToDirectories, mapToDirectoryFiles, retrieveAndSaveFile } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
+import JWTUser from '../types/JWTUser';
 
 @Injectable()
 class FilesharingService {
@@ -94,7 +99,6 @@ class FilesharingService {
     try {
       const response = await client(config);
       FilesharingService.handleWebDAVError(response);
-
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
       throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -222,12 +226,11 @@ class FilesharingService {
         data: file.buffer,
       },
       FileSharingErrorMessage.UploadFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response.status === 201 || response.status === 200,
-          filename: file.originalname,
-          status: response.status,
-        }) as WebdavStatusReplay,
+      (response: WebdavStatusReplay) => ({
+        success: response.status === 201 || response.status === 200,
+        filename: file.originalname,
+        status: response.status,
+      }),
     );
   };
 
@@ -323,6 +326,33 @@ class FilesharingService {
   getOnlyOfficeToken(payload: string) {
     const secret = process.env.EDUI_ONLYOFFICE_SECRET as string;
     return signJwtContent(payload, secret);
+  }
+
+  async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
+    const callbackData = req.body as OnlyOfficeCallbackData;
+    const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
+    const pubKey = readFileSync(pubKeyPath, 'utf8');
+    let user: JWTUser;
+    const cleanedPath = getPathWithoutWebdav(path);
+
+    try {
+      verify(eduToken, pubKey);
+      user = decode(eduToken) as JWTUser;
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.UploadFailed, HttpStatus.UNAUTHORIZED);
+    }
+
+    if (!user) {
+      throw new CustomHttpException(FileSharingErrorMessage.UploadFailed, HttpStatus.FORBIDDEN);
+    }
+    if (callbackData.status === 2 || callbackData.status === 4) {
+      const file = retrieveAndSaveFile(filename, callbackData);
+      if (file) {
+        await this.uploadFile(user.preferred_username, cleanedPath, file, '');
+      } else {
+        throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 }
 

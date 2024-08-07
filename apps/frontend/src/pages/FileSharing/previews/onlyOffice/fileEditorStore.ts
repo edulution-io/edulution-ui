@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditorConfig';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import CleanUpApiEndpoints from '@libs/cleanUp/types/CleanUpApiEndpoints';
 import buildApiCleanPath from '@libs/cleanUp/utilits/buildApiCleanPath';
 import getLastPartOfUrl from '@libs/cleanUp/utilits/getLastPartOfUrl';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 
 type FileEditorStore = {
   closeOnlyOfficeDocEditor: () => void;
@@ -54,7 +55,7 @@ const useFileEditorStore = create<FileEditorStore>((set, get) => ({
         JSON.stringify(config),
         {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': RequestResponseContentType.APPLICATION_JSON,
           },
         },
       );

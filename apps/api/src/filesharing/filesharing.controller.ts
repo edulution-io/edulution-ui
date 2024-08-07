@@ -4,10 +4,13 @@ import {
   Delete,
   Get,
   Header,
+  HttpStatus,
   Patch,
   Post,
   Put,
   Query,
+  Req,
+  Res,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
@@ -17,8 +20,10 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import { Request, Response } from 'express';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
@@ -106,6 +111,22 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.GET_ONLY_OFFICE_TOKEN)
   getOnlyofficeToken(@Body() payload: string) {
     return this.filesharingService.getOnlyOfficeToken(payload);
+  }
+
+  @Public()
+  @Post('callback')
+  handleCallback(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('path') path: string,
+    @Query('filename') filename: string,
+    @Query('eduToken') eduToken: string,
+  ) {
+    try {
+      return this.filesharingService.handleCallback(req, path, filename, eduToken);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+    }
   }
 }
 

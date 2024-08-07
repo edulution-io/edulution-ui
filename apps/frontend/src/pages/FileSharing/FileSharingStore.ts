@@ -59,14 +59,19 @@ const buildFileSharingUrl = (base: string, type: ContentType, path: string): str
 
 const useFileSharingStore = create<FileSharingStore>(
   (persist as PersistedFileManagerStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },
 
       setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
-        set({ currentlyEditingFile: fileToPreview });
+        const { currentlyEditingFile } = get();
+        if (currentlyEditingFile?.etag !== fileToPreview?.etag) {
+          set({ currentlyEditingFile: fileToPreview });
+        } else {
+          set({ currentlyEditingFile });
+        }
       },
 
       setPathToRestoreSession: (path: string) => {

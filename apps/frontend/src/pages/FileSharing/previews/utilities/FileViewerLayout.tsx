@@ -1,34 +1,52 @@
-import FilePreviewOptionsButton from '@/pages/FileSharing/buttonsBar/FilePreviewOptionsButton';
 import React, { FC, ReactNode } from 'react';
 import { MdFullscreen } from 'react-icons/md';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { IoIosArrowForward } from 'react-icons/io';
 import { ImNewTab } from 'react-icons/im';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/shared/Button';
-import isDocumentExtension from '@libs/filesharing/utils/isDocumentExtension';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+
+import FilePreviewOptionsButton from '@/pages/FileSharing/buttonsBar/FilePreviewOptionsButton';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import { Button } from '@/components/shared/Button';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
 
 interface FileViewerLayoutProps {
   isLoading: boolean;
   renderComponent: () => ReactNode;
   editMode?: boolean;
-  fileExtension?: string;
 }
 
-const FileViewerLayout: FC<FileViewerLayoutProps> = ({
-  isLoading,
-  renderComponent,
-  editMode = false,
-  fileExtension,
-}) => {
+const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, renderComponent, editMode = false }) => {
   const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
+  const { setShowEditor } = useFileEditorStore();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  useBeforeUnload(editMode ? 'Are you sure you want to close?' : '', setCurrentlyEditingFile);
+
+  const tabParam = searchParams.get('tab');
+
   const openInNewTab = () => {
     if (currentlyEditingFile) {
-      window.open('/onlyoffice', '_blank');
+      window.open('/onlyoffice?tab=true', '_blank');
+    }
+  };
+
+  const openFullScreen = () => {
+    if (currentlyEditingFile) {
+      navigate('/onlyOffice?tab=false');
+    }
+  };
+
+  const closeOrNavigateBack = () => {
+    if (tabParam === 'false') {
+      navigate(-1);
+      setShowEditor(false);
+      setCurrentlyEditingFile(null);
+    } else {
+      window.close();
     }
   };
 
@@ -41,17 +59,10 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({
               <Button
                 variant="btn-small"
                 className="bg-ciRed"
+                onClick={closeOrNavigateBack}
               >
                 <p>{t('filesharing.closeEditor')}</p>
               </Button>
-              {isDocumentExtension(fileExtension) && (
-                <Button
-                  variant="btn-small"
-                  className="bg-gray-600"
-                >
-                  <p>{t('filesharing.saveFile')}</p>
-                </Button>
-              )}
             </div>
           ) : (
             <p>{t('filesharing.previewTitle')}</p>
@@ -71,13 +82,11 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({
           <div className="flex flex-col space-y-2">
             <FilePreviewOptionsButton
               icon={<ImNewTab />}
-              onClick={() => {
-                openInNewTab();
-              }}
+              onClick={openInNewTab}
             />
             <FilePreviewOptionsButton
               icon={<MdFullscreen />}
-              onClick={() => navigate('/onlyOffice')}
+              onClick={openFullScreen}
             />
           </div>
         )}

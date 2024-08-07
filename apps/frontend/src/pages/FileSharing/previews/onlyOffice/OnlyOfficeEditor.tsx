@@ -1,9 +1,9 @@
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import React, { FC, useCallback } from 'react';
-import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditorConfig';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
 import { useTranslation } from 'react-i18next';
+import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 
 interface OnlyOfficeEditorProps {
   editorType: {
@@ -33,6 +33,9 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
     void deleteFileAfterEdit(editorConfig.document.url);
   }, [mode, fileName, filePath, setCurrentlyEditingFile]);
 
+  const validateConfig = (config: OnlyOfficeEditorConfig) =>
+    !(!config.document || !config.document.url || !config.editorConfig.callbackUrl);
+
   const handleLoadComponentError = (errorCode: number) => {
     switch (errorCode) {
       case -1:
@@ -51,7 +54,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
 
   return (
     <div className={mode === 'view' ? 'relative h-[75vh]' : 'relative h-[95vh]'}>
-      {editorType ? (
+      {editorType && validateConfig(editorConfig) ? (
         <DocumentEditor
           key={editorType.key}
           id={editorType.id}

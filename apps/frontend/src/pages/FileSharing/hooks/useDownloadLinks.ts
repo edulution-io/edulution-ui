@@ -3,7 +3,7 @@ import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import OnlyOfficeDocumentTypes from '@libs/filesharing/types/OnlyOfficeDocumentTypes';
 
-const useDownloadLinks = (file: DirectoryFileDTO) => {
+const useDownloadLinks = (file: DirectoryFileDTO | null) => {
   const { downloadFile, getDownloadLinkURL } = useFileSharingStore();
   const [downloadLinkURL, setDownloadLinkURL] = useState<string | undefined>(undefined);
   const [publicDownloadLink, setPublicDownloadLink] = useState<string | null>(null);
@@ -21,6 +21,10 @@ const useDownloadLinks = (file: DirectoryFileDTO) => {
         setDownloadLinkURL(undefined);
         setPublicDownloadLink(null);
 
+        if (!file) {
+          setIsLoading(false);
+          return;
+        }
         const downloadLink = await downloadFile(file.filename);
         setDownloadLinkURL(downloadLink);
 

@@ -3,8 +3,8 @@ import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
-import FileViewerLayout from '@/pages/FileSharing/previews/utility/FileViewerLayout';
-import FileRenderer from '@/pages/FileSharing/previews/utility/FileRenderer';
+import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
+import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
 
 interface FileViewerProps {
   mode: 'view' | 'edit';
@@ -16,8 +16,6 @@ const FileViewer: FC<FileViewerProps> = ({ mode, editWindow = false }) => {
   const { showEditor } = useFileEditorStore();
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const isMobile = useIsMobileView();
-
-  if (!currentlyEditingFile) return null;
 
   const { downloadLinkURL, publicDownloadLink, isLoading, isError } = useDownloadLinks(currentlyEditingFile);
   const fileExtension = currentlyEditingFile?.filename?.split('.').pop()?.toLowerCase();
@@ -32,7 +30,6 @@ const FileViewer: FC<FileViewerProps> = ({ mode, editWindow = false }) => {
     <FileViewerLayout
       isLoading={isLoading}
       editMode={mode === 'edit'}
-      fileExtension={fileExtension}
       renderComponent={() => (
         <FileRenderer
           isLoading={isLoading}

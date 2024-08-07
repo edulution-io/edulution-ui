@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
-import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/documentsEditorType';
-import callbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/callbackBaseUrl';
-import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/generateOnlyOfficeConfig';
-import OnlyOfficeEditorConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditorConfig';
-import OnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeConfig';
+import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/utilities/documentsEditorType';
+import callbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/utilities/callbackBaseUrl';
+import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/utilities/generateOnlyOfficeConfig';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -15,54 +14,41 @@ interface UseOnlyOfficeProps {
   mode: 'view' | 'edit';
 }
 
-const useOnlyOffice: ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
-  isLoading: boolean;
-  editorsConfig: OnlyOfficeEditorConfig | null;
-  documentServerURL: string;
-  editorType: OnlyOfficeConfig;
-} = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
+const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
   const [editorsConfig, setEditorsConfig] = useState<OnlyOfficeEditorConfig | null>(null);
-  const [documentServerURL, setDocumentServerURL] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useAuth();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
 
-  const fileExtension = fileName.split('.').pop() || '';
+  const fileExtension = useMemo(() => fileName.split('.').pop() || '', [fileName]);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
-  const isDev = true;
-  const formattedUrl = useMemo(
-    () => (isDev ? url.replace('http://localhost:3001', 'http://host.docker.internal:3001') : url),
-    [url, isDev],
-  );
-  const documentSerURL = useMemo(
-    () => (isDev ? 'http://localhost:80' : (import.meta.env.VITE_ONLYOFFICE_URL as string)),
-    [isDev],
-  );
+  const formattedUrl = useMemo(() => url.replace('http://localhost:3001', 'http://host.docker.internal:3001'), [url]);
+  const documentServerURL = 'http://localhost:80';
 
-  const generatedCallbackUrl = useMemo(
-    () =>
-      callbackBaseUrl({
-        fileName,
-        filePath,
-        isDev,
-        accessToken: user?.access_token || 'notfound',
-      }),
-    [fileName, filePath, isDev, user?.access_token],
-  );
+  const generatedCallbackUrl = useMemo(() => {
+    const callbackUrl = callbackBaseUrl({
+      fileName,
+      filePath,
+      accessToken: user?.access_token || 'notfound',
+    });
+    if (!callbackUrl) {
+      console.error('Generated callback URL is invalid:', callbackUrl);
+    }
+    return callbackUrl;
+  }, [fileName, filePath, user?.access_token]);
 
   useEffect(() => {
     const fetchFileUrlAndToken = async () => {
       try {
-        setDocumentServerURL(documentSerURL);
-
         const onlyOfficeConfig = generateOnlyOfficeConfig({
           fileType: fileExtension,
           type,
           editorConfigKey: editorType.key,
           documentTitle: fileName,
           documentUrl: formattedUrl,
-          callBackUrl: generatedCallbackUrl,
+          callbackUrl: generatedCallbackUrl,
           mode,
+          username: user?.profile.preferred_username || 'Anonymous',
         });
         onlyOfficeConfig.token = await getOnlyOfficeJwtToken(onlyOfficeConfig);
         setEditorsConfig(onlyOfficeConfig);
@@ -77,7 +63,7 @@ const useOnlyOffice: ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProp
   }, [
     fileName,
     filePath,
-    documentSerURL,
+    documentServerURL,
     formattedUrl,
     generatedCallbackUrl,
     getOnlyOfficeJwtToken,
@@ -85,6 +71,7 @@ const useOnlyOffice: ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProp
     editorType.key,
     type,
     mode,
+    user?.profile.preferred_username,
   ]);
 
   return {

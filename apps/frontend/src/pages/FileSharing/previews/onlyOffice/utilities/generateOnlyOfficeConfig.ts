@@ -4,8 +4,9 @@ interface OnlyOfficeConfigProps {
   editorConfigKey: string;
   documentTitle: string;
   documentUrl: string;
-  callBackUrl: string;
+  callbackUrl: string;
   mode: 'view' | 'edit';
+  username: string;
 }
 
 const getDocumentType = (editorConfigKey: string): string => {
@@ -25,7 +26,7 @@ const generateOnlyOfficeConfig = ({
   editorConfigKey,
   documentTitle,
   documentUrl,
-  callBackUrl,
+  callbackUrl,
   mode,
 }: OnlyOfficeConfigProps) => ({
   document: {
@@ -40,7 +41,7 @@ const generateOnlyOfficeConfig = ({
   documentType: getDocumentType(editorConfigKey),
   token: '',
   editorConfig: {
-    callBackUrl,
+    callbackUrl,
     mode,
     customization: {
       anonymous: {
@@ -52,7 +53,7 @@ const generateOnlyOfficeConfig = ({
       compactHeader: false,
       compactToolbar: false,
       compatibleFeatures: false,
-      forcesave: true,
+      forcesave: false,
       help: true,
       hideRightMenu: false,
       hideRulers: false,

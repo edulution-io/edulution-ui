@@ -38,7 +38,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
 
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { setCurrentlyEditingFile } = useFileSharingStore();
+      const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
       const { setShowEditor } = useFileEditorStore();
       const handleFilenameClick = (filenamePath: string) => {
         setShowEditor(false);
@@ -47,10 +47,10 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
           setSearchParams(searchParams);
           setShowEditor(false);
           setCurrentlyEditingFile(null);
-        } else {
-          setShowEditor(false);
-          setCurrentlyEditingFile(null);
+        } else if (currentlyEditingFile?.filename !== row.original.filename) {
           setCurrentlyEditingFile(row.original);
+        } else {
+          setShowEditor(true);
         }
       };
       const renderFileIcon = (item: DirectoryFileDTO) => {

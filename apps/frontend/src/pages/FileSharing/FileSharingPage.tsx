@@ -10,7 +10,7 @@ import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const { files, currentlyEditingFile } = useFileSharingStore();
+  const { files } = useFileSharingStore();
 
   return (
     <div className="w-full overflow-x-auto">
@@ -35,10 +35,7 @@ const FileSharingPage = () => {
           className="max-h[75vh] w-full md:w-auto md:max-w-7xl xl:max-w-full"
           data-testid="test-id-file-sharing-page-data-table"
         >
-          <FileSharingLayout
-            currentlyEditingFile={currentlyEditingFile}
-            files={files}
-          />
+          <FileSharingLayout files={files} />
         </div>
       </div>
       <div className="fixed bottom-8 mt-10 flex flex-row space-x-24 bg-opacity-90">
