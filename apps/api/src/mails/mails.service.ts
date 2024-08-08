@@ -1,5 +1,5 @@
-import MailProviderConfigDto from '@libs/mails/types/mailProviderConfig.dto';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -27,6 +27,25 @@ class MailsService {
     }));
 
     return mailProviders;
+  }
+
+  async postExternalMailProviderConfig(mailProviderConfig: MailProviderConfigDto): Promise<MailProviderConfigDto> {
+    try {
+      if (mailProviderConfig.id !== '') {
+        await this.mailProviderModel.findOneAndUpdate(
+          { mailProviderId: mailProviderConfig.id },
+          { $set: mailProviderConfig },
+          { upsert: true },
+        );
+      } else {
+        await this.mailProviderModel.create(mailProviderConfig);
+      }
+    } catch (error) {
+      Logger.log(error, MailsService.name);
+      throw new CustomHttpException('Mail provider not found' as ErrorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    return mailProviderConfig;
   }
 }
 

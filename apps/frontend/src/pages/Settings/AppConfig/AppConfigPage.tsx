@@ -20,6 +20,8 @@ import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import MailsConfig from './mails/MailsConfig';
 
@@ -32,6 +34,7 @@ const AppConfigPage: React.FC = () => {
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
   const isMobileView = useIsMobileView();
+  const { postExternalMailProviderConfig } = useMailsStore();
 
   useEffect(() => {
     setSettingLocation(pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '');
@@ -129,6 +132,18 @@ const AppConfigPage: React.FC = () => {
     });
 
     await updateAppConfig(updatedConfig);
+
+    if (settingLocation === 'mail') {
+      const mailProviderConfig: MailProviderConfigDto = {
+        id: (getValues('mailProviderId') || '') as string,
+        name: getValues('configName') as string,
+        label: getValues('configName') as string,
+        host: getValues('hostname') as string,
+        port: getValues('port') as number,
+        secure: true,
+      };
+      void postExternalMailProviderConfig(mailProviderConfig);
+    }
   };
 
   const settingsForm = () => {
@@ -195,14 +210,7 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    <div>
-                      {item.options?.includes('mails') && (
-                        <MailsConfig
-                          item={item}
-                          form={form}
-                        />
-                      )}
-                    </div>
+                    <div>{item.options?.includes('mails') && <MailsConfig form={form} />}</div>
                   </div>
                 ) : null}
               </div>

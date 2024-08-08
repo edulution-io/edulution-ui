@@ -56,7 +56,7 @@ const UserSettingsMailsPage: React.FC = () => {
         iconSrc={MailIcon}
       />
       <div className="space-y-4 p-4">
-        <h3>{t('usersettings.mails.importer.title')}</h3>
+        <h3>{t('mail.importer.title')}</h3>
         <DropdownMenu
           options={externalMailProviderConfig}
           selectedVal={isLoading ? t('common.loading') : t(option)}

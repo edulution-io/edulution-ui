@@ -31,7 +31,14 @@
   },
   "mail": {
     "title": "MAIL",
-    "sidebar": "Mail"
+    "sidebar": "Mail",
+    "importer": {
+      "title": "E-Mail Importer",
+      "provider": "E-Mail-Provider",
+      "configName": "Name der Konfiguration",
+      "hostname": "Hostname",
+      "port": "Port"
+    }
   },
   "chat": {
     "title": "CHAT",
@@ -244,8 +251,7 @@
       }
     },
     "mails": {
-      "title": "E-Mail",
-      "importer": { "title": "E-Mail Importer" }
+      "title": "E-Mail"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
