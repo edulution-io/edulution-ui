@@ -7,6 +7,9 @@ import useIsMidSizeView from '@/hooks/useIsMidSizeView';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import { appExtendedOptions, AvailableAppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 interface FileSharingLayoutProps {
   files: DirectoryFileDTO[];
@@ -16,7 +19,12 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   const isMidSizeView = useIsMidSizeView();
   const { setShowEditor, showEditor } = useFileEditorStore();
   const { currentlyEditingFile } = useFileSharingStore();
-
+  const { appConfigs } = useAppConfigsStore();
+  const documentServerURL = getExtendedOptionValue(
+    appConfigs,
+    appExtendedOptions,
+    AvailableAppExtendedOptions.ONLY_OFFICE_URL,
+  );
   useEffect(() => {
     setShowEditor(true);
   }, [currentlyEditingFile]);
@@ -26,14 +34,14 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   return (
     <div className={`flex ${isMidSizeView ? 'flex-col' : 'w-full flex-row'}`}>
       <div
-        className={`${showEditor && !isMidSizeView && currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}
+        className={`${showEditor && !isMidSizeView && currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && documentServerURL !== '' ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}
       >
         <FileSharingTable
           columns={FileSharingTableColumns}
           data={files}
         />
       </div>
-      {currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && (
+      {currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && documentServerURL !== '' && (
         <div
           className="w-full md:w-1/2 lg:w-1/3"
           data-testid="test-id-file-preview"
