@@ -87,7 +87,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   return (
     <div className="flex flex-col items-center justify-center space-x-2">
       {renderContent()}
-      <p className="max-w-[100px] justify-center overflow-hidden truncate whitespace-nowrap text-center">{text}</p>
+      <p className="whitespace-prewrap top-0 max-w-[100px] justify-center overflow-hidden overflow-hidden text-center">
+        {text}
+      </p>
     </div>
   );
 };

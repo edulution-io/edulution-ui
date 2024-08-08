@@ -7,8 +7,8 @@ import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import FileTypesConfiguration from '@libs/filesharing/types/fileTypesConfiguration';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
-import UploadButton from '@/components/shared/FloatingButtons/UploadButton';
-import FloatingButtonsBar from '@/components/shared/FloatingButtonsBar';
+import UploadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/uploadButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const { setSelectedFileType } = useFileSharingDialogStore();

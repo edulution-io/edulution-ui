@@ -1,8 +1,8 @@
 import React from 'react';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import FloatingButtonsBarForMobile from '@/components/shared/FloatingsButtonsBarForMobile';
-import FloatingButtonsBarForDesktop from '@/components/shared/FloatingsButtonsBarForDesktop';
+import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
+import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
 
 type FloatingButtonsBarProps = {
   config: FloatingButtonsBarConfig;
@@ -11,11 +11,7 @@ type FloatingButtonsBarProps = {
 const FloatingButtonsBar = (props: FloatingButtonsBarProps) => {
   const isMobileView = useIsMobileView();
 
-  return isMobileView ? (
-    <FloatingButtonsBarForMobile {...props} />
-  ) : (
-    <FloatingButtonsBarForDesktop {...props} />
-  );
+  return isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />;
 };
 
 export default FloatingButtonsBar;

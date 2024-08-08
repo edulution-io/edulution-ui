@@ -1,33 +1,43 @@
 import React, { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { HiOutlineChevronDoubleUp, HiOutlineChevronDoubleDown } from 'react-icons/hi';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
 import { Button } from '@/components/shared/Button';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { IconContext } from 'react-icons';
 
 type FloatingButtonsBarProps = {
   config: FloatingButtonsBarConfig;
 };
 
-const FloatingButtonsBarForMobile = (props: FloatingButtonsBarProps) => {
+const MobileButtonsBar = (props: FloatingButtonsBarProps) => {
   const { config } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-
-  const { t } = useTranslation();
 
   const { buttons, keyPrefix } = config;
   const floatingButtons = useMemo(
     () =>
       buttons.map((conf, index) => {
-        const { icon, text, onClick, isVisible = true } = conf;
+        const {
+          icon,
+          text,
+          onClick,
+          isVisible = true,
+          variant = 'button',
+          options = undefined,
+          onSelectFileSelect = undefined,
+        } = conf;
         return isVisible ? (
           // eslint-disable-next-line react/no-array-index-key
           <div key={`${keyPrefix}${index}`}>
             <FloatingActionButton
+              variant={variant}
               icon={icon}
               text={text}
               onClick={onClick}
+              options={options}
+              onSelectFileSelect={onSelectFileSelect}
             />
           </div>
         ) : null;
@@ -37,21 +47,25 @@ const FloatingButtonsBarForMobile = (props: FloatingButtonsBarProps) => {
 
   const getDialogBody = () => <div className="flex flex-wrap justify-center p-4">{floatingButtons}</div>;
 
+  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+
   return (
     <>
       <Button
         type="button"
         variant="btn-hexagon"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2"
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 scale-90"
       >
-        {t('common.actions')}
+        <IconContext.Provider value={iconContextValue}>
+          {isOpen ? <HiOutlineChevronDoubleDown /> : <HiOutlineChevronDoubleUp />}
+        </IconContext.Provider>
       </Button>
       <AdaptiveDialog
         isOpen={isOpen}
         variant="secondary"
         handleOpenChange={() => setIsOpen(!isOpen)}
-        title={t('common.actions')}
+        title=""
         body={getDialogBody()}
         mobileContentClassName="h-fit h-max-1/2"
       />
@@ -59,4 +73,4 @@ const FloatingButtonsBarForMobile = (props: FloatingButtonsBarProps) => {
   );
 };
 
-export default FloatingButtonsBarForMobile;
+export default MobileButtonsBar;

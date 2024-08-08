@@ -2,10 +2,10 @@ import React from 'react';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import CreateButton from '@/components/shared/FloatingButtons/CreateButton';
-import DeleteButton from '@/components/shared/FloatingButtons/DeleteButton';
-import ReloadButton from '@/components/shared/FloatingButtons/ReloadButton';
-import FloatingButtonsBar from '@/components/shared/FloatingButtonsBar';
+import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
+import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
+import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 const ConferencesFloatingButtons: React.FC = () => {
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();

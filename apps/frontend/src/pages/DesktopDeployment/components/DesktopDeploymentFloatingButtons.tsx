@@ -1,8 +1,8 @@
 import React from 'react';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
-import ConnectButton from '@/components/shared/FloatingButtons/ConnectButton';
-import ReloadButton from '@/components/shared/FloatingButtons/ReloadButton';
-import FloatingButtonsBar from '@/components/shared/FloatingButtonsBar';
+import ConnectButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/connectButton';
+import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 type FloatingButtonsProps = {
   handleConnect: () => void;

@@ -8,10 +8,10 @@ import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import FloatingButtonsBar from '@/components/shared/FloatingButtonsBar';
-import DownloadButton from '@/components/shared/FloatingButtons/DownloadButton';
-import MoveButton from '@/components/shared/FloatingButtons/MoveButton';
-import DeleteButton from '@/components/shared/FloatingButtons/DeleteButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
+import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
+import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileSharingStore();

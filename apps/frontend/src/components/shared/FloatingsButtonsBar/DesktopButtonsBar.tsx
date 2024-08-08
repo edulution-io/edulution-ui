@@ -8,7 +8,7 @@ type FloatingButtonsBarProps = {
   config: FloatingButtonsBarConfig;
 };
 
-const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
+const DesktopButtonsBar = (props: FloatingButtonsBarProps) => {
   const { config } = props;
   const { buttons, keyPrefix } = config;
 
@@ -17,14 +17,25 @@ const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
   const floatingButtons = useMemo(
     () =>
       buttons.map((conf, index) => {
-        const { icon, text, onClick, isVisible = true } = conf;
+        const {
+          icon,
+          text,
+          onClick,
+          isVisible = true,
+          variant = 'button',
+          options = undefined,
+          onSelectFileSelect = undefined,
+        } = conf;
         return isVisible ? (
           // eslint-disable-next-line react/no-array-index-key
           <div key={`${keyPrefix}${index}`}>
             <FloatingActionButton
+              variant={variant}
               icon={icon}
               text={text}
               onClick={onClick}
+              options={options}
+              onSelectFileSelect={onSelectFileSelect}
             />
           </div>
         ) : null;
@@ -45,4 +56,4 @@ const FloatingButtonsBarForDesktop = (props: FloatingButtonsBarProps) => {
   );
 };
 
-export default FloatingButtonsBarForDesktop;
+export default DesktopButtonsBar;

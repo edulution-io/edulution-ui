@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
-import DeleteButton from '@/components/shared/FloatingButtons/DeleteButton';
-import MoveButton from '@/components/shared/FloatingButtons/MoveButton';
-import FloatingButtonsBar from '@/components/shared/FloatingButtonsBar';
+import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
+import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const config: FloatingButtonsBarConfig = {
