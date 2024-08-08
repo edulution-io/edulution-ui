@@ -11,7 +11,8 @@ interface UseLmnApiStore {
   lmnApiToken: string;
   user: UserLmnInfo | null;
   isLoading: boolean;
-  isGetUserLoading: boolean;
+  isGetOwnUserLoading: boolean;
+  isFetchUserLoading: boolean;
   error: Error | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
@@ -23,7 +24,8 @@ const initialState = {
   lmnApiToken: '',
   user: null,
   isLoading: false,
-  isGetUserLoading: false,
+  isGetOwnUserLoading: false,
+  isFetchUserLoading: false,
   error: null,
 };
 
@@ -52,8 +54,8 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       getOwnUser: async () => {
-        if (get().isGetUserLoading) return;
-        set({ isGetUserLoading: true, error: null });
+        if (get().isGetOwnUserLoading) return;
+        set({ isGetOwnUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, {
@@ -63,12 +65,12 @@ const useLmnApiStore = create<UseLmnApiStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          set({ isGetUserLoading: false });
+          set({ isGetOwnUserLoading: false });
         }
       },
 
       fetchUser: async (username): Promise<UserLmnInfo | null> => {
-        set({ error: null });
+        set({ isFetchUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(`${LMN_API_USER_EDU_API_ENDPOINT}/${username}`, {
@@ -79,7 +81,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
           handleApiError(error, set);
           return null;
         } finally {
-          set({ isGetUserLoading: false });
+          set({ isFetchUserLoading: false });
         }
       },
 

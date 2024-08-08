@@ -9,6 +9,9 @@ import UserDto from '@libs/user/types/user.dto';
 import CryptoJS from 'crypto-js';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { getDecryptedPassword } from '@libs/common/utils';
+import { EDU_API_USER_INFO_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
+import processLdapGroups from '@libs/user/utils/processLdapGroups';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 
 const initialState = {
   webdavKey: '',
@@ -36,6 +39,24 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ isPreparingLogout: true });
     await delay(200);
     set({ isAuthenticated: false });
+  },
+
+  fetchUserAndUpdateInDatabase: async () => {
+    set({ userIsLoading: true });
+    try {
+      const response = await eduApi.get<JwtUser>(EDU_API_USER_INFO_ENDPOINT);
+      const newUser = {
+        username: response.data.preferred_username,
+        email: response.data.email,
+        ldapGroups: processLdapGroups(response.data.ldapGroups),
+      };
+      await get().updateUser(newUser);
+      set({ user: { ...get().user, ...newUser, ldapGroups: newUser.ldapGroups } as UserDto });
+    } catch (error) {
+      handleApiError(error, set, 'userError');
+    } finally {
+      set({ isAuthenticated: true, userIsLoading: false });
+    }
   },
 
   createOrUpdateUser: async (user: UserDto) => {

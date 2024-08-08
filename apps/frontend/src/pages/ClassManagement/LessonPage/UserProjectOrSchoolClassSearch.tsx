@@ -27,7 +27,7 @@ const UserProjectOrSchoolClassSearch = () => {
   }, [member]);
 
   const onSearch = async (value: string): Promise<(MultipleSelectorOptionSH & LmnApiSearchResult)[]> => {
-    const result = await searchGroupsOrUsers(value);
+    const result = await searchGroupsOrUsers(value, t);
 
     const isValidSearchResult = (r: MultipleSelectorOptionSH & LmnApiSearchResult) =>
       r.cn !== user?.cn &&

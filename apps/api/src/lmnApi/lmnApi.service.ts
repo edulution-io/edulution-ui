@@ -4,6 +4,7 @@ import {
   EXAM_MODE_LMN_API_ENDPOINT,
   MANAGEMENT_GROUPS_LMN_API_ENDPOINT,
   PRINT_PASSWORDS_LMN_API_ENDPOINT,
+  PRINTERS_LMN_API_ENDPOINT,
   PROJECTS_LMN_API_ENDPOINT,
   QUERY_LMN_API_ENDPOINT,
   SCHOOL_CLASSES_LMN_API_ENDPOINT,
@@ -23,6 +24,7 @@ import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsReq
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
+import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import UsersService from '../users/users.service';
 
 @Injectable()
@@ -183,6 +185,31 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSchoolClassesFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async toggleSchoolClassJoined(
+    lmnApiToken: string,
+    schoolClass: string,
+    action: string,
+  ): Promise<LmnApiSchoolClass> {
+    const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
+
+    const config = {
+      headers: { 'X-API-Key': lmnApiToken },
+    };
+
+    try {
+      const response = await this.enqueue<LmnApiSchoolClass>(() =>
+        this.lmnApi.post<LmnApiSchoolClass>(requestUrl, undefined, config),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.ToggleSchoolClassJoinedFailed,
         HttpStatus.BAD_GATEWAY,
         LmnApiService.name,
       );
@@ -411,6 +438,59 @@ class LmnApiService {
     }
   }
 
+  public async toggleProjectJoined(lmnApiToken: string, project: string, action: string): Promise<LmnApiProject> {
+    const requestUrl = `${PROJECTS_LMN_API_ENDPOINT}/${project}/${action}`;
+    const config = {
+      headers: { 'X-API-Key': lmnApiToken },
+    };
+
+    try {
+      const response = await this.enqueue<LmnApiProject>(() =>
+        this.lmnApi.post<LmnApiProject>(requestUrl, undefined, config),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.ToggleProjectJoinedFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async togglePrinterJoined(lmnApiToken: string, printer: string, action: string): Promise<LmnApiPrinter> {
+    const requestUrl = `${PRINTERS_LMN_API_ENDPOINT}/${printer}/${action}`;
+    const config = {
+      headers: { 'X-API-Key': lmnApiToken },
+    };
+
+    try {
+      const response = await this.enqueue<LmnApiPrinter>(() =>
+        this.lmnApi.post<LmnApiPrinter>(requestUrl, undefined, config),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.TogglePrinterJoinedFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getPrinters(lmnApiToken: string): Promise<LmnApiPrinter[]> {
+    try {
+      const response = await this.enqueue<LmnApiPrinter[]>(() =>
+        this.lmnApi.get<LmnApiPrinter[]>(PRINTERS_LMN_API_ENDPOINT, {
+          headers: { 'x-api-key': lmnApiToken },
+        }),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(LmnApiErrorMessage.GetPrintersFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+    }
+  }
+
   public async changePassword(
     lmnApiToken: string,
     username: string,
@@ -438,7 +518,11 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.RemoveProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.PasswordChangeFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
     }
   }
 }

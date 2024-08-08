@@ -11,6 +11,7 @@ import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { useTranslation } from 'react-i18next';
 import { LuMonitor } from 'react-icons/lu';
+import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const QuickAccess = () => {
   const { t } = useTranslation();
@@ -44,6 +45,15 @@ const QuickAccess = () => {
 
   const userRegex = getUserRegex(user.cn);
 
+  const getGroupsWhereUserIsMember = (
+    groups: LmnApiProject[] | LmnApiSchoolClass[],
+  ): LmnApiProject[] | LmnApiSchoolClass[] => {
+    const isMemberGroups = groups.filter((g) => g.member.some((member) => new RegExp(userRegex.source).test(member)));
+    const isAdminGroups = groups.filter((g) => g.sophomorixAdmins.includes(user.cn));
+
+    return Array.from(new Set([...isAdminGroups, ...isMemberGroups])) as LmnApiProject[] | LmnApiSchoolClass[];
+  };
+
   const groupColumns: GroupColumn[] = [
     {
       name: UserGroups.Room,
@@ -68,7 +78,7 @@ const QuickAccess = () => {
       createFunction: undefined,
       icon: <MdGroups className="h-7 w-7" />,
       isLoading,
-      groups: userSchoolClasses.filter((group) => group.member?.find((member) => userRegex.test(member))),
+      groups: getGroupsWhereUserIsMember(userSchoolClasses),
     },
     {
       name: UserGroups.Projects,
@@ -76,9 +86,9 @@ const QuickAccess = () => {
       createFunction: createProject,
       updateFunction: updateProject,
       removeFunction: deleteProject,
-      icon: <FaUsersGear className="h-5 w-7" />,
+      icon: <FaUsersGear className="h-7 w-7" />,
       isLoading,
-      groups: userProjects.filter((group) => group.member?.find((member) => userRegex.test(member))),
+      groups: getGroupsWhereUserIsMember(userProjects),
     },
   ];
 

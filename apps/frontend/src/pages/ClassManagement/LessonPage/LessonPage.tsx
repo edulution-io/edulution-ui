@@ -14,12 +14,24 @@ import { useTranslation } from 'react-i18next';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
 import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
     useClassManagementStore();
+  const { fetchUserAndUpdateInDatabase } = useUserStore();
   const { groupType, groupName } = useParams();
-  const { isLoading, setOpenDialogType, setUserGroupToEdit, member, setMember } = useLessonStore();
+  const {
+    isLoading,
+    setOpenDialogType,
+    setUserGroupToEdit,
+    member,
+    setMember,
+    setCurrentGroupName,
+    setCurrentGroupType,
+    currentGroupName,
+    currentGroupType,
+  } = useLessonStore();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -54,10 +66,18 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    void fetchData();
+    void fetchUserAndUpdateInDatabase();
 
-    if (!groupName) {
-      setMember([]);
+    const restoreTemporarySession = currentGroupType && currentGroupName && !groupType && !groupName;
+    const fetchInitialData =
+      (groupType && groupType !== currentGroupType) || (groupName && groupName !== currentGroupName);
+
+    if (restoreTemporarySession) {
+      navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${currentGroupType}/${currentGroupName}`, { replace: true });
+    } else if (fetchInitialData) {
+      setCurrentGroupType(groupType);
+      setCurrentGroupName(groupName);
+      void fetchData();
     }
   }, [groupType, groupName]);
 
@@ -75,6 +95,8 @@ const LessonPage = () => {
 
   const closeSession = () => {
     setMember([]);
+    setCurrentGroupType();
+    setCurrentGroupName();
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
   };
 
@@ -128,7 +150,7 @@ const LessonPage = () => {
         ) : null}
       </div>
       <div>
-        {groupName || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
+        {groupName || member.length ? <UserArea /> : <QuickAccess />}
         {isLoading && <LoadingIndicator isOpen={isLoading} />}
       </div>
       {isDialogOpen && <GroupDialog item={sessionToSave} />}
