@@ -100,7 +100,16 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       handleOpenChange={handelOpenChange}
       trigger={trigger}
       title={t(title)}
-      body={isLoading ? <LoadingIndicator isOpen={isLoading} /> : <Component form={form} />}
+      body={
+        isLoading ? (
+          <LoadingIndicator isOpen={isLoading} />
+        ) : (
+          <Component
+            form={form}
+            isRenaming
+          />
+        )
+      }
       footer={
         error ? (
           <div className="rounded-xl  bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>

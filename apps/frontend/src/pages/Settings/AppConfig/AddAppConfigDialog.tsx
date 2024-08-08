@@ -27,7 +27,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
-      <div className="my-6 text-foreground">
+      <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
         <DropdownMenu
           options={filteredAppOptions()}

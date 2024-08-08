@@ -22,6 +22,7 @@ import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
+  isRenaming?: boolean;
   titleKey: string;
   submitKey: string;
   initialValues?: FileSharingFormValues;
@@ -75,6 +76,7 @@ type DialogBodyConfiguration =
 
 const initialFormValues: FileSharingFormValues = {
   filename: '',
+  extension: '',
 };
 
 const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
@@ -82,6 +84,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.folderNameRequired')),
+      extension: z.string(),
     }),
     titleKey: 'fileCreateNewContent.directoryDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
@@ -100,6 +103,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
+      extension: z.string(),
     }),
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
@@ -153,6 +157,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
+      extension: z.string(),
     }),
     titleKey: 'fileRenameContent.rename',
     submitKey: 'fileRenameContent.rename',
@@ -161,12 +166,16 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethods.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: true,
+    isRenaming: true,
     getData: async (form, currentPath, inputValues) => {
       const { selectedItems } = inputValues;
       if (!selectedItems || selectedItems.length === 0) {
         return Promise.resolve([]);
       }
-      const filename = String(form.getValues('filename'));
+      const filename =
+        form.getValues('extension') !== undefined
+          ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
+          : form.getValues('filename');
       const cleanedPath = getPathWithoutWebdav(currentPath);
       return Promise.resolve({
         path: `${cleanedPath}/${selectedItems[0]?.basename}`,

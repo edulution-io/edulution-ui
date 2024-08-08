@@ -4,7 +4,8 @@ import { APPS } from '@libs/appconfig/types';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 import { Card, CardContent } from '@/components/shared/Card';
-import RunningConferencesAccordionItem from '@/pages/Dashboard/Feed/conferences/RunningConferencesAccordionItem';
+import ConferencesFeed from '@/pages/Dashboard/Feed/conferences/ConferencesFeed';
+import MailsFeed from '@/pages/Dashboard/Feed/mails/MailsFeed';
 
 const Feed = () => {
   const { t } = useTranslation();
@@ -21,9 +22,10 @@ const Feed = () => {
           <ScrollArea>
             <AccordionSH
               type="multiple"
-              defaultValue={[APPS.CONFERENCES]}
+              defaultValue={[APPS.MAIL, APPS.CONFERENCES]}
             >
-              <RunningConferencesAccordionItem />
+              <ConferencesFeed />
+              <MailsFeed />
             </AccordionSH>
           </ScrollArea>
         </div>

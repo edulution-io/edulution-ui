@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from 'react-oidc-context';
-
 import useIsMobileView from '@/hooks/useIsMobileView';
 import Feed from '@/pages/Dashboard/Feed/Feed';
-import useLmnApiStore from '@/store/useLmnApiStore';
+import useUserStore from '@/store/UserStore/UserStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
@@ -13,14 +11,7 @@ import Groups from './Groups';
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
-  const auth = useAuth();
-  const { user, lmnApiToken, getOwnUser } = useLmnApiStore();
-
-  useEffect(() => {
-    if (lmnApiToken && !user) {
-      void getOwnUser();
-    }
-  }, [lmnApiToken, user]);
+  const { user } = useUserStore();
 
   return (
     <>
@@ -28,8 +19,8 @@ const Home: React.FC = () => {
         {isMobileView ? (
           <h2>
             {t('heading', {
-              givenName: auth?.user?.profile?.given_name ?? '',
-              familyName: auth?.user?.profile?.family_name ?? '',
+              givenName: user?.firstName || '-',
+              familyName: user?.lastName || '-',
             })}
           </h2>
         ) : null}

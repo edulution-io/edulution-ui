@@ -66,7 +66,7 @@ export class LmnApiController {
     return this.lmnApiService.getCurrentUserRoom(lmnApiToken, username);
   }
 
-  @Get('sessions:sessionId')
+  @Get('sessions/:sessionId')
   async getUserSession(
     @Headers('x-api-key') lmnApiToken: string,
     @Param() params: { sessionSid: string },
@@ -89,7 +89,7 @@ export class LmnApiController {
     return this.lmnApiService.addUserSession(lmnApiToken, body.formValues, username);
   }
 
-  @Delete('sessions:sessionId')
+  @Delete('sessions/:sessionId')
   async removeUserSession(
     @Headers('x-api-key') lmnApiToken: string,
     @Param() params: { sessionId: string },

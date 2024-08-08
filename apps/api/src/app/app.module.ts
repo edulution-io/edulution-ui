@@ -10,13 +10,14 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { resolve } from 'path';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import { ScheduleModule } from '@nestjs/schedule';
+import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import LmnApiModule from '../lmnApi/lmnApi.module';
+import MailsModule from '../mails/mails.module';
 import VdiModule from '../vdi/vdi.module';
-import LoggingInterceptor from '../logging/logging.interceptor';
 import FilesharingModule from '../filesharing/filesharing.module';
 
 @Module({
@@ -30,6 +31,7 @@ import FilesharingModule from '../filesharing/filesharing.module';
     GroupsModule,
     LmnApiModule,
     ConferencesModule,
+    MailsModule,
     FilesharingModule,
     VdiModule,
     JwtModule.register({
