@@ -47,7 +47,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               </IconContext.Provider>
             </Button>
           </Trigger>
-          <Content>
+          <Content className="z-[100]">
             {options.map((option) => (
               <MenuItem
                 key={option.title}
