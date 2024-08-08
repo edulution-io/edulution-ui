@@ -32,7 +32,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   useEffect(() => {}, []);
 
   return (
-    <div className={`flex ${isMidSizeView ? 'flex-col' : 'w-full flex-row'}`}>
+    <div className="flex flex-row">
       <div
         className={`${showEditor && !isMidSizeView && currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && documentServerURL !== '' ? 'w-full md:w-1/2 lg:w-2/3' : 'w-full'}`}
       >
@@ -41,19 +41,22 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
           data={files}
         />
       </div>
-      {currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && documentServerURL !== '' && (
-        <div
-          className="w-full md:w-1/2 lg:w-1/3"
-          data-testid="test-id-file-preview"
-        >
-          {showEditor && (
-            <FileViewer
-              mode="view"
-              editWindow={false}
-            />
-          )}
-        </div>
-      )}
+      {currentlyEditingFile &&
+        currentlyEditingFile.type === ContentType.FILE &&
+        documentServerURL !== '' &&
+        !isMidSizeView && (
+          <div
+            className="w-full md:w-1/2 lg:w-1/3"
+            data-testid="test-id-file-preview"
+          >
+            {showEditor && (
+              <FileViewer
+                mode="view"
+                editWindow={false}
+              />
+            )}
+          </div>
+        )}
     </div>
   );
 };
