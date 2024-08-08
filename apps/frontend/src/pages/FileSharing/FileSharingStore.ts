@@ -190,7 +190,7 @@ const useFileSharingStore = create<FileSharingStore>(
     }),
     {
       name: 'filesharing-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         mountPoints: state.mountPoints,
         currentlyEditingFile: state.currentlyEditingFile,

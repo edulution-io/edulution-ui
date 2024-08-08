@@ -91,7 +91,8 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conferences were found"
+    "noConferences": "No running conference exists",
+    "noMails": "No unread mail exists"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -234,10 +235,8 @@
     }
   },
   "usersettings": {
-    "title": "USER SETTINGS",
-    "sidebar": "User settings",
-    "split-title": "USER SETTINGS",
-    "description": "Here you can view all your user-defined settings and adjust them if necessary.",
+    "title": "MY PROFILE",
+    "sidebar": "My Profile",
     "security": {
       "title": "Security",
       "sidebar": "Security",
@@ -498,5 +497,13 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToConnectClientError": "Could not connect to the imap server",
+      "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
+      "NotAbleToFetchMailsError": "Could not fetch mails",
+      "NotValidPortTypeError": "The port must be specified as a number"
+    }
   }
 }

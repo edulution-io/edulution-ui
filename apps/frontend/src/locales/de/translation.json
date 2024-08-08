@@ -91,7 +91,8 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
+    "noConferences": "Keine laufende Konferenz",
+    "noMails": "Keine ungelesenen Mails"
   },
   "filesharing": {
     "title": "FILESHARING",
@@ -234,10 +235,8 @@
     }
   },
   "usersettings": {
-    "title": "BENUTZEREINSTELLUNGEN",
-    "sidebar": "Benutzereinstellungen",
-    "split-title": "BENUTZER- EINSTELLUNGEN",
-    "description": "Hier können Sie alle ihre Benutzer definierten Einstellungen einsehen und gegebenfalls anpassen.",
+    "title": "MEIN PROFIL",
+    "sidebar": "Mein Profil",
     "security": {
       "title": "Sicherheit",
       "sidebar": "Sicherheit",
@@ -491,6 +490,14 @@
   "permission": {
     "groups": "Nutzergruppen",
     "selectGroupsDescription": "Wähle die Nutzergruppen aus, die Zugriff auf die App bekommen sollen."
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
+      "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
+      "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
+      "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden"
+    }
   },
   "appExtendedOptions": {
     "title": "Erweiterungen",
