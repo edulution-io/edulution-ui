@@ -1,3 +1,11 @@
+/*
+ *
+ * Testing purpose
+ * ----------------
+ *   HAS TO BE REPLACED WITH A CALL TO SERVER THAT WE WILL HOST, WHICH REALLY STORES THE LICENSES
+ * ----------------
+ *
+ * */
 import { Controller, Body, Get, Post, Delete, HttpStatus } from '@nestjs/common';
 import LicenseDto from '@libs/license/types/license.dto';
 import RemoveLicenseDto from '@libs/license/types/remove-license.dto';
@@ -14,7 +22,7 @@ class LicenseController {
   @Post()
   async addLicense(@Body() addLicenseDto: LicenseDto) {
     if (!this.licenseService.isLicenseObject(addLicenseDto)) {
-      throw new CustomHttpException(LicenseErrorMessages.NotALicenseError, HttpStatus.BAD_REQUEST);
+      throw new CustomHttpException(LicenseErrorMessages.WrongSchema, HttpStatus.BAD_REQUEST);
     }
 
     await this.licenseService.addLicense(addLicenseDto);

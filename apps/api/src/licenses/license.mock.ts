@@ -1,3 +1,11 @@
+/*
+ *
+ * Testing purpose
+ * ----------------
+ *   SOME HARDCODED LICENSES FOR TESTING PURPOSE
+ * ----------------
+ *
+ * */
 import mongoose from 'mongoose';
 import LicenseDto from '@libs/license/types/license.dto';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';

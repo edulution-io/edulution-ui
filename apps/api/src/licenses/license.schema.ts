@@ -1,3 +1,11 @@
+/*
+ *
+ * Testing purpose
+ * ----------------
+ *   A BASIC SCHEMA FOR LICENSES TO STORE THE
+ * ----------------
+ *
+ * */
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 

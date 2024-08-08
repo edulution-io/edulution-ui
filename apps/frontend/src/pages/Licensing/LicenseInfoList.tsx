@@ -10,20 +10,20 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
-// import useLmnApiStore from '@/store/lmnApiStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
 import LicenseInfoTableColumns from '@/pages/Licensing/table/LicenseInfoTableColumns';
 import { useInterval } from 'usehooks-ts';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const LicenseInfoList = () => {
+  const { isSuperAdmin } = useLdapGroups();
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const { t } = useTranslation();
 
-  // const { isAdmin } = useLmnApiStore();
   const { selectedRows, setSelectedRows, licenses, showOnlyActiveLicenses, getLicenses, isLoading } =
     useLicenseInfoStore();
 
@@ -54,15 +54,15 @@ const LicenseInfoList = () => {
 
   // Interval fetch every 10s
   useInterval(() => {
-    // if (isAdmin) {
-    void getLicenses();
-    // }
-  }, 1000000);
+    if (isSuperAdmin) {
+      void getLicenses();
+    }
+  }, 30000);
 
   useEffect(() => {
-    // if (isAdmin) {
-    void getLicenses();
-    // }
+    if (isSuperAdmin) {
+      void getLicenses();
+    }
   }, []);
 
   return (
@@ -87,42 +87,38 @@ const LicenseInfoList = () => {
               ))}
             </TableHeader>
             <TableBody className="container">
-              {/* { !isAdmin */}
-              {/*  ? ( */}
-              {/*    <TableRow> */}
-              {/*      <TableCell */}
-              {/*        colSpan={LicenseInfoTableColumns.length} */}
-              {/*        className="h-24 text-center text-white" */}
-              {/*      > */}
-              {/*        {t('licensing.notAdmin')} */}
-              {/*      </TableCell> */}
-              {/*    </TableRow> */}
-              {/*  ) : null */}
-              {/* } */}
-              {
-                /* isAdmin && */ table.getRowModel().rows.length && table.getRowModel().rows.length > 0 ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() ? 'selected' : undefined}
-                      onClick={() => row.toggleSelected()}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={LicenseInfoTableColumns.length}
-                      className="h-24 text-center text-white"
-                    >
-                      {t('table.noDataAvailable')}
-                    </TableCell>
+              {!isSuperAdmin ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={LicenseInfoTableColumns.length}
+                    className="h-24 text-center text-white"
+                  >
+                    {t('licensing.notAdmin')}
+                  </TableCell>
+                </TableRow>
+              ) : null}
+              {isSuperAdmin && table.getRowModel().rows.length && table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() ? 'selected' : undefined}
+                    onClick={() => row.toggleSelected()}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    ))}
                   </TableRow>
-                )
-              }
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={LicenseInfoTableColumns.length}
+                    className="h-24 text-center text-white"
+                  >
+                    {t('table.noDataAvailable')}
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </ScrollArea>

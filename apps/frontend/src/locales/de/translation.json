@@ -512,8 +512,7 @@
       "LicenseAlreadyAdded": "Die Lizenz wurde bereits hinzugefügt.",
       "LicenseValidationPublicKeyMissing": "Die Lizenzprüfung ist fehlgeschlagen, da der öffentliche Schlüssel fehlt",
       "NotALicense": "Die bereit gestellte Datei entspricht keiner bekannten Lizens",
-      "NotAbleToAddLicense": "Es konnte keine Lizenz hinzugefügt werden",
-      "MismatchingLicensePlatformFrontendUrl": "Die Plattform Frontend URL der Lizenz stimmt nicht mit der Frontend URL dieser Plattform überein (Die korrekte Plattform Frontend URL ist '{{{expectedPlatformFrontendURL}}}')."
+      "NotAbleToAddLicense": "Es konnte keine Lizenz hinzugefügt werden"
     }
   }
 }

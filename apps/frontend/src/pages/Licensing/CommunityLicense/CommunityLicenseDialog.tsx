@@ -51,7 +51,7 @@ const CommunityLicenseDialog = ({ trigger }: CommunityLicenseDialogProps) => {
       title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
       trigger={trigger}
-      handleOpenChange={close}
+      handleOpenChange={() => {}}
       body={getDialogBody()}
       footer={getFooter()}
     />

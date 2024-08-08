@@ -512,8 +512,7 @@
       "LicenseAlreadyAdded": "The License has already been added.",
       "LicenseValidationPublicKeyMissing": "The License Validation Public Key is missing.",
       "NotALicense": "The provided file is not a license file.",
-      "NotAbleToAddLicense": "The License could not be added.",
-      "MismatchingLicensePlatformFrontendUrl": "The Platform Frontend URL of the License does not match the Frontend URL of this Platform (The correct Platform Frontend URL is '{{{expectedPlatformFrontendURL}}}')."
+      "NotAbleToAddLicense": "The License could not be added."
     }
   }
 }
