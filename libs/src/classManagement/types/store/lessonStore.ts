@@ -10,6 +10,8 @@ interface LessonState {
   openDialogType: UserGroups | null;
   userGroupToEdit: LmnApiSession | LmnApiProject | LmnApiSchoolClass | null;
   member: UserLmnInfo[];
+  currentGroupType: string | undefined;
+  currentGroupName: string | undefined;
 }
 
 interface LessonActions {
@@ -18,9 +20,14 @@ interface LessonActions {
   removeManagementGroup: (group: string, users: string[]) => Promise<void>;
   startExamMode: (users: string[]) => Promise<void>;
   stopExamMode: (users: string[], groupName?: string, groupType?: string) => Promise<void>;
+  toggleSchoolClassJoined: (isAlreadyJoined: boolean, schoolClass: string) => Promise<void>;
+  togglePrinterJoined: (isAlreadyJoined: boolean, printer: string) => Promise<void>;
+  toggleProjectJoined: (isAlreadyJoined: boolean, project: string) => Promise<void>;
   setOpenDialogType: (type: UserGroups | null) => void;
   setUserGroupToEdit: (group: LmnApiSession | LmnApiProject | LmnApiSchoolClass | null) => void;
   setMember: (member: UserLmnInfo[]) => void;
+  setCurrentGroupType: (groupType?: string) => void;
+  setCurrentGroupName: (groupName?: string) => void;
 }
 
 type LessonStore = LessonState & LessonActions;

@@ -6,8 +6,9 @@ type UserSlice = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   user: UserDto | null;
   getUser: (username: string) => Promise<void>;
+  fetchUserAndUpdateInDatabase: () => Promise<void>;
   createOrUpdateUser: (user: UserDto) => Promise<void>;
-  updateUser: (username: string, user: UserDto) => Promise<void>;
+  updateUser: (user: Partial<UserDto>) => Promise<void>;
   eduApiToken: string;
   setEduApiToken: (eduApiToken: string) => void;
   webdavKey: string;

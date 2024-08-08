@@ -5,16 +5,18 @@ import { useTranslation } from 'react-i18next';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { MdSchool } from 'react-icons/md';
-import { FaEarthAmericas } from 'react-icons/fa6';
+import { FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import { TbFilterCode } from 'react-icons/tb';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import cn from '@/lib/utils';
 import { PiEyeFill, PiKey } from 'react-icons/pi';
 import { useParams } from 'react-router-dom';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
-  fetchData: () => Promise<void>;
+  isTeacherInSameClass: boolean;
 }
 
 interface UserCardButton {
@@ -32,12 +34,23 @@ enum UserCardButtons {
   Wifi = 'wifi',
   Veyon = 'veyon',
   PasswordOptions = 'passwordOptions',
+  joinClass = 'joinClass',
 }
 
-const UserCardButtonBar = ({ user, fetchData }: UserCardButtonBarProps) => {
+const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
-  const { addManagementGroup, removeManagementGroup, startExamMode, stopExamMode } = useLessonStore();
-  const { internet, printing, examMode, webfilter, wifi } = user;
+  const { fetchUserAndUpdateInDatabase } = useUserStore();
+  const { fetchUser } = useLmnApiStore();
+  const {
+    addManagementGroup,
+    removeManagementGroup,
+    startExamMode,
+    stopExamMode,
+    member,
+    setMember,
+    toggleSchoolClassJoined,
+  } = useLessonStore();
+  const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement>, button: UserCardButton) => {
@@ -54,12 +67,18 @@ const UserCardButtonBar = ({ user, fetchData }: UserCardButtonBarProps) => {
       } else {
         await startExamMode(users);
       }
+    } else if (button.title === UserCardButtons.joinClass) {
+      await toggleSchoolClassJoined(false, user.sophomorixAdminClass);
+      await fetchUserAndUpdateInDatabase();
     } else if (button.value) {
       await removeManagementGroup(button.title, users);
     } else {
       await addManagementGroup(button.title, users);
     }
-    void fetchData();
+
+    const updatedUser = await fetchUser(commonName);
+    if (!updatedUser) return;
+    setMember([...member.filter((m) => m.cn !== commonName), updatedUser]);
   };
 
   const booleanButtons: UserCardButton[] = [
@@ -82,6 +101,15 @@ const UserCardButtonBar = ({ user, fetchData }: UserCardButtonBarProps) => {
     }
     return isEnabled ? 'classmanagement.disable' : 'classmanagement.enable';
   };
+
+  if (!isTeacherInSameClass) {
+    booleanButtons.push({
+      icon: FaArrowRightToBracket,
+      value: null,
+      title: UserCardButtons.joinClass,
+      defaultColor: 'bg-ciRed',
+    });
+  }
 
   return booleanButtons.map((button) => (
     <div

@@ -12,10 +12,10 @@ import { FaFileAlt, FaWifi } from 'react-icons/fa';
 import { TbFilterCode } from 'react-icons/tb';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 interface FloatingButtonsBarProps {
-  member: UserLmnInfo[];
-  fetchData: () => Promise<void>;
+  students: UserLmnInfo[];
 }
 
 enum FloatingButtons {
@@ -29,9 +29,21 @@ enum FloatingButtons {
   ExamMode = 'exam',
 }
 
-const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, fetchData }) => {
+const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<string>('');
-  const { startExamMode, stopExamMode, addManagementGroup, removeManagementGroup } = useLessonStore();
+  const { startExamMode, stopExamMode, addManagementGroup, removeManagementGroup, setMember, member } =
+    useLessonStore();
+  const { fetchUser } = useLmnApiStore();
+
+  const updateStudents = async () => {
+    const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
+
+    setMember(
+      [...member.filter((m) => !updatedStudents.find((us) => us?.cn === m.cn)), ...updatedStudents].filter(
+        (m): m is UserLmnInfo => !!m,
+      ),
+    );
+  };
 
   const buttons: {
     icon: IconType;
@@ -83,13 +95,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, f
       enableAction: async () => {
         await addManagementGroup(
           FloatingButtons.Wifi,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
           FloatingButtons.Wifi,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
     },
@@ -99,13 +111,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, f
       enableAction: async () => {
         await addManagementGroup(
           FloatingButtons.WebFilter,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
           FloatingButtons.WebFilter,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
     },
@@ -115,13 +127,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, f
       enableAction: async () => {
         await addManagementGroup(
           FloatingButtons.Internet,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
           FloatingButtons.Internet,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
     },
@@ -131,13 +143,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, f
       enableAction: async () => {
         await addManagementGroup(
           FloatingButtons.Printing,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
           FloatingButtons.Printing,
-          member.map((m) => m.cn),
+          students.map((m) => m.cn),
         );
       },
     },
@@ -145,10 +157,10 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, f
       icon: MdSchool,
       text: FloatingButtons.ExamMode,
       enableAction: async () => {
-        await startExamMode(member.map((m) => m.cn));
+        await startExamMode(students.map((m) => m.cn));
       },
       disableAction: async () => {
-        await stopExamMode(member.map((m) => m.cn));
+        await stopExamMode(students.map((m) => m.cn));
       },
       enableText: 'common.start',
       disableText: 'common.stop',
@@ -168,18 +180,18 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ member, f
               />
               <LessonConfirmationDialog
                 title={button.text}
-                member={member}
+                member={students}
                 isOpen={isDialogOpen === button.text.toString()}
                 onClose={() => setIsDialogOpen('')}
                 enableAction={async () => {
                   await button.enableAction();
-                  await fetchData();
                   setIsDialogOpen('');
+                  await updateStudents();
                 }}
                 disableAction={async () => {
                   await button.disableAction();
-                  await fetchData();
                   setIsDialogOpen('');
+                  await updateStudents();
                 }}
                 enableText={button.enableText}
                 disableText={button.disableText}
