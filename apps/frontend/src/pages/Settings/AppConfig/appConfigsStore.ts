@@ -88,7 +88,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
     }),
     {
       name: 'appConfig-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ appConfigs: state.appConfigs }),
     },
   ),

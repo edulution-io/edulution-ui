@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import MobileLogo from '@/assets/logos/edulution-logo-long-colorfull-white.svg';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from 'react-oidc-context';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface HeaderProps {
   hideHeadingText?: boolean;
@@ -13,15 +13,14 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps) => {
   const isMobileView = useIsMobileView();
   const { t } = useTranslation();
-  const auth = useAuth();
-
+  const { user } = useUserStore();
   const getHeadingText = () => {
     if (isMobileView || hideHeadingText) return null;
     return (
       <h2 className="ml-4 items-center text-2xl font-bold text-white">
         {t('heading', {
-          givenName: auth?.user?.profile?.given_name || '-',
-          familyName: auth?.user?.profile?.family_name || '-',
+          givenName: user?.firstName || '-',
+          familyName: user?.lastName || '-',
         })}
       </h2>
     );

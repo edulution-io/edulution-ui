@@ -4,15 +4,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { resolve } from 'path';
+import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
-import VdiModule from '../vdi/vdi.module';
-import LoggingInterceptor from '../logging/logging.interceptor';
-import FilesharingModule from '../filesharing/filesharing.module';
 import MailsModule from '../mails/mails.module';
+import VdiModule from '../vdi/vdi.module';
+import FilesharingModule from '../filesharing/filesharing.module';
 
 @Module({
   imports: [
@@ -25,9 +25,9 @@ import MailsModule from '../mails/mails.module';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    MailsModule,
     FilesharingModule,
     VdiModule,
-    MailsModule,
     JwtModule.register({
       global: true,
     }),
