@@ -12,17 +12,10 @@ import {
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
-import { getDecryptedPassword } from '@libs/common/utils';
 import UsersService from '../users/users.service';
 
-const {
-  LMN_VDI_API_SECRET,
-  LMN_VDI_API_URL,
-  GUACAMOLE_API_URL,
-  GUACAMOLE_API_PASSWORD,
-  GUACAMOLE_API_USER,
-  EDUI_ENCRYPTION_KEY,
-} = process.env;
+const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, GUACAMOLE_API_URL, GUACAMOLE_API_PASSWORD, GUACAMOLE_API_USER } =
+  process.env;
 
 @Injectable()
 class VdiService {
@@ -106,19 +99,10 @@ class VdiService {
     return this.createSession(guacamoleDto, username);
   }
 
-  async findPwByUsername(username: string) {
-    const user = await this.usersService.findOne(username);
-    if (!user || !user.password || !EDUI_ENCRYPTION_KEY)
-      throw new CustomHttpException(VdiErrorMessages.GuacamoleUserNotFound, HttpStatus.BAD_GATEWAY);
-    const encryptedPassword = user.password;
-    const password = getDecryptedPassword(encryptedPassword, EDUI_ENCRYPTION_KEY);
-    return password;
-  }
-
   async createSession(guacamoleDto: GuacamoleDto, username: string) {
     const { dataSource, authToken, hostname } = guacamoleDto;
-    const password = await this.findPwByUsername(username);
     try {
+      const password = await this.usersService.getPassword(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,
@@ -138,7 +122,7 @@ class VdiService {
   async updateSession(guacamoleDto: GuacamoleDto, username: string) {
     try {
       const { dataSource, authToken, hostname } = guacamoleDto;
-      const password = await this.findPwByUsername(username);
+      const password = await this.usersService.getPassword(username);
       const rdpConnection = VdiService.createRDPConnection(username, {
         hostname,
         username,

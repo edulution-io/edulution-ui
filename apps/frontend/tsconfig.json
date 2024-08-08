@@ -4,7 +4,8 @@
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "declaration": true,
-    "composite": true
+    "composite": true,
+    "jsx": "react"
   },
   "references": [
     {

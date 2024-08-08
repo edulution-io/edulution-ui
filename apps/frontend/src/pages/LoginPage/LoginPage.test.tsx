@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cleanup, render, screen } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 import LoginPage from './LoginPage';
 
 vi.mock('react-oidc-context', () => ({
@@ -22,9 +23,25 @@ vi.mock('react-oidc-context', () => ({
   })),
 }));
 
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return {
+    ...(actual as typeof Object),
+    useNavigate: vi.fn(),
+    useLocation: vi.fn().mockReturnValue({
+      state: { from: { pathname: '/' } },
+    }),
+  };
+});
+
 describe('LoginPage', () => {
   beforeEach(() => {
-    render(<LoginPage />);
+    render(
+      <BrowserRouter>
+        <LoginPage />
+      </BrowserRouter>,
+    );
   });
 
   afterEach(() => {

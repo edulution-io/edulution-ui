@@ -3,14 +3,14 @@
 import { z } from 'zod';
 // import { Model } from 'mongoose';
 // import { InjectModel } from '@nestjs/mongoose';
-import { Logger, Injectable /*, HttpStatus*/ } from '@nestjs/common';
+import { Logger, Injectable /* , HttpStatus */ } from '@nestjs/common';
 // import CustomHttpException from '@libs/error/CustomHttpException';
 // import LicenseErrorMessages from '@libs/license/license-error-messages';
 import LicenseDto from '@libs/license/types/license.dto';
 // import PostChallengeAnswerDto from '@libs/license/types/postChallengeAnswer.dto';
-import { License /*, LicenseDocument*/ } from '../licenses/license.schema';
-// import eduApi from "@/api/eduApi";
 import axios from 'axios';
+// import { License /* , LicenseDocument */ } from '../licenses/license.schema';
+// import eduApi from "@/api/eduApi";
 
 @Injectable()
 class LicenseServerService {
@@ -26,7 +26,7 @@ class LicenseServerService {
    */
   private readonly licenseObjectSchema: z.Schema;
 
-  constructor(/*@InjectModel(License.name) private licenseModel: Model<LicenseDocument>*/) {
+  constructor(/* @InjectModel(License.name) private licenseModel: Model<LicenseDocument> */) {
     // this.serverPrivateKey = fs.readFileSync('server_private_key.pem', 'utf8');
     // this.serverPublicKey = fs.readFileSync('server_public_key.pem', 'utf8');
 
@@ -89,6 +89,7 @@ class LicenseServerService {
   //   }
   // }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   public async addLicense(addLicenseDto: LicenseDto) {
     const licenseApi = axios.create({
       baseURL: `localhost:3002/licenses/`,

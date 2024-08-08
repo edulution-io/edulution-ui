@@ -1,4 +1,4 @@
-import { Body, Controller, /*HttpStatus,*/ Post } from '@nestjs/common';
+import { Body, Controller, /* HttpStatus, */ Post } from '@nestjs/common';
 import CreateLicenseDto from '@libs/license/types/createLicense.dto';
 // import LicenseErrorMessages from '@libs/license/license-error-messages';
 // import CustomHttpException from '@libs/error/CustomHttpException';
@@ -11,7 +11,7 @@ import LicenseServerService from './licenseServer.service';
 class LicenseServerController {
   constructor(private readonly licenseServerService: LicenseServerService) {}
 
-  @Post('/generate-license')
+  @Post('generate')
   async addLicense(@Body() createLicenseDto: CreateLicenseDto) {
     // if (!this.licenseServerService.isLicenseObject(createLicenseDto)) {
     //   throw new CustomHttpException(LicenseErrorMessages.NotALicenseError, HttpStatus.BAD_REQUEST);
@@ -23,7 +23,7 @@ class LicenseServerController {
     // await this.licenseServerService.addLicense(license);
     // return license;
 
-    this.licenseServerService.addLicense(createLicenseDto);
+    return this.licenseServerService.addLicense(createLicenseDto);
   }
 
   // @Post('/challenge')
