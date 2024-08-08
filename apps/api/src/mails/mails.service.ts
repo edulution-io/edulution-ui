@@ -35,7 +35,8 @@ class MailsService {
     });
     client.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void client.logout().finally(() => client.close());
+      void client.logout();
+      client.close();
     });
 
     await client.connect().catch((err) => {
