@@ -3,4 +3,5 @@ export type SidebarMenuItem = {
   link: string;
   icon: string;
   color: string;
+  notificationCounter?: number;
 };

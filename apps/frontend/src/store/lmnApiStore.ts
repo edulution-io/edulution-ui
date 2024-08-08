@@ -69,7 +69,7 @@ const useLmnApiStore = create<LmnApiStore>(
     }),
     {
       name: 'lmn-user-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         lmnApiToken: state.lmnApiToken,
         user: state.user,

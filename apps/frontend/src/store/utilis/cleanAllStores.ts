@@ -9,6 +9,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLicenseInfoStore from '@/pages/Licensing/LicenseInfoStore';
 import useUsersLicenseStore from '@/pages/Licensing/CommunityLicense/useUsersLicenseStore';
 
@@ -26,6 +27,7 @@ const cleanAllStores = () => {
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useMailsStore.getState().reset();
   useUsersLicenseStore.getState().reset();
   useLicenseInfoStore.getState().reset();
 };

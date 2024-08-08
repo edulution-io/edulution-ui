@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
-import handleApiError from '@/utils/handleApiError';
-import eduApi from '@/api/eduApi';
-import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 import Conference from '@libs/conferences/types/conference.dto';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
+import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
   setSelectedRows: (selectedRows: RowSelectionState) => void;
   conferences: Conference[];
+  runningConferences: Conference[];
   isLoading: boolean;
   error: Error | null;
   getConferences: (isLoading?: boolean) => Promise<void>;
@@ -23,6 +24,7 @@ interface ConferencesStore {
 
 const initialValues = {
   conferences: [],
+  runningConferences: [],
   isLoading: false,
   error: null,
   selectedRows: {},
@@ -40,9 +42,13 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
     set({ isLoading, error: null });
     try {
       const response = await eduApi.get<Conference[]>(apiEndpoint);
-      set({ conferences: response.data });
+      const conferences = response.data;
+      // // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
+      const runningConferences = conferences.filter((c) => c.isRunning);
+      set({ conferences, runningConferences });
     } catch (error) {
       handleApiError(error, set);
+      set({ conferences: [], runningConferences: [] });
     } finally {
       set({ isLoading: false });
     }

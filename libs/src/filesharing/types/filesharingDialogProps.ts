@@ -6,4 +6,5 @@ export type FileSharingFormValues = z.infer<typeof fileSharingFromSchema>;
 
 export type FilesharingDialogProps = {
   form: UseFormReturn<FileSharingFormValues>;
+  isRenaming?: boolean;
 };

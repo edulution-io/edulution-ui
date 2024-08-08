@@ -4,13 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { resolve } from 'path';
+import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
 import ConferencesModule from '../conferences/conferences.module';
 import GroupsModule from '../groups/groups.module';
 import ClassManagementModule from '../classManagement/classManagement.module';
+import MailsModule from '../mails/mails.module';
 import VdiModule from '../vdi/vdi.module';
-import LoggingInterceptor from '../logging/logging.interceptor';
 import FilesharingModule from '../filesharing/filesharing.module';
 import LicenseModule from '../licenses/license.modul';
 
@@ -25,6 +26,7 @@ import LicenseModule from '../licenses/license.modul';
     GroupsModule,
     ClassManagementModule,
     ConferencesModule,
+    MailsModule,
     FilesharingModule,
     VdiModule,
     LicenseModule,

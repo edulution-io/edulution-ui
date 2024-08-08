@@ -11,6 +11,7 @@ import useLmnApiStore from '@/store/lmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Sonner';
+import { WebStorageStateStore } from 'oidc-client-ts';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 
 const App = () => {
@@ -32,6 +33,9 @@ const App = () => {
     redirect_uri: '',
     loadUserInfo: true,
     automaticSilentRenew: true,
+    userStore: new WebStorageStateStore({
+      store: localStorage,
+    }),
   };
 
   return (
