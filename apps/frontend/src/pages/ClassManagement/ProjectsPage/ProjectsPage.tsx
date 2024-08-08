@@ -67,7 +67,6 @@ const ProjectsPage = () => {
         >
           <h4>{t(`classmanagement.${row.name}`)}</h4>
           <GroupList row={row} />
-          {!row.groups.length && t('classmanagement.youAreNoAdminInProjects')}
         </div>
       ))}
       <ProjectsFloatingButtonsBar />
