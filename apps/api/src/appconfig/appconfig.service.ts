@@ -34,6 +34,7 @@ class AppConfigService {
               appType: appConfig.appType,
               options: appConfig.options,
               accessGroups: appConfig.accessGroups,
+              extendedOptions: appConfig.extendedOptions,
             },
           },
           upsert: true,
@@ -53,13 +54,13 @@ class AppConfigService {
     try {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups');
+        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups extendedOptions');
       } else {
         const appConfigObjects = await this.appConfigModel.find(
           {
             'accessGroups.path': { $in: ldapGroups },
           },
-          'name icon appType options',
+          'name icon appType options extendedOptions',
         );
 
         appConfigDto = appConfigObjects.map((config) => ({
@@ -68,6 +69,15 @@ class AppConfigService {
           appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
+          extendedOptions: Array.isArray(config.extendedOptions)
+            ? config.extendedOptions.map((item) => ({
+                title: item.title,
+                name: item.name,
+                description: item.description,
+                type: item.type,
+                value: item.value,
+              }))
+            : [],
         }));
       }
 

@@ -25,7 +25,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }
 
   return (
     <OnlyOfficeEditor
-      documentServerURL={documentServerURL}
+      documentServerURL={documentServerURL || ''}
       editorType={editorType}
       mode={mode}
       editorConfig={editorsConfig}

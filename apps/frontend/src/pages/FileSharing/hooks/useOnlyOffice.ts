@@ -5,6 +5,9 @@ import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConf
 import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/utilities/documentsEditorType';
 import callbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/utilities/callbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/utilities/generateOnlyOfficeConfig';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import { appExtendedOptions, AvailableAppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -23,7 +26,12 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const fileExtension = useMemo(() => fileName.split('.').pop() || '', [fileName]);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const formattedUrl = useMemo(() => url.replace('http://localhost:3001', 'http://host.docker.internal:3001'), [url]);
-  const documentServerURL = 'http://localhost:80';
+  const { appConfigs } = useAppConfigsStore();
+  const documentServerURL = getExtendedOptionValue(
+    appConfigs,
+    appExtendedOptions,
+    AvailableAppExtendedOptions.ONLY_OFFICE_URL,
+  );
 
   const generatedCallbackUrl = useMemo(() => {
     const callbackUrl = callbackBaseUrl({
@@ -31,6 +39,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
       filePath,
       accessToken: user?.access_token || 'notfound',
     });
+
     if (!callbackUrl) {
       console.error('Generated callback URL is invalid:', callbackUrl);
     }

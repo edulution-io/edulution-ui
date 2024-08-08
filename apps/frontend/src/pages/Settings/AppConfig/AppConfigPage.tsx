@@ -20,6 +20,9 @@ import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/Accordion';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/ExtendedOptionsForm';
+import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/types/appExtendedType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
@@ -45,6 +48,11 @@ const AppConfigPage: React.FC = () => {
         formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
       });
     }
+    if (item.extendedOptions) {
+      item.extendedOptions.forEach((extension) => {
+        formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
+      });
+    }
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -60,7 +68,7 @@ const AppConfigPage: React.FC = () => {
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig || !currentConfig.accessGroups) {
+    if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
       return;
     }
 
@@ -72,8 +80,16 @@ const AppConfigPage: React.FC = () => {
       label: item.label,
     }));
 
+    const newExtendedOptions = currentConfig?.extendedOptions?.map((item) => ({
+      name: item.name,
+      value: item.value,
+      description: item.description,
+      type: item.type,
+    }));
+
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
+    setValue(`${settingLocation}.extensions`, newExtendedOptions);
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
@@ -108,6 +124,13 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    const extendedOptions = appExtendedOptions.ONLY_OFFICE.map((e) => ({
+      name: e.name,
+      description: e.description,
+      type: e.type,
+      value: getValues(`${settingLocation}.${e.name}`) as string,
+    })) as AppConfigExtendedOption[];
+
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
@@ -117,6 +140,7 @@ const AppConfigPage: React.FC = () => {
           acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
           return acc;
         }, {} as AppConfigOptions) || {},
+      extendedOptions,
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
     };
 
@@ -190,6 +214,23 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {item.extendedOptions && (
+                      <div className="space-y-10">
+                        <Accordion type="multiple">
+                          <AccordionItem value="onlyOffice">
+                            <AccordionTrigger className="flex text-xl font-bold">
+                              <h3>{t('appExtendedOptions.title')}</h3>
+                            </AccordionTrigger>
+                            <AccordionContent className="space-y-10 pt-4">
+                              <ExtendedOptionsForm
+                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
+                                baseName={settingLocation}
+                              />
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      </div>
+                    )}
                   </div>
                 ) : null}
               </div>

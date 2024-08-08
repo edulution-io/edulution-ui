@@ -27,10 +27,13 @@ import signJwtContent from '@libs/common/utils/signJwtContent';
 import process from 'node:process';
 import { Request } from 'express';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
+import { AvailableAppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
 import { mapToDirectories, mapToDirectoryFiles, retrieveAndSaveFile } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import JWTUser from '../types/JWTUser';
+import AppConfigService from '../appconfig/appconfig.service';
 
 @Injectable()
 class FilesharingService {
@@ -41,6 +44,7 @@ class FilesharingService {
   constructor(
     private readonly httpService: HttpService,
     private readonly userService: UsersService,
+    private readonly appConfigService: AppConfigService,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -324,8 +328,15 @@ class FilesharingService {
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  getOnlyOfficeToken(payload: string) {
-    const secret = process.env.EDUI_ONLYOFFICE_SECRET as string;
+  async getOnlyOfficeToken(payload: string) {
+    const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
+    const jwtSecret = appConfig?.extendedOptions.find(
+      (option) => option.name === AvailableAppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+    );
+    if (!jwtSecret) {
+      throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    const secret = jwtSecret.value;
     return signJwtContent(payload, secret);
   }
 

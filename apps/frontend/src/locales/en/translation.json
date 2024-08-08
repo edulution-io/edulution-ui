@@ -491,5 +491,12 @@
   "permission": {
     "groups": "User groups",
     "selectGroupsDescription": "Select the user groups that should have access to the app."
+  },
+  "appExtendedOptions": {
+    "title": "Extensions",
+    "onlyOfficeUrl": "Please enter the OnlyOffice URL",
+    "onlyOfficeUrlTitle": "OnlyOffice URL",
+    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
   }
 }

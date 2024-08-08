@@ -1,0 +1,37 @@
+export enum AvailableAppExtendedOptions {
+  ONLY_OFFICE_URL = 'ONLY_OFFICE_URL',
+  ONLY_OFFICE_JWT_SECRET = 'ONLY_OFFICE_JWT_SECRET',
+}
+
+export type AppConfigExtendedOptionsType = keyof typeof AvailableAppExtendedOptions;
+
+export interface AppConfigExtendedOption {
+  name: AvailableAppExtendedOptions;
+  title: string;
+  description: string;
+  type: string;
+  value: string;
+}
+
+export interface AppExtendedType {
+  [key: string]: AppConfigExtendedOption[];
+}
+
+export const appExtendedOptions: AppExtendedType = {
+  ONLY_OFFICE: [
+    {
+      name: AvailableAppExtendedOptions.ONLY_OFFICE_URL,
+      description: 'appExtendedOptions.onlyOfficeUrl',
+      title: 'appExtendedOptions.onlyOfficeUrlTitle',
+      type: 'input',
+      value: '',
+    },
+    {
+      name: AvailableAppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+      title: 'appExtendedOptions.onlyOfficeJwtSecretTitle',
+      description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',
+      type: 'input',
+      value: '',
+    },
+  ],
+};
