@@ -7,7 +7,9 @@ interface ParticipateDialogStore {
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
   answer: JSON;
-  setAnswer: (answer: JSON | undefined) => void;
+  setAnswer: (answer: JSON) => void;
+  pageNo: number;
+  setPageNo: (pageNo: number) => void;
 
   isOpenParticipateSurveyDialog: boolean;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;

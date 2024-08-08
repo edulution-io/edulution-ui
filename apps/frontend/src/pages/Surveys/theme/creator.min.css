@@ -14,7 +14,7 @@
 
 .sd-input,
 .sd-text {
-  color: theme("colors.ciLightGrey") !important;
+  color: theme("colors.black") !important;
   background: theme("colors.ciLightGrey") !important;
   border: 1px solid rgba(0, 0, 0, 0.5) !important;
 }

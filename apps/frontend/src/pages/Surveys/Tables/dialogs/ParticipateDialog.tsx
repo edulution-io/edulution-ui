@@ -7,13 +7,15 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 
 const ParticipateDialog = () => {
-  const { selectedSurvey: survey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
+  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
   const {
     isOpenParticipateSurveyDialog,
     setIsOpenParticipateSurveyDialog,
     answer,
     setAnswer,
+    pageNo,
+    setPageNo,
     answerSurvey,
     isLoading,
   } = useParticipateDialogStore();
@@ -21,14 +23,16 @@ const ParticipateDialog = () => {
   const { t } = useTranslation();
 
   const getDialogBody = () => {
-    if (!survey) return null;
+    if (!selectedSurvey) return null;
     return (
       <ParticipateDialogBody
-        surveyId={survey.id}
-        saveNo={survey.saveNo}
-        formula={survey.formula}
+        surveyId={selectedSurvey.id}
+        saveNo={selectedSurvey.saveNo}
+        formula={selectedSurvey.formula}
         answer={answer}
         setAnswer={setAnswer}
+        pageNo={pageNo}
+        setPageNo={setPageNo}
         commitAnswer={answerSurvey}
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}

@@ -1,50 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import i18next from 'i18next';
-import { Model } from 'survey-core';
-import { SurveyModel } from 'survey-core/typings/survey';
-import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
-import 'tabulator-tables/dist/css/tabulator.min.css';
-import 'survey-analytics/survey.analytics.tabulator.css';
+import React, { useEffect } from 'react';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import './resultTableDialog.css';
 
-interface ResultTableDialogBodyProps {
-  formula: JSON;
-  result: JSON[];
-}
+const ResultTableDialogBody = () => {
+  const { selectedSurvey } = useSurveyTablesPageStore();
+  const { setIsOpenPublicResultsTableDialog, getSurveyResult, result } = useResultDialogStore();
 
-const ResultTableDialogBody = (props: ResultTableDialogBodyProps) => {
-  const { formula, result } = props;
+  const { t } = useTranslation();
 
-  const [survey, setSurvey] = useState<SurveyModel | null>(null);
-  const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
+  useEffect((): void => {
+    if (selectedSurvey) {
+      void getSurveyResult(selectedSurvey.id);
+    }
+  }, [selectedSurvey]);
 
-  if (survey == null) {
-    const surveyModel = new Model(formula);
-    setSurvey(surveyModel);
+  if (!selectedSurvey?.formula) {
+    toast.error(t(SurveyErrorMessages.NoFormula));
+    setIsOpenPublicResultsTableDialog(false);
+    return null;
   }
 
-  if (visuTable == null && survey != null) {
-    const answers = result || [];
-    const surveyVisuTable = new Tabulator(survey, answers);
-    surveyVisuTable.locale = i18next.options.lng || 'en';
-    setVisuTable(surveyVisuTable);
+  if (!result) {
+    return null;
   }
 
-  useEffect(() => {
-    visuTable?.render('surveyDashboardContainer');
-
-    const component = document.getElementById('surveyDashboardContainer');
-    return () => {
-      if (component) {
-        component.innerHTML = '';
-      }
-    };
-  }, [visuTable]);
+  if (result && result.length === 0) {
+    toast.error(t(SurveyErrorMessages.NoAnswers));
+    setIsOpenPublicResultsTableDialog(false);
+    return null;
+  }
 
   return (
-    <div className="max-h-[75vh] rounded bg-ciLightGrey px-4 pb-4 text-foreground">
-      <div id="surveyDashboardContainer" />
-    </div>
+    <ScrollArea className="overflow-x-auto overflow-y-auto">
+      <ResultTable
+        formula={selectedSurvey.formula}
+        result={result}
+      />
+    </ScrollArea>
   );
 };
 
