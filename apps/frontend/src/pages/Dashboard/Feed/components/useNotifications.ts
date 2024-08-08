@@ -6,10 +6,12 @@ import useIsMailsActive from '@/pages/Mail/useIsMailsActive';
 import useIsConferenceActive from '@/pages/Dashboard/Feed/conferences/useIsConferenceActive';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const useNotifications = (): SidebarNotifications => {
   const { getMails, mails } = useMailsStore();
   const { getConferences, runningConferences } = useConferenceStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   const isMailsAppActivated = useIsMailsActive();
   const isConferenceAppActivated = useIsConferenceActive();
@@ -20,7 +22,7 @@ const useNotifications = (): SidebarNotifications => {
     }
   }, FEED_PULL_TIME_INTERVAL);
   useInterval(() => {
-    if (isMailsAppActivated) {
+    if (isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);
@@ -29,7 +31,7 @@ const useNotifications = (): SidebarNotifications => {
     if (isConferenceAppActivated) {
       void getConferences(undefined);
     }
-    if (isMailsAppActivated) {
+    if (isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
   }, []);

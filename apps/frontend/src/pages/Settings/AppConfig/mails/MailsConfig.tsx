@@ -46,7 +46,13 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
     }
 
     if (option === t('common.custom')) {
-      form.reset();
+      form.reset({
+        ...form.getValues(),
+        mailProviderId: '',
+        configName: '',
+        hostname: '',
+        port: '',
+      });
     }
   }, [option]);
 
