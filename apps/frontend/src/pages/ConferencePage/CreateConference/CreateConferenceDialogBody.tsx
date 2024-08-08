@@ -75,7 +75,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           name="name"
           form={form}
           labelTranslationId={t('conferences.name')}
-          isLoading={isLoading}
+          disabled={isLoading}
           variant="default"
         />
         <SearchUsersOrGroups
@@ -92,7 +92,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"
-          isLoading={isLoading}
+          disabled={isLoading}
           variant="default"
         />
       </form>

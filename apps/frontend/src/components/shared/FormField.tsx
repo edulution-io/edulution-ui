@@ -18,20 +18,26 @@ const variants = cva([], {
 type FormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
   name: Path<T> | string;
-  isLoading: boolean;
+  disabled: boolean;
   labelTranslationId: string;
   type?: 'password';
   defaultValue?: PathValue<T, Path<T>> | string;
+  readonly?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
   form,
   name,
-  isLoading,
+  disabled,
   labelTranslationId,
   type,
   variant,
   defaultValue,
+  readonly = false,
+  value,
+  onChange,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -49,8 +55,14 @@ const FormField = <T extends FieldValues>({
             <Input
               {...field}
               type={type}
-              disabled={isLoading}
+              disabled={disabled}
               variant={variant}
+              readOnly={readonly}
+              value={value}
+              onChange={(e) => {
+                field.onChange(e);
+                if (onChange) onChange(e);
+              }}
             />
           </FormControl>
           <FormMessage className={cn('text-p', variants({ variant }))} />
