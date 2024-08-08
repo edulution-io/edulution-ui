@@ -90,7 +90,8 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conferences were found"
+    "noConferences": "No running conference exists",
+    "noMails": "No unread mail exists"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -484,5 +485,13 @@
   "permission": {
     "groups": "User groups",
     "selectGroupsDescription": "Select the user groups that should have access to the app."
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToConnectClientError": "Could not connect to the imap server",
+      "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
+      "NotAbleToFetchMailsError": "Could not fetch mails",
+      "NotValidPortTypeError": "The port must be specified as a number"
+    }
   }
 }

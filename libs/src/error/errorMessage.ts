@@ -1,11 +1,12 @@
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import VdiErrorMessages from '@libs/desktopdeployment/types/vdiErrorMessages';
 import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -15,6 +16,7 @@ type ErrorMessage =
   | AuthErrorMessages
   | VdiErrorMessages
   | AppConfigErrorMessages
-  | FileSharingErrorMessage;
+  | FileSharingErrorMessage
+  | MailsErrorMessages;
 
 export default ErrorMessage;
