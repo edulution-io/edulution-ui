@@ -31,10 +31,11 @@ class MailsService {
         pass: password,
       },
       logger: false,
+      connectionTimeout: 5000,
     });
     client.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void client.logout().then(() => client.close());
+      void client.logout().finally(() => client.close());
     });
 
     await client.connect().catch((err) => {
@@ -49,7 +50,8 @@ class MailsService {
     const mails: MailDto[] = [];
     try {
       const fetchMail: AsyncGenerator<FetchMessageObject> = client.fetch(
-        { or: [{ new: true }, { seen: false }, { recent: true }] },
+        // { or: [{ new: true }, { seen: false }, { recent: true }] },
+        '1:*',
         {
           source: true,
           envelope: true,
