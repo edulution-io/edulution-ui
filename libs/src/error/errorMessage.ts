@@ -7,6 +7,7 @@ import VdiErrorMessages from '@libs/desktopdeployment/types/vdiErrorMessages';
 import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
+import LicenseErrorMessages from '@libs/license/constants/license-error-messages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -17,6 +18,7 @@ type ErrorMessage =
   | VdiErrorMessages
   | AppConfigErrorMessages
   | FileSharingErrorMessage
-  | MailsErrorMessages;
+  | MailsErrorMessages
+  | LicenseErrorMessages;
 
 export default ErrorMessage;

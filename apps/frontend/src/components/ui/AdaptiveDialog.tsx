@@ -20,6 +20,7 @@ interface AdaptiveDialogProps {
   footer?: React.ReactNode;
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  showCloseButton?: boolean;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -31,6 +32,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   footer,
   mobileContentClassName,
   desktopContentClassName,
+  showCloseButton = true,
 }) => {
   const isMobileView = useIsMobileView();
 
@@ -57,7 +59,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className={desktopContentClassName}>
+      <DialogContent
+        className={desktopContentClassName}
+        showCloseButton={showCloseButton}
+      >
         <DialogTitle>{title}</DialogTitle>
         {body}
         <DialogFooter>{footer}</DialogFooter>

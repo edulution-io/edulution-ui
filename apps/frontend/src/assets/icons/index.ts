@@ -43,3 +43,7 @@ export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
 export { default as SecurityIcon } from '@/assets/icons/security.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';
+export { default as license01 } from '@/assets/icons/license-info-page-icon-01.svg';
+export { default as license02 } from '@/assets/icons/license-info-page-icon-02.svg';
+export { default as licenseKeyActive01 } from '@/assets/icons/license-key-active-01.svg';
+export { default as licenseKeyInactive01 } from '@/assets/icons/license-key-inactive-01.svg';

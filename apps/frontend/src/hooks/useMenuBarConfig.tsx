@@ -11,6 +11,7 @@ import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config'
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
+import useLicenseInfoPageMenu from '@/pages/Licensing/Overview/useLicenseInfoPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
+  const LICENSING_MENUBAR_CONFIG = useLicenseInfoPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -44,6 +46,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
+      }
+      case APPS.LICENSING: {
+        return LICENSING_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };

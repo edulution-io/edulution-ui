@@ -13,6 +13,7 @@ import ClassManagementModule from '../classManagement/classManagement.module';
 import MailsModule from '../mails/mails.module';
 import VdiModule from '../vdi/vdi.module';
 import FilesharingModule from '../filesharing/filesharing.module';
+import LicenseModule from '../licenses/license.modul';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import FilesharingModule from '../filesharing/filesharing.module';
     MailsModule,
     FilesharingModule,
     VdiModule,
+    LicenseModule,
     JwtModule.register({
       global: true,
     }),

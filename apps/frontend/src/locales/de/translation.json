@@ -493,5 +493,32 @@
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
       "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden"
     }
+  },
+  "licensing": {
+    "title": "LIZENSEN",
+    "sidebar": "Lizensen",
+    "description": "Hier werden die erstellten lizensen angezeigt. Nutze den Toggle um auch die inaktiven Lizensen einzublenden.",
+    "notAdmin": "Nur Administratoren können Lizensen einsehen",
+    "communityLicenseDialog": {
+      "title": "Community Version",
+      "description": "Die Community version erlaubt eine lizenzfreie Nutzung für ausgewählte Teile der 'edulution.io' Software."
+    }
+  },
+  "license": {
+    "info": {
+      "id": "Lizens ID",
+      "validFromUtc": "Gültig ab",
+      "validToUtc": "Gültig bis",
+      "isLicenseActive": "Aktiv/Inaktiv",
+      "showOnlyActiveLicensesOn": "Alle anzeigen",
+      "showOnlyActiveLicensesOff": "Inaktive ausblenden"
+    },
+    "errors": {
+      "InvalidLicenseSignature": "Die Signatur der Lizenz ist ungültig.",
+      "LicenseAlreadyAdded": "Die Lizenz wurde bereits hinzugefügt.",
+      "LicenseValidationPublicKeyMissing": "Die Lizenzprüfung ist fehlgeschlagen, da der öffentliche Schlüssel fehlt",
+      "NotALicense": "Die bereit gestellte Datei entspricht keiner bekannten Lizens",
+      "NotAbleToAddLicense": "Es konnte keine Lizenz hinzugefügt werden"
+    }
   }
 }

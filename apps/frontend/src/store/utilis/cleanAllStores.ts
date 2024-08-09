@@ -10,6 +10,8 @@ import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import useLicenseInfoStore from '@/pages/Licensing/Overview/useLicenseInfoStore';
+import useCommunityLicenseStore from '@/pages/Licensing/CommunityLicense/useCommunityLicenseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -26,6 +28,8 @@ const cleanAllStores = () => {
   useSidebarStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
   useMailsStore.getState().reset();
+  useCommunityLicenseStore.getState().reset();
+  useLicenseInfoStore.getState().reset();
 };
 
 export default cleanAllStores;

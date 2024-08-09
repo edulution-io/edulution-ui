@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import Feed from '@/pages/Dashboard/Feed/Feed';
 import useUserStore from '@/store/UserStore/UserStore';
+import Feed from '@/pages/Dashboard/Feed/Feed';
+import CommunityLicenseDialog from '@/pages/Licensing/CommunityLicense/CommunityLicenseDialog';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import Quota from './Quota';
@@ -52,6 +53,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <CommunityLicenseDialog />
     </>
   );
 };

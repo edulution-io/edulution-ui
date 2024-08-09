@@ -4,6 +4,7 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import { APPS } from '@libs/appconfig/types';
+import LicenseInfoPage from '@/pages/Licensing/Overview/LicenseInfoPage';
 
 const pages: Partial<Record<APPS, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -12,6 +13,7 @@ const pages: Partial<Record<APPS, JSX.Element>> = {
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
   [APPS.WHITEBOARD]: <FramePlaceholder />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
+  [APPS.LICENSING]: <LicenseInfoPage />,
 };
 
 type NativeAppPageProps = {

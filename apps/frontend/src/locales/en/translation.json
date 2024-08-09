@@ -493,5 +493,32 @@
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number"
     }
+  },
+  "licensing": {
+    "title": "LICENSES",
+    "sidebar": "Licenses",
+    "description": "Here you can see the created licenses. Use the toggle to display the inactive licenses as well.",
+    "notAdmin": "You have to be an administrator to view view the licenses.",
+    "communityLicenseDialog": {
+      "title": "Community version",
+      "description": "The Community version allows a license free usage for some parts of the 'edulution.io' software."
+    }
+  },
+  "license": {
+    "info": {
+      "id": "License ID",
+      "validFromUtc": "Valid from",
+      "validToUtc": "Valid until",
+      "isLicenseActive": "Active/Inactive",
+      "showOnlyActiveLicensesOn": "Show all",
+      "showOnlyActiveLicensesOff": "Hide inactive"
+    },
+    "errors": {
+      "InvalidLicenseSignature": "The Signature of the License is invalid.",
+      "LicenseAlreadyAdded": "The License has already been added.",
+      "LicenseValidationPublicKeyMissing": "The License Validation Public Key is missing.",
+      "NotALicense": "The provided file is not a license file.",
+      "NotAbleToAddLicense": "The License could not be added."
+    }
   }
 }
