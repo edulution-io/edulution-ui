@@ -5,6 +5,7 @@ import cn from '@/lib/utils';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
+import { useTranslation } from 'react-i18next';
 
 interface UserCardProps {
   user: UserLmnInfo;
@@ -13,6 +14,7 @@ interface UserCardProps {
 }
 
 const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
+  const { t } = useTranslation();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -51,7 +53,7 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
                 className="ml-2 rounded-lg"
                 checked={isSelected}
                 onCheckedChange={onCardClick}
-                aria-label="Select row"
+                aria-label={t('select')}
               />
             ) : null}
             <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isStudent && 'ml-2')}>{displayName}</div>

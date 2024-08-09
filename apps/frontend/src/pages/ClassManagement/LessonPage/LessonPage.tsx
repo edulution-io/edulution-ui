@@ -94,8 +94,8 @@ const LessonPage = () => {
 
   return (
     <div>
-      <LoadingIndicator isOpen={isPageLoading} />
       <div className="my-2 flex flex-col gap-2 md:flex-row">
+        <LoadingIndicator isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
           <div className="md:w-1/3">
@@ -127,10 +127,7 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      <div>
-        {groupName || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
-        {isLoading && <LoadingIndicator isOpen={isLoading} />}
-      </div>
+      <div>{groupName || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {isDialogOpen && <GroupDialog item={sessionToSave} />}
     </div>
   );
