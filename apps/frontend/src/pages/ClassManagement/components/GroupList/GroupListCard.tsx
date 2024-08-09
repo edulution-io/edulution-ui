@@ -104,7 +104,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
                 className="-mr-1 ml-2 rounded-lg"
                 checked={isSelected}
                 onCheckedChange={onSelect}
-                aria-label="Select"
+                aria-label={t('select')}
                 onClick={(e) => e.stopPropagation()}
                 onMouseOver={(e) => e.stopPropagation()}
               />
