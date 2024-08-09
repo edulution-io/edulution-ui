@@ -1,26 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
-import waitForToken from '@/api/common';
-import useLmnApiStore from '@/store/lmnApiStore';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 const AccountInformation = () => {
-  const { user, getUserData } = useLmnApiStore();
-
+  const { user } = useLmnApiStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) {
-      const getUserDataQuery = async () => {
-        await waitForToken();
-        getUserData().catch(console.error);
-      };
-      getUserDataQuery().catch(console.error);
-    }
-  }, [user]);
 
   const { t } = useTranslation();
   const userInfoFields = [

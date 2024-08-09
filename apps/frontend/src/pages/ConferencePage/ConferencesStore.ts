@@ -3,7 +3,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 import Conference from '@libs/conferences/types/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import apiEndpoint from '@/pages/ConferencePage/apiEndpoint';
+import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
@@ -41,7 +41,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   getConferences: async (isLoading = true) => {
     set({ isLoading, error: null });
     try {
-      const response = await eduApi.get<Conference[]>(apiEndpoint);
+      const response = await eduApi.get<Conference[]>(CONFERENCES_EDU_API_ENDPOINT);
       const conferences = response.data;
       // // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
       const runningConferences = conferences.filter((c) => c.isRunning);
@@ -58,7 +58,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   deleteConferences: async (conferences: Conference[]) => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.delete<Conference[]>(apiEndpoint, {
+      const response = await eduApi.delete<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, {
         data: conferences.map((c) => c.meetingID),
       });
       set({ conferences: response.data, selectedRows: {} });
@@ -71,7 +71,7 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   toggleConferenceRunningState: async (meetingID) => {
     set({ toggleConferenceRunningStateIsLoading: true });
     try {
-      const response = await eduApi.put<Conference[]>(apiEndpoint, { meetingID });
+      const response = await eduApi.put<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, { meetingID });
       set({ conferences: response.data });
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');

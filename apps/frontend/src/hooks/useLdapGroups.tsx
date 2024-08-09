@@ -1,5 +1,5 @@
-import GroupRoles from '@libs/user/types/groups/group-roles.enum';
 import { useAuth } from 'react-oidc-context';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
 const useLdapGroups = () => {
   const auth = useAuth();

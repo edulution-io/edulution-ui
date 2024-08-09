@@ -81,7 +81,7 @@ class FilesharingController {
   }
 
   @Get(FileSharingApiEndpoints.GET_FILE_STREAM)
-  @Header('Content-Type', RequestResponseContentType.APPLICATION_OCET_STREAM as string)
+  @Header('Content-Type', RequestResponseContentType.APPLICATION_OCTET_STREAM as string)
   async webDavFileStream(
     @Query('filePath') filePath: string,
     @GetCurrentUsername() username: string,

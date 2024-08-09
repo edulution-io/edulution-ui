@@ -2,11 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConferencesIcon } from '@/assets/icons';
 import { APPS } from '@libs/appconfig/types';
-import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
 import RunningConferencesList from '@/pages/Dashboard/Feed/conferences/RunningConferencesList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useIsConferenceActive from '@/pages/Dashboard/Feed/conferences/useIsConferenceActive';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import { AccordionContent, AccordionItem } from '@/components/ui/AccordionSH';
 
 const ConferencesFeed = () => {
   const { runningConferences } = useConferenceStore();

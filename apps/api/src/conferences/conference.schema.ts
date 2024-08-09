@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
+import { Group } from '@libs/groups/types/group';
 import Attendee from './attendee.schema';
 
 export type ConferenceDocument = Conference & Document;
@@ -34,6 +35,9 @@ export class Conference {
 
   @Prop({ required: true })
   invitedAttendees: Attendee[];
+
+  @Prop({ required: true })
+  invitedGroups: Group[];
 
   @Prop()
   joinedAttendees: Attendee[];

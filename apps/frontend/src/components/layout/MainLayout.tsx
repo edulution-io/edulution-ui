@@ -14,7 +14,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
   return (
     <div className="flex">
       {!menuBar.disabled && !isMainPage && <MenuBar />}
-      <div className={`flex h-[100vh] w-full flex-col ${!menuBar.disabled ? 'px-5 lg:px-20' : ''}`}>
+      <div className={`flex h-[100vh] w-full flex-col ${!menuBar.disabled ? 'pl-7 pr-5 lg:px-20' : ''}`}>
         {!menuBar.disabled && isMainPage && <Header />}
         <main className="flex-1">
           <Outlet />

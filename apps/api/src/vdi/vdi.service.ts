@@ -14,13 +14,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import UsersService from '../users/users.service';
 
-const {
-  LMN_VDI_API_SECRET,
-  LMN_VDI_API_URL,
-  GUACAMOLE_API_URL,
-  GUACAMOLE_API_PASSWORD,
-  GUACAMOLE_API_USER,
-} = process.env;
+const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, GUACAMOLE_API_URL, GUACAMOLE_API_PASSWORD, GUACAMOLE_API_USER } =
+  process.env;
 
 @Injectable()
 class VdiService {

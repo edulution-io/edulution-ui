@@ -11,6 +11,7 @@ import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config'
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
+import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
+  const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -41,6 +43,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.LINUXMUSTER: {
         return LINUXMUSTER_MENUBAR_CONFIG;
+      }
+      case APPS.CLASS_MANAGEMENT: {
+        return CLASS_MANAGEMENT_MENUBAR_CONFIG;
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
