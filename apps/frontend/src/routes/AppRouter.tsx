@@ -7,13 +7,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import useLogout from '@/hooks/useLogout';
-import useLdapGroups from '@/hooks/useLdapGroups';
-import useMailsStore from '@/pages/Mail/useMailsStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import useIsMailsActive from '@/pages/Mail/useIsMailsActive';
-import useIsConferenceActive from '@/pages/Dashboard/Feed/conferences/useIsConferenceActive';
-import { useInterval } from 'usehooks-ts';
-import FEED_PULL_TIME_INTERVAL, { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
+import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications';
 
 const AppRouter: React.FC = () => {
   const auth = useAuth();
@@ -22,11 +16,7 @@ const AppRouter: React.FC = () => {
   const { t } = useTranslation();
   const handleLogout = useLogout();
 
-  const { isSuperAdmin } = useLdapGroups();
-  const isMailsAppActivated = useIsMailsActive();
-  const { getMails } = useMailsStore();
-  const isConferenceAppActivated = useIsConferenceActive();
-  const { getConferences } = useConferenceStore();
+  useNotifications();
 
   const handleTokenExpired = useRef(() => {
     if (auth.user?.expired) {
@@ -66,27 +56,6 @@ const AppRouter: React.FC = () => {
     }
     return () => {};
   }, [auth.events, isAuthenticated]);
-
-  // interval fetch for the notifications (dashboard & sidebar)
-  useInterval(() => {
-    if (isConferenceAppActivated) {
-      void getConferences(undefined);
-    }
-  }, FEED_PULL_TIME_INTERVAL);
-  useInterval(() => {
-    if (isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
-  }, FEED_PULL_TIME_INTERVAL_SLOW);
-
-  useEffect(() => {
-    if (isConferenceAppActivated) {
-      void getConferences(undefined);
-    }
-    if (isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
-  }, []);
 
   return <RouterProvider router={createRouter(isAuthenticated, appConfigs)} />;
 };
