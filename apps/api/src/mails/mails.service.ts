@@ -31,10 +31,12 @@ class MailsService {
         pass: password,
       },
       logger: false,
+      connectionTimeout: 5000,
     });
     client.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void client.logout().then(() => client.close());
+      void client.logout();
+      client.close();
     });
 
     await client.connect().catch((err) => {
