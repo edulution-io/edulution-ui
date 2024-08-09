@@ -7,7 +7,8 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -17,14 +18,15 @@ const Sidebar: React.FC = () => {
   const { isSuperAdmin } = useLdapGroups();
   const isMobileView = useIsMobileView();
 
-  const { mailsNotificationCounter, runningConferencesNotificationCounter } = useNotifications();
+  const { mails } = useMailsStore();
+  const { runningConferences } = useConferenceStore();
 
   const getNotificationCounter = (app: APPS): number | undefined => {
     switch (app) {
       case APPS.MAIL:
-        return mailsNotificationCounter;
+        return mails.length || 0;
       case APPS.CONFERENCES:
-        return runningConferencesNotificationCounter;
+        return runningConferences.length || 0;
       default:
         return undefined;
     }
