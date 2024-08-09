@@ -51,7 +51,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
         ldapGroups: processLdapGroups(response.data.ldapGroups),
       };
       await get().updateUser(newUser);
-      set({ user: { ...get().user, ...newUser, ldapGroups: newUser.ldapGroups } as UserDto });
+      set({ user: { ...get().user, ...newUser } as UserDto });
     } catch (error) {
       handleApiError(error, set, 'userError');
     } finally {

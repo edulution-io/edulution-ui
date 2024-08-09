@@ -14,12 +14,12 @@ import { useTranslation } from 'react-i18next';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
 import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
-import useUserStore from '@/store/UserStore/UserStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
     useClassManagementStore();
-  const { fetchUserAndUpdateInDatabase } = useUserStore();
+  const { getOwnUser } = useLmnApiStore();
   const { groupType, groupName } = useParams();
   const {
     isLoading,
@@ -36,6 +36,10 @@ const LessonPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
+
+  useEffect(() => {
+    void getOwnUser();
+  }, []);
 
   const fetchData = async () => {
     if (!groupName) return;
@@ -66,7 +70,7 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    void fetchUserAndUpdateInDatabase();
+    // void fetchUserAndUpdateInDatabase();
 
     const restoreTemporarySession = currentGroupType && currentGroupName && !groupType && !groupName;
     const fetchInitialData =

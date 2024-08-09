@@ -12,7 +12,6 @@ import cn from '@/lib/utils';
 import { PiEyeFill, PiKey } from 'react-icons/pi';
 import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useUserStore from '@/store/UserStore/UserStore';
 
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
@@ -39,7 +38,6 @@ enum UserCardButtons {
 
 const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
-  const { fetchUserAndUpdateInDatabase } = useUserStore();
   const { fetchUser } = useLmnApiStore();
   const {
     addManagementGroup,
@@ -69,7 +67,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       }
     } else if (button.title === UserCardButtons.joinClass) {
       await toggleSchoolClassJoined(false, user.sophomorixAdminClass);
-      await fetchUserAndUpdateInDatabase();
+      // await fetchUserAndUpdateInDatabase();
     } else if (button.value) {
       await removeManagementGroup(button.title, users);
     } else {
@@ -127,7 +125,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
         onClick={(e) => onButtonClick(e, button)}
       >
         <button.icon className="text-lg" />
-        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-ciDarkGrey px-3 text-background group-hover:flex">
+        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-ciDarkGrey px-2 text-background group-hover:flex">
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>
