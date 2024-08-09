@@ -9,6 +9,6 @@ const PublicSurvey = () => (
   //
   // const survey = await eduApi.get(PUBLIC_SURVEY_ENDPOINT, { surveyId });
 
-  <>{'SOMETHING'}</>
+  <>SOMETHING</>
 );
 export default PublicSurvey;
