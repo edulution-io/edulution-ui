@@ -14,7 +14,6 @@ interface LicenseInfoStore {
   getLicenses: () => Promise<void>;
   removeLicense: (licenses: LicenseInfoDto[]) => Promise<void>;
   isLoading: boolean;
-  error: Error | null;
   reset: () => void;
 }
 

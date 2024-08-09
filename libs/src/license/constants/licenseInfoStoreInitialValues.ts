@@ -5,7 +5,6 @@ const licenseInfoStoreInitialValues = {
   showOnlyActiveLicenses: false,
   isLicenseActive: false,
   isLoading: false,
-  error: null,
 };
 
 export default licenseInfoStoreInitialValues;

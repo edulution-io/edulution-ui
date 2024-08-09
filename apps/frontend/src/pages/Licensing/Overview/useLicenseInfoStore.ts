@@ -22,7 +22,7 @@ const useLicenseInfoStore = create<LicenseInfoStore>((set, get) => ({
     if (isLoading) {
       return;
     }
-    set({ isLoading: true, error: null });
+    set({ isLoading: true });
     try {
       const response = await eduApi.get<LicenseInfoDto[]>(LICENSE_MANAGEMENT_ENDPOINT);
       set({ licenses: response.data });
