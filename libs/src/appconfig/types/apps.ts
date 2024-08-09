@@ -3,6 +3,7 @@ enum APPS {
   MAIL = 'mail',
   CHAT = 'chat',
   CONFERENCES = 'conferences',
+  SURVEYS = 'surveys',
   KNOWLEDGE_BASE = 'knowledgebase',
   FILE_SHARING = 'filesharing',
   FORUMS = 'forums',

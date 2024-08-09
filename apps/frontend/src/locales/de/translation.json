@@ -132,6 +132,73 @@
     "title": "SCHULVERWALTUNG",
     "sidebar": "Schulverwaltung"
   },
+  "survey": {
+    "creationDate": "Erstellungsdatum",
+    "expirationDate": "Ablaufdatum",
+    "noFormula": "Das Formular ist nicht lesbar",
+    "noAnswer": "Keine Antwort verfügbar",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "editor": {
+      "new": "Neu (Leer)",
+      "abort": "Alle Änderungen verwerfen",
+      "addDescription": "Beschreibung hinzufügen",
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+    },
+    "errors": {
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "deleteError": "Die Umfragen konnten nicht gelöscht werden",
+      "noAnswerError": "Es sind noch keine Antworten vorhanden",
+      "noFormulaError": "Das Formular der Umfrage ist nicht lesbar",
+      "notFoundError": "Umfrage konnte nicht gefunden werden",
+      "participationErrorUserNotAssigned": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
+      "participationErrorAlreadyParticipated": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
+      "participationErrorSurveyExpired": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
+      "idTypeError": "Ungültige Umfrage-ID",
+      "missingAnswerError": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Benutzerumfrageantwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
+      "notAbleToUpdateSurveyAnswerError": "Die vorherige Abgabe für die Umfrage konnte nicht aktualisiert werden",
+      "notAbleToCreateSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht erstellt werden",
+      "notAbleToDeleteSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht gelöscht werden"
+    }
+  },
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "view": {
+      "open": "Offene Umfragen",
+      "created": "Eigene Umfragen",
+      "answered": "Schon beantwortet",
+      "editor": "Neue erstellen"
+    },
+    "actions": {
+      "showResultsChart": "Resultat (Schaubild)",
+      "showResultsTable": "Resultat (Tabelle)",
+      "showCommittedAnswers": "Verfügbare Abgaben"
+    },
+    "commitedAnswersDialog": {
+      "title": "Eingereichte Abgabe des Nutzers"
+    },
+    "saveDialog": {
+      "title": "Speichern und Benutzern zuweisen",
+      "settingsFlags": "Einstellungen",
+      "isAnonymous": "Soll die Umfrage anonym sein?",
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+    },
+    "participateDialog": {
+      "title": "An der Umfrage teilnehmen"
+    },
+    "resultChartDialog": {
+      "title": "Ergebnisse - Schaubild"
+    },
+    "resultTableDialog": {
+      "title": "Ergebnisse - Tabelle"
+    }
+  },
   "printer": {
     "title": "DRUCKER",
     "sidebar": "Drucker"
@@ -282,6 +349,9 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "yes": "Ja",
+    "no": "Nein",
+    "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -298,7 +368,15 @@
     "groups": "Gruppen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
-    "close": "Schließen"
+    "close": "Schließen",
+    "select": "Wählen...",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "participate": "Teilnehmen",
+    "participated": "Teilgenommen",
+    "not-available": "'Nicht verfügbar'",
+    "date": "Datum",
+    "time": "Uhrzeit"
   },
   "form": {
     "path": "Link",
@@ -478,7 +556,8 @@
   },
   "users": {
     "errors": {
-      "notFoundError": "Benutzer existiert nicht"
+      "notFoundError": "Benutzer existiert nicht",
+      "updateError": "Benutzer konnte nicht aktualisiert werden"
     }
   },
   "permission": {

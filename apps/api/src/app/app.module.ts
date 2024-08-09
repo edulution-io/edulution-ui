@@ -12,6 +12,7 @@ import ClassManagementModule from '../classManagement/classManagement.module';
 import VdiModule from '../vdi/vdi.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import FilesharingModule from '../filesharing/filesharing.module';
+import SurveysModule from '../surveys/surveys.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import FilesharingModule from '../filesharing/filesharing.module';
     ConferencesModule,
     FilesharingModule,
     VdiModule,
+    SurveysModule,
     JwtModule.register({
       global: true,
     }),
