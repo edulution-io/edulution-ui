@@ -67,7 +67,6 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       }
     } else if (button.title === UserCardButtons.joinClass) {
       await toggleSchoolClassJoined(false, user.sophomorixAdminClass);
-      // await fetchUserAndUpdateInDatabase();
     } else if (button.value) {
       await removeManagementGroup(button.title, users);
     } else {

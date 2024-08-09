@@ -70,8 +70,6 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    // void fetchUserAndUpdateInDatabase();
-
     const restoreTemporarySession = currentGroupType && currentGroupName && !groupType && !groupName;
     const fetchInitialData =
       (groupType && groupType !== currentGroupType) || (groupName && groupName !== currentGroupName);
