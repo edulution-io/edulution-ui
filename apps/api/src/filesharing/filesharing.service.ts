@@ -5,8 +5,8 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
 import {
-  HttpMethodes,
-  HttpMethodesWebDav,
+  HttpMethods,
+  HttpMethodsWebDav,
   RequestResponseContentType,
   ResponseType,
 } from '@libs/common/types/http-methods';
@@ -135,7 +135,7 @@ class FilesharingService {
     return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
-        method: HttpMethodesWebDav.PROPFIND,
+        method: HttpMethodsWebDav.PROPFIND,
         url: this.baseurl + getPathWithoutWebdav(path),
         data: this.webdavXML,
       },
@@ -149,7 +149,7 @@ class FilesharingService {
     return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
-        method: HttpMethodesWebDav.PROPFIND,
+        method: HttpMethodsWebDav.PROPFIND,
         url: this.baseurl + getPathWithoutWebdav(path),
         data: this.webdavXML,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
@@ -166,7 +166,7 @@ class FilesharingService {
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
-        method: HttpMethodesWebDav.MKCOL,
+        method: HttpMethodsWebDav.MKCOL,
         url: fullPath,
       },
       FileSharingErrorMessage.FolderCreationFailed,
@@ -190,7 +190,7 @@ class FilesharingService {
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
-        method: HttpMethodes.PUT,
+        method: HttpMethods.PUT,
         url: fullPath,
         headers: { 'Content-Type': RequestResponseContentType.TEXT_PLAIN },
         data: content,
@@ -210,7 +210,7 @@ class FilesharingService {
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
-        method: HttpMethodes.PUT,
+        method: HttpMethods.PUT,
         url: fullPath,
         headers: { 'Content-Type': file.mimetype },
         data: file.buffer,
@@ -232,7 +232,7 @@ class FilesharingService {
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
-        method: HttpMethodes.DELETE,
+        method: HttpMethods.DELETE,
         url: fullPath,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
@@ -253,7 +253,7 @@ class FilesharingService {
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
-        method: HttpMethodesWebDav.MOVE,
+        method: HttpMethodsWebDav.MOVE,
         url: fullOriginPath,
         headers: {
           Destination: fullNewPath,

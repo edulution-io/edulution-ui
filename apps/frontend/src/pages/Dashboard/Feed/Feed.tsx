@@ -2,9 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { APPS } from '@libs/appconfig/types';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Accordion } from '@/components/ui/Accordion';
+import { AccordionSH } from '@/components/ui/AccordionSH';
 import { Card, CardContent } from '@/components/shared/Card';
-import RunningConferencesAccordionItem from '@/pages/Dashboard/Feed/conferences/RunningConferencesAccordionItem';
+import ConferencesFeed from '@/pages/Dashboard/Feed/conferences/ConferencesFeed';
+import MailsFeed from '@/pages/Dashboard/Feed/mails/MailsFeed';
 
 const Feed = () => {
   const { t } = useTranslation();
@@ -19,12 +20,13 @@ const Feed = () => {
         <div className="flex flex-col gap-3">
           <h4 className="font-bold">{t('feed.title')}</h4>
           <ScrollArea>
-            <Accordion
+            <AccordionSH
               type="multiple"
-              defaultValue={[APPS.CONFERENCES]}
+              defaultValue={[APPS.MAIL, APPS.CONFERENCES]}
             >
-              <RunningConferencesAccordionItem />
-            </Accordion>
+              <ConferencesFeed />
+              <MailsFeed />
+            </AccordionSH>
           </ScrollArea>
         </div>
       </CardContent>

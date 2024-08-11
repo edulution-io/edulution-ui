@@ -46,7 +46,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 ${
-    isDragActive ? 'bg-gray-200' : 'bg-gray-100'
+    isDragActive ? 'bg-ciLightGrey' : 'bg-gray-100'
   }`;
 
   return (
@@ -58,7 +58,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             <p className="font-semibold text-ciLightGrey">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
-            <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
+            <MdOutlineCloudUpload className="h-12 w-12 text-ciGrey" />
           </div>
         ) : (
           <p className="font-bold text-ciRed">
@@ -93,7 +93,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
               />
             ) : (
               <div className="flex h-20 items-center justify-center">
-                <HiDocument className="h-8 w-8 text-gray-500" />
+                <HiDocument className="h-8 w-8 text-ciGrey" />
               </div>
             )}
             <Button

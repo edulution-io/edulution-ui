@@ -1,4 +1,4 @@
-import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AppIntegrationType from './appIntegrationType';
 import { AppConfigOptions } from './appConfigOptions';
 

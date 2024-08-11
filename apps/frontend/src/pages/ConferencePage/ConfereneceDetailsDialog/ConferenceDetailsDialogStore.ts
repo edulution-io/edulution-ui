@@ -5,7 +5,10 @@ import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import Conference from '@libs/conferences/types/conference.dto';
-import apiEndpoint, { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
+import {
+  CONFERENCES_EDU_API_ENDPOINT,
+  CONFERENCES_JOIN_EDU_API_ENDPOINT,
+} from '@libs/conferences/constants/apiEndpoints';
 
 interface ConferenceDetailsDialogStore {
   selectedConference: Conference | null;
@@ -46,7 +49,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
         return;
       }
 
-      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}${meetingID}`);
+      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}/${meetingID}`);
       set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
@@ -60,7 +63,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   updateConference: async (conference) => {
     set({ isLoading: true });
     try {
-      await eduApi.patch<Conference[]>(apiEndpoint, conference);
+      await eduApi.patch<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, conference);
       set({ selectedConference: null });
     } catch (error) {
       handleApiError(error, set);

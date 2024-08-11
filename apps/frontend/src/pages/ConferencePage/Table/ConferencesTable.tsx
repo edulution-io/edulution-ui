@@ -40,24 +40,17 @@ const ConferencesTable = () => {
     },
   });
 
+  // TODO: NIEDUUI-285 use SSE to update the conferences list and the selection (THIS will replace the useInterval
+  //       which fetches every 5seconds and notifies the user about running conferences (Sidebar.tsx (useNotifications.ts)))
   useEffect(() => {
-    const fetchConferences = async () => getConferences(false);
-
-    fetchConferences().catch((e) => console.error(e));
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const intervalId = setInterval(fetchConferences, 500000); // TODO: 10000
-
-    return () => {
-      clearInterval(intervalId);
-      setSelectedRows({});
-    };
-  }, [getConferences, setSelectedRows]);
+    void getConferences(undefined);
+  }, []);
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading && conferences.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
       {selectedRowsCount > 0 ? (
         <div className="flex-1 text-sm text-muted-foreground text-white">
           {t('conferences.selected-x-rows', {
