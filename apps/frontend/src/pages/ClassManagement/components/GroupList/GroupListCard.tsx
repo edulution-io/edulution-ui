@@ -165,6 +165,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
             </div>
           </>
         )}
+
       </CardContent>
     </Card>
   );

@@ -1,5 +1,5 @@
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import React from 'react';
+import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
 import FileActionOneSelect from '@/pages/FileSharing/buttonsBar/FileActionOneSelect';
 import FileActionNonSelect from '@/pages/FileSharing/buttonsBar/FileActionNonSelect';

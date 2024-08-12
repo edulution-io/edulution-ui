@@ -12,6 +12,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDia
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
+import useMailsStore from '@/pages/Mail/useMailsStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -30,6 +31,7 @@ const cleanAllStores = () => {
   useLessonStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useMailsStore.getState().reset();
 };
 
 export default cleanAllStores;

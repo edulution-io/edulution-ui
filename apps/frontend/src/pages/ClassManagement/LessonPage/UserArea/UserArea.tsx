@@ -63,6 +63,7 @@ const UserArea = () => {
       </div>
       <LessonFloatingButtonsBar students={getSelectedStudents()} />
     </div>
+
   );
 };
 

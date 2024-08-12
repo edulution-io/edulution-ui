@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 import React, { useState } from 'react';
 import { MdSchool } from 'react-icons/md';
-import { TooltipProvider } from '@/components/ui/Tooltip';
 import { t } from 'i18next';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { FaArrowRightFromBracket, FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
@@ -13,6 +11,8 @@ import { TbFilterCode } from 'react-icons/tb';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
@@ -167,18 +167,22 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     },
   ];
 
+  const config: FloatingButtonsBarConfig = {
+    buttons: buttons.map((button) => ({
+      icon: button.icon,
+      text: t(`classmanagement.${button.text}`),
+      onClick: () => setIsDialogOpen(button.text),
+    })),
+    keyPrefix: 'class-management-page-floating-button_',
+  };
+
   return (
-    <div className="fixed bottom-8 flex flex-row space-x-8 bg-opacity-90">
-      <TooltipProvider>
-        <div className="flex flex-row items-center space-x-8">
-          {buttons.map((button) => (
-            <div key={button.text}>
-              <FloatingActionButton
-                icon={button.icon}
-                text={t(`classmanagement.${button.text}`)}
-                onClick={() => setIsDialogOpen(button.text)}
-              />
-              <LessonConfirmationDialog
+
+    <>
+      <FloatingButtonsBar config={config} />
+      {buttons.map((button) => (
+        <div key={button.text}>
+          <LessonConfirmationDialog
                 title={button.text}
                 member={students}
                 isOpen={isDialogOpen === button.text.toString()}
@@ -196,11 +200,9 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
                 enableText={button.enableText}
                 disableText={button.disableText}
               />
-            </div>
-          ))}
         </div>
-      </TooltipProvider>
-    </div>
+      ))}
+    </>
   );
 };
 

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { TooltipProvider } from '@/components/ui/Tooltip';
-import { t } from 'i18next';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { IconType } from 'react-icons';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
 import { FaFileCsv, FaRegFilePdf } from 'react-icons/fa6';
 import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import { useTranslation } from 'react-i18next';
+import PrintPasswordsDialog from './PrintPasswordsDialog';
 
 interface FloatingButtonsBarProps {
   selectedClasses: LmnApiSchoolClass[];
@@ -14,48 +13,39 @@ interface FloatingButtonsBarProps {
 
 const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ selectedClasses }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<PrintPasswordsFormat | null>(null);
+  const { t } = useTranslation();
 
   if (!selectedClasses.length) {
     return null;
   }
 
-  const buttons: {
-    icon: IconType;
-    text: PrintPasswordsFormat;
-  }[] = [
-    {
-      icon: FaRegFilePdf,
-      text: PrintPasswordsFormat.PDF,
-    },
-    {
-      icon: FaFileCsv,
-      text: PrintPasswordsFormat.CSV,
-    },
-  ];
+  const config: FloatingButtonsBarConfig = {
+    buttons: [
+      {
+        icon: FaRegFilePdf,
+        text: t(`classmanagement.${PrintPasswordsFormat.PDF}`),
+        onClick: () => setIsDialogOpen(PrintPasswordsFormat.PDF),
+      },
+      {
+        icon: FaFileCsv,
+        text: t(`classmanagement.${PrintPasswordsFormat.CSV}`),
+        onClick: () => setIsDialogOpen(PrintPasswordsFormat.CSV),
+      },
+    ],
+    keyPrefix: 'class-management-page-floating-button_',
+  };
 
   return (
-    <div className="fixed bottom-8 flex flex-row space-x-8 bg-opacity-90">
-      <TooltipProvider>
-        <div className="flex flex-row items-center space-x-8">
-          {buttons.map((button) => (
-            <div key={button.text}>
-              <FloatingActionButton
-                icon={button.icon}
-                text={t(`classmanagement.${button.text}`)}
-                onClick={() => setIsDialogOpen(button.text)}
-              />
-              {isDialogOpen === button.text ? (
-                <PrintPasswordsDialog
-                  title={button.text}
-                  selectedClasses={selectedClasses}
-                  onClose={() => setIsDialogOpen(null)}
-                />
-              ) : null}
-            </div>
-          ))}
-        </div>
-      </TooltipProvider>
-    </div>
+    <>
+      <FloatingButtonsBar config={config} />
+      {isDialogOpen ? (
+        <PrintPasswordsDialog
+          title={isDialogOpen}
+          selectedClasses={selectedClasses}
+          onClose={() => setIsDialogOpen(null)}
+        />
+      ) : null}
+    </>
   );
 };
 
