@@ -9,7 +9,7 @@ enum APPS {
   ROOM_BOOKING = 'roombooking',
   LEARNING_MANAGEMENT = 'learningmanagement',
   SCHOOL_INFORMATION = 'schoolinformation',
-  SCHOOL_MANAGEMENT = 'schoolmanagement',
+  CLASS_MANAGEMENT = 'classmanagement',
   PRINTER = 'printer',
   NETWORK = 'network',
   LOCATION_SERVICES = 'locationservices',

@@ -94,6 +94,7 @@ class ConferencesService {
       meetingID: uuidv4(),
       password: createConferenceDto.password,
       invitedAttendees: [...createConferenceDto.invitedAttendees, creator],
+      invitedGroups: createConferenceDto.invitedGroups,
       isMeetingStarted: false,
     };
 
@@ -176,8 +177,14 @@ class ConferencesService {
     }
   }
 
-  async findAllConferencesTheUserHasAccessTo(username: string): Promise<Conference[]> {
-    const conferencesToBeSynced = await this.conferenceModel.find({ 'invitedAttendees.username': username }).exec();
+  async findAllConferencesTheUserHasAccessTo(user: JWTUser): Promise<Conference[]> {
+    const groupPathConditions = user.ldapGroups.map((groupPath) => ({ 'invitedGroups.path': groupPath }));
+
+    const conferencesToBeSynced = await this.conferenceModel
+      .find({
+        $or: [{ 'invitedAttendees.username': user.preferred_username }, ...groupPathConditions],
+      })
+      .exec();
     return this.syncConferencesWithBBB(conferencesToBeSynced);
   }
 

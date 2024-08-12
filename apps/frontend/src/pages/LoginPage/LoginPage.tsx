@@ -11,9 +11,9 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/UserStore';
-import useLmnApiStore from '@/store/lmnApiStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import UserDto from '@libs/user/types/user.dto';
-import processLdapGroups from '@/utils/processLdapGroups';
+import processLdapGroups from '@libs/user/utils/processLdapGroups';
 
 type LocationState = {
   from: string;

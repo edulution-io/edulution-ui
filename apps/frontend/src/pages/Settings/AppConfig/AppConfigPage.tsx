@@ -11,8 +11,6 @@ import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
-import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
-import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
@@ -20,9 +18,12 @@ import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/Accordion';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/ExtendedOptionsForm';
 import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/types/appExtendedType';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { Accordion } from '@radix-ui/react-accordion';
+import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 
 const AppConfigPage: React.FC = () => {
@@ -72,7 +73,7 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const newAccessGroups = currentConfig.accessGroups.map((item) => ({
+    const newAccessGroups = currentConfig.accessGroups?.map((item) => ({
       id: item.id,
       name: item.name,
       path: item.path,

@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
-import GroupRoles from '@libs/user/types/groups/group-roles.enum';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()

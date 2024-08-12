@@ -9,6 +9,8 @@ A Full Stack Application build with Vite+React (frontend) and Nest.js for the AP
 ### Prerequisites
 
 - Node.js 18 LTS
+- Running MongoDB
+- Running Redis `docker run -p 6379:6379 -it redis/redis-stack-server:latest`
 
 ### Installation
 

@@ -1,4 +1,4 @@
-import useLmnApiStore from '@/store/lmnApiStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
@@ -9,6 +9,9 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 
 const cleanAllStores = () => {
@@ -24,6 +27,9 @@ const cleanAllStores = () => {
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();
   useSidebarStore.getState().reset();
+  useClassManagementStore.getState().reset();
+  useLessonStore.getState().reset();
+  usePrintPasswordsStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
   useMailsStore.getState().reset();
 };

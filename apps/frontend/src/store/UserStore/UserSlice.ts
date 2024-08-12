@@ -1,12 +1,13 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
-import { EDU_API_USERS_ENDPOINT } from '@/api/endpoints/users';
+import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';
 import CryptoJS from 'crypto-js';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import { getDecryptedPassword } from '@libs/common/utils';
 
 const initialState = {
@@ -17,6 +18,8 @@ const initialState = {
   user: null,
   userError: null,
   userIsLoading: false,
+  searchError: null,
+  searchIsLoading: false,
 };
 
 const WEBDAV_SECRET = import.meta.env.VITE_WEBDAV_KEY as string;
@@ -66,6 +69,28 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
       handleApiError(error, set, 'userError');
     } finally {
       set({ userIsLoading: false });
+    }
+  },
+
+  searchAttendees: async (searchParam) => {
+    set({ searchError: null, searchIsLoading: true });
+    try {
+      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
+
+      if (!Array.isArray(response.data)) {
+        return [];
+      }
+
+      return response.data?.map((d) => ({
+        ...d,
+        value: d.username,
+        label: `${d.firstName} ${d.lastName} (${d.username})`,
+      }));
+    } catch (error) {
+      handleApiError(error, set, 'searchError');
+      return [];
+    } finally {
+      set({ searchIsLoading: false });
     }
   },
 

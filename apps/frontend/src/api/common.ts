@@ -1,11 +1,9 @@
-type UserDataConfig = { state: { lmnApiToken: string } };
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 const waitForToken = () =>
   new Promise<void>((resolve) => {
     const checkToken = () => {
-      const lmnUserStorageString = localStorage.getItem('lmn-user-storage') as string;
-      const lmnUserStorage = JSON.parse(lmnUserStorageString) as UserDataConfig;
-      const { lmnApiToken } = lmnUserStorage.state;
+      const { lmnApiToken } = useLmnApiStore();
       if (lmnApiToken) {
         resolve();
       } else {
