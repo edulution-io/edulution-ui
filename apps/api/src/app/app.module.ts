@@ -19,6 +19,7 @@ import LmnApiModule from '../lmnApi/lmnApi.module';
 import MailsModule from '../mails/mails.module';
 import VdiModule from '../vdi/vdi.module';
 import FilesharingModule from '../filesharing/filesharing.module';
+import LicenseModule from '../license/license.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import FilesharingModule from '../filesharing/filesharing.module';
     MailsModule,
     FilesharingModule,
     VdiModule,
+    LicenseModule,
     JwtModule.register({
       global: true,
     }),
