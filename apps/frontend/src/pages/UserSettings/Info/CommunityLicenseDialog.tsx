@@ -5,11 +5,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import useCommunityLicenseStore from './useCommunityLicenseStore';
 
-interface CommunityLicenseDialogProps {
-  trigger?: React.ReactNode;
-}
-
-const CommunityLicenseDialog: React.FC<CommunityLicenseDialogProps> = ({ trigger }: CommunityLicenseDialogProps) => {
+const CommunityLicenseDialog: React.FC = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useUserStore();
   const { checkForActiveUserLicense, close, isOpen, isLoading } = useCommunityLicenseStore();
@@ -44,7 +40,6 @@ const CommunityLicenseDialog: React.FC<CommunityLicenseDialogProps> = ({ trigger
     <AdaptiveDialog
       title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
-      trigger={trigger}
       handleOpenChange={() => close()}
       body={getDialogBody()}
     />
