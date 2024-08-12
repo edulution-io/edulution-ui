@@ -8,7 +8,7 @@ import handleApiError from '@/utils/handleApiError';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type PersistedComunityLicenseStore = (
-  appConfig: StateCreator<CommunityLicenseStore>,
+  licenseData: StateCreator<CommunityLicenseStore>,
   options: PersistOptions<Partial<CommunityLicenseStore>>,
 ) => StateCreator<CommunityLicenseStore>;
 
