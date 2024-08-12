@@ -306,6 +306,10 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "deleteApp": {
+      "title": "App löschen",
+      "description": "Möchtest du diese App sicher löschen?"
+    },
     "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {

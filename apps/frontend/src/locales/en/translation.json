@@ -305,6 +305,10 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
+    "deleteApp": {
+      "title": "Delete App",
+      "description": "Are you sure you want to delete this app?"
+    },
     "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {

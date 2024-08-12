@@ -20,12 +20,13 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
+import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
@@ -228,7 +229,7 @@ const AppConfigPage: React.FC = () => {
       </div>
       {areSettingsVisible ? (
         <AppConfigFloatingButtons
-          handleDeleteSettingsItem={handleDeleteSettingsItem}
+          handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
           handleSaveSettingsItem={handleSubmit(onSubmit)}
         />
       ) : null}
@@ -237,6 +238,7 @@ const AppConfigPage: React.FC = () => {
         setOption={setOption}
         filteredAppOptions={filteredAppOptions}
       />
+      <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
     </>
   );
 };
