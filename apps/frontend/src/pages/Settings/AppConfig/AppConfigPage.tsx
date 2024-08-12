@@ -13,14 +13,13 @@ import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
+import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -228,19 +227,10 @@ const AppConfigPage: React.FC = () => {
         {settingsForm()}
       </div>
       {areSettingsVisible ? (
-        <div className="fixed bottom-8 flex flex-row bg-opacity-90">
-          <FloatingActionButton
-            type="button"
-            icon={MdOutlineSave}
-            text={t('common.save')}
-            onClick={handleSubmit(onSubmit)}
-          />
-          <FloatingActionButton
-            icon={MdOutlineDeleteOutline}
-            text={t('settings.delete')}
-            onClick={handleDeleteSettingsItem}
-          />
-        </div>
+        <AppConfigFloatingButtons
+          handleDeleteSettingsItem={handleDeleteSettingsItem}
+          handleSaveSettingsItem={handleSubmit(onSubmit)}
+        />
       ) : null}
       <AddAppConfigDialog
         option={option}
