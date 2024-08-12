@@ -11,7 +11,7 @@ import { useInterval } from 'usehooks-ts';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VdiCard from './components/VdiCard';
-import FloatingButtonsBar from './components/FloatingButtonsBar';
+import DesktopDeploymentFloatingButtons from './components/DesktopDeploymentFloatingButtons';
 
 const osConfigs = [
   { os: VirtualMachineOs.WIN10, title: 'desktopdeployment.win10' },
@@ -86,31 +86,33 @@ const DesktopDeploymentPage: React.FC = () => {
   };
 
   return (
-    <div className="absolute inset-y-0 left-0 ml-0 mr-14 h-[calc(100vh-var(--floating-buttons-height))] w-screen overflow-y-auto p-5 lg:pr-20">
-      <NativeAppHeader
-        title={t('desktopdeployment.topic')}
-        description={t('desktopdeployment.description')}
-        iconSrc={DesktopDeploymentIcon}
-      />
-      <div className="flex flex-col gap-10 md:flex-row">
-        {osConfigs.map(({ os, title }) => (
-          <VdiCard
-            key={os}
-            title={t(title)}
-            availableClients={getAvailableClients(os, virtualMachines)}
-            onClick={() => handleConnect()}
-            osType={os}
-            disabled={getAvailableClients(os, virtualMachines) === 0}
-          />
-        ))}
+    <>
+      <div className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen overflow-y-auto p-5 lg:pr-20">
+        <NativeAppHeader
+          title={t('desktopdeployment.topic')}
+          description={t('desktopdeployment.description')}
+          iconSrc={DesktopDeploymentIcon}
+        />
+        <div className="flex flex-col gap-10 md:flex-row">
+          {osConfigs.map(({ os, title }) => (
+            <VdiCard
+              key={os}
+              title={t(title)}
+              availableClients={getAvailableClients(os, virtualMachines)}
+              onClick={() => handleConnect()}
+              osType={os}
+              disabled={getAvailableClients(os, virtualMachines) === 0}
+            />
+          ))}
+        </div>
+        <ConnectionErrorDialog handleReload={handleReload} />
+        <LoadingIndicator isOpen={isLoading} />
       </div>
-      <FloatingButtonsBar
+      <DesktopDeploymentFloatingButtons
         handleConnect={handleConnect}
         handleReload={handleReload}
       />
-      <ConnectionErrorDialog handleReload={handleReload} />
-      <LoadingIndicator isOpen={isLoading} />
-    </div>
+    </>
   );
 };
 
