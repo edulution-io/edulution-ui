@@ -1,6 +1,14 @@
 /* eslint-disable react/require-default-props */
 import React, { FC } from 'react';
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/Sheet';
 import {
   Dialog,
   DialogContent,
@@ -52,6 +60,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         </SheetHeader>
         {body}
         <SheetFooter>{footer}</SheetFooter>
+        <SheetDescription aria-disabled />
       </SheetContent>
     </Sheet>
   ) : (

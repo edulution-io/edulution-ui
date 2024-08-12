@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 import { MdFilePresent } from 'react-icons/md';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
-import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import FileTypesConfiguration from '@libs/filesharing/types/fileTypesConfiguration';

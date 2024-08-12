@@ -1,5 +1,5 @@
 import React from 'react';
-import FloatingButtonsBarConfig from '@libs/common/types/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import ConnectButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/connectButton';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';

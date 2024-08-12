@@ -1,4 +1,4 @@
-import FloatingButtonConfig from '@libs/common/types/floatingButtonConfig';
+import FloatingButtonConfig from './floatingButtonConfig';
 
 interface FloatingButtonsBarConfig {
   buttons: FloatingButtonConfig[];
