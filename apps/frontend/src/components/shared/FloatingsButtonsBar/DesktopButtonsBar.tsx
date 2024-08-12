@@ -43,7 +43,7 @@ const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
         { 'left-64': !menuBar.disabled },
       )}
     >
-      <div className="flex-basis-0 flex flex-grow-0 flex-wrap justify-start overflow-y-auto">{floatingButtons}</div>
+      <div className="flex-basis-0 flex flex-grow-0 flex-wrap justify-start overflow-y-auto ">{floatingButtons}</div>
     </div>
   );
 };

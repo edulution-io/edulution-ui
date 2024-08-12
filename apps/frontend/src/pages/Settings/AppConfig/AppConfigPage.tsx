@@ -219,7 +219,7 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
+      <div className="overflow-y-auto">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}

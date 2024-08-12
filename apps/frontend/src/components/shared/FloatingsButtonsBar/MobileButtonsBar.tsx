@@ -60,6 +60,7 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
         title=""
         body={getDialogBody()}
         mobileContentClassName="h-fit h-max-1/2"
+        desktopContentClassName=" bg-black"
       />
     </>
   );

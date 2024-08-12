@@ -24,30 +24,32 @@ const UserArea = ({ fetchData }: UserAreaProps) => {
   };
 
   return (
-    <div className="mt-3 h-full">
-      <h3 className="mb-2 text-center">
-        {member.length} {t('classmanagement.usersInThisSession')}
-        {selectedMember.length ? (
-          <div className="ml-4 text-lg md:inline">
-            ({selectedMember.length} {t('common.selected')})
-          </div>
-        ) : null}
-      </h3>
-      <div className="flex max-h-[calc(100vh-390px)] max-w-full flex-wrap overflow-y-auto md:max-h-[calc(100vh-240px)]">
-        {member.sort(sortByName).map((m) => (
-          <UserCard
-            key={m.dn}
-            user={m}
-            setSelectedMember={setSelectedMember}
-            fetchData={fetchData}
-          />
-        ))}
+    <>
+      <div className="mt-3 h-full">
+        <h3 className="mb-2 text-center">
+          {member.length} {t('classmanagement.usersInThisSession')}
+          {selectedMember.length ? (
+            <div className="ml-4 text-lg md:inline">
+              ({selectedMember.length} {t('common.selected')})
+            </div>
+          ) : null}
+        </h3>
+        <div className="flex max-h-[calc(100vh-390px)] max-w-full flex-wrap overflow-y-auto md:max-h-[calc(100vh-240px)]">
+          {member.sort(sortByName).map((m) => (
+            <UserCard
+              key={m.dn}
+              user={m}
+              setSelectedMember={setSelectedMember}
+              fetchData={fetchData}
+            />
+          ))}
+        </div>
       </div>
       <LessonFloatingButtonsBar
         member={getSelectedStudents()}
         fetchData={fetchData}
       />
-    </div>
+    </>
   );
 };
 
