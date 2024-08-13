@@ -503,7 +503,8 @@
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
-      "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden"
+      "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden",
+      "MailProviderNotFound": "E-Mail-Provider nicht gefunden"
     }
   }
 }

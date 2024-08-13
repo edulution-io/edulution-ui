@@ -503,7 +503,8 @@
       "NotAbleToConnectClientError": "Could not connect to the imap server",
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
-      "NotValidPortTypeError": "The port must be specified as a number"
+      "NotValidPortTypeError": "The port must be specified as a number",
+      "MailProviderNotFound": "Mail provider not found"
     }
   }
 }

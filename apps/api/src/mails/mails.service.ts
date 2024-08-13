@@ -8,7 +8,6 @@ import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import MailDto from '@libs/mail/types/mail.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
-import ErrorMessage from '@libs/error/errorMessage';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 
 @Injectable()
@@ -109,7 +108,7 @@ class MailsService {
 
     if (!mailProvidersList) {
       throw new CustomHttpException(
-        'Mail providers not found' as ErrorMessage,
+        MailsErrorMessages.MailProviderNotFound,
         HttpStatus.NOT_FOUND,
         '',
         MailsService.name,
@@ -138,18 +137,13 @@ class MailsService {
       }
     } catch (error) {
       throw new CustomHttpException(
-        'Mail provider not found' as ErrorMessage,
+        MailsErrorMessages.MailProviderNotFound,
         HttpStatus.NOT_FOUND,
         error,
         MailsService.name,
       );
     }
-    throw new CustomHttpException(
-      'Mail provider not found' as ErrorMessage,
-      HttpStatus.NOT_FOUND,
-      '',
-      MailsService.name,
-    );
+    throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
   async deleteExternalMailProviderConfig(mailProviderId: string) {
@@ -161,18 +155,13 @@ class MailsService {
       }
     } catch (error) {
       throw new CustomHttpException(
-        'Mail provider not found' as ErrorMessage,
+        MailsErrorMessages.MailProviderNotFound,
         HttpStatus.NOT_FOUND,
         error,
         MailsService.name,
       );
     }
-    throw new CustomHttpException(
-      'Mail provider not found' as ErrorMessage,
-      HttpStatus.NOT_FOUND,
-      '',
-      MailsService.name,
-    );
+    throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 }
 
