@@ -314,6 +314,10 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "deleteApp": {
+      "title": "App löschen",
+      "description": "Möchtest du diese App sicher löschen?"
+    },
     "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
@@ -392,6 +396,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "actions": "Aktionen",
     "and": "und",
     "add": "Hinzufügen",
     "reload": "Neu laden",
@@ -430,7 +435,9 @@
     "invalid_chars": "Enthält ungültige Zeichen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
-    "close": "Schließen"
+    "close": "Schließen",
+    "delete": "Löschen",
+    "connect": "Verbinden"
   },
   "form": {
     "path": "Link",

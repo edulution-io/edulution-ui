@@ -13,8 +13,6 @@ import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -25,12 +23,14 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { Accordion } from '@radix-ui/react-accordion';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
+import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
+import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
@@ -266,7 +266,7 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
+      <div className="overflow-y-auto">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}
@@ -275,25 +275,17 @@ const AppConfigPage: React.FC = () => {
         {settingsForm()}
       </div>
       {areSettingsVisible ? (
-        <div className="fixed bottom-8 flex flex-row bg-opacity-90">
-          <FloatingActionButton
-            type="button"
-            icon={MdOutlineSave}
-            text={t('common.save')}
-            onClick={handleSubmit(onSubmit)}
-          />
-          <FloatingActionButton
-            icon={MdOutlineDeleteOutline}
-            text={t('settings.delete')}
-            onClick={handleDeleteSettingsItem}
-          />
-        </div>
+        <AppConfigFloatingButtons
+          handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
+          handleSaveSettingsItem={handleSubmit(onSubmit)}
+        />
       ) : null}
       <AddAppConfigDialog
         option={option}
         setOption={setOption}
         filteredAppOptions={filteredAppOptions}
       />
+      <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
     </>
   );
 };

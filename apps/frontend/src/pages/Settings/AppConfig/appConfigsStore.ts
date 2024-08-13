@@ -12,7 +12,9 @@ type AppConfigsStore = {
   isLoading: boolean;
   error: Error | null;
   isAddAppConfigDialogOpen: boolean;
+  isDeleteAppConfigDialogOpen: boolean;
   setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen: boolean) => void;
+  setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
   getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
@@ -26,6 +28,7 @@ type PersistedAppConfigsStore = (
 
 const initialState = {
   isAddAppConfigDialogOpen: false,
+  isDeleteAppConfigDialogOpen: false,
   appConfigs: [
     {
       name: '',
@@ -48,6 +51,10 @@ const useAppConfigsStore = create<AppConfigsStore>(
 
       setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
         set({ isAddAppConfigDialogOpen });
+      },
+
+      setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen) => {
+        set({ isDeleteAppConfigDialogOpen });
       },
 
       getAppConfigs: async () => {
