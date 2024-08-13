@@ -98,7 +98,6 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
                 {...field}
               />
             </FormControl>
-            {/* <p>{t('mails.provider.description')}</p> */}
             <FormMessage className="text-p" />
           </FormItem>
         )}
@@ -116,7 +115,6 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
                 {...field}
               />
             </FormControl>
-            {/* <p>{t('mails.provider.description')}</p> */}
             <FormMessage className="text-p" />
           </FormItem>
         )}
@@ -134,7 +132,6 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
                 {...field}
               />
             </FormControl>
-            {/* <p>{t('mails.provider.description')}</p> */}
             <FormMessage className="text-p" />
           </FormItem>
         )}
