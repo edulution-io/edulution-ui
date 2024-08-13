@@ -14,7 +14,6 @@ import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import JWTUser from '../types/JWTUser';
 
 const { KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET, PUBLIC_KEY_FILE_PATH } =
   process.env as {
@@ -60,7 +59,7 @@ class GroupsService {
 
       const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
 
-      const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(response.data.access_token, {
+      const decoded: JwtUser = await this.jwtService.verifyAsync<JwtUser>(response.data.access_token, {
         publicKey: pubKey,
         algorithms: ['RS256'],
       });
