@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
@@ -7,10 +7,16 @@ import { Button } from '@/components/shared/Button';
 import useLmnApiStore from '@/store/useLmnApiStore';
 
 const AccountInformation = () => {
-  const { user } = useLmnApiStore();
+  const { user, getOwnUser } = useLmnApiStore();
   const navigate = useNavigate();
-
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!user) {
+      void getOwnUser();
+    }
+  }, [user]);
+
   const userInfoFields = [
     { label: t('accountData.name'), value: user?.displayName || '...' },
     {

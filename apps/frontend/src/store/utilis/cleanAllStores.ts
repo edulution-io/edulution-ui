@@ -13,6 +13,7 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -32,6 +33,7 @@ const cleanAllStores = () => {
   usePrintPasswordsStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
   useMailsStore.getState().reset();
+  useCommunityLicenseStore.getState().reset();
 };
 
 export default cleanAllStores;
