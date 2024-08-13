@@ -496,10 +496,11 @@ class LmnApiService {
     username: string,
     oldPassword: string,
     newPassword: string,
+    bypassSecurityCheck: boolean = false,
   ): Promise<null> {
     const password = await this.userService.getPassword(username);
 
-    if (oldPassword !== password) {
+    if (!bypassSecurityCheck && oldPassword !== password) {
       throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
     }
 
@@ -510,6 +511,30 @@ class LmnApiService {
           {
             password: newPassword,
             set_first: false,
+          },
+          {
+            headers: { 'x-api-key': lmnApiToken },
+          },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.PasswordChangeFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async setFirstPassword(lmnApiToken: string, username: string, password: string): Promise<null> {
+    try {
+      const response = await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(
+          `${USERS_LMN_API_ENDPOINT}/${username}/set-first-password`,
+          {
+            password,
+            set_current: false,
           },
           {
             headers: { 'x-api-key': lmnApiToken },

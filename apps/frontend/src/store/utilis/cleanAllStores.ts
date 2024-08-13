@@ -13,6 +13,7 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -31,6 +32,7 @@ const cleanAllStores = () => {
   useLessonStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useLmnApiPasswordStore.getState().reset();
   useMailsStore.getState().reset();
 };
 

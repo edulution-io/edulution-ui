@@ -192,6 +192,19 @@ export class LmnApiController {
   ) {
     return this.lmnApiService.changePassword(lmnApiToken, username, body.oldPassword, body.newPassword);
   }
+
+  @Post('password')
+  async setPassword(@Headers('x-api-key') lmnApiToken: string, @Body() body: { password: string; username: string }) {
+    return this.lmnApiService.changePassword(lmnApiToken, body.username, '', body.password, true);
+  }
+
+  @Put('first-password')
+  async setFirstPassword(
+    @Headers('x-api-key') lmnApiToken: string,
+    @Body() body: { password: string; username: string },
+  ) {
+    return this.lmnApiService.setFirstPassword(lmnApiToken, body.username, body.password);
+  }
 }
 
 export default LmnApiController;

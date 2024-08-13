@@ -12,6 +12,8 @@ import cn from '@/lib/utils';
 import { PiEyeFill, PiKey } from 'react-icons/pi';
 import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
+import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
@@ -50,13 +52,14 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
   } = useLessonStore();
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
+  const { setCurrentUser, currentUser } = useLmnApiPasswordStore();
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement>, button: UserCardButton) => {
     event.stopPropagation();
 
     const users = [user.cn];
 
-    if (button.title === UserCardButtons.Veyon || button.title === UserCardButtons.PasswordOptions) {
+    if (button.title === UserCardButtons.Veyon) {
       // eslint-disable-next-line no-alert
       alert(t('classmanagement.featureIsStillInDevelopment')); // Will be implemented in NIEDUUI-359
     } else if (button.title === UserCardButtons.ExamMode) {
@@ -67,6 +70,9 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       }
     } else if (button.title === UserCardButtons.joinClass) {
       await toggleSchoolClassJoined(false, user.sophomorixAdminClass);
+    } else if (button.title === UserCardButtons.PasswordOptions) {
+      setCurrentUser(user);
+      return;
     } else if (button.value) {
       await removeManagementGroup(button.title, users);
     } else {
@@ -128,6 +134,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>
+      {currentUser?.dn === user.dn && <UserPasswordDialog />}
     </div>
   ));
 };
