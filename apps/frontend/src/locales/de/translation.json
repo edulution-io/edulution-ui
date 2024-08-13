@@ -655,5 +655,11 @@
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
       "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden"
     }
+  },
+  "licensing": {
+    "communityLicenseDialog": {
+      "title": "Community-Edition",
+      "description": "Kostenlose Community Edition von edulution. Diese Version erhält keinen Support."
+    }
   }
 }

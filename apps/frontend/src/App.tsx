@@ -13,6 +13,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Sonner';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
+import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -45,6 +46,7 @@ const App = () => {
       <AppRouter />
       <EmbeddedIframes />
       <NativeFrames />
+      <CommunityLicenseDialog />
       <Toaster />
     </AuthProvider>
   );
