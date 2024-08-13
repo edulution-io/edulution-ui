@@ -1,7 +1,9 @@
 // This DTO is based on a third-party object definition from mailcow https://mailcow.docs.apiary.io/#reference/sync-jobs/create-sync-job/create-sync-job.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
 
-type CreateSyncJob = {
+import TMailEncryption from './mailEncryption.type';
+
+type CreateSyncJobDto = {
   username: string;
   delete2duplicates: boolean;
   delete1: boolean;
@@ -14,7 +16,7 @@ type CreateSyncJob = {
   port1: string;
   user1: string;
   password1: string;
-  enc1: 'TLS' | 'SSL' | 'PLAIN';
+  enc1: TMailEncryption;
   mins_interval: number;
   subfolder2: string;
   maxage: number;
@@ -24,4 +26,4 @@ type CreateSyncJob = {
   exclude: string;
 };
 
-export default CreateSyncJob;
+export default CreateSyncJobDto;

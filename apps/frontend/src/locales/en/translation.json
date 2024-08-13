@@ -62,7 +62,8 @@
       "provider": "E-Mail-Provider",
       "configName": "Name der Konfiguration",
       "hostname": "Hostname",
-      "port": "Port"
+      "port": "Port",
+      "encryption": "Encryption"
     }
   },
   "chat": {
@@ -633,7 +634,9 @@
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number",
-      "MailProviderNotFound": "Mail provider not found"
+      "MailProviderNotFound": "Mail provider not found",
+      "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
+      "MailcowApiCreateSyncJobFailed": "Not able to create sync job"
     }
   },
   "licensing": {

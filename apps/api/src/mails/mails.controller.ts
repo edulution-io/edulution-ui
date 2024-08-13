@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Logger, Param, Post, UseGuards } from '@nestjs/common';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
-import MailDto from '@libs/mail/types/mail.dto';
-import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
+import { MailDto, MailProviderConfigDto, CreateSyncJobDto, CreateSyncJobResponseDto } from '@libs/mail/types';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
@@ -39,6 +38,16 @@ class MailsController {
     return this.mailsService
       .deleteExternalMailProviderConfig(mailProviderId)
       .catch((e) => Logger.error(e, MailsController.name));
+  }
+
+  @Get('sync-job')
+  async getSyncJob(): Promise<CreateSyncJobDto> {
+    return this.mailsService.getSyncJobs();
+  }
+
+  @Post('sync-job')
+  async postSyncJob(@Body() createSyncJobDto: CreateSyncJobDto): Promise<CreateSyncJobResponseDto> {
+    return this.mailsService.createSyncJob(createSyncJobDto);
   }
 }
 

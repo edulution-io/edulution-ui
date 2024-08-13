@@ -5,18 +5,31 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
-import MailDto from '@libs/mail/types/mail.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
+import axios, { AxiosInstance } from 'axios';
+import { MailDto, MailProviderConfigDto, CreateSyncJobDto, CreateSyncJobResponseDto } from '@libs/mail/types';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
+
+const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED, MAIL_API_KEY } =
+  process.env;
 
 @Injectable()
 class MailsService {
-  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {}
+  private mailcowApi: AxiosInstance;
+
+  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
+    this.mailcowApi = axios.create({
+      baseURL: `https://${MAIL_IMAP_URL}/api/v1`,
+      headers: {
+        [HTTP_HEADERS.X_API_Key]: MAIL_API_KEY,
+        [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
+      },
+    });
+  }
 
   static getMails = async (username: string, password: string): Promise<MailDto[]> => {
     // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = process.env;
 
     if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
@@ -162,6 +175,24 @@ class MailsService {
       );
     }
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
+  }
+
+  async getSyncJobs() {
+    try {
+      const syncJobs = await this.mailcowApi.get<CreateSyncJobDto>('/get/syncjobs/all/no_log');
+      return syncJobs.data;
+    } catch (e) {
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+    }
+  }
+
+  async createSyncJob(createSyncJobDto: CreateSyncJobDto) {
+    try {
+      const syncJob = await this.mailcowApi.post<CreateSyncJobResponseDto>('/add/syncjob', createSyncJobDto);
+      return syncJob.data;
+    } catch (e) {
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY, e);
+    }
   }
 }
 

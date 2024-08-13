@@ -1,17 +1,24 @@
+import React, { useEffect, useState } from 'react';
 import { DropdownMenu } from '@/components';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
-import React, { useEffect, useState } from 'react';
+import { TMailEncryption, MailProviderConfigDto } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import MailEncryption from '@libs/mail/constants/mailEncryption';
 
 type MailsConfigProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
 };
+
+const encOptions: { id: string; name: TMailEncryption }[] = [
+  { id: '0', name: 'STARTTLS' },
+  { id: '1', name: 'SSL' },
+  { id: '2', name: 'PLAIN' },
+];
 
 const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
   const { t } = useTranslation();
@@ -45,6 +52,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
       form.setValue('configName', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].name);
       form.setValue('hostname', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].host);
       form.setValue('port', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].port);
+      form.setValue('encryption', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].secure);
     }
 
     if (option === t('common.custom')) {
@@ -54,6 +62,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
         configName: '',
         hostname: '',
         port: '',
+        encryption: MailEncryption.SSL,
       });
     }
   }, [option]);
@@ -119,23 +128,45 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
           </FormItem>
         )}
       />
-      <FormFieldSH
-        control={form.control}
-        name="port"
-        defaultValue=""
-        render={({ field }) => (
-          <FormItem>
-            <p>{t(`mail.importer.${field.name}`)}</p>
-            <FormControl>
-              <Input
-                placeholder={field.name}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage className="text-p" />
-          </FormItem>
-        )}
-      />
+      <div className="flex gap-4">
+        <FormFieldSH
+          control={form.control}
+          name="port"
+          defaultValue=""
+          render={({ field }) => (
+            <FormItem>
+              <p>{t(`mail.importer.${field.name}`)}</p>
+              <FormControl>
+                <Input
+                  placeholder={field.name}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className="text-p" />
+            </FormItem>
+          )}
+        />
+        <FormFieldSH
+          control={form.control}
+          name="encryption"
+          defaultValue=""
+          render={({ field }) => (
+            <FormItem>
+              <p>{t(`mail.importer.${field.name}`)}</p>
+              <FormControl>
+                <DropdownMenu
+                  options={encOptions}
+                  selectedVal={field.value as string}
+                  handleChange={field.onChange}
+                  classname="z-50"
+                  openToTop
+                />
+              </FormControl>
+              <FormMessage className="text-p" />
+            </FormItem>
+          )}
+        />
+      </div>
     </div>
   );
 };
