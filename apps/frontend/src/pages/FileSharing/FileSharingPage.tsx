@@ -7,7 +7,7 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
-import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FloatingButtonsBar';
+import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FileSharingFloatingButtonsBar';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();

@@ -1,4 +1,4 @@
-import LdapGroups from '@libs/user/types/groups/ldapGroups';
+import LdapGroups from '@libs/groups/types/ldapGroups';
 
 class CreateUserDto {
   username: string;

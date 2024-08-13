@@ -2,19 +2,20 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
 import { APPS } from '@libs/appconfig/types';
-import { AccordionContent, AccordionItem } from '@/components/ui/Accordion';
 import MailList from '@/pages/Dashboard/Feed/mails/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useIsMailsActive from '@/pages/Mail/useIsMailsActive';
+import { AccordionContent, AccordionItem } from '@/components/ui/AccordionSH';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const MailsFeed = () => {
   const { mails } = useMailsStore();
-
   const { t } = useTranslation();
+  const { isSuperAdmin } = useLdapGroups();
 
   const isActive = useIsMailsActive();
-  if (!isActive) {
+  if (!isActive || isSuperAdmin) {
     return null;
   }
 

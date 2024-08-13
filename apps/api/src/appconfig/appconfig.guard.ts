@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
-import GroupRoles from '@libs/user/types/groups/group-roles.enum';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
 import { Request } from 'express';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
 @Injectable()
 class AppConfigGuard implements CanActivate {

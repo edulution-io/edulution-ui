@@ -33,7 +33,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
+  const homePath = `${user?.ldapGroups.roles[0]}s/${user?.username}`;
   const filteredSegments = filterSegments(segments);
 
   const handleSegmentClick = (index: number) => {
@@ -82,7 +82,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <span className="text-gray-500">{filteredSegments[filteredSegments.length - 1]}</span>
+              <span className="text-ciGrey">{filteredSegments[filteredSegments.length - 1]}</span>
             </BreadcrumbItem>
           </>
         ) : (
@@ -91,7 +91,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {index === filteredSegments.length - 1 ? (
-                  <span className="text-gray-500">{segment}</span>
+                  <span className="text-ciGrey">{segment}</span>
                 ) : (
                   <BreadcrumbLink
                     href="#"

@@ -8,7 +8,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { HttpMethodes } from '@libs/common/types/http-methods';
+import { HttpMethods } from '@libs/common/types/http-methods';
 import { t } from 'i18next';
 
 import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
@@ -28,7 +28,7 @@ interface DialogBodyConfigurationBase {
   initialValues?: FileSharingFormValues;
   endpoint: string;
   type: ContentType;
-  httpMethod: HttpMethodes;
+  httpMethod: HttpMethods;
   getData: (
     form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
@@ -90,7 +90,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.POST,
+    httpMethod: HttpMethods.POST,
     type: ContentType.DIRECTORY,
     requiresForm: true,
     getData: (form, currentPath: string) => {
@@ -109,7 +109,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.PUT,
+    httpMethod: HttpMethods.PUT,
     type: ContentType.FILE,
     requiresForm: true,
     getData: async (form, currentPath, inputValues) => {
@@ -136,7 +136,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     titleKey: 'deleteDialog.deleteFiles',
     submitKey: 'deleteDialog.continue',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.DELETE,
+    httpMethod: HttpMethods.DELETE,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
@@ -163,7 +163,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     submitKey: 'fileRenameContent.rename',
     initialValues: initialFormValues,
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.PATCH,
+    httpMethod: HttpMethods.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: true,
     isRenaming: true,
@@ -189,7 +189,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     titleKey: 'filesharingUpload.title',
     submitKey: 'filesharingUpload.upload',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.PUT,
+    httpMethod: HttpMethods.PUT,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
@@ -213,7 +213,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethodes.PATCH,
+    httpMethod: HttpMethods.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {

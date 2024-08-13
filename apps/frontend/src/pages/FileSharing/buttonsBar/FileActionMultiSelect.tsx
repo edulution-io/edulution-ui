@@ -1,23 +1,21 @@
 import React, { FC } from 'react';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { MdOutlineDeleteOutline, MdOutlineDriveFileMove } from 'react-icons/md';
-import { t } from 'i18next';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
+import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
-const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => (
-  <>
-    <FloatingActionButton
-      icon={MdOutlineDeleteOutline}
-      text={t('tooltip.delete')}
-      onClick={() => openDialog(FileActionType.DELETE_FILE_FOLDER)}
-    />
-    <FloatingActionButton
-      icon={MdOutlineDriveFileMove}
-      text={t('tooltip.move')}
-      onClick={() => openDialog(FileActionType.MOVE_FILE_FOLDER)}
-    />
-  </>
-);
+const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
+  const config: FloatingButtonsBarConfig = {
+    buttons: [
+      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
+      MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+    ],
+    keyPrefix: 'file-sharing-page-floating-button_',
+  };
+
+  return <FloatingButtonsBar config={config} />;
+};
 
 export default FileActionMultiSelect;

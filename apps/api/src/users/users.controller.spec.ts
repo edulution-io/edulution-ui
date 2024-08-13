@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { CacheModule } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import UserDto from '@libs/user/types/user.dto';
+import LdapGroups from '@libs/groups/types/ldapGroups';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import UpdateUserDto from './dto/update-user.dto';
 
 const mockUserModel = {
@@ -26,13 +25,13 @@ const mockUsersService = {
   searchUsersByName: jest.fn(),
 };
 
-const mockLdapGroups = {
-  school: 'school',
+const mockLdapGroups: LdapGroups = {
+  schools: ['school'],
   projects: ['project1', 'project2'],
   projectPaths: ['/path/to/project1', '/path/to/project2'],
   classes: ['class1A', 'class2B'],
   classPaths: ['/path/to/class1A', '/path/to/class2B'],
-  role: 'teacher',
+  roles: ['teacher'],
   others: ['group1', 'group2'],
 };
 
@@ -42,11 +41,6 @@ describe(UsersController.name, () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CacheModule.register({
-          ttl: DEFAULT_CACHE_TTL_MS,
-        }),
-      ],
       controllers: [UsersController],
       providers: [
         {
