@@ -19,7 +19,7 @@ const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
       {row.groups.length ? (
         row.groups.map((group) => (
           <GroupListCard
-            key={(group as LmnApiProject | LmnApiSchoolClass).dn}
+            key={row.name + (group as LmnApiProject | LmnApiSchoolClass).dn}
             group={group as LmnApiProject | LmnApiSchoolClass}
             type={row.name}
             icon={row.icon}

@@ -61,6 +61,14 @@ export class LmnApiController {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
 
+  @Put('school-classes/:schoolClass/:action')
+  async toggleSchoolClassJoined(
+    @Param() params: { schoolClass: string; action: string },
+    @Headers('x-api-key') lmnApiToken: string,
+  ) {
+    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action);
+  }
+
   @Get('room')
   async getCurrentUserRoom(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
     return this.lmnApiService.getCurrentUserRoom(lmnApiToken, username);
@@ -153,6 +161,27 @@ export class LmnApiController {
   @Get('projects')
   async getUserProjects(@Headers('x-api-key') lmnApiToken: string) {
     return this.lmnApiService.getUserProjects(lmnApiToken);
+  }
+
+  @Put('projects/:project/:action')
+  async toggleProjectJoined(
+    @Param() params: { project: string; action: string },
+    @Headers('x-api-key') lmnApiToken: string,
+  ) {
+    return this.lmnApiService.toggleProjectJoined(lmnApiToken, params.project, params.action);
+  }
+
+  @Put('printers/:project/:action')
+  async togglePrinterJoined(
+    @Param() params: { project: string; action: string },
+    @Headers('x-api-key') lmnApiToken: string,
+  ) {
+    return this.lmnApiService.togglePrinterJoined(lmnApiToken, params.project, params.action);
+  }
+
+  @Get('printers')
+  async getPrinters(@Headers('x-api-key') lmnApiToken: string) {
+    return this.lmnApiService.getPrinters(lmnApiToken);
   }
 
   @Put('password')

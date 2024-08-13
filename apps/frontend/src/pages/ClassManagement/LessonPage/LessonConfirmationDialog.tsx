@@ -24,12 +24,17 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   enableText,
   disableText,
 }) => {
-  const getDialogBody = () => (
-    <div className="text-foreground">
-      <p className="mb-3">{t(`classmanagement.${title}Description`, { count: member.length })}:</p>
-      <p className="p-2">{member.map((m) => m.displayName).join(', ')}</p>
-    </div>
-  );
+  const noMembers = member.length < 1;
+
+  const getDialogBody = () => {
+    if (noMembers) return <div className="text-foreground">{t('classmanagement.noStudentsForAction')}</div>;
+    return (
+      <div className="text-foreground">
+        <p className="mb-3">{t(`classmanagement.${title}Description`, { count: member.length })}:</p>
+        <p className="p-2">{member.map((m) => m.displayName).join(', ')}</p>
+      </div>
+    );
+  };
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between space-x-4">
@@ -56,7 +61,7 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       handleOpenChange={onClose}
       title={t(`classmanagement.${title}`)}
       body={getDialogBody()}
-      footer={getFooter()}
+      footer={noMembers ? null : getFooter()}
     />
   );
 };

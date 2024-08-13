@@ -20,6 +20,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
+import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -79,7 +80,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     );
 
   const setFormInitialValues = (
-    fetchedGroup: LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers | LmnApiSession,
+    fetchedGroup: LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers | LmnApiSession | LmnApiPrinterWithMembers,
   ) => {
     form.setValue(
       'id',

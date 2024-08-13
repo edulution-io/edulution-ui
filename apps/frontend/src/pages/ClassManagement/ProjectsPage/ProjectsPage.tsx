@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import GroupList from '@/pages/ClassManagement/components/GroupList/GroupList';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,8 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FaUsersGear } from 'react-icons/fa6';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
+import Input from '@/components/shared/Input';
+import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
@@ -21,6 +23,7 @@ const ProjectsPage = () => {
     fetchUserSchoolClasses,
     isLoading,
   } = useClassManagementStore();
+  const [filterKeyWord, setFilterKeyWord] = useState<string>('');
 
   useEffect(() => {
     void getOwnUser();
@@ -32,6 +35,10 @@ const ProjectsPage = () => {
     return null;
   }
 
+  const filterProjects = (project: LmnApiProject) =>
+    project.sophomorixAdmins.includes(user.cn) &&
+    (project.cn.includes(filterKeyWord) || project.displayName.includes(filterKeyWord));
+
   const groupRows: GroupColumn[] = [
     {
       name: UserGroups.Projects,
@@ -40,12 +47,18 @@ const ProjectsPage = () => {
       updateFunction: updateProject,
       removeFunction: deleteProject,
       icon: <FaUsersGear className="h-5 w-7" />,
-      groups: userProjects.filter((p) => p.sophomorixAdmins.includes(user.cn)),
+      groups: userProjects.filter(filterProjects),
     },
   ];
 
   return (
     <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
+      <Input
+        name="filter"
+        onChange={(e) => setFilterKeyWord(e.target.value)}
+        placeholder={t('classmanagement.typeToFilter')}
+      />
+      <div className="mt-2 text-lg">{t('classmanagement.projectsPageDescription')}</div>
       <LoadingIndicator isOpen={isLoading} />
       {groupRows.map((row) => (
         <div
