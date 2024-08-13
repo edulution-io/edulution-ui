@@ -7,6 +7,7 @@ interface MailsStore {
   externalMailProviderConfig: MailProviderConfigDto[];
   getExternalMailProviderConfig: () => Promise<void>;
   postExternalMailProviderConfig: (mailProviderConfig: MailProviderConfigDto) => Promise<void>;
+  deleteExternalMailProviderConfig: (mailProviderId: string) => Promise<void>;
   error: Error | null;
   isLoading: boolean;
   reset: () => void;

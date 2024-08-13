@@ -38,10 +38,12 @@ class MailsService {
         pass: password,
       },
       logger: false,
+      connectionTimeout: 5000,
     });
     client.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void client.logout().then(() => client.close());
+      void client.logout();
+      client.close();
     });
 
     await client.connect().catch((err) => {
@@ -89,13 +91,7 @@ class MailsService {
     return mails;
   };
 
-  async getExternalMailProviderConfig(): Promise<MailProviderConfigDto[]> {
-    const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
-
-    if (!mailProvidersList) {
-      throw new CustomHttpException('Mail providers not found' as ErrorMessage, HttpStatus.NOT_FOUND);
-    }
-
+  static prepareMailProviderResponse(mailProvidersList: MailProviderDocument[]): MailProviderConfigDto[] {
     const mailProviders: MailProviderConfigDto[] = mailProvidersList.map((item) => ({
       id: item.mailProviderId,
       name: item.name,
@@ -108,23 +104,75 @@ class MailsService {
     return mailProviders;
   }
 
-  async postExternalMailProviderConfig(mailProviderConfig: MailProviderConfigDto): Promise<MailProviderConfigDto> {
-    try {
-      if (mailProviderConfig.id !== '') {
-        await this.mailProviderModel.findOneAndUpdate(
-          { mailProviderId: mailProviderConfig.id },
-          { $set: mailProviderConfig },
-          { upsert: true },
-        );
-      } else {
-        await this.mailProviderModel.create(mailProviderConfig);
-      }
-    } catch (error) {
-      Logger.log(error, MailsService.name);
-      throw new CustomHttpException('Mail provider not found' as ErrorMessage, HttpStatus.NOT_FOUND);
+  async getExternalMailProviderConfig(): Promise<MailProviderConfigDto[]> {
+    const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
+
+    if (!mailProvidersList) {
+      throw new CustomHttpException(
+        'Mail providers not found' as ErrorMessage,
+        HttpStatus.NOT_FOUND,
+        '',
+        MailsService.name,
+      );
     }
 
-    return mailProviderConfig;
+    return MailsService.prepareMailProviderResponse(mailProvidersList);
+  }
+
+  async postExternalMailProviderConfig(mailProviderConfig: MailProviderConfigDto): Promise<MailProviderConfigDto[]> {
+    try {
+      let response = {};
+      if (mailProviderConfig.id !== '') {
+        response =
+          (await this.mailProviderModel.findOneAndUpdate(
+            { mailProviderId: mailProviderConfig.id },
+            { $set: mailProviderConfig },
+            { upsert: true },
+          )) || {};
+      } else {
+        response = await this.mailProviderModel.create(mailProviderConfig);
+      }
+      if (response) {
+        const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
+        return MailsService.prepareMailProviderResponse(mailProvidersList);
+      }
+    } catch (error) {
+      throw new CustomHttpException(
+        'Mail provider not found' as ErrorMessage,
+        HttpStatus.NOT_FOUND,
+        error,
+        MailsService.name,
+      );
+    }
+    throw new CustomHttpException(
+      'Mail provider not found' as ErrorMessage,
+      HttpStatus.NOT_FOUND,
+      '',
+      MailsService.name,
+    );
+  }
+
+  async deleteExternalMailProviderConfig(mailProviderId: string) {
+    try {
+      const deleteResponse = await this.mailProviderModel.deleteOne({ mailProviderId });
+      if (deleteResponse.deletedCount === 1) {
+        const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
+        return MailsService.prepareMailProviderResponse(mailProvidersList);
+      }
+    } catch (error) {
+      throw new CustomHttpException(
+        'Mail provider not found' as ErrorMessage,
+        HttpStatus.NOT_FOUND,
+        error,
+        MailsService.name,
+      );
+    }
+    throw new CustomHttpException(
+      'Mail provider not found' as ErrorMessage,
+      HttpStatus.NOT_FOUND,
+      '',
+      MailsService.name,
+    );
   }
 }
 

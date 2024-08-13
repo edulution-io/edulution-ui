@@ -1,6 +1,4 @@
-import MailsStore from '@libs/mail/types/mailsStore';
-
-const MailStoreInitialState: Partial<MailsStore> = {
+const MailStoreInitialState = {
   mails: [],
   isLoading: false,
   externalMailProviderConfig: [],

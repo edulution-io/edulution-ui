@@ -310,7 +310,8 @@
     "clearSelection": "Clear selection",
     "start": "Start",
     "close": "Close",
-    "custom": "Custom"
+    "custom": "Custom",
+    "delete": "Delete"
   },
   "form": {
     "path": "Path",

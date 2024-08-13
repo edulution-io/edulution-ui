@@ -1,4 +1,5 @@
 import { DropdownMenu } from '@/components';
+import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useMailsStore from '@/pages/Mail/useMailsStore';
@@ -14,7 +15,8 @@ type MailsConfigProps = {
 
 const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
   const { t } = useTranslation();
-  const { externalMailProviderConfig, getExternalMailProviderConfig } = useMailsStore();
+  const { externalMailProviderConfig, getExternalMailProviderConfig, deleteExternalMailProviderConfig } =
+    useMailsStore();
   const [option, setOption] = useState('');
 
   useEffect(() => {
@@ -23,7 +25,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
 
   const mailProviderDropdownOptions: MailProviderConfigDto[] = [
     {
-      id: '',
+      id: '0',
       name: t('common.custom'),
       label: '',
       host: '',
@@ -56,15 +58,33 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
     }
   }, [option]);
 
+  const handleDeleteMailProviderConfig = async (mailProviderId: string) => {
+    await deleteExternalMailProviderConfig(mailProviderId).finally(() => {
+      setOption(t('common.custom'));
+    });
+  };
+
   return (
     <div className="space-y-4">
       <h4>{t(`mail.importer.title`)}</h4>
-      <DropdownMenu
-        options={mailProviderDropdownOptions}
-        selectedVal={t(option)}
-        handleChange={setOption}
-        classname="md:w-1/3"
-      />
+      <div className="flex gap-4">
+        <DropdownMenu
+          options={mailProviderDropdownOptions}
+          selectedVal={t(option)}
+          handleChange={setOption}
+          classname="md:w-1/3"
+        />
+        {option !== t('common.custom') ? (
+          <Button
+            variant="btn-collaboration"
+            size="lg"
+            type="button"
+            onClick={() => handleDeleteMailProviderConfig(form.getValues('mailProviderId') as string)}
+          >
+            {t('common.delete')}
+          </Button>
+        ) : null}
+      </div>
       <FormFieldSH
         control={form.control}
         name="configName"

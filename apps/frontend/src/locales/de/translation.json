@@ -310,7 +310,8 @@
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
     "close": "Schließen",
-    "custom": "Benutzerdefiniert"
+    "custom": "Benutzerdefiniert",
+    "delete": "Löschen"
   },
   "form": {
     "path": "Link",

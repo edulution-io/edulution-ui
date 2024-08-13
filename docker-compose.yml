@@ -44,3 +44,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: <DBUSER>
       MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>
+
+  redis:
+    container_name: redisEdu
+    image: redis:7.2
+    restart: always
+    ports:
+      - '6379:6379'
