@@ -1,10 +1,11 @@
-import React, { FC, useEffect, useState } from 'react';
-import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import React, { FC } from 'react';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
 
 interface FileViewerProps {
   mode: 'view' | 'edit';
@@ -13,29 +14,23 @@ interface FileViewerProps {
 
 const FileViewer: FC<FileViewerProps> = ({ mode, editWindow = false }) => {
   const { currentlyEditingFile } = useFileSharingStore();
+  const { downloadLinkURL, publicDownloadLink, isEditorLoading, isError } = useFileSharingStore();
   const { showEditor } = useFileEditorStore();
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
   const isMobile = useIsMobileView();
-
-  const { downloadLinkURL, publicDownloadLink, isLoading, isError } = useDownloadLinks(currentlyEditingFile);
-  const fileExtension = currentlyEditingFile?.filename?.split('.').pop()?.toLowerCase();
-
-  useEffect(() => {
-    if (downloadLinkURL) {
-      setFileUrl(downloadLinkURL);
-    }
-  }, [downloadLinkURL, currentlyEditingFile]);
+  useDownloadLinks(currentlyEditingFile);
+  if (!currentlyEditingFile) return null;
+  const fileExtension = getFileExtension(currentlyEditingFile?.filename);
 
   return (
     <FileViewerLayout
-      isLoading={isLoading}
+      isLoading={isEditorLoading}
       editMode={mode === 'edit'}
       renderComponent={() => (
         <FileRenderer
-          isLoading={isLoading}
+          isLoading={isEditorLoading}
           editWindow={editWindow}
           isError={isError}
-          fileUrl={fileUrl}
+          fileUrl={downloadLinkURL}
           fileExtension={fileExtension}
           publicDownloadLink={publicDownloadLink}
           showEditor={showEditor}

@@ -19,7 +19,6 @@ import LmnApiModule from '../lmnApi/lmnApi.module';
 import MailsModule from '../mails/mails.module';
 import VdiModule from '../vdi/vdi.module';
 import FilesharingModule from '../filesharing/filesharing.module';
-import CleanUpModule from '../cleanUp/cleanUp.module';
 
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import CleanUpModule from '../cleanUp/cleanUp.module';
     MailsModule,
     FilesharingModule,
     VdiModule,
-    CleanUpModule,
     JwtModule.register({
       global: true,
     }),

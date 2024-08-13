@@ -8,8 +8,10 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
 
-type FileSharingStore = {
+type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
@@ -29,11 +31,16 @@ type FileSharingStore = {
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
+  isEditorLoading: boolean;
+  downloadLinkURL: string;
+  publicDownloadLink: string | null;
+  isError: boolean;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   downloadFile: (filePath: string) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
+  fetchDownloadLinks: (file: DirectoryFileDTO | null) => Promise<void>;
 };
 
 const initialState = {
@@ -47,22 +54,46 @@ const initialState = {
   mountPoints: [],
   directorys: [],
   isLoading: false,
+  isError: false,
+  publicDownloadLink: null,
+  isEditorLoading: false,
 };
 
 type PersistedFileManagerStore = (
-  fileManagerData: StateCreator<FileSharingStore>,
-  options: PersistOptions<Partial<FileSharingStore>>,
-) => StateCreator<FileSharingStore>;
+  fileManagerData: StateCreator<UseFileSharingStore>,
+  options: PersistOptions<Partial<UseFileSharingStore>>,
+) => StateCreator<UseFileSharingStore>;
 
-const buildFileSharingUrl = (base: string, type: ContentType, path: string): string =>
-  `${base}?type=${type}&path=${path}`;
-
-const useFileSharingStore = create<FileSharingStore>(
+const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
     (set, get) => ({
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
+      },
+
+      fetchDownloadLinks: async (file: DirectoryFileDTO | null) => {
+        try {
+          set({ isEditorLoading: true, isError: false, downloadLinkURL: undefined, publicDownloadLink: null });
+
+          if (!file) {
+            set({ isEditorLoading: false });
+            return;
+          }
+
+          const downloadLink = await get().downloadFile(file.filename);
+          set({ downloadLinkURL: downloadLink });
+
+          if (isOnlyOfficeDocument(file.filename)) {
+            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename);
+            set({ publicDownloadLink: publicLink || ' ' });
+          }
+
+          set({ isEditorLoading: false });
+        } catch (error) {
+          console.error('Failed to download file:', error);
+          set({ isError: true, isEditorLoading: false });
+        }
       },
 
       setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
@@ -97,7 +128,7 @@ const useFileSharingStore = create<FileSharingStore>(
         try {
           set({ isLoading: true });
           const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildFileSharingUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
+            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
           );
           set({
             currentPath: path,
@@ -162,7 +193,7 @@ const useFileSharingStore = create<FileSharingStore>(
         try {
           set({ isLoading: true });
           const resp = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildFileSharingUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, '')}`,
+            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, '')}`,
           );
           set({ mountPoints: resp.data });
         } catch (error) {
@@ -175,7 +206,7 @@ const useFileSharingStore = create<FileSharingStore>(
       fetchDirs: async (path: string) => {
         try {
           const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildFileSharingUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
+            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
           );
           set({ directorys: directoryFiles.data });
         } catch (error) {

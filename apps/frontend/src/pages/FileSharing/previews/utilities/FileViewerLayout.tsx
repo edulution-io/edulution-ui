@@ -6,10 +6,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import FilePreviewOptionsButton from '@/pages/FileSharing/buttonsBar/FilePreviewOptionsButton';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { Button } from '@/components/shared/Button';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 
 interface FileViewerLayoutProps {
   isLoading: boolean;
@@ -24,7 +24,7 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, renderComponen
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  useBeforeUnload(editMode ? 'Are you sure you want to close?' : '', setCurrentlyEditingFile);
+  useBeforeUnload(editMode ? t('closeEditingWindow') : '', setCurrentlyEditingFile);
 
   const tabParam = searchParams.get('tab');
 

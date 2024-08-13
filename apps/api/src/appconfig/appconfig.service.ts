@@ -69,15 +69,7 @@ class AppConfigService {
           appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
-          extendedOptions: Array.isArray(config.extendedOptions)
-            ? config.extendedOptions.map((item) => ({
-                title: item.title,
-                name: item.name,
-                description: item.description,
-                type: item.type,
-                value: item.value,
-              }))
-            : [],
+          extendedOptions: config.extendedOptions ?? [],
         }));
       }
 

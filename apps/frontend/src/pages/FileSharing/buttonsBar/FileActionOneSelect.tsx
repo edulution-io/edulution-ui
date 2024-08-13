@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { MdDownload, MdDriveFileRenameOutline } from 'react-icons/md';
 import { t } from 'i18next';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';

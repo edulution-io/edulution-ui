@@ -1,3 +1,6 @@
+// This Interface is based on a config definition from OnlyOffice.
+// Any modifications should be carefully reviewed to ensure compatibility with the source.
+
 interface OnlyOfficeEditorConfig {
   document: {
     fileType: string;

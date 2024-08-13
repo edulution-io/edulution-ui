@@ -17,7 +17,7 @@ import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateP
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 
-interface FileSharingDialogStore {
+interface UseFileSharingDialogStore {
   isDialogOpen: boolean;
   openDialog: (action: FileActionType) => void;
   closeDialog: () => void;
@@ -49,7 +49,7 @@ interface FileSharingDialogStore {
   setSubmitButtonIsInActive: (isSubmitButtonActive: boolean) => void;
 }
 
-const initialState: Partial<FileSharingDialogStore> = {
+const initialState: Partial<UseFileSharingDialogStore> = {
   isDialogOpen: false,
   isLoading: false,
   error: null,
@@ -60,8 +60,8 @@ const initialState: Partial<FileSharingDialogStore> = {
   isSubmitButtonInActive: false,
 };
 
-const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => ({
-  ...(initialState as FileSharingDialogStore),
+const useFileSharingDialogStore = create<UseFileSharingDialogStore>((set, get) => ({
+  ...(initialState as UseFileSharingDialogStore),
   openDialog: (action: FileActionType) =>
     set(() => ({
       isDialogOpen: true,

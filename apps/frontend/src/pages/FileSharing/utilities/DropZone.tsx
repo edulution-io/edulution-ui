@@ -8,7 +8,7 @@ import { HiDocument, HiXMark } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import Progress from '@/components/ui/Progress';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 
 interface DropZoneProps {
   files: File[];
@@ -100,7 +100,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
               onClick={() => removeFile(file.name)}
               className="absolute right-0 top-0 rounded-full bg-white bg-opacity-70 p-1"
             >
-              <HiXMark className="h-5 w-5 text-red-500 hover:text-red-700" />
+              <HiXMark className="text-ci-Red-500 h-5 w-5 hover:text-red-700" />
             </Button>
             <div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>
           </li>

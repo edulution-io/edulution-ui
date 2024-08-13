@@ -1,4 +1,4 @@
-import { AvailableAppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
+import { AppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
 
 const mockAppConfigService = {
   insertConfig: jest.fn().mockResolvedValue(undefined),
@@ -12,14 +12,14 @@ const mockAppConfigService = {
     },
     extendedOptions: [
       {
-        name: AvailableAppExtendedOptions.ONLY_OFFICE_URL,
+        name: AppExtendedOptions.ONLY_OFFICE_URL,
         value: 'https://example.com/api/',
         title: 'OnlyOffice URL',
         description: 'The URL for OnlyOffice',
         type: 'input',
       },
       {
-        name: AvailableAppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+        name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
         value: 'secret-key',
         title: 'OnlyOffice Secret',
         description: 'The secret key for OnlyOffice',

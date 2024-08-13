@@ -15,8 +15,8 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';

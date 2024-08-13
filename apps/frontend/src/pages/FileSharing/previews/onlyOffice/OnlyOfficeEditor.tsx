@@ -1,7 +1,7 @@
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import React, { FC, useCallback } from 'react';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import { useTranslation } from 'react-i18next';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 
@@ -38,17 +38,8 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
 
   const handleLoadComponentError = (errorCode: number) => {
     switch (errorCode) {
-      case -1:
-        console.error('Error: Document Server not available');
-        break;
-      case -2:
-        console.error('Error: Invalid document key');
-        break;
-      case -3:
-        console.error('Error: Unsupported document type');
-        break;
       default:
-        console.error(`Error: Unknown error code ${errorCode}`);
+        void deleteFileAfterEdit(editorConfig.document.url);
     }
   };
 

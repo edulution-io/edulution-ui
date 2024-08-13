@@ -4,6 +4,7 @@
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
+  "closeEditingWindow": "Close editing window",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -138,7 +139,9 @@
       "DbAccessFailed": "Database access failed",
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
-      "FolderCreationFailed": "Folder creation failed"
+      "FolderCreationFailed": "Folder creation failed",
+      "DeleteFromServerFailed": "Delete from server failed",
+      "SaveFailed": "Save failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -502,6 +505,7 @@
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
+    "min_3_chars": "Minimum 3 characters",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred",
@@ -628,5 +632,8 @@
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number"
     }
+  },
+  "preview": {
+    "failedToLoadImage": "Failed to load image"
   }
 }

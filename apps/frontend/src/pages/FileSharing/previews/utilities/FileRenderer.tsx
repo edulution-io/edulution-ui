@@ -42,10 +42,6 @@ const FileRenderer: FC<FileRendererProps> = ({
     );
   }
 
-  if (!currentlyEditingFile) {
-    return <p>{t('loadingIndicator.unsupportedFile')}</p>;
-  }
-
   if (isImageExtension(fileExtension)) {
     return (
       <ImageComponent
@@ -57,7 +53,7 @@ const FileRenderer: FC<FileRendererProps> = ({
   }
 
   if (isDocumentExtension(fileExtension)) {
-    return publicDownloadLink && (showEditor || editWindow) ? (
+    return publicDownloadLink && currentlyEditingFile && (showEditor || editWindow) ? (
       <OnlyOffice
         url={publicDownloadLink}
         fileName={currentlyEditingFile.basename}

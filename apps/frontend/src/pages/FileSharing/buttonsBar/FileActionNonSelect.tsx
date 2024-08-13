@@ -5,7 +5,7 @@ import { FiUpload } from 'react-icons/fi';
 import React, { FC } from 'react';
 import { t } from 'i18next';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import FileTypesConfiguration from '@libs/filesharing/types/fileTypesConfiguration';
 

@@ -3,7 +3,7 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcr
 import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
 import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FloatingButtonsBar';
 import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';

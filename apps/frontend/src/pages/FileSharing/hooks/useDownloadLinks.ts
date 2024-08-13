@@ -1,50 +1,14 @@
-import { useEffect, useState } from 'react';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import { useEffect } from 'react';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import OnlyOfficeDocumentTypes from '@libs/filesharing/types/OnlyOfficeDocumentTypes';
 
 const useDownloadLinks = (file: DirectoryFileDTO | null) => {
-  const { downloadFile, getDownloadLinkURL } = useFileSharingStore();
-  const [downloadLinkURL, setDownloadLinkURL] = useState<string | undefined>(undefined);
-  const [publicDownloadLink, setPublicDownloadLink] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
-
-  const isOnlyOfficeDocument = (filePath: string) =>
-    Object.values(OnlyOfficeDocumentTypes).some((type) => filePath.includes(type));
-
+  const { fetchDownloadLinks } = useFileSharingStore();
   useEffect(() => {
-    const fetchDownloadLinks = async () => {
-      try {
-        setIsLoading(true);
-        setIsError(false);
-        setDownloadLinkURL(undefined);
-        setPublicDownloadLink(null);
-
-        if (!file) {
-          setIsLoading(false);
-          return;
-        }
-        const downloadLink = await downloadFile(file.filename);
-        setDownloadLinkURL(downloadLink);
-
-        if (isOnlyOfficeDocument(file.filename)) {
-          const publicLink = await getDownloadLinkURL(file.filename, file.basename);
-          setPublicDownloadLink(publicLink || ' ');
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Failed to download file:', error);
-        setIsError(true);
-        setIsLoading(false);
-      }
-    };
-
-    void fetchDownloadLinks();
-  }, [file, downloadFile, getDownloadLinkURL]);
-
-  return { downloadLinkURL, publicDownloadLink, isLoading, isError };
+    if (file) {
+      void fetchDownloadLinks(file);
+    }
+  }, [file]);
 };
 
 export default useDownloadLinks;

@@ -4,6 +4,7 @@
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
+  "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -137,7 +138,9 @@
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
       "DownloadFailed": "Herunterladen fehlgeschlagen",
-      "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
+      "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
+      "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
+      "SaveFailed": "Speichern fehlgeschlagen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -503,6 +506,7 @@
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
+    "min_3_chars": "Mindestens 3 Zeichen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -624,9 +628,12 @@
   },
   "appExtendedOptions": {
     "title": "Erweiterungen",
-    "onlyOfficeUrl": "Bitte geben Sie die OnlyOffice URL an",
-    "onlyOfficeUrlTitle": "OnlyOffice URL",
+    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Bitte geben Sie das OnlyOffice JWT Secret Key an"
+    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+  },
+  "preview": {
+    "failedToLoadImage": "Bild konnte nicht geladen werden"
   }
 }

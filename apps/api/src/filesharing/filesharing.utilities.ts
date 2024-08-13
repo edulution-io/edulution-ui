@@ -3,11 +3,6 @@ import he from 'he';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { Logger } from '@nestjs/common';
 import ContentType from '@libs/filesharing/types/contentType';
-import pathNode from 'path';
-import fs from 'fs';
-import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
-import syncRequest from 'sync-request';
-import CustomFile from '@libs/filesharing/types/customFile';
 import { WebDAVMultiStatus, WebDAVResponse, XMLAttributes as XA } from './filesharing.types';
 
 const xmlOptions = {
@@ -85,31 +80,6 @@ export function mapToDirectories(xmlData: string): DirectoryFileDTO[] {
   } catch (error) {
     Logger.error('Error parsing XML data:', error);
     return [];
-  }
-}
-
-export function retrieveAndSaveFile(filename: string, body: OnlyOfficeCallbackData): CustomFile | undefined {
-  if ((body.status !== 2 && body.status !== 4) || !body.url) {
-    return undefined;
-  }
-
-  try {
-    const file = syncRequest('GET', body.url);
-    const filePath = pathNode.join(__dirname, `../public/downloads/${filename}`);
-    fs.mkdirSync(pathNode.dirname(filePath), { recursive: true });
-    fs.writeFileSync(filePath, file.getBody());
-    const fileBuffer = fs.readFileSync(filePath);
-
-    return {
-      fieldname: 'file',
-      originalname: filename,
-      encoding: '7bit',
-      mimetype: 'text/plain',
-      buffer: fileBuffer,
-      size: fileBuffer.length,
-    } as CustomFile;
-  } catch (error) {
-    return undefined;
   }
 }
 

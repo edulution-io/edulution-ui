@@ -62,6 +62,7 @@ const FormField = <T extends FieldValues>({
               variant={variant}
               readOnly={readonly}
               value={value}
+              defaultValue={defaultValue as string}
               onChange={(e) => {
                 field.onChange(e);
                 if (onChange) onChange(e);

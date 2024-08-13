@@ -3,7 +3,7 @@ enum FileSharingApiEndpoints {
   BASE = 'filesharing',
   GET_FILE_STREAM = 'file-stream',
   GET_DOWNLOAD_LINK = 'download-link',
-  GET_ONLY_OFFICE_TOKEN = 'only-office',
+  ONLY_OFFICE_TOKEN = 'only-office',
 }
 
 export default FileSharingApiEndpoints;

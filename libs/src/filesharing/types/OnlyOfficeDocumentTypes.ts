@@ -1,4 +1,4 @@
-const OnlyOfficeDocumentTypes = Object.freeze({
+const OnlyOfficeDocumentTypes = {
   DOCX: 'docx',
   DOC: 'doc',
   XLSX: 'xlsx',
@@ -11,6 +11,6 @@ const OnlyOfficeDocumentTypes = Object.freeze({
   TXT: 'txt',
   CSV: 'csv',
   PDF: 'pdf',
-});
+};
 
 export default OnlyOfficeDocumentTypes;

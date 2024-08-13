@@ -4,36 +4,18 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
-import {
-  HttpMethods,
-  HttpMethodsWebDav,
-  RequestResponseContentType,
-  ResponseType,
-} from '@libs/common/types/http-methods';
-import { firstValueFrom } from 'rxjs';
+import { HttpMethods, HttpMethodsWebDav, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
-import { HttpService } from '@nestjs/axios';
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import getProtocol from '@libs/common/utils/getProtocol';
-import { extname, join, resolve } from 'path';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
-import { createHash } from 'crypto';
-import { decode, verify } from 'jsonwebtoken';
-import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
-import saveFileStream from 'libs/src/filesharing/utils/saveFileStream';
-import signJwtContent from '@libs/common/utils/signJwtContent';
 import process from 'node:process';
 import { Request } from 'express';
-import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
-import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
-import { AvailableAppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
-import { mapToDirectories, mapToDirectoryFiles, retrieveAndSaveFile } from './filesharing.utilities';
+import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
-import JWTUser from '../types/JWTUser';
-import AppConfigService from '../appconfig/appconfig.service';
+import FilesystemService from './filesystem.service';
+import OnlyofficeService from './onlyoffice.service';
 
 @Injectable()
 class FilesharingService {
@@ -42,9 +24,9 @@ class FilesharingService {
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
   constructor(
-    private readonly httpService: HttpService,
     private readonly userService: UsersService,
-    private readonly appConfigService: AppConfigService,
+    private readonly onlyofficeService: OnlyofficeService,
+    private readonly fileSystemService: FilesystemService,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -121,27 +103,6 @@ class FilesharingService {
     '    <d:creationdate />\n' +
     '  </d:prop>\n' +
     '</d:propfind>\n';
-
-  private async fetchFileStream(
-    username: string,
-    url: string,
-    streamFetching = false,
-  ): Promise<AxiosResponse<Readable> | Readable> {
-    try {
-      const password = await this.userService.getPassword(username);
-      const authContents = `${username}:${password}`;
-      const protocol = getProtocol(url);
-      const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
-
-      const fileStream = this.httpService.get<Readable>(authenticatedUrl, {
-        responseType: ResponseType.STREAM,
-      });
-
-      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
-  }
 
   getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
@@ -285,7 +246,7 @@ class FilesharingService {
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const resp = await this.fetchFileStream(username, url);
+      const resp = await this.fileSystemService.fetchFileStream(username, url);
       if (resp instanceof Readable) {
         return resp;
       }
@@ -296,75 +257,24 @@ class FilesharingService {
   }
 
   async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
-    const outputFolder = resolve(__dirname, '..', 'public', 'downloads');
-    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-    if (!existsSync(outputFolder)) {
-      mkdirSync(outputFolder, { recursive: true });
-    }
+    return this.fileSystemService.downloadLink(username, filePath, filename);
+  }
 
-    try {
-      const user = await this.userService.findOne(username);
-      if (!user) {
-        return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusReplay;
-      }
-      const responseStream = await this.fetchFileStream(user?.username, `${url}`);
-      const hash = createHash(HashAlgorithm).update(filePath).digest('hex');
-      const extension = extname(filename);
-      const hashedFilename = `${hash}${extension}`;
-      const outputFilePath = join(outputFolder, hashedFilename);
-
-      await saveFileStream(responseStream, outputFilePath);
-
-      const publicUrl = `${process.env.EDUI_DOWNLOAD_DIR as string}${hashedFilename}`;
-
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        data: publicUrl,
-      } as WebdavStatusReplay;
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
+  async getOnlyOfficeToken(payload: string) {
+    return this.onlyofficeService.generateOnlyOfficeToken(payload);
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async getOnlyOfficeToken(payload: string) {
-    const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
-    const jwtSecret = appConfig?.extendedOptions.find(
-      (option) => option.name === AvailableAppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
-    );
-    if (!jwtSecret) {
-      throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+  async deleteFileFromServer(path: string): Promise<void> {
+    try {
+      await FilesystemService.deleteFile(path);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const secret = jwtSecret.value;
-    return signJwtContent(payload, secret);
   }
 
   async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
-    const callbackData = req.body as OnlyOfficeCallbackData;
-    const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
-    const pubKey = readFileSync(pubKeyPath, 'utf8');
-    let user: JWTUser;
-    const cleanedPath = getPathWithoutWebdav(path);
-
-    try {
-      verify(eduToken, pubKey);
-      user = decode(eduToken) as JWTUser;
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.UploadFailed, HttpStatus.UNAUTHORIZED);
-    }
-
-    if (!user) {
-      throw new CustomHttpException(FileSharingErrorMessage.UploadFailed, HttpStatus.FORBIDDEN);
-    }
-    if (callbackData.status === 2 || callbackData.status === 4) {
-      const file = retrieveAndSaveFile(filename, callbackData);
-      if (file) {
-        await this.uploadFile(user.preferred_username, cleanedPath, file, '');
-      } else {
-        throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
+    return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
   }
 }
 

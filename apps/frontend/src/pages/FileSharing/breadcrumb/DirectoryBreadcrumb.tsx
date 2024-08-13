@@ -17,8 +17,8 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
 import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
 import useUserStore from '@/store/UserStore/UserStore';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/fileEditorStore';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 interface DirectoryBreadcrumbProps {
   path: string;

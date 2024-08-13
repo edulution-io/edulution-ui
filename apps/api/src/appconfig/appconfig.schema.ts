@@ -12,7 +12,7 @@ export class AppConfig extends Document {
   @Prop({ required: true })
   icon: string;
 
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Array, default: [] })
   extendedOptions: AppConfigExtendedOption[];
 
   @Prop({ required: true, type: String })
@@ -21,7 +21,7 @@ export class AppConfig extends Document {
   @Prop({ type: Object, default: {} })
   options: AppConfigOptions;
 
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
 }
 

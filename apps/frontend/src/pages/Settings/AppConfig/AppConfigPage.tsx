@@ -81,7 +81,7 @@ const AppConfigPage: React.FC = () => {
       label: item.label,
     }));
 
-    const newExtendedOptions = currentConfig?.extendedOptions?.map((item) => ({
+    const newExtendedOptions = currentConfig.extendedOptions?.map((item) => ({
       name: item.name,
       value: item.value,
       description: item.description,
@@ -91,6 +91,7 @@ const AppConfigPage: React.FC = () => {
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
     setValue(`${settingLocation}.extensions`, newExtendedOptions);
+
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
@@ -125,12 +126,15 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const extendedOptions = appExtendedOptions.ONLY_OFFICE.map((e) => ({
-      name: e.name,
-      description: e.description,
-      type: e.type,
-      value: getValues(`${settingLocation}.${e.name}`) as string,
-    })) as AppConfigExtendedOption[];
+    const extendedOptions =
+      settingLocation === 'filesharing'
+        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
+            name: e.name,
+            description: e.description,
+            type: e.type,
+            value: getValues(`${settingLocation}.${e.name}`) as string,
+          })) as AppConfigExtendedOption[])
+        : [];
 
     const newConfig = {
       name: settingLocation,
@@ -220,12 +224,13 @@ const AppConfigPage: React.FC = () => {
                         <Accordion type="multiple">
                           <AccordionItem value="onlyOffice">
                             <AccordionTrigger className="flex text-xl font-bold">
-                              <h3>{t('appExtendedOptions.title')}</h3>
+                              <h4>{t('appExtendedOptions.title')}</h4>
                             </AccordionTrigger>
                             <AccordionContent className="space-y-10 pt-4">
                               <ExtendedOptionsForm
                                 extendedOptions={appExtendedOptions.ONLY_OFFICE}
                                 baseName={settingLocation}
+                                form={form}
                               />
                             </AccordionContent>
                           </AccordionItem>

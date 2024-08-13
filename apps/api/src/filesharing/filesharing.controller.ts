@@ -21,6 +21,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { Request, Response } from 'express';
+import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
@@ -69,8 +70,15 @@ class FilesharingController {
   }
 
   @Delete()
-  async deleteFile(@Query('path') path: string, @GetCurrentUsername() username: string) {
-    return this.filesharingService.deleteFileAtPath(username, path);
+  async deleteFile(
+    @Query('path') path: string,
+    @Query('target') target: DeleteTargetType,
+    @GetCurrentUsername() username: string,
+  ) {
+    if (target === DeleteTargetType.FILE_SERVER) {
+      return this.filesharingService.deleteFileAtPath(username, path);
+    }
+    return this.filesharingService.deleteFileFromServer(path);
   }
 
   @Patch()
@@ -108,7 +116,7 @@ class FilesharingController {
     return this.filesharingService.downloadLink(username, filePath, fileName);
   }
 
-  @Post(FileSharingApiEndpoints.GET_ONLY_OFFICE_TOKEN)
+  @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)
   getOnlyofficeToken(@Body() payload: string) {
     return this.filesharingService.getOnlyOfficeToken(payload);
   }

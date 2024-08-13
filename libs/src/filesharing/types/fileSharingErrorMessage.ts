@@ -11,6 +11,8 @@ enum FileSharingErrorMessage {
   DbAccessFailed = 'filesharing.errors.DbAccessFailed',
   WebDavError = 'filesharing.errors.WebDavError',
   DownloadFailed = 'filesharing.errors.DownloadFailed',
+  SaveFailed = 'filesharing.errors.SaveFailed',
+  DeleteFromServerFailed = 'filesharing.errors.DeleteFromServerFailed',
 }
 
 export default FileSharingErrorMessage;
