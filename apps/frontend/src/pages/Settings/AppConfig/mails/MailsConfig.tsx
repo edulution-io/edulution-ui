@@ -4,7 +4,7 @@ import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import { MailProviderConfigDto } from '@libs/mail/types';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MailEncryption from '@libs/mail/constants/mailEncryption';
@@ -47,11 +47,12 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
 
   useEffect(() => {
     if (option && option !== t('common.custom')) {
-      form.setValue('mailProviderId', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].id);
-      form.setValue('configName', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].name);
-      form.setValue('hostname', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].host);
-      form.setValue('port', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].port);
-      form.setValue('encryption', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].encryption);
+      const mailProvider = mailProviderDropdownOptions.filter((itm) => itm.name === option)[0];
+      form.setValue('mailProviderId', mailProvider.id);
+      form.setValue('configName', mailProvider.name);
+      form.setValue('hostname', mailProvider.host);
+      form.setValue('port', mailProvider.port);
+      form.setValue('encryption', mailProvider.encryption);
     }
 
     if (option === t('common.custom')) {
@@ -127,7 +128,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
           </FormItem>
         )}
       />
-      <div className="flex gap-4">
+      <div className="flex flex-row justify-between gap-4">
         <FormFieldSH
           control={form.control}
           name="port"
@@ -155,7 +156,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
               <FormControl>
                 <DropdownMenu
                   options={encOptions}
-                  selectedVal={field.value as string}
+                  selectedVal={field.value as TMailEncryption}
                   handleChange={field.onChange}
                   classname="z-50"
                   openToTop

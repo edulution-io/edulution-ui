@@ -57,7 +57,7 @@ const MailImporterTable: React.FC = () => {
       ) : (
         <div className="flex-1 text-sm">&nbsp;</div>
       )}
-      <div className="w-full flex-1  pl-3 pr-3.5">
+      <div className="flex-1 pl-3  pr-3.5">
         <ScrollArea className="max-h-[80vh] overflow-auto">
           <Table>
             <TableHeader>
