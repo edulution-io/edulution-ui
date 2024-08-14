@@ -41,10 +41,6 @@ const MailImporterTable: React.FC = () => {
     },
   });
 
-  // useEffect(() => {
-  //   setSelectedSyncJob('6');
-  // }, [table.getFilteredSelectedRowModel().rows]);
-
   return (
     <>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
