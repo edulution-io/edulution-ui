@@ -655,5 +655,11 @@
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number"
     }
+  },
+  "licensing": {
+    "communityLicenseDialog": {
+      "title": "Community Edition",
+      "description": "Free Community Edition of edulution. This version does not receive any support."
+    }
   }
 }

@@ -14,6 +14,7 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
+import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -34,6 +35,7 @@ const cleanAllStores = () => {
   useDesktopDeploymentStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();
   useMailsStore.getState().reset();
+  useCommunityLicenseStore.getState().reset();
 };
 
 export default cleanAllStores;
