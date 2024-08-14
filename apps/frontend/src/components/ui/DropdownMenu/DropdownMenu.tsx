@@ -72,6 +72,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({
               handleChange('');
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
+            disabled={options.length === 0}
           />
         </div>
         <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />

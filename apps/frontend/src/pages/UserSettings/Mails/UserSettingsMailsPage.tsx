@@ -73,9 +73,10 @@ const UserSettingsMailsPage: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      SaveButton(() => handleCreateSyncJob()),
+      SaveButton(() => handleCreateSyncJob(), externalMailProviderConfig.length > 0),
       ReloadButton(() => {
         void getSyncJob();
+        void getExternalMailProviderConfig();
       }),
       DeleteButton(() => handleDeleteSyncJob(), Object.keys(selectedSyncJob).length > 0),
     ],
