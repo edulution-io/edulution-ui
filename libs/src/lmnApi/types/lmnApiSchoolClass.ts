@@ -8,6 +8,7 @@ interface LmnApiSchoolClass {
   mail: string[];
   member: string[];
   memberOf: string[];
+  proxyAddresses: string[];
   name: string;
   sAMAccountName: string;
   sAMAccountType: string;

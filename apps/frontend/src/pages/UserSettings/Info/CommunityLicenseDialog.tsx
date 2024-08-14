@@ -22,7 +22,7 @@ const CommunityLicenseDialog: React.FC = () => {
 
   const getDialogBody = () => (
     <div className="flex flex-col items-center space-y-4">
-      <p>{t('licensing.communityLicenseDialog.description')}</p>
+      <p className="mb-5">{t('licensing.communityLicenseDialog.description')}</p>
       <Button
         className="md:absolute md:bottom-4"
         variant="btn-collaboration"
