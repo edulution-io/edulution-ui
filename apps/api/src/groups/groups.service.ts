@@ -13,7 +13,7 @@ import { ALL_GROUPS_CACHE_KEY, GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/group
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
-import JWTUser from '../types/JWTUser';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 
 const { KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET, PUBLIC_KEY_FILE_PATH } =
   process.env as {
@@ -59,7 +59,7 @@ class GroupsService {
 
       const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
 
-      const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(response.data.access_token, {
+      const decoded: JwtUser = await this.jwtService.verifyAsync<JwtUser>(response.data.access_token, {
         publicKey: pubKey,
         algorithms: ['RS256'],
       });
@@ -106,6 +106,23 @@ class GroupsService {
   static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
+    } catch (e) {
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+    }
+  }
+
+  static async fetchCurrentUser(token: string): Promise<JwtUser> {
+    try {
+      const tokenEndpoint = `${KEYCLOAK_API}/realms/edulution/protocol/openid-connect/userinfo`;
+
+      const response = await axios.get<JwtUser>(tokenEndpoint, {
+        headers: {
+          [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
+          [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
     } catch (e) {
       throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
     }

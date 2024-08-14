@@ -3,6 +3,7 @@ enum UserGroups {
   Projects = 'projects',
   Sessions = 'sessions',
   Room = 'room',
+  Printers = 'Printers',
 }
 
 export default UserGroups;

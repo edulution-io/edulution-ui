@@ -35,5 +35,5 @@ export const HTTP_HEADERS = {
   ContentDisposition: 'Content-Disposition',
   ContentType: 'Content-Type',
   Authorization: 'Authorization',
-  X_API_Key: 'X-API-Key',
+  XApiKey: 'x-api-key',
 } as const;

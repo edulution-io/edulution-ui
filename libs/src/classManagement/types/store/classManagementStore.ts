@@ -8,11 +8,15 @@ import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWithMembers';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
+import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
+import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
+import { TFunction } from 'i18next';
 
 interface ClassManagementState {
   userSessions: LmnApiSession[];
   isLoading: boolean;
   isRoomLoading: boolean;
+  isPrinterLoading: boolean;
   isSessionLoading: boolean;
   isProjectLoading: boolean;
   isSchoolClassLoading: boolean;
@@ -22,11 +26,15 @@ interface ClassManagementState {
   isSearchGroupsLoading: boolean;
   error: Error | null;
   userRoom: LmnApiRoom | null;
+  printers: LmnApiPrinter[];
 }
 
 interface ClassManagementActions {
   reset: () => void;
-  searchGroupsOrUsers: (searchQuery: string) => Promise<(MultipleSelectorGroup & LmnApiSearchResult)[]>;
+  searchGroupsOrUsers: (
+    searchQuery: string,
+    t: TFunction<'translation', undefined>,
+  ) => Promise<(MultipleSelectorGroup & LmnApiSearchResult)[]>;
   createSession: (form: UseFormReturn<GroupForm>) => Promise<void>;
   updateSession: (form: UseFormReturn<GroupForm>) => Promise<void>;
   removeSession: (sessionId: string) => Promise<void>;
@@ -40,6 +48,8 @@ interface ClassManagementActions {
   fetchUserSession: (name: string) => Promise<LmnApiSession | null>;
   fetchUserSessions: () => Promise<void>;
   fetchRoom: () => Promise<void>;
+  fetchPrinters: () => Promise<void>;
+  fetchPrinter: (name: string) => Promise<LmnApiPrinterWithMembers | null>;
 }
 
 type ClassManagementStore = ClassManagementState & ClassManagementActions;

@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { FaCog } from 'react-icons/fa';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import CircleLoader from '@/components/ui/CircleLoader';
+import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 
 interface GroupListCardProps {
   group: LmnApiProject | LmnApiSchoolClass;
@@ -25,7 +27,11 @@ interface GroupListCardProps {
 const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnrolEnabled = false }) => {
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const { setOpenDialogType, setUserGroupToEdit } = useLessonStore();
+  const { setOpenDialogType, setUserGroupToEdit, togglePrinterJoined, toggleProjectJoined, toggleSchoolClassJoined } =
+    useLessonStore();
+
+  const { fetchUserProjects, fetchUserSchoolClasses, fetchPrinters } = useClassManagementStore();
+
   const {
     displayName,
     cn: commonName,
@@ -36,6 +42,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   } = group;
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
+  const [isCardLoading, setIsCardLoading] = useState<boolean>(false);
 
   if (!user) {
     return null;
@@ -48,40 +55,57 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   }, [group.member, user]);
 
   const onCardClick = () => {
+    if (type === UserGroups.Printers) {
+      return;
+    }
     setUserGroupToEdit(group);
     setOpenDialogType(type);
   };
 
-  const onSelect = () => {
+  const onSelect = async () => {
     if (!sophomorixJoinable) {
       return;
     }
-    if (isSelected) {
-      setIsSelected(false);
-      // Will be implemented in NIEDUUI-358
-    } else {
-      setIsSelected(true);
-      // Will be implemented in NIEDUUI-358
+    setIsCardLoading(true);
+
+    switch (type) {
+      case UserGroups.Printers:
+        await togglePrinterJoined(isSelected, commonName);
+        await fetchPrinters();
+        break;
+      case UserGroups.Projects:
+        await toggleProjectJoined(isSelected, commonName);
+        await fetchUserProjects();
+        break;
+      case UserGroups.Classes:
+        await toggleSchoolClassJoined(isSelected, commonName);
+        await fetchUserSchoolClasses();
+        break;
+      default:
     }
+
+    setIsSelected(!isSelected);
+    setIsCardLoading(false);
   };
 
   const isActive = isSelected || isHovered;
   const titleIcon = isEnrolEnabled ? <MdLock className="ml-2 mt-1 h-5 w-5" /> : null;
-  const cardContentIcon = isHovered ? <FaCog className="ml-2 h-7" /> : icon;
-  const cardContentText = isHovered ? (
-    <div>{t('details')}</div>
-  ) : (
-    <>
-      {type === UserGroups.Projects ? (
+  const cardContentIcon = isHovered && type !== UserGroups.Printers ? <FaCog className="ml-2 h-7" /> : icon;
+  const cardContentText =
+    isHovered && type !== UserGroups.Printers ? (
+      <div>{t('details')}</div>
+    ) : (
+      <>
+        {type === UserGroups.Projects ? (
+          <div>
+            {sophomorixAdmins.length} {t(sophomorixAdmins.length === 1 ? 'common.adminShort' : 'common.adminsShort')}
+          </div>
+        ) : null}
         <div>
-          {sophomorixAdmins.length} {t(sophomorixAdmins.length === 1 ? 'common.adminShort' : 'common.adminsShort')}
+          {sophomorixMembers.length} {t(sophomorixMembers.length === 1 ? 'user' : 'common.users')}
         </div>
-      ) : null}
-      <div>
-        {sophomorixMembers.length} {t(sophomorixMembers.length === 1 ? 'user' : 'common.users')}
-      </div>
-    </>
-  );
+      </>
+    );
 
   return (
     <Card
@@ -97,44 +121,50 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
       onMouseOut={() => setIsHovered(false)}
     >
       <CardContent className="relative flex w-full flex-row p-0">
-        <div className="flex w-full flex-col justify-around">
-          <div className="flew-row flex ">
-            {sophomorixJoinable && isEnrolEnabled ? (
-              <Checkbox
-                className="-mr-1 ml-2 rounded-lg"
-                checked={isSelected}
-                onCheckedChange={onSelect}
-                aria-label={t('select')}
-                onClick={(e) => e.stopPropagation()}
-                onMouseOver={(e) => e.stopPropagation()}
-              />
-            ) : (
-              titleIcon
-            )}
-            <TooltipProvider>
-              <ActionTooltip
-                tooltipText={displayName || commonName}
-                trigger={
-                  <div className="ml-2 overflow-hidden whitespace-nowrap text-nowrap text-lg font-bold">
-                    {displayName || commonName.replace('p_', '')}
-                  </div>
-                }
-              />
-            </TooltipProvider>
-          </div>
-          <div className="ml-3 flex flex-row items-center">
-            {cardContentIcon}
-            <div className="ml-2  text-sm">{cardContentText}</div>
-          </div>
-        </div>
-        <div
-          className={cn(
-            'absolute bottom-2 right-2 mt-1 h-[26px] flex-col items-center justify-around rounded-lg px-2 py-0 text-sm',
-            isActive ? 'bg-gray-400' : 'bg-gray-700',
-          )}
-        >
-          {sophomorixSchoolname}
-        </div>
+        {isCardLoading ? (
+          <CircleLoader className="m-auto" />
+        ) : (
+          <>
+            <div className="flex w-full flex-col justify-around">
+              <div className="flew-row flex ">
+                {sophomorixJoinable && isEnrolEnabled ? (
+                  <Checkbox
+                    className="-mr-1 ml-2 rounded-lg"
+                    checked={isSelected}
+                    onCheckedChange={onSelect}
+                    aria-label="Select"
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseOver={(e) => e.stopPropagation()}
+                  />
+                ) : (
+                  titleIcon
+                )}
+                <TooltipProvider>
+                  <ActionTooltip
+                    tooltipText={displayName || commonName}
+                    trigger={
+                      <div className="ml-2 overflow-hidden whitespace-nowrap text-nowrap text-lg font-bold">
+                        {displayName || commonName.replace('p_', '')}
+                      </div>
+                    }
+                  />
+                </TooltipProvider>
+              </div>
+              <div className="ml-3 flex h-10 flex-row items-center">
+                {cardContentIcon}
+                <div className="ml-2  text-sm">{cardContentText}</div>
+              </div>
+            </div>
+            <div
+              className={cn(
+                'absolute bottom-2 right-2 mt-1 h-[26px] flex-col items-center justify-around rounded-lg px-2 py-0 text-sm',
+                isActive ? 'bg-gray-400' : 'bg-gray-700',
+              )}
+            >
+              {sophomorixSchoolname}
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

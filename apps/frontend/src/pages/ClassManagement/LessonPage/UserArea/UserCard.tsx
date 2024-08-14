@@ -10,10 +10,11 @@ import { useTranslation } from 'react-i18next';
 interface UserCardProps {
   user: UserLmnInfo;
   setSelectedMember: React.Dispatch<React.SetStateAction<UserLmnInfo[]>>;
-  fetchData: () => Promise<void>;
+  isTeacherInSameClass: boolean;
+  isTeacherInSameSchool: boolean;
 }
 
-const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
+const UserCard = ({ user, setSelectedMember, isTeacherInSameClass, isTeacherInSameSchool }: UserCardProps) => {
   const { t } = useTranslation();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
 
@@ -23,7 +24,16 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
 
   const onCardClick = () => {
-    if (!isStudent) return;
+    if (!isStudent) {
+      // eslint-disable-next-line no-alert
+      alert(t('classmanagement.itsNotPossibleToEditOtherTeacher'));
+      return;
+    }
+    if (!isTeacherInSameSchool) {
+      // eslint-disable-next-line no-alert
+      alert(t('classmanagement.itsNotPossibleToEditOtherSchoolStudents'));
+      return;
+    }
 
     setSelectedMember((prevState) => {
       if (isSelected) {
@@ -36,6 +46,7 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
   };
 
   const isActive = isSelected || isHovered;
+  const isSelectable = isTeacherInSameSchool && isStudent;
 
   return (
     <Card
@@ -46,24 +57,24 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
       onMouseOut={() => setIsHovered(false)}
     >
       <CardContent className="flex w-full flex-row p-0">
-        <div className={cn('m-0 flex flex-col justify-between', isStudent ? 'w-5/6' : 'w-full')}>
+        <div className={cn('m-0 flex flex-col justify-between', isSelectable ? 'w-5/6' : 'w-full')}>
           <div className="flew-row flex h-8">
-            {isStudent ? (
+            {isSelectable && (
               <Checkbox
                 className="ml-2 rounded-lg"
                 checked={isSelected}
                 onCheckedChange={onCardClick}
                 aria-label={t('select')}
               />
-            ) : null}
-            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isStudent && 'ml-2')}>{displayName}</div>
+            )}
+            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>{displayName}</div>
           </div>
 
           <div className="-mt-1 ml-2 flex justify-between">
             <div className={cn('mt-1 h-6 rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
               {sophomorixAdminClass}
             </div>
-            <div className={cn('flex flex-col text-xs', !isStudent && 'mr-2')}>
+            <div className={cn('flex flex-col text-xs', !isSelectable && 'mr-2')}>
               <div>{name}</div>
               <div>{school}</div>
             </div>
@@ -80,11 +91,11 @@ const UserCard = ({ user, setSelectedMember, fetchData }: UserCardProps) => {
             {surname.slice(0, 1)}
           </button>
         </div>
-        {isStudent ? (
+        {isSelectable ? (
           <div className="mt-0.5 flex w-1/6 flex-col items-center justify-around">
             <UserCardButtonBar
               user={user}
-              fetchData={fetchData}
+              isTeacherInSameClass={isTeacherInSameClass}
             />
           </div>
         ) : null}

@@ -23,7 +23,7 @@ class MailsService {
     this.mailcowApi = axios.create({
       baseURL: `https://${MAIL_IMAP_URL}/api/v1`,
       headers: {
-        [HTTP_HEADERS.X_API_Key]: MAIL_API_KEY,
+        [HTTP_HEADERS.XApiKey]: MAIL_API_KEY,
         [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
       },
     });
