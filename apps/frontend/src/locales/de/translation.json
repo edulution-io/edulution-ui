@@ -225,6 +225,8 @@
     "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
     "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
+    "systemName": "Systemname",
+    "proxyAddresses": "Proxy Adressen (kommasepariert)",
     "printing": "Drucken",
     "veyon": "Veyon",
     "enable": "einschalten",
