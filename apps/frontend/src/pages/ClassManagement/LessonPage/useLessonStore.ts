@@ -16,6 +16,7 @@ import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 
 const initialState = {
   isLoading: false,
@@ -52,7 +53,7 @@ const useLessonStore = create<LessonStore>(
               users,
             },
             {
-              headers: { 'x-api-key': lmnApiToken },
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
         } catch (error) {
@@ -71,7 +72,7 @@ const useLessonStore = create<LessonStore>(
               group,
               users,
             },
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {
           handleApiError(error, set);
@@ -90,7 +91,7 @@ const useLessonStore = create<LessonStore>(
               users,
             },
             {
-              headers: { 'x-api-key': lmnApiToken },
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
         } catch (error) {
@@ -112,7 +113,7 @@ const useLessonStore = create<LessonStore>(
               groupType,
             },
             {
-              headers: { 'x-api-key': lmnApiToken },
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
         } catch (error) {
@@ -131,7 +132,7 @@ const useLessonStore = create<LessonStore>(
             `${LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT}/${schoolClass}/${param}`,
             undefined,
             {
-              headers: { 'x-api-key': lmnApiToken },
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
         } catch (error) {
@@ -147,7 +148,7 @@ const useLessonStore = create<LessonStore>(
           const { lmnApiToken } = useLmnApiStore.getState();
           const param = isAlreadyJoined ? GroupJoinState.Quit : GroupJoinState.Join;
           await eduApi.put<LmnApiProject>(`${LMN_API_EDU_API_PROJECT_ENDPOINT}/${project}/${param}`, undefined, {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {
           handleApiError(error, set);
@@ -162,7 +163,7 @@ const useLessonStore = create<LessonStore>(
           const { lmnApiToken } = useLmnApiStore.getState();
           const param = isAlreadyJoined ? GroupJoinState.Quit : GroupJoinState.Join;
           await eduApi.put<LmnApiPrinter>(`${LMN_API_PRINTERS_EDU_API_ENDPOINT}/${printer}/${param}`, undefined, {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {
           handleApiError(error, set);

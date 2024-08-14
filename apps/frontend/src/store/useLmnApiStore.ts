@@ -6,6 +6,7 @@ import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 
 import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -59,7 +60,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
           set({ user: response.data });
         } catch (error) {
@@ -74,7 +75,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(`${LMN_API_USER_EDU_API_ENDPOINT}/${username}`, {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
           return response.data;
         } catch (error) {

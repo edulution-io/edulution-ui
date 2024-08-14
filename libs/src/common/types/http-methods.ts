@@ -31,8 +31,9 @@ export enum RequestResponseContentType {
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
 }
 
-export const HTTP_HEADERS: { [key: string]: string } = {
+export const HTTP_HEADERS = {
   ContentDisposition: 'Content-Disposition',
   ContentType: 'Content-Type',
   Authorization: 'Authorization',
+  XApiKey: 'x-api-key',
 } as const;

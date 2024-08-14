@@ -6,9 +6,10 @@ import {
   LMN_API_CHANGE_PASSWORD_EDU_API_ENDPOINT,
   LMN_API_FIRST_PASSWORD_EDU_API_ENDPOINT,
 } from '@libs/lmnApi/types/eduApiEndpoints';
-import LmnApiStore from '@libs/lmnApi/constants/lmnApiPasswordStore';
+import LmnApiStore from '@libs/lmnApi/types/lmnApiPasswordStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 
 const initialState = {
   isLoading: false,
@@ -34,7 +35,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
           password,
         },
         {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         },
       );
       toast.success(i18n.t('classmanagement.firstPasswordChangedSuccessfully'));
@@ -56,7 +57,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
           password,
         },
         {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         },
       );
       toast.success(i18n.t('classmanagement.currentPasswordChangedSuccessfully'));

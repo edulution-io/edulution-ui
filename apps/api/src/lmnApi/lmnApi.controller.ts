@@ -13,7 +13,7 @@ export class LmnApiController {
 
   @Post('passwords')
   async printPasswords(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { options: PrintPasswordsRequest },
     @Res() res: Response,
   ) {
@@ -26,7 +26,7 @@ export class LmnApiController {
   @Put('exam-mode/:state')
   async startExamMode(
     @Param() params: { state: string },
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { users: string[]; groupType: string; groupName: string },
   ) {
     if (params.state === 'start') {
@@ -37,7 +37,7 @@ export class LmnApiController {
 
   @Post('management-groups')
   async addManagementGroup(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { group: string; users: string[] },
   ) {
     return this.lmnApiService.addManagementGroup(lmnApiToken, body.group, body.users);
@@ -45,38 +45,41 @@ export class LmnApiController {
 
   @Delete('management-groups')
   async removeManagementGroup(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { group: string; users: string[] },
   ) {
     return this.lmnApiService.removeManagementGroup(lmnApiToken, body.group, body.users);
   }
 
   @Get('school-classes/:schoolClassName')
-  async getSchoolClass(@Param() params: { schoolClassName: string }, @Headers('x-api-key') lmnApiToken: string) {
+  async getSchoolClass(
+    @Param() params: { schoolClassName: string },
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+  ) {
     return this.lmnApiService.getSchoolClass(lmnApiToken, params.schoolClassName);
   }
 
   @Get('school-classes')
-  async getUserSchoolClasses(@Headers('x-api-key') lmnApiToken: string) {
+  async getUserSchoolClasses(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
 
   @Put('school-classes/:schoolClass/:action')
   async toggleSchoolClassJoined(
     @Param() params: { schoolClass: string; action: string },
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
   ) {
     return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action);
   }
 
   @Get('room')
-  async getCurrentUserRoom(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
+  async getCurrentUserRoom(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentUsername() username: string) {
     return this.lmnApiService.getCurrentUserRoom(lmnApiToken, username);
   }
 
   @Get('sessions/:sessionId')
   async getUserSession(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Param() params: { sessionSid: string },
     @GetCurrentUsername() username: string,
   ) {
@@ -84,13 +87,13 @@ export class LmnApiController {
   }
 
   @Get('sessions')
-  async getUserSessions(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() username: string) {
+  async getUserSessions(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentUsername() username: string) {
     return this.lmnApiService.getUserSessions(lmnApiToken, username);
   }
 
   @Post('sessions')
   async addUserSession(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
@@ -99,7 +102,7 @@ export class LmnApiController {
 
   @Delete('sessions/:sessionId')
   async removeUserSession(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Param() params: { sessionId: string },
     @GetCurrentUsername() username: string,
   ) {
@@ -108,7 +111,7 @@ export class LmnApiController {
 
   @Patch('sessions')
   async updateUserSession(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
@@ -116,23 +119,29 @@ export class LmnApiController {
   }
 
   @Get('user')
-  async getCurrentUser(@Headers('x-api-key') lmnApiToken: string, @GetCurrentUsername() currentUsername: string) {
+  async getCurrentUser(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() currentUsername: string,
+  ) {
     return this.lmnApiService.getUser(lmnApiToken, currentUsername);
   }
 
   @Get('user/:username')
-  async getUser(@Headers('x-api-key') lmnApiToken: string, @Param() params: { username: string }) {
+  async getUser(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
     return this.lmnApiService.getUser(lmnApiToken, params.username);
   }
 
   @Get('search')
-  async searchUsersOrGroups(@Headers('x-api-key') lmnApiToken: string, @Query('searchQuery') searchQuery: string) {
+  async searchUsersOrGroups(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Query('searchQuery') searchQuery: string,
+  ) {
     return this.lmnApiService.searchUsersOrGroups(lmnApiToken, searchQuery);
   }
 
   @Post('projects')
   async createProject(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
@@ -141,7 +150,7 @@ export class LmnApiController {
 
   @Patch('projects')
   async updateProject(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { formValues: GroupForm },
     @GetCurrentUsername() username: string,
   ) {
@@ -149,24 +158,24 @@ export class LmnApiController {
   }
 
   @Delete('projects/:projectName')
-  async deleteProject(@Headers('x-api-key') lmnApiToken: string, @Param() params: { projectName: string }) {
+  async deleteProject(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { projectName: string }) {
     return this.lmnApiService.deleteProject(lmnApiToken, params.projectName);
   }
 
   @Get('projects/:projectName')
-  async getProject(@Headers('x-api-key') lmnApiToken: string, @Param() params: { projectName: string }) {
+  async getProject(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { projectName: string }) {
     return this.lmnApiService.getProject(lmnApiToken, params.projectName);
   }
 
   @Get('projects')
-  async getUserProjects(@Headers('x-api-key') lmnApiToken: string) {
+  async getUserProjects(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getUserProjects(lmnApiToken);
   }
 
   @Put('projects/:project/:action')
   async toggleProjectJoined(
     @Param() params: { project: string; action: string },
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
   ) {
     return this.lmnApiService.toggleProjectJoined(lmnApiToken, params.project, params.action);
   }
@@ -174,19 +183,19 @@ export class LmnApiController {
   @Put('printers/:project/:action')
   async togglePrinterJoined(
     @Param() params: { project: string; action: string },
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
   ) {
     return this.lmnApiService.togglePrinterJoined(lmnApiToken, params.project, params.action);
   }
 
   @Get('printers')
-  async getPrinters(@Headers('x-api-key') lmnApiToken: string) {
+  async getPrinters(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getPrinters(lmnApiToken);
   }
 
   @Put('password')
   async changePassword(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { oldPassword: string; newPassword: string },
     @GetCurrentUsername() username: string,
   ) {
@@ -194,13 +203,16 @@ export class LmnApiController {
   }
 
   @Post('password')
-  async setPassword(@Headers('x-api-key') lmnApiToken: string, @Body() body: { password: string; username: string }) {
+  async setPassword(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { password: string; username: string },
+  ) {
     return this.lmnApiService.changePassword(lmnApiToken, body.username, '', body.password, true);
   }
 
   @Put('first-password')
   async setFirstPassword(
-    @Headers('x-api-key') lmnApiToken: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { password: string; username: string },
   ) {
     return this.lmnApiService.setFirstPassword(lmnApiToken, body.username, body.password);
