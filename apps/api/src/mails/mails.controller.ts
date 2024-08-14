@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Logger, Param, Post, UseGuards } from '@nestjs/common';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
-import { MailDto, MailProviderConfigDto, CreateSyncJobDto, CreateSyncJobResponseDto } from '@libs/mail/types';
+import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobDto } from '@libs/mail/types';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
@@ -41,13 +41,21 @@ class MailsController {
   }
 
   @Get('sync-job')
-  async getSyncJob(): Promise<CreateSyncJobDto> {
-    return this.mailsService.getSyncJobs();
+  async getSyncJob(@GetCurrentUsername() username: string): Promise<SyncJobDto[]> {
+    return this.mailsService.getSyncJobs(username);
   }
 
   @Post('sync-job')
-  async postSyncJob(@Body() createSyncJobDto: CreateSyncJobDto): Promise<CreateSyncJobResponseDto> {
-    return this.mailsService.createSyncJob(createSyncJobDto);
+  async postSyncJob(
+    @Body() createSyncJobDto: CreateSyncJobDto,
+    @GetCurrentUsername() username: string,
+  ): Promise<SyncJobDto[]> {
+    return this.mailsService.createSyncJob(createSyncJobDto, username);
+  }
+
+  @Delete('sync-job')
+  async deleteSyncJobs(@Body() syncJobIds: string[], @GetCurrentUsername() username: string): Promise<SyncJobDto[]> {
+    return this.mailsService.deleteSyncJobs(syncJobIds, username);
   }
 }
 

@@ -6,6 +6,7 @@ enum MailsErrorMessages {
   MailProviderNotFound = 'mails.errors.MailProviderNotFound',
   MailcowApiGetSyncJobsFailed = 'mails.errors.MailcowApiGetSyncJobsFailed',
   MailcowApiCreateSyncJobFailed = 'mails.errors.MailcowApiCreateSyncJobFailed',
+  MailcowApiDeleteSyncJobsFailed = 'mails.errors.MailcowApiDeleteSyncJobsFailed',
 }
 
 export default MailsErrorMessages;

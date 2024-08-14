@@ -1,21 +1,16 @@
 import { create } from 'zustand';
-import {
-  MailDto,
-  MailsStore,
-  MailProviderConfigDto,
-  CreateSyncJobDto,
-  CreateSyncJobResponseDto,
-  SyncJobDto,
-} from '@libs/mail/types';
+import { MailDto, MailsStore, MailProviderConfigDto, CreateSyncJobDto, SyncJobDto } from '@libs/mail/types';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MailStoreInitialState from '@libs/mail/constants/mailsStoreInitialState';
 import { MAILS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import { RowSelectionState } from '@tanstack/react-table';
 
 const useMailsStore = create<MailsStore>((set) => ({
   ...MailStoreInitialState,
   reset: () => set(MailStoreInitialState),
+  setSelectedSyncJob: (selectedSyncJob: RowSelectionState) => set({ selectedSyncJob }),
 
   getMails: async (): Promise<void> => {
     set({ isLoading: true });
@@ -70,11 +65,10 @@ const useMailsStore = create<MailsStore>((set) => ({
   getSyncJob: async () => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<SyncJobDto>(`${MAILS_PATH}/sync-job`);
-      return response.data;
+      const response = await eduApi.get<SyncJobDto[]>(`${MAILS_PATH}/sync-job`);
+      set({ syncJobs: response.data });
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
-      return {} as SyncJobDto;
     } finally {
       set({ isLoading: false });
     }
@@ -83,11 +77,22 @@ const useMailsStore = create<MailsStore>((set) => ({
   postSyncJob: async (createSyncJobDto: CreateSyncJobDto) => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.post<CreateSyncJobResponseDto>(`${MAILS_PATH}/provider-config`, createSyncJobDto);
-      return response.data;
+      const response = await eduApi.post<SyncJobDto[]>(`${MAILS_PATH}/sync-job`, createSyncJobDto);
+      set({ syncJobs: response.data });
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
-      return {} as CreateSyncJobResponseDto;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteSyncJobs: async (syncJobIds: string[]) => {
+    set({ isLoading: true });
+    try {
+      const response = await eduApi.delete<SyncJobDto[]>(`${MAILS_PATH}/sync-job`, { data: syncJobIds });
+      set({ syncJobs: response.data });
+    } catch (error) {
+      handleApiError(error, set, 'mailProviderConfigError');
     } finally {
       set({ isLoading: false });
     }

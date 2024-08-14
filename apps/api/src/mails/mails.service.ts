@@ -1,15 +1,16 @@
 import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { InjectModel } from '@nestjs/mongoose';
 import axios, { AxiosInstance } from 'axios';
-import { MailDto, MailProviderConfigDto, CreateSyncJobDto, CreateSyncJobResponseDto } from '@libs/mail/types';
+import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
+import FilterUserPipe from '../common/pipes/filterUser.pipe';
 
 const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED, MAIL_API_KEY } =
   process.env;
@@ -177,21 +178,41 @@ class MailsService {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs() {
+  async getSyncJobs(username: string) {
     try {
-      const syncJobs = await this.mailcowApi.get<CreateSyncJobDto>('/get/syncjobs/all/no_log');
-      return syncJobs.data;
+      const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
+
+      const filteredSyncJobs = new FilterUserPipe(username).transform(syncJobs.data, {} as ArgumentMetadata);
+
+      return filteredSyncJobs;
     } catch (e) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
     }
   }
 
-  async createSyncJob(createSyncJobDto: CreateSyncJobDto) {
+  async createSyncJob(createSyncJobDto: CreateSyncJobDto, username: string) {
     try {
-      const syncJob = await this.mailcowApi.post<CreateSyncJobResponseDto>('/add/syncjob', createSyncJobDto);
-      return syncJob.data;
+      const response = await this.mailcowApi.post<SyncJobResponseDto>('/add/syncjob', createSyncJobDto);
+      if (response) {
+        const syncJobs = await this.getSyncJobs(username);
+        return syncJobs;
+      }
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY, e);
+    }
+  }
+
+  async deleteSyncJobs(syncJobIds: string[], username: string) {
+    try {
+      const response = await this.mailcowApi.post<SyncJobResponseDto>('/delete/syncjob', syncJobIds);
+      if (response) {
+        const syncJobs = await this.getSyncJobs(username);
+        return syncJobs;
+      }
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
+    } catch (e) {
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
     }
   }
 }

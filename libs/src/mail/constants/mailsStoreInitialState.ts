@@ -4,6 +4,8 @@ const MailStoreInitialState = {
   externalMailProviderConfig: [],
   error: null,
   reset: () => {},
+  syncJobs: [],
+  selectedSyncJob: {},
 };
 
 export default MailStoreInitialState;

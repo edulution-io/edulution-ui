@@ -63,7 +63,11 @@
       "configName": "Name der Konfiguration",
       "hostname": "Hostname",
       "port": "Port",
-      "encryption": "Encryption"
+      "encryption": "Encryption",
+      "interval": "Sync Interval",
+      "isActive": "Active",
+      "syncJobsTable": "Importer Jobs",
+      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt"
     }
   },
   "chat": {
@@ -441,7 +445,9 @@
     "close": "Close",
     "delete": "Delete",
     "connect": "Connect",
-    "custom": "Custom"
+    "custom": "Custom",
+    "yes": "Yes",
+    "no": "No"
   },
   "form": {
     "path": "Path",
@@ -636,7 +642,8 @@
       "NotValidPortTypeError": "The port must be specified as a number",
       "MailProviderNotFound": "Mail provider not found",
       "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
-      "MailcowApiCreateSyncJobFailed": "Not able to create sync job"
+      "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
+      "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"
     }
   },
   "licensing": {

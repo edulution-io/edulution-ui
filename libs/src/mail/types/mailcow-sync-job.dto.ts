@@ -15,14 +15,14 @@ type SyncJobDto = {
   maxbytespersecond: number;
   port1: number;
   enc1: TMailEncryption;
-  delete2duplicates: boolean;
-  delete1: boolean;
-  delete2: boolean;
-  automap: boolean;
+  delete2duplicates: number;
+  delete1: number;
+  delete2: number;
+  automap: number;
   skipcrossduplicates: number;
   timeout1: number;
   timeout2: number;
-  subscribeall: boolean;
+  subscribeall: number;
   dry: number;
   is_running: number;
   last_run: string;
@@ -30,7 +30,7 @@ type SyncJobDto = {
   exit_status: string;
   created: string;
   modified: string;
-  active: boolean;
+  active: number;
   log: string;
 };
 

@@ -6,8 +6,9 @@ import { HomePage } from '@/pages/Home';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import { MAILS_PATH, SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
@@ -43,6 +44,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 <Route
                   path={SECURITY_PATH}
                   element={<UserSettingsSecurityPage />}
+                />
+                <Route
+                  path={MAILS_PATH}
+                  element={<UserSettingsMailsPage />}
                 />
               </Route>
               {isSuperAdmin ? (
