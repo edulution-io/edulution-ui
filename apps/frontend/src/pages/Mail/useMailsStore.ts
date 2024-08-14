@@ -63,38 +63,38 @@ const useMailsStore = create<MailsStore>((set) => ({
   },
 
   getSyncJob: async () => {
-    set({ isLoading: true });
+    set({ isGetSyncJobLoading: true });
     try {
       const response = await eduApi.get<SyncJobDto[]>(`${MAILS_PATH}/sync-job`);
       set({ syncJobs: response.data });
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
     } finally {
-      set({ isLoading: false });
+      set({ isGetSyncJobLoading: false });
     }
   },
 
   postSyncJob: async (createSyncJobDto: CreateSyncJobDto) => {
-    set({ isLoading: true });
+    set({ isEditSyncJobLoading: true });
     try {
       const response = await eduApi.post<SyncJobDto[]>(`${MAILS_PATH}/sync-job`, createSyncJobDto);
       set({ syncJobs: response.data });
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
     } finally {
-      set({ isLoading: false });
+      set({ isEditSyncJobLoading: false });
     }
   },
 
   deleteSyncJobs: async (syncJobIds: string[]) => {
-    set({ isLoading: true });
+    set({ isEditSyncJobLoading: true });
     try {
       const response = await eduApi.delete<SyncJobDto[]>(`${MAILS_PATH}/sync-job`, { data: syncJobIds });
       set({ syncJobs: response.data });
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
     } finally {
-      set({ isLoading: false });
+      set({ isEditSyncJobLoading: false });
     }
   },
 }));

@@ -5,13 +5,13 @@ import TMailEncryption from './mailEncryption.type';
 
 type CreateSyncJobDto = {
   username: string;
-  delete2duplicates: boolean;
-  delete1: boolean;
-  delete2: boolean;
-  automap: boolean;
-  skipcrossduplicates: boolean;
-  active: boolean;
-  subscribeall: boolean;
+  delete2duplicates: number;
+  delete1: number;
+  delete2: number;
+  automap: number;
+  skipcrossduplicates: number;
+  active: number;
+  subscribeall: number;
   host1: string;
   port1: string;
   user1: string;

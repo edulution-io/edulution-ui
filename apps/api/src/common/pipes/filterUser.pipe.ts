@@ -1,5 +1,5 @@
 import { SyncJobDto } from '@libs/mail/types';
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 
 @Injectable()
 class FilterUserPipe implements PipeTransform {
@@ -7,7 +7,7 @@ class FilterUserPipe implements PipeTransform {
 
   transform(syncJobs: SyncJobDto[], _metadata: ArgumentMetadata) {
     if (!Array.isArray(syncJobs)) {
-      throw new BadRequestException('Expected an array');
+      return [];
     }
 
     return syncJobs.filter((item) => item.user2.includes(this.username));

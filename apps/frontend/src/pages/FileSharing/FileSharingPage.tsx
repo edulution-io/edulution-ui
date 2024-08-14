@@ -24,10 +24,7 @@ const FileSharingPage = () => {
             }}
             style={{ color: 'white' }}
           />
-          <div className="flex items-center justify-end pr-10">
-            <StateLoader isFileProcessing={isFileProcessing} />
-            <p /> {/* Do not remove - this will prevent the table scrollbar from being reloaded. */}
-          </div>
+          <StateLoader isLoading={isFileProcessing} />
         </div>
         <LoadingIndicator isOpen={isLoading} />
         <div

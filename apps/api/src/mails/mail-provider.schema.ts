@@ -1,6 +1,8 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import MailEncryption from '@libs/mail/constants/mailEncryption';
+import { TMailEncryption } from '@libs/mail/types';
 
 export type MailProviderDocument = MailProvider & Document;
 
@@ -18,10 +20,10 @@ export class MailProvider {
   @Prop({ required: true, default: '' })
   host: string;
 
-  @Prop({ type: Number, required: true, default: 993 }) port: number | null;
+  @Prop({ type: String, required: true, default: '' }) port: string;
 
-  @Prop({ required: true, default: false })
-  secure: boolean;
+  @Prop({ type: String, required: true, default: MailEncryption.SSL })
+  encryption: TMailEncryption;
 }
 
 export const MailProviderSchema = SchemaFactory.createForClass(MailProvider);

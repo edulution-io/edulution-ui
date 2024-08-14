@@ -13,6 +13,8 @@ interface MailsStore {
   deleteExternalMailProviderConfig: (mailProviderId: string) => Promise<void>;
   error: Error | null;
   isLoading: boolean;
+  isGetSyncJobLoading: boolean;
+  isEditSyncJobLoading: boolean;
   reset: () => void;
   selectedSyncJob: RowSelectionState;
   setSelectedSyncJob: (selectedSyncJob: RowSelectionState) => void;

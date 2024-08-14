@@ -19,7 +19,7 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -139,8 +139,8 @@ const AppConfigPage: React.FC = () => {
         name: getValues('configName') as string,
         label: getValues('configName') as string,
         host: getValues('hostname') as string,
-        port: getValues('port') as number,
-        secure: true,
+        port: getValues('port') as string,
+        encryption: getValues('encryption') as TMailEncryption,
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }

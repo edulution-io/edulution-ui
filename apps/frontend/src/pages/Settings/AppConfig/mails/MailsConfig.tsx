@@ -4,7 +4,7 @@ import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import { TMailEncryption, MailProviderConfigDto } from '@libs/mail/types';
+import { MailProviderConfigDto } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MailEncryption from '@libs/mail/constants/mailEncryption';
@@ -14,11 +14,10 @@ type MailsConfigProps = {
   form: UseFormReturn<any>;
 };
 
-const encOptions: { id: string; name: TMailEncryption }[] = [
-  { id: '0', name: 'STARTTLS' },
-  { id: '1', name: 'SSL' },
-  { id: '2', name: 'PLAIN' },
-];
+const encOptions = Object.entries(MailEncryption).map(([value], index) => ({
+  id: index.toString(),
+  name: value,
+}));
 
 const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
   const { t } = useTranslation();
@@ -36,8 +35,8 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
       name: t('common.custom'),
       label: '',
       host: '',
-      port: null,
-      secure: true,
+      port: '993',
+      encryption: MailEncryption.SSL,
     },
     ...externalMailProviderConfig,
   ];
@@ -52,7 +51,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
       form.setValue('configName', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].name);
       form.setValue('hostname', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].host);
       form.setValue('port', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].port);
-      form.setValue('encryption', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].secure);
+      form.setValue('encryption', mailProviderDropdownOptions.filter((itm) => itm.name === option)[0].encryption);
     }
 
     if (option === t('common.custom')) {

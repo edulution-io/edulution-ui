@@ -111,14 +111,14 @@ class MailsService {
       label: item.label,
       host: item.host,
       port: item.port,
-      secure: item.secure,
+      encryption: item.encryption,
     }));
 
     return mailProviders;
   }
 
   async getExternalMailProviderConfig(): Promise<MailProviderConfigDto[]> {
-    const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
+    const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port encryption');
 
     if (!mailProvidersList) {
       throw new CustomHttpException(
@@ -146,7 +146,10 @@ class MailsService {
         response = await this.mailProviderModel.create(mailProviderConfig);
       }
       if (response) {
-        const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
+        const mailProvidersList = await this.mailProviderModel.find(
+          {},
+          'mailProviderId name label host port encryption',
+        );
         return MailsService.prepareMailProviderResponse(mailProvidersList);
       }
     } catch (error) {
@@ -164,7 +167,10 @@ class MailsService {
     try {
       const deleteResponse = await this.mailProviderModel.deleteOne({ mailProviderId });
       if (deleteResponse.deletedCount === 1) {
-        const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port secure');
+        const mailProvidersList = await this.mailProviderModel.find(
+          {},
+          'mailProviderId name label host port encryption',
+        );
         return MailsService.prepareMailProviderResponse(mailProvidersList);
       }
     } catch (error) {
@@ -204,6 +210,7 @@ class MailsService {
   }
 
   async deleteSyncJobs(syncJobIds: string[], username: string) {
+    // TODO: Check if user has permission to delete
     try {
       const response = await this.mailcowApi.post<SyncJobResponseDto>('/delete/syncjob', syncJobIds);
       if (response) {

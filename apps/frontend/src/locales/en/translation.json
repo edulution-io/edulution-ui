@@ -67,7 +67,8 @@
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt"
+      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "mailAddress": "E-Mail Address"
     }
   },
   "chat": {
