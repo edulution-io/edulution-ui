@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
-import { AppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
+import { AppOnlyOfficeExtendedOptions } from '@libs/appconfig/constants/filesharing/appExtendedOnlyOfficeType';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
@@ -55,14 +55,14 @@ describe('AppConfigController', () => {
           },
           extendedOptions: [
             {
-              name: AppExtendedOptions.ONLY_OFFICE_URL,
+              name: AppOnlyOfficeExtendedOptions.ONLY_OFFICE_URL,
               value: 'https://example.com/api/',
               title: 'OnlyOffice URL',
               description: 'The URL for OnlyOffice',
               type: 'input',
             },
             {
-              name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+              name: AppOnlyOfficeExtendedOptions.ONLY_OFFICE_JWT_SECRET,
               value: 'secret-key',
               title: 'OnlyOffice Secret',
               description: 'The secret key for OnlyOffice',
@@ -91,14 +91,14 @@ describe('AppConfigController', () => {
           },
           extendedOptions: [
             {
-              name: AppExtendedOptions.ONLY_OFFICE_URL,
+              name: AppOnlyOfficeExtendedOptions.ONLY_OFFICE_URL,
               value: 'https://example.com/api/',
               title: 'OnlyOffice URL',
               description: 'The URL for OnlyOffice',
               type: 'input',
             },
             {
-              name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+              name: AppOnlyOfficeExtendedOptions.ONLY_OFFICE_JWT_SECRET,
               value: 'secret-key',
               title: 'OnlyOffice Secret',
               description: 'The secret key for OnlyOffice',

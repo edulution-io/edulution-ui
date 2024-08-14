@@ -14,6 +14,7 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -24,6 +25,7 @@ const cleanAllStores = () => {
   useConferenceStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
   useFileSharingStore.getState().reset();
+  useFileEditorStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();

@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
-import signJwtContent from '@libs/common/utils/signJwtContent';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request } from 'express';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
+import { JwtService } from '@nestjs/jwt';
+import { AppOnlyOfficeExtendedOptions } from '@libs/appconfig/constants/filesharing/appExtendedOnlyOfficeType';
 import AppConfigService from '../appconfig/appconfig.service';
 import JWTUser from '../types/JWTUser';
 import TokenService from '../common/services/token.service';
@@ -19,18 +19,19 @@ class OnlyofficeService {
   constructor(
     private readonly appConfigService: AppConfigService,
     private readonly tokenService: TokenService,
+    private jwtService: JwtService,
   ) {}
 
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
     const jwtSecret = appConfig?.extendedOptions.find(
-      (option) => option.name === AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+      (option) => option.name === AppOnlyOfficeExtendedOptions.ONLY_OFFICE_JWT_SECRET,
     );
     if (!jwtSecret) {
       throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     const secret = jwtSecret.value;
-    return signJwtContent(payload, secret);
+    return this.jwtService.sign(payload, { secret });
   }
 
   async handleCallback(

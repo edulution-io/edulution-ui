@@ -46,22 +46,6 @@ class TokenService {
       throw new UnauthorizedException('JWT or Token is missing');
     }
   }
-
-  async getCurrentUsername(token: string): Promise<string> {
-    const user = await this.getCurrentUser(token);
-    if (!user.preferred_username) {
-      throw new UnauthorizedException('preferred_username in JWT is missing');
-    }
-    return user.preferred_username;
-  }
-
-  async getCurrentUserGroups(token: string): Promise<string[]> {
-    const user = await this.getCurrentUser(token);
-    if (!user.ldapGroups) {
-      throw new UnauthorizedException('ldapGroups in JWT is missing');
-    }
-    return user.ldapGroups;
-  }
 }
 
 export default TokenService;

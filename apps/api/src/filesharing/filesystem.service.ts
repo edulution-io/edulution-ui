@@ -14,10 +14,10 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import CustomFile from '@libs/filesharing/types/customFile';
-import outputFolder from '@libs/fileSystem/constants/outputFolder';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
+import outputFolder from '@libs/filesharing/utils/outputFolder';
 import UsersService from '../users/users.service';
 
 const pipelineAsync = promisify(pipeline);
@@ -99,10 +99,6 @@ class FilesystemService {
     }
   }
 
-  static generatePublicUrl(hashedFilename: string): string {
-    return `${process.env.EDUI_DOWNLOAD_DIR as string}${hashedFilename}`;
-  }
-
   static async deleteFile(fileName: string): Promise<void> {
     const filePath = resolve(outputFolder, fileName);
     try {
@@ -114,7 +110,7 @@ class FilesystemService {
     }
   }
 
-  async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
     FilesystemService.ensureDirectoryExists(outputFolder);
 
@@ -128,13 +124,10 @@ class FilesystemService {
       const outputFilePath = FilesystemService.getOutputFilePath(outputFolder, hashedFilename);
 
       await FilesystemService.saveFileStream(responseStream, outputFilePath);
-
-      const publicUrl = FilesystemService.generatePublicUrl(hashedFilename);
-
       return {
         success: true,
         status: HttpStatus.OK,
-        data: publicUrl,
+        data: hashedFilename,
       } as WebdavStatusReplay;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);

@@ -53,7 +53,7 @@ const useFileSharingMenuConfig = () => {
       .map((mountPoint: DirectoryFileDTO) => ({
         id: mountPoint.basename,
         label:
-          mountPoint.filename.includes(`${user?.ldapGroups?.roles[0]}s`) &&
+          mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
           mountPoint.filename.includes(`${user?.username}`)
             ? 'home'
             : mountPoint.basename,

@@ -24,9 +24,9 @@ const ImageComponent: React.FC<ImageComponentProps> = ({ downloadLink, altText, 
         src={src}
         alt={altText}
         onError={handleError}
-        className={`h-auto w-full ${error ? 'border-ci-Red-500 border' : 'border'}`}
+        className={`h-auto w-full ${error ? 'border-text-ciRed border' : 'border'}`}
       />
-      {error && <p className="text-ci-Red-500">{t('preview.failedToLoadImage')}</p>}
+      {error && <p className="text-text-ciRed">{t('preview.failedToLoadImage')}</p>}
     </div>
   );
 };

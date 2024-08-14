@@ -8,7 +8,7 @@ import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import getLastPartOfUrl from '@libs/filesharing/utils/getLastPartOfUrl';
 import handleApiError from '@/utils/handleApiError';
 
-type UseFileEditorStore = {
+type FileEditorStore = {
   closeOnlyOfficeDocEditor: () => void;
   showEditor: boolean;
   setShowEditor: (show: boolean) => void;
@@ -19,7 +19,7 @@ type UseFileEditorStore = {
 
 const initialState = { showEditor: false };
 
-const useFileEditorStore = create<UseFileEditorStore>((set, get) => ({
+const useFileEditorStore = create<FileEditorStore>((set, get) => ({
   ...initialState,
   reset: () => set(initialState),
   setShowEditor: (show: boolean) => set({ showEditor: show }),
@@ -34,7 +34,6 @@ const useFileEditorStore = create<UseFileEditorStore>((set, get) => ({
       );
     } catch (error) {
       handleApiError(error, set);
-      throw error;
     }
     return Promise.resolve();
   },
@@ -50,12 +49,11 @@ const useFileEditorStore = create<UseFileEditorStore>((set, get) => ({
           },
         },
       );
-
       return response.data;
     } catch (error) {
       handleApiError(error, set);
-      throw error;
     }
+    return Promise.resolve('');
   },
 }));
 

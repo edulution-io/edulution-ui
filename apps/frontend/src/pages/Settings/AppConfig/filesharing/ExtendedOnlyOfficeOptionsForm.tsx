@@ -1,20 +1,24 @@
 import React from 'react';
-import { AppConfigExtendedOption, appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/types/appExtendedType';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import FormField from '@/components/shared/FormField';
-import AppExtendedForm from '@libs/appconfig/types/appExtendedForm';
+import AppExtendedOnlyOfficeForm from '@libs/appconfig/types/filesharing/appExtendedOnlyOfficeForm';
 import { UseFormReturn } from 'react-hook-form';
+import {
+  AppConfigOnlyOfficeExtendedOption,
+  appExtendedOnyOfficeOptions,
+  AppOnlyOfficeExtendedOptions,
+} from '@libs/appconfig/constants/filesharing/appExtendedOnlyOfficeType';
 
-interface ExtendedOptionsFormProps {
+interface ExtendedOnlyOfficeOptionsFormProps {
   baseName: string;
-  extendedOptions: AppConfigExtendedOption[];
+  extendedOptions: AppConfigOnlyOfficeExtendedOption[];
   disabled?: boolean;
   isLoading?: boolean;
-  form: UseFormReturn<AppExtendedForm>;
+  form: UseFormReturn<AppExtendedOnlyOfficeForm>;
 }
 
-const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
+const ExtendedOnlyOfficeOptionsForm: React.FC<ExtendedOnlyOfficeOptionsFormProps> = ({
   baseName,
   extendedOptions,
   disabled,
@@ -24,9 +28,15 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
   const { appConfigs } = useAppConfigsStore();
 
   const defaultValues: Record<string, string> = {
-    ONLY_OFFICE_URL: getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_URL) || '',
+    ONLY_OFFICE_URL:
+      getExtendedOptionValue(appConfigs, appExtendedOnyOfficeOptions, AppOnlyOfficeExtendedOptions.ONLY_OFFICE_URL) ||
+      '',
     ONLY_OFFICE_JWT_SECRET:
-      getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_JWT_SECRET) || '',
+      getExtendedOptionValue(
+        appConfigs,
+        appExtendedOnyOfficeOptions,
+        AppOnlyOfficeExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+      ) || '',
   };
 
   return (
@@ -42,7 +52,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
               isLoading={isLoading}
               defaultValue={defaultValues[option.name]}
               labelTranslationId={option.title}
-              variant="default"
+              variant="light"
             />
           ))}
         </div>
@@ -51,4 +61,4 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
   );
 };
 
-export default ExtendedOptionsForm;
+export default ExtendedOnlyOfficeOptionsForm;

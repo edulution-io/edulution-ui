@@ -256,8 +256,8 @@ class FilesharingService {
     }
   }
 
-  async downloadLink(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
-    return this.fileSystemService.downloadLink(username, filePath, filename);
+  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+    return this.fileSystemService.fileLocation(username, filePath, filename);
   }
 
   async getOnlyOfficeToken(payload: string) {

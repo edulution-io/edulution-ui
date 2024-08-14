@@ -10,6 +10,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
+import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -86,12 +87,12 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
           if (isOnlyOfficeDocument(file.filename)) {
             const publicLink = await get().getDownloadLinkURL(file.filename, file.basename);
-            set({ publicDownloadLink: publicLink || ' ' });
+            set({ publicDownloadLink: `${getFrontEndUrl()}/edu-api/downloads/${publicLink}` || ' ' });
           }
 
           set({ isEditorLoading: false });
         } catch (error) {
-          console.error('Failed to download file:', error);
+          handleApiError(error, set);
           set({ isError: true, isEditorLoading: false });
         }
       },
@@ -147,7 +148,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
         try {
           set({ isLoading: true });
           const fileStreamResponse = await eduApi.get<Blob>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_FILE_STREAM}`,
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
             {
               params: { filePath },
               responseType: 'blob',
@@ -168,7 +169,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
         try {
           set({ isLoading: true });
           const response = await eduApi.get<WebdavStatusReplay>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.GET_DOWNLOAD_LINK}`,
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
             {
               params: {
                 filePath,

@@ -1,5 +1,5 @@
-import getBackendEndUrl from '@libs/common/utils/getBackEndUrl';
-import onlyOfficeUrlConfig from '@libs/filesharing/utils/onlyOfficeUrlConfig';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 
 interface CallbackBaseUrlProps {
   fileName: string;
@@ -7,9 +7,7 @@ interface CallbackBaseUrlProps {
   accessToken: string;
 }
 
-const callbackBaseUrl = ({ fileName, filePath, accessToken }: CallbackBaseUrlProps): string => {
-  const callbackUrl = `${getBackendEndUrl()}/edu-api/filesharing/callback?path=${filePath}&filename=${fileName}&eduToken=${accessToken}`;
-  return callbackUrl.replace(onlyOfficeUrlConfig.localUrl, onlyOfficeUrlConfig.dockerUrl);
-};
+const callbackBaseUrl = ({ fileName, filePath, accessToken }: CallbackBaseUrlProps): string =>
+  `${getFrontEndUrl()}/edu-api/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&eduToken=${accessToken}`;
 
 export default callbackBaseUrl;

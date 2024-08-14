@@ -16,12 +16,14 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import ExtendedOptionsForm from '@/pages/Settings/AppConfig/ExtendedOptionsForm';
-import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/types/appExtendedType';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOnlyOfficeOptionsForm';
+import {
+  AppConfigOnlyOfficeExtendedOption,
+  appExtendedOnyOfficeOptions,
+} from '@libs/appconfig/constants/filesharing/appExtendedOnlyOfficeType';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { Accordion } from '@radix-ui/react-accordion';
-import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -128,12 +130,12 @@ const AppConfigPage: React.FC = () => {
 
     const extendedOptions =
       settingLocation === 'filesharing'
-        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
+        ? (appExtendedOnyOfficeOptions.ONLY_OFFICE.map((e) => ({
             name: e.name,
             description: e.description,
             type: e.type,
             value: getValues(`${settingLocation}.${e.name}`) as string,
-          })) as AppConfigExtendedOption[])
+          })) as AppConfigOnlyOfficeExtendedOption[])
         : [];
 
     const newConfig = {
@@ -221,20 +223,20 @@ const AppConfigPage: React.FC = () => {
                     />
                     {item.extendedOptions && (
                       <div className="space-y-10">
-                        <Accordion type="multiple">
+                        <AccordionSH type="multiple">
                           <AccordionItem value="onlyOffice">
                             <AccordionTrigger className="flex text-xl font-bold">
                               <h4>{t('appExtendedOptions.title')}</h4>
                             </AccordionTrigger>
                             <AccordionContent className="space-y-10 pt-4">
                               <ExtendedOptionsForm
-                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
+                                extendedOptions={appExtendedOnyOfficeOptions.ONLY_OFFICE}
                                 baseName={settingLocation}
                                 form={form}
                               />
                             </AccordionContent>
                           </AccordionItem>
-                        </Accordion>
+                        </AccordionSH>
                       </div>
                     )}
                   </div>

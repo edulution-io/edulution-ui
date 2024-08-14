@@ -93,7 +93,7 @@ class FilesharingController {
     return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
   }
 
-  @Get(FileSharingApiEndpoints.GET_FILE_STREAM)
+  @Get(FileSharingApiEndpoints.FILE_STREAM)
   @Header('Content-Type', RequestResponseContentType.APPLICATION_OCTET_STREAM as string)
   async webDavFileStream(
     @Query('filePath') filePath: string,
@@ -107,13 +107,13 @@ class FilesharingController {
     });
   }
 
-  @Get(FileSharingApiEndpoints.GET_DOWNLOAD_LINK)
+  @Get(FileSharingApiEndpoints.FILE_LOCATION)
   async getDownloadLink(
     @Query('filePath') filePath: string,
     @Query('fileName') fileName: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.downloadLink(username, filePath, fileName);
+    return this.filesharingService.fileLocation(username, filePath, fileName);
   }
 
   @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)

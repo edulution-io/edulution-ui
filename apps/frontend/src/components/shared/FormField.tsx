@@ -11,6 +11,7 @@ const variants = cva([], {
   variants: {
     variant: {
       default: 'text-foreground',
+      light: 'text-white',
     },
   },
 });

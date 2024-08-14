@@ -11,7 +11,6 @@ import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { files } = useFileSharingStore();
-
   return (
     <div className="w-full overflow-x-auto">
       {isLoading && <LoadingIndicator isOpen={isLoading} />}

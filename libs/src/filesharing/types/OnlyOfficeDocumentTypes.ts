@@ -11,6 +11,6 @@ const OnlyOfficeDocumentTypes = {
   TXT: 'txt',
   CSV: 'csv',
   PDF: 'pdf',
-};
+} as const;
 
 export default OnlyOfficeDocumentTypes;

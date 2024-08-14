@@ -100,7 +100,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
               onClick={() => removeFile(file.name)}
               className="absolute right-0 top-0 rounded-full bg-white bg-opacity-70 p-1"
             >
-              <HiXMark className="text-ci-Red-500 h-5 w-5 hover:text-red-700" />
+              <HiXMark className="text-text-ciRed h-5 w-5 hover:text-red-700" />
             </Button>
             <div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>
           </li>
