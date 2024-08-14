@@ -90,7 +90,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         );
       case 'date':
         return watch(groupProperty.name)
-          ? dayjs(watch(groupProperty.name) as string, 'yyyyMMddHHmmss.SZ').format()
+          ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]').format()
           : '-';
       case 'text':
       default:
