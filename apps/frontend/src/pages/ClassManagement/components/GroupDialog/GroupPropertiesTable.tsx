@@ -23,7 +23,7 @@ interface GroupPropertiesTableProps {
 }
 
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
-  const { watch, setValue } = form;
+  const { watch, setValue, register } = form;
   const { t } = useTranslation();
 
   const groupProperties: GroupProperty[] = [
@@ -99,10 +99,8 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         }
         return (
           <Input
-            name={groupProperty.name}
+            {...register(groupProperty.name)}
             variant="default"
-            value={watch(groupProperty.name) as string}
-            onChange={(e) => setValue(groupProperty.name, e.target.value)}
           />
         );
     }
