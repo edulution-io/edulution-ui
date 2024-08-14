@@ -25,6 +25,7 @@ import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMember
 import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UsersService from '../users/users.service';
 
 @Injectable()
@@ -64,7 +65,7 @@ class LmnApiService {
       return await this.enqueue<unknown>(() =>
         this.lmnApi.post<unknown>(PRINT_PASSWORDS_LMN_API_ENDPOINT, options, {
           responseType: 'arraybuffer',
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
     } catch (error) {
@@ -83,7 +84,7 @@ class LmnApiService {
           `${EXAM_MODE_LMN_API_ENDPOINT}/start`,
           { users },
           {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           },
         ),
       );
@@ -105,7 +106,7 @@ class LmnApiService {
           `${EXAM_MODE_LMN_API_ENDPOINT}/stop`,
           { users, group_name: groupName, group_type: groupType },
           {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           },
         ),
       );
@@ -120,7 +121,7 @@ class LmnApiService {
       const response = await this.enqueue<LmnApiSchoolClass>(() =>
         this.lmnApi.delete<LmnApiSchoolClass>(`${MANAGEMENT_GROUPS_LMN_API_ENDPOINT}/${group}/members`, {
           data: { users },
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -140,7 +141,7 @@ class LmnApiService {
           `${MANAGEMENT_GROUPS_LMN_API_ENDPOINT}/${group}/members`,
           { users },
           {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           },
         ),
       );
@@ -158,7 +159,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiSchoolClass>(() =>
         this.lmnApi.get<LmnApiSchoolClass>(`${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClassName}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -174,7 +175,7 @@ class LmnApiService {
   public async getUserSchoolClasses(lmnApiToken: string): Promise<LmnApiSchoolClass[]> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}`;
     const config = {
-      headers: { 'X-API-Key': lmnApiToken },
+      headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
 
     try {
@@ -199,7 +200,7 @@ class LmnApiService {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
 
     const config = {
-      headers: { 'X-API-Key': lmnApiToken },
+      headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
 
     try {
@@ -220,7 +221,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiSession>(() =>
         this.lmnApi.get<LmnApiSession>(`${SESSIONS_LMN_API_ENDPOINT}/${username}/${sessionSid}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -239,7 +240,7 @@ class LmnApiService {
 
       const response = await this.enqueue<LmnApiSession>(() =>
         this.lmnApi.post<LmnApiSession>(`${SESSIONS_LMN_API_ENDPOINT}/${username}/${formValues.name}`, data, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -260,7 +261,7 @@ class LmnApiService {
 
       const response = await this.enqueue<LmnApiSession>(() =>
         this.lmnApi.post<LmnApiSession>(`${SESSIONS_LMN_API_ENDPOINT}/${username}/${formValues.name}`, data, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -277,7 +278,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiSession>(() =>
         this.lmnApi.delete<LmnApiSession>(`${SESSIONS_LMN_API_ENDPOINT}/${username}/${sessionId}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -294,7 +295,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiSession[]>(() =>
         this.lmnApi.get<LmnApiSession[]>(`${SESSIONS_LMN_API_ENDPOINT}/${username}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -311,7 +312,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<UserLmnInfo>(() =>
         this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -324,7 +325,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<UserLmnInfo>(() =>
         this.lmnApi.get<UserLmnInfo>(`${USER_ROOM_LMN_API_ENDPOINT}/${username}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -341,7 +342,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiSearchResult[]>(() =>
         this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/global/${searchQuery}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -370,7 +371,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiProject[]>(() =>
         this.lmnApi.get<LmnApiProject[]>(PROJECTS_LMN_API_ENDPOINT, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -387,7 +388,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiProjectWithMembers>(() =>
         this.lmnApi.get<LmnApiProjectWithMembers>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}?all_members=true`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -401,7 +402,7 @@ class LmnApiService {
       const data = LmnApiService.getProjectFromForm(formValues, username);
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.post<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -416,7 +417,7 @@ class LmnApiService {
 
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.patch<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -429,7 +430,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.delete<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${projectName}`, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -441,7 +442,7 @@ class LmnApiService {
   public async toggleProjectJoined(lmnApiToken: string, project: string, action: string): Promise<LmnApiProject> {
     const requestUrl = `${PROJECTS_LMN_API_ENDPOINT}/${project}/${action}`;
     const config = {
-      headers: { 'X-API-Key': lmnApiToken },
+      headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
 
     try {
@@ -461,7 +462,7 @@ class LmnApiService {
   public async togglePrinterJoined(lmnApiToken: string, printer: string, action: string): Promise<LmnApiPrinter> {
     const requestUrl = `${PRINTERS_LMN_API_ENDPOINT}/${printer}/${action}`;
     const config = {
-      headers: { 'X-API-Key': lmnApiToken },
+      headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
 
     try {
@@ -482,7 +483,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<LmnApiPrinter[]>(() =>
         this.lmnApi.get<LmnApiPrinter[]>(PRINTERS_LMN_API_ENDPOINT, {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
       return response.data;
@@ -496,10 +497,11 @@ class LmnApiService {
     username: string,
     oldPassword: string,
     newPassword: string,
+    bypassSecurityCheck: boolean = false,
   ): Promise<null> {
     const password = await this.userService.getPassword(username);
 
-    if (oldPassword !== password) {
+    if (!bypassSecurityCheck && oldPassword !== password) {
       throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
     }
 
@@ -512,7 +514,31 @@ class LmnApiService {
             set_first: false,
           },
           {
-            headers: { 'x-api-key': lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.PasswordChangeFailed,
+        HttpStatus.BAD_GATEWAY,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async setFirstPassword(lmnApiToken: string, username: string, password: string): Promise<null> {
+    try {
+      const response = await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(
+          `${USERS_LMN_API_ENDPOINT}/${username}/set-first-password`,
+          {
+            password,
+            set_current: false,
+          },
+          {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           },
         ),
       );

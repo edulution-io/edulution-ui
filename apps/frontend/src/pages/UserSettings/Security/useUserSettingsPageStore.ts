@@ -7,6 +7,7 @@ import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import UserSettingsPageStore from '@libs/userSettings/constants/userSettingsPageStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 
 const initialState = {
   isLoading: false,
@@ -27,7 +28,7 @@ const useUserSettingsPageStore = create<UserSettingsPageStore>((set) => ({
           newPassword,
         },
         {
-          headers: { 'x-api-key': lmnApiToken },
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         },
       );
 

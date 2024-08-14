@@ -12,6 +12,7 @@ import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Sonner';
 import { WebStorageStateStore } from 'oidc-client-ts';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 
@@ -20,7 +21,7 @@ const App = () => {
   const { eduApiToken } = useUserStore();
   const { lmnApiToken } = useLmnApiStore();
 
-  lmnApi.defaults.headers.common['x-api-key'] = lmnApiToken;
+  lmnApi.defaults.headers.common[HTTP_HEADERS.XApiKey] = lmnApiToken;
   eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
