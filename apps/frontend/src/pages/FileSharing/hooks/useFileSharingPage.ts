@@ -8,10 +8,12 @@ import userStore from '@/store/UserStore/UserStore';
 const useFileSharingPage = () => {
   const {
     fetchFiles,
+    fetchMountPoints,
     currentPath,
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
+    mountPoints,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { user } = userStore();
@@ -32,6 +34,12 @@ const useFileSharingPage = () => {
       }
     }
   }, [path, pathToRestoreSession, setSearchParams, homePath, setPathToRestoreSession]);
+
+  useEffect(() => {
+    if (mountPoints.length === 0) {
+      void fetchMountPoints();
+    }
+  }, [user?.username]);
 
   useEffect(() => {
     if (fileOperationResult && !isLoading) {
