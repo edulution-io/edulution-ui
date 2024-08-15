@@ -1,13 +1,10 @@
 import { AppConfigDto } from '@libs/appconfig/types';
-import {
-  AppExtendedOnlyOfficeType,
-  AppOnlyOfficeExtendedOptions,
-} from '@libs/appconfig/constants/filesharing/appExtendedOnlyOfficeType';
+import { AppExtendedOptions, AppExtendedType } from '@libs/appconfig/constants/appExtendedType';
 
 const getExtendedOptionValue = (
   appConfigs: AppConfigDto[],
-  extendedOptionsConfig: AppExtendedOnlyOfficeType,
-  optionName: AppOnlyOfficeExtendedOptions,
+  extendedOptionsConfig: AppExtendedType,
+  optionName: AppExtendedOptions,
 ): string | undefined => {
   const validOptionNames = extendedOptionsConfig['ONLY_OFFICE'].map((item) => item.name);
 

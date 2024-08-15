@@ -1,5 +1,5 @@
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AppConfigOnlyOfficeExtendedOption } from '@libs/appconfig/constants/filesharing/appExtendedOnlyOfficeType';
+import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtendedType';
 import AppIntegrationType from './appIntegrationType';
 import { AppConfigOptions } from './appConfigOptions';
 
@@ -9,5 +9,5 @@ export type AppConfigDto = {
   appType: AppIntegrationType;
   options: AppConfigOptions;
   accessGroups: MultipleSelectorGroup[];
-  extendedOptions?: AppConfigOnlyOfficeExtendedOption[];
+  extendedOptions?: AppConfigExtendedOption[];
 };
