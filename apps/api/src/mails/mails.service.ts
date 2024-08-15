@@ -12,8 +12,14 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 
-const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED, MAIL_API_KEY } =
-  process.env;
+const {
+  MAIL_IMAP_URL,
+  MAIL_API_URL,
+  MAIL_IMAP_PORT,
+  MAIL_IMAP_SECURE,
+  MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
+  MAIL_API_KEY,
+} = process.env;
 
 @Injectable()
 class MailsService {
@@ -21,7 +27,7 @@ class MailsService {
 
   constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
     this.mailcowApi = axios.create({
-      baseURL: `https://${MAIL_IMAP_URL}/api/v1`,
+      baseURL: `${MAIL_API_URL}/api/v1`,
       headers: {
         [HTTP_HEADERS.XApiKey]: MAIL_API_KEY,
         [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
