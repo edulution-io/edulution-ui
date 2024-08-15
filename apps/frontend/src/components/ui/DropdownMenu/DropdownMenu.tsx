@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
+import cn from '@/lib/utils';
 import styles from './dropdownmenu.module.scss';
 
 export type DropdownOptions = {
@@ -14,9 +15,16 @@ interface DropdownProps {
   selectedVal: string;
   handleChange: (value: string) => void;
   openToTop?: boolean;
+  classname?: string;
 }
 
-const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleChange, openToTop = false }) => {
+const DropdownMenu: React.FC<DropdownProps> = ({
+  options,
+  selectedVal,
+  handleChange,
+  openToTop = false,
+  classname,
+}) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -50,7 +58,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
 
   return (
     <div
-      className={styles.dropdown}
+      className={cn(styles.dropdown, classname)}
       ref={dropdownRef}
     >
       <div>
@@ -64,6 +72,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({ options, selectedVal, handleCha
               handleChange('');
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
+            disabled={options.length === 0}
           />
         </div>
         <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />

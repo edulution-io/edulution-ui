@@ -62,7 +62,20 @@
   },
   "mail": {
     "title": "MAIL",
-    "sidebar": "Mail"
+    "sidebar": "Mail",
+    "importer": {
+      "title": "E-Mail Importer",
+      "provider": "E-Mail Provider",
+      "configName": "Name der Konfiguration",
+      "hostname": "Hostname",
+      "port": "Port",
+      "encryption": "Encryption",
+      "interval": "Sync Interval",
+      "isActive": "Active",
+      "syncJobsTable": "Importer Jobs",
+      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "mailAddress": "E-Mail Address"
+    }
   },
   "chat": {
     "title": "CHAT",
@@ -389,6 +402,9 @@
         "passwordChangedSuccessfully": "Password changed successfully"
       }
     },
+    "mails": {
+      "title": "E-Mail"
+    },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": {
@@ -471,7 +487,10 @@
     "start": "Start",
     "close": "Close",
     "delete": "Delete",
-    "connect": "Connect"
+    "connect": "Connect",
+    "custom": "Custom",
+    "yes": "Yes",
+    "no": "No"
   },
   "form": {
     "path": "Path",
@@ -671,7 +690,11 @@
       "NotAbleToConnectClientError": "Could not connect to the imap server",
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
-      "NotValidPortTypeError": "The port must be specified as a number"
+      "NotValidPortTypeError": "The port must be specified as a number",
+      "MailProviderNotFound": "E-Mail provider not found",
+      "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
+      "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
+      "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"
     }
   },
   "licensing": {

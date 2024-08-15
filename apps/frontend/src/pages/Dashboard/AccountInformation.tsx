@@ -53,7 +53,8 @@ const AccountInformation = () => {
             {t('accountData.change_password')}
           </Button>
         </div>
-        <div className="mt-6">
+        {/* NIEDUUI-378: Add change personal data */}
+        {/* <div className="mt-6">
           <h4 className="font-bold">{t('accountData.my_information')}</h4>
           {user?.mail && user?.mail.length > 1 && (
             <>
@@ -72,7 +73,7 @@ const AccountInformation = () => {
           >
             {t('accountData.change_my_data')}
           </Button>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );
