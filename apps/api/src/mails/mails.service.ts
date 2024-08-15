@@ -41,7 +41,7 @@ class MailsService {
 
     const client = new ImapFlow({
       host: MAIL_IMAP_URL,
-      port: Number(MAIL_IMAP_URL),
+      port: Number(MAIL_IMAP_PORT),
       secure: MAIL_IMAP_SECURE === 'true',
       tls: {
         rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',

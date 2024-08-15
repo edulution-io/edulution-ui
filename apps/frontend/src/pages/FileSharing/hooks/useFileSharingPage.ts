@@ -7,6 +7,7 @@ import userStore from '@/store/UserStore/UserStore';
 
 const useFileSharingPage = () => {
   const {
+    fetchMountPoints,
     fetchFiles,
     currentPath,
     setPathToRestoreSession,
@@ -18,6 +19,13 @@ const useFileSharingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
   const homePath = `${user?.ldapGroups.roles.at(0)}s/${user?.username}`;
+
+  useEffect(() => {
+    if (user) {
+      void fetchMountPoints();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!isFileProcessing) {
       if (path === '/') {
