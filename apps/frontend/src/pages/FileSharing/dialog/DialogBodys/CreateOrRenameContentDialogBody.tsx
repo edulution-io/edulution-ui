@@ -58,6 +58,7 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
                 type="text"
                 value={extension}
                 variant="default"
+                onChange={(e) => e.preventDefault()}
               />
             </div>
           )}
