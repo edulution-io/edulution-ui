@@ -78,6 +78,7 @@ class FilesharingService {
       data?: string | Record<string, any> | Buffer;
       headers?: Record<string, string | number>;
     },
+    showDebugMessage: boolean,
     fileSharingErrorMessage: ErrorMessage,
     // eslint-disable-next-line
     transformer?: (data: any) => T,
@@ -87,7 +88,15 @@ class FilesharingService {
       FilesharingService.handleWebDAVError(response);
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (showDebugMessage) {
+        throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.NOT_FOUND, error, FilesharingService.name);
+      }
+      throw new CustomHttpException(
+        fileSharingErrorMessage,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        '',
+        FilesharingService.name,
+      );
     }
   }
 
@@ -114,6 +123,7 @@ class FilesharingService {
         url: this.baseurl + getPathWithoutWebdav(path),
         data: this.webdavXML,
       },
+      true,
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
     )) as DirectoryFileDTO[];
@@ -129,6 +139,7 @@ class FilesharingService {
         data: this.webdavXML,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
+      true,
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
     )) as DirectoryFileDTO[];
@@ -144,6 +155,7 @@ class FilesharingService {
         method: HttpMethodsWebDav.MKCOL,
         url: fullPath,
       },
+      true,
       FileSharingErrorMessage.FolderCreationFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -170,6 +182,7 @@ class FilesharingService {
         headers: { 'Content-Type': RequestResponseContentType.TEXT_PLAIN },
         data: content,
       },
+      true,
       FileSharingErrorMessage.CreationFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -190,6 +203,7 @@ class FilesharingService {
         headers: { 'Content-Type': file.mimetype },
         data: file.buffer,
       },
+      false,
       FileSharingErrorMessage.UploadFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -211,6 +225,7 @@ class FilesharingService {
         url: fullPath,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
+      true,
       FileSharingErrorMessage.DeletionFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -235,6 +250,7 @@ class FilesharingService {
           'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
+      true,
       FileSharingErrorMessage.RenameFailed,
       (response: WebdavStatusReplay) => ({
         success: response.status >= 200 && response.status < 300,
