@@ -78,6 +78,7 @@ class FilesharingService {
       data?: string | Record<string, any> | Buffer;
       headers?: Record<string, string | number>;
     },
+    // TODO make showDebugMessage optional
     showDebugMessage: boolean,
     fileSharingErrorMessage: ErrorMessage,
     // eslint-disable-next-line
