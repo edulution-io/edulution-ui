@@ -64,6 +64,11 @@ class OnlyofficeService {
         throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+
+    if (callbackData.status === 1) {
+      return { success: true, status: HttpStatus.OK } as WebdavStatusReplay;
+    }
+    throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
