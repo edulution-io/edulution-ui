@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { MenuItem } from '@/datatypes/types';
 import {
   FileSharingIcon,
@@ -53,7 +53,7 @@ const useFileSharingMenuConfig = () => {
       .map((mountPoint: DirectoryFileDTO) => ({
         id: mountPoint.basename,
         label:
-          mountPoint.filename.includes(`${user?.ldapGroups?.roles[0]}s`) &&
+          mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
           mountPoint.filename.includes(`${user?.username}`)
             ? 'home'
             : mountPoint.basename,

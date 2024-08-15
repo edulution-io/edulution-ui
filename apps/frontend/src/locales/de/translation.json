@@ -3,6 +3,8 @@
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "preparing": "Vorbereiten...",
+  "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -124,6 +126,10 @@
   "filesharing": {
     "title": "FILESHARING",
     "sidebar": "Filesharing",
+    "previewTitle": "Dateivorschau",
+    "saveFile": "Datei speichern",
+    "closeEditor": "Editor schließen",
+    "loadingDocument": "Dokument wird geladen...",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -136,7 +142,9 @@
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WebDavError": "Dateiserver nicht erreichbar",
       "DownloadFailed": "Herunterladen fehlgeschlagen",
-      "FolderCreationFailed": "Ordner konnte nicht erstellt werden"
+      "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
+      "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
+      "SaveFailed": "Speichern fehlgeschlagen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -453,7 +461,7 @@
     "groupUsers": "Gruppenbenutzer",
     "description": "Beschreibung",
     "school": "Schule",
-    "properties": "Eigentschaften",
+    "properties": "Eigenschaften",
     "type": "Typ",
     "creationDate": "Erstelldatum",
     "schoolName": "Schulname",
@@ -539,6 +547,7 @@
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
+    "min_3_chars": "Mindestens 3 Zeichen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -663,5 +672,15 @@
       "title": "Community-Edition",
       "description": "Kostenlose Community Edition von edulution. Diese Version erhält keinen Support."
     }
+  },
+  "appExtendedOptions": {
+    "title": "Erweiterungen",
+    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrlTitle": "OnlyOffice-URL",
+    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+  },
+  "preview": {
+    "failedToLoadImage": "Bild konnte nicht geladen werden"
   }
 }

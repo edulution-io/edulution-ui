@@ -3,6 +3,8 @@
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "preparing": "preparing...",
+  "closeEditingWindow": "Close editing window",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -125,6 +127,10 @@
   "filesharing": {
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
+    "previewTitle": "File Preview",
+    "saveFile": "Save file",
+    "loadingDocument": "Loading document...",
+    "closeEditor": "Close editor",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -137,7 +143,9 @@
       "DbAccessFailed": "Database access failed",
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
-      "FolderCreationFailed": "Folder creation failed"
+      "FolderCreationFailed": "Folder creation failed",
+      "DeleteFromServerFailed": "Delete from server failed",
+      "SaveFailed": "Save failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -538,6 +546,7 @@
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
+    "min_3_chars": "Minimum 3 characters",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred",
@@ -650,6 +659,13 @@
     "groups": "User groups",
     "selectGroupsDescription": "Select the user groups that should have access to the app."
   },
+  "appExtendedOptions": {
+    "title": "Extensions",
+    "onlyOfficeUrl": "Please enter the OnlyOffice URL",
+    "onlyOfficeUrlTitle": "OnlyOffice URL",
+    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+  },
   "mails": {
     "errors": {
       "NotAbleToConnectClientError": "Could not connect to the imap server",
@@ -663,5 +679,8 @@
       "title": "Community Edition",
       "description": "Free Community Edition of edulution. This version does not receive any support."
     }
+  },
+  "preview": {
+    "failedToLoadImage": "Failed to load image"
   }
 }

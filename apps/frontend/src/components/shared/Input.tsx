@@ -8,6 +8,8 @@ import cn from '@/lib/utils';
 const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
+      light:
+        'placeholder:color:ciLightGrey placeholder:text-p placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
       default:
         'placeholder:color:ciLightGrey placeholder:text-p placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
       login:

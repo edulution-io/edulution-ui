@@ -16,8 +16,12 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOnlyOfficeOptionsForm';
+
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -45,6 +49,11 @@ const AppConfigPage: React.FC = () => {
         formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
       });
     }
+    if (item.extendedOptions) {
+      item.extendedOptions.forEach((extension) => {
+        formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
+      });
+    }
   });
 
   const formSchema = z.object(formSchemaObject);
@@ -60,7 +69,7 @@ const AppConfigPage: React.FC = () => {
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig) {
+    if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
       return;
     }
 
@@ -72,8 +81,17 @@ const AppConfigPage: React.FC = () => {
       label: item.label,
     }));
 
+    const newExtendedOptions = currentConfig.extendedOptions?.map((item) => ({
+      name: item.name,
+      value: item.value,
+      description: item.description,
+      type: item.type,
+    }));
+
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
+    setValue(`${settingLocation}.extensions`, newExtendedOptions);
+
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
@@ -108,6 +126,16 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    const extendedOptions =
+      settingLocation === 'filesharing'
+        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
+            name: e.name,
+            description: e.description,
+            type: e.type,
+            value: getValues(`${settingLocation}.${e.name}`) as string,
+          })) as AppConfigExtendedOption[])
+        : [];
+
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
@@ -117,6 +145,7 @@ const AppConfigPage: React.FC = () => {
           acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
           return acc;
         }, {} as AppConfigOptions) || {},
+      extendedOptions,
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
     };
 
@@ -190,6 +219,24 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {item.extendedOptions && (
+                      <div className="space-y-10">
+                        <AccordionSH type="multiple">
+                          <AccordionItem value="onlyOffice">
+                            <AccordionTrigger className="flex text-xl font-bold">
+                              <h4>{t('appExtendedOptions.title')}</h4>
+                            </AccordionTrigger>
+                            <AccordionContent className="space-y-10 pt-4">
+                              <ExtendedOnlyOfficeOptionsForm
+                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
+                                baseName={settingLocation}
+                                form={form}
+                              />
+                            </AccordionContent>
+                          </AccordionItem>
+                        </AccordionSH>
+                      </div>
+                    )}
                   </div>
                 ) : null}
               </div>

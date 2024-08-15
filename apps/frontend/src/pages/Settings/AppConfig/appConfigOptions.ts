@@ -25,6 +25,7 @@ import {
   WlanIcon,
 } from '@/assets/icons';
 import { AppConfigOptionType, APPS } from '@libs/appconfig/types';
+import { AppConfigExtendedOptionsType } from '@libs/appconfig/types/appConfigExtendedOptions';
 
 type AppConfigOption = {
   id: string;
@@ -32,6 +33,7 @@ type AppConfigOption = {
   color: string;
   isNativeApp: boolean;
   options?: AppConfigOptionType[];
+  extendedOptions?: AppConfigExtendedOptionsType[];
 };
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
@@ -70,6 +72,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
     isNativeApp: true,
+    extendedOptions: ['name', 'type', 'description', 'value'],
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {

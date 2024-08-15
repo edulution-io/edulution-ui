@@ -1,5 +1,6 @@
 import { IconType } from 'react-file-icon';
 import { translateKey } from '@/utils/common';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 
 interface ContentFileTypes {
   [extension: string]: IconType | undefined;
@@ -36,7 +37,7 @@ const contentFiletypes: ContentFileTypes = {
 };
 
 export function getFileCategorie(filename: string): IconType {
-  const extension = filename.split('.').pop();
+  const extension = getFileExtension(filename);
   return contentFiletypes[`.${extension}`] ?? 'document';
 }
 

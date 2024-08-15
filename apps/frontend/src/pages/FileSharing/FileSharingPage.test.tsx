@@ -11,7 +11,7 @@ vi.mock('usehooks-ts', () => ({
   useMediaQuery: vi.fn(),
 }));
 
-describe('FileSharing', () => {
+describe('FileSharingPage', () => {
   it('should render the fields that are needed on the page', () => {
     render(
       <BrowserRouter>

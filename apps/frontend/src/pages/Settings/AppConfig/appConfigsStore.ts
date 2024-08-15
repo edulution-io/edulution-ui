@@ -29,7 +29,16 @@ type PersistedAppConfigsStore = (
 const initialState = {
   isAddAppConfigDialogOpen: false,
   isDeleteAppConfigDialogOpen: false,
-  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {}, accessGroups: [] }],
+  appConfigs: [
+    {
+      name: '',
+      icon: '',
+      appType: AppIntegrationType.NATIVE,
+      options: {},
+      accessGroups: [],
+      extendedOptions: [],
+    },
+  ],
   isLoading: false,
   error: null,
 };
