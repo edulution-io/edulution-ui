@@ -1,16 +1,36 @@
+import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
-import MailDto from '@libs/mail/types/mail.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import axios, { AxiosInstance } from 'axios';
+import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { MailProvider, MailProviderDocument } from './mail-provider.schema';
+import FilterUserPipe from '../common/pipes/filterUser.pipe';
+
+const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED, MAIL_API_KEY } =
+  process.env;
 
 @Injectable()
 class MailsService {
+  private mailcowApi: AxiosInstance;
+
+  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
+    this.mailcowApi = axios.create({
+      baseURL: `https://${MAIL_IMAP_URL}/api/v1`,
+      headers: {
+        [HTTP_HEADERS.XApiKey]: MAIL_API_KEY,
+        [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
+      },
+    });
+  }
+
   static getMails = async (username: string, password: string): Promise<MailDto[]> => {
     // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = process.env;
 
     if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
@@ -83,6 +103,125 @@ class MailsService {
     Logger.log(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;
   };
+
+  static prepareMailProviderResponse(mailProvidersList: MailProviderDocument[]): MailProviderConfigDto[] {
+    const mailProviders: MailProviderConfigDto[] = mailProvidersList.map((item) => ({
+      id: item.mailProviderId,
+      name: item.name,
+      label: item.label,
+      host: item.host,
+      port: item.port,
+      encryption: item.encryption,
+    }));
+
+    return mailProviders;
+  }
+
+  async getExternalMailProviderConfig(): Promise<MailProviderConfigDto[]> {
+    const mailProvidersList = await this.mailProviderModel.find({}, 'mailProviderId name label host port encryption');
+
+    if (!mailProvidersList) {
+      throw new CustomHttpException(
+        MailsErrorMessages.MailProviderNotFound,
+        HttpStatus.NOT_FOUND,
+        '',
+        MailsService.name,
+      );
+    }
+
+    return MailsService.prepareMailProviderResponse(mailProvidersList);
+  }
+
+  async postExternalMailProviderConfig(mailProviderConfig: MailProviderConfigDto): Promise<MailProviderConfigDto[]> {
+    try {
+      let response = {};
+      if (mailProviderConfig.id !== '') {
+        response =
+          (await this.mailProviderModel.findOneAndUpdate(
+            { mailProviderId: mailProviderConfig.id },
+            { $set: mailProviderConfig },
+            { upsert: true },
+          )) || {};
+      } else {
+        response = await this.mailProviderModel.create(mailProviderConfig);
+      }
+      if (response) {
+        const mailProvidersList = await this.mailProviderModel.find(
+          {},
+          'mailProviderId name label host port encryption',
+        );
+        return MailsService.prepareMailProviderResponse(mailProvidersList);
+      }
+    } catch (error) {
+      throw new CustomHttpException(
+        MailsErrorMessages.MailProviderNotFound,
+        HttpStatus.NOT_FOUND,
+        error,
+        MailsService.name,
+      );
+    }
+    throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
+  }
+
+  async deleteExternalMailProviderConfig(mailProviderId: string) {
+    try {
+      const deleteResponse = await this.mailProviderModel.deleteOne({ mailProviderId });
+      if (deleteResponse.deletedCount === 1) {
+        const mailProvidersList = await this.mailProviderModel.find(
+          {},
+          'mailProviderId name label host port encryption',
+        );
+        return MailsService.prepareMailProviderResponse(mailProvidersList);
+      }
+    } catch (error) {
+      throw new CustomHttpException(
+        MailsErrorMessages.MailProviderNotFound,
+        HttpStatus.NOT_FOUND,
+        error,
+        MailsService.name,
+      );
+    }
+    throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
+  }
+
+  async getSyncJobs(username: string) {
+    try {
+      const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
+
+      const filteredSyncJobs = new FilterUserPipe(username).transform(syncJobs.data, {} as ArgumentMetadata);
+
+      return filteredSyncJobs;
+    } catch (e) {
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+    }
+  }
+
+  async createSyncJob(createSyncJobDto: CreateSyncJobDto, username: string) {
+    try {
+      const response = await this.mailcowApi.post<SyncJobResponseDto>('/add/syncjob', createSyncJobDto);
+      if (response) {
+        const syncJobs = await this.getSyncJobs(username);
+        return syncJobs;
+      }
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
+    } catch (e) {
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY, e);
+    }
+  }
+
+  async deleteSyncJobs(syncJobIds: string[], username: string) {
+    // NIEDUUI-374: Check if user has permission to delete
+    try {
+      const response = await this.mailcowApi.post<SyncJobResponseDto>('/delete/syncjob', syncJobIds);
+      if (response) {
+        const syncJobs = await this.getSyncJobs(username);
+        return syncJobs;
+      }
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
+    } catch (e) {
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+    }
+  }
 }
 
 export default MailsService;

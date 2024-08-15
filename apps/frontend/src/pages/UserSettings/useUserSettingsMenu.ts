@@ -1,7 +1,10 @@
-import { SecurityIcon, UserIcon } from '@/assets/icons';
+import { MailIcon, SecurityIcon, UserIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { useNavigate } from 'react-router-dom';
-import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import {
+  USER_SETTINGS_MAILS_PATH,
+  USER_SETTINGS_SECURITY_PATH,
+} from '@libs/userSettings/constants/user-settings-endpoints';
 
 const useUserSettingsMenu = () => {
   const navigate = useNavigate();
@@ -16,6 +19,12 @@ const useUserSettingsMenu = () => {
         label: 'usersettings.security.title',
         icon: SecurityIcon,
         action: () => navigate(USER_SETTINGS_SECURITY_PATH),
+      },
+      {
+        id: 'mails',
+        label: 'usersettings.mails.title',
+        icon: MailIcon,
+        action: () => navigate(USER_SETTINGS_MAILS_PATH),
       },
     ],
   };

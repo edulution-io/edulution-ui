@@ -1,1 +1,3 @@
-export type AppConfigExtendedOptionsType = 'name' | 'type' | 'description' | 'value';
+type AppConfigExtendedOptionsType = 'name' | 'type' | 'description' | 'value';
+
+export default AppConfigExtendedOptionsType;

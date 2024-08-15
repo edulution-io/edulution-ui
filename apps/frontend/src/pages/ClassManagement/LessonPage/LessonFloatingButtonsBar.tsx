@@ -177,29 +177,28 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   };
 
   return (
-
     <>
       <FloatingButtonsBar config={config} />
       {buttons.map((button) => (
         <div key={button.text}>
           <LessonConfirmationDialog
-                title={button.text}
-                member={students}
-                isOpen={isDialogOpen === button.text.toString()}
-                onClose={() => setIsDialogOpen('')}
-                enableAction={async () => {
-                  await button.enableAction();
-                  setIsDialogOpen('');
-                  await updateStudents();
-                }}
-                disableAction={async () => {
-                  await button.disableAction();
-                  setIsDialogOpen('');
-                  await updateStudents();
-                }}
-                enableText={button.enableText}
-                disableText={button.disableText}
-              />
+            title={button.text}
+            member={students}
+            isOpen={isDialogOpen === button.text.toString()}
+            onClose={() => setIsDialogOpen('')}
+            enableAction={async () => {
+              await button.enableAction();
+              setIsDialogOpen('');
+              await updateStudents();
+            }}
+            disableAction={async () => {
+              await button.disableAction();
+              setIsDialogOpen('');
+              await updateStudents();
+            }}
+            enableText={button.enableText}
+            disableText={button.disableText}
+          />
         </div>
       ))}
     </>
