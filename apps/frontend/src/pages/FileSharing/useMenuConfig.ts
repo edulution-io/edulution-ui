@@ -30,14 +30,10 @@ const findCorrespondingMountPointIcon = (filename: string) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { mountPoints, fetchMountPoints } = useFileSharingStore();
+  const { mountPoints } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = userStore();
-
-  useEffect(() => {
-    void fetchMountPoints();
-  }, [user?.username]);
 
   const handlePathChange = useCallback(
     (newPath: string) => {

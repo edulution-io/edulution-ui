@@ -31,7 +31,7 @@ const useFileSharingPage = () => {
         setPathToRestoreSession(path);
       }
     }
-  }, [path, pathToRestoreSession, setSearchParams, homePath, setPathToRestoreSession]);
+  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
 
   useEffect(() => {
     if (fileOperationResult && !isLoading) {
