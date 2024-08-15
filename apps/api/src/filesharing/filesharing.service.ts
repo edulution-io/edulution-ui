@@ -4,22 +4,18 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
-import {
-  HttpMethods,
-  HttpMethodsWebDav,
-  RequestResponseContentType,
-  ResponseType,
-} from '@libs/common/types/http-methods';
-import { firstValueFrom } from 'rxjs';
+import { HttpMethods, HttpMethodsWebDav, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { Readable } from 'stream';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
-import { HttpService } from '@nestjs/axios';
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import getProtocol from '@libs/common/utils/getProtocol';
+import process from 'node:process';
+import { Request } from 'express';
+import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
+import FilesystemService from './filesystem.service';
+import OnlyofficeService from './onlyoffice.service';
 
 @Injectable()
 class FilesharingService {
@@ -28,8 +24,9 @@ class FilesharingService {
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
   constructor(
-    private readonly httpService: HttpService,
     private readonly userService: UsersService,
+    private readonly onlyofficeService: OnlyofficeService,
+    private readonly fileSystemService: FilesystemService,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -88,7 +85,6 @@ class FilesharingService {
     try {
       const response = await client(config);
       FilesharingService.handleWebDAVError(response);
-
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
       throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -107,27 +103,6 @@ class FilesharingService {
     '    <d:creationdate />\n' +
     '  </d:prop>\n' +
     '</d:propfind>\n';
-
-  private async fetchFileStream(
-    username: string,
-    url: string,
-    streamFetching = false,
-  ): Promise<AxiosResponse<Readable> | Readable> {
-    try {
-      const password = await this.userService.getPassword(username);
-      const authContents = `${username}:${password}`;
-      const protocol = getProtocol(url);
-      const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
-
-      const fileStream = this.httpService.get<Readable>(authenticatedUrl, {
-        responseType: ResponseType.STREAM,
-      });
-
-      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
-  }
 
   getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
@@ -271,7 +246,7 @@ class FilesharingService {
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const resp = await this.fetchFileStream(username, url);
+      const resp = await this.fileSystemService.fetchFileStream(username, url);
       if (resp instanceof Readable) {
         return resp;
       }
@@ -279,6 +254,27 @@ class FilesharingService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
+  }
+
+  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+    return this.fileSystemService.fileLocation(username, filePath, filename);
+  }
+
+  async getOnlyOfficeToken(payload: string) {
+    return this.onlyofficeService.generateOnlyOfficeToken(payload);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteFileFromServer(path: string): Promise<void> {
+    try {
+      await FilesystemService.deleteFile(path);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
+    return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
   }
 }
 

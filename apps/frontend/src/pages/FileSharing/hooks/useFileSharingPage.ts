@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
 
 const useFileSharingPage = () => {
@@ -17,7 +17,7 @@ const useFileSharingPage = () => {
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.ldapGroups.roles[0]}s/${user?.username}`;
+  const homePath = `${user?.ldapGroups.roles.at(0)}s/${user?.username}`;
   useEffect(() => {
     if (!isFileProcessing) {
       if (path === '/') {

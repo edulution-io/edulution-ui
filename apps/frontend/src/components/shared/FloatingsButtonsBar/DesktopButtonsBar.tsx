@@ -34,7 +34,6 @@ const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
       </div>
     ) : null;
   });
-
   return (
     <div
       className={cn(

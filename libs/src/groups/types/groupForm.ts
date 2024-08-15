@@ -4,6 +4,7 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 interface GroupForm {
   id: string;
   name: string;
+  displayName: string;
   description: string;
   quota: string;
   mailquota: string;
@@ -15,6 +16,7 @@ interface GroupForm {
   admingroups: MultipleSelectorGroup[];
   members: MultipleSelectorOptionSH[];
   membergroups: MultipleSelectorGroup[];
+  proxyAddresses: string;
   school: string;
   creationDate?: string;
 }

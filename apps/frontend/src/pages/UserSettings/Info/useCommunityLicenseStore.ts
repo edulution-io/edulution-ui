@@ -7,13 +7,13 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-type PersistedComunityLicenseStore = (
+type PersistedCommunityLicenseStore = (
   licenseData: StateCreator<CommunityLicenseStore>,
   options: PersistOptions<Partial<CommunityLicenseStore>>,
 ) => StateCreator<CommunityLicenseStore>;
 
 const useCommunityLicenseStore = create<CommunityLicenseStore>(
-  (persist as PersistedComunityLicenseStore)(
+  (persist as PersistedCommunityLicenseStore)(
     (set, get) => ({
       ...communityLicenseStoreInitialValues,
       reset: () => set(communityLicenseStoreInitialValues),
@@ -30,13 +30,13 @@ const useCommunityLicenseStore = create<CommunityLicenseStore>(
         set({ isLoading: true });
         try {
           const response = await eduApi.get<LicenseInfoDto>(LICENSE_ENDPOINT);
-          const licenseinfo = response.data;
+          const licenseInfo = response.data;
 
-          if (!licenseinfo || !licenseinfo.isLicenseActive) {
+          if (!licenseInfo || !licenseInfo.isLicenseActive) {
             setTimeout(() => set({ isOpen: true }), 400);
             return;
           }
-          set({ isOpen: false, wasViewedAlready: true, isLicenseActive: licenseinfo.isLicenseActive });
+          set({ isOpen: false, wasViewedAlready: true, isLicenseActive: licenseInfo.isLicenseActive });
         } catch (error) {
           handleApiError(error, set);
         } finally {

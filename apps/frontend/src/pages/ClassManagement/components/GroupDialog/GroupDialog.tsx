@@ -47,6 +47,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const initialFormValues: GroupForm = {
     id: '',
     name: '',
+    displayName: '',
+    proxyAddresses: '',
     description: '',
     quota: '',
     mailquota: '',
@@ -82,11 +84,18 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const setFormInitialValues = (
     fetchedGroup: LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers | LmnApiSession | LmnApiPrinterWithMembers,
   ) => {
+    if (!userGroupToEdit) return;
+
     form.setValue(
       'id',
       (userGroupToEdit as LmnApiSession).sid || (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).cn || '',
     );
-    form.setValue('name', userGroupToEdit?.name || '');
+    form.setValue('name', userGroupToEdit.name || '');
+    form.setValue('displayName', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).displayName || '');
+    form.setValue(
+      'proxyAddresses',
+      (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses.join(',') || '',
+    );
     form.setValue(
       'school',
       (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixSchoolname || DEFAULT_SCHOOL,

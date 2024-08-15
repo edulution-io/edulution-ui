@@ -3,18 +3,19 @@ import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConfere
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import UserStore from '@/store/UserStore/UserStore';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -25,6 +26,7 @@ const cleanAllStores = () => {
   useConferenceStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
   useFileSharingStore.getState().reset();
+  useFileEditorStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useAppConfigsStore.getState().reset();

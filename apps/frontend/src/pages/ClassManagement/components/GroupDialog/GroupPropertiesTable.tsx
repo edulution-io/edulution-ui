@@ -1,16 +1,17 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Checkbox from '@/components/ui/Checkbox';
-import Input from '@/components/shared/Input';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import GroupForm from '@libs/groups/types/groupForm';
+import Input from '@/components/shared/Input';
 
 dayjs.extend(customParseFormat);
 
 type GroupProperty = {
   labelTranslationId: string;
-  name: string;
+  name: keyof GroupForm;
   disabled?: boolean;
   component: 'checkbox' | 'text' | 'date';
 };
@@ -18,10 +19,11 @@ type GroupProperty = {
 interface GroupPropertiesTableProps {
   isCreateMode: boolean;
   disabled?: boolean;
+  form: UseFormReturn<GroupForm>;
 }
 
-const GroupPropertiesTable = ({ isCreateMode, disabled }: GroupPropertiesTableProps) => {
-  const { watch, setValue } = useFormContext();
+const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
+  const { watch, setValue, register } = form;
   const { t } = useTranslation();
 
   const groupProperties: GroupProperty[] = [
@@ -67,6 +69,12 @@ const GroupPropertiesTable = ({ isCreateMode, disabled }: GroupPropertiesTablePr
       disabled,
       component: 'checkbox',
     },
+    {
+      labelTranslationId: 'classmanagement.proxyAddresses',
+      name: 'proxyAddresses',
+      disabled,
+      component: 'text',
+    },
   ];
 
   const getComponent = (groupProperty: GroupProperty) => {
@@ -82,14 +90,19 @@ const GroupPropertiesTable = ({ isCreateMode, disabled }: GroupPropertiesTablePr
         );
       case 'date':
         return watch(groupProperty.name)
-          ? dayjs(watch(groupProperty.name) as string, 'yyyyMMddHHmmss.SZ').format()
+          ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]').format()
           : '-';
       case 'text':
       default:
         if (groupProperty.disabled) {
           return <>{watch(groupProperty.name)}</>;
         }
-        return <Input name={groupProperty.name} />;
+        return (
+          <Input
+            {...register(groupProperty.name)}
+            variant="default"
+          />
+        );
     }
   };
 
@@ -97,6 +110,10 @@ const GroupPropertiesTable = ({ isCreateMode, disabled }: GroupPropertiesTablePr
     <div className="flex flex-col text-base text-foreground">
       <table className="w-full table-fixed">
         <tbody>
+          <tr>
+            <td className="w-1/2 border p-2 text-left ">{t('classmanagement.systemName')}</td>
+            <td className="w-1/2 border p-2">{watch('name')}</td>
+          </tr>
           {groupProperties
             .filter((groupProperty) => isCreateMode || watch(groupProperty.name) !== undefined)
             .map((groupProperty) => (

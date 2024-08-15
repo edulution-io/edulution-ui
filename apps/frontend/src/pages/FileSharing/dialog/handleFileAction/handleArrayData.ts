@@ -4,12 +4,16 @@ import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
+import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
 const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
   const promises = data
     .map((item) => getPathWithoutWebdav(item.path))
     .filter((filename) => filename !== undefined)
-    .map((filename) => eduApi[httpMethod](`${buildApiFilePathUrl(endpoint, filename)}`));
+    .map((filename) =>
+      eduApi[httpMethod](`${buildApiDeletePathUrl(endpoint, filename, DeleteTargetType.FILE_SERVER)}`),
+    );
 
   return Promise.all(promises);
 };

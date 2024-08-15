@@ -10,6 +10,7 @@ interface LmnApiProject {
   mail: string[];
   member: string[];
   members: UserLmnInfo[];
+  proxyAddresses: string[];
   name: string;
   sAMAccountName: string;
   sAMAccountType: string;

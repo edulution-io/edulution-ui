@@ -56,6 +56,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
     isNativeApp: true,
+    extendedOptions: ['name', 'type', 'description', 'value'],
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {

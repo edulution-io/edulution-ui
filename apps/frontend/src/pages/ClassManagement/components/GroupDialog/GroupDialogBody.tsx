@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
@@ -54,6 +54,17 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
     setValue('membergroups', groups, { shouldValidate: true });
   };
 
+  const displayName = watch('displayName');
+
+  useEffect(() => {
+    if (!isCreateMode) {
+      return;
+    }
+
+    const sanitizedName = displayName.replace(' ', '_').replace(/[^a-z0-9_+-]/gi, '');
+    setValue('name', sanitizedName);
+  }, [displayName, setValue]);
+
   const adminUsers = watch('admins') as AttendeeDto[];
   const adminGroups = watch('admingroups');
   const standardUsers = watch('members') as AttendeeDto[];
@@ -72,10 +83,9 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
         }}
       >
         <FormField
-          name="name"
+          name="displayName"
           disabled={disabled}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          form={form as UseFormReturn<any>}
+          form={form}
           labelTranslationId={t('classmanagement.name')}
           isLoading={searchGroupsIsLoading}
           variant="default"
@@ -91,6 +101,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                 <GroupPropertiesTable
                   isCreateMode={isCreateMode}
                   disabled={disabled}
+                  form={form}
                 />
               </AccordionContent>
             </AccordionItem>

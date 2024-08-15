@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { t } from 'i18next';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { MdDriveFileRenameOutline } from 'react-icons/md';
 import ContentType from '@libs/filesharing/types/contentType';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';

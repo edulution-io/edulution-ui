@@ -4,10 +4,13 @@ import {
   Delete,
   Get,
   Header,
+  HttpStatus,
   Patch,
   Post,
   Put,
   Query,
+  Req,
+  Res,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
@@ -17,8 +20,11 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import { Request, Response } from 'express';
+import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
@@ -64,8 +70,15 @@ class FilesharingController {
   }
 
   @Delete()
-  async deleteFile(@Query('path') path: string, @GetCurrentUsername() username: string) {
-    return this.filesharingService.deleteFileAtPath(username, path);
+  async deleteFile(
+    @Query('path') path: string,
+    @Query('target') target: DeleteTargetType,
+    @GetCurrentUsername() username: string,
+  ) {
+    if (target === DeleteTargetType.FILE_SERVER) {
+      return this.filesharingService.deleteFileAtPath(username, path);
+    }
+    return this.filesharingService.deleteFileFromServer(path);
   }
 
   @Patch()
@@ -80,7 +93,7 @@ class FilesharingController {
     return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
   }
 
-  @Get(FileSharingApiEndpoints.GET_FILE_STREAM)
+  @Get(FileSharingApiEndpoints.FILE_STREAM)
   @Header('Content-Type', RequestResponseContentType.APPLICATION_OCTET_STREAM as string)
   async webDavFileStream(
     @Query('filePath') filePath: string,
@@ -92,6 +105,36 @@ class FilesharingController {
     return new StreamableFile(stream, {
       disposition: `attachment; filename="${fileName}"`,
     });
+  }
+
+  @Get(FileSharingApiEndpoints.FILE_LOCATION)
+  async getDownloadLink(
+    @Query('filePath') filePath: string,
+    @Query('fileName') fileName: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.fileLocation(username, filePath, fileName);
+  }
+
+  @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)
+  getOnlyofficeToken(@Body() payload: string) {
+    return this.filesharingService.getOnlyOfficeToken(payload);
+  }
+
+  @Public()
+  @Post('callback')
+  handleCallback(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('path') path: string,
+    @Query('filename') filename: string,
+    @Query('eduToken') eduToken: string,
+  ) {
+    try {
+      return this.filesharingService.handleCallback(req, path, filename, eduToken);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+    }
   }
 }
 

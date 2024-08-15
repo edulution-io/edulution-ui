@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import Input from '@/components/shared/Input';
 import ContentType from '@libs/filesharing/types/contentType';
 

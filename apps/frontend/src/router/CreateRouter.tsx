@@ -10,6 +10,8 @@ import { MAILS_PATH, SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSetting
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
+import EmptyLayout from '@/components/layout/EmptyLayout';
+import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import getSettingsRoutes from './routes/SettingsRoutes';
@@ -25,6 +27,17 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>
+            <Route element={<EmptyLayout />}>
+              <Route
+                path="/onlyoffice"
+                element={
+                  <FileViewer
+                    mode="edit"
+                    editWindow
+                  />
+                }
+              />
+            </Route>
             {getForwardedRoutes(appConfigs)}
             {getEmbeddedRoutes(appConfigs)}
 
