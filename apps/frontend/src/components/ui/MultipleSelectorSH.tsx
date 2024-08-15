@@ -48,6 +48,7 @@ interface MultipleSelectorProps {
   groupBy?: string;
   className?: string;
   badgeClassName?: string;
+  variant?: 'light' | 'dark';
   /**
    * First item selected is a default behavior by cmdk. That is why the default is true.
    * This is a workaround solution by add a dummy item.
@@ -177,6 +178,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       triggerSearchOnFocus = false,
       commandProps,
       inputProps,
+      variant = 'dark',
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
@@ -353,13 +355,18 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           handleKeyDown(e);
           commandProps?.onKeyDown?.(e);
         }}
-        className={cn('overflow-visible', commandProps?.className)}
+        className={cn(
+          'overflow-visible',
+          variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
+          commandProps?.className,
+        )}
         shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
         filter={commandFilter()}
       >
         <div
           className={cn(
             'group rounded-md border border-input p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
             className,
           )}
         >
@@ -393,7 +400,13 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    <X
+                      className={
+                        variant === 'dark'
+                          ? 'h-3 w-3 text-ciLightGrey hover:text-foreground'
+                          : 'h-3 w-3 text-muted-foreground hover:text-foreground'
+                      }
+                    />
                   </button>
                 )}
               </BadgeSH>
@@ -418,13 +431,22 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 inputProps?.onFocus?.(event);
               }}
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
-              className={cn('ml-2 flex-1 outline-none placeholder:text-muted-foreground', inputProps?.className)}
+              className={cn(
+                'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
+                variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey placeholder:text-ciLightGrey' : '',
+                inputProps?.className,
+              )}
             />
           </div>
         </div>
         <div className="relative">
           {open && (
-            <CommandList className="absolute top-0 z-50 w-full rounded-md border bg-popover bg-white text-popover-foreground shadow-md outline-none animate-in">
+            <CommandList
+              className={cn(
+                'absolute top-0 z-50 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in',
+                variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : 'bg-white',
+              )}
+            >
               {isLoading ? (
                 <>{loadingIndicator}</>
               ) : (
@@ -441,7 +463,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     <CommandGroup
                       key={key}
                       heading={key}
-                      className="h-full overflow-auto"
+                      className={variant === 'dark' ? 'h-full overflow-auto text-ciLightGrey' : 'h-full overflow-auto'}
                     >
                       <>
                         {dropdowns.map((option) => (
@@ -463,7 +485,14 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                               setSelected(newOptions);
                               onChange?.(newOptions);
                             }}
-                            className={cn('cursor-pointer', option.disable && 'cursor-default text-muted-foreground')}
+                            className={cn(
+                              'cursor-pointer',
+                              variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : 'bg-white text-black',
+                              option.disable &&
+                                (variant === 'dark'
+                                  ? 'cursor-default text-muted-foreground'
+                                  : 'cursor-default text-gray-500'),
+                            )}
                           >
                             {option.label}
                           </CommandItem>
