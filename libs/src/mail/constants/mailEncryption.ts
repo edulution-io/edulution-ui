@@ -1,5 +1,5 @@
 const MailEncryption = {
-  STARTTLS: 'STARTTLS',
+  TLS: 'TLS',
   SSL: 'SSL',
   PLAIN: 'PLAIN',
 } as const;

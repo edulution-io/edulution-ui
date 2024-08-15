@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobDto } from '@libs/mail/types';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -35,9 +35,7 @@ class MailsController {
   @Delete('provider-config/:mailProviderId')
   @UseGuards(AppConfigGuard)
   deleteExternalMailProviderConfig(@Param('mailProviderId') mailProviderId: string) {
-    return this.mailsService
-      .deleteExternalMailProviderConfig(mailProviderId)
-      .catch((e) => Logger.error(e, MailsController.name));
+    return this.mailsService.deleteExternalMailProviderConfig(mailProviderId);
   }
 
   @Get('sync-job')

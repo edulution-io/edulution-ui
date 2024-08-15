@@ -62,7 +62,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
-      "title": "E-Mail Importer",
+      "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "configName": "Name der Konfiguration",
       "hostname": "Hostname",

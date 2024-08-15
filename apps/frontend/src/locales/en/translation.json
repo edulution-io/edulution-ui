@@ -63,7 +63,7 @@
     "sidebar": "Mail",
     "importer": {
       "title": "E-Mail Importer",
-      "provider": "E-Mail-Provider",
+      "provider": "E-Mail Provider",
       "configName": "Name der Konfiguration",
       "hostname": "Hostname",
       "port": "Port",
@@ -673,7 +673,7 @@
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number",
-      "MailProviderNotFound": "Mail provider not found",
+      "MailProviderNotFound": "E-Mail provider not found",
       "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
       "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
       "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"

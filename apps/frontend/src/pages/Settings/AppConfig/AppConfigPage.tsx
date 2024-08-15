@@ -37,7 +37,12 @@ const AppConfigPage: React.FC = () => {
   const { postExternalMailProviderConfig } = useMailsStore();
 
   useEffect(() => {
-    setSettingLocation(pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '');
+    const secondPartFromPath =
+      pathname
+        .split('/')
+        .filter((part) => part !== '')
+        .at(1) || '';
+    setSettingLocation(pathname !== '/settings' ? secondPartFromPath : '');
   }, [pathname]);
 
   const formSchemaObject: { [key: string]: z.Schema } = {};

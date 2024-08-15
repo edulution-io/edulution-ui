@@ -210,7 +210,7 @@ class MailsService {
   }
 
   async deleteSyncJobs(syncJobIds: string[], username: string) {
-    // TODO: Check if user has permission to delete
+    // NIEDUUI-374: Check if user has permission to delete
     try {
       const response = await this.mailcowApi.post<SyncJobResponseDto>('/delete/syncjob', syncJobIds);
       if (response) {
