@@ -18,7 +18,7 @@ const FileSharingFloatingButtonsBar = () => {
           selectedItem={selectedItems.at(0)}
         />
       )}
-      {selectedItems.length > 0 && <FileActionMultiSelect openDialog={openDialog} />}
+      {selectedItems.length > 1 && <FileActionMultiSelect openDialog={openDialog} />}
     </div>
   );
 };
