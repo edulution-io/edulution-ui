@@ -22,6 +22,7 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
+import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
@@ -131,6 +132,10 @@ class FilesharingController {
     @Query('eduToken') eduToken: string,
   ) {
     try {
+      const { status } = req.body as OnlyOfficeCallbackData;
+      if (status === 1) {
+        return res.status(HttpStatus.OK).send();
+      }
       return this.filesharingService.handleCallback(req, path, filename, eduToken);
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
