@@ -3,8 +3,6 @@ export enum AppExtendedOptions {
   ONLY_OFFICE_JWT_SECRET = 'ONLY_OFFICE_JWT_SECRET',
 }
 
-export type AppConfigExtendedOptionsType = keyof typeof AppExtendedOptions;
-
 export interface AppConfigExtendedOption {
   name: AppExtendedOptions;
   title: string;

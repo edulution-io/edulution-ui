@@ -22,9 +22,12 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
+import MailsConfig from './mails/MailsConfig';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -35,9 +38,15 @@ const AppConfigPage: React.FC = () => {
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
   const isMobileView = useIsMobileView();
+  const { postExternalMailProviderConfig } = useMailsStore();
 
   useEffect(() => {
-    setSettingLocation(pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '');
+    const secondPartFromPath =
+      pathname
+        .split('/')
+        .filter((part) => part !== '')
+        .at(1) || '';
+    setSettingLocation(pathname !== '/settings' ? secondPartFromPath : '');
   }, [pathname]);
 
   const formSchemaObject: { [key: string]: z.Schema } = {};
@@ -157,6 +166,18 @@ const AppConfigPage: React.FC = () => {
     });
 
     await updateAppConfig(updatedConfig);
+
+    if (settingLocation === 'mail' && getValues('configName')) {
+      const mailProviderConfig: MailProviderConfigDto = {
+        id: (getValues('mailProviderId') || '') as string,
+        name: getValues('configName') as string,
+        label: getValues('configName') as string,
+        host: getValues('hostname') as string,
+        port: getValues('port') as string,
+        encryption: getValues('encryption') as TMailEncryption,
+      };
+      void postExternalMailProviderConfig(mailProviderConfig);
+    }
   };
 
   const settingsForm = () => {
@@ -192,6 +213,7 @@ const AppConfigPage: React.FC = () => {
                         )}
                       />
                     ))}
+
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
@@ -237,6 +259,7 @@ const AppConfigPage: React.FC = () => {
                         </AccordionSH>
                       </div>
                     )}
+                    <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
                   </div>
                 ) : null}
               </div>
@@ -266,7 +289,7 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="overflow-y-auto">
+      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}
