@@ -20,19 +20,16 @@ const ResultTableDialogBody = () => {
     }
   }, [selectedSurvey]);
 
-  if (!selectedSurvey?.formula) {
-    toast.error(t(SurveyErrorMessages.NoFormula));
-    setIsOpenPublicResultsTableDialog(false);
-    return null;
-  }
+  useEffect(() => {
+    if (!selectedSurvey?.formula) {
+      toast.error(t(SurveyErrorMessages.NoFormula));
+      setIsOpenPublicResultsTableDialog(false);
+    } else if (result && result.length === 0) {
+      setIsOpenPublicResultsTableDialog(false);
+    }
+  }, [selectedSurvey, result]);
 
-  if (!result) {
-    return null;
-  }
-
-  if (result && result.length === 0) {
-    toast.error(t(SurveyErrorMessages.NoAnswers));
-    setIsOpenPublicResultsTableDialog(false);
+  if (!selectedSurvey?.formula || !result || result.length === 0) {
     return null;
   }
 

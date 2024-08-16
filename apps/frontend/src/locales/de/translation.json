@@ -146,24 +146,24 @@
     },
     "errors": {
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
-      "deleteError": "Die Umfragen konnten nicht gelöscht werden",
-      "noAnswerError": "Es sind noch keine Antworten vorhanden",
-      "noFormulaError": "Das Formular der Umfrage ist nicht lesbar",
-      "notFoundError": "Umfrage konnte nicht gefunden werden",
-      "participationErrorUserNotAssigned": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
-      "participationErrorAlreadyParticipated": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
-      "participationErrorSurveyExpired": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
+      "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
+      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
+      "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
+      "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
+      "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte, fülle die Umfrage aus bevor du deine Antwort abschickst"
+      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Benutzerumfrageantwort konnte nicht gefunden oder erstellt werden",
-      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
-      "notAbleToUpdateSurveyAnswerError": "Die vorherige Abgabe für die Umfrage konnte nicht aktualisiert werden",
-      "notAbleToCreateSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht gelöscht werden"
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
+      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
   },
   "surveys": {

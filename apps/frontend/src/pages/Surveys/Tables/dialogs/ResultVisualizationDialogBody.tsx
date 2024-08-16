@@ -18,19 +18,16 @@ const ResultVisualizationDialogBody = () => {
     }
   }, [selectedSurvey]);
 
-  if (!selectedSurvey?.formula) {
-    toast.error(t(SurveyErrorMessages.NoFormula));
-    setIsOpenPublicResultsVisualisationDialog(false);
-    return null;
-  }
+  useEffect(() => {
+    if (!selectedSurvey?.formula) {
+      toast.error(t(SurveyErrorMessages.NoFormula));
+      setIsOpenPublicResultsVisualisationDialog(false);
+    } else if (result && result.length === 0) {
+      setIsOpenPublicResultsVisualisationDialog(false);
+    }
+  }, [selectedSurvey, result]);
 
-  if (!result) {
-    return null;
-  }
-
-  if (result && result.length === 0) {
-    toast.error(t(SurveyErrorMessages.NoAnswers));
-    setIsOpenPublicResultsVisualisationDialog(false);
+  if (!selectedSurvey?.formula || !result || result.length === 0) {
     return null;
   }
 
