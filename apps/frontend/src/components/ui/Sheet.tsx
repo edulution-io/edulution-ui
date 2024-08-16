@@ -42,9 +42,15 @@ const sheetVariants = cva(
         right:
           'inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
       },
+      variant: {
+        primary: 'bg-white',
+        secondary: 'bg-ciGray',
+        tertiary: 'bg-black',
+      },
     },
     defaultVariants: {
       side: 'right',
+      variant: 'primary',
     },
   },
 );
@@ -54,16 +60,28 @@ interface SheetContentProps
     VariantProps<typeof sheetVariants> {}
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = 'right', className, children, ...props }, ref) => (
+  ({ side = 'right', variant = 'secondary', className, children, ...props }, ref) => (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
-        className={cn(sheetVariants({ side }), 'max-h-[90vh] overflow-auto', className)}
+        className={cn(
+          { 'color-black text-foreground': variant === 'primary' },
+          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          sheetVariants({ side, variant }),
+          'max-h-[90vh] overflow-auto',
+          className,
+        )}
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm text-foreground opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+        <SheetPrimitive.Close
+          className={cn(
+            { 'text-foreground': variant === 'primary' },
+            { 'text-background': variant === 'secondary' || variant === 'tertiary' },
+            'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none',
+          )}
+        >
           <Cross2Icon className="h-4 w-4" />
           <span className="sr-only">{translateKey('dialog.close')}</span>
         </SheetPrimitive.Close>
@@ -73,9 +91,15 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
 );
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
-const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+interface SheetHeaderProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof sheetVariants> {}
+const SheetHeader = ({ className, variant, ...props }: SheetHeaderProps) => (
   <div
-    className={cn('flex flex-col space-y-2 text-center sm:text-left', className)}
+    className={cn(
+      { 'color-black text-foreground': variant === 'primary' },
+      { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+      'flex flex-col space-y-2 text-center sm:text-left',
+      className,
+    )}
     {...props}
   />
 );
@@ -95,7 +119,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold text-foreground', className)}
+    className={cn('text-center text-lg font-semibold', className)}
     {...props}
   />
 ));

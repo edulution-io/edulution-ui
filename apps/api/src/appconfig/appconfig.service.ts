@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
-import GroupRoles from '@libs/user/types/groups/group-roles.enum';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
@@ -34,6 +34,7 @@ class AppConfigService {
               appType: appConfig.appType,
               options: appConfig.options,
               accessGroups: appConfig.accessGroups,
+              extendedOptions: appConfig.extendedOptions,
             },
           },
           upsert: true,
@@ -53,13 +54,13 @@ class AppConfigService {
     try {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups');
+        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups extendedOptions');
       } else {
         const appConfigObjects = await this.appConfigModel.find(
           {
             'accessGroups.path': { $in: ldapGroups },
           },
-          'name icon appType options',
+          'name icon appType options extendedOptions',
         );
 
         appConfigDto = appConfigObjects.map((config) => ({
@@ -68,6 +69,7 @@ class AppConfigService {
           appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
+          extendedOptions: config.extendedOptions ?? [],
         }));
       }
 

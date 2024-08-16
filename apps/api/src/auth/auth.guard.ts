@@ -33,12 +33,10 @@ class AuthenticationGuard implements CanActivate {
       const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
       const pubKey = readFileSync(pubKeyPath, 'utf8');
 
-      const decoded: JWTUser = await this.jwtService.verifyAsync<JWTUser>(token, {
+      request.user = await this.jwtService.verifyAsync<JWTUser>(token, {
         publicKey: pubKey,
         algorithms: ['RS256'],
       });
-
-      request.user = decoded;
       request.token = token;
 
       return true;

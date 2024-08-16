@@ -17,7 +17,7 @@ services:
       EDUI_PORT: 3000
 
       LMN_VDI_API_URL: http://localhost:5555
-      LMN_VDI_API_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      LMN_VDI_API_SECRET: <LMN_VDI_SECRET>
 
       GUACAMOLE_API_URL: http://localhost:8081
       GUACAMOLE_API_USER: <GUAC_ADMIN>
@@ -34,6 +34,9 @@ services:
     volumes:
       - ./public.pem:/opt/edulution/api/public.pem
       - ./public/downloads:/opt/edulution/public/downloads
+    depends_on:
+      - mongoEdu
+      - redis
 
   mongoEdu:
     container_name: mongoEdu
@@ -44,3 +47,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: <DBUSER>
       MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>
+
+  redis:
+    container_name: redisEdu
+    image: redis:7.2
+    restart: always
+    ports:
+      - '6379:6379'

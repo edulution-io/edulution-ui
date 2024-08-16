@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { t } from 'i18next';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSettingsPageStore';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 interface PasswordChangeFormInputs {
   currentPassword: string;
@@ -16,15 +18,19 @@ const PasswordChangeForm: FC = () => {
     handleSubmit,
     watch,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<PasswordChangeFormInputs>();
+  const { changePassword, isLoading } = useUserSettingsPageStore();
 
-  const onSubmit = () => {
-    reset();
+  const onSubmit = async () => {
+    const success = await changePassword(getValues('currentPassword'), getValues('newPassword'));
+    if (success) reset();
   };
 
   return (
     <div className="mb-4 pt-5 sm:pt-0">
+      <LoadingIndicator isOpen={isLoading} />
       <h3>{t('usersettings.security.changePassword.title')}</h3>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -40,6 +46,7 @@ const PasswordChangeForm: FC = () => {
           <Input
             id="currentPassword"
             type="password"
+            variant="lightGray"
             {...register('currentPassword', { required: t('usersettings.errors.currentPasswordRequired') })}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.currentPassword ? 'border-red-500' : ''
@@ -55,6 +62,7 @@ const PasswordChangeForm: FC = () => {
           <Input
             id="newPassword"
             type="password"
+            variant="lightGray"
             {...register('newPassword', {
               required: t('usersettings.errors.newPasswordRequired'),
               minLength: { value: 8, message: t('usersettings.errors.passwordLength') },
@@ -73,6 +81,7 @@ const PasswordChangeForm: FC = () => {
           <Input
             id="confirmPassword"
             type="password"
+            variant="lightGray"
             {...register('confirmPassword', {
               required: t('usersettings.errors.confirmPasswordRequired'),
               validate: (value) => value === watch('newPassword') || t('usersettings.errors.passwordsDoNotMatch'),
@@ -87,7 +96,7 @@ const PasswordChangeForm: FC = () => {
           <Button
             variant="btn-collaboration"
             size="sm"
-            onClick={() => onSubmit()}
+            type="submit"
           >
             {t('usersettings.security.changePassword.confirm')}
           </Button>

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { Group } from '@libs/user/types/groups/group';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import { Group } from '@libs/groups/types/group';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 interface SurveyDto {
   id: mongoose.Types.ObjectId;

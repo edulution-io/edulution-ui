@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import he from 'he';
+import { decode } from 'he';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { Logger } from '@nestjs/common';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -33,7 +33,7 @@ function parseWebDAVResponse(response: WebDAVResponse): DirectoryFileDTO {
     [XA.GetContentLength]: contentLength,
   } = props;
   const isCollection = resourceType?.[XA.Collection] !== undefined;
-  const decodedBasename = he.decode(String(displayName));
+  const decodedBasename = decode(String(displayName));
 
   return {
     basename: decodedBasename,
@@ -83,4 +83,4 @@ export function mapToDirectories(xmlData: string): DirectoryFileDTO[] {
   }
 }
 
-export default { mapToDirectoryFiles, mapToDirectories, fromBase64 };
+export default { mapToDirectoryFiles, mapToDirectories };

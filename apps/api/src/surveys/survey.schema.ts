@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Group } from '@libs/user/types/groups/group';
+import { Group } from '@libs/groups/types/group';
 import Attendee from '../conferences/attendee.schema';
 
 export type SurveyDocument = Survey & Document;

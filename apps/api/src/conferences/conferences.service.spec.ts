@@ -15,6 +15,7 @@ import Attendee from './attendee.schema';
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
   invitedAttendees: [],
+  invitedGroups: [],
 };
 
 const mockCreator: Attendee = {
@@ -108,7 +109,7 @@ describe(ConferencesService.name, () => {
 
   describe('findAll', () => {
     it('should return an array of conferences', async () => {
-      const result = await service.findAllConferencesTheUserHasAccessTo(mockCreator.username);
+      const result = await service.findAllConferencesTheUserHasAccessTo(mockJWTUser);
       expect(result[0].creator).toEqual(mockCreator);
       expect(model.find).toHaveBeenCalled();
     });

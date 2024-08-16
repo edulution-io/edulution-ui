@@ -1,11 +1,10 @@
+/* Base Styles for Dropdown */
 .dropdown {
   position: relative;
-  color: #333;
   cursor: default;
 }
 
 .dropdown .arrow {
-  border-color: #999 transparent transparent;
   border-style: solid;
   border-width: 5px 5px 0;
   display: block;
@@ -18,25 +17,20 @@
 }
 
 .dropdown .arrow.open {
-  border-color: transparent transparent #999;
   border-width: 0 5px 5px;
 }
 
 .dropdown .arrow.up {
-  border-color: transparent transparent #999;
   border-width: 0 5px 5px;
 }
 
 .dropdown .arrow.up.open {
-  border-color: #999 transparent transparent;
   border-width: 5px 5px 0;
 }
 
 .dropdown .selected-value input {
   line-height: 1.5;
   font-size: 1rem;
-  background-color: #fff;
-  border: 1px solid #ccc;
   border-radius: 2px;
   box-sizing: border-box;
   cursor: default;
@@ -48,12 +42,9 @@
 
 .dropdown .options {
   display: none;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   margin-top: -1px;
-  max-height: 200px;
+  max-height: 125px;
   overflow-y: auto;
   position: absolute;
   top: 100%;
@@ -74,14 +65,87 @@
 
 .dropdown .option {
   box-sizing: border-box;
-  color: rgba(51, 51, 51, 0.8);
   cursor: pointer;
   display: block;
   padding: 8px 10px;
 }
 
-.dropdown .option.selected,
-.dropdown .option:hover {
+/* Light Theme Styles */
+.dropdown.light {
+  color: #333;
+}
+
+.dropdown.light .arrow {
+  border-color: #999 transparent transparent;
+}
+
+.dropdown.light .arrow.open,
+.dropdown.light .arrow.up {
+  border-color: transparent transparent #999;
+}
+
+.dropdown.light .arrow.up.open {
+  border-color: #999 transparent transparent;
+}
+
+.dropdown.light .selected-value input {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.dropdown.light .options {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.dropdown.light .option {
+  color: rgba(51, 51, 51, 0.8);
+}
+
+.dropdown.light .option.selected,
+.dropdown.light .option:hover {
   background-color: #f2f9fc;
   color: #333;
+}
+
+/* Dark Theme Styles */
+.dropdown.dark {
+  color: #d1d5db;
+}
+
+.dropdown.dark .arrow {
+  border-color: #999 transparent transparent;
+}
+
+.dropdown.dark .arrow.open,
+.dropdown.dark .arrow.up {
+  border-color: transparent transparent #999;
+}
+
+.dropdown.dark .arrow.up.open {
+  border-color: #999 transparent transparent;
+}
+
+.dropdown.dark .selected-value input {
+  background-color: #2d2d30;
+  color: #d1d5db;
+  border: 1px solid #555;
+}
+
+.dropdown.dark .options {
+  background-color: #333;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #555;
+}
+
+.dropdown.dark .option {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dropdown.dark .option.selected,
+.dropdown.dark .option:hover {
+  background-color: #555;
+  color: rgba(255, 255, 255, 0.8);
 }

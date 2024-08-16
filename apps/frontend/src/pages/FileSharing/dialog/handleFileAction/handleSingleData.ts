@@ -1,5 +1,5 @@
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import { HttpMethodes } from '@libs/common/types/http-methods';
+import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import eduApi from '@/api/eduApi';
@@ -9,7 +9,7 @@ import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateP
 const handleSingleData = async (
   action: FileActionType,
   endpoint: string,
-  httpMethod: HttpMethodes,
+  httpMethod: HttpMethods,
   type: ContentType,
   data: PathChangeOrCreateProps,
 ) => {

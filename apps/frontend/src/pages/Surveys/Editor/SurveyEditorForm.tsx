@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';

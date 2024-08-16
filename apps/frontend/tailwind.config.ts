@@ -100,7 +100,7 @@ module.exports = {
   },
   plugins: [
     require('tailwindcss-animate'),
-    require('tailwind-scrollbar'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
     plugin(function ({ addBase, theme }) {
       addBase({
         ':root': {
@@ -125,7 +125,7 @@ module.exports = {
           '--destructive-foreground': '210 40% 98%',
           '--ring': '215 20.2% 65.1%',
           '--sidebar-width': '56px',
-          '--floating-buttons-height': '120px',
+          '--floating-buttons-height': '150px',
         },
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
         h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em', fontWeight: '700' },

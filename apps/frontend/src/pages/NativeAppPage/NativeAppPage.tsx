@@ -5,6 +5,7 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import SurveysPage from '@/pages/Surveys/SurveysPage';
+import { Outlet } from 'react-router-dom';
 
 const pages: Partial<Record<APPS, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -14,6 +15,7 @@ const pages: Partial<Record<APPS, JSX.Element>> = {
   [APPS.WHITEBOARD]: <FramePlaceholder />,
   [APPS.SURVEYS]: <SurveysPage />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
+  [APPS.CLASS_MANAGEMENT]: <Outlet />,
 };
 
 type NativeAppPageProps = {

@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
@@ -55,7 +55,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <div className="flex-1 text-sm text-background text-muted-foreground">
+        <div className="flex-1 text-sm text-background">
           {t('table.rowsSelected', {
             selected: table.getFilteredSelectedRowModel().rows.length,
             total: table.getFilteredRowModel().rows.length,
@@ -66,7 +66,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[75vh] overflow-auto">
+        <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

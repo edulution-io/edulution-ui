@@ -11,29 +11,42 @@ import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
-import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
-import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { MdOutlineDeleteOutline, MdOutlineSave } from 'react-icons/md';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOnlyOfficeOptionsForm';
+
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
+import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
+import DeleteAppConfigDialog from './DeleteAppConfigDialog';
+import MailsConfig from './mails/MailsConfig';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
   const isMobileView = useIsMobileView();
+  const { postExternalMailProviderConfig } = useMailsStore();
 
   useEffect(() => {
-    setSettingLocation(pathname !== '/settings' ? pathname.split('/').filter((part) => part !== '')[1] : '');
+    const secondPartFromPath =
+      pathname
+        .split('/')
+        .filter((part) => part !== '')
+        .at(1) || '';
+    setSettingLocation(pathname !== '/settings' ? secondPartFromPath : '');
   }, [pathname]);
 
   const formSchemaObject: { [key: string]: z.Schema } = {};
@@ -43,6 +56,11 @@ const AppConfigPage: React.FC = () => {
     if (item.options) {
       item.options.forEach((itemOption) => {
         formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
+      });
+    }
+    if (item.extendedOptions) {
+      item.extendedOptions.forEach((extension) => {
+        formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
       });
     }
   });
@@ -60,11 +78,11 @@ const AppConfigPage: React.FC = () => {
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig) {
+    if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
       return;
     }
 
-    const newAccessGroups = currentConfig.accessGroups.map((item) => ({
+    const newAccessGroups = currentConfig.accessGroups?.map((item) => ({
       id: item.id,
       name: item.name,
       path: item.path,
@@ -72,8 +90,17 @@ const AppConfigPage: React.FC = () => {
       label: item.label,
     }));
 
+    const newExtendedOptions = currentConfig.extendedOptions?.map((item) => ({
+      name: item.name,
+      value: item.value,
+      description: item.description,
+      type: item.type,
+    }));
+
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
+    setValue(`${settingLocation}.extensions`, newExtendedOptions);
+
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
@@ -108,6 +135,16 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    const extendedOptions =
+      settingLocation === 'filesharing'
+        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
+            name: e.name,
+            description: e.description,
+            type: e.type,
+            value: getValues(`${settingLocation}.${e.name}`) as string,
+          })) as AppConfigExtendedOption[])
+        : [];
+
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
@@ -117,6 +154,7 @@ const AppConfigPage: React.FC = () => {
           acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
           return acc;
         }, {} as AppConfigOptions) || {},
+      extendedOptions,
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
     };
 
@@ -128,6 +166,18 @@ const AppConfigPage: React.FC = () => {
     });
 
     await updateAppConfig(updatedConfig);
+
+    if (settingLocation === 'mail' && getValues('configName')) {
+      const mailProviderConfig: MailProviderConfigDto = {
+        id: (getValues('mailProviderId') || '') as string,
+        name: getValues('configName') as string,
+        label: getValues('configName') as string,
+        host: getValues('hostname') as string,
+        port: getValues('port') as string,
+        encryption: getValues('encryption') as TMailEncryption,
+      };
+      void postExternalMailProviderConfig(mailProviderConfig);
+    }
   };
 
   const settingsForm = () => {
@@ -155,7 +205,10 @@ const AppConfigPage: React.FC = () => {
                           <FormItem>
                             <h4>{t(`form.${itemOption}`)}</h4>
                             <FormControl>
-                              <Input {...field} />
+                              <Input
+                                {...field}
+                                variant="lightGray"
+                              />
                             </FormControl>
                             <p>{t(`form.${itemOption}Description`)}</p>
                             <FormMessage className="text-p" />
@@ -163,6 +216,7 @@ const AppConfigPage: React.FC = () => {
                         )}
                       />
                     ))}
+
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
@@ -190,6 +244,25 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {item.extendedOptions && (
+                      <div className="space-y-10">
+                        <AccordionSH type="multiple">
+                          <AccordionItem value="onlyOffice">
+                            <AccordionTrigger className="flex text-xl font-bold">
+                              <h4>{t('appExtendedOptions.title')}</h4>
+                            </AccordionTrigger>
+                            <AccordionContent className="space-y-10 px-1 pt-4">
+                              <ExtendedOnlyOfficeOptionsForm
+                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
+                                baseName={settingLocation}
+                                form={form}
+                              />
+                            </AccordionContent>
+                          </AccordionItem>
+                        </AccordionSH>
+                      </div>
+                    )}
+                    <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
                   </div>
                 ) : null}
               </div>
@@ -219,7 +292,7 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
+      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}
@@ -228,25 +301,17 @@ const AppConfigPage: React.FC = () => {
         {settingsForm()}
       </div>
       {areSettingsVisible ? (
-        <div className="fixed bottom-8 flex flex-row bg-opacity-90">
-          <FloatingActionButton
-            type="button"
-            icon={MdOutlineSave}
-            text={t('common.save')}
-            onClick={handleSubmit(onSubmit)}
-          />
-          <FloatingActionButton
-            icon={MdOutlineDeleteOutline}
-            text={t('settings.delete')}
-            onClick={handleDeleteSettingsItem}
-          />
-        </div>
+        <AppConfigFloatingButtons
+          handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
+          handleSaveSettingsItem={handleSubmit(onSubmit)}
+        />
       ) : null}
       <AddAppConfigDialog
         option={option}
         setOption={setOption}
         filteredAppOptions={filteredAppOptions}
       />
+      <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
     </>
   );
 };

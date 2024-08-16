@@ -5,9 +5,9 @@ import { Button } from '@/components/shared/Button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
@@ -100,7 +100,16 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       handleOpenChange={handelOpenChange}
       trigger={trigger}
       title={t(title)}
-      body={isLoading ? <LoadingIndicator isOpen={isLoading} /> : <Component form={form} />}
+      body={
+        isLoading ? (
+          <LoadingIndicator isOpen={isLoading} />
+        ) : (
+          <Component
+            form={form}
+            isRenaming
+          />
+        )
+      }
       footer={
         error ? (
           <div className="rounded-xl  bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>

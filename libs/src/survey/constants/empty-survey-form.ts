@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { Group } from '@libs/user/types/groups/group';
+import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 class EmptySurveyForm implements SurveyDto {
   readonly id: mongoose.Types.ObjectId;

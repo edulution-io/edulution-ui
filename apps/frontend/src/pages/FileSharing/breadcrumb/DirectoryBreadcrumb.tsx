@@ -17,6 +17,10 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
 import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
 import useUserStore from '@/store/UserStore/UserStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import buildHomePath from '@libs/filesharing/utils/buildHomePath';
+import buildBasePath from '@libs/filesharing/utils/buildBasePath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -29,17 +33,25 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
     .split('/')
     .map((segment) => segment.replace(/%20/g, ' '))
     .filter(Boolean);
+
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
-  const filteredSegment = filterSegments(segments);
+  const homePath = buildHomePath(user);
+  const filteredSegments = filterSegments(segments, user);
+  const { setShowEditor } = useFileEditorStore();
+  const { setCurrentlyEditingFile } = useFileSharingStore();
 
-  const handleSegmentClick = (segment: string) => {
-    const pathTo = `/${segments.slice(0, segments.indexOf(segment) + 1).join('/')}`;
-    onNavigate(pathTo);
+  const handleSegmentClick = (index: number) => {
+    const pathTo = `/${filteredSegments.slice(0, index + 1).join('/')}`;
+    setShowEditor(false);
+    setCurrentlyEditingFile(null);
+    const basePath = buildBasePath(user);
+    const finalPath = `${basePath}${pathTo}`;
+    onNavigate(finalPath);
   };
+  const getSegmentKey = (index: number) => filteredSegments.slice(0, index + 1).join('/');
 
   return (
     <Breadcrumb style={style}>
@@ -54,7 +66,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
           </BreadcrumbLink>
         </BreadcrumbItem>
 
-        {filteredSegment.length > displaySegments ? (
+        {filteredSegments.length > displaySegments ? (
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -67,35 +79,33 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
                   align="start"
                   className="z-50 bg-white text-foreground"
                 >
-                  {filterSegments(segments)
-                    .slice(0, -1)
-                    .map((segment) => (
-                      <DropdownMenuItem
-                        key={segment}
-                        onClick={() => handleSegmentClick(segment)}
-                      >
-                        {segment}
-                      </DropdownMenuItem>
-                    ))}
+                  {filteredSegments.slice(0, -1).map((segment, index) => (
+                    <DropdownMenuItem
+                      key={getSegmentKey(index)}
+                      onClick={() => handleSegmentClick(index)}
+                    >
+                      {segment}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuContent>
               </DropdownMenuSH>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <span className="text-gray-500">{segments[segments.length - 1]}</span>
+              <span className="text-ciGrey">{filteredSegments[filteredSegments.length - 1]}</span>
             </BreadcrumbItem>
           </>
         ) : (
-          filteredSegment.map((segment, index) => (
-            <React.Fragment key={segment}>
+          filteredSegments.map((segment, index) => (
+            <React.Fragment key={getSegmentKey(index)}>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                {index === segments.length - 1 ? (
-                  <span className="text-gray-500">{segment}</span>
+                {index === filteredSegments.length - 1 ? (
+                  <span className="text-ciGrey">{segment}</span>
                 ) : (
                   <BreadcrumbLink
                     href="#"
-                    onClick={() => handleSegmentClick(segment)}
+                    onClick={() => handleSegmentClick(index)}
                   >
                     {segment}
                   </BreadcrumbLink>

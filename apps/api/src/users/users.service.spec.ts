@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Query } from 'mongoose';
-import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import LdapGroups from '@libs/groups/types/ldapGroups';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 
@@ -83,6 +84,10 @@ const fetchedUsers: LDAPUser[] = [
   },
 ];
 
+jest.mock('../groups/groups.service', () => ({
+  fetchAllUsers: jest.fn(() => fetchedUsers),
+}));
+
 const userModelMock = {
   create: jest.fn().mockResolvedValue(mockUser),
 
@@ -105,13 +110,13 @@ const cacheManagerMock = {
   set: jest.fn(),
 };
 
-const mockLdapGroups = {
-  school: 'school',
+const mockLdapGroups: LdapGroups = {
+  schools: ['school'],
   projects: ['project1', 'project2'],
   projectPaths: ['/path/to/project1', '/path/to/project2'],
   classes: ['class1A', 'class2B'],
   classPaths: ['/path/to/class1A', '/path/to/class2B'],
-  role: 'teacher',
+  roles: ['teacher'],
   others: ['group1', 'group2'],
 };
 
@@ -121,11 +126,6 @@ describe(UsersService.name, () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CacheModule.register({
-          ttl: DEFAULT_CACHE_TTL_MS,
-        }),
-      ],
       providers: [
         UsersService,
         {
@@ -256,11 +256,11 @@ describe(UsersService.name, () => {
 
     it('should fetch users from external API if not cached', async () => {
       cacheManagerMock.get.mockResolvedValue(null);
-      mockGroupsService.fetchUsers.mockResolvedValue(fetchedUsers);
+      mockGroupsService.fetchAllUsers.mockResolvedValue(fetchedUsers);
 
       const result = await service.findAllCachedUsers(mockToken);
       expect(result).toEqual(fetchedUsers);
-      expect(mockGroupsService.fetchUsers).toHaveBeenCalledWith(mockToken);
+      expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
       expect(cacheManagerMock.set).toHaveBeenCalledWith('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     });
   });

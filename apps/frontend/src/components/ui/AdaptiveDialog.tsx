@@ -1,6 +1,14 @@
 /* eslint-disable react/require-default-props */
 import React, { FC } from 'react';
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/Sheet';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +26,7 @@ interface AdaptiveDialogProps {
   trigger?: React.ReactNode;
   body: React.ReactNode;
   footer?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
 }
@@ -29,6 +38,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   trigger,
   body,
   footer,
+  variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
 }) => {
@@ -42,13 +52,15 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent
         side="bottom"
+        variant={variant}
         className={mobileContentClassName}
       >
-        <SheetHeader>
+        <SheetHeader variant={variant}>
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
         {body}
         <SheetFooter>{footer}</SheetFooter>
+        <SheetDescription aria-disabled />
       </SheetContent>
     </Sheet>
   ) : (
@@ -57,7 +69,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className={desktopContentClassName}>
+      <DialogContent
+        variant={variant}
+        className={desktopContentClassName}
+      >
         <DialogTitle>{title}</DialogTitle>
         {body}
         <DialogFooter>{footer}</DialogFooter>
