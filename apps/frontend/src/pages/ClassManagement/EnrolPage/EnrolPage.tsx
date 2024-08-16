@@ -63,7 +63,7 @@ const EnrolPage: React.FC = () => {
   ];
 
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
+    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto scrollbar-thin">
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
+import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
@@ -37,7 +37,6 @@ const MenuBar: React.FC = () => {
         />
         <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
       </div>
-      <MenubarSeparator />
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
@@ -60,7 +59,6 @@ const MenuBar: React.FC = () => {
               />
               <p className="text-nowrap">{item.label}</p>
             </MenubarTrigger>
-            <MenubarSeparator />
           </React.Fragment>
         ))}
       </MenubarMenu>
@@ -104,7 +102,7 @@ const MenuBar: React.FC = () => {
         </>
       ) : (
         <div className="relative flex h-screen">
-          <VerticalMenubar className={cn('h-full overflow-hidden', 'w-64', 'bg-black', 'bg-opacity-40')}>
+          <VerticalMenubar className="w-64 overflow-y-auto bg-black bg-opacity-40 scrollbar-thin">
             {renderMenuBarContent()}
           </VerticalMenubar>
         </div>

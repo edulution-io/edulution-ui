@@ -117,7 +117,7 @@ const LessonPage = () => {
   };
 
   return (
-    <div>
+    <>
       <div className="my-2 flex flex-col gap-2 md:flex-row">
         <LoadingIndicator isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
@@ -153,7 +153,7 @@ const LessonPage = () => {
       </div>
       <div>{groupName || member.length ? <UserArea /> : <QuickAccess />}</div>
       {isDialogOpen && <GroupDialog item={sessionToSave} />}
-    </div>
+    </>
   );
 };
 

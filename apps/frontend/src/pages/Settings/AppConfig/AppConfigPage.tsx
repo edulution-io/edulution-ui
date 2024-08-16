@@ -251,7 +251,7 @@ const AppConfigPage: React.FC = () => {
                             <AccordionTrigger className="flex text-xl font-bold">
                               <h4>{t('appExtendedOptions.title')}</h4>
                             </AccordionTrigger>
-                            <AccordionContent className="space-y-10 pt-4">
+                            <AccordionContent className="space-y-10 px-1 pt-4">
                               <ExtendedOnlyOfficeOptionsForm
                                 extendedOptions={appExtendedOptions.ONLY_OFFICE}
                                 baseName={settingLocation}
@@ -292,7 +292,7 @@ const AppConfigPage: React.FC = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto">
+      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}
