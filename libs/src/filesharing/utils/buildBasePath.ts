@@ -2,6 +2,9 @@ import UserDto from '@libs/user/types/user.dto';
 
 const buildBasePath = (user: UserDto | null): string => {
   const role = user?.ldapGroups?.roles[0];
+  if (role === 'globaladministrator') {
+    return 'global';
+  }
 
   if (role === 'teacher') {
     return `${role}s`;

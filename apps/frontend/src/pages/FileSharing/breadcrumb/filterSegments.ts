@@ -9,6 +9,7 @@ const filterSegments = (segments: string[], user: UserDto | null): string[] =>
         item !== HiddenAttributesBreadcrumb.teachers.toString() &&
         item !== HiddenAttributesBreadcrumb.students.toString() &&
         item !== user?.ldapGroups.classes[0] &&
+        item !== 'global' &&
         item !== HiddenAttributesBreadcrumb.webdav.toString(),
     );
 
