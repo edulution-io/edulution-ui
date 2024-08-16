@@ -46,6 +46,7 @@ const PasswordChangeForm: FC = () => {
           <Input
             id="currentPassword"
             type="password"
+            variant="lightGray"
             {...register('currentPassword', { required: t('usersettings.errors.currentPasswordRequired') })}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.currentPassword ? 'border-red-500' : ''
@@ -61,6 +62,7 @@ const PasswordChangeForm: FC = () => {
           <Input
             id="newPassword"
             type="password"
+            variant="lightGray"
             {...register('newPassword', {
               required: t('usersettings.errors.newPasswordRequired'),
               minLength: { value: 8, message: t('usersettings.errors.passwordLength') },
@@ -79,6 +81,7 @@ const PasswordChangeForm: FC = () => {
           <Input
             id="confirmPassword"
             type="password"
+            variant="lightGray"
             {...register('confirmPassword', {
               required: t('usersettings.errors.confirmPasswordRequired'),
               validate: (value) => value === watch('newPassword') || t('usersettings.errors.passwordsDoNotMatch'),

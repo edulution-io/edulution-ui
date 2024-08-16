@@ -16,6 +16,7 @@ interface DropdownProps {
   handleChange: (value: string) => void;
   openToTop?: boolean;
   classname?: string;
+  variant?: 'light' | 'dark';
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({
@@ -24,6 +25,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({
   handleChange,
   openToTop = false,
   classname,
+  variant = 'dark',
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
@@ -58,7 +60,10 @@ const DropdownMenu: React.FC<DropdownProps> = ({
 
   return (
     <div
-      className={cn(styles.dropdown, classname)}
+      className={cn(styles.dropdown, classname, {
+        [styles.dark]: variant === 'dark',
+        [styles.light]: variant === 'light',
+      })}
       ref={dropdownRef}
     >
       <div>
@@ -73,16 +78,31 @@ const DropdownMenu: React.FC<DropdownProps> = ({
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
             disabled={options.length === 0}
+            className={clsx({
+              'bg-white text-black': variant === 'light',
+              'bg-ciDarkGrey text-ciLightGrey': variant === 'dark',
+            })}
           />
         </div>
         <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       </div>
-      <div className={clsx(styles.options, { [styles.open]: isOpen, [styles.up]: openToTop })}>
+      <div
+        className={clsx(styles.options, {
+          [styles.open]: isOpen,
+          [styles.up]: openToTop,
+          'bg-white text-black': variant === 'light',
+          'bg-ciDarkGrey text-ciLightGrey': variant === 'dark',
+        })}
+      >
         {filter(options).map((option) => (
           <div
             key={option.id}
             onClickCapture={() => selectOption(option)}
-            className={clsx(styles.option, { [styles.selected]: t(option.name) === selectedVal })}
+            className={clsx(styles.option, {
+              [styles.selected]: t(option.name) === selectedVal,
+              'hover:bg-gray-200': variant === 'light',
+              'bg-ciDarkGrey hover:bg-white': variant === 'dark',
+            })}
           >
             {t(option.name)}
           </div>

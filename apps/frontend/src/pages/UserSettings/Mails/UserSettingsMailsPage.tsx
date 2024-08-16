@@ -96,7 +96,7 @@ const UserSettingsMailsPage: React.FC = () => {
               {...field}
               type={type}
               placeholder={label}
-              variant="login"
+              variant="lightGray"
               data-testid={`test-id-login-page-${fieldName}-input`}
             />
           </FormControl>
@@ -117,7 +117,7 @@ const UserSettingsMailsPage: React.FC = () => {
         <StateLoader isLoading={isEditSyncJobLoading} />
       </div>
       <h3>{t('mail.importer.title')}</h3>
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 p-4 ">
         <DropdownMenu
           options={externalMailProviderConfig}
           selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
