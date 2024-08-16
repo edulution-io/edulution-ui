@@ -54,6 +54,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
       ref={ref}
       className={cn(
         ' truncate border-b text-black transition-colors data-[state=selected]:bg-muted hover:bg-muted/50',
+        'py-0',
         className,
       )}
       {...props}
@@ -67,7 +68,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'mr-4 h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]', // Added mr-4 for margin right
+        'mr-4 h-8 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]', // Added mr-4 for margin right
         className,
       )}
       {...props}
@@ -81,7 +82,8 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
     <td
       ref={ref}
       className={cn(
-        'mr-4 h-10 truncate px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]', // Added mr-4 for margin right
+        'mr-4 h-8 truncate px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]', // Added mr-4 for margin right
+        'py-0',
         className,
       )}
       {...props}
