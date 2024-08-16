@@ -54,18 +54,16 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <>
-      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+      {table.getFilteredSelectedRowModel().rows.length > 0 && (
         <div className="flex-1 text-sm text-background">
           {t('table.rowsSelected', {
             selected: table.getFilteredSelectedRowModel().rows.length,
             total: table.getFilteredRowModel().rows.length,
           })}
         </div>
-      ) : (
-        <div className="flex-1 text-sm">&nbsp;</div>
       )}
 
-      <div className=" w-full flex-1  pl-3 pr-3.5">
+      <div className=" w-full flex-1 ">
         <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
           <Table>
             <TableHeader>
@@ -104,7 +102,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-16 text-center"
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>
