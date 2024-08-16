@@ -367,6 +367,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           className={cn(
             'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
             variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
+            variant === 'light' ? 'border border-input' : '',
             className,
           )}
         >
