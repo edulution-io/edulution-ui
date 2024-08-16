@@ -12,7 +12,7 @@ const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { files } = useFileSharingStore();
   return (
-    <div className="w-full overflow-x-auto ">
+    <div className="w-full overflow-x-auto">
       {isLoading && <LoadingIndicator isOpen={isLoading} />}
       <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
         <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2 ">
