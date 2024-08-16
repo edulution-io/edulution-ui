@@ -12,6 +12,7 @@ const variants = cva([], {
     variant: {
       default: 'text-foreground',
       light: 'text-white',
+      lightGray: 'text-ciLightGrey',
     },
   },
 });

@@ -61,6 +61,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           groups={watch('invitedGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={handleGroupsChange}
+          variant="light"
         />
         <FormField
           name="password"

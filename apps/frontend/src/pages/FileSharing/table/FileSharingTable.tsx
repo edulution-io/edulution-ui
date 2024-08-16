@@ -66,7 +66,7 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
       )}
 
       <div className=" w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[75vh] overflow-auto">
+        <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
