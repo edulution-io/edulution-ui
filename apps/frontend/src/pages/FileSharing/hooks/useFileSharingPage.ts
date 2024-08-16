@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
+import buildHomePath from '@libs/filesharing/utils/buildHomePath';
 
 const useFileSharingPage = () => {
   const {
@@ -18,7 +19,7 @@ const useFileSharingPage = () => {
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.ldapGroups.roles.at(0)}s/${user?.username}`;
+  const homePath = buildHomePath(user);
 
   useEffect(() => {
     if (user) {

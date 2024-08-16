@@ -46,7 +46,7 @@ const ExtendedOnlyOfficeOptionsForm: React.FC<ExtendedOnlyOfficeOptionsFormProps
               isLoading={isLoading}
               defaultValue={defaultValues[option.name]}
               labelTranslationId={option.title}
-              variant="light"
+              variant="lightGray"
             />
           ))}
         </div>

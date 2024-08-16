@@ -19,6 +19,8 @@ import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
 import useUserStore from '@/store/UserStore/UserStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import buildHomePath from '@libs/filesharing/utils/buildHomePath';
+import buildBasePath from '@libs/filesharing/utils/buildBasePath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -31,22 +33,25 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
     .split('/')
     .map((segment) => segment.replace(/%20/g, ' '))
     .filter(Boolean);
+
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const homePath = `${user?.ldapGroups.roles[0]}s/${user?.username}`;
-  const filteredSegments = filterSegments(segments);
+  const homePath = buildHomePath(user);
+  const filteredSegments = filterSegments(segments, user);
   const { setShowEditor } = useFileEditorStore();
   const { setCurrentlyEditingFile } = useFileSharingStore();
+
   const handleSegmentClick = (index: number) => {
-    const pathTo = `/${segments.slice(0, index + 3).join('/')}`;
+    const pathTo = `/${filteredSegments.slice(0, index + 1).join('/')}`;
     setShowEditor(false);
     setCurrentlyEditingFile(null);
-    onNavigate(pathTo);
+    const basePath = buildBasePath(user);
+    const finalPath = `${basePath}${pathTo}`;
+    onNavigate(finalPath);
   };
-
-  const getSegmentKey = (index: number) => segments.slice(0, index + 3).join('/');
+  const getSegmentKey = (index: number) => filteredSegments.slice(0, index + 1).join('/');
 
   return (
     <Breadcrumb style={style}>

@@ -30,7 +30,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     >
       <NavLink
         to={link}
-        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
         <p className="md:hidden">{title}</p>
         <>

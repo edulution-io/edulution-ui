@@ -57,6 +57,7 @@ const ProjectsPage = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
+        variant="lightGray"
       />
       <div className="mt-2 text-lg">{t('classmanagement.projectsPageDescription')}</div>
       <LoadingIndicator isOpen={isLoading} />

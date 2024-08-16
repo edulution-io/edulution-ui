@@ -50,7 +50,7 @@ const UserArea = () => {
           </div>
         ) : null}
       </h3>
-      <div className="flex max-h-[calc(100vh-390px)] max-w-full flex-wrap overflow-y-auto overflow-x-visible md:max-h-[calc(100vh-240px)]">
+      <div className="flex max-h-[calc(100vh-390px)] max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin md:max-h-[calc(100vh-240px)]">
         {member.sort(sortByName).map((m) => (
           <UserCard
             key={m.dn}

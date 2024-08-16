@@ -15,6 +15,7 @@ interface SearchUsersOrGroupsProps {
   onGroupsChange: (options: MultipleSelectorGroup[]) => void;
   disabled?: boolean;
   hideGroupSearch?: boolean;
+  variant?: 'light' | 'dark';
 }
 
 const SearchUsersOrGroups = ({
@@ -26,6 +27,7 @@ const SearchUsersOrGroups = ({
   onGroupSearch,
   disabled,
   hideGroupSearch,
+  variant,
 }: SearchUsersOrGroupsProps) => {
   const { t } = useTranslation();
 
@@ -37,6 +39,7 @@ const SearchUsersOrGroups = ({
         disabled={disabled}
         onSearch={onSearch}
         onChange={onUserChange}
+        variant={variant}
         placeholder={disabled ? '' : t('search.type-to-search')}
       />
       {users?.length && users.length > 1 && !disabled ? (
@@ -63,6 +66,7 @@ const SearchUsersOrGroups = ({
             onSearch={onGroupSearch}
             onChange={onGroupsChange}
             placeholder={disabled ? '' : t('search.type-to-search')}
+            variant={variant}
           />
         </>
       )}
