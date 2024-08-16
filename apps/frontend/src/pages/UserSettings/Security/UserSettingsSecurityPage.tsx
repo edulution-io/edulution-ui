@@ -17,7 +17,7 @@ const UserSettingsSecurityPage: React.FC = () => {
       />
       <div className="p-4">
         <PasswordChangeForm />
-        <Separator className="my-1 bg-ciLightGrey" />
+        <Separator className="my-1 bg-ciGrey" />
       </div>
     </div>
   );

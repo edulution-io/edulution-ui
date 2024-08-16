@@ -287,6 +287,73 @@
   "options": "Optionen",
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
+  "survey": {
+    "creationDate": "Erstellungsdatum",
+    "expirationDate": "Ablaufdatum",
+    "noFormula": "Das Formular ist nicht lesbar",
+    "noAnswer": "Keine Antwort verfügbar",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "editor": {
+      "new": "Neu (Leer)",
+      "abort": "Alle Änderungen verwerfen",
+      "addDescription": "Beschreibung hinzufügen",
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+    },
+    "errors": {
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
+      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
+      "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
+      "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
+      "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
+      "idTypeError": "Ungültige Umfrage-ID",
+      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
+      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
+    }
+  },
+  "surveys": {
+    "title": "UMFRAGEN",
+    "sidebar": "Umfragen",
+    "view": {
+      "open": "Offene Umfragen",
+      "created": "Eigene Umfragen",
+      "answered": "Schon beantwortet",
+      "editor": "Neue erstellen"
+    },
+    "actions": {
+      "showResultsChart": "Schaubild",
+      "showResultsTable": "Tabelle",
+      "showCommittedAnswers": "Antworten"
+    },
+    "commitedAnswersDialog": {
+      "title": "Eingereichte Abgabe des Nutzers"
+    },
+    "saveDialog": {
+      "title": "Speichern und Benutzern zuweisen",
+      "settingsFlags": "Einstellungen",
+      "isAnonymous": "Soll die Umfrage anonym sein?",
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+    },
+    "participateDialog": {
+      "title": "An der Umfrage teilnehmen"
+    },
+    "resultChartDialog": {
+      "title": "Ergebnisse - Schaubild"
+    },
+    "resultTableDialog": {
+      "title": "Ergebnisse - Tabelle"
+    }
+  },
   "printer": {
     "title": "DRUCKER",
     "sidebar": "Drucker"
@@ -448,6 +515,9 @@
     },
     "actions": "Aktionen",
     "and": "und",
+    "yes": "Ja",
+    "no": "Nein",
+    "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -489,8 +559,13 @@
     "delete": "Löschen",
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
-    "yes": "Ja",
-    "no": "Nein"
+    "select": "Wählen...",
+    "edit": "Bearbeiten",
+    "participate": "Teilnehmen",
+    "participated": "Teilgenommen",
+    "not-available": "'Nicht verfügbar'",
+    "date": "Datum",
+    "time": "Uhrzeit"
   },
   "form": {
     "path": "Link",
@@ -671,7 +746,8 @@
   },
   "users": {
     "errors": {
-      "notFoundError": "Benutzer existiert nicht"
+      "notFoundError": "Benutzer existiert nicht",
+      "updateError": "Benutzer konnte nicht aktualisiert werden"
     }
   },
   "permission": {

@@ -8,6 +8,8 @@ import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMes
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -19,6 +21,8 @@ type ErrorMessage =
   | LmnApiErrorMessage
   | AppConfigErrorMessages
   | FileSharingErrorMessage
-  | MailsErrorMessages;
+  | MailsErrorMessages
+  | SurveyErrorMessages
+  | SurveyAnswerErrorMessages;
 
 export default ErrorMessage;

@@ -20,6 +20,7 @@ import MailsModule from '../mails/mails.module';
 import VdiModule from '../vdi/vdi.module';
 import FilesharingModule from '../filesharing/filesharing.module';
 import LicenseModule from '../license/license.module';
+import SurveysModule from '../surveys/surveys.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import LicenseModule from '../license/license.module';
     FilesharingModule,
     VdiModule,
     LicenseModule,
+    SurveysModule,
     JwtModule.register({
       global: true,
     }),

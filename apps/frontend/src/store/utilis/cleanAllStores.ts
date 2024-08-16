@@ -16,6 +16,12 @@ import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
+import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
+import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -38,6 +44,12 @@ const cleanAllStores = () => {
   useLmnApiPasswordStore.getState().reset();
   useMailsStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
+  useSurveyEditorFormStore.getState().reset();
+  useSurveyTablesPageStore.getState().reset();
+  useDeleteSurveyStore.getState().reset();
+  useParticipateDialogStore.getState().reset();
+  useCommitedAnswersDialogStore.getState().reset();
+  useResultDialogStore.getState().reset();
 };
 
 export default cleanAllStores;

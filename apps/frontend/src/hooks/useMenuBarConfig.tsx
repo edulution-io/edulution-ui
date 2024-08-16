@@ -8,6 +8,7 @@ import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMen
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
 import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config';
+import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
@@ -22,6 +23,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
   const MAIL_MENUBAR_CONFIG = useMailPageMenu();
+  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
 
@@ -37,6 +39,9 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.CONFERENCES: {
         return CONFERENCES_MENUBAR_CONFIG;
+      }
+      case APPS.SURVEYS: {
+        return SURVEYS_MENUBAR_CONFIG;
       }
       case APPS.MAIL: {
         return MAIL_MENUBAR_CONFIG;

@@ -19,6 +19,7 @@ import {
   PrinterIcon,
   RoomBookingIcon,
   SchoolInformationIcon,
+  SurveysMenuIcon,
   TicketSystemIcon,
   VirtualizationIcon,
   WhiteBoardIcon,
@@ -41,6 +42,12 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: ConferencesIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey'],
+    isNativeApp: true,
+  },
+  {
+    id: APPS.SURVEYS,
+    icon: SurveysMenuIcon,
+    color: 'bg-ciDarkBlue',
     isNativeApp: true,
   },
   {
