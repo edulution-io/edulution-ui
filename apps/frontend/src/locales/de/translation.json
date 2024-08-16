@@ -331,9 +331,9 @@
       "editor": "Neue erstellen"
     },
     "actions": {
-      "showResultsChart": "Resultat (Schaubild)",
-      "showResultsTable": "Resultat (Tabelle)",
-      "showCommittedAnswers": "Verfügbare Abgaben"
+      "showResultsChart": "Schaubild",
+      "showResultsTable": "Tabelle",
+      "showCommittedAnswers": "Antworten"
     },
     "commitedAnswersDialog": {
       "title": "Eingereichte Abgabe des Nutzers"

@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
 import { z } from 'zod';
-import { useTranslation } from 'react-i18next';
-import { AiOutlineSave } from 'react-icons/ai';
-import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
@@ -10,14 +7,16 @@ import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
-import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
+import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -36,8 +35,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     updateOrCreateSurvey,
     isLoading,
   } = useSurveyEditorFormStore();
-
-  const { t } = useTranslation();
 
   if (!user || !user.username) {
     return null;
@@ -162,33 +159,18 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     [formulaWatcher, saveNoWatcher],
   );
 
+  const config: FloatingButtonsBarConfig = {
+    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true)), CreateButton(() => form.reset(emptyFormValues))],
+    keyPrefix: 'surveys-page-floating-button_',
+  };
+
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
         <ScrollArea className="overflow-y-auto overflow-x-hidden">{getSurveyEditor}</ScrollArea>
       </div>
-      <TooltipProvider>
-        <div className="fixed bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
-          <FloatingActionButton
-            icon={AiOutlineSave}
-            text={t('common.save')}
-            onClick={() => setIsOpenSaveSurveyDialog(true)}
-          />
-          <FloatingActionButton
-            icon={FiFilePlus}
-            text={t('survey.editor.new')}
-            onClick={() => form.reset(emptyFormValues)}
-          />
-          {editMode ? (
-            <FloatingActionButton
-              icon={FiFileMinus}
-              text={t('survey.editor.abort')}
-              onClick={() => form.reset(initialFormValues)}
-            />
-          ) : null}
-        </div>
-      </TooltipProvider>
+      <FloatingButtonsBar config={config} />
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}

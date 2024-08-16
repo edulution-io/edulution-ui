@@ -330,9 +330,9 @@
       "editor": "Create new"
     },
     "actions": {
-      "showResultsChart": "Result (Chart)",
-      "showResultsTable": "Result (Table)",
-      "showCommittedAnswers": "Commited Answers"
+      "showResultsChart": "Chart",
+      "showResultsTable": "Table",
+      "showCommittedAnswers": "Answers"
     },
     "commitedAnswersDialog": {
       "title": "Commited survey answer"
