@@ -18,8 +18,8 @@ interface SurveyEditorProps {
   formula?: JSON;
 }
 
-editorLocalization.defaultLocale = i18next.language || 'en';
-localization.currentLocale = i18next.language || 'en';
+editorLocalization.defaultLocale = i18next.options.lng || 'en';
+localization.currentLocale = i18next.options.lng || 'en';
 
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula } = props;

@@ -5,19 +5,19 @@ import { AiOutlineSave } from 'react-icons/ai';
 import { FiFileMinus, FiFilePlus } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import EmptySurveyForm from '@libs/survey/types/empty-survey-form';
-import InitialSurveyForm from '@libs/survey/types/initial-survey-form';
+import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
+import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/conferences/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/SurveyEditorFormStore';
+import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -101,8 +101,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     ),
     answers: z.any(),
     created: z.date().optional(),
-    expirationDate: z.date().optional(),
-    expirationTime: z.string().optional(),
+    expires: z.date().optional(),
     isAnonymous: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
   });
@@ -124,8 +123,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       participatedAttendees,
       answers,
       created,
-      expirationDate,
-      expirationTime,
+      expires,
       isAnonymous,
       canSubmitMultipleAnswers,
     } = form.getValues();
@@ -140,8 +138,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       participatedAttendees,
       answers,
       created,
-      expirationDate,
-      expirationTime,
+      expires,
       isAnonymous,
       canSubmitMultipleAnswers,
     });

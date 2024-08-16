@@ -1,53 +1,16 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
-import SurveyDto from '@libs/survey/types/survey.dto';
-import SurveysPageView from '@libs/survey/types/page-view';
-import SurveyStatus from '@libs/survey/types/survey-status-enum';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveyStatus from '@libs/survey/survey-status-enum';
+import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
+import SurveysTablesPageStoreInitialState from '@libs/survey/types/tables/surveysTablePageStoreInitialState';
 import handleApiError from '@/utils/handleApiError';
 
-interface SurveysTablesPageStore {
-  selectedPageView: SurveysPageView;
-  updateSelectedPageView: (pageView: SurveysPageView) => void;
-
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  updateUsersSurveys: () => Promise<void>;
-
-  openSurveys: SurveyDto[];
-  updateOpenSurveys: () => Promise<void>;
-  isFetchingOpenSurveys: boolean;
-
-  createdSurveys: SurveyDto[];
-  updateCreatedSurveys: () => Promise<void>;
-  isFetchingCreatedSurveys: boolean;
-
-  answeredSurveys: SurveyDto[];
-  updateAnsweredSurveys: () => Promise<void>;
-  isFetchingAnsweredSurveys: boolean;
-
-  reset: () => void;
-}
-
-const initialState: Partial<SurveysTablesPageStore> = {
-  selectedPageView: SurveysPageView.OPEN,
-
-  selectedSurvey: undefined,
-
-  answeredSurveys: [],
-  isFetchingAnsweredSurveys: false,
-
-  createdSurveys: [],
-  isFetchingCreatedSurveys: false,
-
-  openSurveys: [],
-  isFetchingOpenSurveys: false,
-};
-
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
-  ...(initialState as SurveysTablesPageStore),
-  reset: () => set(initialState),
+  ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
+  reset: () => set(SurveysTablesPageStoreInitialState),
 
   updateSelectedPageView: (pageView: SurveysPageView) => set({ selectedPageView: pageView }),
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),

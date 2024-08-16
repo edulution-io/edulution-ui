@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
+import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import { format } from 'date-fns';
+import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
 
@@ -16,12 +19,15 @@ const SURVEY_TABLE_HEADERS: string[] = [
   'survey.creationDate',
   'survey.expirationDate',
   'common.participated',
+  'survey.canSubmitMultiple',
 ];
 
 const SurveyTable = (props: SurveyTableProps) => {
   const { title, surveys, selectedSurvey, selectSurvey } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation', { lng: i18n.options.lng || 'en' });
+
+  const localDateFormat = getLocaleDateFormat();
 
   const surveyRows = useMemo(
     () =>
@@ -56,10 +62,18 @@ const SurveyTable = (props: SurveyTableProps) => {
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             <TableCell className="text-white">{surveyObj?.title || t('common.not-available')}</TableCell>
             <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : t('common.not-available')}
+              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
             </TableCell>
             <TableCell className="text-white">
-              {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
+              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.invitedAttendees && survey?.participatedAttendees
+                ? `${survey?.participatedAttendees.length || 0}/${survey?.invitedAttendees.length || 0}`
+                : t('common.not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              {survey?.canSubmitMultipleAnswers ? t('common.yes') : t('common.no')}
             </TableCell>
           </TableRow>
         );

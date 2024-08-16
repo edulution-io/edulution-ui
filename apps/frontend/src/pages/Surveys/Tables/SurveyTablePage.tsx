@@ -1,5 +1,5 @@
 import React from 'react';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';

@@ -137,6 +137,7 @@
     "expirationDate": "Expiration date",
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
+    "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes",
@@ -146,6 +147,8 @@
     "errors": {
       "updateOrCreateError": "Neither able to update a survey nor to create a new one",
       "deleteError": "Not able to delete the surveys",
+      "noAnswerError": "No answers available jet",
+      "noFormulaError": "The formula of the survey is not readable",
       "notFoundError": "Survey not found",
       "participationErrorUserNotAssigned": "User is no participant of the survey",
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
@@ -348,6 +351,8 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "yes": "Yes",
+    "no": "No",
     "title": "Title",
     "add": "Add",
     "reload": "Reload",

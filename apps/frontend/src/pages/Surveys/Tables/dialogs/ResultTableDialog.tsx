@@ -1,51 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/ResultDialogStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import ResultTableDialogBodyWrapper from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
+import './resultTableDialog.css';
 
 const ResultTableDialog = () => {
-  const { selectedSurvey: survey } = useSurveyTablesPageStore();
-
-  const { isOpenPublicResultsTableDialog, setIsOpenPublicResultsTableDialog, getSurveyResult, result, isLoading } =
-    useResultDialogStore();
+  const { isOpenPublicResultsTableDialog, setIsOpenPublicResultsTableDialog, isLoading } = useResultDialogStore();
 
   const { t } = useTranslation();
-
-  useEffect((): void => {
-    if (survey && isOpenPublicResultsTableDialog) {
-      void getSurveyResult(survey.id);
-    }
-  }, [isOpenPublicResultsTableDialog, survey]);
-
-  const getDialogBody = () => {
-    if (!survey?.formula) {
-      return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
-          <div>{t('survey.noFormula')}</div>
-        </div>
-      );
-    }
-    if (!result || result.length === 0) {
-      return (
-        <div className="rounded-xl bg-red-400 py-3 text-center text-foreground">
-          <div>{t('survey.noAnswer')}</div>
-        </div>
-      );
-    }
-
-    return (
-      <ScrollArea className="overflow-x-auto overflow-y-auto">
-        <ResultTableDialogBody
-          formula={survey.formula}
-          result={result}
-        />
-      </ScrollArea>
-    );
-  };
 
   return isOpenPublicResultsTableDialog ? (
     <>
@@ -54,7 +18,7 @@ const ResultTableDialog = () => {
         isOpen={isOpenPublicResultsTableDialog}
         handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
         title={t('surveys.resultTableDialog.title')}
-        body={getDialogBody()}
+        body={<ResultTableDialogBodyWrapper />}
         desktopContentClassName="max-h-[75vh] max-w-[85%]"
       />
     </>

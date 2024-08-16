@@ -2,29 +2,38 @@
  * ADDED BY DM
  */
 /* ------------------------- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.svc-creator__non-commercial,
+.svc-creator__non-commercial-text {
+  visibility: hidden;
+  height: 0px;
+}
 
 .sd-input,
 .sd-text {
-  color: rgba(255, 255, 255, 0.4) !important;
-  background: rgba(150, 150, 150, 0.4) !important;
+  color: theme("colors.black") !important;
+  background: theme("colors.ciLightGrey") !important;
   border: 1px solid rgba(0, 0, 0, 0.5) !important;
 }
 
 .svc-text,
 .spg-panel__title--expanded,
 .sv-action-bar-item__title {
-  color: rgba(255, 255, 255, 1) !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 .sd-page__title,
 .sd-item__control-label,
 .spg-panel__title,
 .spg-action-button__text {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 .sd-description,
 .sd-question__title,
 .spg-question__title {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 
 .svc-flex-row,
@@ -45,79 +54,79 @@
   background-color: unset !important;
 }
 .svc-question__content {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: theme("colors.ciDarkGrey") !important;
 }
 .svc-top-bar,
 .svc-side-bar__container,
 .svc-side-bar__container-header,
 .sd-element--collapsed > .sd-element__header {
-  background-color: rgba(40, 40, 40, 1) !important;
+  background-color: theme("colors.ciDarkGrey") !important;
 }
 
 .svc-btn,
 .svc-tabbed-menu-item--selected,
 .spg-panel__title--expanded {
-  background-color: rgba(255, 255, 255, 0.25) !important;
+  background-color: theme("colors.ciGrey") !important;
 }
 
 .svc-btn {
-  background-color: rgba(255, 255, 255, 0.25) !important;
+  background-color: theme("colors.ciGrey") !important;
 }
 
 .svc-json-editor-tab__content-area {
   background-color: unset !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 
 .sv-action-bar-item:not(.sv-action-bar-item--pressed):hover:enabled {
-  background-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: theme("colors.ciGrey") !important;
 }
 .sv-action-bar-item:not(.sv-action-bar-item--pressed):focus:enabled {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: theme("colors.ciGrey") !important;
 }
 
 .spg-panel__content,
 .sv-popup__body-content,
 .svc-question__dropdown {
-  background-color: rgba(40, 40, 40, 0.95) !important;
+  background-color: theme("colors.ciDarkGrey") !important;
 }
 
 .sv-svg-icon {
   background-color: unset !important;
-  fill: rgba(255, 255, 255, 0.8) !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+  fill: theme("colors.ciLightGrey") !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 
 .sv-action-bar-item__icon,
 .sv-action-bar-item__icon use,
 .sv-action-bar-item--secondary,
 .sv-action-bar-item--secondary use .sv-action-bar-item__icon use {
-  fill: rgba(255, 255, 255, 0.9) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  fill: theme("colors.ciLightGrey") !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 
 .sv-string-viewer {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 
 .spg-checkbox__svg {
-  fill: rgba(255, 255, 255, 0.9) !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+  fill: theme("colors.ciLightGrey") !important;
+  color: theme("colors.ciLightGrey") !important;
 }
 
 .spg-search-editor_container {
   height: 56px;
   width: 100%;
-  background: rgba(75, 75, 75, 0.6) !important;
+  background: theme("colors.ciGrey") !important;
 }
 
 .svc-toolbox__item-title {
-  padding: 10px;
+  padding: theme("container.padding");
 }
 
 .svc-toolbox__item-title:hover {
-  background: rgba(50, 50, 50, 0.4) !important;
-  border-radius: 5px;
+  background: theme("colors.ciDarkGrey") !important;
+  border-radius: theme("borderRadius.lg");
 }
 
 .sv-popup--dropdown-overlay .sv-list__filter {

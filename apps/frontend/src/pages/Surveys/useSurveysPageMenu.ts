@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import SurveysPageView from '@libs/survey/types/page-view';
+import SurveysPageView from '@libs/survey/types/api/page-view';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 

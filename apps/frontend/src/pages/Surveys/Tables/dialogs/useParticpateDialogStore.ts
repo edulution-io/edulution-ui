@@ -1,44 +1,20 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
-import SURVEYS_ENDPOINT from '@libs/survey/surveys-endpoint';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import ParticipateDialogStoreInitialState from '@libs/survey/types/tables/dialogs/participateDialogStoreInitialState';
+import ParticipateDialogStore from '@libs/survey/types/tables/dialogs/participateDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
-interface ParticipateDialogStore {
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  answer: JSON;
-  setAnswer: (answer: JSON | undefined) => void;
-
-  isOpenParticipateSurveyDialog: boolean;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
-  answerSurvey: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-const initialState: Partial<ParticipateDialogStore> = {
-  selectedSurvey: undefined,
-  answer: {} as JSON,
-  isOpenParticipateSurveyDialog: false,
-  isLoading: false,
-};
-
 const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
-  ...(initialState as ParticipateDialogStore),
-  reset: () => set(initialState),
+  ...(ParticipateDialogStoreInitialState as ParticipateDialogStore),
+  reset: () => set(ParticipateDialogStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
-  setAnswer: (answer: JSON | undefined) => set({ answer }),
+  setAnswer: (answer: JSON) => set({ answer }),
+  setPageNo: (pageNo: number) => set({ pageNo }),
 
   setIsOpenParticipateSurveyDialog: (state: boolean) => set({ isOpenParticipateSurveyDialog: state }),
   answerSurvey: async (
