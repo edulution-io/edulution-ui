@@ -23,10 +23,12 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import { ApiTags } from '@nestjs/swagger';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
 
+@ApiTags(FileSharingApiEndpoints.BASE)
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   constructor(private readonly filesharingService: FilesharingService) {}

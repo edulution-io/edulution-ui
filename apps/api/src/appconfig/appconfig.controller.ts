@@ -1,12 +1,13 @@
 import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards } from '@nestjs/common';
 
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
 import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
 
+@ApiTags(EDU_API_CONFIG_ENDPOINT)
 @ApiBearerAuth()
 @Controller(EDU_API_CONFIG_ENDPOINT)
 class AppConfigController {

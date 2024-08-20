@@ -1,8 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 
 import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
+import { ApiTags } from '@nestjs/swagger';
 import LicenseService from './license.service';
 
+@ApiTags(LICENSE_ENDPOINT)
 @Controller(LICENSE_ENDPOINT)
 class LicenseController {
   constructor(private readonly licenseService: LicenseService) {}
