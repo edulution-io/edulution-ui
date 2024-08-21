@@ -83,7 +83,7 @@ class FilesystemService {
       const response = await axios.get<ArrayBuffer>(body.url, { responseType: 'arraybuffer' });
       const filePath = join(`${outputFolder}/${filename}`);
       mkdirSync(dirname(filePath), { recursive: true });
-      writeFileSync(filePath, new Uint8Array(response.data));
+      writeFileSync(filePath, new Uint8Array(response?.data));
       const fileBuffer = readFileSync(filePath);
 
       return {

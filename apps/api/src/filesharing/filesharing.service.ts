@@ -11,11 +11,14 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import { Request } from 'express';
-import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
+import { mapToDirectories, mapToDirectoryFiles, transformWebdavResponse } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from './filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+
+// eslint-disable-next-line
+type Transformer<T> = (data: any) => T;
 
 @Injectable()
 class FilesharingService {
@@ -82,7 +85,7 @@ class FilesharingService {
     showDebugMessage: boolean,
     fileSharingErrorMessage: ErrorMessage,
     // eslint-disable-next-line
-    transformer?: (data: any) => T,
+    transformer?: Transformer<T>,
   ): Promise<T | WebdavStatusReplay> {
     try {
       const response = await client(config);
@@ -158,11 +161,7 @@ class FilesharingService {
       },
       true,
       FileSharingErrorMessage.FolderCreationFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response?.status >= 200 && response?.status < 300,
-          status: response.status,
-        }) as WebdavStatusReplay,
+      transformWebdavResponse,
     );
   };
 
@@ -185,11 +184,7 @@ class FilesharingService {
       },
       true,
       FileSharingErrorMessage.CreationFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response.status >= 200 && response.status < 300,
-          status: response.status,
-        }) as WebdavStatusReplay,
+      transformWebdavResponse,
     );
   };
 
@@ -206,12 +201,7 @@ class FilesharingService {
       },
       false,
       FileSharingErrorMessage.UploadFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response.status === 201 || response.status === 200,
-          filename: file.originalname,
-          status: response.status,
-        }) as WebdavStatusReplay,
+      transformWebdavResponse,
     );
   };
 
@@ -228,11 +218,7 @@ class FilesharingService {
       },
       true,
       FileSharingErrorMessage.DeletionFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response.status >= 200 && response.status < 300,
-          status: response.status,
-        }) as WebdavStatusReplay,
+      transformWebdavResponse,
     );
   };
 
@@ -253,10 +239,7 @@ class FilesharingService {
       },
       true,
       FileSharingErrorMessage.RenameFailed,
-      (response: WebdavStatusReplay) => ({
-        success: response.status >= 200 && response.status < 300,
-        status: response.status,
-      }),
+      transformWebdavResponse,
     );
   };
 

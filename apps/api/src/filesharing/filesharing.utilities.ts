@@ -1,8 +1,8 @@
 import { XMLParser } from 'fast-xml-parser';
 import { decode } from 'he';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import { Logger } from '@nestjs/common';
 import ContentType from '@libs/filesharing/types/contentType';
+import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import { WebDAVMultiStatus, WebDAVResponse, XMLAttributes as XA } from './filesharing.types';
 
 const xmlOptions = {
@@ -45,10 +45,6 @@ function parseWebDAVResponse(response: WebDAVResponse): DirectoryFileDTO {
   };
 }
 
-export function fromBase64(str: string): string {
-  return Buffer.from(str, 'base64').toString('utf-8');
-}
-
 function parseWebDAVMultiStatus(xmlData: string) {
   const jsonObj: WebDAVMultiStatus = xmlParser.parse(xmlData) as WebDAVMultiStatus;
   if (!jsonObj[XA.MultiStatus] || !jsonObj[XA.MultiStatus][XA.Response]) {
@@ -62,25 +58,22 @@ function parseWebDAVMultiStatus(xmlData: string) {
 }
 
 export function mapToDirectoryFiles(xmlData: string): DirectoryFileDTO[] {
-  try {
-    const responses = parseWebDAVMultiStatus(xmlData);
-    return responses.map(parseWebDAVResponse).filter((file) => file && file.basename !== '');
-  } catch (error) {
-    Logger.error('Error parsing XML data:', error);
-    return [];
-  }
+  const responses = parseWebDAVMultiStatus(xmlData);
+  return responses.map(parseWebDAVResponse).filter((file) => file && file.basename !== '');
 }
 
 export function mapToDirectories(xmlData: string): DirectoryFileDTO[] {
-  try {
-    const responses = parseWebDAVMultiStatus(xmlData);
-    return responses
-      .map(parseWebDAVResponse)
-      .filter((file) => file && file.type === ContentType.DIRECTORY && file.basename !== '');
-  } catch (error) {
-    Logger.error('Error parsing XML data:', error);
-    return [];
-  }
+  const responses = parseWebDAVMultiStatus(xmlData);
+  return responses
+    .map(parseWebDAVResponse)
+    .filter((file) => file && file.type === ContentType.DIRECTORY && file.basename !== '');
+}
+
+export function transformWebdavResponse(response: WebdavStatusReplay): WebdavStatusReplay {
+  return {
+    success: response.status >= 200 && response.status < 300,
+    status: response.status,
+  } as WebdavStatusReplay;
 }
 
 export default { mapToDirectoryFiles, mapToDirectories };

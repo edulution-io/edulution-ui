@@ -55,7 +55,7 @@ class LmnApiService {
           }),
       )
       .then(fn)
-      .catch(() => Promise.resolve());
+      .catch((error) => Promise.reject(error));
 
     return this.queue as Promise<AxiosResponse<T>>;
   }

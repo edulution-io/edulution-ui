@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import * as xml2js from 'xml2js';
+import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -35,7 +35,7 @@ class ConferencesService {
   static parseXml<T>(xml: string): Promise<T> {
     return new Promise((resolve, reject) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
+      parseString(xml, { explicitArray: false }, (err, result) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -217,7 +217,7 @@ class ConferencesService {
     return result.deletedCount > 0;
   }
 
-  async createChecksum(method = '', query = '') {
+  async createChecksum(method: string, query: string) {
     await this.loadConfig();
     const string = method + query + this.BBB_SECRET;
 

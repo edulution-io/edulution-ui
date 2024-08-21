@@ -1,16 +1,21 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-
+import { parseString } from 'xml2js';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import JWTUser from '../types/JWTUser';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
 import Attendee from './attendee.schema';
+import { AppConfig } from '../appconfig/appconfig.schema';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -71,6 +76,39 @@ const conferencesModelMock = {
   }),
 };
 
+jest.mock('xml2js', () => ({
+  parseString: jest.fn(),
+}));
+
+describe('ConferencesService.parseXml', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should correctly parse valid XML', async () => {
+    const xml = '<response><returncode>SUCCESS</returncode></response>';
+
+    (parseString as jest.Mock).mockImplementation((_xml, _options, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      callback(null, { response: { returncode: 'SUCCESS' } });
+    });
+
+    const result = await ConferencesService.parseXml<{ response: { returncode: string } }>(xml);
+    expect(result.response.returncode).toBe('SUCCESS');
+  });
+
+  it('should handle XML parsing errors', async () => {
+    const xml = '<response><returncode>SUCCESS</returncode></response>';
+
+    (parseString as jest.Mock).mockImplementation((_xml, _options, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      callback(new Error('Parsing error'), null);
+    });
+
+    await expect(ConferencesService.parseXml(xml)).rejects.toThrow('Parsing error');
+  });
+});
+
 describe(ConferencesService.name, () => {
   let service: ConferencesService;
   let model: Model<ConferenceDocument>;
@@ -112,6 +150,23 @@ describe(ConferencesService.name, () => {
       const result = await service.findAllConferencesTheUserHasAccessTo(mockJWTUser);
       expect(result[0].creator).toEqual(mockCreator);
       expect(model.find).toHaveBeenCalled();
+    });
+    it('should handle ldapGroups mapping correctly', async () => {
+      const mockUserWithGroups: JWTUser = {
+        ...mockJWTUser,
+        ldapGroups: ['group1', 'group2'],
+      };
+
+      const expectedQuery = {
+        $or: [
+          { 'invitedAttendees.username': mockUserWithGroups.preferred_username },
+          { 'invitedGroups.path': 'group1' },
+          { 'invitedGroups.path': 'group2' },
+        ],
+      };
+
+      await service.findAllConferencesTheUserHasAccessTo(mockUserWithGroups);
+      expect(model.find).toHaveBeenCalledWith(expectedQuery);
     });
   });
 
@@ -157,6 +212,21 @@ describe(ConferencesService.name, () => {
       await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
       expect(service.stopConference).toHaveBeenCalled();
     });
+
+    it('should throw a CustomHttpException if the user is not the creator', async () => {
+      jest.spyOn(service, 'isCurrentUserTheCreator').mockResolvedValue({
+        conference: mockConferenceDocument,
+        isCreator: false,
+      });
+
+      await expect(
+        service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, mockCreator.username),
+      ).rejects.toThrow(CustomHttpException);
+
+      await expect(
+        service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, mockCreator.username),
+      ).rejects.toThrow(ConferencesErrorMessage.YouAreNotTheCreator);
+    });
   });
 
   describe('join', () => {
@@ -168,9 +238,28 @@ describe(ConferencesService.name, () => {
       const result = await service.join('mockMeetingId', mockJWTUser);
       expect(result).toContain('join?');
     });
+    it('should throw CustomHttpException if there is an error joining the conference', async () => {
+      jest.spyOn(service, 'isCurrentUserTheCreator').mockRejectedValue(new Error('Network Error'));
+
+      await expect(service.join('mockMeetingId', mockJWTUser)).rejects.toThrow(CustomHttpException);
+      await expect(service.join('mockMeetingId', mockJWTUser)).rejects.toThrow(
+        ConferencesErrorMessage.BbbServerNotReachable,
+      );
+    });
   });
 
   describe('isCurrentUserTheCreator', () => {
+    it('should throw CustomHttpException if the conference is not found', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValue(null);
+
+      await expect(service.isCurrentUserTheCreator('nonExistentMeetingId', 'username')).rejects.toThrow(
+        CustomHttpException,
+      );
+      await expect(service.isCurrentUserTheCreator('nonExistentMeetingId', 'username')).rejects.toThrow(
+        ConferencesErrorMessage.MeetingNotFound,
+      );
+    });
+
     it('should verify if the current user is the creator', async () => {
       const result = await service.isCurrentUserTheCreator('mockMeetingId', mockCreator.username);
       expect(result.isCreator).toBe(true);
@@ -194,6 +283,34 @@ describe(ConferencesService.name, () => {
     });
   });
 
+  describe('ConferencesService.handleBBBApiError', () => {
+    it('should not throw an error if returncode is SUCCESS', () => {
+      const result = { response: { returncode: 'SUCCESS' } };
+
+      expect(() => ConferencesService.handleBBBApiError(result)).not.toThrow();
+    });
+
+    it('should throw an HttpException if returncode is not SUCCESS', () => {
+      const result = { response: { returncode: 'FAILED' } };
+
+      expect(() => ConferencesService.handleBBBApiError(result)).toThrow(HttpException);
+      expect(() => ConferencesService.handleBBBApiError(result)).toThrow(
+        new HttpException(ConferencesErrorMessage.BbbUnauthorized, HttpStatus.UNAUTHORIZED),
+      );
+    });
+  });
+
+  describe('startConferenceWithException', () => {
+    it('should throw a CustomHttpException if BBB API is not reachable', async () => {
+      jest.spyOn(axios, 'get').mockRejectedValue(new Error('Network Error'));
+
+      await expect(service.startConference(mockConferenceDocument)).rejects.toThrow(CustomHttpException);
+      await expect(service.startConference(mockConferenceDocument)).rejects.toThrow(
+        ConferencesErrorMessage.BbbServerNotReachable,
+      );
+    });
+  });
+
   describe('stopConference', () => {
     it('should stop a conference and update its status', async () => {
       jest.spyOn(axios, 'get').mockResolvedValue({
@@ -208,5 +325,110 @@ describe(ConferencesService.name, () => {
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
     });
+    it('should throw CustomHttpException if there is an error stopping the conference', async () => {
+      jest.spyOn(axios, 'get').mockRejectedValue(new Error('Network Error'));
+
+      await expect(service.stopConference(mockConferenceDocument)).rejects.toThrow(CustomHttpException);
+      await expect(service.stopConference(mockConferenceDocument)).rejects.toThrow(
+        ConferencesErrorMessage.BbbServerNotReachable,
+      );
+    });
+  });
+});
+
+describe('ConferencesService.getJoinedAttendees', () => {
+  it('should return an empty array if attendees are not present', () => {
+    const bbbMeetingDto = { response: {} } as unknown as BbbResponseDto;
+    const result = ConferencesService.getJoinedAttendees(bbbMeetingDto);
+    expect(result).toEqual([]);
+  });
+
+  it('should return a single attendee if attendees.attendee is not an array', () => {
+    const bbbMeetingDto = {
+      response: {
+        attendees: {
+          attendee: {
+            role: 'Viewer',
+            fullName: 'John Doe',
+            userID: 'john_doe',
+          },
+        },
+      },
+    } as unknown as BbbResponseDto;
+    const result = ConferencesService.getJoinedAttendees(bbbMeetingDto);
+    expect(result).toEqual([
+      {
+        lastName: 'Viewer',
+        firstName: 'John Doe',
+        username: 'john_doe',
+      },
+    ]);
+  });
+
+  it('should return an array of attendees if attendees.attendee is an array', () => {
+    const bbbMeetingDto = {
+      response: {
+        attendees: {
+          attendee: [
+            {
+              role: 'Viewer',
+              fullName: 'John Doe',
+              userID: 'john_doe',
+            },
+            {
+              role: 'Moderator',
+              fullName: 'Jane Smith',
+              userID: 'jane_smith',
+            },
+          ],
+        },
+      },
+    } as unknown as BbbResponseDto;
+    const result = ConferencesService.getJoinedAttendees(bbbMeetingDto);
+    expect(result).toEqual([
+      {
+        lastName: 'Viewer',
+        firstName: 'John Doe',
+        username: 'john_doe',
+      },
+      {
+        lastName: 'Moderator',
+        firstName: 'Jane Smith',
+        username: 'jane_smith',
+      },
+    ]);
+  });
+});
+
+describe('ConferencesService.loadConfig', () => {
+  let service: ConferencesService;
+  let appConfigService: AppConfigService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ConferencesService,
+        {
+          provide: getModelToken(Conference.name),
+          useValue: conferencesModelMock,
+        },
+        {
+          provide: AppConfigService,
+          useValue: mockAppConfigService,
+        },
+      ],
+    }).compile();
+
+    service = module.get<ConferencesService>(ConferencesService);
+    appConfigService = module.get<AppConfigService>(AppConfigService);
+  });
+
+  it('should throw CustomHttpException if app config is not properly set', async () => {
+    jest.spyOn(appConfigService, 'getAppConfigByName').mockResolvedValue({
+      options: { url: '', apiKey: '' },
+    } as AppConfig);
+
+    await expect(service.loadConfig()).rejects.toThrow(CustomHttpException);
+    await expect(service.loadConfig()).rejects.toThrow(ConferencesErrorMessage.AppNotProperlyConfigured);
   });
 });

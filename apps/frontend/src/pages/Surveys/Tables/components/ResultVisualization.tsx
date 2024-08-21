@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import i18next from 'i18next';
 import { Model } from 'survey-core';
 import { SurveyModel } from 'survey-core/typings/survey';
@@ -25,7 +25,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
   const [visuPanel, setVisuPanel] = useState<VisualizationPanel | null>(null);
 
   if (survey == null) {
-    const surveyModel = new Model(formula);
+    const surveyModel = new Model(formula) as unknown as SurveyModel;
     setSurvey(surveyModel);
   }
 

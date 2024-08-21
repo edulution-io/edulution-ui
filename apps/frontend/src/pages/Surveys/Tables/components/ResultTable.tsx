@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import i18next from 'i18next';
 import { Model } from 'survey-core';
 import { SurveyModel } from 'survey-core/typings/survey';
@@ -19,13 +19,13 @@ const ResultTable = (props: ResultTableDialogBodyProps) => {
   const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
 
   if (survey == null) {
-    const surveyModel = new Model(formula);
+    const surveyModel = new Model(formula) as unknown as SurveyModel;
     setSurvey(surveyModel);
   }
 
   if (visuTable == null && survey != null) {
     const answers = result || [];
-    const surveyVisuTable = new Tabulator(survey, answers);
+    const surveyVisuTable = new Tabulator(survey as unknown as Model, answers);
     surveyVisuTable.locale = i18next.options.lng || 'en';
     setVisuTable(surveyVisuTable);
   }
