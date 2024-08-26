@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import UsersSurveys from '@libs/survey/types/users-surveys';
 import { idOfCreateNewOpenSurvey, idOfOpenSurvey01 } from './open-surveys';
 import { idOfAnswerFromFirstUserToAnswerTheOpenSurvey, idOfTheOpenSurvey } from './answer-the-open-survey';

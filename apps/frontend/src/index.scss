@@ -3,6 +3,8 @@
   html {
     @apply text-white;
     font-family: 'Lato', sans-serif;
+
+    @apply scrollbar-thin scrollbar-track-black/10 scrollbar-thumb-ciLightGrey scrollbar-thumb-rounded-full;
   }
 }
 

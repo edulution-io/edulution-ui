@@ -1,19 +1,20 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import GetTokenDecorator from '../common/decorators/getToken.decorator';
+import { Controller, Get, Query } from '@nestjs/common';
 import GroupsService from './groups.service';
+import GetToken from '../common/decorators/getToken.decorator';
 
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
-  async getGroups(@GetTokenDecorator() token: string) {
-    return this.groupsService.searchGroups(token);
+  async searchGroups(@Query('groupName') groupName: string) {
+    return this.groupsService.searchGroups(groupName);
   }
 
-  @Get(':searchString')
-  async searchGroups(@GetTokenDecorator() token: string, @Param('searchString') searchString: string) {
-    return this.groupsService.searchGroups(token, searchString);
+  @Get('user')
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async fetchCurrentUser(@GetToken() token: string) {
+    return GroupsService.fetchCurrentUser(token);
   }
 }
 

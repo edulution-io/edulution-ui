@@ -5,17 +5,22 @@ import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 
 interface AppConfigTypeSelectProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+  control: Control;
   settingLocation: string;
   appConfig: AppConfigDto[];
+  isNativeApp: boolean;
 }
 
-const AppConfigTypeSelect: React.FC<AppConfigTypeSelectProps> = ({ control, settingLocation, appConfig }) => {
+const AppConfigTypeSelect: React.FC<AppConfigTypeSelectProps> = ({
+  control,
+  settingLocation,
+  appConfig,
+  isNativeApp,
+}) => {
   const radioGroupItems = [
-    { value: AppIntegrationType.NATIVE, translationId: 'form.native' },
-    { value: AppIntegrationType.FORWARDED, translationId: 'form.forwarded' },
-    { value: AppIntegrationType.EMBEDDED, translationId: 'form.embedded' },
+    { value: AppIntegrationType.NATIVE, translationId: 'form.native', disabled: !isNativeApp },
+    { value: AppIntegrationType.FORWARDED, translationId: 'form.forwarded', disabled: false },
+    { value: AppIntegrationType.EMBEDDED, translationId: 'form.embedded', disabled: false },
   ];
 
   return (

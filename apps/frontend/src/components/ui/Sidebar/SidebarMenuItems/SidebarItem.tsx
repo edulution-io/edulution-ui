@@ -4,8 +4,10 @@ import { useWindowSize } from 'usehooks-ts';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
+import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
+  const { title, icon, color, link, notificationCounter } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const size = useWindowSize();
@@ -22,30 +24,33 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
 
   return (
     <div
-      key={menuItem.title}
+      key={title}
       className="relative"
       ref={buttonRef}
     >
       <NavLink
-        to={menuItem.link}
-        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 border-b-2 border-ciLightGrey px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        to={link}
+        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
       >
-        <p className="md:hidden">{menuItem.title}</p>
-        <img
-          src={menuItem.icon}
-          width={SIDEBAR_ICON_WIDTH}
-          className="relative z-0"
-          alt={`${menuItem.title}-icon`}
-        />
+        <p className="md:hidden">{title}</p>
+        <>
+          <img
+            src={icon}
+            width={SIDEBAR_ICON_WIDTH}
+            className="relative z-0"
+            alt={`${title}-icon`}
+          />
+          <SidebarItemNotification notificationCounter={notificationCounter} />
+        </>
         {isInView ? (
           <div
-            className={`${menuItem.color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
-            <p className="whitespace-nowrap font-bold">{menuItem.title}</p>
+            <p className="whitespace-nowrap font-bold">{title}</p>
             <img
-              src={menuItem.icon}
+              src={icon}
               width={SIDEBAR_ICON_WIDTH}
-              alt={`${menuItem.title}-icon`}
+              alt={`${title}-icon`}
             />
           </div>
         ) : null}

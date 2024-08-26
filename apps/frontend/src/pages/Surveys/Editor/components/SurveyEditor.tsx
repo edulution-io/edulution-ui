@@ -1,8 +1,6 @@
 import React from 'react';
 import i18next from 'i18next';
-import { toast } from 'sonner';
 import { UseFormReturn } from 'react-hook-form';
-// import { useTranslation } from 'react-i18next';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import 'survey-creator-core/i18n/english';
@@ -18,16 +16,13 @@ interface SurveyEditorProps {
   form: UseFormReturn<any>;
   saveNumber: number;
   formula?: JSON;
-  error: Error | null;
 }
 
-editorLocalization.defaultLocale = i18next.language || 'en';
-localization.currentLocale = i18next.language || 'en';
+editorLocalization.defaultLocale = i18next.options.lng || 'en';
+localization.currentLocale = i18next.options.lng || 'en';
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form, saveNumber, formula, error } = props;
-
-  // const { t } = useTranslation();
+  const { form, saveNumber, formula } = props;
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -81,24 +76,13 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   // PROPERTY GRID (RIGHT SIDEBAR)
   creator.showSidebar = false;
+  // TODO: NIEDUUI-334: add a placeholder to for the description of the question (invisible - accessible in sidebar)
 
   // ELEMENT MENU (part of the ELEMENT/QUESTION)
   creator.onDefineElementMenuItems.add((_, options) => {
     const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
     options.items.splice(settingsItemIndex, 1);
   });
-
-  // ADD PLACEHOLDER TEXT TO TEXT QUESTIONS
-  // creator.onQuestionAdded.add((_, options) => {
-  //   const updateOptions = options;
-  //   if (updateOptions.question.getType() === 'text') {
-  //     updateOptions.question.placeHolder = `${t('survey.editor.expectingUserInput')}`;
-  //     // updateOptions.question.defaultValue = `${t('survey.editor.expectingUserInput')}`;
-  //     // TODO: FIX PROBLEM: DOES NOT SHOW QUESTION DESCRIPTION ONLY IN THIS SETTINGS MENU
-  //     // updateOptions.question.description = options.question.description || t('survey.editor.addDescription');
-  //   }
-  //   return updateOptions;
-  // });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
     form.setValue('formula', creator.JSON);
@@ -111,16 +95,13 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   return (
-    <>
-      <SurveyCreatorComponent
-        creator={creator}
-        style={{
-          height: '85vh',
-          width: '100%',
-        }}
-      />
-      {error ? toast.error(error.message) : null}
-    </>
+    <SurveyCreatorComponent
+      creator={creator}
+      style={{
+        height: '85vh',
+        width: '100%',
+      }}
+    />
   );
 };
 

@@ -1,64 +1,81 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiDocument, HiXMark } from 'react-icons/hi2';
-
-export interface FileWithPreview extends File {
-  preview: string;
-}
+import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import Progress from '@/components/ui/Progress';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 
 interface DropZoneProps {
-  files: FileWithPreview[];
-  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[]>>;
+  files: File[];
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
+const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   const { t } = useTranslation();
+  const [fileUploadSize, setFileUploadSize] = useState(0);
+  const { setSubmitButtonIsInActive } = useFileSharingDialogStore();
 
   const removeFile = (name: string) => {
-    setFiles((removed) => removed.filter((file) => file.name !== name));
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
+
+  useEffect(() => {
+    const totalSize = files.reduce((total, file) => total + bytesToMegabytes(file.size), 0);
+    setFileUploadSize(totalSize);
+    if (totalSize > MAX_FILE_UPLOAD_SIZE || totalSize === 0) {
+      setSubmitButtonIsInActive(true);
+    } else {
+      setSubmitButtonIsInActive(false);
+    }
+  }, [files]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newFiles = acceptedFiles.filter((file) => !files.some((f) => f.name === file.name));
-      if (newFiles.length) {
-        setFiles((previousFiles) => [
-          ...previousFiles,
-          ...acceptedFiles.map((file) => {
-            const fileWithPreview: FileWithPreview = Object.assign(file, {
-              preview: URL.createObjectURL(file),
-            });
-            return fileWithPreview;
-          }),
-        ]);
-      }
+      setFiles((prevFiles) => {
+        const newFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
+        return [...prevFiles, ...newFiles];
+      });
     },
-    [files, setFiles],
+    [setFiles],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 ${
-    isDragActive ? 'bg-gray-200' : 'bg-gray-100'
+    isDragActive ? 'bg-ciLightGrey' : 'bg-gray-100'
   }`;
 
   return (
-    <form>
+    <form className="overflow-auto">
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-        {files.length <= 5 ? (
+        {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
           <div className="flex flex-col items-center justify-center space-y-2">
-            <p className="font-semibold text-gray-700">
+            <p className="font-semibold text-ciLightGrey">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
-            <MdOutlineCloudUpload className="h-12 w-12 text-gray-500" />
+            <MdOutlineCloudUpload className="h-12 w-12 text-ciGrey" />
           </div>
         ) : (
-          <p className="font-bold text-red-700">{t('filesharingUpload.limitExceeded')}</p>
+          <p className="font-bold text-ciRed">
+            {fileUploadSize > MAX_FILE_UPLOAD_SIZE
+              ? t('filesharingUpload.dataLimitExceeded')
+              : t('filesharingUpload.limitExceeded')}
+          </p>
         )}
+      </div>
+      <div>
+        <Progress value={(fileUploadSize / MAX_FILE_UPLOAD_SIZE) * 100} />
+        <div className="flex flex-row justify-between text-foreground">
+          <p>{t('filesharingUpload.fileSize')}</p>
+          <p>
+            {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}MB
+          </p>
+        </div>
       </div>
 
       <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
@@ -69,37 +86,44 @@ export const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           >
             {file.type.startsWith('image/') ? (
               <img
-                src={file.preview}
-                alt={t('filesharingUpload.previewAlt', { filename: file.preview })}
+                src={URL.createObjectURL(file)}
+                alt={t('filesharingUpload.previewAlt', { filename: file.name })}
                 className="mb-2 h-auto w-full object-cover"
-                onLoad={() => URL.revokeObjectURL(file.preview)}
+                onLoad={() => URL.revokeObjectURL(file.name)}
               />
             ) : (
               <div className="flex h-20 items-center justify-center">
-                <HiDocument className="h-8 w-8 text-gray-500" />
+                <HiDocument className="h-8 w-8 text-ciGrey" />
               </div>
             )}
             <Button
               onClick={() => removeFile(file.name)}
               className="absolute right-0 top-0 rounded-full bg-white bg-opacity-70 p-1"
             >
-              <HiXMark className="h-5 w-5 text-red-500 hover:text-red-700" />
+              <HiXMark className="text-text-ciRed h-5 w-5 hover:text-red-700" />
             </Button>
             <div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>
           </li>
         ))}
       </ul>
-      <p className="pt-4 text-black underline">{t('filesharingUpload.filesToUpload')}</p>
-      <ScrollArea className="h-[200px]">
+      <p className="pt-4 text-foreground underline">{t('filesharingUpload.filesToUpload')}</p>
+      <ScrollArea className="max-h-[30vh]">
         <ol
           type="1"
-          className="text-black"
+          className="text-foreground"
         >
           {files.map((file, i) => (
-            <li key={file.name}>{`${i + 1}. ${file.name}`}</li>
+            <li
+              key={file.name}
+              className="flex w-full items-center justify-between overflow-hidden rounded bg-white p-2 shadow"
+            >
+              <span className="w-full overflow-hidden truncate whitespace-nowrap">{`${i + 1}. ${file.name}`}</span>
+            </li>
           ))}
         </ol>
       </ScrollArea>
     </form>
   );
 };
+
+export default DropZone;

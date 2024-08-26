@@ -1,27 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { useEncryption } from '@/hooks/mutations';
-
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import { createWebdavClient } from '@/webdavclient/WebDavFileManager';
 import useUserStore from '@/store/UserStore/UserStore';
-import useLmnApiStore from '@/store/lmnApiStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import UserDto from '@libs/user/types/user.dto';
+import processLdapGroups from '@libs/user/utils/processLdapGroups';
+
+type LocationState = {
+  from: string;
+};
 
 const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { setUsername, setWebdavKey, setIsAuthenticated, setEduApiToken } = useUserStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
+  const [loginComplete, setLoginComplete] = useState(false);
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
@@ -35,6 +42,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (auth.error) {
+      // NIEDUUI-322 Translate keycloak error messages
       form.setError('password', { type: 'custom', message: auth.error.message });
     }
   }, [auth.error]);
@@ -47,28 +55,55 @@ const LoginPage: React.FC = () => {
         username,
         password,
       });
-
       if (requestUser) {
-        const encryptedPassword = useEncryption({
-          mode: 'encrypt',
-          data: password,
-          key: `${import.meta.env.VITE_WEBDAV_KEY}`,
-        });
-
-        setUsername(username);
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(encryptedPassword);
-        setIsAuthenticated(true);
-
-        createWebdavClient();
-        await setLmnApiToken(username, password);
+        setWebdavKey(password);
       }
-
-      return null;
     } catch (e) {
-      return null;
+      //
     }
   };
+
+  const handleRegisterUser = async () => {
+    const profile = auth.user?.profile;
+    if (!profile) {
+      return;
+    }
+
+    const newUser: UserDto = {
+      username: profile.preferred_username!,
+      firstName: profile.given_name!,
+      lastName: profile.family_name!,
+      email: profile.email!,
+      ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
+      password: webdavKey,
+    };
+    await createOrUpdateUser(newUser);
+  };
+
+  useEffect(() => {
+    const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
+    if (isLoginPrevented) {
+      return;
+    }
+    const registerUser = async () => {
+      await handleRegisterUser();
+      await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      setLoginComplete(true);
+    };
+
+    void registerUser();
+  }, [auth.isAuthenticated, eduApiToken]);
+
+  useEffect(() => {
+    if (loginComplete) {
+      const { from } = (location?.state ?? { from: '/' }) as LocationState;
+      const toLocation = from === '/login' ? '/' : from;
+      navigate(toLocation, {
+        replace: true,
+      });
+    }
+  }, [loginComplete]);
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
     <FormFieldSH
@@ -131,7 +166,7 @@ const LoginPage: React.FC = () => {
             </div> */}
           </div>
           <Button
-            className="mx-auto w-full justify-center pt-4 text-white shadow-xl"
+            className="mx-auto w-full justify-center pt-4 text-background shadow-xl"
             type="submit"
             variant="btn-security"
             size="lg"

@@ -1,9 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
 import { useAuth } from 'react-oidc-context';
-import useUserStore from '@/store/UserStore/UserStore';
+import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import Avatar from '@/components/shared/Avatar';
 import {
   DropdownMenuContent,
@@ -11,29 +10,22 @@ import {
   DropdownMenuSH,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useLogout from '@/hooks/useLogout';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
-  const isMobileView = useIsMobileView();
   const navigate = useNavigate();
   const auth = useAuth();
-  const { logout } = useUserStore();
+  const handleLogout = useLogout();
 
   const handleUserSettingsClick = () => {
-    navigate('user');
-  };
-
-  const handleLogout = async () => {
-    auth.removeUser().catch(console.error);
-    await logout();
-    cleanAllStores();
+    navigate(USER_SETTINGS_PATH);
   };
 
   return (
     <div
       key="usermenu"
-      className={`${isMobileView ? 'border-b-2' : 'fixed bottom-0 right-0 border-t-2 bg-black'}`}
+      className="fixed bottom-0 right-0 bg-black"
     >
       <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
         <DropdownMenuSH>

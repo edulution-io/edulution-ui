@@ -3,6 +3,8 @@
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "preparing": "Vorbereiten...",
+  "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -18,7 +20,41 @@
     }
   },
   "auth": {
-    "errors": { "TokenExpired": "Sitzung abgelaufen", "SessionExpiring": "Sie werden in 1 Minute abgemeldet." }
+    "errors": {
+      "TokenExpired": "Sitzung abgelaufen.",
+      "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
+      "Unauthorized": "Du bist nicht autorisiert.",
+      "Unknown": "Nutzer nicht gefunden."
+    }
+  },
+  "lmnApi": {
+    "errors": {
+      "ToggleSchoolClassJoinedFailed": "Betreten oder Verlassen der Schulklasse fehlgeschlagen",
+      "ToggleProjectJoinedFailed": "Betreten oder Verlassen des Projekts fehlgeschlagen",
+      "TogglePrinterJoinedFailed": "Hinzufügen oder Entfernen des Druckers fehlgeschlagen",
+      "GetUserSessionsFailed": "Abrufen der Benutzersitzungen fehlgeschlagen",
+      "AddUserSessionsFailed": "Hinzufügen der Benutzersitzung fehlgeschlagen",
+      "GetPrintersFailed": "Drucker abrufen fehlgeschlagen",
+      "RemoveUserSessionsFailed": "Entfernen der Benutzersitzung fehlgeschlagen",
+      "UpdateUserSessionsFailed": "Aktualisierung der Benutzersitzung fehlgeschlagen",
+      "StartExamModeFailed": "Start des Prüfungsmodus fehlgeschlagen",
+      "PrintPasswordsFailed": "Drucken der Passwörter fehlgeschlagen",
+      "StopExamModeFailed": "Beenden des Prüfungsmodus fehlgeschlagen",
+      "RemoveManagementGroupFailed": "Entfernen der Verwaltungsgruppe fehlgeschlagen",
+      "AddManagementGroupFailed": "Hinzufügen der Verwaltungsgruppe fehlgeschlagen",
+      "GetUserSchoolClassesFailed": "Abrufen der Schulklassen des Benutzers fehlgeschlagen",
+      "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
+      "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
+      "GetUserFailed": "Abrufen fehlgeschlagen",
+      "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
+      "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
+      "RemoveProjectFailed": "Entfernen des Projekts fehlgeschlagen",
+      "UpdateProjectFailed": "Aktualisierung des Projekts fehlgeschlagen",
+      "SearchUsersOrGroupsFailed": "Suche nach Benutzern oder Gruppen fehlgeschlagen",
+      "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
+      "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
+      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen"
+    }
   },
   "ticketsystem": {
     "title": "TICKETSYSTEM",
@@ -26,7 +62,20 @@
   },
   "mail": {
     "title": "MAIL",
-    "sidebar": "Mail"
+    "sidebar": "Mail",
+    "importer": {
+      "title": "E-Mail-Importer",
+      "provider": "E-Mail-Provider",
+      "configName": "Name der Konfiguration",
+      "hostname": "Hostname",
+      "port": "Port",
+      "encryption": "Verschlüsselung",
+      "interval": "Sync-Intervall",
+      "isActive": "Aktiv",
+      "syncJobsTable": "Importer Jobs",
+      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "mailAddress": "E-Mail-Adresse"
+    }
   },
   "chat": {
     "title": "CHAT",
@@ -40,9 +89,10 @@
     "errors": {
       "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
-      "BbbUnauthorized": "Sie sind am externen BBB-Server nicht autorisiert",
-      "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wenden Sie sich an Ihren Systemadministrator",
-      "YouAreNotTheCreator": "Sie sind nicht der Ersteller der Konferenz"
+      "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
+      "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
+      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst."
     },
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
@@ -58,6 +108,7 @@
     "name": "Name der Konferenz",
     "conference": "Konferenz",
     "password": "Passwort",
+    "attendee": "Teilnehmer",
     "attendees": "Teilnehmer",
     "invitedAttendees": "Eingeladen",
     "joinedAttendees": "Beigetreten",
@@ -66,8 +117,6 @@
     "private": "Privat",
     "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
     "cancel": "Abbrechen",
-    "min_3_chars": "Mindestens 3 Zeichen",
-    "max_30_chars": "Maximal 30 Zeichen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
     "action": "Aktion",
@@ -84,20 +133,42 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Es wurden keine laufenden Konferenzen gefunden"
+    "noConferences": "Keine laufende Konferenz",
+    "noMails": "Keine ungelesenen Mails"
   },
   "filesharing": {
     "title": "FILESHARING",
-    "sidebar": "Filesharing"
+    "sidebar": "Filesharing",
+    "previewTitle": "Dateivorschau",
+    "saveFile": "Datei speichern",
+    "closeEditor": "Editor schließen",
+    "loadingDocument": "Dokument wird geladen...",
+    "errors": {
+      "FileNotFound": "Datei nicht gefunden",
+      "MountPointsNotFound": "Laufwerke nicht gefunden",
+      "FolderNotFound": "Ordner nicht gefunden",
+      "UploadFailed": "Datei konnte nicht hinzugefügt werden",
+      "DeletionFailed": "Löschen fehlgeschlagen",
+      "RenameFailed": "Umbenennen fehlgeschlagen",
+      "MoveFailed": "Verschieben fehlgeschlagen",
+      "CreationFailed": "Erstellen fehlgeschlagen",
+      "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "WebDavError": "Dateiserver nicht erreichbar",
+      "DownloadFailed": "Herunterladen fehlgeschlagen",
+      "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
+      "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
+      "SaveFailed": "Speichern fehlgeschlagen"
+    },
+    "tooltips": {
+      "folderNameRequired": "Ordnername ist erforderlich",
+      "FileNameRequired": "Dateiname ist erforderlich",
+      "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
+      "NameRequired": "Name erforderlich"
+    }
   },
   "forums": {
     "title": "FOREN",
     "sidebar": "Foren"
-  },
-  "roombooking": {
-    "title": "RAUMBUCHUNG",
-    "sidebar": "Raumbuchung",
-    "rooms": "Räume"
   },
   "learningmanagement": {
     "title": "LERNMANAGEMENT",
@@ -107,15 +178,121 @@
     "title": "SCHULINFORMATION",
     "sidebar": "Schulinformation"
   },
-  "schoolmanagement": {
-    "title": "SCHULVERWALTUNG",
-    "sidebar": "Schulverwaltung"
+  "edit": "Bearbeiten",
+  "schoolclass": "Schulklasse",
+  "project": "Projekt",
+  "unknown": "Unbekannt",
+  "device": "Gerät",
+  "globalbinduser": "Systemnutzer",
+  "globaladministrator": "Globaler Admin",
+  "schoolbinduser": "Systemnutzer",
+  "schooladministrator": "Schuladmin",
+  "classroom-studentcomputer": "Klassenzimmer-Schülercomputer",
+  "server": "Server",
+  "loginname": "Loginname",
+  "classmanagement": {
+    "title": "KLASSENZIMMER",
+    "sidebar": "Klassenzimmer",
+    "name": "Name",
+    "notMemberOfClass": "Du bist kein Mitglied einer Klasse.",
+    "noGroupsToShow": "Keine Gruppen vorhanden.",
+    "classes": "Klassen",
+    "detailsprinters": "Details von Drucker",
+    "overview": "Übersicht",
+    "lesson": "Unterricht",
+    "enrol": "Einschreiben",
+    "printPasswords": "Passwörter drucken",
+    "Printers": "Drucker",
+    "projects": "Projekte",
+    "editmyProjects": "Projekt beabeiten",
+    "createmyProjects": "Projekt erstellen",
+    "detailsmyProjects": "Details von Projekt",
+    "myClasses": "Meine Klassen",
+    "detailsmyClasses": "Details der Klasse",
+    "closeSession": "Schließen",
+    "session": "Sitzung",
+    "startSession": "Sitzung starten",
+    "mySessions": "Meine Sitzungen",
+    "addsessions": "Sitzung erstellen",
+    "editmySessions": "Sitzung beabeiten",
+    "createmySessions": "Eine Sitzung erstellen",
+    "myProjects": "Meine Projekte",
+    "members": "Mitglieder",
+    "member": "Mitglied",
+    "noneAvailable": "Keine vorhanden",
+    "isJoinable": "Nutzer können beitreten",
+    "joinClass": "Klasse betreten zum Dateien teilen",
+    "hide": "Anderen Nutzern nicht anzeigen",
+    "typeToSearchUsersGroupsProjects": "Tippen um Schüler, Klassen oder Projekte hinzuzufügen",
+    "typeToSearchUsersGroupsProjectsToNewSession": "Tippen um Schüler, Klassen oder Projekte zu einer neuen Sitzung hinzuzufügen",
+    "itsNotPossibleToEditOtherTeacher": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines anderen Lehrers zu erstellen, oder die Verwaltungsgruppen zu ändern.",
+    "itsNotPossibleToEditOtherSchoolStudents": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines Schülers einer anderen Schule zu erstellen oder, die Verwaltungsgruppen zu ändern.",
+    "usersInThisSession": "Nutzer in dieser Sitzung",
+    "webfilter": "Web Filter",
+    "internet": "Internet",
+    "noStudentsForAction": "Es gibt keine Schüler auf die diese Aktion angewendet werden kann.",
+    "wifi": "Wifi",
+    "teacher": "Lehrer",
+    "examMode": "Klassenarbeitsmodus",
+    "exam": "Klassenarbeit",
+    "printPasswordsPageDescription": "Erstelle Dateien um die Passwörter einzelner Klassen auszudrucken oder selektiere Klassen um gleichzeitig mehrere auszudrucken.",
+    "userPasswordDialogTitle": "Passwort von {{displayName}}",
+    "firstPassword": "Standard Passwort",
+    "currentPassword": "Aktuelles Passwort",
+    "restoreFirstPassword": "Standard Passwort wiederherstellen",
+    "setRandom": "Zufälliges setzen",
+    "currentPasswordChangedSuccessfully": "Aktuelles Passwort erfolgreich geändert",
+    "firstPasswordChangedSuccessfully": "Standard Passwort erfolgreich geändert",
+    "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
+    "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
+    "typeToFilter": "Tippen um zu filtern...",
+    "systemName": "Systemname",
+    "proxyAddresses": "Proxy Adressen (kommasepariert)",
+    "printing": "Drucken",
+    "veyon": "Veyon",
+    "enable": "einschalten",
+    "disable": "ausschalten",
+    "featureIsStillInDevelopment": "Das Feature ist noch in der Entwicklung und wird in der nächsten Version implementiert werden.",
+    "collect": "Einsammeln",
+    "showCollectedFiles": "Dateien anzeigen",
+    "share": "Austeilen",
+    "examDescription": "Den Klassenarbeitsmodus für {{count}} Schüler umschalten",
+    "wifiDescription": "Das Wifi für {{count}} Schüler umschalten",
+    "webfilterDescription": "Den Webfilter für {{count}} Schüler umschalten",
+    "internetDescription": "Das Internet für {{count}} Schüler umschalten",
+    "printingDescription": "Das Drucken für {{count}} Schüler umschalten",
+    "collectDescription": "Die Dateien von {{count}} Schüler einsammeln",
+    "shareDescription": "Die Dateien an {{count}} Schüler austeilen",
+    "showCollectedFilesDescription": "Die Dateien von {{count}} Schüler anzeigen",
+    "deactivate": "Deaktivieren",
+    "activate": "Aktivieren",
+    "passwordOptions": "Passwortoptionen",
+    "createFile": "Datei erstellen",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "usePdfLatexInsteadOfLatex": "pdfLatex anstelle von Latex verwenden",
+    "pdfDescription": "Erzeuge eine PDF Datei um die Passwörter für diese Schulklassen auszudrucken",
+    "csvDescription": "Erzeuge eine CSV Datei um die Passwörter für diese Schulklassen auszudrucken",
+    "printOneItemPerPage": "Drucke ein Passwort pro Seite",
+    "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
+    "saveSession": "Sitzung speichern",
+    "myRoom": "Mein Raum",
+    "sharedMailBox": "Geteiltes Postfach",
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
   },
+  "select": "Auswählen",
+  "details": "Details",
+  "quickAccess": "Schnellzugriff",
+  "delete": "Löschen",
+  "options": "Optionen",
+  "downloadFile": "Datei herunterladen",
+  "cancel": "Abbrechen",
   "survey": {
     "creationDate": "Erstellungsdatum",
-    "expirationDate": "Deadline",
+    "expirationDate": "Ablaufdatum",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -123,56 +300,58 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "neitherAbleToUpdateNorToCreateSurveyError": "Umfrage konnte weder aktualisiert noch erstellt werden",
-      "notAbleToCreateSurveyError": "Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyError": "Die Umfragen konnten nicht gelöscht werden",
-      "notAbleToFindSurveyError": "Umfrage konnte nicht gefunden werden",
-      "notAbleToFindSurveysError": "Umfragen konnten nicht gefunden werden",
-      "notAbleToFindSurveyParameterError": "Um eine Umfrage findne zu können muss mindestens eine Survey-Id übergeben werden",
-      "notAbleToParticipateNotAnParticipantError": "Nicht in der Lage teilzunehmen, da Sie kein Teilnehmer sind",
-      "notAbleToParticipateAlreadyParticipatedError": "Nicht in der Lage teilzunehmen, da Sie bereits teilgenommen haben",
-      "notAbleToParticipateSurveyExpiredError": "Nicht in der Lage teilzunehmen, da die Umfrage abgelaufen ist",
-      "notAbleToUpdateSurveyError": "Umfrage konnte nicht aktualisiert werden",
-      "notValidSurveyIdIsNoMongooseObjectId": "Ungültige Umfrage-ID ist kein Mongoose-Objekt-ID"
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
+      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
+      "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
+      "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
+      "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
+      "idTypeError": "Ungültige Umfrage-ID",
+      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Benutzerumfrageantwort konnte nicht gefunden oder erstellt werden",
-      "notAbleToFindSurveyAnswerError": "Umfrageantwort konnte nicht gefunden werden",
-      "notAbleToUpdateSurveyAnswerError": "Die vorherige Abgabe für die Umfrage konnte nicht aktualisiert werden",
-      "notAbleToCreateSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht erstellt werden",
-      "notAbleToDeleteSurveyAnswerError": "Die Abgabe für die Umfrage konnte nicht gelöscht werden"
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
+      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
   },
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "description": "Hier können Sie eigene Umfragen erstellen und verwalten oder an den Umfragen anderer teilnehmen.",
     "view": {
-      "management": "Umfragen verwalten",
       "open": "Offene Umfragen",
       "created": "Eigene Umfragen",
       "answered": "Schon beantwortet",
       "editor": "Neue erstellen"
     },
     "actions": {
-      "showResultsChart": "Resultat (Schaubild)",
-      "showResultsTable": "Resultat (Tabelle)",
-      "showCommittedAnswers": "Verfügbare Abgaben"
+      "showResultsChart": "Schaubild",
+      "showResultsTable": "Tabelle",
+      "showCommittedAnswers": "Antworten"
+    },
+    "commitedAnswersDialog": {
+      "title": "Eingereichte Abgabe des Nutzers"
     },
     "saveDialog": {
       "title": "Speichern und Benutzern zuweisen",
-      "expires": "Deadline",
-      "flags": "Einstellungen",
+      "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme des Benutzers bleibt der status auf offen?"
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+    },
+    "participateDialog": {
+      "title": "An der Umfrage teilnehmen"
     },
     "resultChartDialog": {
-      "title": "Ein Schaubild in der die öffentlichen Antworten dargestellt werden"
+      "title": "Ergebnisse - Schaubild"
     },
     "resultTableDialog": {
-      "title": "Eine Tabelle in der die öffentlichen Antworten aufgelistet sind"
+      "title": "Ergebnisse - Tabelle"
     }
   },
   "printer": {
@@ -188,8 +367,28 @@
     "sidebar": "Standortverbindung"
   },
   "desktopdeployment": {
-    "title": "DESKTOP-BEREITSTELLUNG",
-    "sidebar": "Desktop-Bereitstellung"
+    "title": "DESKTOP",
+    "topic": "Desktop-Bereitstellung",
+    "description": "Hier kannst du dich mit deinem virtuellen Desktop verbinden.",
+    "sidebar": "Desktop",
+    "connect": "Verbinden",
+    "reload": "Neu laden",
+    "close": "Verbindung schließen",
+    "error": {
+      "title": "Verbindungsfehler",
+      "description": "Bitte prüfe deine Netzwerkverbindung und versuche es erneut."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients verfügbar",
+    "client": "Client verfügbar",
+    "errors": {
+      "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
+      "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
+      "SessionNotFound": "Session nicht gefunden."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -219,6 +418,9 @@
     "title": "KI CHAT",
     "sidebar": "KI Chat"
   },
+  "roombooking": {
+    "sidebar": "Raumbuchung"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -226,6 +428,11 @@
       "title": "App hinzufügen",
       "description": "Bitte wählen Sie eine App aus:"
     },
+    "deleteApp": {
+      "title": "App löschen",
+      "description": "Möchtest du diese App sicher löschen?"
+    },
+    "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
       "update": {
@@ -240,16 +447,48 @@
         "success": "App wurde angelegt",
         "failed": "App anlegen fehlgeschlagen"
       }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "App speichern fehlgeschlagen",
+      "ReadAppConfigFailed": "App lesen fehlgeschlagen",
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
     }
   },
   "usersettings": {
-    "title": "BENUTZER",
-    "sidebar": "Einstellungen",
-    "security": "Sicherheit",
+    "title": "MEIN PROFIL",
+    "sidebar": "Mein Profil",
+    "security": {
+      "title": "Sicherheit",
+      "sidebar": "Sicherheit",
+      "description": "Konfigurieren Sie hier die Sicherheitseinstellungen des Accounts",
+      "changePassword": {
+        "title": "Passwort ändern",
+        "currentPassword": "Aktuelles Passwort",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Passwort bestätigen",
+        "confirm": "Passwort ändern",
+        "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
+      }
+    },
+    "mails": {
+      "title": "E-Mail"
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
-    "config": { "mfa": "Zweifaktorauthentifizierung aktivieren" },
-    "addTotp": { "title": "QR-Code", "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:" }
+    "config": {
+      "mfa": "Zweifaktorauthentifizierung aktivieren"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
+    },
+    "errors": {
+      "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
+      "newPasswordRequired": "Neues Passwort ist erforderlich",
+      "confirmPasswordRequired": "Erneute Eingabe des Passwortes ist erforderlich zur Bestätigung",
+      "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein"
+    }
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
@@ -262,6 +501,7 @@
   "iso": "ISO",
   "program": "Programme",
   "share": "Share",
+  "student": "Schüler",
   "students": "Schüler",
   "user": "Benutzer",
   "login": {
@@ -269,10 +509,21 @@
     "remember_me": "Merken"
   },
   "common": {
+    "errors": {
+      "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
+    },
+    "actions": "Aktionen",
+    "and": "und",
+    "yes": "Ja",
+    "no": "Nein",
+    "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
     "save": "Speichern",
+    "stop": "Stoppen",
+    "selected": "ausgewählt",
     "successful": "Erfolgreich",
     "failed": "Fehlgeschlagen",
     "login": "Anmelden",
@@ -282,11 +533,36 @@
     "overview": "Übersicht",
     "create": "Erstellen",
     "icon": "Icon",
+    "group": "Gruppe",
     "groups": "Gruppen",
+    "min_chars": "Mindestens {{count}} Zeichen",
+    "max_chars": "Maximal {{count}} Zeichen",
+    "groupAdmins": "Gruppenadministratoren",
+    "admins": "Administratoren",
+    "adminsShort": "Admins",
+    "adminShort": "Admin",
+    "admin": "Administrator",
+    "teacher": "Lehrer",
+    "users": "Benutzer",
+    "groupUsers": "Gruppenbenutzer",
+    "description": "Beschreibung",
+    "school": "Schule",
+    "properties": "Eigenschaften",
+    "type": "Typ",
+    "creationDate": "Erstelldatum",
+    "schoolName": "Schulname",
+    "mailList": "Email Verteiler",
+    "invalid_chars": "Enthält ungültige Zeichen",
     "clearSelection": "Auswahl löschen",
-    "edit": "Bearbeiten",
+    "start": "Starten",
+    "close": "Schließen",
     "delete": "Löschen",
+    "connect": "Verbinden",
+    "custom": "Benutzerdefiniert",
+    "select": "Wählen...",
+    "edit": "Bearbeiten",
     "participate": "Teilnehmen",
+    "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
     "time": "Uhrzeit"
@@ -294,7 +570,7 @@
   "form": {
     "path": "Link",
     "pathDescription": "Bitte eine URL eintragen.",
-    "apptype": "Verknüpfungsart",
+    "apptype": "Art der Anwendung",
     "native": "Native Unterstützung",
     "forwarded": "Weiterleitung",
     "embedded": "Eingebettet",
@@ -315,11 +591,14 @@
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
     "title": "Dateien hochladen",
+    "dataLimitExceeded": "Datenlimit von 50MB überschritten",
+    "fileSize": "Dateigröße",
     "upload": "Hochladen",
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
-    "filesToUpload": "Dateien zum Hochladen"
+    "filesToUpload": "Dateien zum Hochladen",
+    "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -334,8 +613,7 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "title": "Lädt...",
-    "message": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten..."
+    "message": "Bitte warten..."
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
@@ -349,15 +627,31 @@
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Präsentation",
+    "spreadsheet": "Tabelle",
+    "vector": "Diagramm"
   },
   "fileCreateNewContent": {
+    "documentFile": "Erstelle ein neues Dokument",
+    "spreadsheetFile": "Erstelle eine neue Tabelle",
+    "presentationFile": "Erstelle eine neue Präsentation",
+    "textFile": "Erstelle eine neue Textdatei",
+    "drawIoFile": "Erstelle eine neue Draw.io-Datei",
     "fileDialogTitle": "Erstelle eine neue Datei",
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
+    "min_3_chars": "Mindestens 3 Zeichen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
-    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
+    "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
+    "newFileFromType": {
+      "drawIoFile": "Neue Draw.io-Datei",
+      "textFile": "Neue Textdatei",
+      "spreadsheetFile": "Neue Tabelle",
+      "presentationFile": "Neue Präsentation",
+      "documentFile": "Neues Dokument"
+    }
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",
@@ -423,6 +717,7 @@
     "directory_created_successfully": "Verzeichnis {{directoryName}} erfolgreich erstellt",
     "file_created_successfully": "Datei {{fileName}} erfolgreich erstellt",
     "file_was_deleted_successfully": "Datei {{fileName}} erfolgreich gelöscht",
+    "files_deleted_successfully": "Dateien erfolgreich gelöscht",
     "all_items_moved_successfully": "Alle Elemente erfolgreich verschoben",
     "destination_path_is_undefined": "Zielpfad ist undefiniert"
   },
@@ -451,8 +746,40 @@
   },
   "users": {
     "errors": {
-      "notAbleToFindUserError": "Benutzer konnte nicht gefunden werden",
-      "notAbleToUpdateUserError": "Benutzer konnte nicht aktualisiert werden"
+      "notFoundError": "Benutzer existiert nicht",
+      "updateError": "Benutzer konnte nicht aktualisiert werden"
     }
+  },
+  "permission": {
+    "groups": "Nutzergruppen",
+    "selectGroupsDescription": "Wähle die Nutzergruppen aus, die Zugriff auf die App bekommen sollen."
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
+      "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
+      "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
+      "NotValidPortTypeError": "Der Port muss als Nummer angegeben werden",
+      "MailProviderNotFound": "E-Mail-Provider nicht gefunden",
+      "MailcowApiGetSyncJobsFailed": "Sync-Jobs konnten nicht abgerufen werden",
+      "MailcowApiCreateSyncJobFailed": "Sync-Job konnte nicht erstellt werden",
+      "MailcowApiDeleteSyncJobsFailed": "Sync-Jobs konnten nicht gelöscht werden"
+    }
+  },
+  "licensing": {
+    "communityLicenseDialog": {
+      "title": "Community-Edition",
+      "description": "Kostenlose Community Edition von edulution. Diese Version erhält keinen Support."
+    }
+  },
+  "appExtendedOptions": {
+    "title": "Erweiterungen",
+    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrlTitle": "OnlyOffice-URL",
+    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+  },
+  "preview": {
+    "failedToLoadImage": "Bild konnte nicht geladen werden"
   }
 }

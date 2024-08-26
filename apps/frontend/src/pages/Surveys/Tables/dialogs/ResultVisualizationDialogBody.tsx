@@ -1,56 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import i18next from 'i18next';
-import { Model } from 'survey-core';
-import { SurveyModel } from 'survey-core/typings/survey';
-import { VisualizationPanel } from 'survey-analytics';
-import 'survey-analytics/survey.analytics.min.css';
+import React, { useEffect } from 'react';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 
-const vizPanelOptions = {
-  haveCommercialLicense: true,
-  defaultChartType: 'bar',
-  showToolbar: false,
-  allowDynamicLayout: false,
-  allowHideQuestions: false,
-};
+const ResultVisualizationDialogBody = () => {
+  const { selectedSurvey } = useSurveyTablesPageStore();
+  const { setIsOpenPublicResultsVisualisationDialog, getSurveyResult, result } = useResultDialogStore();
 
-interface ResultVisualizationDialogBodyProps {
-  formula: JSON;
-  result: JSON[];
-}
+  const { t } = useTranslation();
 
-const ResultVisualizationDialogBody = (props: ResultVisualizationDialogBodyProps) => {
-  const { formula, result } = props;
-
-  const [survey, setSurvey] = useState<SurveyModel | undefined>(undefined);
-  const [vizPanel, setVizPanel] = useState<VisualizationPanel | undefined>(undefined);
-
-  if (!survey) {
-    const surveyModel = new Model(formula);
-    setSurvey(surveyModel);
-  }
-
-  if (!vizPanel && !!survey) {
-    const visualizationPanel = new VisualizationPanel(survey.getAllQuestions(), result, vizPanelOptions);
-    visualizationPanel.locale = i18next.language;
-    visualizationPanel.showToolbar = false;
-    setVizPanel(visualizationPanel);
-  }
+  useEffect((): void => {
+    if (selectedSurvey) {
+      void getSurveyResult(selectedSurvey.id);
+    }
+  }, [selectedSurvey]);
 
   useEffect(() => {
-    vizPanel?.render('surveyVizPanel');
+    if (!selectedSurvey?.formula) {
+      toast.error(t(SurveyErrorMessages.NoFormula));
+      setIsOpenPublicResultsVisualisationDialog(false);
+    } else if (result && result.length === 0) {
+      setIsOpenPublicResultsVisualisationDialog(false);
+    }
+  }, [selectedSurvey, result]);
 
-    const component = document.getElementById('surveyVizPanel');
-    return () => {
-      if (component) {
-        component.innerHTML = '';
-      }
-    };
-  }, [vizPanel]);
+  if (!selectedSurvey?.formula || !result || result.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="max-h-[75vh] rounded bg-gray-600 p-4 text-white">
-      <div id="surveyVizPanel" />
-    </div>
+    <ResultVisualization
+      formula={selectedSurvey.formula}
+      result={result}
+    />
   );
 };
 

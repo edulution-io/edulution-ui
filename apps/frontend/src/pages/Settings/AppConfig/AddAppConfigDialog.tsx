@@ -1,6 +1,6 @@
-import React from 'react';
-import { toast } from 'sonner';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownMenu } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -8,43 +8,42 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface AddAppConfigDialogProps {
-  isOpen: boolean;
   option: string;
   setOption: (option: string) => void;
   filteredAppOptions: () => { id: string; name: string }[];
-  setSearchParams: (params: URLSearchParams | ((prevParams: URLSearchParams) => URLSearchParams)) => void;
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
-  isOpen,
-  option,
-  setOption,
-  filteredAppOptions,
-  setSearchParams,
-}) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, filteredAppOptions }) => {
   const { t } = useTranslation();
+  const isMobileView = useIsMobileView();
   const navigate = useNavigate();
-  const { appConfigs, updateAppConfig, isLoading, error } = useAppConfigsStore();
+  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
+    useAppConfigsStore();
+  const selectedOption = option.toLowerCase().split('.')[0];
 
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
-      <div className="my-6 text-foreground">
+      <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
         <DropdownMenu
           options={filteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
+          openToTop={isMobileView}
+          variant="light"
         />
       </div>
     );
   };
 
   const onSubmit = async () => {
-    const selectedOption = option.toLowerCase().split('.')[0];
+    if (!selectedOption) {
+      return;
+    }
     const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
 
     if (optionsConfig) {
@@ -53,16 +52,23 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
         icon: optionsConfig.icon,
         appType: AppIntegrationType.FORWARDED,
         options: {},
+        accessGroups: [],
+        extendedOptions: [],
       };
       const updatedConfig = [...appConfigs, newConfig];
 
       await updateAppConfig(updatedConfig);
       if (!error) {
-        navigate(`/settings/${selectedOption}`);
-        toast.success(`${t(`${selectedOption}.sidebar`)} - ${t('settings.appconfig.create.success')}`);
+        setIsAddAppConfigDialogOpen(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (!isAddAppConfigDialogOpen) {
+      navigate(selectedOption ? `/settings/${selectedOption}` : '/settings', { replace: true });
+    }
+  }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
 
   const dialogFooter = (
     <div className="mt-4 flex justify-end">
@@ -71,6 +77,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
         variant="btn-collaboration"
         size="lg"
         onClick={onSubmit}
+        disabled={isLoading || !selectedOption}
       >
         {t('common.add')}
       </Button>
@@ -78,9 +85,9 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({
   );
 
   return (
-    <AdaptiveDialogSH
-      isOpen={isOpen}
-      handleOpenChange={() => setSearchParams(new URLSearchParams(''))}
+    <AdaptiveDialog
+      isOpen={isAddAppConfigDialogOpen}
+      handleOpenChange={() => setIsAddAppConfigDialogOpen(false)}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
       footer={dialogFooter}

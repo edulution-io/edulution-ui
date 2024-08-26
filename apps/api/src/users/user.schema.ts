@@ -1,7 +1,6 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import UsersSurveys from '@libs/survey/types/users-surveys';
-import emptyUsersSurveys from '@libs/survey/types/empty-user-surveys';
+import LdapGroups from '@libs/groups/types/ldapGroups';
 
 export type UserDocument = User & Document;
 
@@ -22,11 +21,8 @@ export class User {
   @Prop()
   password?: string;
 
-  @Prop()
-  roles?: string[];
-
-  @Prop({ type: Object, default: emptyUsersSurveys, required: false })
-  usersSurveys?: UsersSurveys;
+  @Prop({ type: Object, default: {} })
+  ldapGroups?: LdapGroups;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

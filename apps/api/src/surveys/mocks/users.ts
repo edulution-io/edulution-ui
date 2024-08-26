@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import emptyUsersSurveys from '@libs/survey/types/empty-user-surveys';
 import { firstUsername, secondUsername, thirdUsername } from './usernames';
 import { basicUserSurveysFirstUser } from './users-surveys';
