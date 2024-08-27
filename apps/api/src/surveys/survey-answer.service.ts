@@ -100,7 +100,7 @@ class SurveyAnswersService {
 
     const isCreator = survey.creator.username === username;
     const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
-    const canParticipate = isCreator || isAttendee;
+    const canParticipate = isCreator || !!isAttendee;
     if (!canParticipate) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
     }

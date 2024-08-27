@@ -1,16 +1,11 @@
+import unknownSurveyId from './unknown-survey-id';
+
+export { unknownSurveyId };
+
+export { createdSurveyId01, createdSurvey01, createdSurveyId02, createdSurvey02 } from './created-surveys';
+export { surveyUpdateSurveyId, surveyUpdateInitialSurvey, surveyUpdateUpdatedSurvey } from './updated-survey';
+export { openSurveyId01, openSurvey01, openSurveyId02, openSurvey02 } from './open-surveys';
 export {
-  unknownSurveyId,
-  createdSurveyId01,
-  createdSurvey01,
-  createdSurveyId02,
-  createdSurvey02,
-  surveyUpdateSurveyId,
-  surveyUpdateInitialSurvey,
-  surveyUpdateUpdatedSurvey,
-  openSurveyId01,
-  openSurvey01,
-  openSurveyId02,
-  openSurvey02,
   idOfAnsweredSurvey01,
   saveNoAnsweredSurvey01,
   firstUsersMockedAnswerForAnsweredSurveys01,
@@ -45,17 +40,5 @@ export {
   mockedAnswerForAnsweredSurveys04,
   surveyAnswerAnsweredSurvey04,
   answeredSurvey04,
-  mockedSurveyIds,
-  mockedSurveys,
-} from './surveys';
-export {
-  firstUsername,
-  secondUsername,
-  firstParticipant,
-  secondParticipant,
-  mockedParticipants,
-  firstMockUser,
-  secondMockUser,
-  firstMockJWTUser,
-  secondMockJWTUser,
-} from './user';
+} from './answered-surveys';
+export { mockedSurveyIds, mockedSurveys } from './surveys';

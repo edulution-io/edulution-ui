@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
-import { Survey } from '../survey.schema';
+import { Survey } from '../../survey.schema';
+import { firstMockUser, secondMockUser } from '../user/users';
 
 // -------------------------
-// Open Survey 01
+// Created Survey 01
 // -------------------------
-export const idOfOpenSurvey01 = new mongoose.Types.ObjectId(210);
-export const openSurvey01: Survey = {
-  _id: idOfOpenSurvey01,
-  id: idOfOpenSurvey01,
+export const createdSurveyId01 = new mongoose.Types.ObjectId(110);
+export const createdSurvey01: Survey = {
+  _id: createdSurveyId01,
+  id: createdSurveyId01,
+  creator: firstMockUser,
   formula: {
     // @ts-expect-error: 'formula' has the following structure
-    title: 'Open Survey 01',
+    title: 'Created Survey 01',
     description: 'This is a test survey',
     elements: [
       {
@@ -20,24 +22,30 @@ export const openSurvey01: Survey = {
       },
     ],
   },
+  invitedAttendees: [firstMockUser, secondMockUser],
+  invitedGroups: [],
+  participatedAttendees: [],
+  answers: [],
   saveNo: 1,
   created: new Date('2021-06-26T00:00:00.000Z'),
   expirationDate: new Date('2044-08-22'),
   expirationTime: '12:00',
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+  canUpdateFormerAnswer: false,
 };
 
 // -------------------------
 // Create New
 // -------------------------
-export const idOfCreateNewOpenSurvey = new mongoose.Types.ObjectId(220);
-export const createNewOpenSurvey: Survey = {
-  _id: idOfCreateNewOpenSurvey,
-  id: idOfCreateNewOpenSurvey,
+export const createdSurveyId02 = new mongoose.Types.ObjectId(120);
+export const createdSurvey02: Survey = {
+  _id: createdSurveyId02,
+  id: createdSurveyId02,
+  creator: firstMockUser,
   formula: {
     // @ts-expect-error: 'formula' has the following structure
-    title: 'New Created Open Survey',
+    title: 'New Create Created Survey',
     description: 'This is a test survey',
     elements: [
       {
@@ -47,10 +55,15 @@ export const createNewOpenSurvey: Survey = {
       },
     ],
   },
+  invitedAttendees: [firstMockUser, secondMockUser],
+  invitedGroups: [],
+  participatedAttendees: [],
+  answers: [],
   saveNo: 12,
   created: new Date('2021-06-26T00:00:00.000Z'),
   expirationDate: new Date('2044-08-22'),
   expirationTime: '12:00',
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+  canUpdateFormerAnswer: false,
 };

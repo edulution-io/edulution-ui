@@ -7,17 +7,17 @@ import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import {
-  mockedSurveyIds,
-  mockedSurveys,
-  distributedSurvey,
-  idOfDistributedSurvey,
-  theCreatedSurvey,
-  theUpdatedCreatedSurvey,
+  surveyUpdateInitialSurvey,
+  surveyUpdateUpdatedSurvey,
+  surveyUpdateSurveyId,
+  createdSurvey02,
+  unknownSurveyId,
 } from './mocks';
 
 describe('SurveyService', () => {
@@ -26,6 +26,7 @@ describe('SurveyService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [],
       providers: [
         SurveysService,
         {
@@ -47,92 +48,47 @@ describe('SurveyService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAllSurveys', () => {
-    it('should return all surveys', async () => {
-      surveyModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(mockedSurveys),
+  describe('deleteSurveys', () => {
+    it('should delete a survey', async () => {
+      surveyModel.deleteMany = jest.fn().mockReturnValueOnce({
+        exec: jest.fn(),
       });
 
-      jest.spyOn(surveyModel, 'find');
-
-      const result = await service.getAllSurveys();
-      expect(result).toStrictEqual(mockedSurveys);
-      expect(surveyModel.find).toHaveBeenCalled();
-    });
-  });
-
-  describe('findSurvey', () => {
-    it('should return a single survey by ID', async () => {
-      surveyModel.findOne = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(distributedSurvey),
-      });
-
-      jest.spyOn(surveyModel, 'findOne');
-
-      const result = await service.findOneSurvey(idOfDistributedSurvey);
-      expect(result).toStrictEqual(distributedSurvey);
-      expect(surveyModel.findOne).toHaveBeenCalled();
-    });
-  });
-
-  describe('findSurveys', () => {
-    it('should return multiple surveys by ID', async () => {
-      surveyModel.find = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(mockedSurveys),
-      });
-
-      jest.spyOn(surveyModel, 'find');
-
-      const result = await service.findSurveys(mockedSurveyIds);
-      expect(result).toStrictEqual(mockedSurveys);
-      expect(surveyModel.find).toHaveBeenCalled();
-    });
-  });
-
-  describe('updateSurvey', () => {
-    it('should update a survey', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValue(theUpdatedCreatedSurvey),
-      });
-
-      const result = await service.updateSurvey(theUpdatedCreatedSurvey);
-      expect(result).toStrictEqual(theUpdatedCreatedSurvey);
-
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: theCreatedSurvey.id }, theUpdatedCreatedSurvey);
+      const surveyIds = [surveyUpdateSurveyId];
+      await service.deleteSurveys(surveyIds);
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     });
 
-    it('should throw an error if the survey update fails', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
+    it('should throw an error if the survey deletion fails', async () => {
+      surveyModel.deleteMany = jest.fn().mockReturnValueOnce({
         exec: jest
           .fn()
-          .mockRejectedValue(
-            new CustomHttpException(SurveyErrorMessages.NotAbleToUpdateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR),
-          ),
+          .mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED)),
       });
 
-      jest.spyOn(surveyModel, 'findOneAndUpdate');
-
+      const surveyIds = [unknownSurveyId];
       try {
-        await service.updateSurvey(theUpdatedCreatedSurvey);
+        await service.deleteSurveys(surveyIds);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.NotAbleToUpdateSurveyError);
+        expect(e.message).toEqual(SurveyErrorMessages.DeleteError);
       }
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     });
   });
 
   describe('createSurvey', () => {
     it('should create a survey', async () => {
       surveyModel.create = jest.fn().mockReturnValueOnce({
-        exec: jest.fn().mockReturnValueOnce(theCreatedSurvey),
+        exec: jest.fn().mockReturnValueOnce(surveyUpdateInitialSurvey),
       });
 
       await service
-        .createSurvey(theCreatedSurvey)
-        .then((data) => expect(data).toStrictEqual(theCreatedSurvey))
+        .createSurvey(surveyUpdateInitialSurvey)
+        .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurvey))
         .catch(() => {});
 
-      expect(surveyModel.create).toHaveBeenCalledWith(theCreatedSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
     });
 
     it('should throw an error if the survey creation fails', async () => {
@@ -143,19 +99,97 @@ describe('SurveyService', () => {
         exec: jest
           .fn()
           .mockRejectedValueOnce(
-            new CustomHttpException(SurveyErrorMessages.NotAbleToCreateSurveyError, HttpStatus.INTERNAL_SERVER_ERROR),
+            new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
           ),
       });
 
-      jest.spyOn(surveyModel, 'create');
-
       try {
-        await service.createSurvey(theCreatedSurvey);
+        await service.createSurvey(surveyUpdateInitialSurvey);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(SurveyErrorMessages.NotAbleToCreateSurveyError);
+        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.create).toHaveBeenCalledWith(theCreatedSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+    });
+  });
+
+  describe('updateSurvey', () => {
+    it('should update a survey', async () => {
+      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockResolvedValue(surveyUpdateUpdatedSurvey),
+      });
+
+      const result = await service.updateSurvey(surveyUpdateUpdatedSurvey);
+      expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
+
+      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateUpdatedSurvey);
+    });
+
+    it('should throw an error if the survey update fails', async () => {
+      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValueOnce({
+        exec: jest
+          .fn()
+          .mockRejectedValue(
+            new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
+          ),
+      });
+
+      try {
+        await service.updateSurvey(surveyUpdateUpdatedSurvey);
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toBe(CommonErrorMessages.DBAccessFailed);
+      }
+    });
+  });
+
+  describe('updateOrCreateSurvey', () => {
+    it('should create a survey if it does not exist', async () => {
+      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(null),
+      });
+
+      surveyModel.create = jest.fn().mockReturnValue(surveyUpdateInitialSurvey);
+
+      const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurvey);
+      expect(result).toStrictEqual(surveyUpdateInitialSurvey);
+
+      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateInitialSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+    });
+
+    it('should update a survey', async () => {
+      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockResolvedValue(surveyUpdateUpdatedSurvey),
+      });
+
+      const result = await service.updateOrCreateSurvey(surveyUpdateUpdatedSurvey);
+      expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
+
+      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateUpdatedSurvey);
+    });
+
+    it('should throw an error if the survey update and the creation of the survey failed', async () => {
+      jest.spyOn(service, 'updateSurvey').mockResolvedValue(null);
+      jest.spyOn(service, 'createSurvey').mockResolvedValue(null);
+
+      // surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+      //   exec: jest.fn().mockResolvedValue(null),
+      // });
+      //
+      // surveyModel.create = jest.fn().mockReturnValue({
+      //   exec: jest.fn().mockResolvedValue(null),
+      // });
+
+      try {
+        await service.updateOrCreateSurvey(createdSurvey02);
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toBe(SurveyErrorMessages.UpdateOrCreateError);
+      }
+
+      expect(service.updateSurvey).toHaveBeenCalledWith(createdSurvey02);
+      expect(service.createSurvey).toHaveBeenCalledWith(createdSurvey02);
     });
   });
 });
