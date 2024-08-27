@@ -1,10 +1,6 @@
 import { createdSurvey01, createdSurveyId01, createdSurvey02, createdSurveyId02 } from './created-surveys';
 import { openSurveyId02, openSurvey01, openSurvey02, openSurveyId01 } from './open-surveys';
-import {
-  surveyUpdateSurveyId,
-  // surveyUpdateInitialSurvey,
-  surveyUpdateUpdatedSurvey,
-} from './updated-survey';
+import { surveyUpdateSurveyId, surveyUpdateUpdatedSurvey } from './updated-survey';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -32,7 +28,6 @@ export const mockedSurveyIds = [
 ];
 
 export const mockedSurveys = [
-  // surveyUpdateInitialSurvey,
   surveyUpdateUpdatedSurvey,
   createdSurvey01,
   createdSurvey02,

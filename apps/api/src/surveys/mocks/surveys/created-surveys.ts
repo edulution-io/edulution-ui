@@ -1,10 +1,7 @@
 import mongoose from 'mongoose';
 import { Survey } from '../../survey.schema';
-import { firstMockUser, secondMockUser } from '../user/users';
+import { firstMockUser, secondMockUser } from '../user';
 
-// -------------------------
-// Created Survey 01
-// -------------------------
 export const createdSurveyId01 = new mongoose.Types.ObjectId(110);
 export const createdSurvey01: Survey = {
   _id: createdSurveyId01,
@@ -35,9 +32,6 @@ export const createdSurvey01: Survey = {
   canUpdateFormerAnswer: false,
 };
 
-// -------------------------
-// Create New
-// -------------------------
 export const createdSurveyId02 = new mongoose.Types.ObjectId(120);
 export const createdSurvey02: Survey = {
   _id: createdSurveyId02,

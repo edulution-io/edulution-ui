@@ -173,14 +173,6 @@ describe('SurveyService', () => {
       jest.spyOn(service, 'updateSurvey').mockResolvedValue(null);
       jest.spyOn(service, 'createSurvey').mockResolvedValue(null);
 
-      // surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-      //   exec: jest.fn().mockResolvedValue(null),
-      // });
-      //
-      // surveyModel.create = jest.fn().mockReturnValue({
-      //   exec: jest.fn().mockResolvedValue(null),
-      // });
-
       try {
         await service.updateOrCreateSurvey(createdSurvey02);
       } catch (e) {
