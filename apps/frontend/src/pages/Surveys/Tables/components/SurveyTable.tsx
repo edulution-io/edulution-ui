@@ -2,10 +2,15 @@ import React, { useMemo } from 'react';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
+import { TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/Tooltip';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/api/surveys-endpoint';
+import { toast } from 'sonner';
 
 interface SurveyTableProps {
   title: string;
@@ -18,6 +23,7 @@ const SURVEY_TABLE_HEADERS: string[] = [
   'common.title',
   'survey.creationDate',
   'survey.expirationDate',
+  'survey.isPublic',
   'common.participated',
   'survey.canSubmitMultiple',
 ];
@@ -66,6 +72,26 @@ const SurveyTable = (props: SurveyTableProps) => {
             </TableCell>
             <TableCell className="text-white">
               {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+            </TableCell>
+            <TableCell className="text-white">
+              <TooltipProvider>
+                <TooltipTrigger>
+                  <CopyToClipboard
+                    text={`${window.location.origin}/edu-api/${PUBLIC_SURVEYS_ENDPOINT}/?surveyId=${survey.id.toString('hex')}`}
+                    onCopy={() => toast.info(t('common.savedToClipboard'))}
+                  >
+                    <span>{survey?.isPublic ? t('common.yes') : t('common.no')}</span>
+                  </CopyToClipboard>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="relative">
+                    <QRCodeDisplay
+                      className="-translate-x-50% -translate-y-50% absolute left-1/2 top-1/2"
+                      value={window.location.href}
+                    />
+                  </div>
+                </TooltipContent>
+              </TooltipProvider>
             </TableCell>
             <TableCell className="text-white">
               {survey?.invitedAttendees && survey?.participatedAttendees

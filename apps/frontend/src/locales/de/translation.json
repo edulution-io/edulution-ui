@@ -138,6 +138,7 @@
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "isPublic": "Öffentlich",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -376,7 +377,8 @@
     "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
-    "time": "Uhrzeit"
+    "time": "Uhrzeit",
+    "savedToClipboard": "In die Zwischenablage kopiert"
   },
   "form": {
     "path": "Link",

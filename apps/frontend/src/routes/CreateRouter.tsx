@@ -26,7 +26,7 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
           <Route>
             path={PUBLIC_SURVEYS_ENDPOINT}
             <Route
-              path="*"
+              path={`${PUBLIC_SURVEYS_ENDPOINT}/*`}
               element={<ParticipatePublicSurvey />}
             />
           </Route>

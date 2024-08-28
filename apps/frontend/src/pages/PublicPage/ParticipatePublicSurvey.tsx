@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
 import useParticipatePublicSurveyStore from '@/pages/PublicPage/useParticipatePublicSurveyStore';
-import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 
 const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
@@ -41,16 +40,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
     );
   };
 
-  return (
-    <>
-      {getContent()}
-      <QRCodeDisplay
-        className="translateX(50%) absolute bottom-0 right-1/2 pb-5"
-        // style={{display: 'absolute', right: '50%', transform: 'translate(-50%, 0)', bottom: '0', paddingBottom: '5px'}}
-        value={window.location.href}
-      />
-    </>
-  );
+  return <div className="w-fill h-fill">{getContent()}</div>;
 };
 
 export default ParticipatePublicSurvey;

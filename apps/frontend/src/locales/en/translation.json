@@ -138,6 +138,7 @@
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
     "canSubmitMultiple": "Allow multiple submission",
+    "isPublic": "Public",
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes",
@@ -376,7 +377,8 @@
     "participated": "Participated",
     "not-available": "'Not available'",
     "date": "Date",
-    "time": "Time"
+    "time": "Time",
+    "savedToClipboard": "Saved to clipboard"
   },
   "form": {
     "path": "Path",
