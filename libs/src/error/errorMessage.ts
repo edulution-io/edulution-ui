@@ -6,8 +6,8 @@ import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import SurveyErrorMessagesEnum from '@libs/survey/constants/api/survey-error-messages-enum';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/api/survey-answer-error-messages-enum';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -18,7 +18,7 @@ type ErrorMessage =
   | VdiErrorMessages
   | AppConfigErrorMessages
   | FileSharingErrorMessage
-  | SurveyErrorMessages
+  | SurveyErrorMessagesEnum
   | SurveyAnswerErrorMessages;
 
 export default ErrorMessage;

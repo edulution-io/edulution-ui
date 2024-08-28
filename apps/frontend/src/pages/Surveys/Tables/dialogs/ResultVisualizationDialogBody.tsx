@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import SurveyErrorMessagesEnum from '@libs/survey/constants/api/survey-error-messages-enum';
 import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
@@ -19,7 +19,7 @@ const ResultVisualizationDialogBody = () => {
   }, [selectedSurvey]);
 
   if (!selectedSurvey?.formula) {
-    toast.error(t(SurveyErrorMessages.NoFormula));
+    toast.error(t(SurveyErrorMessagesEnum.NoFormula));
     setIsOpenPublicResultsVisualisationDialog(false);
     return null;
   }
@@ -29,7 +29,7 @@ const ResultVisualizationDialogBody = () => {
   }
 
   if (result && result.length === 0) {
-    toast.error(t(SurveyErrorMessages.NoAnswers));
+    toast.error(t(SurveyErrorMessagesEnum.NoAnswers));
     setIsOpenPublicResultsVisualisationDialog(false);
     return null;
   }

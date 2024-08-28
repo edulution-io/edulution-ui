@@ -3,19 +3,31 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import SurveyErrorMessagesEnum from '@libs/survey/constants/api/survey-error-messages-enum';
 import { Survey, SurveyDocument } from './survey.schema';
 
 @Injectable()
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
+  async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
+    return (
+      this.surveyModel
+        // eslint-disable-next-line no-underscore-dangle
+        .findOne<Survey>({ _id: surveyId, isPublic: true })
+        .exec()
+        .catch((error) => {
+          throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+        })
+    );
+  }
+
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
+      throw new CustomHttpException(SurveyErrorMessagesEnum.DeleteError, HttpStatus.NOT_MODIFIED, error);
     }
   }
 
@@ -49,7 +61,7 @@ class SurveysService {
     if (createdSurvey != null) {
       return createdSurvey;
     }
-    throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new CustomHttpException(SurveyErrorMessagesEnum.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 

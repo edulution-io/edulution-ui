@@ -41,6 +41,9 @@ export class Survey {
   expires?: Date;
 
   @Prop({ required: false })
+  isPublic?: boolean;
+
+  @Prop({ required: false })
   isAnonymous?: boolean;
 
   @Prop({ required: false })

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/api/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import SurveyStatus from '@libs/survey/survey-status-enum';
+import SurveysPageView from '@libs/survey/types/api/page-view-enum';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
 import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
-import SurveysTablesPageStoreInitialState from '@libs/survey/types/tables/surveysTablePageStoreInitialState';
+import SurveysTablesPageStoreInitialState from '@libs/survey/constants/tables/surveysTablePageStoreInitialState';
 import handleApiError from '@/utils/handleApiError';
 
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({

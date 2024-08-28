@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysPageView from '@libs/survey/types/api/page-view-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface CommitedAnswersDialogStore {

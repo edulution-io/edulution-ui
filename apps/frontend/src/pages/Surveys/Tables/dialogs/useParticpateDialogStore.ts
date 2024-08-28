@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/api/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import ParticipateDialogStoreInitialState from '@libs/survey/types/tables/dialogs/participateDialogStoreInitialState';
+import ParticipateDialogStoreInitialState from '@libs/survey/constants/tables/dialogs/participateDialogStoreInitialState';
 import ParticipateDialogStore from '@libs/survey/types/tables/dialogs/participateDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';

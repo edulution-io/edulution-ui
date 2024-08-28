@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { create } from 'zustand';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/api/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import DeleteSurveyStore from '@libs/survey/types/tables/deleteSurveyStore';
-import DeleteSurveyStoreInitialState from '@libs/survey/types/tables/deleteSurveyStoreInitialState';
+import DeleteSurveyStoreInitialState from '@libs/survey/constants/tables/deleteSurveyStoreInitialState';
 
 const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   ...(DeleteSurveyStoreInitialState as DeleteSurveyStore),

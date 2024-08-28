@@ -1,4 +1,4 @@
-import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysPageView from '@libs/survey/types/api/page-view-enum';
 import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
 
 const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {

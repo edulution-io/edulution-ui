@@ -13,7 +13,8 @@ import { SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import PublicSurvey from '@/pages/PublicPage/PublicSurvey';
+import ParticipatePublicSurvey from '@/pages/PublicPage/ParticipatePublicSurvey';
+import { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/api/surveys-endpoint';
 
 const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
   const { isSuperAdmin } = useLdapGroups();
@@ -22,10 +23,11 @@ const createRouter = (isAuthenticated: boolean, appConfig: AppConfigDto[]) => {
     createRoutesFromElements(
       <>
         <Route element={<BlankLayout />}>
-          <Route path="/public">
+          <Route>
+            path={PUBLIC_SURVEYS_ENDPOINT}
             <Route
-              path="/survey"
-              element={<PublicSurvey />}
+              path="*"
+              element={<ParticipatePublicSurvey />}
             />
           </Route>
           <Route

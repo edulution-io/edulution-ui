@@ -3,9 +3,10 @@ import { QRCodeSVG } from 'qrcode.react';
 
 interface QRCodeDisplayProps {
   value: string;
+  className?: string;
 }
-const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value }) => (
-  <div className="flex flex-col items-center justify-center">
+const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, className }) => (
+  <div className={className}>
     <QRCodeSVG
       value={value}
       size={256}

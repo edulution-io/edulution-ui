@@ -73,7 +73,10 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         {t(isStepOne ? 'dashboard.mobileAccess.scanAppStoreLink' : 'dashboard.mobileAccess.scanAccessInfo')}
       </p>
       <div className="mt-4 justify-center">
-        <QRCodeDisplay value={isStepOne ? EDU_APP_APPSTORE_URL : webdavAccessJson} />
+        <QRCodeDisplay
+          value={isStepOne ? EDU_APP_APPSTORE_URL : webdavAccessJson}
+          className="flex flex-col items-center justify-center"
+        />
       </div>
       <Button
         type="button"

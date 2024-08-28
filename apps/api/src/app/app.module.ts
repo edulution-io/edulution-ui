@@ -13,6 +13,7 @@ import VdiModule from '../vdi/vdi.module';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import FilesharingModule from '../filesharing/filesharing.module';
 import SurveysModule from '../surveys/surveys.module';
+import PublicSurveysModule from '../surveys/public-surveys.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import SurveysModule from '../surveys/surveys.module';
     FilesharingModule,
     VdiModule,
     SurveysModule,
+    PublicSurveysModule,
     JwtModule.register({
       global: true,
     }),

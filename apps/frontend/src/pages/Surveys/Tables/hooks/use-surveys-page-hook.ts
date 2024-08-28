@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useInterval } from 'usehooks-ts';
 import FEED_PULL_TIME_INTERVAL from '@libs/dashboard/constants/pull-time-interval';
-import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysPageView from '@libs/survey/types/api/page-view-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 const useSurveysPageHook = (

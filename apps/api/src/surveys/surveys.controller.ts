@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Query, Get, Patch, Post, Param } from '@nestjs/common';
-import SurveyStatus from '@libs/survey/survey-status-enum';
-import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import SurveyStatus from '@libs/survey/types/survey-status-enum';
+import SURVEYS, { ANSWER_ENDPOINT, RESULT_ENDPOINT } from '@libs/survey/constants/api/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';

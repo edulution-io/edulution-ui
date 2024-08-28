@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import SurveyEditorFormStore from '@libs/survey/types/editor/surveyEditorFormStore';
-import SurveyEditorFormStoreInitialState from '@libs/survey/types/editor/surveyEditorFormStoreInitialState';
+import SurveyEditorFormStore from '@libs/survey/types/surveyEditorFormStore';
+import SurveyEditorFormStoreInitialState from '@libs/survey/constants/surveyEditorFormStoreInitialState';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/api/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 

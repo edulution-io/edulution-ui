@@ -1,4 +1,4 @@
-import CommitedAnswersDialogStore from './commitedAnswersDialogStore';
+import CommitedAnswersDialogStore from '../../../types/tables/dialogs/commitedAnswersDialogStore';
 
 const CommitedAnswersDialogStoreInitialState: Partial<CommitedAnswersDialogStore> = {
   selectedSurvey: undefined,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysPageView from '@libs/survey/types/api/page-view-enum';
 import OpenSurveys from '@/pages/Surveys/Tables/OpenSurveys';
 import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys';
 import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys';

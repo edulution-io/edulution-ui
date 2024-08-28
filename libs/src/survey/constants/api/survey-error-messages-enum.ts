@@ -1,4 +1,4 @@
-enum SurveyErrorMessages {
+enum SurveyErrorMessagesEnum {
   UpdateOrCreateError = 'survey.errors.updateOrCreateError',
   DeleteError = 'survey.errors.deleteError',
   NoAnswers = 'survey.errors.noAnswerError',
@@ -10,4 +10,4 @@ enum SurveyErrorMessages {
   ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
 }
 
-export default SurveyErrorMessages;
+export default SurveyErrorMessagesEnum;
