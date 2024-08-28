@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import SurveyErrorMessagesEnum from '@libs/survey/constants/api/survey-error-messages-enum';
+import SurveyErrorMessages from '@libs/survey/constants/api/survey-error-messages-enum';
 import { Survey, SurveyDocument } from './survey.schema';
 
 @Injectable()
@@ -27,7 +27,7 @@ class SurveysService {
       await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessagesEnum.DeleteError, HttpStatus.NOT_MODIFIED, error);
+      throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     }
   }
 
@@ -61,7 +61,7 @@ class SurveysService {
     if (createdSurvey != null) {
       return createdSurvey;
     }
-    throw new CustomHttpException(SurveyErrorMessagesEnum.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 

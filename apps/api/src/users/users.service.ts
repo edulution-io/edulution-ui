@@ -7,12 +7,12 @@ import { getDecryptedPassword } from '@libs/common/utils';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import { LDAPUser } from '@libs/user/types/groups/ldapUser';
+import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
 import GroupsService from '../groups/groups.service';
 
 @Injectable()
@@ -20,7 +20,6 @@ class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly groupsService: GroupsService,
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -71,7 +70,7 @@ class UsersService {
       return cachedUsers;
     }
 
-    const fetchedUsers = await this.groupsService.fetchUsers(token);
+    const fetchedUsers = await GroupsService.fetchAllUsers(token);
 
     await this.cacheManager.set('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
     return fetchedUsers;

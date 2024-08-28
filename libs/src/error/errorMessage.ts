@@ -1,12 +1,14 @@
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import VdiErrorMessages from '@libs/desktopdeployment/types/vdiErrorMessages';
-import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
-import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import SurveyErrorMessagesEnum from '@libs/survey/constants/api/survey-error-messages-enum';
+import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
+import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
+import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/api/survey-error-messages-enum';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/api/survey-answer-error-messages-enum';
 
 type ErrorMessage =
@@ -16,9 +18,11 @@ type ErrorMessage =
   | GroupsErrorMessage
   | AuthErrorMessages
   | VdiErrorMessages
+  | LmnApiErrorMessage
   | AppConfigErrorMessages
   | FileSharingErrorMessage
-  | SurveyErrorMessagesEnum
+  | MailsErrorMessages
+  | SurveyErrorMessages
   | SurveyAnswerErrorMessages;
 
 export default ErrorMessage;

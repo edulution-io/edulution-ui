@@ -8,6 +8,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface AddAppConfigDialogProps {
   option: string;
@@ -17,6 +18,7 @@ interface AddAppConfigDialogProps {
 
 const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, filteredAppOptions }) => {
   const { t } = useTranslation();
+  const isMobileView = useIsMobileView();
   const navigate = useNavigate();
   const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
     useAppConfigsStore();
@@ -25,12 +27,14 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const getDialogBody = () => {
     if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
     return (
-      <div className="my-6 text-foreground">
+      <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
         <DropdownMenu
           options={filteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
+          openToTop={isMobileView}
+          variant="light"
         />
       </div>
     );
@@ -49,6 +53,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         appType: AppIntegrationType.FORWARDED,
         options: {},
         accessGroups: [],
+        extendedOptions: [],
       };
       const updatedConfig = [...appConfigs, newConfig];
 

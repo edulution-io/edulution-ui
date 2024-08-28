@@ -3,6 +3,8 @@
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "preparing": "preparing...",
+  "closeEditingWindow": "Close editing window",
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -25,13 +27,55 @@
       "Unknown": "User not found."
     }
   },
+  "lmnApi": {
+    "errors": {
+      "ToggleSchoolClassJoinedFailed": "Failed to join or leave the classroom",
+      "ToggleProjectJoinedFailed": "Failed to join or leave the project",
+      "TogglePrinterJoinedFailed": "Failed to add or remove the printer",
+      "GetUserSessionsFailed": "Get user session failed",
+      "AddUserSessionsFailed": "Add user session failed",
+      "GetPrintersFailed": "Fetching printers failed",
+      "RemoveUserSessionsFailed": "Remove user session failed",
+      "UpdateUserSessionsFailed": "Update user session failed",
+      "StartExamModeFailed": "Start exam mode failed",
+      "PrintPasswordsFailed": "Print passwords failed",
+      "StopExamModeFailed": "Stop exam mode failed",
+      "RemoveManagementGroupFailed": "Remove management group failed",
+      "AddManagementGroupFailed": "Add management group failed",
+      "GetUserSchoolClassesFailed": "Get user school classes failed",
+      "GetUserSchoolClassFailed": "Get user school class failed",
+      "GetUserProjectsFailed": "Get user projects failed",
+      "GetUserFailed": "Fetching failed",
+      "GetCurrentUserRoomFailed": "Get current user room failed",
+      "CreateProjectFailed": "Create project failed",
+      "RemoveProjectFailed": "Remove project failed",
+      "UpdateProjectFailed": "Update project failed",
+      "SearchUsersOrGroupsFailed": "Search users or groups failed",
+      "GetProjectFailed": "Get project failed",
+      "PasswordMismatch": "The current password is wrong",
+      "PasswordChangeFailed": "Password change failed"
+    }
+  },
   "ticketsystem": {
     "title": "TICKET SYSTEM",
     "sidebar": "Ticket System"
   },
   "mail": {
     "title": "MAIL",
-    "sidebar": "Mail"
+    "sidebar": "Mail",
+    "importer": {
+      "title": "E-Mail Importer",
+      "provider": "E-Mail Provider",
+      "configName": "Name der Konfiguration",
+      "hostname": "Hostname",
+      "port": "Port",
+      "encryption": "Encryption",
+      "interval": "Sync Interval",
+      "isActive": "Active",
+      "syncJobsTable": "Importer Jobs",
+      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "mailAddress": "E-Mail Address"
+    }
   },
   "chat": {
     "title": "CHAT",
@@ -64,7 +108,8 @@
     "name": "Name of conference",
     "conference": "Conference",
     "password": "Password",
-    "attendees": "Teilnehmer",
+    "attendee": "Attendee",
+    "attendees": "Attendees",
     "invitedAttendees": "Invited",
     "joinedAttendees": "Joined",
     "privacyStatus": "Access",
@@ -72,8 +117,6 @@
     "private": "Private",
     "selected-x-rows": "{{selected}} of {{total}} selected",
     "cancel": "Cancel",
-    "min_3_chars": "Minimum 3 characters",
-    "max_30_chars": "Maximum 30 characters",
     "password_required": "No Password entered",
     "error": "Error",
     "action": "Action",
@@ -84,17 +127,23 @@
     "maximize": "Maximize",
     "close": "Leave conference"
   },
+  "delete": "Delete",
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conferences were found"
+    "noConferences": "No running conference exists",
+    "noMails": "No unread mail exists"
   },
   "filesharing": {
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
+    "previewTitle": "File Preview",
+    "saveFile": "Save file",
+    "loadingDocument": "Loading document...",
+    "closeEditor": "Close editor",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -107,7 +156,9 @@
       "DbAccessFailed": "Database access failed",
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
-      "FolderCreationFailed": "Folder creation failed"
+      "FolderCreationFailed": "Folder creation failed",
+      "DeleteFromServerFailed": "Delete from server failed",
+      "SaveFailed": "Save failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -128,10 +179,113 @@
     "title": "SCHOOL INFORMATION",
     "sidebar": "School Information"
   },
-  "schoolmanagement": {
-    "title": "SCHOOL MANAGEMENT",
-    "sidebar": "School Management"
+  "schoolclass": "School Class",
+  "project": "Project",
+  "unknown": "Unknown",
+  "device": "Device",
+  "globalbinduser": "System User",
+  "globaladministrator": "Global Administrator",
+  "schoolbinduser": "System User",
+  "schooladministrator": "School Administrator",
+  "classroom-studentcomputer": "Classroom Student Computer",
+  "server": "Server",
+  "loginname": "Login name",
+  "classmanagement": {
+    "title": "CLASS ROOM",
+    "sidebar": "Class Room",
+    "detailsprinters": "Details of printer",
+    "classes": "Classes",
+    "name": "Name",
+    "notMemberOfClass": "You are no member of a class.",
+    "noGroupsToShow": "No groups available.",
+    "overview": "Overview",
+    "lesson": "Lesson",
+    "enrol": "Enrol",
+    "printPasswords": "Print passwords",
+    "Printers": "Printers",
+    "projects": "Projects",
+    "editmyProjects": "Edit project",
+    "createmyProjects": "Create project",
+    "detailsmyProjects": "Details of project",
+    "myClasses": "My classes",
+    "detailsmyClasses": "Details of school class",
+    "session": "Session",
+    "startSession": "Start session",
+    "mySessions": "My sessions",
+    "closeSession": "Close",
+    "editmySessions": "Edit session",
+    "createmySessions": "Create a session",
+    "addsessions": "Create session",
+    "myProjects": "My Projects",
+    "members": "Members",
+    "member": "Member",
+    "noneAvailable": "None available",
+    "isJoinable": "Users can join",
+    "joinClass": "Join class to share files",
+    "hide": "Hide for other users",
+    "teacher": "Teacher",
+    "typeToSearchUsersGroupsProjects": "Type to add students, classes or projects",
+    "typeToSearchUsersGroupsProjectsToNewSession": "Type to add students, classes or projects to a new session",
+    "itsNotPossibleToEditOtherTeacher": "At the moment it is not possible to create the directory for sharing in another teacher's home directory or to manage the administration groups.",
+    "itsNotPossibleToEditOtherSchoolStudents": "At the moment it is not possible to create the directory for sharing in a student's home directory of another school or to manage the administration groups.",
+    "usersInThisSession": "Users in this session",
+    "webfilter": "Webfilter",
+    "internet": "Internet",
+    "noStudentsForAction": "There are no students to whom this action can be applied.",
+    "wifi": "Wifi",
+    "examMode": "Exam mode",
+    "exam": "Exam",
+    "printPasswordsPageDescription": "Create files to print the passwords of individual classes or select classes to print several at the same time.",
+    "userPasswordDialogTitle": "Password of {{displayName}}",
+    "firstPassword": "Standard password",
+    "currentPassword": "Current password",
+    "restoreFirstPassword": "Restore standard password",
+    "setRandom": "Set random",
+    "currentPasswordChangedSuccessfully": "Current password changed successfully",
+    "firstPasswordChangedSuccessfully": "First password changed successfully",
+    "passwordRequirements": "Use upper case letters, lower case letters and special characters or numbers.",
+    "projectsPageDescription": "Here you will find an overview of all projects in which you are an admin.",
+    "typeToFilter": "Type to filter...",
+    "systemName": "System name",
+    "proxyAddresses": "Proxy Addresses (comma separated)",
+    "printing": "Printing",
+    "veyon": "Veyon",
+    "enable": "enable",
+    "disable": "disable",
+    "featureIsStillInDevelopment": "The feature is still under development and will be implemented in the next version.",
+    "collect": "Collect",
+    "showCollectedFiles": "Show files",
+    "share": "Hand out",
+    "examDescription": "Toggle the exam mode for {{count}} students",
+    "wifiDescription": "Toggle the Wifi for {{count}} students",
+    "webfilterDescription": "Toggle the webfilter for {{count}} students",
+    "internetDescription": "Toggle the internet for {{count}} students",
+    "printingDescription": "Toggle the printing for {{count}} students",
+    "collectDescription": "Collect the files for {{count}} students",
+    "shareDescription": "Share the files with {{count}} students",
+    "showCollectedFilesDescription": "Show the collected files of {{count}} students",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "passwordOptions": "Password options",
+    "createFile": "file creation",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "usePdfLatexInsteadOfLatex": "Use pdfLatex instead of Latex",
+    "pdfDescription": "Create a PDF file to print the passwords for these school classes",
+    "csvDescription": "Create a CSV file to print the passwords for these school classes",
+    "printOneItemPerPage": "Print one password per page",
+    "selectSavedSession": "Select from saved sessions",
+    "saveSession": "Save session",
+    "myRoom": "My room",
+    "sharedMailBox": "Shared mailbox",
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
   },
+  "select": "Select",
+  "details": "Details",
+  "quickAccess": "Quick access",
+  "options": "Options",
+  "downloadFile": "Download file",
+  "cancel": "Cancel",
   "survey": {
     "creationDate": "Creation date",
     "expirationDate": "Expiration date",
@@ -177,9 +331,9 @@
       "editor": "Create new"
     },
     "actions": {
-      "showResultsChart": "Result (Chart)",
-      "showResultsTable": "Result (Table)",
-      "showCommittedAnswers": "Commited Answers"
+      "showResultsChart": "Chart",
+      "showResultsTable": "Table",
+      "showCommittedAnswers": "Answers"
     },
     "commitedAnswersDialog": {
       "title": "Commited survey answer"
@@ -202,7 +356,7 @@
   },
   "printer": {
     "title": "PRINTER",
-    "sidebar": "Printe"
+    "sidebar": "Printer"
   },
   "network": {
     "title": "NETWORK",
@@ -274,6 +428,10 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
+    "deleteApp": {
+      "title": "Delete App",
+      "description": "Are you sure you want to delete this app?"
+    },
     "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
@@ -308,8 +466,12 @@
         "currentPassword": "Current password",
         "newPassword": "New Password",
         "confirmPassword": "Confirm Password",
-        "confirm": "Change Password"
+        "confirm": "Change Password",
+        "passwordChangedSuccessfully": "Password changed successfully"
       }
+    },
+    "mails": {
+      "title": "E-Mail"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -339,23 +501,29 @@
   "iso": "ISO",
   "program": "Programs",
   "share": "Share",
+  "student": "Student",
   "students": "Students",
   "user": "User",
   "login": {
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
   },
+  "edit": "Edit",
   "common": {
     "errors": {
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "actions": "Actions",
+    "and": "and",
     "yes": "Yes",
     "no": "No",
     "title": "Title",
     "add": "Add",
     "reload": "Reload",
+    "stop": "Stop",
     "logout": "Logout",
+    "selected": "selected",
     "save": "Save",
     "successful": "Successful",
     "failed": "Failed",
@@ -366,13 +534,34 @@
     "overview": "Overview",
     "create": "Create",
     "icon": "Icon",
+    "group": "Group",
     "groups": "Groups",
+    "min_chars": "Minimum {{count}} characters",
+    "max_chars": "Maximum {{count}} characters",
+    "groupAdmins": "Group administrators",
+    "admins": "Administrators",
+    "adminsShort": "Admins",
+    "adminShort": "Admin",
+    "admin": "Administrator",
+    "teacher": "Teacher",
+    "users": "Users",
+    "groupUsers": "Group users",
+    "description": "Description",
+    "school": "School",
+    "properties": "Properties",
+    "type": "Type",
+    "creationDate": "Creation date",
+    "schoolName": "School name",
+    "mailList": "Mailing List",
+    "invalid_chars": "Contains invalid characters",
     "clearSelection": "Clear selection",
     "start": "Start",
     "close": "Close",
+    "delete": "Delete",
+    "connect": "Connect",
+    "custom": "Custom",
     "select": "Select...",
     "edit": "Edit",
-    "delete": "Delete",
     "participate": "Participate",
     "participated": "Participated",
     "not-available": "'Not available'",
@@ -425,7 +614,7 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait while we process your request..."
+    "message": "Please wait..."
   },
   "search": {
     "type-to-search": "Type to search",
@@ -453,6 +642,7 @@
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
+    "min_3_chars": "Minimum 3 characters",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred",
@@ -565,5 +755,33 @@
   "permission": {
     "groups": "User groups",
     "selectGroupsDescription": "Select the user groups that should have access to the app."
+  },
+  "appExtendedOptions": {
+    "title": "Extensions",
+    "onlyOfficeUrl": "Please enter the OnlyOffice URL",
+    "onlyOfficeUrlTitle": "OnlyOffice URL",
+    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToConnectClientError": "Could not connect to the imap server",
+      "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
+      "NotAbleToFetchMailsError": "Could not fetch mails",
+      "NotValidPortTypeError": "The port must be specified as a number",
+      "MailProviderNotFound": "E-Mail provider not found",
+      "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
+      "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
+      "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"
+    }
+  },
+  "licensing": {
+    "communityLicenseDialog": {
+      "title": "Community Edition",
+      "description": "Free Community Edition of edulution. This version does not receive any support."
+    }
+  },
+  "preview": {
+    "failedToLoadImage": "Failed to load image"
   }
 }

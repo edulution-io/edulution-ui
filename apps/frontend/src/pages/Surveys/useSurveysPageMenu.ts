@@ -9,7 +9,7 @@ const useSurveysPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
     title: 'surveys.title',
     icon: SurveysSidebarIcon,
-    color: 'hover:bg-ciDarkBlue',
+    color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
         id: 'overview-open-surveys',

@@ -10,12 +10,10 @@ import {
   DropdownMenuSH,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import useLogout from '@/hooks/useLogout';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
-  const isMobileView = useIsMobileView();
   const navigate = useNavigate();
   const auth = useAuth();
   const handleLogout = useLogout();
@@ -27,7 +25,7 @@ const UserMenuButton: React.FC = () => {
   return (
     <div
       key="usermenu"
-      className={`${isMobileView ? 'border-b-2' : 'fixed bottom-0 right-0 border-t-2 bg-black'}`}
+      className="fixed bottom-0 right-0 bg-black"
     >
       <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
         <DropdownMenuSH>

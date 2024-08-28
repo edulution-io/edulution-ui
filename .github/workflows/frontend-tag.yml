@@ -48,7 +48,7 @@ jobs:
 
       # setup nodejs environment
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: 18.x
           cache: 'npm'
@@ -66,20 +66,23 @@ jobs:
         run: npm install
 
       - name: Build Frontend
-        run: npm run build
+
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          npm run build
 
       # - name: Set Commit SHA in package.json
       #   run: npx json -I -f package.json -e "this.config.gitCommitSHA='${{ github.sha }}'"
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3.2.0
+        uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
 
       - name: Build and push docker image
-        uses: docker/build-push-action@v6.0.1
+        uses: docker/build-push-action@v6.7.0
         with:
           build-args: |
             buildId=${{ github.sha }}

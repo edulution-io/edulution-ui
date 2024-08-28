@@ -12,7 +12,9 @@ type AppConfigsStore = {
   isLoading: boolean;
   error: Error | null;
   isAddAppConfigDialogOpen: boolean;
+  isDeleteAppConfigDialogOpen: boolean;
   setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen: boolean) => void;
+  setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
   getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
@@ -26,7 +28,17 @@ type PersistedAppConfigsStore = (
 
 const initialState = {
   isAddAppConfigDialogOpen: false,
-  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {}, accessGroups: [] }],
+  isDeleteAppConfigDialogOpen: false,
+  appConfigs: [
+    {
+      name: '',
+      icon: '',
+      appType: AppIntegrationType.NATIVE,
+      options: {},
+      accessGroups: [],
+      extendedOptions: [],
+    },
+  ],
   isLoading: false,
   error: null,
 };
@@ -39,6 +51,10 @@ const useAppConfigsStore = create<AppConfigsStore>(
 
       setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
         set({ isAddAppConfigDialogOpen });
+      },
+
+      setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen) => {
+        set({ isDeleteAppConfigDialogOpen });
       },
 
       getAppConfigs: async () => {
@@ -88,7 +104,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
     }),
     {
       name: 'appConfig-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ appConfigs: state.appConfigs }),
     },
   ),

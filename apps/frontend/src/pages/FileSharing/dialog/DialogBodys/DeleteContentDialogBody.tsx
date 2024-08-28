@@ -1,6 +1,6 @@
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import React from 'react';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { useTranslation } from 'react-i18next';
 import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 

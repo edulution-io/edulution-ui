@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { MenuItem } from '@/datatypes/types';
 import {
   FileSharingIcon,
@@ -30,14 +30,10 @@ const findCorrespondingMountPointIcon = (filename: string) => {
 };
 
 const useFileSharingMenuConfig = () => {
-  const { mountPoints, fetchMountPoints } = useFileSharingStore();
+  const { mountPoints } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = userStore();
-
-  useEffect(() => {
-    void fetchMountPoints();
-  }, [user?.username]);
 
   const handlePathChange = useCallback(
     (newPath: string) => {
@@ -53,7 +49,7 @@ const useFileSharingMenuConfig = () => {
       .map((mountPoint: DirectoryFileDTO) => ({
         id: mountPoint.basename,
         label:
-          mountPoint.filename.includes(`${user?.ldapGroups?.role}s`) &&
+          mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
           mountPoint.filename.includes(`${user?.username}`)
             ? 'home'
             : mountPoint.basename,
@@ -63,7 +59,7 @@ const useFileSharingMenuConfig = () => {
       }))
       .filter((item) => item !== null);
     setMenuItems(items);
-  }, [mountPoints, user?.ldapGroups?.role, user?.ldapGroups?.school, searchParams, setSearchParams]);
+  }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams]);
 
   return {
     menuItems,

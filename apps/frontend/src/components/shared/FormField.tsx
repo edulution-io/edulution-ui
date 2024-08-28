@@ -11,33 +11,44 @@ const variants = cva([], {
   variants: {
     variant: {
       default: 'text-foreground',
+      light: 'text-white',
+      lightGray: 'text-ciLightGrey',
     },
   },
 });
 
 type FormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
+  disabled?: boolean;
   name: Path<T> | string;
-  isLoading: boolean;
+  isLoading?: boolean;
   labelTranslationId: string;
   type?: 'password';
   defaultValue?: PathValue<T, Path<T>> | string;
+  readonly?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
   form,
+  disabled,
   name,
   isLoading,
   labelTranslationId,
   type,
   variant,
   defaultValue,
+  readonly = false,
+  value,
+  onChange,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
   return (
     <FormFieldSH
       control={form.control}
+      disabled={disabled}
       name={name as Path<T>}
       defaultValue={defaultValue as PathValue<T, Path<T>>}
       render={({ field }) => (
@@ -49,8 +60,15 @@ const FormField = <T extends FieldValues>({
             <Input
               {...field}
               type={type}
-              disabled={isLoading}
+              disabled={disabled || isLoading}
               variant={variant}
+              readOnly={readonly}
+              value={value}
+              defaultValue={defaultValue as string}
+              onChange={(e) => {
+                field.onChange(e);
+                if (onChange) onChange(e);
+              }}
             />
           </FormControl>
           <FormMessage className={cn('text-p', variants({ variant }))} />

@@ -3,6 +3,7 @@ import {
   AntiMalwareIcon,
   BackupIcon,
   ChatIcon,
+  ClassManagementIcon,
   ConferencesIcon,
   DesktopDeploymentIcon,
   FileSharingIcon,
@@ -18,22 +19,13 @@ import {
   PrinterIcon,
   RoomBookingIcon,
   SchoolInformationIcon,
-  SchoolManagementIcon,
   SurveysMenuIcon,
   TicketSystemIcon,
   VirtualizationIcon,
   WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
-import { AppConfigOptionType, APPS } from '@libs/appconfig/types';
-
-type AppConfigOption = {
-  id: string;
-  icon: string;
-  color: string;
-  options?: AppConfigOptionType[];
-  isNativeApp: boolean;
-};
+import { AppConfigOption, APPS } from '@libs/appconfig/types';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -71,6 +63,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
     isNativeApp: true,
+    extendedOptions: ['name', 'type', 'description', 'value'],
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {
@@ -95,11 +88,11 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: false,
   },
   {
-    id: APPS.SCHOOL_MANAGEMENT,
-    icon: SchoolManagementIcon,
+    id: APPS.CLASS_MANAGEMENT,
+    icon: ClassManagementIcon,
     color: 'bg-ciLightBlue',
     options: ['url'],
-    isNativeApp: false,
+    isNativeApp: true,
   },
   { id: APPS.PRINTER, icon: PrinterIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
   { id: APPS.NETWORK, icon: NetworkIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },

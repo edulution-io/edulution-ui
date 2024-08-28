@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import useFileSharingStore from '@/pages/FileSharing/FileSharingStore';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/FileSharingDialogStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
+import buildHomePath from '@libs/filesharing/utils/buildHomePath';
 
 const useFileSharingPage = () => {
   const {
+    fetchMountPoints,
     fetchFiles,
     currentPath,
     setPathToRestoreSession,
@@ -17,7 +19,14 @@ const useFileSharingPage = () => {
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = `${user?.ldapGroups.role}s/${user?.username}`;
+  const homePath = buildHomePath(user);
+
+  useEffect(() => {
+    if (user) {
+      void fetchMountPoints();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!isFileProcessing) {
       if (path === '/') {
@@ -31,7 +40,7 @@ const useFileSharingPage = () => {
         setPathToRestoreSession(path);
       }
     }
-  }, [path, pathToRestoreSession, setSearchParams, homePath, setPathToRestoreSession]);
+  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
 
   useEffect(() => {
     if (fileOperationResult && !isLoading) {

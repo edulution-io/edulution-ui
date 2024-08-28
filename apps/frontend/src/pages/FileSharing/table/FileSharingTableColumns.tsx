@@ -15,6 +15,8 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -36,10 +38,19 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
 
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
+      const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
+      const { setShowEditor } = useFileEditorStore();
       const handleFilenameClick = (filenamePath: string) => {
+        setShowEditor(false);
         if (row.original.type === ContentType.DIRECTORY) {
           searchParams.set('path', filenamePath);
           setSearchParams(searchParams);
+          setShowEditor(false);
+          setCurrentlyEditingFile(null);
+        } else if (currentlyEditingFile?.filename !== row.original.filename) {
+          setCurrentlyEditingFile(row.original);
+        } else {
+          setShowEditor(true);
         }
       };
       const renderFileIcon = (item: DirectoryFileDTO) => {

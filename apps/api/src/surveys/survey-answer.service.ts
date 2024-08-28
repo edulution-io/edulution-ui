@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/types/survey-status-enum';
-import SurveyErrorMessagesEnum from '@libs/survey/constants/api/survey-error-messages-enum';
+import SurveyErrorMessages from '@libs/survey/constants/api/survey-error-messages-enum';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/api/survey-answer-error-messages-enum';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -69,11 +69,11 @@ class SurveyAnswersService {
 
   async getSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(SurveyErrorMessagesEnum.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
     const survey = await this.surveyModel.findById<Survey>(surveyId).exec();
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessagesEnum.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
     return survey;
   }
@@ -185,7 +185,7 @@ class SurveyAnswersService {
 
   async getPrivateAnswer(surveyId: mongoose.Types.ObjectId, username: string): Promise<SurveyAnswer> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(SurveyErrorMessagesEnum.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
     const usersSurveyAnswer = await this.surveyAnswerModel
       .findOne<SurveyAnswer>({ $and: [{ 'attendee.username': username }, { surveyId }] })
@@ -199,7 +199,7 @@ class SurveyAnswersService {
 
   async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(SurveyErrorMessagesEnum.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId }).exec();
     if (surveyAnswers.length === 0) {

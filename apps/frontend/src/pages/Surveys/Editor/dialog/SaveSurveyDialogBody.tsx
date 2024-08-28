@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { setHours, setMinutes, getHours, getMinutes } from 'date-fns';
 import cn from '@/lib/utils';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/UserStore';
 import Input from '@/components/shared/Input';
 import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
-import CircleLoader from '@/components/ui/CircleLoader';
-import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+import useGroupStore from '@/store/GroupStore';
 
 interface EditSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,15 +22,13 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
   const { form } = props;
   const { setValue, getValues, watch } = form;
   const { user } = useUserStore();
-  const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
-    useCreateConferenceDialogStore();
+  const { searchAttendees } = useUserStore();
+  const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
 
   const [expirationTime, setExpirationTime] = useState<string>(
     `${getHours(getValues('expires')) || '00'}:${getMinutes(getValues('expires')) || '00'}`,
   );
-
-  if (isLoading) return <CircleLoader className="mx-auto" />;
 
   const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -46,32 +42,8 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
     return result.filter((r) => r.username !== user.username);
   };
 
-  const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
-    const selectedGroups = getValues('invitedGroups') as MultipleSelectorGroup[];
-
-    const newlySelectedGroups = groups.filter((g) => !selectedGroups.some((sg) => sg.id === g.id));
-
-    if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
-      const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
-      const attendees = getValues('invitedAttendees') as AttendeeDto[];
-
-      const combinedAttendees = [...groupMembers, ...attendees];
-
-      const uniqueAttendeesMap = new Map(combinedAttendees.map((a) => [a.username, a]));
-      const uniqueAttendees = Array.from(uniqueAttendeesMap.values());
-
-      uniqueAttendees.sort((a, b) => a.username.localeCompare(b.username));
-
-      const newlyAddedAttendeesCount = groupMembers.filter(
-        (member) => !attendees.some((attendee) => attendee.username === member.username),
-      ).length;
-
-      setValue('invitedAttendees', uniqueAttendees, { shouldValidate: true });
-
-      toast.success(t('search.usersAdded', { count: newlyAddedAttendeesCount }));
-    }
-
-    setValue('invitedGroups', groups);
+  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
+    setValue('invitedGroups', groups /* , { shouldValidate: true } */);
   };
 
   const expiresWatched = watch('expires') as Date;
@@ -99,9 +71,8 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         groups={watch('invitedGroups') as MultipleSelectorGroup[]}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
-        isGetGroupMembersLoading={isGetGroupMembersLoading}
+        variant="light"
       />
-
       <p className="text-m font-bold text-foreground">{t('survey.expirationDate')}</p>
       <div className="flex items-center text-foreground">
         {t('common.date')}
