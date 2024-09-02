@@ -1,4 +1,4 @@
-import ParticipateDialogStore from '../../../types/tables/dialogs/participateDialogStore';
+import ParticipateDialogStore from '@libs/survey/types/tables/dialogs/participateDialogStore';
 
 const ParticipateDialogStoreInitialState: Partial<ParticipateDialogStore> = {
   selectedSurvey: undefined,

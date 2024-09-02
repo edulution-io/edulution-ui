@@ -1,4 +1,4 @@
-import ResultDialogStore from '../../../types/tables/dialogs/resultDialogStore';
+import ResultDialogStore from '@libs/survey/types/tables/dialogs/resultDialogStore';
 
 const ResultDialogStoreInitialState: Partial<ResultDialogStore> = {
   selectedSurvey: undefined,

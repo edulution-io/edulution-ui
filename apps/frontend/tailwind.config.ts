@@ -4,7 +4,6 @@ import plugin from 'tailwindcss/plugin';
 module.exports = {
   darkMode: ['class'],
   content: ['./**/*.{ts,tsx}'],
-  exclude: ['node_modules', 'dist', 'public'],
   prefix: '',
   theme: {
     container: {
