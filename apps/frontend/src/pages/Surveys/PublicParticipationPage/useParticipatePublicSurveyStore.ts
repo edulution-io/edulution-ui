@@ -29,10 +29,14 @@ const useParticipatePublicSurveyStore = create<ParticipatePublicSurveyStore>((se
     }
   },
 
+  setIsOpenCommitAnswerDialog: (isOpenCommitAnswerDialog: boolean) => set({ isOpenCommitAnswerDialog }),
+  setUsername: (username: string) => set({ username }),
+
   answerPublicSurvey: async (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
+    username: string,
     surveyEditorCallbackOnSave?: CompleteEvent,
   ): Promise<void> => {
     set({ isSubmitting: true });
@@ -42,13 +46,14 @@ const useParticipatePublicSurveyStore = create<ParticipatePublicSurveyStore>((se
         surveyId,
         saveNo,
         answer,
+        username,
       });
       surveyEditorCallbackOnSave?.showSaveSuccess();
     } catch (error) {
       surveyEditorCallbackOnSave?.showSaveError();
       handleApiError(error, set);
     } finally {
-      set({ isSubmitting: false });
+      set({ isSubmitting: false, isOpenCommitAnswerDialog: false });
     }
   },
 }));

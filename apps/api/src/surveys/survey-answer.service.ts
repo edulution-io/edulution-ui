@@ -138,6 +138,7 @@ class SurveyAnswersService {
     const attendee = { firstName: user.given_name, lastName: user.family_name, username };
 
     checkIsSurveyExpired(survey);
+    checkCanUserParticipate(survey, username);
 
     const alreadyExistingSurveyAnswer = await this.getPreviousSurveyAnswer(surveyId, username);
     const { canSubmitMultipleAnswers = false, canUpdateFormerAnswer } = survey;
@@ -168,7 +169,6 @@ class SurveyAnswersService {
     const survey = await this.getSurvey(surveyId);
 
     checkIsSurveyExpired(survey);
-    checkCanUserParticipate(survey, username);
 
     const alreadyExistingSurveyAnswer = await this.getPreviousSurveyAnswer(surveyId, username);
     const { canSubmitMultipleAnswers = false } = survey;

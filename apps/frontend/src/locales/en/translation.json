@@ -342,6 +342,7 @@
       "title": "Save and assign to participants",
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
+      "isPublic": "Should external people be able to participate?",
       "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
     },
     "participateDialog": {
@@ -514,6 +515,11 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "dialogs": {
+      "shareUrlDialog": {
+        "title": "Share URL"
+      }
+    },
     "actions": "Actions",
     "and": "and",
     "yes": "Yes",
@@ -567,7 +573,10 @@
     "not-available": "'Not available'",
     "date": "Date",
     "time": "Time",
-    "savedToClipboard": "Saved to clipboard"
+    "submit": "Submit",
+    "copyToClipboard": "Copy link",
+    "savedToClipboard": "Saved to clipboard",
+    "savedToClipboardError": "Unable to save into clipboard"
   },
   "form": {
     "path": "Path",

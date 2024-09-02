@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
-import useParticipatePublicSurveyStore from '@/pages/PublicPage/useParticipatePublicSurveyStore';
+import useParticipatePublicSurveyStore from '@/pages/Surveys/PublicParticipationPage/useParticipatePublicSurveyStore';
+import CommitAnswerDialog from '@/pages/Surveys/PublicParticipationPage/dialog/CommitAnswerDialog';
 
 const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
   const surveyId = searchParams.get('surveyId');
 
-  const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey } =
+  const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, setIsOpenCommitAnswerDialog } =
     useParticipatePublicSurveyStore();
 
   useEffect(() => {
@@ -24,19 +25,20 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
       return <p className="transform(-50%,-50%) absolute right-1/2 top-1/2"> Survey not found </p>;
     }
     return (
-      <ParticipateDialogBody
-        surveyId={survey.id}
-        saveNo={survey.saveNo}
-        formula={survey.formula}
-        answer={answer}
-        setAnswer={setAnswer}
-        pageNo={pageNo}
-        setPageNo={setPageNo}
-        commitAnswer={answerPublicSurvey}
-        updateOpenSurveys={() => {}}
-        updateAnsweredSurveys={() => {}}
-        setIsOpenParticipateSurveyDialog={() => {}}
-      />
+      <>
+        <ParticipateDialogBody
+          surveyId={survey.id}
+          saveNo={survey.saveNo}
+          formula={survey.formula}
+          answer={answer}
+          setAnswer={setAnswer}
+          pageNo={pageNo}
+          setPageNo={setPageNo}
+          openCommitAnswerDialog={() => setIsOpenCommitAnswerDialog(true)}
+          inDialog={false}
+        />
+        <CommitAnswerDialog />
+      </>
     );
   };
 

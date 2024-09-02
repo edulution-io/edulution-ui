@@ -12,10 +12,17 @@ interface ParticipatePublicSurveyStore {
 
   getPublicSurvey: (surveyId: string) => Promise<void>;
   isFetching: boolean;
+
+  isOpenCommitAnswerDialog: boolean;
+  setIsOpenCommitAnswerDialog: (isOpenCommitAnswerDialog: boolean) => void;
+  username: string;
+  setUsername: (username: string) => void;
+
   answerPublicSurvey: (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
+    username: string,
     options?: CompleteEvent,
   ) => Promise<void>;
   isSubmitting: boolean;

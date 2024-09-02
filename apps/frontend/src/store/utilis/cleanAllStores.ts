@@ -22,6 +22,8 @@ import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSur
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
+import useShareUrlDialogStore from '@/components/shared/Dialog/useShareUrlDialogStore';
+import useParticipatePublicSurveyStore from '@/pages/Surveys/PublicParticipationPage/useParticipatePublicSurveyStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -50,6 +52,8 @@ const cleanAllStores = () => {
   useParticipateDialogStore.getState().reset();
   useCommitedAnswersDialogStore.getState().reset();
   useResultDialogStore.getState().reset();
+  useParticipatePublicSurveyStore.getState().reset();
+  useShareUrlDialogStore.getState().reset();
 };
 
 export default cleanAllStores;

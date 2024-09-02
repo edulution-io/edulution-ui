@@ -343,6 +343,7 @@
       "title": "Speichern und Benutzern zuweisen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
+      "isPublic": "Sollen auch externe Personen teilnehmen können?",
       "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
     },
     "participateDialog": {
@@ -514,6 +515,11 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "dialogs": {
+      "shareUrlDialog": {
+        "title": "Link teilen"
+      }
+    },
     "actions": "Aktionen",
     "and": "und",
     "yes": "Ja",
@@ -567,7 +573,10 @@
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
     "time": "Uhrzeit",
-    "savedToClipboard": "In die Zwischenablage kopiert"
+    "submit": "Absenden",
+    "copyToClipboard": "Link kopieren",
+    "savedToClipboard": "In die Zwischenablage kopiert",
+    "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
   },
   "form": {
     "path": "Link",

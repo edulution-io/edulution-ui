@@ -10,6 +10,7 @@ import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog'
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
 import CommitedAnswersDialog from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialog';
+import SharePublicSurveyDialog from '@/pages/Surveys/Tables/dialogs/SharePublicSurveyDialog';
 
 const SurveysPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -44,6 +45,7 @@ const SurveysPage = () => {
           <ResultVisualizationDialog />
           <ParticipateDialog />
           <CommitedAnswersDialog />
+          <SharePublicSurveyDialog />
         </div>
       </TooltipProvider>
     </>

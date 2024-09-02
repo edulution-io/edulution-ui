@@ -23,6 +23,18 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
   },
 });
 
+type ButtonVariant =
+  | 'btn-collaboration'
+  | 'btn-organisation'
+  | 'btn-infrastructure'
+  | 'btn-security'
+  | 'btn-outline'
+  | 'btn-hexagon'
+  | 'btn-attention'
+  | 'btn-small'
+  | null
+  | undefined;
+
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof originButtonVariants> & {
     asChild?: boolean;
@@ -59,4 +71,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
 
 Button.defaultProps = defaultProps;
 
-export { Button, originButtonVariants };
+export { Button, originButtonVariants, ButtonVariant };

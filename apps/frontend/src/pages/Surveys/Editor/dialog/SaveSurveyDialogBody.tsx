@@ -48,6 +48,7 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
 
   const expiresWatched = watch('expires') as Date;
   const isAnonymousWatched = watch('isAnonymous') as boolean;
+  const isPublicWatched = watch('isPublic') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
   const handleExpirationDateChange = (value: Date | undefined) => {
@@ -103,6 +104,15 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
           className="mr-2"
         />
         {t('surveys.saveDialog.isAnonymous')}
+      </div>
+      <div className="flex items-center text-foreground">
+        <Checkbox
+          checked={isPublicWatched}
+          onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
+          aria-label={`${t('survey.isPublic')}`}
+          className="mr-2"
+        />
+        {t('surveys.saveDialog.isPublic')}
       </div>
       <div className="flex items-center text-foreground">
         <Checkbox

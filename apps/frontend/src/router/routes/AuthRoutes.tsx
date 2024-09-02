@@ -3,7 +3,7 @@ import { Navigate, Route } from 'react-router-dom';
 import { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/api/surveys-endpoint';
 import BlankLayout from '@/components/layout/BlankLayout';
 import LoginPage from '@/pages/LoginPage/LoginPage';
-import ParticipatePublicSurvey from '@/pages/PublicPage/ParticipatePublicSurvey';
+import ParticipatePublicSurvey from '@/pages/Surveys/PublicParticipationPage/ParticipatePublicSurvey';
 
 const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route

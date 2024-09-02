@@ -14,10 +14,10 @@ class LicenseService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const collections = await this.connection.db.listCollections({ name: 'licenses' }).toArray();
+    const collections = await this.connection?.db?.listCollections({ name: 'licenses' }).toArray();
 
-    if (collections.length === 0) {
-      await this.connection.db.createCollection('licenses');
+    if (!collections || collections.length === 0) {
+      await this.connection?.db?.createCollection('licenses');
     }
 
     const count = await this.licenseModel.countDocuments();
