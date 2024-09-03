@@ -5,12 +5,14 @@ import {
   Get,
   Header,
   HttpStatus,
+  Logger,
   Patch,
   Post,
   Put,
   Query,
   Req,
   Res,
+  Sse,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
@@ -26,10 +28,14 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
+import SseService from '../sse/sse.service';
 
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  constructor(private readonly filesharingService: FilesharingService) {}
+  constructor(
+    private readonly filesharingService: FilesharingService,
+    private readonly sseService: SseService,
+  ) {}
 
   @Get()
   async getFilesAtPath(
@@ -41,6 +47,14 @@ class FilesharingController {
       return this.filesharingService.getFilesAtPath(username, path);
     }
     return this.filesharingService.getDirAtPath(username, path);
+  }
+
+  @Sse()
+  @Get('sse')
+  handleSse() {
+    Logger.log('SSE connection established');
+    const { subject } = this.sseService.addClient();
+    return subject.asObservable();
   }
 
   @Post()

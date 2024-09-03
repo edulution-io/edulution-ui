@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AxiosInstance, AxiosResponse } from 'axios';
+import { AxiosInstance, AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -16,6 +16,7 @@ import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from './filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+import SseService from '../sse/sse.service';
 
 @Injectable()
 class FilesharingService {
@@ -27,6 +28,7 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
+    private readonly sseService: SseService,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -116,8 +118,7 @@ class FilesharingService {
 
   getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
-
-    return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
+    const files = (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -128,6 +129,8 @@ class FilesharingService {
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
     )) as DirectoryFileDTO[];
+
+    return files;
   };
 
   getDirAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
@@ -196,23 +199,40 @@ class FilesharingService {
   uploadFile = async (username: string, path: string, file: CustomFile, name: string): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
-      client,
-      {
-        method: HttpMethods.PUT,
-        url: fullPath,
-        headers: { 'Content-Type': file.mimetype },
-        data: file.buffer,
+    const totalSize = file.buffer.byteLength; // Get total size of the file
+
+    const config: AxiosRequestConfig = {
+      method: 'PUT',
+      url: fullPath,
+      headers: { 'Content-Type': file.mimetype },
+      data: file.buffer, // Assuming buffer is directly used
+      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / totalSize);
+        this.sseService.sendMessageToAllClients(
+          `Upload in progress: ${percentCompleted}% completed`,
+          'upload-progress',
+        );
       },
-      false,
-      FileSharingErrorMessage.UploadFailed,
-      (response: WebdavStatusReplay) =>
-        ({
-          success: response.status === 201 || response.status === 200,
-          filename: file.originalname,
-          status: response.status,
-        }) as WebdavStatusReplay,
-    );
+    };
+
+    try {
+      const response: AxiosResponse = await client.request(config);
+      const resp: WebdavStatusReplay = {
+        success: response.status === 201 || response.status === 200,
+        filename: file.originalname,
+        status: response.status,
+      };
+
+      this.sseService.sendMessageToAllClients(
+        `User ${username} successfully uploaded file to ${path}`,
+        'file-uploaded',
+      );
+
+      return resp;
+    } catch (error) {
+      this.sseService.sendMessageToAllClients(`User ${username} failed to upload file to ${path}`, 'upload-failed');
+      throw new Error(FileSharingErrorMessage.UploadFailed);
+    }
   };
 
   deleteFileAtPath = async (username: string, path: string): Promise<WebdavStatusReplay> => {

@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
 import buildHomePath from '@libs/filesharing/utils/buildHomePath';
+import useCombinedSSeStore from '@/sse/useSseStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import SseEventType from '@libs/sse/types/sseEventType';
 
 const useFileSharingPage = () => {
   const {
@@ -20,7 +22,7 @@ const useFileSharingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
   const homePath = buildHomePath(user);
-
+  const { connectFileSharingSseEvent, uploadStatus } = useCombinedSSeStore();
   useEffect(() => {
     if (user) {
       void fetchMountPoints();
@@ -43,6 +45,10 @@ const useFileSharingPage = () => {
   }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
 
   useEffect(() => {
+    connectFileSharingSseEvent(SseEventType.UploadProgress);
+  }, [connectFileSharingSseEvent]);
+
+  useEffect(() => {
     if (fileOperationResult && !isLoading) {
       if (fileOperationResult.success) {
         toast.success(fileOperationResult.message);
@@ -51,7 +57,7 @@ const useFileSharingPage = () => {
     }
   }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
 
-  return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
+  return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams, uploadStatus };
 };
 
 export default useFileSharingPage;

@@ -6,9 +6,10 @@ import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from './filesystem.service';
 import TokenService from '../common/services/token.service';
 import OnlyofficeService from './onlyoffice.service';
+import { SseModule } from '../sse/sse.module';
 
 @Module({
-  imports: [HttpModule, AppConfigModule],
+  imports: [HttpModule, AppConfigModule, SseModule],
   controllers: [FilesharingController],
   providers: [FilesharingService, FilesystemService, TokenService, OnlyofficeService],
 })
