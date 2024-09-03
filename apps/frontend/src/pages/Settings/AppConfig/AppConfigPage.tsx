@@ -260,10 +260,9 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
-                          <AccordionItem value={t(`appExtendedOptions${settingLocation}`)}>
+                          <AccordionItem value={`app-extension-${settingLocation}`}>
                             <AccordionTrigger className="flex text-xl font-bold">
                               <h4>{t('appExtendedOptions.title')}</h4>
-                              <h2>{t(`appExtendedOptions${settingLocation}`)}</h2>
                             </AccordionTrigger>
                             <AccordionContent className="space-y-10 px-1 pt-4">
                               <ExtendedOnlyOfficeOptionsForm
