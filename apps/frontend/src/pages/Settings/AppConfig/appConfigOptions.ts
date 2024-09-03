@@ -35,7 +35,14 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url'],
     isNativeApp: false,
   },
-  { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: true },
+  {
+    id: APPS.MAIL,
+    icon: MailIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url'],
+    isNativeApp: true,
+    extendedOptions: ['name', 'type', 'description', 'value'],
+  },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {
     id: APPS.CONFERENCES,

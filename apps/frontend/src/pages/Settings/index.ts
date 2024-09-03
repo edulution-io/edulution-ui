@@ -1,1 +1,2 @@
-export { default as AppConfigPage } from './AppConfig/AppConfigPage';
+import AppConfigPage from './AppConfig/AppConfigPage';
+export default AppConfigPage;

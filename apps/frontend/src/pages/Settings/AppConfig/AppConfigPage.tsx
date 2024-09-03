@@ -21,15 +21,16 @@ import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/filesharin
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
+import { appExtendedOptions } from '@libs/appconfig/constants/appExtentions';
+import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtentionOptions';
 
-const AppConfigPage: React.FC = () => {
+const AppConfigPage: React.FC = (): React.ReactNode => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -129,21 +130,33 @@ const AppConfigPage: React.FC = () => {
     setValue(fieldName, combinedGroups, { shouldValidate: true });
   };
 
+  const getAppExtention = (settingLocation: string): AppConfigExtendedOption[] | undefined => {
+    switch (settingLocation) {
+      case 'filesharing':
+        return appExtendedOptions.ONLY_OFFICE as AppConfigExtendedOption[];
+      case 'mail':
+        return appExtendedOptions.MAIL as AppConfigExtendedOption[];
+      default:
+        return undefined;
+    }
+  };
+
+  const extention = getAppExtention(settingLocation);
+
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
     if (!selectedOption) {
       return;
     }
 
-    const extendedOptions =
-      settingLocation === 'filesharing'
-        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
-            name: e.name,
-            description: e.description,
-            type: e.type,
-            value: getValues(`${settingLocation}.${e.name}`) as string,
-          })) as AppConfigExtendedOption[])
-        : [];
+    const extendedOptions: AppConfigExtendedOption[] = extention
+      ? (extention.map((e) => ({
+          name: e.name,
+          description: e.description,
+          type: e.type,
+          value: getValues(`${settingLocation}.${e.name}`) as string,
+        })) as AppConfigExtendedOption[])
+      : [];
 
     const newConfig = {
       name: settingLocation,
@@ -247,13 +260,13 @@ const AppConfigPage: React.FC = () => {
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
-                          <AccordionItem value="onlyOffice">
+                          <AccordionItem value={t('appExtendedOptions' + settingLocation)}>
                             <AccordionTrigger className="flex text-xl font-bold">
                               <h4>{t('appExtendedOptions.title')}</h4>
                             </AccordionTrigger>
                             <AccordionContent className="space-y-10 px-1 pt-4">
                               <ExtendedOnlyOfficeOptionsForm
-                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
+                                extendedOptions={extention || []}
                                 baseName={settingLocation}
                                 form={form}
                               />

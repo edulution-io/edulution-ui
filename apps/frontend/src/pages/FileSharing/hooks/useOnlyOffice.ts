@@ -8,7 +8,8 @@ import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/ut
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import { appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import { ExtendedOptions_OnlyOffice } from '@libs/appconfig/constants/appConfig-OnlyOffice';
+import { appExtendedOptions } from '@libs/appconfig/constants/appExtentions';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -27,7 +28,11 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_URL);
+  const documentServerURL = getExtendedOptionValue(
+    appConfigs,
+    appExtendedOptions,
+    ExtendedOptions_OnlyOffice.ONLY_OFFICE_URL,
+  );
 
   const callbackUrl = callbackBaseUrl({
     fileName,

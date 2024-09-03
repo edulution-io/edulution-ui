@@ -6,9 +6,9 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request } from 'express';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import { ExtendedOptions_OnlyOffice } from '@libs/appconfig/constants/appConfig-OnlyOffice';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
-import { AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import AppConfigService from '../appconfig/appconfig.service';
 import JWTUser from '../types/JWTUser';
 import TokenService from '../common/services/token.service';
@@ -25,7 +25,7 @@ class OnlyofficeService {
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
     const jwtSecret = appConfig?.extendedOptions.find(
-      (option) => option.name === AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
+      (option) => option.name === ExtendedOptions_OnlyOffice.ONLY_OFFICE_JWT_SECRET,
     );
     if (!jwtSecret) {
       throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);

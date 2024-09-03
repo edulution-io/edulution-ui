@@ -756,10 +756,24 @@
   },
   "appExtendedOptions": {
     "title": "Extensions",
-    "onlyOfficeUrl": "Please enter the OnlyOffice URL",
-    "onlyOfficeUrlTitle": "OnlyOffice URL",
-    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+    "filesharing": "OnlyOffice",
+    "onlyOffice": {
+      "onlyOfficeUrl": "Please enter the OnlyOffice URL",
+      "onlyOfficeUrlTitle": "OnlyOffice URL",
+      "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+      "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+    },
+    "mails": "MailsFeed (IMAP)",
+    "imapFeed": {
+      "imapURL": "Please enter the URL over which Imap accesses the mail server (e.g. webmail.schulung.multi.schule)",
+      "imapURLTitle": "IMAP-URL",
+      "imapPort": "Please specify the port over which Imap accesses the mail server (e.g. 993)",
+      "imapPortTitle": "IMAP-Port",
+      "imapSecure": "Please specify whether Imap access is via a secure line (e.g. true)",
+      "imapSecureTitle": "IMAP-Secure",
+      "imapTlsRejectUnauthorized": "Please specify whether Imap rejects unauthorized access (can cause problems) (e.g. false)",
+      "imapTlsRejectUnauthorizedTitle": "IMAP-TLS (Reject Unauthorized)"
+    }
   },
   "mails": {
     "errors": {
