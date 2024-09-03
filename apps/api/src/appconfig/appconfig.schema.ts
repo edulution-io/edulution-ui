@@ -1,7 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AppConfigOptions, AppIntegrationType } from '@libs/appconfig/types';
-import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtentionOptions';
+import AppConfigExtension from '@libs/appconfig/extensions/types/appConfigExtension';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 @Schema({ timestamps: true, strict: true })
@@ -13,7 +13,7 @@ export class AppConfig extends Document {
   icon: string;
 
   @Prop({ type: Array, default: [] })
-  extendedOptions: AppConfigExtendedOption[];
+  extendedOptions: AppConfigExtension[];
 
   @Prop({ required: true, type: String })
   appType: AppIntegrationType;

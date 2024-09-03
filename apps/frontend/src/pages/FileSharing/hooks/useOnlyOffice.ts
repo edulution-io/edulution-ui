@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import appExtension from '@libs/appconfig/extensions/constants/appExtension';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/utilities/documentsEditorType';
 import callbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/utilities/callbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/utilities/generateOnlyOfficeConfig';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import { ExtendedOptions_OnlyOffice } from '@libs/appconfig/constants/appConfig-OnlyOffice';
-import { appExtendedOptions } from '@libs/appconfig/constants/appExtentions';
+import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension-enum';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -28,11 +28,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionValue(
-    appConfigs,
-    appExtendedOptions,
-    ExtendedOptions_OnlyOffice.ONLY_OFFICE_URL,
-  );
+  const documentServerURL = getExtendedOptionValue(appConfigs, appExtension, FileSharingAppExtensions.ONLY_OFFICE_URL);
 
   const callbackUrl = callbackBaseUrl({
     fileName,

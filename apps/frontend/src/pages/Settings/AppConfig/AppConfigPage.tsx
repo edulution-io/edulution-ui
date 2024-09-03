@@ -23,12 +23,12 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
+import AppConfigExtension from '@libs/appconfig/extensions/types/appConfigExtension';
+import appExtension from '@libs/appconfig/extensions/constants/appExtension';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
-import { appExtendedOptions } from '@libs/appconfig/constants/appExtentions';
-import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtentionOptions';
 
 const AppConfigPage: React.FC = (): React.ReactNode => {
   const { pathname } = useLocation();
@@ -130,18 +130,18 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
     setValue(fieldName, combinedGroups, { shouldValidate: true });
   };
 
-  const getAppExtention = (settingLocation: string): AppConfigExtendedOption[] | undefined => {
+  const getAppExtention = (): AppConfigExtension[] | undefined => {
     switch (settingLocation) {
       case 'filesharing':
-        return appExtendedOptions.ONLY_OFFICE as AppConfigExtendedOption[];
+        return appExtension.ONLY_OFFICE;
       case 'mail':
-        return appExtendedOptions.MAIL as AppConfigExtendedOption[];
+        return appExtension.MAIL;
       default:
         return undefined;
     }
   };
 
-  const extention = getAppExtention(settingLocation);
+  const extention = getAppExtention();
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
@@ -149,13 +149,13 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       return;
     }
 
-    const extendedOptions: AppConfigExtendedOption[] = extention
+    const extendedOptions: AppConfigExtension[] = extention
       ? (extention.map((e) => ({
           name: e.name,
           description: e.description,
           type: e.type,
           value: getValues(`${settingLocation}.${e.name}`) as string,
-        })) as AppConfigExtendedOption[])
+        })) as AppConfigExtension[])
       : [];
 
     const newConfig = {
@@ -260,9 +260,10 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
-                          <AccordionItem value={t('appExtendedOptions' + settingLocation)}>
+                          <AccordionItem value={t(`appExtendedOptions${settingLocation}`)}>
                             <AccordionTrigger className="flex text-xl font-bold">
                               <h4>{t('appExtendedOptions.title')}</h4>
+                              <h2>{t(`appExtendedOptions${settingLocation}`)}</h2>
                             </AccordionTrigger>
                             <AccordionContent className="space-y-10 px-1 pt-4">
                               <ExtendedOnlyOfficeOptionsForm
