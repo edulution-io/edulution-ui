@@ -135,7 +135,8 @@
   "feed": {
     "title": "Current affairs",
     "noConferences": "No running conference exists",
-    "noMails": "No unread mail exists"
+    "noMails": "No unread mail exists",
+    "noSurveys": "No open survey exists"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -289,6 +290,8 @@
   "survey": {
     "creationDate": "Creation date",
     "expirationDate": "Expiration date",
+    "created": "Created",
+    "expires": "Expires",
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
     "canSubmitMultiple": "Allow multiple submission",

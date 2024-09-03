@@ -134,7 +134,8 @@
   "feed": {
     "title": "Aktuelles",
     "noConferences": "Keine laufende Konferenz",
-    "noMails": "Keine ungelesenen Mails"
+    "noMails": "Keine ungelesenen Mails",
+    "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
     "title": "FILESHARING",
@@ -290,6 +291,8 @@
   "survey": {
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Ablaufdatum",
+    "created": "Erstellt",
+    "expires": "Läuft ab",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
