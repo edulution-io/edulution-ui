@@ -9,23 +9,21 @@ import { InjectModel } from '@nestjs/mongoose';
 import axios, { AxiosInstance } from 'axios';
 import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import AppConfigExtension from '@libs/appconfig/extensions/types/appConfigExtension';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
+import AppConfigService from '../appconfig/appconfig.service';
 
-const {
-  MAIL_IMAP_URL,
-  MAIL_API_URL,
-  MAIL_IMAP_PORT,
-  MAIL_IMAP_SECURE,
-  MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
-  MAIL_API_KEY,
-} = process.env;
+const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
 class MailsService {
   private mailcowApi: AxiosInstance;
 
-  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
+  constructor(
+    @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
+    private readonly appConfigService: AppConfigService,
+  ) {
     this.mailcowApi = axios.create({
       baseURL: `${MAIL_API_URL}/api/v1`,
       headers: {
@@ -35,22 +33,36 @@ class MailsService {
     });
   }
 
-  static getMails = async (username: string, password: string): Promise<MailDto[]> => {
-    // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
+  getMails = async (username: string, password: string): Promise<MailDto[]> => {
+    const appConfig = await this.appConfigService.getAppConfigByName('mail');
 
-    if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const imapOptions: any = {};
+    appConfig?.extendedOptions.forEach((option: AppConfigExtension) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      imapOptions[option.name] = option.value;
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (!imapOptions.MAIL_IMAP_URL || !imapOptions.MAIL_IMAP_PORT) {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
-    if (Number.isNaN(Number(MAIL_IMAP_PORT))) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (Number.isNaN(Number(imapOptions.MAIL_IMAP_PORT))) {
       throw new CustomHttpException(MailsErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const client = new ImapFlow({
-      host: MAIL_IMAP_URL,
-      port: Number(MAIL_IMAP_PORT),
-      secure: MAIL_IMAP_SECURE === 'true',
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      host: `${imapOptions.MAIL_IMAP_URL}`,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      port: Number(imapOptions.MAIL_IMAP_PORT),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      secure: imapOptions.MAIL_IMAP_SECURE === 'true',
       tls: {
-        rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        rejectUnauthorized: imapOptions.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',
       },
       auth: {
         user: username,
@@ -59,6 +71,7 @@ class MailsService {
       logger: false,
       connectionTimeout: 5000,
     });
+
     client.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
       void client.logout();
