@@ -6,7 +6,7 @@ import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from './filesystem.service';
 import TokenService from '../common/services/token.service';
 import OnlyofficeService from './onlyoffice.service';
-import { SseModule } from '../sse/sse.module';
+import SseModule from '../sse/sse.module';
 
 @Module({
   imports: [HttpModule, AppConfigModule, SseModule],
