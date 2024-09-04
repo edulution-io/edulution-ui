@@ -10,7 +10,6 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import ControlPanel from '@/components/shared/ControlPanel';
-import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface FileViewerLayoutProps {
   isLoading: boolean;
@@ -51,21 +50,11 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, renderComponen
     }
   };
 
-  const isMobileView = useIsMobileView();
   return (
     <>
       <div>
         <h1 className="flex items-center justify-center text-2xl font-semibold">
-          {editMode ? (
-            <ControlPanel
-              isMobileView={isMobileView}
-              onClose={closeOrNavigateBack}
-              closeLabel={t('filesharing.closeEditor')}
-              showMinimize={false}
-            />
-          ) : (
-            <p>{t('filesharing.previewTitle')}</p>
-          )}
+          {editMode ? <ControlPanel onClose={closeOrNavigateBack} /> : <p>{t('filesharing.previewTitle')}</p>}
         </h1>
       </div>
       <div className="flex w-full flex-row">

@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
 import Guacamole from 'guacamole-common-js';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { SIDEBAR_WIDTH } from '@libs/ui/constants';
 import ControlPanel from '@/components/shared/ControlPanel';
@@ -12,8 +10,6 @@ import useDesktopDeploymentStore from './DesktopDeploymentStore';
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
-  const isMobileView = useIsMobileView();
-  const { t } = useTranslation();
   const {
     error,
     guacToken,
@@ -142,13 +138,9 @@ const VDIFrame = () => {
       <>
         {clientState < 3 && <LoadingIndicator isOpen />}
         <ControlPanel
-          isMobileView={isMobileView}
           isMinimized={isVdiConnectionMinimized}
           toggleMinimized={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
           onClose={handleDisconnect}
-          minimizeLabel={t('conferences.minimize')}
-          closeLabel={t('desktopdeployment.close')}
-          maximizeLabel={t('conferences.maximize')}
         />
         <div
           id="display"
