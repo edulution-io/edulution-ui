@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 
 import FilePreviewOptionsButton from '@/pages/FileSharing/buttonsBar/FilePreviewOptionsButton';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { Button } from '@/components/shared/Button';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import ControlPanel from '@/components/shared/ControlPanel';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface FileViewerLayoutProps {
   isLoading: boolean;
@@ -50,20 +51,18 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, renderComponen
     }
   };
 
+  const isMobileView = useIsMobileView();
   return (
     <>
       <div>
         <h1 className="flex items-center justify-center text-2xl font-semibold">
           {editMode ? (
-            <div className="flex flex-row">
-              <Button
-                variant="btn-small"
-                className="bg-ciRed"
-                onClick={closeOrNavigateBack}
-              >
-                <p>{t('filesharing.closeEditor')}</p>
-              </Button>
-            </div>
+            <ControlPanel
+              isMobileView={isMobileView}
+              onClose={closeOrNavigateBack}
+              closeLabel={t('filesharing.closeEditor')}
+              showMinimize={false}
+            />
           ) : (
             <p>{t('filesharing.previewTitle')}</p>
           )}
