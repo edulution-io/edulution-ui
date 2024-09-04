@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
@@ -19,6 +19,33 @@ const MenuBar: React.FC = () => {
   const isMobileView = useIsMobileView();
 
   useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
+
+  if (menuBarEntries.disabled) {
+    return null;
+  }
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const queryParams: { key: string; value: string }[] = [];
+
+  searchParams.forEach((value, key) => {
+    queryParams.push({ key, value });
+  });
+
+  const pathParts = location.pathname.split('/').filter((part) => part !== '');
+  useEffect(() => {
+    const matchedItem = menuBarEntries.menuItems.find((item) =>
+      queryParams?.some((part) => {
+        const partValue = part.value.replace(/\/$/, '').toLowerCase();
+        return item.id?.toLowerCase().includes(partValue);
+      }),
+    );
+    if (location.pathname === '/' || pathParts.at(0) !== '') {
+      setIsSelected(menuBarEntries.menuItems[0]?.id);
+    } else if (matchedItem) {
+      setIsSelected(matchedItem.id);
+    }
+  }, [location.pathname, menuBarEntries.menuItems]);
 
   if (menuBarEntries.disabled) {
     return null;
