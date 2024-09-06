@@ -10,6 +10,18 @@ import { Survey, SurveyDocument } from './survey.schema';
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
+  async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
+    return (
+      this.surveyModel
+        // eslint-disable-next-line no-underscore-dangle
+        .findOne<Survey>({ _id: surveyId, isPublic: true })
+        .exec()
+        .catch((error) => {
+          throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+        })
+    );
+  }
+
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
       await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();

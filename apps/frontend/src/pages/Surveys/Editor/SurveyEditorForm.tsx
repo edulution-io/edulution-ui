@@ -100,6 +100,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     created: z.date().optional(),
     expires: z.date().optional(),
     isAnonymous: z.boolean().optional(),
+    isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
   });
 
@@ -122,6 +123,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       created,
       expires,
       isAnonymous,
+      isPublic,
       canSubmitMultipleAnswers,
     } = form.getValues();
 
@@ -137,6 +139,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       created,
       expires,
       isAnonymous,
+      isPublic,
       canSubmitMultipleAnswers,
     });
 

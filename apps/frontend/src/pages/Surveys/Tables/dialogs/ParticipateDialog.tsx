@@ -37,6 +37,7 @@ const ParticipateDialog = () => {
         updateOpenSurveys={updateOpenSurveys}
         updateAnsweredSurveys={updateAnsweredSurveys}
         setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
+        className="max-h-[75vh] overflow-y-auto rounded bg-gray-600 p-4"
       />
     );
   };

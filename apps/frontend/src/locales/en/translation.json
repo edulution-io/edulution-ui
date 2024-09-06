@@ -341,6 +341,7 @@
       "title": "Save and assign to participants",
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
+      "isPublic": "Should external people be able to participate?",
       "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
     },
     "participateDialog": {

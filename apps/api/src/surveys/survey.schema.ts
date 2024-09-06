@@ -44,6 +44,9 @@ export class Survey {
   isAnonymous?: boolean;
 
   @Prop({ required: false })
+  isPublic?: boolean;
+
+  @Prop({ required: false })
   canUpdateFormerAnswer?: boolean;
 
   @Prop({ required: false })

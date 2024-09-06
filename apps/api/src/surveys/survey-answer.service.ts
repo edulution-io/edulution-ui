@@ -150,6 +150,63 @@ class SurveyAnswersService {
     return updatedSurveyAnswer;
   }
 
+  async addAnswerToPublicSurvey(
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+  ): Promise<SurveyAnswer | undefined> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    const survey = await this.surveyModel.findById<Survey>(surveyId).exec();
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+    const { expires, isPublic } = survey;
+
+    if (expires) {
+      const isExpired = expires < new Date();
+      if (isExpired) {
+        throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
+      }
+    }
+
+    if (!isPublic) {
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
+    }
+
+    const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}` };
+
+    const time = new Date().getTime();
+    const id = mongoose.Types.ObjectId.createFromTime(time);
+    const newSurveyAnswer = await this.surveyAnswerModel.create({
+      _id: id,
+      id,
+      attendee: pseudoAttendee,
+      surveyId,
+      saveNo,
+      answer,
+    });
+    if (newSurveyAnswer == null) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const updateSurvey = await this.surveyModel
+      .findByIdAndUpdate<Survey>(surveyId, {
+        answers: [...survey.answers, newSurveyAnswer.id],
+      })
+      .exec();
+    if (updateSurvey == null) {
+      throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return newSurveyAnswer;
+  }
+
   async getPrivateAnswer(surveyId: mongoose.Types.ObjectId, username: string): Promise<SurveyAnswer> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);

@@ -14,6 +14,7 @@ interface SurveyDto {
   created?: Date;
   expires?: Date;
   isAnonymous?: boolean;
+  isPublic?: boolean;
   canShowResultsTable?: boolean;
   canShowResultsChart?: boolean;
   canSubmitMultipleAnswers?: boolean;

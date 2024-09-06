@@ -342,6 +342,7 @@
       "title": "Speichern und Benutzern zuweisen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
+      "isPublic": "Sollen auch externe Personen teilnehmen können?",
       "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
     },
     "participateDialog": {
