@@ -54,7 +54,14 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, renderComponen
     <>
       <div>
         <h1 className="flex items-center justify-center text-2xl font-semibold">
-          {editMode ? <ControlPanel onClose={closeOrNavigateBack} /> : <p>{t('filesharing.previewTitle')}</p>}
+          {editMode ? (
+            <ControlPanel
+              onClose={closeOrNavigateBack}
+              showMinimize={false}
+            />
+          ) : (
+            <p>{t('filesharing.previewTitle')}</p>
+          )}
         </h1>
       </div>
       <div className="flex w-full flex-row">

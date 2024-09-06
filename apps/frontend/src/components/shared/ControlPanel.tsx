@@ -17,15 +17,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   showMinimize = true,
   showClose = true,
 }) => (
-  <div
-    className={cn(
-      'fixed right-0 top-1 z-10 mr-2 flex items-center space-x-2', // Reduced space between buttons
-    )}
-  >
+  <div className={cn('fixed right-0 top-1 z-50 mr-14 flex items-center space-x-2')}>
     {showMinimize && (
       <button
         type="button"
-        className="mr-1 rounded bg-ciLightGrey px-2 py-1 text-sm text-white hover:bg-blue-700" // Smaller padding and text
+        className="mr-1 rounded bg-ciLightGrey px-2 py-1 text-sm text-white hover:bg-blue-700"
         onClick={toggleMinimized}
       >
         {isMinimized ? <MdMaximize className="inline  bg-black" /> : <MdMinimize className="inline text-black" />}
@@ -34,7 +30,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     {showClose && (
       <button
         type="button"
-        className="rounded bg-ciLightGrey px-2 py-1 text-sm text-white hover:bg-ciRed" // Smaller padding and text
+        className="rounded bg-ciLightGrey px-2 py-1 text-sm text-white hover:bg-ciRed"
         onClick={onClose}
       >
         <MdClose className="inline text-black" />
