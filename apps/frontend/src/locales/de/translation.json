@@ -296,8 +296,11 @@
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "title": "Titel",
+      "description": "Beschreibung",
       "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+      "questionSettings": "Einstellungen"
     },
     "errors": {
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
@@ -511,7 +514,8 @@
   "common": {
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
-      "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
+      "envAccessError": "Konnte Umgebungsvariablen nicht lesen",
+      "permissionDenied": "Zugriff verweigert"
     },
     "actions": "Aktionen",
     "and": "und",

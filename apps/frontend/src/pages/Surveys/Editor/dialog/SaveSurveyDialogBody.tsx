@@ -13,12 +13,12 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
 
-interface EditSurveyDialogBodyProps {
+interface SaveSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
 }
 
-const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
+const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const { form } = props;
   const { setValue, getValues, watch } = form;
   const { user } = useUserStore();

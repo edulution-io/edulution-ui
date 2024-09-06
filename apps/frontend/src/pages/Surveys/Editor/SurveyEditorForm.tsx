@@ -14,7 +14,6 @@ import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
-import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
@@ -29,6 +28,11 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
+    selectedQuestion,
+    setSelectedQuestion,
+    isOpenQuestionSettingsDialog,
+    setIsOpenQuestionSettingsDialog,
+
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
 
@@ -154,13 +158,24 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         form={form}
         formula={formulaWatcher}
         saveNumber={saveNoWatcher}
+        selectedQuestion={selectedQuestion}
+        setSelectedQuestion={setSelectedQuestion}
+        isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
+        setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
       />
     ),
-    [formulaWatcher, saveNoWatcher],
+    [
+      formulaWatcher,
+      saveNoWatcher,
+      selectedQuestion,
+      setSelectedQuestion,
+      isOpenQuestionSettingsDialog,
+      setIsOpenQuestionSettingsDialog,
+    ],
   );
 
   const config: FloatingButtonsBarConfig = {
-    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true)), CreateButton(() => form.reset(emptyFormValues))],
+    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
     keyPrefix: 'surveys-page-floating-button_',
   };
 

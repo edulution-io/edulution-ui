@@ -6,7 +6,13 @@ import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-const OpenSurveys = () => {
+interface OpenSurveysProps {
+  participate: () => void;
+}
+
+const OpenSurveys = (props: OpenSurveysProps) => {
+  const { participate } = props;
+
   const {
     selectedPageView,
     updateSelectedPageView,
@@ -34,11 +40,11 @@ const OpenSurveys = () => {
       {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
       <SurveyTablePage
         title={t('surveys.view.open')}
-        selectSurvey={selectSurvey}
         surveys={openSurveys || []}
         selectedSurvey={selectedSurvey}
         canShowResults
         canParticipate
+        participateSurvey={participate}
       />
     </>
   );

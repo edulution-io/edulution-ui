@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { Question } from 'survey-core/typings/question';
 import SurveyEditorFormStore from '@libs/survey/types/editor/surveyEditorFormStore';
 import SurveyEditorFormStoreInitialState from '@libs/survey/types/editor/surveyEditorFormStoreInitialState';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -9,6 +10,9 @@ import handleApiError from '@/utils/handleApiError';
 const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   ...SurveyEditorFormStoreInitialState,
   reset: () => set(SurveyEditorFormStoreInitialState),
+
+  setSelectedQuestion: (question: Question | undefined) => set({ selectedQuestion: question }),
+  setIsOpenQuestionSettingsDialog: (state: boolean) => set({ isOpenQuestionSettingsDialog: state }),
 
   setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 

@@ -2,9 +2,11 @@ import { useSearchParams } from 'react-router-dom';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
 const useSurveysPageMenu = () => {
   const [, setSearchParams] = useSearchParams();
+  const { updateSelectedPageView } = useSurveyTablesPageStore();
 
   const menuBar = (): MenuBarEntryProps => ({
     title: 'surveys.title',
@@ -16,6 +18,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.open',
         icon: SurveysViewOpenIcon,
         action: () => {
+          updateSelectedPageView(SurveysPageView.OPEN);
           setSearchParams({ page: SurveysPageView.OPEN });
         },
       },
@@ -24,6 +27,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.answered',
         icon: SurveysViewAnsweredIcon,
         action: () => {
+          updateSelectedPageView(SurveysPageView.ANSWERED);
           setSearchParams({ page: SurveysPageView.ANSWERED });
         },
       },
@@ -32,6 +36,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.created',
         icon: UserIcon,
         action: () => {
+          updateSelectedPageView(SurveysPageView.CREATED);
           setSearchParams({ page: SurveysPageView.CREATED });
         },
       },
@@ -40,6 +45,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.editor',
         icon: PlusIcon,
         action: () => {
+          updateSelectedPageView(SurveysPageView.CREATOR);
           setSearchParams({ page: SurveysPageView.CREATOR });
         },
       },

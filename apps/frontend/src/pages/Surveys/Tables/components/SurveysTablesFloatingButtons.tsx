@@ -4,7 +4,6 @@ import { AiOutlineUpSquare } from 'react-icons/ai';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -18,12 +17,14 @@ interface SurveysTablesFloatingButtonsProps {
   editSurvey?: () => void;
   canDelete: boolean;
   canParticipate: boolean;
+  participateSurvey?: () => void;
   canShowCommitedAnswers: boolean;
   canShowResults: boolean;
 }
 
 const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
-  const { canEdit, editSurvey, canDelete, canShowCommitedAnswers, canParticipate, canShowResults } = props;
+  const { canEdit, editSurvey, canDelete, canShowCommitedAnswers, canParticipate, participateSurvey, canShowResults } =
+    props;
 
   const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
 
@@ -31,8 +32,6 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
 
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
-
-  const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
 
   const { setIsOpenCommitedAnswersDialog } = useCommitedAnswersDialogStore();
 
@@ -76,7 +75,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
       {
         icon: AiOutlineUpSquare,
         text: t('common.participate'),
-        onClick: () => setIsOpenParticipateSurveyDialog(true),
+        onClick: participateSurvey ? () => participateSurvey() : () => {},
         isVisible: canParticipate,
       },
       {

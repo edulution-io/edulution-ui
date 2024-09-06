@@ -5,10 +5,25 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
+import Attendee from '../conferences/attendee.schema';
 
 @Injectable()
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
+
+  async findSurvey(surveyId: mongoose.Types.ObjectId, username: string): Promise<Survey | null> {
+    const survey = await this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
+    if (survey == null) {
+      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.NOT_FOUND);
+    }
+
+    const isCreator = survey.creator.username === username;
+    const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
+    if (isCreator || isAttendee) {
+      return survey;
+    }
+    throw new CustomHttpException(CommonErrorMessages.PermissionDenied, HttpStatus.NOT_FOUND);
+  }
 
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {

@@ -8,10 +8,11 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 interface CreatedSurveysProps {
   edit: () => void;
+  participate: () => void;
 }
 
 const CreatedSurveys = (props: CreatedSurveysProps) => {
-  const { edit } = props;
+  const { edit, participate } = props;
   const {
     selectedPageView,
     updateSelectedPageView,
@@ -41,12 +42,12 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
         title={t('surveys.view.created')}
         selectedSurvey={selectedSurvey}
         surveys={createdSurveys}
-        selectSurvey={selectSurvey}
         canDelete
         canEdit
         editSurvey={edit}
         canShowResults
         canParticipate
+        participateSurvey={participate}
         canShowCommitedAnswers
       />
     </>

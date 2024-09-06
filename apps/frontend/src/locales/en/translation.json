@@ -295,8 +295,11 @@
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes",
+      "expectingUserInput": "Expecting the user to answer here, ... ",
+      "title": "Title",
+      "description": "Description",
       "addDescription": "Add a description",
-      "expectingUserInput": "Expecting the user to answer here, ... "
+      "questionSettings": "Settings"
     },
     "errors": {
       "updateOrCreateError": "Neither able to update a survey nor to create a new one",
@@ -511,7 +514,8 @@
   "common": {
     "errors": {
       "dbAccessFailed": "Database access failed",
-      "envAccessError": "Not able to read environment variables"
+      "envAccessError": "Not able to read environment variables",
+      "permissionDenied": "Access denied"
     },
     "actions": "Actions",
     "and": "and",
