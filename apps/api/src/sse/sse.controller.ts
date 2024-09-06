@@ -1,16 +1,16 @@
-import { Controller, Get, MessageEvent, Sse } from '@nestjs/common';
+import { Controller, Get, Sse } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Public } from '../common/decorators/public.decorator';
 import SseService from './sse.service';
 
 @Controller('sse')
-class SseController {
-  constructor(private readonly sseService: SseService) {}
+class SseController<T> {
+  constructor(private readonly sseService: SseService<T>) {}
 
   @Public()
   @Get()
   @Sse()
-  sse(): Observable<MessageEvent> {
+  sse(): Observable<T> {
     const { id, subject } = this.sseService.addClient();
 
     // Automatically handle client disconnects

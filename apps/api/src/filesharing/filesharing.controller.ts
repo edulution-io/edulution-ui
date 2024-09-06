@@ -31,10 +31,10 @@ import { Public } from '../common/decorators/public.decorator';
 import SseService from '../sse/sse.service';
 
 @Controller(FileSharingApiEndpoints.BASE)
-class FilesharingController {
+class FilesharingController<T> {
   constructor(
     private readonly filesharingService: FilesharingService,
-    private readonly sseService: SseService,
+    private readonly sseService: SseService<T>,
   ) {}
 
   @Get()

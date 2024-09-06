@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -11,6 +11,8 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import { Request } from 'express';
+import UploadEvent from '@libs/sse/types/uploadEvent';
+import SseEventType from '@libs/sse/types/sseEventType';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -28,7 +30,7 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    private readonly sseService: SseService,
+    private readonly sseService: SseService<UploadEvent>,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -208,10 +210,14 @@ class FilesharingService {
       data: file.buffer, // Assuming buffer is directly used
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         const percentCompleted = Math.round((progressEvent.loaded * 100) / totalSize);
-        this.sseService.sendMessageToAllClients(
-          `Upload in progress: ${percentCompleted}% completed`,
-          'upload-progress',
-        );
+        Logger.log(`Upload in progress: ${percentCompleted}% completed`);
+        this.sseService.sendMessageToAllClients({
+          data: {
+            message: `Upload in progress: ${percentCompleted}% completed`,
+            eventType: SseEventType.UploadProgress,
+            percentCompleted,
+          },
+        });
       },
     };
 
@@ -223,14 +229,23 @@ class FilesharingService {
         status: response.status,
       };
 
-      this.sseService.sendMessageToAllClients(
-        `User ${username} successfully uploaded file to ${path}`,
-        'file-uploaded',
-      );
+      this.sseService.sendMessageToAllClients({
+        data: {
+          message: `User ${username} successfully uploaded file to ${path}`,
+          eventType: SseEventType.FileUploaded,
+          percentCompleted: 100,
+        },
+      });
 
       return resp;
     } catch (error) {
-      this.sseService.sendMessageToAllClients(`User ${username} failed to upload file to ${path}`, 'upload-failed');
+      this.sseService.sendMessageToAllClients({
+        data: {
+          message: `User ${username} failed to upload file to ${path}`,
+          eventType: SseEventType.UploadFailed,
+          percentCompleted: 0,
+        },
+      });
       throw new Error(FileSharingErrorMessage.UploadFailed);
     }
   };

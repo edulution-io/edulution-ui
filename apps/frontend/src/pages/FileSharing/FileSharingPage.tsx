@@ -10,6 +10,7 @@ import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
+
   const { files } = useFileSharingStore();
 
   return (

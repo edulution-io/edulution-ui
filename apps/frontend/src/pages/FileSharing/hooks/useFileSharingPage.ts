@@ -45,7 +45,7 @@ const useFileSharingPage = () => {
   }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
 
   useEffect(() => {
-    connectFileSharingSseEvent(SseEventType.UploadProgress);
+    connectFileSharingSseEvent(SseEventType.FileUploaded);
   }, [connectFileSharingSseEvent]);
 
   useEffect(() => {

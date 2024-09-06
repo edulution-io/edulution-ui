@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
 
-interface CustomMessageEvent {
-  type?: string;
-  data: string;
-}
-
 @Injectable()
-class SseService {
-  private clients: Map<number, Subject<CustomMessageEvent>> = new Map();
+class SseService<T> {
+  private clients: Map<number, Subject<T>> = new Map();
 
   private clientIdCounter = 0;
 
-  addClient(): { id: number; subject: Subject<CustomMessageEvent> } {
+  addClient(): { id: number; subject: Subject<T> } {
     const id = 1 + this.clientIdCounter;
-    const subject = new Subject<CustomMessageEvent>();
+    const subject = new Subject<T>();
 
     this.clients.set(id, subject);
 
@@ -29,16 +24,16 @@ class SseService {
     }
   }
 
-  sendMessageToAllClients(message: string, event: string): void {
+  sendMessageToAllClients(message: T): void {
     this.clients.forEach((subject) => {
-      subject.next({ type: event, data: message });
+      subject.next(message);
     });
   }
 
-  sendMessageToClient(id: number, message: string, event: string): void {
+  sendMessageToClient(id: number, message: T): void {
     const client = this.clients.get(id);
     if (client) {
-      client.next({ type: event, data: message });
+      client.next(message);
     }
   }
 }

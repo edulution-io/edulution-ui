@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
 import UploadEvent from '@libs/sse/types/uploadEvent';
+import { StateCreator } from 'zustand';
 
 type FileSharingState = {
   uploadStatus: number | undefined;
@@ -8,13 +8,22 @@ type FileSharingState = {
 };
 
 const createFileSharingSseStore: StateCreator<FileSharingState> = (set) => ({
-  uploadStatus: 0, // Initial status
+  uploadStatus: 0,
 
   connectFileSharingSseEvent: (eventType) => {
     const eventSource = new EventSource('http://localhost:5173/edu-api/sse');
-    eventSource.addEventListener(eventType, (event) => {
-      const data = event.data as UploadEvent;
-      set({ uploadStatus: data.percentCompleted });
+
+    eventSource.addEventListener(eventType, (event: MessageEvent) => {
+      try {
+        const { data } = event as UploadEvent; // Ensure the event data is parsed correctly
+
+        // Handle specific event type, for example, upload progress
+        if (data.percentCompleted !== undefined) {
+          set({ uploadStatus: data.percentCompleted });
+        }
+      } catch (error) {
+        console.error('Error parsing event data', error);
+      }
     });
   },
 
