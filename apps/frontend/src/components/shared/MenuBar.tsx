@@ -40,12 +40,12 @@ const MenuBar: React.FC = () => {
         return item.id?.toLowerCase().includes(partValue);
       }),
     );
-    if (location.pathname === '/' || pathParts.at(0) !== '') {
+    if (location.pathname === '/' || pathParts.at(0) === ' ') {
       setIsSelected(menuBarEntries.menuItems[0]?.id);
     } else if (matchedItem) {
       setIsSelected(matchedItem.id);
     }
-  }, [location.pathname, menuBarEntries.menuItems]);
+  }, [location.pathname, menuBarEntries.menuItems, isSelected]);
 
   if (menuBarEntries.disabled) {
     return null;
@@ -74,9 +74,9 @@ const MenuBar: React.FC = () => {
                 isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
               )}
               onClick={() => {
-                item.action();
                 setIsSelected(item.id);
                 toggle();
+                item.action();
               }}
             >
               <img
