@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
@@ -7,13 +7,14 @@ import { useLocation } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { getFromPathName } from '@libs/common/utils';
+import { APPS } from '@libs/appconfig/types';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
   const menubarRef = useRef<HTMLDivElement>(null);
 
   const menuBarEntries = useMenuBarConfig();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobileView = useIsMobileView();
@@ -25,27 +26,33 @@ const MenuBar: React.FC = () => {
   }
 
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const queryParams: { key: string; value: string }[] = [];
 
-  searchParams.forEach((value, key) => {
-    queryParams.push({ key, value });
-  });
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams(search);
+    return Array.from(params.entries()).map(([key, value]) => ({ key, value }));
+  }, [search]);
 
-  const pathParts = location.pathname.split('/').filter((part) => part !== '');
+  const shouldSelectFirstItem = useMemo(() => {
+    const fileSharingCondition =
+      pathParts.length === 1 && pathParts[0] === APPS.FILE_SHARING.toString() && queryParams.length !== 1;
+    const classManagementCondition =
+      pathParts.length === 2 && pathParts[0] === APPS.CLASS_MANAGEMENT.toString() && pathParts[1] === 'lesson';
+
+    return location.pathname === '/' || fileSharingCondition || classManagementCondition;
+  }, [pathParts, queryParams]);
+
   useEffect(() => {
     const matchedItem = menuBarEntries.menuItems.find((item) =>
-      queryParams?.some((part) => {
-        const partValue = part.value.replace(/\/$/, '').toLowerCase();
-        return item.id?.toLowerCase().includes(partValue);
-      }),
+      queryParams.some((param) => item.id?.toLowerCase().includes(param.value.toLowerCase())),
     );
-    if (location.pathname === '/' || pathParts.at(0) === ' ') {
+
+    if (shouldSelectFirstItem) {
       setIsSelected(menuBarEntries.menuItems[0]?.id);
     } else if (matchedItem) {
       setIsSelected(matchedItem.id);
     }
-  }, [location.pathname, menuBarEntries.menuItems, isSelected]);
+  }, [pathname, menuBarEntries.menuItems, queryParams, shouldSelectFirstItem]);
 
   if (menuBarEntries.disabled) {
     return null;
