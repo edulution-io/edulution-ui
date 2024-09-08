@@ -53,7 +53,7 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, renderComponen
   return (
     <>
       <div>
-        <h1 className="flex items-center justify-center text-2xl font-semibold">
+        <h1 className="flex items-center justify-center pt-8 text-2xl font-semibold">
           {editMode ? (
             <ControlPanel
               onClose={closeOrNavigateBack}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
 import cn from '@/lib/utils';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface ControlPanelProps {
   isMinimized?: boolean;
@@ -16,27 +17,38 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onClose,
   showMinimize = true,
   showClose = true,
-}) => (
-  <div className={cn('fixed right-0 top-1 z-50 mr-14 flex items-center space-x-2')}>
-    {showMinimize && (
-      <button
-        type="button"
-        className="mr-1 rounded bg-ciLightGrey px-2 py-1 text-sm text-white hover:bg-blue-700"
-        onClick={toggleMinimized}
-      >
-        {isMinimized ? <MdMaximize className="inline  bg-black" /> : <MdMinimize className="inline text-black" />}
-      </button>
-    )}
-    {showClose && (
-      <button
-        type="button"
-        className="rounded bg-ciLightGrey px-2 py-1 text-sm text-white hover:bg-ciRed"
-        onClick={onClose}
-      >
-        <MdClose className="inline text-black" />
-      </button>
-    )}
-  </div>
-);
-
+}) => {
+  const isMobileView = useIsMobileView();
+  return (
+    <div
+      className={cn(
+        'fixed -top-0.5 left-1/2 z-10 -translate-x-1/2 transform items-center',
+        isMobileView && 'flex items-center space-x-4',
+      )}
+    >
+      {showMinimize && (
+        <button
+          type="button"
+          className="mr-1 rounded border-4 bg-black px-2 py-1 text-sm text-white border-ciGreenToBlue hover:bg-blue-700"
+          onClick={toggleMinimized}
+        >
+          {isMinimized ? (
+            <MdMaximize className="inline bg-ciLightGrey" />
+          ) : (
+            <MdMinimize className="inline text-ciLightGrey" />
+          )}
+        </button>
+      )}
+      {showClose && (
+        <button
+          type="button"
+          className="mr-1 rounded border-4 bg-black px-2 py-1 text-sm text-white border-ciGreenToBlue   hover:bg-ciRed"
+          onClick={onClose}
+        >
+          <MdClose className="bg-ciLightGre inline" />
+        </button>
+      )}
+    </div>
+  );
+};
 export default ControlPanel;

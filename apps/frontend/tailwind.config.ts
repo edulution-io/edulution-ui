@@ -63,6 +63,11 @@ module.exports = {
       backgroundImage: {
         ciGreenToBlue: 'linear-gradient(45deg, #88D840, #0081C6)',
       },
+
+      borderImage: {
+        ciGreenToBlue: 'linear-gradient(45deg, #88D840, #0081C6) 1',
+      },
+
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -101,7 +106,7 @@ module.exports = {
   plugins: [
     require('tailwindcss-animate'),
     require('tailwind-scrollbar')({ nocompatible: true }),
-    plugin(function ({ addBase, theme }) {
+    plugin(function ({ addBase, addUtilities, theme }) {
       addBase({
         ':root': {
           '--radius': '0.25rem',
@@ -133,6 +138,17 @@ module.exports = {
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
         span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
+      });
+      const newUtilities = {
+        '.border-ciGreenToBlue': {
+          borderWidth: '4px',
+          borderImage: 'linear-gradient(45deg, #88D840, #0081C6) 1',
+        },
+      };
+
+      addUtilities(newUtilities, {
+        respectPrefix: true,
+        respectImportant: false,
       });
     }),
   ],
