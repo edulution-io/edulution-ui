@@ -6,7 +6,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -14,6 +14,7 @@ import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser
 import JWTUser from '../types/JWTUser';
 
 @ApiTags(SURVEYS)
+@ApiBearerAuth()
 @Controller(SURVEYS)
 class SurveysController {
   constructor(
