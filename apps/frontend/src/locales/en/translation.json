@@ -344,6 +344,13 @@
       "isPublic": "Should external people be able to participate?",
       "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
     },
+    "sharePublicSurveyDialog": {
+      "title": "Share survey",
+      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
+      "copy": "copy",
+      "savedToClipboard": "Saved to clipboard",
+      "savedToClipboardError": "Unable to save into clipboard"
+    },
     "participateDialog": {
       "title": "Participate in the survey"
     },

@@ -345,6 +345,13 @@
       "isPublic": "Sollen auch externe Personen teilnehmen können?",
       "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
     },
+    "sharePublicSurveyDialog": {
+      "title": "Umfrage teilen",
+      "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
+      "copy": "kopieren",
+      "savedToClipboard": "In die Zwischenablage kopiert",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
+    },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
     },

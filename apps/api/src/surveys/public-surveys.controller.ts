@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Query, Get, Patch } from '@nestjs/common';
+import { Body, Controller, Query, Get, Post } from '@nestjs/common';
 import { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import SurveysService from './surveys.service';
@@ -19,7 +19,7 @@ class PublicSurveysController {
     return this.surveyService.findPublicSurvey(surveyId);
   }
 
-  @Patch()
+  @Post()
   @Public()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
