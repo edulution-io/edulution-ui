@@ -17,8 +17,11 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
     try {
       const result = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
       const resultingSurvey = result.data;
-      if (resultingSurvey && resultingSurvey.isPublic) {
-        set({ isOpenSharePublicSurveyDialog: true, publicSurveyId: resultingSurvey.id.toString('hex') });
+      if (resultingSurvey && survey.isPublic) {
+        set({
+          isOpenSharePublicSurveyDialog: true,
+          publicSurveyId: survey.isPublic ? resultingSurvey.id.toString('hex') : '',
+        });
       } else {
         set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: '' });
       }

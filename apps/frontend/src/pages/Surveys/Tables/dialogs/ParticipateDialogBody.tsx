@@ -69,8 +69,8 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onMatrixCellValueChanged.add(saveSurvey);
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
-  surveyModel.onComplete.add(async (_sender, options) => {
-    await commitAnswer(surveyId, saveNo, answer, options);
+  surveyModel.onComplete.add(async (_sender, _options) => {
+    await commitAnswer(surveyId, saveNo, answer /* , _options */);
     updateOpenSurveys();
     updateAnsweredSurveys();
     setIsOpenParticipateSurveyDialog(false);
