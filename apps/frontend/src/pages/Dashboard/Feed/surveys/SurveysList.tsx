@@ -32,10 +32,8 @@ const SurveysList = (props: SurveysListProps) => {
 
   const getSurveyInfo = (survey: SurveyDto) => {
     let surveyFormula;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    surveyFormula = JSON.parse(JSON.stringify(survey.formula));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (!surveyFormula.elements && !surveyFormula.pages[0].elements) {
+    // surveyFormula = JSON.parse(JSON.stringify(survey.formula));
+    if (!survey.formula.elements && !survey.formula.pages[0].elements) {
       surveyFormula = undefined;
       toast.error('not able to parse the surveys string object after stringifying it');
     }

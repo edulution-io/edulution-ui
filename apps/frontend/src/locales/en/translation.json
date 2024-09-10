@@ -134,9 +134,9 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference exists",
-    "noMails": "No unread mail exists",
-    "noSurveys": "No open survey exists"
+    "noConferences": "No running conference",
+    "noMails": "No unread mail",
+    "noSurveys": "No open survey"
   },
   "filesharing": {
     "title": "FILE SHARING",

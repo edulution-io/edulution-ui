@@ -6,7 +6,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useIsSurveysActive from '@/pages/Surveys/useIsSurveysActive';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
-import SurveysList from '@/pages/Dashboard/Feed/surveys/OpenSurveysList';
+import SurveysList from '@/pages/Dashboard/Feed/surveys/SurveysList';
 import { AccordionContent, AccordionItem } from '@/components/ui/AccordionSH';
 
 const SurveysFeed = () => {
