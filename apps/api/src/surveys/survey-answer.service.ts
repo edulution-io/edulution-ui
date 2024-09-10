@@ -6,6 +6,7 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -17,6 +18,54 @@ class SurveyAnswersService {
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
   ) {}
+
+  public getSelectableChoices = async (surveyId: mongoose.Types.ObjectId, questionId: string): Promise<ChoiceDto[]> => {
+    const survey = await this.surveyModel.findById(surveyId).exec();
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    const { backendLimiters } = survey;
+    const limiter = backendLimiters?.find((limit) => limit.questionId === questionId);
+    if (!limiter || !limiter.choices || limiter.choices.length === 0) {
+      throw new CustomHttpException(SurveyErrorMessages.NoBackendLimiters, HttpStatus.NOT_FOUND);
+    }
+    const possibleChoices: ChoiceDto[] = limiter.choices;
+
+    const choices: ChoiceDto[] = [];
+    const promises: Promise<void>[] = possibleChoices.map(async (choice): Promise<void> => {
+      const isVisible = (await this.countChoiceSelections(surveyId, questionId, choice.name)) < choice.limit;
+      if (isVisible) {
+        choices.push(choice);
+      }
+    });
+    await Promise.all(promises);
+    return choices;
+  };
+
+  async countChoiceSelections(
+    surveyId: mongoose.Types.ObjectId,
+    questionId: string,
+    choiceId: string,
+  ): Promise<number> {
+    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId }).exec();
+    if (surveyAnswers.length === 0) {
+      return 0;
+    }
+    let counter = 0;
+    surveyAnswers.forEach((surveyAnswer) => {
+      if (surveyAnswer.answer) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const answer = JSON.parse(JSON.stringify(surveyAnswer.answer));
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+        const questionAnswer = answer[questionId];
+        if (questionAnswer === choiceId) {
+          counter += 1;
+        }
+      }
+    });
+    return counter;
+  }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
     const createdSurveys = await this.surveyModel.find<Survey>({ 'creator.username': username }).exec();

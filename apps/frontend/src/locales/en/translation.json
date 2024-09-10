@@ -303,6 +303,7 @@
       "deleteError": "Not able to delete the surveys",
       "noAnswerError": "No answers available jet",
       "noFormulaError": "The formula of the survey is not readable",
+      "noBackendLimitersError": "No backend limiters available for the given question Id",
       "notFoundError": "Survey not found",
       "participationErrorUserNotAssigned": "User is no participant of the survey",
       "participationErrorAlreadyParticipated": "User has already participated in the survey",

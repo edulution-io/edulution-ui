@@ -43,7 +43,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
         />
       </ScrollArea>
     );
-  }, [surveyId, survey]);
+  }, [surveyId, survey, answer, pageNo]);
 
   return (
     <>

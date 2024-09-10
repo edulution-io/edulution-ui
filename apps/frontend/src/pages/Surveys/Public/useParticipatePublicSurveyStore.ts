@@ -38,7 +38,7 @@ const useParticipatePublicSurveyStore = create<ParticipatePublicSurveyStore>((se
     set({ isSubmitting: true });
     try {
       surveyEditorCallbackOnSave?.showSaveInProgress();
-      await eduApi.patch<string>(PUBLIC_SURVEYS_ENDPOINT, {
+      await eduApi.post<string>(PUBLIC_SURVEYS_ENDPOINT, {
         surveyId,
         saveNo,
         answer,

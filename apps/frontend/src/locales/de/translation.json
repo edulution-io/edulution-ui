@@ -304,6 +304,7 @@
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Es sind noch keine Antworten vorhanden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
+      "noBackendLimitersError": "Für die gegeben QuestionId sind keine Backend-Limiter vorhanden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
