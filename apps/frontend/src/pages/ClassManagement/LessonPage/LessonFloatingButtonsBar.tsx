@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
-import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { FaArrowRightFromBracket, FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -13,23 +12,13 @@ import { IconType } from 'react-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import ShareFilesDialog from '@/pages/ClassManagement/LessonPage/ShareFilesDialog';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
+import FloatingButtons from '@libs/lmnApi/types/FloatingButtons';
+import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
-}
-
-enum FloatingButtons {
-  Share = 'share',
-  Collect = 'collect',
-  ShowCollectedFiles = 'showCollectedFiles',
-  Wifi = 'wifi',
-  WebFilter = 'webfilter',
-  Internet = 'internet',
-  Printing = 'printing',
-  ExamMode = 'exam',
 }
 
 const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
@@ -65,10 +54,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
         if (!shareDTO) return;
         await shareFiles(shareDTO);
       },
-      disableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
+      disableAction: async () => {},
     },
     {
       icon: FaArrowRightToBracket,
@@ -184,43 +170,11 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   return (
     <>
       <FloatingButtonsBar config={config} />
-      {buttons.map((button) =>
-        button.text !== FloatingButtons.Share ? (
-          <div key={button.text}>
-            <LessonConfirmationDialog
-              title={button.text}
-              member={students}
-              isOpen={isDialogOpen === button.text.toString()}
-              onClose={() => setIsDialogOpen('')}
-              enableAction={async () => {
-                await button.enableAction();
-                setIsDialogOpen('');
-                await updateStudents();
-              }}
-              disableAction={async () => {
-                await button.disableAction();
-                setIsDialogOpen('');
-                await updateStudents();
-              }}
-              enableText={button.enableText}
-              disableText={button.disableText}
-            />
-          </div>
-        ) : (
-          <div key={button.text}>
-            <ShareFilesDialog
-              title={button.text}
-              isOpen={isDialogOpen === button.text.toString()}
-              onClose={() => setIsDialogOpen('')}
-              action={async () => {
-                await button.enableAction();
-                setIsDialogOpen('');
-                await updateStudents();
-              }}
-            />
-          </div>
-        ),
-      )}
+      {buttons.map((button) => (
+        <div key={button.text}>
+          {getDialogComponent(button, isDialogOpen, setIsDialogOpen, updateStudents, students)}
+        </div>
+      ))}
     </>
   );
 };
