@@ -39,18 +39,6 @@ export default defineConfig({
     host: 'localhost',
     fs: { strict: false },
     proxy: {
-      // '/auth': {
-      //   rewrite: (path) => path.replace(/^\/auth/, ''),
-      //   target: 'https://auth.schulung.multi.schule/auth',
-      //   changeOrigin: true,
-      //   secure: false,
-      //   headers: {
-      //     Origin: 'https://ui.schulung.multi.schule',
-      //     'X-Forwarded-For': 'client-ip-address',
-      //     'X-Forwarded-Proto': 'https',
-      //     'X-Forwarded-Host': 'auth.schulung.multi.schule',
-      //   },
-      // },
       '/webdav': {
         target: 'https://server.schulung.multi.schule',
         changeOrigin: true,

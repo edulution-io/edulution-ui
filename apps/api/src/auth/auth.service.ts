@@ -16,32 +16,30 @@ class AuthService {
 
   constructor() {
     this.keycloakApi = axios.create({
-      baseURL: KEYCLOAK_API,
+      baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
       timeout: 5000,
     });
   }
 
   authconfig(req: Request): Observable<OidcMetadata> {
-    const targetUrl = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}/.well-known/openid-configuration`;
-
-    return from(this.keycloakApi.get(targetUrl)).pipe(
+    return from(this.keycloakApi.get('/.well-known/openid-configuration')).pipe(
       map((response: AxiosResponse<OidcMetadata>) => {
         const oidcConfig = response.data;
 
-        const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/edu-api/auth`;
+        const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/edu-api/auth`;
 
-        oidcConfig.authorization_endpoint = baseUrl;
-        oidcConfig.token_endpoint = baseUrl;
+        oidcConfig.authorization_endpoint = apiAuthUrl;
+        oidcConfig.token_endpoint = apiAuthUrl;
 
         return oidcConfig;
       }),
-      catchError((err) => {
-        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, err);
+      catchError((error) => {
+        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error);
       }),
     );
   }
 
-  async authenticateUser(body: SigninRequest) {
+  async authenticateUser(body: SigninRequest): Promise<SigninResponse> {
     const extendedBody = {
       ...body,
       client_id: KEYCLOAK_EDU_UI_CLIENT_ID,
@@ -49,15 +47,11 @@ class AuthService {
     };
 
     try {
-      const response = await this.keycloakApi.post<SigninResponse>(
-        `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}/protocol/openid-connect/token`,
-        extendedBody,
-        {
-          headers: {
-            [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
-          },
+      const response = await this.keycloakApi.post<SigninResponse>('/protocol/openid-connect/token', extendedBody, {
+        headers: {
+          [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
-      );
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response?.data) {
