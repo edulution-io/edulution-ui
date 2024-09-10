@@ -1,5 +1,4 @@
-import { ITheme } from 'survey-core';
-import { IHeader, ImageFit } from 'survey-core/typings/packages/survey-core/src/themes';
+import { ITheme, IHeader, ImageFit } from 'survey-core';
 
 const surveyTheme: ITheme = {
   backgroundImage: '',
