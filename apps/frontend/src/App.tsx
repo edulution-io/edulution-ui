@@ -29,9 +29,9 @@ const App = () => {
   }, [lang]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `http://localhost:3001/edu-api/auth`,
-    client_id: '123',
-    client_secret: '123',
+    authority: `${window.location.origin}/edu-api/auth`,
+    client_id: ' ',
+    client_secret: ' ',
     redirect_uri: '',
     loadUserInfo: true,
     automaticSilentRenew: true,

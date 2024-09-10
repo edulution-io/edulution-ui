@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { Request } from 'express';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import ErrorMessage from '@libs/error/errorMessage';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { OidcMetadata, SigninResponse, SigninRequest, ErrorResponse } from 'oidc-client-ts';
+import AuthErrorMessages from '@libs/auth/authErrorMessages';
 
 const { EDUI_AUTH_CLIENT_SECRET, EDUI_AUTH_CLIENT_ID, EDUI_AUTH_REALM, KEYCLOAK_API } = process.env;
 
@@ -23,43 +21,35 @@ class AuthService {
     });
   }
 
-  authconfig(): Observable<any> {
+  authconfig(req: Request): Observable<OidcMetadata> {
     const targetUrl = `${KEYCLOAK_API}/realms/${EDUI_AUTH_REALM}/.well-known/openid-configuration`;
 
     return from(this.keycloakApi.get(targetUrl)).pipe(
-      map((response: AxiosResponse) => {
+      map((response: AxiosResponse<OidcMetadata>) => {
         const oidcConfig = response.data;
 
-        oidcConfig.authorization_endpoint = 'http://localhost:3001/edu-api/auth';
-        oidcConfig.token_endpoint = 'http://localhost:3001/edu-api/auth';
+        const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/edu-api/auth`;
+
+        oidcConfig.authorization_endpoint = baseUrl;
+        oidcConfig.token_endpoint = baseUrl;
 
         return oidcConfig;
       }),
       catchError((err) => {
-        throw new CustomHttpException(
-          'Could not fetch OIDC configuration from Keycloak' as ErrorMessage,
-          HttpStatus.UNAUTHORIZED,
-          err,
-        );
+        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, err);
       }),
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async authenticateUser(body: any) {
-    Logger.log(body, AuthService.name);
-
-    // Erweitere den Body um die client_id und client_secret
+  async authenticateUser(body: SigninRequest) {
     const extendedBody = {
       ...body,
       client_id: EDUI_AUTH_CLIENT_ID,
       client_secret: EDUI_AUTH_CLIENT_SECRET,
     };
 
-    Logger.log(extendedBody, AuthService.name);
-
     try {
-      const response = await this.keycloakApi.post(
+      const response = await this.keycloakApi.post<SigninResponse>(
         `${KEYCLOAK_API}/realms/${EDUI_AUTH_REALM}/protocol/openid-connect/token`,
         extendedBody,
         {
@@ -68,12 +58,13 @@ class AuthService {
           },
         },
       );
-
-      Logger.log(response.data, AuthService.name);
       return response.data;
     } catch (error) {
-      Logger.error(`Authentication failed: ${error.message}`, AuthService.name);
-      throw new Error('Authentication request to Keycloak failed');
+      if (error instanceof AxiosError && error.response?.data) {
+        const errorMessage: ErrorResponse = error.response.data as ErrorResponse;
+        throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
+      }
+      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error);
     }
   }
 }

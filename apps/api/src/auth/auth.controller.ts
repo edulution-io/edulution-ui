@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import type SigninRequest from '@libs/auth/types/signin-request';
+import { SigninRequest } from 'oidc-client-ts';
+import { Request } from 'express';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 
@@ -11,8 +12,8 @@ class AuthController {
 
   @Public()
   @Get('/.well-known/openid-configuration')
-  authconfig() {
-    return this.authService.authconfig();
+  authconfig(@Req() req: Request) {
+    return this.authService.authconfig(req);
   }
 
   @Public()
