@@ -13,6 +13,9 @@ import { IconType } from 'react-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import ShareFilesDialog from '@/pages/ClassManagement/LessonPage/ShareFilesDialog';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
@@ -31,9 +34,10 @@ enum FloatingButtons {
 
 const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<string>('');
-  const { startExamMode, stopExamMode, addManagementGroup, removeManagementGroup, setMember, member } =
+  const { startExamMode, stopExamMode, addManagementGroup, removeManagementGroup, setMember, shareFiles, member } =
     useLessonStore();
   const { fetchUser } = useLmnApiStore();
+  const { moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
@@ -57,8 +61,9 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       icon: FaArrowRightFromBracket,
       text: FloatingButtons.Share,
       enableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
+        const shareDTO = buildShareDTO(member, moveOrCopyItemToPath);
+        if (!shareDTO) return;
+        await shareFiles(shareDTO);
       },
       disableAction: async () => {
         // eslint-disable-next-line no-alert
@@ -179,28 +184,43 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   return (
     <>
       <FloatingButtonsBar config={config} />
-      {buttons.map((button) => (
-        <div key={button.text}>
-          <LessonConfirmationDialog
-            title={button.text}
-            member={students}
-            isOpen={isDialogOpen === button.text.toString()}
-            onClose={() => setIsDialogOpen('')}
-            enableAction={async () => {
-              await button.enableAction();
-              setIsDialogOpen('');
-              await updateStudents();
-            }}
-            disableAction={async () => {
-              await button.disableAction();
-              setIsDialogOpen('');
-              await updateStudents();
-            }}
-            enableText={button.enableText}
-            disableText={button.disableText}
-          />
-        </div>
-      ))}
+      {buttons.map((button) =>
+        button.text !== FloatingButtons.Share ? (
+          <div key={button.text}>
+            <LessonConfirmationDialog
+              title={button.text}
+              member={students}
+              isOpen={isDialogOpen === button.text.toString()}
+              onClose={() => setIsDialogOpen('')}
+              enableAction={async () => {
+                await button.enableAction();
+                setIsDialogOpen('');
+                await updateStudents();
+              }}
+              disableAction={async () => {
+                await button.disableAction();
+                setIsDialogOpen('');
+                await updateStudents();
+              }}
+              enableText={button.enableText}
+              disableText={button.disableText}
+            />
+          </div>
+        ) : (
+          <div key={button.text}>
+            <ShareFilesDialog
+              title={button.text}
+              isOpen={isDialogOpen === button.text.toString()}
+              onClose={() => setIsDialogOpen('')}
+              action={async () => {
+                await button.enableAction();
+                setIsDialogOpen('');
+                await updateStudents();
+              }}
+            />
+          </div>
+        ),
+      )}
     </>
   );
 };

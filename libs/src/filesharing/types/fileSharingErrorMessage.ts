@@ -13,6 +13,7 @@ enum FileSharingErrorMessage {
   DownloadFailed = 'filesharing.errors.DownloadFailed',
   SaveFailed = 'filesharing.errors.SaveFailed',
   DeleteFromServerFailed = 'filesharing.errors.DeleteFromServerFailed',
+  DuplicateFailed = 'filesharing.errors.DuplicateFailed',
 }
 
 export default FileSharingErrorMessage;

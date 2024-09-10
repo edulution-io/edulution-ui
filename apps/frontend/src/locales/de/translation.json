@@ -157,7 +157,8 @@
       "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
-      "SaveFailed": "Speichern fehlgeschlagen"
+      "SaveFailed": "Speichern fehlgeschlagen",
+      "DuplicateFailed": "Kopieren fehlgeschlagen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -672,7 +673,7 @@
     "moveTo": "Verschieben nach",
     "move": "Verschieben",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
-    "selectedItem": "Ausgewählter Ordner"
+    "selectedItem": "Ausgewähltes Element"
   },
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",

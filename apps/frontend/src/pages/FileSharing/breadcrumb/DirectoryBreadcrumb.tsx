@@ -47,7 +47,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
     const pathTo = `/${filteredSegments.slice(0, index + 1).join('/')}`;
     setShowEditor(false);
     setCurrentlyEditingFile(null);
-    const basePath = buildBasePath(user);
+    const basePath = buildBasePath(user?.ldapGroups.roles[0], user?.ldapGroups.classes[0]);
     const finalPath = `${basePath}${pathTo}`;
     onNavigate(finalPath);
   };

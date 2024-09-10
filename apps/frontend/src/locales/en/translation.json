@@ -158,7 +158,8 @@
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
       "DeleteFromServerFailed": "Delete from server failed",
-      "SaveFailed": "Save failed"
+      "SaveFailed": "Save failed",
+      "DuplicateFailed": "Copy failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -672,7 +673,7 @@
     "moveTo": "Move to",
     "move": "Move",
     "unknownErrorOccurred": "An unknown error occurred",
-    "selectedItem": "Ausgewählter Ordner"
+    "selectedItem": "selected item"
   },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",

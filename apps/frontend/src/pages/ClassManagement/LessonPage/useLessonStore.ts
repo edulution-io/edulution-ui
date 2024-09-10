@@ -17,6 +17,8 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import { EDU_API_EDU_API_COPY_FILE } from '@libs/eduApi/types/eduApiEndPoints';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 
 const initialState = {
   isLoading: false,
@@ -56,6 +58,20 @@ const useLessonStore = create<LessonStore>(
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      shareFiles: async (duplicateFileRequestDto: DuplicateFileRequestDto) => {
+        set({ error: null, isLoading: true });
+        try {
+          await eduApi.post(EDU_API_EDU_API_COPY_FILE, {
+            originFilePath: duplicateFileRequestDto.originFilePath,
+            destinationFilePaths: duplicateFileRequestDto.destinationFilePaths,
+          });
         } catch (error) {
           handleApiError(error, set);
         } finally {

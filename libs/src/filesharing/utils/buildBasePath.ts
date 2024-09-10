@@ -1,16 +1,13 @@
-import UserDto from '@libs/user/types/user.dto';
 import UserRoles from '@libs/user/constants/userRoles';
 
-const buildBasePath = (user: UserDto | null): string => {
-  const role = user?.ldapGroups?.roles[0];
-
+const buildBasePath = (role: string | undefined, schoolClass: string | undefined): string => {
   switch (role) {
     case UserRoles.GLOBAL_ADMIN: {
       return 'global';
     }
 
     case UserRoles.SCHOOL_ADMIN: {
-      return user?.ldapGroups?.schools[0] || '';
+      return schoolClass || '';
     }
 
     case UserRoles.TEACHER: {
@@ -18,7 +15,7 @@ const buildBasePath = (user: UserDto | null): string => {
     }
 
     default: {
-      const userClass = user?.ldapGroups?.classes[0];
+      const userClass = schoolClass || '';
       return `${role}s/${userClass}`;
     }
   }

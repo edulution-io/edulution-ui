@@ -9,17 +9,23 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import ContentType from '@libs/filesharing/types/contentType';
-import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 import useLmnApiStore from '@/store/useLmnApiStore';
 
-const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+}
+
+const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({ showAllFiles = false }) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState('');
-  const { setMoveItemsToPath, moveItemsToPath } = useFileSharingDialogStore();
-  const { fetchDirs, directorys } = useFileSharingStore();
+  const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const { fetchDirs, fetchFiles, directorys, files } = useFileSharingStore();
   const { user } = useLmnApiStore();
 
   useEffect(() => {
+    if (showAllFiles) {
+      void fetchFiles(currentPath);
+    }
     void fetchDirs(currentPath);
   }, [currentPath]);
 
@@ -47,18 +53,16 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
       key={row.filename}
       onClick={(e) => {
         e.preventDefault();
-        setMoveItemsToPath(row);
+        setMoveOrCopyItemToPath(row);
       }}
       onDoubleClick={(event) => {
         event.stopPropagation();
         handleNextFolder(row);
       }}
-      style={{
-        backgroundColor: moveItemsToPath?.filename === row.filename ? 'bg-ciDarkBlue bg-opacity-30' : 'bg-transparent',
-        cursor: 'pointer',
-      }}
     >
-      <TableCell>
+      <TableCell
+        className={moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue text-black' : 'text-black'}
+      >
         <div className="flex w-full items-center justify-between">
           <div>{row.basename}</div>
           <Button onClick={() => handleNextFolder(row)}>
@@ -69,7 +73,7 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
     </TableRow>
   );
 
-  const renderDirectoryTable = () => (
+  const renderTable = () => (
     <ScrollArea className="h-[200px]">
       <Table>
         <TableHeader>
@@ -77,7 +81,11 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
             <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>{directorys.map(renderTableRow)}</TableBody>
+        {showAllFiles ? (
+          <TableBody>{files.map(renderTableRow)}</TableBody>
+        ) : (
+          <TableBody>{directorys.map(renderTableRow)}</TableBody>
+        )}
       </Table>
     </ScrollArea>
   );
@@ -88,10 +96,10 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
         path={currentPath}
         onNavigate={handleBreadcrumbNavigate}
       />
-      <ScrollArea className="h-[200px]">{renderDirectoryTable()}</ScrollArea>
-      {moveItemsToPath && (
+      <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
+      {moveOrCopyItemToPath && (
         <p className="pt-10 text-foreground">
-          {t('moveItemDialog.selectedItem')}: {moveItemsToPath.filename}
+          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.filename}
         </p>
       )}
     </>

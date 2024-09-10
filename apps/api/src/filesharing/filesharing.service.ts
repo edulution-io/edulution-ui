@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -11,6 +11,7 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import { Request } from 'express';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -260,6 +261,27 @@ class FilesharingService {
     );
   };
 
+  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+    const client = await this.getClient(username);
+
+    if (!duplicateFile) return;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const destinationPath of duplicateFile.destinationFilePaths) {
+      const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
+      const fullNewPath = `${destinationPath}`;
+
+      Logger.log(`Duplicating file from ${fullOriginPath} to ${fullNewPath} by ${username}`);
+
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await FilesharingService.copyFileViaWebDAV(client, fullOriginPath, fullNewPath);
+      } catch (error) {
+        Logger.error(`Failed to duplicate file from ${fullOriginPath} to ${fullNewPath}`, error);
+        throw error;
+      }
+    }
+  }
+
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
@@ -292,6 +314,29 @@ class FilesharingService {
 
   async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
     return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
+  }
+
+  private static async copyFileViaWebDAV(
+    client: AxiosInstance,
+    originPath: string,
+    destinationPath: string,
+  ): Promise<WebdavStatusReplay> {
+    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+      client,
+      {
+        method: HttpMethodsWebDav.COPY,
+        url: originPath,
+        headers: {
+          Destination: destinationPath,
+        },
+      },
+      true,
+      FileSharingErrorMessage.DuplicateFailed,
+      (response: WebdavStatusReplay) => ({
+        success: response.status >= 200 && response.status < 300,
+        status: response.status,
+      }),
+    );
   }
 }
 
