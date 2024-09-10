@@ -15,10 +15,15 @@ import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 
-const { KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET, PUBLIC_KEY_FILE_PATH } =
-  process.env as {
-    [key: string]: string;
-  };
+const {
+  KEYCLOAK_EDU_UI_REALM,
+  KEYCLOAK_API,
+  KEYCLOAK_EDU_API_CLIENT_ID,
+  KEYCLOAK_EDU_API_CLIENT_SECRET,
+  PUBLIC_KEY_FILE_PATH,
+} = process.env as {
+  [key: string]: string;
+};
 
 @Injectable()
 class GroupsService {
@@ -44,7 +49,7 @@ class GroupsService {
   private keycloakAccessToken: string;
 
   async obtainAccessToken() {
-    const tokenEndpoint = `${KEYCLOAK_API}/realms/edulution/protocol/openid-connect/token`;
+    const tokenEndpoint = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}/protocol/openid-connect/token`;
 
     const params = new URLSearchParams({
       grant_type: 'client_credentials',

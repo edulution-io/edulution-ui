@@ -8,7 +8,7 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import { OidcMetadata, SigninResponse, SigninRequest, ErrorResponse } from 'oidc-client-ts';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
 
-const { EDUI_AUTH_CLIENT_SECRET, EDUI_AUTH_CLIENT_ID, EDUI_AUTH_REALM, KEYCLOAK_API } = process.env;
+const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
 @Injectable()
 class AuthService {
@@ -22,7 +22,7 @@ class AuthService {
   }
 
   authconfig(req: Request): Observable<OidcMetadata> {
-    const targetUrl = `${KEYCLOAK_API}/realms/${EDUI_AUTH_REALM}/.well-known/openid-configuration`;
+    const targetUrl = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}/.well-known/openid-configuration`;
 
     return from(this.keycloakApi.get(targetUrl)).pipe(
       map((response: AxiosResponse<OidcMetadata>) => {
@@ -44,13 +44,13 @@ class AuthService {
   async authenticateUser(body: SigninRequest) {
     const extendedBody = {
       ...body,
-      client_id: EDUI_AUTH_CLIENT_ID,
-      client_secret: EDUI_AUTH_CLIENT_SECRET,
+      client_id: KEYCLOAK_EDU_UI_CLIENT_ID,
+      client_secret: KEYCLOAK_EDU_UI_SECRET,
     };
 
     try {
       const response = await this.keycloakApi.post<SigninResponse>(
-        `${KEYCLOAK_API}/realms/${EDUI_AUTH_REALM}/protocol/openid-connect/token`,
+        `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}/protocol/openid-connect/token`,
         extendedBody,
         {
           headers: {
