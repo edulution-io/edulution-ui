@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import i18next from 'i18next';
-import { Model } from 'survey-core';
-import { SurveyModel } from 'survey-core/typings/survey';
+import { Model, SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 
