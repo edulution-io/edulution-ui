@@ -10,13 +10,10 @@ const getAuthRoutes = (isAuthenticated: boolean) => [
     key="auth"
     element={<BlankLayout />}
   >
-    <Route>
-      path={PUBLIC_SURVEYS_ENDPOINT}
-      <Route
-        path={`${PUBLIC_SURVEYS_ENDPOINT}/*`}
-        element={<ParticipatePublicSurvey />}
-      />
-    </Route>
+    <Route
+      path={`${PUBLIC_SURVEYS_ENDPOINT}/*`}
+      element={<ParticipatePublicSurvey />}
+    />
     <Route
       path="/login"
       element={<LoginPage />}
