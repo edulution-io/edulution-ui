@@ -16,7 +16,7 @@ class LicenseService implements OnModuleInit {
   async onModuleInit() {
     const collections = await this.connection.db?.listCollections({ name: 'licenses' }).toArray();
 
-    if (!collections || collections.length === 0) {
+    if (collections?.length === 0) {
       await this.connection.db?.createCollection('licenses');
     }
 
