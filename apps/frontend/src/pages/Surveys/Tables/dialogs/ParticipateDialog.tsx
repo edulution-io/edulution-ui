@@ -25,7 +25,7 @@ const ParticipateDialog = () => {
 
   const content = useMemo(() => {
     if (!selectedSurvey) {
-      return <p className="transform(-50%,-50%) absolute right-1/2 top-1/2"> Survey not found </p>;
+      return <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h4>;
     }
     return (
       <ScrollArea>

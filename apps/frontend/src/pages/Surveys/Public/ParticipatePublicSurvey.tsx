@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -12,6 +13,8 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey, isFetching } =
     useParticipatePublicSurveyStore();
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (surveyId) {
       void getPublicSurvey(surveyId);
@@ -19,11 +22,8 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   }, [surveyId]);
 
   const content = useMemo(() => {
-    if (!surveyId) {
-      return <p className="transform(-50%,-50%) absolute right-1/2 top-1/2"> Survey Id not found </p>;
-    }
-    if (!survey) {
-      return <p className="transform(-50%,-50%) absolute right-1/2 top-1/2"> Survey not found </p>;
+    if (!surveyId || !survey) {
+      return <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h4>;
     }
     return (
       <ScrollArea>

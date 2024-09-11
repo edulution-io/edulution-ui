@@ -290,6 +290,7 @@
   "survey": {
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Ablaufdatum",
+    "notFound": "Umfrage nicht gefunden",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
@@ -304,7 +305,7 @@
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Es sind noch keine Antworten vorhanden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
-      "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Schranken definiert werden.",
+      "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
