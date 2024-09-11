@@ -26,14 +26,14 @@ const SurveysFeed = () => {
         alt={`${APPS.SURVEYS}-notification-icon`}
         labelTranslationId="surveys.sidebar"
       />
-      <AccordionContent>
+      <AccordionContent className="pb-2">
         {openSurveys.length > 0 ? (
           <SurveysList
             items={openSurveys}
-            className="mb-6 mt-2"
+            className="my-2"
           />
         ) : (
-          <div className="mb-6 mt-2 text-center">{t('feed.noSurveys')}</div>
+          <span className="my-2 text-center text-sm">{t('feed.noSurveys')}</span>
         )}
       </AccordionContent>
     </AccordionItem>

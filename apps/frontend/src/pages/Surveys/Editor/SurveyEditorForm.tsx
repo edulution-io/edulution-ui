@@ -168,7 +168,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ScrollArea className="overflow-y-auto overflow-x-hidden">{getSurveyEditor}</ScrollArea>
+        <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">{getSurveyEditor}</ScrollArea>
       </div>
       <FloatingButtonsBar config={config} />
       <SaveSurveyDialog

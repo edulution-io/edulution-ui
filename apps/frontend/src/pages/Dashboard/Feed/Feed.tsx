@@ -18,9 +18,9 @@ const Feed = () => {
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 p-0">
           <h4 className="font-bold">{t('feed.title')}</h4>
-          <ScrollArea>
+          <ScrollArea className="scrollbar-thin">
             <AccordionSH
               type="multiple"
               defaultValue={[APPS.MAIL, APPS.CONFERENCES, APPS.SURVEYS]}

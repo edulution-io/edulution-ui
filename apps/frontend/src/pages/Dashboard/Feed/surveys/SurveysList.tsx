@@ -1,13 +1,14 @@
 import React from 'react';
-import { toast } from 'sonner';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
-import cn from '@/lib/utils';
+import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import { APPS } from '@libs/appconfig/types';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';
+import cn from '@/lib/utils';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -30,43 +31,38 @@ const SurveysList = (props: SurveysListProps) => {
     setIsOpenParticipateSurveyDialog(true);
   };
 
+  const locale = getLocaleDateFormat();
+
   const getSurveyInfo = (survey: SurveyDto) => {
-    let surveyFormula;
-    // surveyFormula = JSON.parse(JSON.stringify(survey.formula));
-    if (!survey.formula.elements && !survey.formula.pages[0].elements) {
-      surveyFormula = undefined;
-      toast.error('not able to parse the surveys string object after stringifying it');
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const surveyFormula: SurveyFormulaDto | undefined = JSON.parse(JSON.stringify(survey.formula));
 
     return (
-      <div className="w-full">
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          <div className="font-semibold">{surveyFormula.title || survey.id}</div>
-        }
-        <div className="flex text-xs">
-          {`${t('survey.created')}:`}
-          <div className="ml-2">{survey.created ? format(survey.created, 'E, h:m b') : t('not-available')}</div>
-        </div>
+      <div className="flex w-full flex-col gap-1">
+        <span className="text-sm font-semibold">{surveyFormula?.title || survey.id.toString('hex')}</span>
+        <p className="line-clamp-2 text-sm text-muted-foreground">
+          {`${t('survey.created')}:  `}
+          {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : t('not-available')}
+        </p>
         {survey.expires ? (
-          <div className="flex text-xs">
-            {`${t('survey.expires')}:`}
-            <div className="ml-2">{formatDistanceToNow(survey.expires, { addSuffix: true })}</div>
-          </div>
+          <p className="text-muted-background line-clamp-2 text-sm">
+            {`${t('survey.expires')}:  `}
+            {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
+          </p>
         ) : null}
       </div>
     );
   };
 
   return (
-    <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
-      <div className="flex flex-col gap-2 p-4 pt-0">
+    <ScrollArea className={cn('max-h-[470px] overflow-y-auto scrollbar-thin', className)}>
+      <div className="flex flex-col gap-2 py-2 pt-0">
         {items.map((item) => (
           <NavLink
             to={APPS.SURVEYS}
             onClick={() => updateSurveyStores(item)}
             key={item.id.toString('base64')}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-ciDarkGrey"
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             {getSurveyInfo(item)}
           </NavLink>

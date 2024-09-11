@@ -5,7 +5,7 @@ import FEED_PULL_TIME_INTERVAL, { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/das
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useIsMailsActive from '@/pages/Mail/useIsMailsActive';
-import useIsConferenceActive from '@/pages/Dashboard/Feed/conferences/useIsConferenceActive';
+import useIsConferenceActive from '@/pages/ConferencePage/useIsConferenceActive';
 import useIsSurveysActive from '@/pages/Surveys/useIsSurveysActive';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
