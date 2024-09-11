@@ -3,7 +3,7 @@ import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
 import UserStore from '@libs/user/types/store/userStore';
 import TotpSlice from '@libs/user/types/store/totpSlice';
-import AUTH_PATHS from '@libs/auth/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 
 const initialState = {
   totpError: null,

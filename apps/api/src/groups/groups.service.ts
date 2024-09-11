@@ -14,7 +14,7 @@ import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import AUTH_PATHS from '@libs/auth/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 
 const {
   KEYCLOAK_EDU_UI_REALM,
