@@ -34,7 +34,6 @@ const OpenSurveys = () => {
       {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
       <SurveyTablePage
         title={t('surveys.view.open')}
-        selectSurvey={selectSurvey}
         surveys={openSurveys || []}
         selectedSurvey={selectedSurvey}
         canShowResults

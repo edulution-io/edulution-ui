@@ -1,12 +1,12 @@
 import React from 'react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
+import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface SurveysTablePageProps {
   title: string;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
   selectedSurvey?: SurveyDto | undefined;
   surveys?: SurveyDto[];
 
@@ -21,7 +21,6 @@ interface SurveysTablePageProps {
 const SurveyTablePage = (props: SurveysTablePageProps) => {
   const {
     title,
-    selectSurvey,
     selectedSurvey,
     surveys,
 
@@ -35,12 +34,11 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
 
   return (
     <>
+      <h4>{title}</h4>
       <ScrollArea className="overflow-y-auto overflow-x-hidden">
         <SurveyTable
-          title={title}
-          surveys={surveys || []}
-          selectedSurvey={selectedSurvey}
-          selectSurvey={selectSurvey}
+          columns={SurveyTableColumns}
+          data={surveys || []}
         />
       </ScrollArea>
       {selectedSurvey ? (

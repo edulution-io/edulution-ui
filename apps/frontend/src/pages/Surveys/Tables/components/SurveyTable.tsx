@@ -1,117 +1,118 @@
-import React, { useMemo } from 'react';
-import i18n from 'i18next';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  OnChangeFn,
+  RowSelectionState,
+  SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import Checkbox from '@/components/ui/Checkbox';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
-interface SurveyTableProps {
-  title: string;
-  surveys: SurveyDto[];
-  selectSurvey: (survey?: SurveyDto) => void;
-  selectedSurvey?: SurveyDto;
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
-const SURVEY_TABLE_HEADERS: string[] = [
-  'common.title',
-  'survey.creationDate',
-  'survey.expirationDate',
-  'common.participated',
-  'survey.canSubmitMultiple',
-];
+const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const setSelectedItems = useSurveyTablesPageStore((state) => state.setSelectedItems);
+  const { t } = useTranslation();
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+    const newValue =
+      typeof updaterOrValue === 'function'
+        ? updaterOrValue(useSurveyTablesPageStore.getState().selectedRows)
+        : updaterOrValue;
+    useSurveyTablesPageStore.getState().setSelectedRows(newValue);
+  };
 
-const SurveyTable = (props: SurveyTableProps) => {
-  const { title, surveys, selectedSurvey, selectSurvey } = props;
+  const table = useReactTable({
+    data,
+    columns,
+    enableRowSelection: true,
+    enableMultiRowSelection: false,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: handleRowSelectionChange,
+    state: {
+      sorting,
+      rowSelection: useSurveyTablesPageStore((state) => state.selectedRows),
+    },
+  });
 
-  const { t } = useTranslation('translation', { lng: i18n.options.lng || 'en' });
-
-  const localDateFormat = getLocaleDateFormat();
-
-  const surveyRows = useMemo(
-    () =>
-      surveys.map((survey: SurveyDto) => {
-        const isSelectedSurvey = selectedSurvey?.id === survey.id;
-        if (!survey.formula) {
-          return null;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        let surveyObj = JSON.parse(JSON.stringify(survey.formula));
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (!surveyObj.elements && !surveyObj.pages[0].elements) {
-          surveyObj = undefined;
-        }
-
-        return (
-          <TableRow
-            key={`survey_row_-_${survey.id.toString('base64')}`}
-            className="cursor-pointer"
-            onClick={() => {
-              selectSurvey(survey);
-            }}
-          >
-            <TableCell>
-              <Checkbox
-                checked={isSelectedSurvey}
-                aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-              />
-            </TableCell>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            <TableCell className="text-white">{surveyObj?.title || t('common.not-available')}</TableCell>
-            <TableCell className="text-white">
-              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.invitedAttendees && survey?.participatedAttendees
-                ? `${survey?.participatedAttendees.length || 0}/${survey?.invitedAttendees.length || 0}`
-                : t('common.not-available')}
-            </TableCell>
-            <TableCell className="text-white">
-              {survey?.canSubmitMultipleAnswers ? t('common.yes') : t('common.no')}
-            </TableCell>
-          </TableRow>
-        );
-      }),
-    [surveys, selectedSurvey],
-  );
+  useEffect(() => {
+    const selectedItemFilenames = table.getFilteredSelectedRowModel().rows.map((row) => row.original as SurveyDto);
+    setSelectedItems(selectedItemFilenames);
+  }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
-    <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
-      <h4>{title}</h4>
-      <Table>
-        <TableHeader>
-          <TableRow className="text-white">
-            <TableHead
-              key="tableHead-checkbox"
-              className="w-20px"
-            />
-            {SURVEY_TABLE_HEADERS.map((header) => (
-              <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody className="container">
-          {surveys.length && surveys.length > 0 ? (
-            surveyRows
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={SURVEY_TABLE_HEADERS.length + 1} // +1 for the checkbox column
-                className="h-24 text-center text-white"
-              >
-                {t('table.noDataAvailable')}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      {table.getFilteredSelectedRowModel().rows.length > 0 && (
+        <div className="flex-1 text-sm text-background">
+          {t('table.rowsSelected', {
+            selected: table.getFilteredSelectedRowModel().rows.length,
+            total: table.getFilteredRowModel().rows.length,
+          })}
+        </div>
+      )}
+
+      <div className="w-full flex-1 ">
+        <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className="text-background"
+                >
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody className="container">
+              {table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() ? 'selected' : undefined}
+                    className="cursor-pointer"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className="h-[40px] text-background"
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-16 text-center"
+                  >
+                    {t('table.noDataAvailable')}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+      </div>
+    </>
   );
 };
 

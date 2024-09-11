@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -61,6 +62,9 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
       set({ isFetchingAnsweredSurveys: false });
     }
   },
+
+  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+  setSelectedItems: (items: SurveyDto[]) => set({ selectedItems: items }),
 }));
 
 export default useSurveyTablesPageStore;

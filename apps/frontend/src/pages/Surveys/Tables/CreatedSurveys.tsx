@@ -41,7 +41,6 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
         title={t('surveys.view.created')}
         selectedSurvey={selectedSurvey}
         surveys={createdSurveys}
-        selectSurvey={selectSurvey}
         canDelete
         canEdit
         editSurvey={edit}

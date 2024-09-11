@@ -36,9 +36,6 @@ const AnsweredSurveys = () => {
         title={t('surveys.view.answered')}
         selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
-        selectSurvey={selectSurvey}
-        canEdit={false}
-        canDelete={false}
         canShowResults
         canParticipate
         canShowCommitedAnswers

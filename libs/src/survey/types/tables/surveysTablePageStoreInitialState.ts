@@ -14,6 +14,9 @@ const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
 
   openSurveys: [],
   isFetchingOpenSurveys: false,
+
+  selectedRows: {},
+  selectedItems: [],
 };
 
 export default SurveysTablesPageStoreInitialState;
