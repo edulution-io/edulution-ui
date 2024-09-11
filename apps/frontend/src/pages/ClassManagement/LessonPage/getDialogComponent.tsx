@@ -4,6 +4,7 @@ import FloatingButtons from '@libs/lmnApi/types/FloatingButtons';
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { IconType } from 'react-icons';
+import CollectedFilesDialog from '@/pages/ClassManagement/components/Dialogs/CollectedFilesDialog';
 
 interface ButtonConfig {
   title: string;
@@ -68,6 +69,14 @@ const getDialogComponent = (
         );
       }
       return null;
+    case FloatingButtons.ShowCollectedFiles:
+      return (
+        <CollectedFilesDialog
+          title={buttonConfig.title}
+          isOpen={buttonConfig.isOpen}
+          onClose={buttonConfig.onClose}
+        />
+      );
     default:
       return students ? (
         <LessonConfirmationDialog

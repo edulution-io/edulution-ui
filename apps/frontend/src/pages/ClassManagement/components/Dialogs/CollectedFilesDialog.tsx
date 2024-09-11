@@ -1,16 +1,13 @@
 import { t } from 'i18next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import ContentType from '@libs/filesharing/types/contentType';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import { Button } from '@/components/shared/Button';
-import { ArrowRightIcon } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import useUserStore from '@/store/UserStore/UserStore';
+import buildBasePath from '@libs/filesharing/utils/buildBasePath';
 
 interface CollectedFilesDialogProps {
   title: string;
@@ -32,33 +29,14 @@ const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOp
   );
 
   const getDialogBody = () => {
-    const [currentPath, setCurrentPath] = useState('');
     const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
-    const { fetchDirs, directorys } = useFileSharingStore();
-    const { user } = useLmnApiStore();
+    const { fetchFiles, files } = useFileSharingStore();
+    const { user } = useUserStore();
 
+    const basePath = buildBasePath(user?.ldapGroups.roles[0], user?.ldapGroups.classes[0]);
     useEffect(() => {
-      void fetchDirs(currentPath);
-    }, [currentPath]);
-
-    const handleBreadcrumbNavigate = (path: string) => {
-      setCurrentPath(path);
-    };
-
-    const handleNextFolder = (nextItem: DirectoryFileDTO) => {
-      if (nextItem.type === ContentType.DIRECTORY) {
-        let newCurrentPath = currentPath;
-        if (!newCurrentPath.endsWith('/')) {
-          newCurrentPath += '/';
-        }
-        if (newCurrentPath === '/') {
-          newCurrentPath += nextItem.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
-        } else {
-          newCurrentPath += nextItem.basename;
-        }
-        setCurrentPath(newCurrentPath);
-      }
-    };
+      void fetchFiles(`${basePath}/${user?.username}/transfer/collected`);
+    }, []);
 
     const renderTableRow = (row: DirectoryFileDTO) => (
       <TableRow
@@ -67,19 +45,13 @@ const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOp
           e.preventDefault();
           setMoveOrCopyItemToPath(row);
         }}
-        onDoubleClick={(event) => {
-          event.stopPropagation();
-          handleNextFolder(row);
-        }}
       >
         <TableCell
           className={moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue text-black' : 'text-black'}
         >
           <div className="flex w-full items-center justify-between">
-            <div>{row.basename}</div>
-            <Button onClick={() => handleNextFolder(row)}>
-              <ArrowRightIcon />
-            </Button>
+            <div className="max-w-[200px] truncate">{row.basename}</div>
+            {/* Apply truncation */}
           </div>
         </TableCell>
       </TableRow>
@@ -93,25 +65,12 @@ const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOp
               <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>{directorys.map(renderTableRow)}</TableBody>
+          <TableBody>{files.map(renderTableRow)}</TableBody>
         </Table>
       </ScrollArea>
     );
 
-    return (
-      <>
-        <DirectoryBreadcrumb
-          path={currentPath}
-          onNavigate={handleBreadcrumbNavigate}
-        />
-        <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
-        {moveOrCopyItemToPath && (
-          <p className="pt-10 text-foreground">
-            {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.filename}
-          </p>
-        )}
-      </>
-    );
+    return <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>;
   };
 
   return (
