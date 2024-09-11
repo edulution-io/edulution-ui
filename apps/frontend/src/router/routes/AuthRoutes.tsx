@@ -11,6 +11,7 @@ const getAuthRoutes = (isAuthenticated: boolean) => [
     element={<BlankLayout />}
   >
     <Route
+      // TODO: NIEDUUI-392: Move 'public-surveys' route out of AuthRoutes and create a new PublicRoutes section.
       path={`${PUBLIC_SURVEYS_ENDPOINT}/*`}
       element={<ParticipatePublicSurvey />}
     />

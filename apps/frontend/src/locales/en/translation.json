@@ -303,7 +303,7 @@
       "deleteError": "Not able to delete the surveys",
       "noAnswerError": "No answers available jet",
       "noFormulaError": "The formula of the survey is not readable",
-      "noBackendLimitersError": "No backend limiters available for the given question Id",
+      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
       "notFoundError": "Survey not found",
       "participationErrorUserNotAssigned": "User is no participant of the survey",
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
@@ -342,13 +342,12 @@
       "title": "Save and assign to participants",
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
-      "isPublic": "Should external people be able to participate?",
+      "isPublic": "Should the survey be public?",
       "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
       "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "copy": "copy",
       "savedToClipboard": "Saved to clipboard",
       "savedToClipboardError": "Unable to save into clipboard"
     },
@@ -570,6 +569,7 @@
     "custom": "Custom",
     "select": "Select...",
     "edit": "Edit",
+    "copy": "Copy",
     "participate": "Participate",
     "participated": "Participated",
     "not-available": "'Not available'",

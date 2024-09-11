@@ -11,20 +11,16 @@ class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
   async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
-    return (
-      this.surveyModel
-        // eslint-disable-next-line no-underscore-dangle
-        .findOne<Survey>({ _id: surveyId, isPublic: true })
-        .exec()
-        .catch((error) => {
-          throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-        })
-    );
+    try {
+      return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
   }
 
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
     try {
-      await this.surveyModel.deleteMany({ _id: { $in: surveyIds } }).exec();
+      await this.surveyModel.deleteMany({ _id: { $in: surveyIds } });
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
