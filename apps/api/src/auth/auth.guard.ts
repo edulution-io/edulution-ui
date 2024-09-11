@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import AuthErrorMessages from '@libs/auth/authErrorMessages';
+import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import JWTUser from '../types/JWTUser';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
