@@ -278,7 +278,13 @@ class SurveyAnswersService {
     if (surveyAnswers.length === 0) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
-    return surveyAnswers.map((surveyAnswer: SurveyAnswer) => surveyAnswer.answer);
+    const answers: JSON[] = [];
+    surveyAnswers.forEach((surveyAnswer: SurveyAnswer) => {
+      if (surveyAnswer.answer != null) {
+        answers.push(surveyAnswer.answer);
+      }
+    });
+    return answers;
   }
 
   async onSurveyRemoval(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
