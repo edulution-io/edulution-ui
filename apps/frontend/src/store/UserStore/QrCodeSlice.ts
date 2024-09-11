@@ -1,9 +1,9 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import EDU_API_AUTH_ENDPOINT from '@/api/endpoints/auth';
 import { StateCreator } from 'zustand';
 import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
 import UserStore from '@libs/user/types/store/userStore';
+import AUTH_PATHS from '@libs/auth/auth-endpoints';
 
 const initialState = {
   qrCode: '',
@@ -17,7 +17,7 @@ const createQrCodeSlice: StateCreator<UserStore, [], [], QrCodeSlice> = (set) =>
   getQrCode: async (username) => {
     set({ qrCodeIsLoading: true });
     try {
-      const response = await eduApi.get<string>(`${EDU_API_AUTH_ENDPOINT}/${username}`);
+      const response = await eduApi.get<string>(`${AUTH_PATHS.AUTH_ENDPOINT}/${username}`);
       set({ qrCode: response.data });
     } catch (e) {
       handleApiError(e, set, 'qrCodeError');

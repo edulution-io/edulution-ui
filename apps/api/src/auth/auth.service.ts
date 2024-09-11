@@ -7,6 +7,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { OidcMetadata, SigninResponse, SigninRequest, ErrorResponse } from 'oidc-client-ts';
 import AuthErrorMessages from '@libs/auth/authErrorMessages';
+import AUTH_PATHS from '@libs/auth/auth-endpoints';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -22,11 +23,11 @@ class AuthService {
   }
 
   authconfig(req: Request): Observable<OidcMetadata> {
-    return from(this.keycloakApi.get('/.well-known/openid-configuration')).pipe(
+    return from(this.keycloakApi.get(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)).pipe(
       map((response: AxiosResponse<OidcMetadata>) => {
         const oidcConfig = response.data;
 
-        const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/edu-api/auth`;
+        const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/edu-api/${AUTH_PATHS.AUTH_ENDPOINT}`;
 
         oidcConfig.authorization_endpoint = apiAuthUrl;
         oidcConfig.token_endpoint = apiAuthUrl;
@@ -47,7 +48,7 @@ class AuthService {
     };
 
     try {
-      const response = await this.keycloakApi.post<SigninResponse>('/protocol/openid-connect/token', extendedBody, {
+      const response = await this.keycloakApi.post<SigninResponse>(AUTH_PATHS.AUTH_OIDC_TOKEN_PATH, extendedBody, {
         headers: {
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
