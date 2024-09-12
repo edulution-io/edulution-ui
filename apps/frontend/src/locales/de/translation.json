@@ -327,10 +327,24 @@
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
-      "open": "Offene Umfragen",
-      "created": "Eigene Umfragen",
-      "answered": "Schon beantwortet",
-      "editor": "Neue erstellen"
+      "open": {
+        "menu": "Offene Umfragen",
+        "title": "Offene Umfragen",
+        "description": "Hier findest du die Umfragen, zu denen du eingeladen wurdest."
+      },
+      "created": {
+        "menu": "Eigene Umfragen",
+        "title": "Eigens erstellte Umfragen",
+        "description": "Hier findest du die Umfragen, die du selbst erstellt hast."
+      },
+      "answered": {
+        "menu": "Schon beantwortet",
+        "title": "Schon beantwortete Umfragen",
+        "description": "Hier findest du die Umfragen, an denen du bereits teilgenommen hast."
+      },
+      "editor": {
+        "menu": "Neue erstellen"
+      }
     },
     "actions": {
       "showResultsChart": "Schaubild",

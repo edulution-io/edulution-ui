@@ -326,10 +326,24 @@
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
-      "open": "Open Surveys",
-      "created": "Owned Surveys",
-      "answered": "Answered Surveys",
-      "editor": "Create new"
+      "open": {
+        "menu": "Open Surveys",
+        "title": "Open Surveys",
+        "description": "Here, you find the surveys you were invited to participate."
+      },
+      "created": {
+        "menu": "Owned Surveys",
+        "title": "Owned Surveys",
+        "description": "Here, you find the surveys that you have created by yourself."
+      },
+      "answered": {
+        "menu": "Answered Surveys",
+        "title": "Answered Surveys",
+        "description": "Here, you find the surveys that you have participated, already."
+      },
+      "editor": {
+        "menu": "Create new"
+      }
     },
     "actions": {
       "showResultsChart": "Chart",

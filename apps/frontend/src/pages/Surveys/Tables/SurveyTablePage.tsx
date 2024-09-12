@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface SurveysTablePageProps {
   title: string;
+  description: string;
   selectedSurvey?: SurveyDto | undefined;
   surveys?: SurveyDto[];
 
@@ -21,6 +22,7 @@ interface SurveysTablePageProps {
 const SurveyTablePage = (props: SurveysTablePageProps) => {
   const {
     title,
+    description,
     selectedSurvey,
     surveys,
 
@@ -34,7 +36,10 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
 
   return (
     <>
-      <p className="mr-2 py-2 text-white">{title}</p>
+      <div className="py-2">
+        <p className="text-background">{title}</p>
+        <p className="text-sm font-normal text-gray-500">{description}</p>
+      </div>
       <ScrollArea className="overflow-y-auto overflow-x-hidden">
         <SurveyTable
           columns={SurveyTableColumns}

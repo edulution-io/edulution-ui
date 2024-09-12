@@ -38,7 +38,8 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
     <>
       {isFetchingCreatedSurveys ? <LoadingIndicator isOpen={isFetchingCreatedSurveys} /> : null}
       <SurveyTablePage
-        title={t('surveys.view.created')}
+        title={t('surveys.view.created.title')}
+        description={t('surveys.view.created.description')}
         selectedSurvey={selectedSurvey}
         surveys={createdSurveys}
         canDelete
