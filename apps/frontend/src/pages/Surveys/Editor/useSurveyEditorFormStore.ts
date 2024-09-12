@@ -15,13 +15,25 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   updateOrCreateSurvey: async (survey: SurveyDto): Promise<void> => {
     set({ isLoading: true });
     try {
-      await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
+      const result = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
+      const resultingSurvey = result.data;
+      if (resultingSurvey && survey.isPublic) {
+        set({
+          isOpenSharePublicSurveyDialog: true,
+          publicSurveyId: resultingSurvey.id.toString('hex'),
+        });
+      } else {
+        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: '' });
+      }
     } catch (error) {
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
     }
   },
+
+  closeSharePublicSurveyDialog: () =>
+    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorFormStoreInitialState.publicSurveyId }),
 }));
 
 export default useSurveyEditorFormStore;
