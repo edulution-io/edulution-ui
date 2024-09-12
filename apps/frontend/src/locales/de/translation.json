@@ -291,8 +291,12 @@
   "survey": {
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Ablaufdatum",
+<<<<<<< NIEDUUI-263-move-surveys-feed-part-to-dev-branch
     "created": "Erstellt",
     "expires": "Läuft ab",
+=======
+    "notFound": "Umfrage nicht gefunden",
+>>>>>>> dev
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
@@ -307,6 +311,7 @@
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Es sind noch keine Antworten vorhanden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
+      "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
@@ -345,7 +350,14 @@
       "title": "Speichern und Benutzern zuweisen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
+      "isPublic": "Soll die Umfrage öffentlich sein?",
       "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+    },
+    "sharePublicSurveyDialog": {
+      "title": "Umfrage teilen",
+      "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
+      "savedToClipboard": "In die Zwischenablage kopiert",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -564,6 +576,7 @@
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
     "edit": "Bearbeiten",
+    "copy": "Kopieren",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",

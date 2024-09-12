@@ -5,6 +5,11 @@ interface SurveyEditorFormStore {
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
   isLoading: boolean;
+
+  isOpenSharePublicSurveyDialog: boolean;
+  publicSurveyId: string;
+  closeSharePublicSurveyDialog: () => void;
+
   reset: () => void;
 }
 
