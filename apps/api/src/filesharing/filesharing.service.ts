@@ -12,6 +12,8 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import { Request } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import buildNewCollectFolderName from '@libs/filesharing/utils/buildNewCollectFolderName';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -314,6 +316,17 @@ class FilesharingService {
 
   async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
     return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
+  }
+
+  async collectFiles(
+    userRole: string,
+    schoolClass: string,
+    username: string,
+    collectFileRequestDTO: CollectFileRequestDTO,
+  ) {
+    Logger.log(collectFileRequestDTO.originPath);
+    const newFolder = buildNewCollectFolderName(schoolClass);
+    await this.createFolder(username, `${userRole}s/${username}/transfer/collected`, newFolder);
   }
 
   private static async copyFileViaWebDAV(

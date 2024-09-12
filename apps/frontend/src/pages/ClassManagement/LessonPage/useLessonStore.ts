@@ -17,8 +17,10 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import { EDU_API_EDU_API_COPY_FILE } from '@libs/eduApi/types/eduApiEndPoints';
+import { EDU_API_EDU_API_COLLECT_FILE, EDU_API_EDU_API_COPY_FILE } from '@libs/eduApi/types/eduApiEndPoints';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import UserDto from '@libs/user/types/user.dto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 
 const initialState = {
   isLoading: false,
@@ -71,6 +73,21 @@ const useLessonStore = create<LessonStore>(
           await eduApi.post(EDU_API_EDU_API_COPY_FILE, {
             originFilePath: duplicateFileRequestDto.originFilePath,
             destinationFilePaths: duplicateFileRequestDto.destinationFilePaths,
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      collectFiles: async (duplicateFileRequestDto: CollectFileRequestDTO, user: UserDto) => {
+        set({ error: null, isLoading: true });
+        try {
+          await eduApi.post(EDU_API_EDU_API_COLLECT_FILE, {
+            originFilePath: duplicateFileRequestDto.originPath,
+            destinationFilePaths: duplicateFileRequestDto.destinationPath,
+            user,
           });
         } catch (error) {
           handleApiError(error, set);

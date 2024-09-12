@@ -24,6 +24,7 @@ import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
@@ -129,6 +130,16 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+  }
+
+  @Post(FileSharingApiEndpoints.COLLECT)
+  async collectFiles(
+    @Body() collectFileRequestDTO: CollectFileRequestDTO,
+    @Query('userRole') userRole: string,
+    @Query('schoolname') schoolname: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.collectFiles(userRole, schoolname, username, collectFileRequestDTO);
   }
 
   @Public()
