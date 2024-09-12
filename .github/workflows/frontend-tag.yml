@@ -9,9 +9,6 @@ on:
 # TODO: Remove github secrets and env when handled by backend NIEDUUI-143
 env:
   VITE_WEBDAV_KEY: ${{ secrets.WEBDAV_KEY }}
-  VITE_AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
-  VITE_AUTH_CLIENT_ID: edulution-api
-  VITE_AUTH_REALM: edulution
 
 jobs:
   prepare:

@@ -14,11 +14,17 @@ import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 
-const { KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET, PUBLIC_KEY_FILE_PATH } =
-  process.env as {
-    [key: string]: string;
-  };
+const {
+  KEYCLOAK_EDU_UI_REALM,
+  KEYCLOAK_API,
+  KEYCLOAK_EDU_API_CLIENT_ID,
+  KEYCLOAK_EDU_API_CLIENT_SECRET,
+  PUBLIC_KEY_FILE_PATH,
+} = process.env as {
+  [key: string]: string;
+};
 
 @Injectable()
 class GroupsService {
@@ -44,7 +50,7 @@ class GroupsService {
   private keycloakAccessToken: string;
 
   async obtainAccessToken() {
-    const tokenEndpoint = `${KEYCLOAK_API}/realms/edulution/protocol/openid-connect/token`;
+    const tokenEndpoint = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
 
     const params = new URLSearchParams({
       grant_type: 'client_credentials',
@@ -87,7 +93,7 @@ class GroupsService {
     token: string,
     queryParams: string = '',
   ): Promise<T> {
-    const url = `${KEYCLOAK_API}/admin/realms/edulution/${urlPath}?${queryParams}`;
+    const url = `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}/${urlPath}?${queryParams}`;
     const headers = {
       [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
       [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
@@ -113,7 +119,7 @@ class GroupsService {
 
   static async fetchCurrentUser(token: string): Promise<JwtUser> {
     try {
-      const tokenEndpoint = `${KEYCLOAK_API}/realms/edulution/protocol/openid-connect/userinfo`;
+      const tokenEndpoint = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}${AUTH_PATHS.AUTH_OIDC_USERINFO_PATH}`;
 
       const response = await axios.get<JwtUser>(tokenEndpoint, {
         headers: {

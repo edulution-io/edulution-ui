@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import AuthErrorMessages from '@libs/auth/authErrorMessages';
+import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import { Request } from 'express';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 
