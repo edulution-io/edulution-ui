@@ -85,8 +85,8 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         try {
           await eduApi.post(EDU_API_EDU_API_COLLECT_FILE, {
-            originFilePath: duplicateFileRequestDto.originPath,
-            destinationFilePaths: duplicateFileRequestDto.destinationPath,
+            originPaths: duplicateFileRequestDto.originPaths,
+            destinationPath: duplicateFileRequestDto.destinationPath,
             user,
           });
         } catch (error) {
