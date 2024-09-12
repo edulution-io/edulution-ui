@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import i18next from 'i18next';
 import { ColumnDef } from '@tanstack/react-table';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormulaDto from '@libs/survey/types/surveyFormula.dto';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
@@ -12,7 +13,9 @@ import { ButtonSH } from '@/components/ui/ButtonSH';
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
     id: 'select-survey',
-
+    accessorKey: 'formula',
+    enableHiding: false,
+    enableSorting: true,
     header: ({ table, column }) => (
       <SortableHeader<SurveyDto, unknown>
         titleTranslationId="common.title"
@@ -45,10 +48,30 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         </div>
       );
     },
-    enableHiding: false,
+    sortingFn: (rowA, rowB) => {
+      const surveyA = rowA.original;
+      const surveyB = rowB.original;
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const surveyFormulaA: SurveyFormulaDto | undefined = JSON.parse(JSON.stringify(surveyA.formula));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const surveyFormulaB: SurveyFormulaDto | undefined = JSON.parse(JSON.stringify(surveyB.formula));
+
+      const valueA: string | undefined = surveyFormulaA?.title;
+      const valueB: string | undefined = surveyFormulaB?.title;
+
+      if (!valueB) {
+        return 1;
+      }
+      if (!valueA) {
+        return -1;
+      }
+      return valueA.localeCompare(valueB);
+    },
   },
   {
     accessorKey: 'created',
+    enableSorting: true,
     header: ({ column }) => (
       <SortableHeader<SurveyDto, unknown>
         titleTranslationId="survey.creationDate"
@@ -75,18 +98,27 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         </ButtonSH>
       );
     },
-
     sortingFn: (rowA, rowB) => {
       const dateA = rowA.original.created;
       const dateB = rowB.original.created;
-      if (!dateA || !dateB) {
-        return !dateA ? -1 : 1;
+      if (!dateB) {
+        return 1;
       }
-      return dateA.getTime() - dateB.getTime();
+      if (!dateA) {
+        return -1;
+      }
+      if (dateA === dateB) {
+        return 0;
+      }
+      if (dateA < dateB) {
+        return -1;
+      }
+      return 1;
     },
   },
   {
     accessorKey: 'expires',
+    enableSorting: true,
     header: ({ column }) => (
       <SortableHeader<SurveyDto, unknown>
         titleTranslationId="survey.expirationDate"
@@ -113,18 +145,28 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         </ButtonSH>
       );
     },
-
     sortingFn: (rowA, rowB) => {
       const dateA = rowA.original.expires;
       const dateB = rowB.original.expires;
-      if (!dateA || !dateB) {
-        return !dateA ? -1 : 1;
+      if (!dateB) {
+        return 1;
       }
-      return dateA.getTime() - dateB.getTime();
+      if (!dateA) {
+        return -1;
+      }
+      if (dateA === dateB) {
+        return 0;
+      }
+      if (dateA < dateB) {
+        return -1;
+      }
+      return 1;
     },
   },
   {
     id: 'participated',
+    accessorKey: 'participatedAttendees',
+    enableSorting: true,
     header: ({ column }) => (
       <SortableHeader<SurveyDto, unknown>
         titleTranslationId="common.participated"
@@ -150,6 +192,47 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
           </span>
         </ButtonSH>
       );
+    },
+    sortingFn: (rowA, rowB) => {
+      const surveyA: SurveyDto = rowA.original;
+      const surveyB: SurveyDto = rowB.original;
+      if (!surveyB) {
+        return 1;
+      }
+      if (!surveyA) {
+        return -1;
+      }
+
+      const invitesA: number = surveyA.invitedAttendees.length;
+      const invitesB: number = surveyB.invitedAttendees.length;
+      if (!invitesB) {
+        return 1;
+      }
+      if (!invitesA) {
+        return -1;
+      }
+      if (invitesB > invitesA) {
+        return -1;
+      }
+      if (invitesB < invitesA) {
+        return 1;
+      }
+
+      const participatesA: number = surveyA.participatedAttendees.length;
+      const participatesB: number = surveyB.participatedAttendees.length;
+      if (!participatesB) {
+        return 1;
+      }
+      if (!participatesA) {
+        return -1;
+      }
+      if (participatesA === participatesB) {
+        return 0;
+      }
+      if (participatesA < participatesB) {
+        return -1;
+      }
+      return 1;
     },
   },
 ];
