@@ -19,7 +19,7 @@ const buildBasePath = (user: UserDto | null): string => {
     }
 
     default: {
-      const userClass = user?.ldapGroups.classes[0];
+      const userClass = user?.ldapGroups?.classes[0];
       return `${role}s/${userClass}/${username}`;
     }
   }

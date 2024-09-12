@@ -119,7 +119,6 @@ class FilesharingService {
 
   getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
-
     return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
@@ -324,7 +323,7 @@ class FilesharingService {
     username: string,
     collectFileRequestDTO: CollectFileRequestDTO,
   ) {
-    Logger.log(collectFileRequestDTO.originPath);
+    Logger.log(collectFileRequestDTO.originPaths, collectFileRequestDTO.destinationPath);
     const newFolder = buildNewCollectFolderName(schoolClass);
     await this.createFolder(username, `${userRole}s/${username}/transfer/collected`, newFolder);
   }

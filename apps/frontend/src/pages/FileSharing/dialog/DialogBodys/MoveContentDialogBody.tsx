@@ -13,9 +13,15 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 
 interface MoveContentDialogBodyProps {
   showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
 }
 
-const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({ showAllFiles = false }) => {
+const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
+  showAllFiles = false,
+  pathToFetch,
+  showSelectedFile = true,
+}) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState('');
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
@@ -23,10 +29,18 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({ showAllFi
   const { user } = useLmnApiStore();
 
   useEffect(() => {
-    if (showAllFiles) {
+    if (showAllFiles && !pathToFetch) {
       void fetchFiles(currentPath);
     }
-    void fetchDirs(currentPath);
+    if (pathToFetch && showAllFiles) {
+      if (currentPath.includes(pathToFetch)) {
+        void fetchFiles(currentPath);
+      } else {
+        void fetchFiles(pathToFetch);
+      }
+    } else {
+      void fetchDirs(currentPath);
+    }
   }, [currentPath]);
 
   const handleBreadcrumbNavigate = (path: string) => {
@@ -61,9 +75,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({ showAllFi
       }}
     >
       <TableCell
-        className={moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue text-black' : 'text-black'}
+        className={`${
+          moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue text-black' : 'text-black'
+        } max-w-[150px] overflow-hidden truncate whitespace-nowrap`}
       >
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full items-center justify-between text-ellipsis">
           <div>{row.basename}</div>
           <Button onClick={() => handleNextFolder(row)}>
             <ArrowRightIcon />
@@ -97,7 +113,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({ showAllFi
         onNavigate={handleBreadcrumbNavigate}
       />
       <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
-      {moveOrCopyItemToPath && (
+      {moveOrCopyItemToPath && showSelectedFile && (
         <p className="pt-10 text-foreground">
           {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.filename}
         </p>

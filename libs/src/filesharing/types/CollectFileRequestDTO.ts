@@ -1,5 +1,5 @@
 class CollectFileRequestDTO {
-  originPath: string;
+  originPaths: string[];
 
   destinationPath: string;
 }

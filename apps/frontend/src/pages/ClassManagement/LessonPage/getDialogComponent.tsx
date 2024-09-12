@@ -75,6 +75,7 @@ const getDialogComponent = (
           title={buttonConfig.title}
           isOpen={buttonConfig.isOpen}
           onClose={buttonConfig.onClose}
+          action={() => buttonConfig.action}
         />
       );
     default:
@@ -84,8 +85,8 @@ const getDialogComponent = (
           member={students}
           isOpen={buttonConfig.isOpen}
           onClose={buttonConfig.onClose}
-          enableAction={buttonConfig.enableAction} // Now synchronous
-          disableAction={buttonConfig.disableAction} // Now synchronous
+          enableAction={buttonConfig.enableAction}
+          disableAction={buttonConfig.disableAction}
           enableText={buttonConfig.enableText}
           disableText={buttonConfig.disableText}
         />
