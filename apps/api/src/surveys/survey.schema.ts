@@ -1,6 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Group } from '@libs/groups/types/group';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import Attendee from '../conferences/attendee.schema';
 
 export type SurveyDocument = Survey & Document;
@@ -15,6 +16,12 @@ export class Survey {
 
   @Prop({ type: JSON, required: true })
   formula: JSON;
+
+  @Prop({ required: false })
+  backendLimiters?: {
+    questionId: string;
+    choices: ChoiceDto[];
+  }[];
 
   @Prop({ required: true })
   saveNo: number;
@@ -42,6 +49,9 @@ export class Survey {
 
   @Prop({ required: false })
   isAnonymous?: boolean;
+
+  @Prop({ required: false })
+  isPublic?: boolean;
 
   @Prop({ required: false })
   canUpdateFormerAnswer?: boolean;

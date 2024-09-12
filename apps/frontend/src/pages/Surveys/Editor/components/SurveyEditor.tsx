@@ -29,7 +29,8 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     isAutoSave: true,
     maxNestedPanels: 0,
     showJSONEditorTab: true,
-    showPreviewTab: false,
+    showPreviewTab: true,
+    showLogicTab: true,
     questionTypes: [
       'radiogroup',
       'rating',
