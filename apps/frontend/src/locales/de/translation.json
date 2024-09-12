@@ -514,6 +514,8 @@
   "students": "Schüler",
   "user": "Benutzer",
   "login": {
+    "username_too_long": "Benutzername zu lang",
+    "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken"
   },
