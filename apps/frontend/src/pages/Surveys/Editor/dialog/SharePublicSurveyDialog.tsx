@@ -36,7 +36,7 @@ const SharePublicSurveyDialog = () => {
           variant="btn-collaboration"
           onClick={() => copyToClipboard()}
         >
-          {t('surveys.sharePublicSurveyDialog.copy')}
+          {t('common.copy')}
         </Button>
       </div>
     </>
