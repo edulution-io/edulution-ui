@@ -134,12 +134,12 @@ class FilesharingController {
 
   @Post(FileSharingApiEndpoints.COLLECT)
   async collectFiles(
-    @Body() collectFileRequestDTO: CollectFileRequestDTO,
+    @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
     @Query('userRole') userRole: string,
-    @Query('schoolname') schoolname: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.collectFiles(userRole, schoolname, username, collectFileRequestDTO);
+    const { collectFileRequestDTO } = body;
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole);
   }
 
   @Public()

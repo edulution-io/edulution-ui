@@ -1,7 +1,11 @@
 class CollectFileRequestDTO {
-  originPaths: string[];
+  originPath: string;
 
   destinationPath: string;
+
+  userName: string;
+
+  newFolderName: string;
 }
 
 export default CollectFileRequestDTO;

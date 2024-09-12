@@ -16,6 +16,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharing
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 import FloatingButtons from '@libs/lmnApi/types/FloatingButtons';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
+import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
@@ -23,9 +24,17 @@ interface FloatingButtonsBarProps {
 
 const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<string>('');
-  const { startExamMode, stopExamMode, addManagementGroup, removeManagementGroup, setMember, shareFiles, member } =
-    useLessonStore();
-  const { fetchUser } = useLmnApiStore();
+  const {
+    startExamMode,
+    stopExamMode,
+    addManagementGroup,
+    removeManagementGroup,
+    setMember,
+    shareFiles,
+    collectFiles,
+    member,
+  } = useLessonStore();
+  const { fetchUser, user } = useLmnApiStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const updateStudents = async () => {
@@ -60,8 +69,9 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       icon: FaArrowRightToBracket,
       text: FloatingButtons.Collect,
       enableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
+        const collectDTO = buildCollectDTO(member, user);
+        if (!collectDTO) return;
+        await collectFiles(collectDTO, user?.sophomorixRole || '');
       },
       disableAction: async () => {
         // eslint-disable-next-line no-alert

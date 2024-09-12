@@ -19,7 +19,6 @@ import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import { EDU_API_EDU_API_COLLECT_FILE, EDU_API_EDU_API_COPY_FILE } from '@libs/eduApi/types/eduApiEndPoints';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
-import UserDto from '@libs/user/types/user.dto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 
 const initialState = {
@@ -81,13 +80,12 @@ const useLessonStore = create<LessonStore>(
         }
       },
 
-      collectFiles: async (duplicateFileRequestDto: CollectFileRequestDTO, user: UserDto) => {
+      collectFiles: async (collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) => {
         set({ error: null, isLoading: true });
+        const queryParamString = `?userRole=${encodeURIComponent(userRole)}`;
         try {
-          await eduApi.post(EDU_API_EDU_API_COLLECT_FILE, {
-            originPaths: duplicateFileRequestDto.originPaths,
-            destinationPath: duplicateFileRequestDto.destinationPath,
-            user,
+          await eduApi.post(`${EDU_API_EDU_API_COLLECT_FILE}${queryParamString}`, {
+            collectFileRequestDTO,
           });
         } catch (error) {
           handleApiError(error, set);

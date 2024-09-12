@@ -12,7 +12,6 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import { Request } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
-import buildNewCollectFolderName from '@libs/filesharing/utils/buildNewCollectFolderName';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
@@ -317,15 +316,18 @@ class FilesharingService {
     return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
   }
 
-  async collectFiles(
-    userRole: string,
-    schoolClass: string,
-    username: string,
-    collectFileRequestDTO: CollectFileRequestDTO,
-  ) {
-    Logger.log(collectFileRequestDTO.originPaths, collectFileRequestDTO.destinationPath);
-    const newFolder = buildNewCollectFolderName(schoolClass);
-    await this.createFolder(username, `${userRole}s/${username}/transfer/collected`, newFolder);
+  async collectFiles(username: string, collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) {
+    const initFolderName = `${userRole}s/${username}/transfer/collected`;
+    await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName.toString());
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of collectFileRequestDTO) {
+      Logger.log(item);
+      // eslint-disable-next-line no-await-in-loop
+      await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+      // eslint-disable-next-line no-await-in-loop
+      await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
+    }
   }
 
   private static async copyFileViaWebDAV(
