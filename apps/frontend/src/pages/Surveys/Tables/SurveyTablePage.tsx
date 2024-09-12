@@ -38,7 +38,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     <>
       <div className="py-2">
         <p className="text-background">{title}</p>
-        <p className="text-sm font-normal text-gray-500">{description}</p>
+        <p className="text-sm font-normal text-ciGrey">{description}</p>
       </div>
       <ScrollArea className="overflow-y-auto overflow-x-hidden">
         <SurveyTable
