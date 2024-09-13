@@ -1,8 +1,12 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { EDU_API_GROUPS_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GroupsService from './groups.service';
 import GetToken from '../common/decorators/getToken.decorator';
 
-@Controller('groups')
+@ApiTags(EDU_API_GROUPS_ENDPOINT)
+@ApiBearerAuth()
+@Controller(EDU_API_GROUPS_ENDPOINT)
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 

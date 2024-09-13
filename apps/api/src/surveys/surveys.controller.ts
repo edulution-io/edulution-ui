@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Query, Get, Patch, Post, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ANSWER_ENDPOINT, FIND_ONE_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -12,6 +13,8 @@ import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';
 
+@ApiTags(SURVEYS)
+@ApiBearerAuth()
 @Controller(SURVEYS)
 class SurveysController {
   constructor(
