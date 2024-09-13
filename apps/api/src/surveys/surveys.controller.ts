@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Query, Get, Patch, Post, Param } from '@nestjs/common';
+import { ANSWER_ENDPOINT, FIND_ONE_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
@@ -18,6 +18,11 @@ class SurveysController {
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
+
+  @Get(FIND_ONE_ENDPOINT)
+  async findOne(@Query('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
+    return this.surveyService.findSurvey(surveyId, username);
+  }
 
   @Get()
   async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {

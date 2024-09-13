@@ -521,6 +521,7 @@
   },
   "common": {
     "errors": {
+      "permissionDenied": "Zugriff verweigert",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },

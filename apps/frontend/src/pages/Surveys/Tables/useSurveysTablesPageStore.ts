@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT, { FIND_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
 import SurveysTablesPageStoreInitialState from '@libs/survey/types/tables/surveysTablePageStoreInitialState';
@@ -12,8 +11,22 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
   reset: () => set(SurveysTablesPageStoreInitialState),
 
-  updateSelectedPageView: (pageView: SurveysPageView) => set({ selectedPageView: pageView }),
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+
+  updateSelectedSurvey: async (surveyId: string): Promise<void> => {
+    set({ isFetching: true });
+    try {
+      const response = await eduApi.get<SurveyDto>(FIND_SURVEYS_ENDPOINT, { params: { surveyId } });
+      const survey = response.data;
+      set({ selectedSurvey: survey });
+    } catch (error) {
+      set({ selectedSurvey: undefined });
+      handleApiError(error, set);
+    } finally {
+      set({ isFetching: false });
+    }
+  },
+
   updateUsersSurveys: async (): Promise<void> => {
     const { updateOpenSurveys, updateCreatedSurveys, updateAnsweredSurveys } = get();
     const promises = [updateOpenSurveys(), updateCreatedSurveys(), updateAnsweredSurveys()];

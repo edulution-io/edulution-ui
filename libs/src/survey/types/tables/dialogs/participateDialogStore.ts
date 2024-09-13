@@ -11,8 +11,6 @@ interface ParticipateDialogStore {
   pageNo: number;
   setPageNo: (pageNo: number) => void;
 
-  isOpenParticipateSurveyDialog: boolean;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   answerSurvey: (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
