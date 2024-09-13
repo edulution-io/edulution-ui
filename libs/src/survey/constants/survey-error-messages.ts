@@ -3,6 +3,7 @@ enum SurveyErrorMessages {
   DeleteError = 'survey.errors.deleteError',
   NoAnswers = 'survey.errors.noAnswerError',
   NoFormula = 'survey.errors.noFormulaError',
+  NoBackendLimiters = 'survey.errors.noBackendLimitersError',
   NotFoundError = 'survey.errors.notFoundError',
   IdTypeError = 'survey.errors.idTypeError',
   ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',

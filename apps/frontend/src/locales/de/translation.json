@@ -290,6 +290,7 @@
   "survey": {
     "creationDate": "Erstellungsdatum",
     "expirationDate": "Ablaufdatum",
+    "notFound": "Umfrage nicht gefunden",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
@@ -304,6 +305,7 @@
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Es sind noch keine Antworten vorhanden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
+      "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
@@ -342,7 +344,14 @@
       "title": "Speichern und Benutzern zuweisen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
+      "isPublic": "Soll die Umfrage öffentlich sein?",
       "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+    },
+    "sharePublicSurveyDialog": {
+      "title": "Umfrage teilen",
+      "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
+      "savedToClipboard": "In die Zwischenablage kopiert",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -501,10 +510,13 @@
   "iso": "ISO",
   "program": "Programme",
   "share": "Share",
+  "teacher": "Lehrer",
   "student": "Schüler",
   "students": "Schüler",
   "user": "Benutzer",
   "login": {
+    "username_too_long": "Benutzername zu lang",
+    "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken"
   },
@@ -561,6 +573,7 @@
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
     "edit": "Bearbeiten",
+    "copy": "Kopieren",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",

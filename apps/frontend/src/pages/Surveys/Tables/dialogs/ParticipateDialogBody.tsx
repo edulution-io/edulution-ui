@@ -1,10 +1,16 @@
 import React from 'react';
 import mongoose from 'mongoose';
+import i18next from 'i18next';
 import { Survey } from 'survey-react-ui';
 import { CompleteEvent, Model } from 'survey-core';
-import * as SurveyThemes from 'survey-core/themes';
-import '@/pages/Surveys/theme/creator.min.css';
+import 'survey-core/i18n/english';
+import 'survey-core/i18n/german';
+import 'survey-core/i18n/french';
+import 'survey-core/i18n/spanish';
+import 'survey-core/i18n/italian';
+import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
+import '@/pages/Surveys/theme/custom.participation.css';
 
 interface ParticipateDialogBodyProps {
   surveyId: mongoose.Types.ObjectId;
@@ -23,6 +29,7 @@ interface ParticipateDialogBodyProps {
   updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
+  className?: string;
 }
 
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
@@ -38,9 +45,12 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     updateOpenSurveys,
     updateAnsweredSurveys,
     setIsOpenParticipateSurveyDialog,
+    className,
   } = props;
   const surveyModel = new Model(formula);
-  surveyModel.applyTheme(SurveyThemes.FlatDark);
+  surveyModel.applyTheme(surveyTheme);
+
+  surveyModel.locale = i18next.options.lng || 'en';
 
   if (surveyModel.pages.length > 1) {
     surveyModel.showProgressBar = 'top';
@@ -59,14 +69,14 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onMatrixCellValueChanged.add(saveSurvey);
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
-  surveyModel.onComplete.add(async (_sender, options) => {
-    await commitAnswer(surveyId, saveNo, answer, options);
+  surveyModel.onComplete.add(async (_sender, _options) => {
+    await commitAnswer(surveyId, saveNo, answer /* , _options */);
     updateOpenSurveys();
     updateAnsweredSurveys();
     setIsOpenParticipateSurveyDialog(false);
   });
   return (
-    <div className="max-h-[75vh] overflow-y-auto rounded bg-gray-600 p-4">
+    <div className={className}>
       <Survey model={surveyModel} />
     </div>
   );
