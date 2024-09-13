@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import i18next from 'i18next';
 import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';

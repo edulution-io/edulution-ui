@@ -2,10 +2,12 @@ import mongoose from 'mongoose';
 import { Body, Controller, Query, Get, Post, Param } from '@nestjs/common';
 import { PUBLIC_SURVEYS_ENDPOINT, RESTFUL_CHOICES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import { ApiTags } from '@nestjs/swagger';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
 
+@ApiTags(PUBLIC_SURVEYS_ENDPOINT)
 @Controller(PUBLIC_SURVEYS_ENDPOINT)
 class PublicSurveysController {
   constructor(
