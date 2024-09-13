@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+// TODO: Replace the next line after the "Leistungsschau-2024 (23.09.2024)"
+import { useSearchParams } from 'react-router-dom'; // import { useParams } from 'react-router-dom';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const ParticipatePublicSurvey = (): React.ReactNode => {
-  const { surveyId } = useParams();
+  // TODO: Replace the next two lines after the "Leistungsschau-2024 (23.09.2024)"
+  const [searchParams] = useSearchParams();
+  const surveyId = searchParams.get('surveyId'); // const { surveyId } = useParams();
 
   const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey, isFetching } =
     useParticipatePublicSurveyStore();

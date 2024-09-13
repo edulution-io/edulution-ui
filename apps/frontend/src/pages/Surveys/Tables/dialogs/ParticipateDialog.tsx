@@ -6,6 +6,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
+// TODO: NIEDUUI-396: Cleanup - Rename
 interface ParticipateDialogProps {
   survey?: SurveyDto;
   answer: JSON;

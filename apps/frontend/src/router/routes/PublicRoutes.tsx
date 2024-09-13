@@ -10,7 +10,8 @@ const getPublicRoutes = () => [
     element={<BlankLayout />}
   >
     <Route
-      path={`${PUBLIC_SURVEYS_ENDPOINT}/:surveyId`}
+      // TODO: Replace the next line after the "Leistungsschau-2024 (23.09.2024)"
+      path={`${PUBLIC_SURVEYS_ENDPOINT}/*`} // path={`${PUBLIC_SURVEYS_ENDPOINT}/:surveyId`}
       element={<ParticipatePublicSurvey />}
     />
   </Route>,
