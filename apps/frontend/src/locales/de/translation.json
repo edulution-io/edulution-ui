@@ -289,14 +289,11 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
-    "creationDate": "Erstellungsdatum",
-    "expirationDate": "Ablaufdatum",
-<<<<<<< NIEDUUI-263-move-surveys-feed-part-to-dev-branch
     "created": "Erstellt",
+    "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
-=======
+    "expirationDate": "Ablaufdatum",
     "notFound": "Umfrage nicht gefunden",
->>>>>>> dev
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
