@@ -1,7 +1,6 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
-import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
@@ -12,6 +11,7 @@ import { getDecryptedPassword } from '@libs/common/utils';
 import { EDU_API_USER_INFO_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 const initialState = {
   webdavKey: '',

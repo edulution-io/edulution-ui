@@ -512,10 +512,13 @@
   "iso": "ISO",
   "program": "Programs",
   "share": "Share",
+  "teacher": "Teacher",
   "student": "Student",
   "students": "Students",
   "user": "User",
   "login": {
+    "username_too_long": "Username to long",
+    "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
   },
