@@ -1,34 +1,34 @@
-import MailAppExtensions from '@libs/appconfig/extensions/types/mail-app-extension-enum';
+import MailAppExtensions from '@libs/appconfig/extensions/types/mail-app-extension';
+import AppExtension from '@libs/appconfig/extensions/types/appExtension';
 
-const appExtensionIMAP = [
-  {
-    name: MailAppExtensions.MAIL_IMAP_URL,
-    title: 'appExtendedOptions.imapFeed.imapURLTitle',
-    description: 'appExtendedOptions.imapFeed.imapURL',
-    type: 'input',
-    value: '',
-  },
-  {
-    name: MailAppExtensions.MAIL_IMAP_PORT,
-    title: 'appExtendedOptions.imapFeed.imapPortTitle',
-    description: 'appExtendedOptions.imapFeed.imapPort',
-    type: 'input',
-    value: '',
-  },
-  {
-    name: MailAppExtensions.MAIL_IMAP_SECURE,
-    title: 'appExtendedOptions.imapFeed.imapSecureTitle',
-    description: 'appExtendedOptions.imapFeed.imapSecure',
-    type: 'input',
-    value: '',
-  },
-  {
-    name: MailAppExtensions.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
-    title: 'appExtendedOptions.imapFeed.imapTlsRejectUnauthorizedTitle',
-    description: 'appExtendedOptions.imapFeed.imapTlsRejectUnauthorized',
-    type: 'input',
-    value: '',
-  },
-];
+const appExtensionIMAP: AppExtension = {
+  name: 'IMAP',
+  extensions: [
+    {
+      name: MailAppExtensions.MAIL_IMAP_URL,
+      width: 'full',
+      type: 'text',
+      value: '',
+    },
+    {
+      name: MailAppExtensions.MAIL_IMAP_PORT,
+      width: 'half',
+      type: 'number',
+      value: 993,
+    },
+    {
+      name: MailAppExtensions.MAIL_IMAP_SECURE,
+      width: 'half',
+      type: 'switch',
+      value: true,
+    },
+    {
+      name: MailAppExtensions.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
+      width: 'half',
+      type: 'switch',
+      value: false,
+    },
+  ],
+};
 
 export default appExtensionIMAP;

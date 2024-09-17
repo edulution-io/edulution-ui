@@ -1,24 +1,18 @@
 import { AppConfigDto } from '@libs/appconfig/types';
-import AppExtension from '@libs/appconfig/extensions/types/appExtension';
 import AppConfigExtensions from '@libs/appconfig/extensions/types/appConfigExtensions';
 
 const getExtendedOptionValue = (
   appConfigs: AppConfigDto[],
-  extendedOptionsConfig: AppExtension,
-  optionName: AppConfigExtensions,
+  appName: string,
+  appExtensionName: string,
+  appExtensionOptionsName: AppConfigExtensions,
 ): string | undefined => {
-  const validOptionNames = extendedOptionsConfig['ONLY_OFFICE'].map((item) => item.name);
+  const appConfig = appConfigs.find((config) => config.name === appName);
+  const appExtensions = appConfig?.extendedOptions?.find((extension) => extension.name === appExtensionName);
+  const option = appExtensions?.extensions.find((opt) => opt.name === appExtensionOptionsName);
 
-  const appConfig = appConfigs.find(
-    (config) => config.extendedOptions && config.extendedOptions.some((opt) => validOptionNames.includes(opt.name)),
-  );
-
-  if (appConfig && appConfig.extendedOptions) {
-    const foundOption = appConfig.extendedOptions.find((opt) => opt.name === optionName);
-    return foundOption?.value;
-  }
-
-  return undefined;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return option ? option.value : undefined;
 };
 
 export default getExtendedOptionValue;

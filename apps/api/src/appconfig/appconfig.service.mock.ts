@@ -1,4 +1,4 @@
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension-enum';
+import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
 
 const mockAppConfigService = {
   insertConfig: jest.fn().mockResolvedValue(undefined),

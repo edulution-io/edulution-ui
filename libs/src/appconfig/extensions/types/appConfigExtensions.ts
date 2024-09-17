@@ -1,6 +1,6 @@
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension-enum';
-import MailAppExtensions from '@libs/appconfig/extensions/types/mail-app-extension-enum';
+import TFileSharingAppExtensions from '@libs/appconfig/extensions/types/tFileSharingAppExtension';
+import TMailAppExtensions from '@libs/appconfig/extensions/types/tMailAppExtension';
 
-type AppConfigExtensions = FileSharingAppExtensions | MailAppExtensions;
+type AppConfigExtensions = TFileSharingAppExtensions | TMailAppExtensions;
 
 export default AppConfigExtensions;

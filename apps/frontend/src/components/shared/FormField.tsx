@@ -1,9 +1,9 @@
-import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
 import React from 'react';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
+import Input from '@/components/shared/Input';
+import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
 import cn from '@/lib/utils';
 
@@ -23,7 +23,7 @@ type FormFieldProps<T extends FieldValues> = {
   name: Path<T> | string;
   isLoading?: boolean;
   labelTranslationId: string;
-  type?: 'password';
+  type?: React.HTMLInputTypeAttribute;
   defaultValue?: PathValue<T, Path<T>> | string;
   readonly?: boolean;
   value?: string;

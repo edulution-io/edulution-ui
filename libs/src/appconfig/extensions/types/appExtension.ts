@@ -1,7 +1,8 @@
-import AppConfigExtension from '@libs/appconfig/extensions/types/appConfigExtension';
+import AppConfigExtendedOption from '@libs/appconfig/extensions/types/appConfigExtendedOption';
 
-interface AppExtension {
-  [key: string]: AppConfigExtension[];
-}
+type AppExtension = {
+  name: string;
+  extensions: AppConfigExtendedOption[];
+};
 
 export default AppExtension;

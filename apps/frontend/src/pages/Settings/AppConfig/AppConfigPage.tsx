@@ -11,20 +11,19 @@ import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
+import AppExtension from '@libs/appconfig/extensions/types/appExtension';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOnlyOfficeOptionsForm';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOptionsForm';
 
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import AppConfigExtension from '@libs/appconfig/extensions/types/appConfigExtension';
-import appExtension from '@libs/appconfig/extensions/constants/appExtension';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -60,8 +59,12 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       });
     }
     if (item.extendedOptions) {
-      item.extendedOptions.forEach((extension) => {
-        formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
+      item.extendedOptions.forEach((appExtension) => {
+        if (appExtension.extensions) {
+          appExtension.extensions.forEach((extension) => {
+            formSchemaObject[`${item.id}.${appExtension.name}.${extension.name}`] = z.string().optional();
+          });
+        }
       });
     }
   });
@@ -91,16 +94,20 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       label: item.label,
     }));
 
-    const newExtendedOptions = currentConfig.extendedOptions?.map((item) => ({
-      name: item.name,
-      value: item.value,
-      description: item.description,
-      type: item.type,
+    const newExtendedOptions = currentConfig.extendedOptions?.map((app) => ({
+      name: app.name,
+      extensions: app.extensions?.map((item) => ({
+        name: item.name,
+        type: item.type,
+        width: item.width,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        value: item.value,
+      })),
     }));
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
-    setValue(`${settingLocation}.extensions`, newExtendedOptions);
+    setValue(`${settingLocation}.extendedOptions`, newExtendedOptions);
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
@@ -130,33 +137,11 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
     setValue(fieldName, combinedGroups, { shouldValidate: true });
   };
 
-  const getAppExtention = (): AppConfigExtension[] | undefined => {
-    switch (settingLocation) {
-      case 'filesharing':
-        return appExtension.ONLY_OFFICE;
-      case 'mail':
-        return appExtension.MAIL;
-      default:
-        return undefined;
-    }
-  };
-
-  const extention = getAppExtention();
-
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
     if (!selectedOption) {
       return;
     }
-
-    const extendedOptions: AppConfigExtension[] = extention
-      ? (extention.map((e) => ({
-          name: e.name,
-          description: e.description,
-          type: e.type,
-          value: getValues(`${settingLocation}.${e.name}`) as string,
-        })) as AppConfigExtension[])
-      : [];
 
     const newConfig = {
       name: settingLocation,
@@ -167,8 +152,8 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
           acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
           return acc;
         }, {} as AppConfigOptions) || {},
-      extendedOptions,
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
+      extendedOptions: getValues(`${settingLocation}.extendedOptions`) as AppExtension[],
     };
 
     const updatedConfig = appConfigs.map((entry) => {
@@ -194,6 +179,7 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
   };
 
   const settingsForm = () => {
+    const extensions = getValues(`${settingLocation}.extendedOptions`) as AppExtension[];
     if (areSettingsVisible) {
       return (
         <Form {...form}>
@@ -260,18 +246,24 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
-                          <AccordionItem value={`app-extension-${settingLocation}`}>
-                            <AccordionTrigger className="flex text-xl font-bold">
-                              <h4>{t('appExtendedOptions.title')}</h4>
-                            </AccordionTrigger>
-                            <AccordionContent className="space-y-10 px-1 pt-4">
-                              <ExtendedOnlyOfficeOptionsForm
-                                extendedOptions={extention || []}
-                                baseName={settingLocation}
-                                form={form}
-                              />
-                            </AccordionContent>
-                          </AccordionItem>
+                          {extensions.map((extension) => (
+                            <AccordionItem
+                              key={`app-extension-${settingLocation}.${extension.name}`}
+                              value={`app-extension-${settingLocation}`}
+                            >
+                              <AccordionTrigger className="flex text-xl font-bold">
+                                <h4>{t(`appExtendedOptions.${settingLocation}.${extension.name}.title`)}</h4>
+                              </AccordionTrigger>
+                              <AccordionContent className="space-y-10 px-1 pt-4">
+                                <ExtendedOptionsForm
+                                  form={form}
+                                  appName={settingLocation}
+                                  appExtensionName={extension.name}
+                                  appExtensionOptions={extension.extensions}
+                                />
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
                         </AccordionSH>
                       </div>
                     )}

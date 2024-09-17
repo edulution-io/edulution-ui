@@ -773,24 +773,23 @@
     }
   },
   "appExtendedOptions": {
-    "title": "Erweiterungen",
-    "filesharing": "OnlyOffice",
-    "onlyOffice": {
-      "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
-      "onlyOfficeUrlTitle": "OnlyOffice-URL",
-      "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-      "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+    "filesharing": {
+      "ONLY_OFFICE": {
+        "title": "OnlyOffice",
+        "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+        "onlyOfficeUrlTitle": "OnlyOffice-URL",
+        "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+        "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+      }
     },
-    "mails": "MailsFeed (IMAP)",
-    "imapFeed": {
-      "imapURL": "Bitte gib die URL an über die Imap zugriff auf den Mailserver bekommt (z.B. webmail.schulung.multi.schule)",
-      "imapURLTitle": "IMAP-URL",
-      "imapPort": "Bitte gib den Port an über den Imap zugriff auf den Mailserver bekommt (z.B. 993)",
-      "imapPortTitle": "IMAP-Port",
-      "imapSecure": "Bitte gib an ob der Imap Zugriff über eine sichere Leitung führt ist (z.B. true)",
-      "imapSecureTitle": "IMAP-Sicherheit",
-      "imapTlsRejectUnauthorized": "Bitte gib an ob Imap unauthorisierte Zugriffe ablehnt (kann zu problemen führen) (z.B. false)",
-      "imapTlsRejectUnauthorizedTitle": "IMAP-TLS (Unbefugte Abweisen)"
+    "mail": {
+      "IMAP": {
+        "title": "IMAP",
+        "imapURL": "IMAP-URL",
+        "imapPort": "IMAP-Port",
+        "imapSecure": "IMAP-Sicherheit",
+        "imapTlsRejectUnauthorized": "IMAP-TLS (Unbefugte Abweisen)"
+      }
     }
   },
   "preview": {

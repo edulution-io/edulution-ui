@@ -26,6 +26,8 @@ import {
   WlanIcon,
 } from '@/assets/icons';
 import { AppConfigOption, APPS } from '@libs/appconfig/types';
+import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
+import appExtensionIMAP from '@libs/appconfig/extensions/constants/appExtensionIMAP';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -41,7 +43,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
     isNativeApp: true,
-    extendedOptions: ['name', 'type', 'description', 'value'],
+    extendedOptions: [appExtensionIMAP],
   },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {
@@ -70,7 +72,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url'],
     isNativeApp: true,
-    extendedOptions: ['name', 'type', 'description', 'value'],
+    extendedOptions: [appExtensionOnlyOffice],
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: false },
   {
