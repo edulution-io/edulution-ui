@@ -59,13 +59,29 @@ class SurveyAnswersService {
   }
 
   public getOpenSurveys = async (username: string): Promise<Survey[]> => {
+    const currentDate = new Date();
     const openSurveys = await this.surveyModel.find<Survey>({
-      $and: [
-        { 'invitedAttendees.username': username },
+      $or: [
         {
-          $or: [
-            { $nor: [{ participatedAttendees: { $elemMatch: { username } } }] },
-            { canSubmitMultipleAnswers: true },
+          $and: [
+            { isPublic: true },
+            {
+              $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+            },
+          ],
+        },
+        {
+          $and: [
+            { 'invitedAttendees.username': username },
+            {
+              $or: [
+                { $nor: [{ participatedAttendees: { $elemMatch: { username } } }] },
+                { canSubmitMultipleAnswers: true },
+              ],
+            },
+            {
+              $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+            },
           ],
         },
       ],

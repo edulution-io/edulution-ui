@@ -34,8 +34,7 @@ const SurveysList = (props: SurveysListProps) => {
   const locale = getLocaleDateFormat();
 
   const getSurveyInfo = (survey: SurveyDto) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const surveyFormula: SurveyFormulaDto | undefined = JSON.parse(JSON.stringify(survey.formula));
+    const surveyFormula = JSON.parse(JSON.stringify(survey.formula)) as SurveyFormulaDto;
 
     return (
       <div className="flex w-full flex-col gap-1">
