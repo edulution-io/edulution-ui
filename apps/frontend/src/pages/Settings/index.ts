@@ -1,3 +1,1 @@
-import AppConfigPage from './AppConfig/AppConfigPage';
-
-export default AppConfigPage;
+export { default as AppConfigPage } from './AppConfig/AppConfigPage';

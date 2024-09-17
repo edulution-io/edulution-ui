@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
 import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
+import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 import mockAppConfigService from './appconfig.service.mock';
-import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
 
 const mockAppConfigModel = {
   insertMany: jest.fn(),
