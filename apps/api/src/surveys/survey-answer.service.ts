@@ -58,7 +58,7 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  public getOpenSurveys = async (username: string): Promise<Survey[]> => {
+  async getOpenSurveys(username: string): Promise<Survey[]> {
     const currentDate = new Date();
     const openSurveys = await this.surveyModel.find<Survey>({
       $or: [
@@ -86,8 +86,8 @@ class SurveyAnswersService {
         },
       ],
     });
-    return openSurveys || [];
-  };
+    return openSurveys;
+  }
 
   async getAnswers(username: string): Promise<SurveyAnswer[]> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ 'attendee.username': username });
