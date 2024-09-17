@@ -12,6 +12,7 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
@@ -100,6 +101,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     created: z.date().optional(),
     expires: z.date().optional(),
     isAnonymous: z.boolean().optional(),
+    isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
   });
 
@@ -122,6 +124,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       created,
       expires,
       isAnonymous,
+      isPublic,
       canSubmitMultipleAnswers,
     } = form.getValues();
 
@@ -137,6 +140,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       created,
       expires,
       isAnonymous,
+      isPublic,
       canSubmitMultipleAnswers,
     });
 
@@ -177,6 +181,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         commitSurvey={saveSurvey}
         isCommitting={isLoading}
       />
+      <SharePublicSurveyDialog />
     </>
   );
 };

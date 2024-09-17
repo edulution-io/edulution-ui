@@ -17,6 +17,7 @@ services:
       EDUI_PORT: 3000
       EDUI_CORS_URL: '*'
       EDUI_ENCRYPTION_KEY: <KEY>
+      EDUI_WEBDAV_URL: <WEBDAV_URL>
 
       LMN_VDI_API_URL: http://localhost:5555
       LMN_VDI_API_SECRET: <LMN_VDI_SECRET>
