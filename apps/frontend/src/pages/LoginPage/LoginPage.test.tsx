@@ -114,8 +114,8 @@ describe('LoginPage', () => {
 
   it('3 should be able to use the useForm hook', () => {
     const formSchema: z.Schema = z.object({
-      username: z.string({ required_error: 'username.required' }).max(32, { message: 'username.too_long' }),
-      password: z.string({ required_error: 'password.required' }).max(32, { message: 'password.too_long' }),
+      username: z.string({ required_error: 'username.required' }).max(32, { message: 'login.username_too_long' }),
+      password: z.string({ required_error: 'password.required' }).max(32, { message: 'login.password_too_long' }),
     });
 
     const { result } = renderHook(() =>
@@ -147,8 +147,8 @@ describe('LoginPage', () => {
 
   it('4 ensure, that changing the values using the form functions, updates the component', async () => {
     const formSchema: z.Schema = z.object({
-      username: z.string({ required_error: 'username.required' }).max(32, { message: 'username.too_long' }),
-      password: z.string({ required_error: 'password.required' }).max(32, { message: 'password.too_long' }),
+      username: z.string({ required_error: 'username.required' }).max(32, { message: 'login.username_too_long' }),
+      password: z.string({ required_error: 'password.required' }).max(32, { message: 'login.password_too_long' }),
     });
 
     const { result } = renderHook(() =>

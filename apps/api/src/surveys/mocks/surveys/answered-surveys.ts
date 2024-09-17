@@ -147,6 +147,18 @@ export const surveyAnswerAnsweredSurvey03: SurveyAnswer = {
   answer: mockedAnswerForAnsweredSurveys03,
 };
 
+export const answeredSurvey03BackendLimiter = [
+  {
+    questionId: 'Frage2',
+    choices: [
+      { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
+      { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },
+      { name: 'choice2', title: 'CanBeSelected2times', limit: 2 },
+      { name: 'choice3', title: 'CanBeSelected3times', limit: 3 },
+    ],
+  },
+];
+
 export const updatedSurveyAnswerAnsweredSurvey03: SurveyAnswer = {
   ...surveyAnswerAnsweredSurvey03,
   answer: updatedMockedAnswerForAnsweredSurveys03,
@@ -173,6 +185,7 @@ export const answeredSurvey03: Survey = {
       },
     ],
   },
+  backendLimiters: answeredSurvey03BackendLimiter,
   invitedAttendees: [firstMockUser, secondMockUser],
   invitedGroups: [],
   participatedAttendees: [firstMockUser],

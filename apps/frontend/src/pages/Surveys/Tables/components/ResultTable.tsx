@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import i18next from 'i18next';
-import { Model } from 'survey-core';
-import { SurveyModel } from 'survey-core/typings/survey';
+import { SurveyModel } from 'survey-core';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
@@ -19,7 +18,7 @@ const ResultTable = (props: ResultTableDialogBodyProps) => {
   const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
 
   if (survey == null) {
-    const surveyModel = new Model(formula);
+    const surveyModel = new SurveyModel(formula);
     setSurvey(surveyModel);
   }
 
