@@ -4,9 +4,12 @@ import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
 
+@ApiTags(LMN_API_EDU_API_ENDPOINT)
+@ApiBearerAuth()
 @Controller(LMN_API_EDU_API_ENDPOINT)
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
