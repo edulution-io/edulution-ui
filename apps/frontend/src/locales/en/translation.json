@@ -770,20 +770,18 @@
   "appExtendedOptions": {
     "filesharing": {
       "ONLY_OFFICE": {
-        "title": "OnlyOffice",
-        "onlyOfficeUrl": "Please enter the OnlyOffice URL",
-        "onlyOfficeUrlTitle": "OnlyOffice URL",
-        "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-        "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+        "title": "Only Office",
+        "ONLY_OFFICE_URL": "URL",
+        "ONLY_OFFICE_JWT_SECRET": "JWT Secret"
       }
     },
     "mail": {
       "IMAP": {
         "title": "IMAP",
-        "imapURL": "IMAP-URL",
-        "imapPort": "IMAP-Port",
-        "imapSecure": "IMAP-Secure",
-        "imapTlsRejectUnauthorized": "IMAP-TLS (Reject Unauthorized)"
+        "MAIL_IMAP_URL": "URL",
+        "MAIL_IMAP_PORT": "Port",
+        "MAIL_IMAP_SECURE": "Secure connection",
+        "MAIL_IMAP_TLS_REJECT_UNAUTHORIZED": "TLS (Reject Unauthorized)"
       }
     }
   },

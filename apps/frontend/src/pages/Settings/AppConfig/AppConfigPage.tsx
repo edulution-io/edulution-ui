@@ -20,10 +20,10 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import ExtendedOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOptionsForm';
 
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { AccordionSH } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOptionsForm';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -61,9 +61,23 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
     if (item.extendedOptions) {
       item.extendedOptions.forEach((appExtension) => {
         if (appExtension.extensions) {
-          appExtension.extensions.forEach((extension) => {
-            formSchemaObject[`${item.id}.${appExtension.name}.${extension.name}`] = z.string().optional();
-          });
+          formSchemaObject[`${item.id}.extendedOptions`] = z
+            .array(
+              z.object({
+                name: z.string(),
+                extensions: z.array(
+                  z.object({
+                    name: z.string(),
+                    value: z.any(),
+                    width: z.string().optional(),
+                    type: z.string().optional(),
+                    defaultValue: z.any().optional(),
+                    choices: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
+                  }),
+                ),
+              }),
+            )
+            .optional();
         }
       });
     }
@@ -98,10 +112,10 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       name: app.name,
       extensions: app.extensions?.map((item) => ({
         name: item.name,
-        type: item.type,
-        width: item.width,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         value: item.value,
+        width: item.width,
+        type: item.type,
       })),
     }));
 
@@ -143,6 +157,18 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       return;
     }
 
+    const currentExtendedOptions = (getValues(`${settingLocation}.extendedOptions`) as AppExtension[]) || [];
+    const newExtendedOptions = currentExtendedOptions?.map((app) => ({
+      name: app.name,
+      extensions: app.extensions?.map((item) => ({
+        name: item.name,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        value: item.value,
+        width: item.width,
+        type: item.type,
+      })),
+    }));
+
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
@@ -153,7 +179,7 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
           return acc;
         }, {} as AppConfigOptions) || {},
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
-      extendedOptions: getValues(`${settingLocation}.extendedOptions`) as AppExtension[],
+      extendedOptions: newExtendedOptions,
     };
 
     const updatedConfig = appConfigs.map((entry) => {
@@ -179,7 +205,6 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
   };
 
   const settingsForm = () => {
-    const extensions = getValues(`${settingLocation}.extendedOptions`) as AppExtension[];
     if (areSettingsVisible) {
       return (
         <Form {...form}>
@@ -246,24 +271,11 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
-                          {extensions.map((extension) => (
-                            <AccordionItem
-                              key={`app-extension-${settingLocation}.${extension.name}`}
-                              value={`app-extension-${settingLocation}`}
-                            >
-                              <AccordionTrigger className="flex text-xl font-bold">
-                                <h4>{t(`appExtendedOptions.${settingLocation}.${extension.name}.title`)}</h4>
-                              </AccordionTrigger>
-                              <AccordionContent className="space-y-10 px-1 pt-4">
-                                <ExtendedOptionsForm
-                                  form={form}
-                                  appName={settingLocation}
-                                  appExtensionName={extension.name}
-                                  appExtensionOptions={extension.extensions}
-                                />
-                              </AccordionContent>
-                            </AccordionItem>
-                          ))}
+                          <ExtendedOptionsForm
+                            form={form}
+                            settingLocation={settingLocation}
+                            extendedOptions={item.extendedOptions}
+                          />
                         </AccordionSH>
                       </div>
                     )}

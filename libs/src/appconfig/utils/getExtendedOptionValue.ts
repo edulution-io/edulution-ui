@@ -12,7 +12,7 @@ const getExtendedOptionValue = (
   const option = appExtensions?.extensions.find((opt) => opt.name === appExtensionOptionsName);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return option ? option.value : undefined;
+  return option ? (option.value as string) : undefined;
 };
 
 export default getExtendedOptionValue;

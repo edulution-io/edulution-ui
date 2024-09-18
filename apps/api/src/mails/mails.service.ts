@@ -5,7 +5,6 @@ import { ParsedMail, simpleParser } from 'mailparser';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import APPS from '@libs/appconfig/types/apps';
-import AppConfigExtensions from '@libs/appconfig/extensions/types/appConfigExtensions';
 import appExtensionIMAP from '@libs/appconfig/extensions/constants/appExtensionIMAP';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/contants/common-error-messages';
@@ -39,20 +38,13 @@ class MailsService {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
 
     const imapExtension = appConfig?.extendedOptions.find((option) => option.name === appExtensionIMAP.name);
-    const imapOptions = imapExtension?.extensions.reduce<
-      Partial<Record<Partial<AppConfigExtensions>, string | number | boolean>>
-    >(
-      // eslint-disable-next-line no-return-assign, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
-      (acc, item) => (acc[item.name] = item.value),
-      {},
-    );
-
+    const imapExtendedOptions = imapExtension?.extensions.map((item) => ({ [item.name]: item.value }));
+    const imapOptions = imapExtendedOptions?.reduce((acc, item) => ({ ...acc, ...item }), {});
     if (!imapOptions) {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
 
     const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = imapOptions;
-
     if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
@@ -61,11 +53,14 @@ class MailsService {
     }
 
     const client = new ImapFlow({
-      host: `${MAIL_IMAP_URL}`,
+      host: MAIL_IMAP_URL as string,
       port: Number(MAIL_IMAP_PORT),
-      secure: MAIL_IMAP_SECURE === 'true',
+      secure: typeof MAIL_IMAP_SECURE === 'string' ? MAIL_IMAP_SECURE === 'true' : !!MAIL_IMAP_SECURE,
       tls: {
-        rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',
+        rejectUnauthorized:
+          typeof MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'string'
+            ? MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true'
+            : !!MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
       },
       auth: {
         user: username,
