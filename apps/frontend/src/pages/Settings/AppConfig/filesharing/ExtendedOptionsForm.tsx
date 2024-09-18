@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import AppExtension from '@libs/appconfig/extensions/types/appExtension';
+import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
 import FormField from '@/components/shared/FormField';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { ValueTypes } from '@libs/appconfig/extensions/types/appConfigExtendedOption';
@@ -10,7 +10,7 @@ interface ExtendedOptionsFormProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
   settingLocation: string;
-  extendedOptions: AppExtension[];
+  extendedOptions: AppConfigExtendedOptions[];
 }
 
 const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({ form, settingLocation, extendedOptions }) => {
@@ -24,12 +24,12 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({ form, setting
     );
     if (appExtensionOptionIndex === -1) return;
 
-    const extendedOptionsUpdate = form.getValues(`${settingLocation}.extendedOptions`) as AppExtension[];
+    const extendedOptionsUpdate = form.getValues(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[];
     extendedOptionsUpdate[appExtensionIndex].extensions[appExtensionOptionIndex].value = value;
     form.setValue(`${settingLocation}.extendedOptions`, extendedOptionsUpdate);
   };
 
-  const extendedOptionsWatcher = (form.watch(`${settingLocation}.extendedOptions`) as AppExtension[]) || [];
+  const extendedOptionsWatcher = (form.watch(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]) || [];
 
   return extendedOptionsWatcher.map((extension) => (
     <AccordionItem

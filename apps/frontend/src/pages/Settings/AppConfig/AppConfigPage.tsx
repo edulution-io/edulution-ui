@@ -12,7 +12,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import AppExtension from '@libs/appconfig/extensions/types/appExtension';
+import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useGroupStore from '@/store/GroupStore';
@@ -157,7 +157,8 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       return;
     }
 
-    const currentExtendedOptions = (getValues(`${settingLocation}.extendedOptions`) as AppExtension[]) || [];
+    const currentExtendedOptions =
+      (getValues(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]) || [];
     const newExtendedOptions = currentExtendedOptions?.map((app) => ({
       name: app.name,
       extensions: app.extensions?.map((item) => ({

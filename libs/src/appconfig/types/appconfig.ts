@@ -1,4 +1,4 @@
-import AppExtension from '@libs/appconfig/extensions/types/appExtension';
+import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AppIntegrationType from './appIntegrationType';
 import { AppConfigOptions } from './appConfigOptions';
@@ -9,5 +9,5 @@ export type AppConfigDto = {
   appType: AppIntegrationType;
   options: AppConfigOptions;
   accessGroups: MultipleSelectorGroup[];
-  extendedOptions?: AppExtension[];
+  extendedOptions?: AppConfigExtendedOptions[];
 };
