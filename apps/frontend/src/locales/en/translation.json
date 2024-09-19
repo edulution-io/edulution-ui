@@ -159,7 +159,8 @@
       "FolderCreationFailed": "Folder creation failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
-      "DuplicateFailed": "Copy failed"
+      "DuplicateFailed": "Copy failed",
+      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator."
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",

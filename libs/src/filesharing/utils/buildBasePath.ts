@@ -1,6 +1,6 @@
 import UserRoles from '@libs/user/constants/userRoles';
 
-const buildBasePath = (role: string | undefined, schoolClass: string | undefined): string => {
+const buildBasePath = (role: string | null, schoolClass: string): string => {
   switch (role) {
     case UserRoles.GLOBAL_ADMIN: {
       return 'global';
@@ -15,8 +15,7 @@ const buildBasePath = (role: string | undefined, schoolClass: string | undefined
     }
 
     default: {
-      const userClass = schoolClass || '';
-      return `${role}s/${userClass}`;
+      return `${role}s/${schoolClass}`;
     }
   }
 };

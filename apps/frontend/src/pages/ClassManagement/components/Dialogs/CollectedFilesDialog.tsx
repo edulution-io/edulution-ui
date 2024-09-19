@@ -15,7 +15,9 @@ interface CollectedFilesDialogProps {
 
 const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { user } = useUserStore();
-  const basePath = buildBasePath(user?.ldapGroups.roles[0], user?.ldapGroups.classes[0]);
+  const userRole = user?.ldapGroups?.roles[0] || '';
+  const userSchoolClass = user?.ldapGroups.classes[0] || '';
+  const basePath = buildBasePath(userRole, userSchoolClass);
   const collectedFilesPath = `${basePath}/${user?.username}/transfer/collected`;
 
   const getDialogBody = () => (

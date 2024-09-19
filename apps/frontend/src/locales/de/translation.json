@@ -158,7 +158,8 @@
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
       "SaveFailed": "Speichern fehlgeschlagen",
-      "DuplicateFailed": "Kopieren fehlgeschlagen"
+      "DuplicateFailed": "Kopieren fehlgeschlagen",
+      "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
