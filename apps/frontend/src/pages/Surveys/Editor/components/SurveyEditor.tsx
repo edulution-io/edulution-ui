@@ -11,10 +11,10 @@ import 'survey-creator-core/i18n/spanish';
 import 'survey-creator-core/i18n/italian';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface SurveyEditorProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
   saveNumber: number;
   formula?: JSON;
   setSelectedQuestion: (question: Question | undefined) => void;
@@ -105,18 +105,16 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   creator.onModified.add(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     form.setValue('formula', creator.JSON);
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     form.setValue('formula', creator.JSON);
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };
-
-  creator.onModified.add(() => {
-    form.setValue('formula', creator.JSON);
-  });
 
   return (
     <div className="survey-editor">

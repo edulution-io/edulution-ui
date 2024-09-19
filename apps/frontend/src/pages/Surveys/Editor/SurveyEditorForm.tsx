@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -13,13 +12,13 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import QuestionSettingsDialog from '@/pages/Surveys/Editor/dialog/QuestionSettingsDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import QuestionSettingsDialog from '@/pages/Surveys/Editor/dialog/QuestionSettingsDialog';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -64,17 +63,21 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const formSchema = z.object({
     id: z.number(),
     formula: z.any(),
-    backendLimiters: z.array(
-      z.object({
-        questionId: z.string().optional(),
-        choices: z.object({
-          // choice
-          name: z.string().optional(),
-          title: z.string().optional(),
-          limit: z.number().optional(),
+    backendLimiters: z
+      .array(
+        z.object({
+          questionId: z.string().optional(),
+          choices: z.array(
+            z.object({
+              // choice
+              name: z.string().optional(),
+              title: z.string().optional(),
+              limit: z.number().optional(),
+            }),
+          ),
         }),
-      }),
-    ),
+      )
+      .optional(),
     saveNo: z.number().optional(),
     creator: z.intersection(
       z.object({
@@ -169,6 +172,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
 
   const formulaWatcher = form.watch('formula');
   const saveNoWatcher = form.watch('saveNo');
+  const backendLimiterWatcher = form.watch('backendLimiters');
 
   // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(
@@ -181,17 +185,8 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
       />
     ),
-    [
-      formulaWatcher,
-      saveNoWatcher,
-      selectedQuestion,
-      setSelectedQuestion,
-      isOpenQuestionSettingsDialog,
-      setIsOpenQuestionSettingsDialog,
-    ],
+    [formulaWatcher, saveNoWatcher, setSelectedQuestion, setIsOpenQuestionSettingsDialog],
   );
-
-  // const formulaWatcher = form.watch('formula');
 
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true)), CreateButton(() => form.reset(emptyFormValues))],
@@ -213,15 +208,15 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         isCommitting={isLoading}
       />
       <SharePublicSurveyDialog />
-      <QuestionSettingsDialog
-        backendLimiters={form.getValues().backendLimiters || []}
-        setBackendLimiters={(questionId: string, choices: ChoiceDto[]) =>
-          form.setValue('backendLimiters', [...(form.getValues().backendLimiters || []), { questionId, choices }])
-        }
-        selectedQuestion={selectedQuestion}
-        isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
-        setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
-      />
+      {selectedQuestion ? (
+        <QuestionSettingsDialog
+          form={form}
+          backendLimiters={backendLimiterWatcher || []}
+          selectedQuestion={selectedQuestion}
+          isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
+          setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
+        />
+      ) : null}
     </>
   );
 };

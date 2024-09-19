@@ -304,7 +304,8 @@
         "questionDescription": "Beschreibung",
         "addQuestionDescription": "Beschreibung hinzufügen",
         "backendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
-        "addBackendLimiters": "Füge Auswahlsmöglichleiten mit einer Obergrenze hinzu, so dass die Option nur begrenzt oft ausgewählt werden kann."
+        "addBackendLimiters": "Füge Auswahlsmöglichleiten mit einer Obergrenze hinzu, so dass die Option nur begrenzt oft ausgewählt werden kann.",
+        "addChoice": "Hinzufügen"
       }
     },
     "errors": {
@@ -577,6 +578,7 @@
     "start": "Starten",
     "close": "Schließen",
     "delete": "Löschen",
+    "remove": "Entfernen",
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",

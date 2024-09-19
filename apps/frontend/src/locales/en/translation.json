@@ -303,7 +303,8 @@
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
         "backendLimiters": "Choices with limiters",
-        "addBackendLimiters": "Add choices with an upper limit, such that the option can only be selected that many times."
+        "addBackendLimiters": "Add choices with an upper limit, such that the option can only be selected that many times.",
+        "addChoice": "Add"
       }
     },
     "errors": {
@@ -577,6 +578,7 @@
     "start": "Start",
     "close": "Close",
     "delete": "Delete",
+    "remove": "Remove",
     "connect": "Connect",
     "custom": "Custom",
     "select": "Select...",
