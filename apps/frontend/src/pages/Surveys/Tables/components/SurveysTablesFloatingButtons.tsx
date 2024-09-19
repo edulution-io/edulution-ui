@@ -79,12 +79,6 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
         onClick: () => setIsOpenParticipateSurveyDialog(true),
         isVisible: canParticipate,
       },
-      {
-        icon: HiOutlineArrowDownOnSquare,
-        text: t('surveys.actions.showCommittedAnswers'),
-        onClick: () => setIsOpenCommitedAnswersDialog(true),
-        isVisible: canShowCommitedAnswers,
-      },
     ],
     keyPrefix: 'surveys-page-floating-button_',
   };
