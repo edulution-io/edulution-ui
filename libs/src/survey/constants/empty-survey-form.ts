@@ -1,12 +1,15 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 
 class EmptySurveyForm implements SurveyDto {
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
+
+  backendLimiters: { questionId: string; choices: ChoiceDto[] }[];
 
   saveNo: number;
 
@@ -36,6 +39,7 @@ class EmptySurveyForm implements SurveyDto {
     const time = new Date().getTime();
     this.id = mongoose.Types.ObjectId.createFromTime(time);
     this.formula = {} as JSON;
+    this.backendLimiters = [];
     this.saveNo = 0;
     this.creator = creator;
     this.invitedAttendees = [];

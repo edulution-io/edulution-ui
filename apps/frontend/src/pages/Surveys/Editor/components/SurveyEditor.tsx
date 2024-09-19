@@ -1,6 +1,7 @@
 import React from 'react';
 import i18next from 'i18next';
 import { UseFormReturn } from 'react-hook-form';
+import { Question } from 'survey-core/typings/question';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import 'survey-creator-core/i18n/english';
@@ -16,13 +17,15 @@ interface SurveyEditorProps {
   form: UseFormReturn<any>;
   saveNumber: number;
   formula?: JSON;
+  setSelectedQuestion: (question: Question | undefined) => void;
+  setIsOpenQuestionSettingsDialog: (state: boolean) => void;
 }
 
 editorLocalization.defaultLocale = i18next.options.lng || 'en';
 localization.currentLocale = i18next.options.lng || 'en';
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form, saveNumber, formula } = props;
+  const { form, saveNumber, formula, setSelectedQuestion, setIsOpenQuestionSettingsDialog } = props;
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -71,18 +74,38 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.toolbar.actions.splice(expandSettingsAction, 1);
 
   // TOOLBOX (LEFT SIDEBAR)
-  creator.showToolbox = true; // TODO: Ask
-  creator.toolbox.overflowBehavior = 'scroll';
-  creator.toolbox.searchEnabled = false;
+  creator.showToolbox = false;
 
   // PROPERTY GRID (RIGHT SIDEBAR)
   creator.showSidebar = false;
-  // TODO: NIEDUUI-334: add a placeholder to for the description of the question (invisible - accessible in sidebar)
+
+  creator.onElementAllowOperations.add((_, options) => {
+    // eslint-disable-next-line no-param-reassign
+    options.allowShowSettings = true;
+  });
 
   // ELEMENT MENU (part of the ELEMENT/QUESTION)
   creator.onDefineElementMenuItems.add((_, options) => {
-    const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
-    options.items.splice(settingsItemIndex, 1);
+    const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
+    // eslint-disable-next-line no-param-reassign
+    options.items[settingsItemIndex].visibleIndex = 10;
+    // eslint-disable-next-line no-param-reassign
+    options.items[settingsItemIndex].title = i18next.t('survey.editor.questionSettings');
+    // eslint-disable-next-line no-param-reassign
+    options.items[settingsItemIndex].action = () => {
+      if (_.isObjQuestion(_.selectedElement)) {
+        setIsOpenQuestionSettingsDialog(true);
+        setSelectedQuestion(_.selectedElement as unknown as Question);
+      }
+    };
+
+    const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
+    // eslint-disable-next-line no-param-reassign
+    options.items[doubleItemIndex].visibleIndex = 20;
+  });
+
+  creator.onModified.add(() => {
+    form.setValue('formula', creator.JSON);
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
@@ -96,13 +119,15 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   return (
-    <SurveyCreatorComponent
-      creator={creator}
-      style={{
-        height: '85vh',
-        width: '100%',
-      }}
-    />
+    <div className="survey-editor">
+      <SurveyCreatorComponent
+        creator={creator}
+        style={{
+          height: '85vh',
+          width: '100%',
+        }}
+      />
+    </div>
   );
 };
 

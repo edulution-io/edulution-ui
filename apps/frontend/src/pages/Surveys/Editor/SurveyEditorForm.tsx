@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -18,6 +19,7 @@ import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import QuestionSettingsDialog from '@/pages/Surveys/Editor/dialog/QuestionSettingsDialog';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -30,9 +32,13 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const {
+    isOpenQuestionSettingsDialog,
+    setIsOpenQuestionSettingsDialog,
+    selectedQuestion,
+    setSelectedQuestion,
+
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
-
     updateOrCreateSurvey,
     isLoading,
   } = useSurveyEditorFormStore();
@@ -58,6 +64,17 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const formSchema = z.object({
     id: z.number(),
     formula: z.any(),
+    backendLimiters: z.array(
+      z.object({
+        questionId: z.string().optional(),
+        choices: z.object({
+          // choice
+          name: z.string().optional(),
+          title: z.string().optional(),
+          limit: z.number().optional(),
+        }),
+      }),
+    ),
     saveNo: z.number().optional(),
     creator: z.intersection(
       z.object({
@@ -115,6 +132,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     const {
       id,
       formula,
+      backendLimiters,
       saveNo,
       creator,
       invitedAttendees,
@@ -131,6 +149,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     await updateOrCreateSurvey({
       id,
       formula,
+      backendLimiters,
       saveNo,
       creator,
       invitedAttendees,
@@ -158,10 +177,21 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         form={form}
         formula={formulaWatcher}
         saveNumber={saveNoWatcher}
+        setSelectedQuestion={setSelectedQuestion}
+        setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
       />
     ),
-    [formulaWatcher, saveNoWatcher],
+    [
+      formulaWatcher,
+      saveNoWatcher,
+      selectedQuestion,
+      setSelectedQuestion,
+      isOpenQuestionSettingsDialog,
+      setIsOpenQuestionSettingsDialog,
+    ],
   );
+
+  // const formulaWatcher = form.watch('formula');
 
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true)), CreateButton(() => form.reset(emptyFormValues))],
@@ -183,6 +213,15 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         isCommitting={isLoading}
       />
       <SharePublicSurveyDialog />
+      <QuestionSettingsDialog
+        backendLimiters={form.getValues().backendLimiters || []}
+        setBackendLimiters={(questionId: string, choices: ChoiceDto[]) =>
+          form.setValue('backendLimiters', [...(form.getValues().backendLimiters || []), { questionId, choices }])
+        }
+        selectedQuestion={selectedQuestion}
+        isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
+        setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
+      />
     </>
   );
 };

@@ -297,8 +297,15 @@
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
-      "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "questionSettings": {
+        "title": "Einstellungen bezüglich der Frage",
+        "questionTitle": "Titel",
+        "questionDescription": "Beschreibung",
+        "addQuestionDescription": "Beschreibung hinzufügen",
+        "backendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
+        "addBackendLimiters": "Füge Auswahlsmöglichleiten mit einer Obergrenze hinzu, so dass die Option nur begrenzt oft ausgewählt werden kann."
+      }
     },
     "errors": {
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
@@ -529,6 +536,7 @@
     "and": "und",
     "yes": "Ja",
     "no": "Nein",
+    "name": "Name",
     "title": "Titel",
     "add": "Hinzufügen",
     "reload": "Neu laden",
