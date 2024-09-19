@@ -15,12 +15,13 @@ import {
 } from '@/components/ui/DropdownMenuSH';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
-import useUserStore from '@/store/UserStore/UserStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import buildHomePath from '@libs/filesharing/utils/buildHomePath';
 import buildBasePath from '@libs/filesharing/utils/buildBasePath';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -38,7 +39,9 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const homePath = buildHomePath(user);
+  const { user: lmnUser } = useLmnApiStore();
+  const schoolClass = lmnUser?.schoolclasses[0] || '';
+  const homePath = buildHomePath(user, schoolClass);
   const filteredSegments = filterSegments(segments, user);
   const { setShowEditor } = useFileEditorStore();
   const { setCurrentlyEditingFile } = useFileSharingStore();
@@ -47,7 +50,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
     const pathTo = `/${filteredSegments.slice(0, index + 1).join('/')}`;
     setShowEditor(false);
     setCurrentlyEditingFile(null);
-    const basePath = buildBasePath(user);
+    const basePath = buildBasePath(user, schoolClass);
     const finalPath = `${basePath}${pathTo}`;
     onNavigate(finalPath);
   };

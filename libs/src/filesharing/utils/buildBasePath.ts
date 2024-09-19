@@ -1,7 +1,7 @@
 import UserDto from '@libs/user/types/user.dto';
 import UserRoles from '@libs/user/constants/userRoles';
 
-const buildBasePath = (user: UserDto | null): string => {
+const buildBasePath = (user: UserDto | null, schoolClass: string): string => {
   const role = user?.ldapGroups?.roles[0];
 
   switch (role) {
@@ -18,8 +18,7 @@ const buildBasePath = (user: UserDto | null): string => {
     }
 
     default: {
-      const userClass = user?.ldapGroups?.classes[0];
-      return `${role}s/${userClass}`;
+      return `${role}s/${schoolClass}`;
     }
   }
 };

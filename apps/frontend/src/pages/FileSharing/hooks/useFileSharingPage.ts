@@ -5,6 +5,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
 import buildHomePath from '@libs/filesharing/utils/buildHomePath';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 const useFileSharingPage = () => {
   const {
@@ -17,9 +18,10 @@ const useFileSharingPage = () => {
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { user } = userStore();
+  const { user: lmnUser } = useLmnApiStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const path = searchParams.get('path') || '/';
-  const homePath = buildHomePath(user);
+  const homePath = buildHomePath(user, lmnUser?.schoolclasses[0] || '');
 
   useEffect(() => {
     if (user) {
