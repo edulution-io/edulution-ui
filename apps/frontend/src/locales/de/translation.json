@@ -256,6 +256,7 @@
     "disable": "ausschalten",
     "featureIsStillInDevelopment": "Das Feature ist noch in der Entwicklung und wird in der nächsten Version implementiert werden.",
     "Collect": "Einsammeln",
+    "CollectFilesDescription": "Hier werden alle Dateien der Schüler wieder eingesammelt.",
     "ShowCollectedFiles": "Dateien anzeigen",
     "Share": "Austeilen",
     "examDescription": "Den Klassenarbeitsmodus für {{count}} Schüler umschalten",

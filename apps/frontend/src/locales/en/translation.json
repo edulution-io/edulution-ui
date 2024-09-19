@@ -256,6 +256,7 @@
     "disable": "disable",
     "featureIsStillInDevelopment": "The feature is still under development and will be implemented in the next version.",
     "Collect": "Collect",
+    "CollectFilesDescription": "Here you will collect all files.",
     "ShowCollectedFiles": "Show files",
     "Share": "Hand out",
     "examDescription": "Toggle the exam mode for {{count}} students",

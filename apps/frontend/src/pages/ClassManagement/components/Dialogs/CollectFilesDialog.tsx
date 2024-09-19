@@ -1,12 +1,11 @@
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
 import React from 'react';
-import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 
-const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const getDialogBody = () => <MoveContentDialogBody showAllFiles />;
+const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
+  const getDialogBody = () => <div className="text-foreground">{t('classmanagement.CollectFilesDescription')}</div>;
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between space-x-4">
@@ -32,4 +31,4 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
   );
 };
 
-export default ShareFilesDialog;
+export default CollectFilesDialog;

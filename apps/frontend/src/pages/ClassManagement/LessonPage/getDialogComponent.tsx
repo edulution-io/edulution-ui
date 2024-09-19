@@ -4,7 +4,8 @@ import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingBu
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { IconType } from 'react-icons';
-import CollectedFilesDialog from '@/pages/ClassManagement/components/Dialogs/CollectedFilesDialog';
+import ShowCollectedFilesDialog from '../components/Dialogs/ShowCollectedFilesDialog';
+import CollectFilesDialog from '../components/Dialogs/CollectFilesDialog';
 
 interface ButtonConfig {
   title: string;
@@ -69,9 +70,21 @@ const getDialogComponent = (
         );
       }
       return null;
-    case ClassMgmtFloatingButtons.ShowCollectedFiles || ClassMgmtFloatingButtons.Collect:
+    case ClassMgmtFloatingButtons.Collect:
+      if (buttonConfig.action) {
+        return (
+          <CollectFilesDialog
+            title={buttonConfig.title}
+            isOpen={buttonConfig.isOpen}
+            onClose={buttonConfig.onClose}
+            action={buttonConfig.action}
+          />
+        );
+      }
+      return null;
+    case ClassMgmtFloatingButtons.ShowCollectedFiles:
       return (
-        <CollectedFilesDialog
+        <ShowCollectedFilesDialog
           title={buttonConfig.title}
           isOpen={buttonConfig.isOpen}
           onClose={buttonConfig.onClose}

@@ -5,15 +5,9 @@ import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveCo
 import useUserStore from '@/store/UserStore/UserStore';
 import buildBasePath from '@libs/filesharing/utils/buildBasePath';
 import { Button } from '@/components/shared/Button';
+import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 
-interface CollectedFilesDialogProps {
-  title: string;
-  isOpen: boolean;
-  onClose: () => void;
-  action: () => void;
-}
-
-const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOpen, onClose, action }) => {
+const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { user } = useUserStore();
   const userRole = user?.ldapGroups?.roles[0] || '';
   const userSchoolClass = user?.ldapGroups.classes[0] || '';
@@ -52,4 +46,4 @@ const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOp
   );
 };
 
-export default CollectedFilesDialog;
+export default ShowCollectedFilesDialog;

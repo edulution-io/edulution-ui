@@ -33,6 +33,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     shareFiles,
     collectFiles,
     member,
+    currentGroupName,
   } = useLessonStore();
   const { fetchUser, user } = useLmnApiStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
@@ -69,14 +70,11 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       icon: FaArrowRightToBracket,
       text: ClassMgmtFloatingButtons.Collect,
       enableAction: async () => {
-        const collectDTO = buildCollectDTO(member, user);
+        const collectDTO = buildCollectDTO(member, user, currentGroupName || '');
         if (!collectDTO) return;
         await collectFiles(collectDTO, user?.sophomorixRole || '');
       },
-      disableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
+      disableAction: async () => {},
     },
     {
       icon: FaFileAlt,
