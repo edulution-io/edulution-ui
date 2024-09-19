@@ -42,7 +42,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
   const { user: lmnUser } = useLmnApiStore();
   const schoolClass = lmnUser?.schoolclasses[0] || '';
   const homePath = buildHomePath(user, schoolClass);
-  const filteredSegments = filterSegments(segments, user);
+  const filteredSegments = filterSegments(segments, schoolClass);
   const { setShowEditor } = useFileEditorStore();
   const { setCurrentlyEditingFile } = useFileSharingStore();
 
