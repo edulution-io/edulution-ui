@@ -2,6 +2,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
 import React from 'react';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
+import { Button } from '@/components/shared/Button';
 
 interface ShareFilesDialogProps {
   title: string;
@@ -15,13 +16,14 @@ const ShareFilesDialog: React.FC<ShareFilesDialogProps> = ({ title, isOpen, onCl
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between space-x-4">
-      <button
+      <Button
         type="button"
-        className="hover:ciRed rounded-md bg-ciLightRed px-4 py-2 text-foreground"
+        size="lg"
+        variant="btn-collaboration"
         onClick={action}
       >
-        {t('classmanagement.deactivate')}
-      </button>
+        {t(`classmanagement.${title}`)}
+      </Button>
     </div>
   );
 

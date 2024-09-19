@@ -4,6 +4,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import useUserStore from '@/store/UserStore/UserStore';
 import buildBasePath from '@libs/filesharing/utils/buildBasePath';
+import { Button } from '@/components/shared/Button';
 
 interface CollectedFilesDialogProps {
   title: string;
@@ -27,13 +28,14 @@ const CollectedFilesDialog: React.FC<CollectedFilesDialogProps> = ({ title, isOp
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between space-x-4">
-      <button
+      <Button
         type="button"
-        className="hover:ciRed rounded-md bg-ciLightRed px-4 py-2 text-foreground"
+        size="lg"
+        variant="btn-collaboration"
         onClick={action}
       >
-        {t('classmanagement.deactivate')}
-      </button>
+        {t(`classmanagement.${title}`)}
+      </Button>
     </div>
   );
 

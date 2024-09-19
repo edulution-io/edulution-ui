@@ -1,6 +1,6 @@
 import React from 'react';
 import ShareFilesDialog from '@/pages/ClassManagement/components/Dialogs/ShareFilesDialog';
-import FloatingButtons from '@libs/lmnApi/types/FloatingButtons';
+import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingButtons';
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { IconType } from 'react-icons';
@@ -20,7 +20,7 @@ interface ButtonConfig {
 const getDialogComponent = (
   button: {
     icon: IconType;
-    text: FloatingButtons;
+    text: string;
     enableAction: () => Promise<void>;
     disableAction: () => Promise<void>;
     enableText?: string;
@@ -57,7 +57,7 @@ const getDialogComponent = (
   };
 
   switch (button.text) {
-    case FloatingButtons.Share:
+    case ClassMgmtFloatingButtons.Share:
       if (buttonConfig.action) {
         return (
           <ShareFilesDialog
@@ -69,7 +69,7 @@ const getDialogComponent = (
         );
       }
       return null;
-    case FloatingButtons.ShowCollectedFiles:
+    case ClassMgmtFloatingButtons.ShowCollectedFiles || ClassMgmtFloatingButtons.Collect:
       return (
         <CollectedFilesDialog
           title={buttonConfig.title}

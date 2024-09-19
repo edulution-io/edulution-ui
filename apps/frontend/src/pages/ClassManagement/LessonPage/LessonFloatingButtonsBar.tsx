@@ -14,7 +14,7 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
-import FloatingButtons from '@libs/lmnApi/types/FloatingButtons';
+import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingButtons';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 
@@ -49,7 +49,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
 
   const buttons: {
     icon: IconType;
-    text: FloatingButtons;
+    text: string;
     enableAction: () => Promise<void>;
     disableAction: () => Promise<void>;
     enableText?: string;
@@ -57,7 +57,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   }[] = [
     {
       icon: FaArrowRightFromBracket,
-      text: FloatingButtons.Share,
+      text: ClassMgmtFloatingButtons.Share,
       enableAction: async () => {
         const shareDTO = buildShareDTO(member, moveOrCopyItemToPath);
         if (!shareDTO) return;
@@ -67,7 +67,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     },
     {
       icon: FaArrowRightToBracket,
-      text: FloatingButtons.Collect,
+      text: ClassMgmtFloatingButtons.Collect,
       enableAction: async () => {
         const collectDTO = buildCollectDTO(member, user);
         if (!collectDTO) return;
@@ -80,7 +80,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     },
     {
       icon: FaFileAlt,
-      text: FloatingButtons.ShowCollectedFiles,
+      text: ClassMgmtFloatingButtons.ShowCollectedFiles,
       enableAction: async () => {
         // eslint-disable-next-line no-alert
         alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
@@ -92,71 +92,71 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     },
     {
       icon: FaWifi,
-      text: FloatingButtons.Wifi,
+      text: ClassMgmtFloatingButtons.Wifi,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.Wifi,
+          ClassMgmtFloatingButtons.Wifi,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.Wifi,
+          ClassMgmtFloatingButtons.Wifi,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: TbFilterCode,
-      text: FloatingButtons.WebFilter,
+      text: ClassMgmtFloatingButtons.WebFilter,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.WebFilter,
+          ClassMgmtFloatingButtons.WebFilter,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.WebFilter,
+          ClassMgmtFloatingButtons.WebFilter,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: FaEarthAmericas,
-      text: FloatingButtons.Internet,
+      text: ClassMgmtFloatingButtons.Internet,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.Internet,
+          ClassMgmtFloatingButtons.Internet,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.Internet,
+          ClassMgmtFloatingButtons.Internet,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: FiPrinter,
-      text: FloatingButtons.Printing,
+      text: ClassMgmtFloatingButtons.Printing,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.Printing,
+          ClassMgmtFloatingButtons.Printing,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.Printing,
+          ClassMgmtFloatingButtons.Printing,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: MdSchool,
-      text: FloatingButtons.ExamMode,
+      text: ClassMgmtFloatingButtons.ExamMode,
       enableAction: async () => {
         await startExamMode(students.map((m) => m.cn));
       },
