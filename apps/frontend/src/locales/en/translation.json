@@ -158,7 +158,8 @@
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
       "DeleteFromServerFailed": "Delete from server failed",
-      "SaveFailed": "Save failed"
+      "SaveFailed": "Save failed",
+      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator."
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
