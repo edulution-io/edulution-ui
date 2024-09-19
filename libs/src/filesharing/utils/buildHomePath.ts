@@ -1,7 +1,7 @@
 import UserDto from '@libs/user/types/user.dto';
 import UserRoles from '@libs/user/constants/userRoles';
 
-const buildBasePath = (user: UserDto | null): string => {
+const buildHomePath = (user: UserDto | null, schoolClass: string): string => {
   const role = user?.ldapGroups?.roles[0];
   const username = user?.username;
 
@@ -19,10 +19,9 @@ const buildBasePath = (user: UserDto | null): string => {
     }
 
     default: {
-      const userClass = user?.ldapGroups?.classes[0];
-      return `${role}s/${userClass}/${username}`;
+      return `${role}s/${schoolClass}/${username}`;
     }
   }
 };
 
-export default buildBasePath;
+export default buildHomePath;

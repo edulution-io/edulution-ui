@@ -157,7 +157,8 @@
       "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
-      "SaveFailed": "Speichern fehlgeschlagen"
+      "SaveFailed": "Speichern fehlgeschlagen",
+      "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",

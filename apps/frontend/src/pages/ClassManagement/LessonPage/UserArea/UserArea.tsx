@@ -21,7 +21,7 @@ const UserArea = () => {
       (student: UserLmnInfo): boolean => {
         if (!teacher || !user) return false;
         const teacherClasses = teacher.memberOf.filter((teacherClass) =>
-          user.ldapGroups.classes.find((userClass) => teacherClass.includes(userClass)),
+          teacher.schoolclasses.find((userClass) => teacherClass.includes(userClass)),
         );
         return !!teacherClasses.find((tc) => student.memberOf.includes(tc));
       },
