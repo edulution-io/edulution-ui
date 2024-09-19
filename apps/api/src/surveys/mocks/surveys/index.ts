@@ -41,4 +41,22 @@ export {
   surveyAnswerAnsweredSurvey04,
   answeredSurvey04,
 } from './answered-surveys';
+export {
+  idOfPublicSurvey01,
+  publicSurvey01,
+  idOfPublicSurvey02,
+  saveNoPublicSurvey02,
+  publicSurvey02,
+  idOfTheValidSurveyAnswerForThePublicSurvey02,
+  mockedValidAnswerForPublicSurveys02,
+  surveyValidAnswerPublicSurvey02,
+  publicSurvey02AfterAddingValidAnswer,
+  idOfTheInvalidSurveyAnswerForThePublicSurvey02,
+  mockedInvalidAnswerForPublicSurveys02,
+  surveyInvalidAnswerPublicSurvey02,
+  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02BackendLimiter,
+  filteredChoices,
+  filteredChoicesAfterAddingValidAnswer,
+} from './public-surveys';
 export { mockedSurveyIds, mockedSurveys } from './surveys';

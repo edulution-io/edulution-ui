@@ -18,6 +18,8 @@ import {
   surveyUpdateSurveyId,
   createdSurvey02,
   unknownSurveyId,
+  idOfPublicSurvey01,
+  publicSurvey01,
 } from './mocks';
 
 describe('SurveyService', () => {
@@ -46,6 +48,37 @@ describe('SurveyService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('findPublicSurvey', () => {
+    it('should search for public survey given an id', async () => {
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(publicSurvey01),
+      });
+
+      const result = await service.findPublicSurvey(idOfPublicSurvey01);
+      expect(result).toEqual(publicSurvey01);
+
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+    });
+
+    it('should throw an error if the database access fails', async () => {
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        lean: jest
+          .fn()
+          .mockRejectedValue(
+            new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
+          ),
+      });
+
+      try {
+        await service.findPublicSurvey(idOfPublicSurvey01);
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
+      }
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+    });
   });
 
   describe('deleteSurveys', () => {
@@ -127,6 +160,8 @@ describe('SurveyService', () => {
         expect(e.message).toBe(CommonErrorMessages.DBAccessFailed);
       }
     });
+
+    // TODO: NIEDUUI-405: Survey: Update backendLimiters on question removal or name change of a question
   });
 
   describe('updateOrCreateSurvey', () => {

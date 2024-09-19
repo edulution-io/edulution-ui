@@ -42,6 +42,8 @@ class SurveysService {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
+
+    // TODO: NIEDUUI-405: Survey: Update backendLimiters on question removal or name change of a question
   }
 
   async updateOrCreateSurvey(survey: Survey): Promise<Survey | null> {
