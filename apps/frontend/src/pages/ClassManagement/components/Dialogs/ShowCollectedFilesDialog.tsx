@@ -3,16 +3,15 @@ import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import useUserStore from '@/store/UserStore/UserStore';
-import buildBasePath from '@libs/filesharing/utils/buildBasePath';
 import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 
 const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { user } = useUserStore();
-  const userRole = user?.ldapGroups?.roles[0] || '';
-  const userSchoolClass = user?.ldapGroups.classes[0] || '';
-  const basePath = buildBasePath(userRole, userSchoolClass);
-  const collectedFilesPath = `${basePath}/${user?.username}/transfer/collected`;
+  const { basePath } = useUserPath();
+  const collectedFilesPath = `${basePath}/${user?.username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
 
   const getDialogBody = () => (
     <MoveContentDialogBody

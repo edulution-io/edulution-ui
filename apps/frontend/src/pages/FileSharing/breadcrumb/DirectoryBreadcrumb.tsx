@@ -19,9 +19,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import filterSegments from '@/pages/FileSharing/breadcrumb/filterSegments';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import buildHomePath from '@libs/filesharing/utils/buildHomePath';
-import buildBasePath from '@libs/filesharing/utils/buildBasePath';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -30,28 +28,25 @@ interface DirectoryBreadcrumbProps {
 }
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate, style }) => {
+  const isMobileView = useIsMobileView();
+  const displaySegments = isMobileView ? 1 : 4;
+  const { t } = useTranslation();
+  const { user: lmnUser } = useLmnApiStore();
+  const schoolClass = lmnUser?.schoolclasses[0] || '';
+  const { homePath, basePath } = useUserPath();
+  const { setShowEditor } = useFileEditorStore();
+  const { setCurrentlyEditingFile } = useFileSharingStore();
+
   const segments = path
     .split('/')
     .map((segment) => segment.replace(/%20/g, ' '))
     .filter(Boolean);
-
-  const isMobileView = useIsMobileView();
-  const displaySegments = isMobileView ? 1 : 4;
-  const { t } = useTranslation();
-  const { user } = useUserStore();
-  const { user: lmnUser } = useLmnApiStore();
-  const schoolClass = lmnUser?.schoolclasses[0] || '';
-  const userRole = user?.ldapGroups?.roles[0] || '';
-  const homePath = buildHomePath(user, schoolClass);
   const filteredSegments = filterSegments(segments, schoolClass);
-  const { setShowEditor } = useFileEditorStore();
-  const { setCurrentlyEditingFile } = useFileSharingStore();
 
   const handleSegmentClick = (index: number) => {
     const pathTo = `/${filteredSegments.slice(0, index + 1).join('/')}`;
     setShowEditor(false);
     setCurrentlyEditingFile(null);
-    const basePath = buildBasePath(userRole, schoolClass);
     const finalPath = `${basePath}${pathTo}`;
     onNavigate(finalPath);
   };
@@ -59,7 +54,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
 
   return (
     <Breadcrumb style={style}>
-      <p className="mr-2 text-white">{t('currentDirectory')}</p>
+      <p className="mr-2 text-background">{t('currentDirectory')}</p>
       <BreadcrumbList>
         <BreadcrumbItem key="home">
           <BreadcrumbLink
@@ -81,7 +76,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
-                  className="z-50 bg-white text-foreground"
+                  className="z-50 bg-background text-foreground"
                 >
                   {filteredSegments.slice(0, -1).map((segment, index) => (
                     <DropdownMenuItem

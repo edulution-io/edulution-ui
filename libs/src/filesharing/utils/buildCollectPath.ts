@@ -1,23 +1,26 @@
-import buildBasePath from '@libs/filesharing/utils/buildBasePath';
+import buildUserPath from '@libs/filesharing/utils/buildUserPath';
 import buildNewCollectFolderName from '@libs/filesharing/utils/buildNewCollectFolderName';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import FILE_PATHS from '../constants/file-paths';
 
 const buildCollectPath = (
   username: string,
   role: string,
-  schoolclass: string,
+  schoolClass: string,
   student: UserLmnInfo,
 ): CollectFileRequestDTO => {
-  const basePathForCurrentUser = buildBasePath(role, schoolclass);
-  const buildPathForStudent = buildBasePath(student.sophomorixRole, student.schoolclasses[0]);
-  const newFolderName = buildNewCollectFolderName(schoolclass);
-  const destinationPath = `${basePathForCurrentUser}/${username}/transfer/collected/${newFolderName}/${student.cn}/_collect/`;
-  const srcPath = `${buildPathForStudent}/${student.cn}/transfer/${username}/_collect/`;
+  const basePathForCurrentUser = buildUserPath(role, schoolClass, username);
+  const basePathForStudent = buildUserPath(student.sophomorixRole, student.schoolclasses[0], student.cn);
+
+  const newFolderName = buildNewCollectFolderName(schoolClass);
+
+  const destinationPath = `${basePathForCurrentUser}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${student.cn}/`;
+  const originPath = `${basePathForStudent}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;
 
   return {
     destinationPath,
-    originPath: srcPath,
+    originPath,
     userName: student.cn,
     newFolderName,
   };

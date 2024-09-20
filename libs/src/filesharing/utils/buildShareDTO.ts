@@ -20,7 +20,7 @@ const buildShareDTO = (
 
       const { school } = s;
       const schoolclass = s.schoolclasses[0].replace(`${school}-`, '');
-      return buildSharePath(role, s.cn, schoolclass, fileName.filename); // Build the path
+      return buildSharePath(role, s.cn, schoolclass, fileName.filename);
     })
     .filter(Boolean) as string[];
 

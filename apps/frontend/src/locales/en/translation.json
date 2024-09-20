@@ -160,7 +160,9 @@
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
       "DuplicateFailed": "Copy failed",
-      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator."
+      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
+      "CollectingFailed": "Collecting files failed",
+      "SharingFailed": "Sharing files failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",

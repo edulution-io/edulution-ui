@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -13,6 +13,7 @@ import process from 'node:process';
 import { Request } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -264,21 +265,28 @@ class FilesharingService {
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     const client = await this.getClient(username);
 
-    if (!duplicateFile) return;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const destinationPath of duplicateFile.destinationFilePaths) {
-      const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
-      const fullNewPath = `${destinationPath}`;
+    const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
-      Logger.log(`Duplicating file from ${fullOriginPath} to ${fullNewPath} by ${username}`);
+    const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+      const pathWithoutFilename = destinationPath.slice(0, destinationPath.lastIndexOf('/'));
 
       try {
-        // eslint-disable-next-line no-await-in-loop
-        await FilesharingService.copyFileViaWebDAV(client, fullOriginPath, fullNewPath);
+        await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
       } catch (error) {
-        Logger.error(`Failed to duplicate file from ${fullOriginPath} to ${fullNewPath}`, error);
-        throw error;
+        throw new CustomHttpException(FileSharingErrorMessage.CreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
       }
+
+      try {
+        await FilesharingService.copyFileViaWebDAV(client, fullOriginPath, destinationPath);
+      } catch (error) {
+        throw new CustomHttpException(FileSharingErrorMessage.DuplicateFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    });
+
+    try {
+      await Promise.all(duplicationPromises);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -317,16 +325,32 @@ class FilesharingService {
   }
 
   async collectFiles(username: string, collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) {
-    const initFolderName = `${userRole}s/${username}/transfer/collected`;
-    await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName.toString());
+    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const item of collectFileRequestDTO) {
-      Logger.log(item);
-      // eslint-disable-next-line no-await-in-loop
-      await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
-      // eslint-disable-next-line no-await-in-loop
-      await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
+    try {
+      await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.CreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    const operations = collectFileRequestDTO.map(async (item) => {
+      try {
+        await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+      } catch (error) {
+        throw new CustomHttpException(FileSharingErrorMessage.CreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      try {
+        await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
+      } catch (error) {
+        throw new CustomHttpException(FileSharingErrorMessage.MoveFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    });
+
+    try {
+      await Promise.all(operations);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.CollectingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

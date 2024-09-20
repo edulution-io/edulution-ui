@@ -76,8 +76,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     >
       <TableCell
         className={`${
-          moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue text-black' : 'text-black'
-        } max-w-[150px] overflow-hidden truncate whitespace-nowrap`}
+          moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue' : ''
+        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-foreground`}
       >
         <div className="flex w-full items-center justify-between text-ellipsis">
           <div>{row.basename}</div>
