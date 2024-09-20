@@ -7,7 +7,7 @@ interface SurveyDto {
   id: mongoose.Types.ObjectId;
   formula: JSON;
   backendLimiters?: {
-    questionId: string;
+    questionName: string;
     choices: ChoiceDto[];
   }[];
   saveNo: number;

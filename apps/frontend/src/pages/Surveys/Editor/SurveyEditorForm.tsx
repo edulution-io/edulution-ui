@@ -19,6 +19,7 @@ import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -30,17 +31,15 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { user } = useUserStore();
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading } =
+    useSurveyEditorFormStore();
   const {
     isOpenQuestionSettingsDialog,
     setIsOpenQuestionSettingsDialog,
     selectedQuestion,
     setSelectedQuestion,
-
-    isOpenSaveSurveyDialog,
-    setIsOpenSaveSurveyDialog,
-    updateOrCreateSurvey,
-    isLoading,
-  } = useSurveyEditorFormStore();
+    setBackendLimiters,
+  } = useQuestionSettingsDialogStore();
 
   if (!user || !user.username) {
     return null;
@@ -66,7 +65,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     backendLimiters: z
       .array(
         z.object({
-          questionId: z.string().optional(),
+          questionName: z.string().optional(),
           choices: z.array(
             z.object({
               // choice
@@ -185,7 +184,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
       />
     ),
-    [formulaWatcher, saveNoWatcher, setSelectedQuestion, setIsOpenQuestionSettingsDialog],
+    [formulaWatcher, saveNoWatcher],
   );
 
   const config: FloatingButtonsBarConfig = {
@@ -210,11 +209,10 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       <SharePublicSurveyDialog />
       {selectedQuestion ? (
         <QuestionSettingsDialog
-          form={form}
-          backendLimiters={backendLimiterWatcher || []}
-          selectedQuestion={selectedQuestion}
+          backendLimitersWatcher={backendLimiterWatcher || []}
           isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
           setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
+          setBackendLimiters={setBackendLimiters}
         />
       ) : null}
     </>

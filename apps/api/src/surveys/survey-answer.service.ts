@@ -19,13 +19,16 @@ class SurveyAnswersService {
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
   ) {}
 
-  public getSelectableChoices = async (surveyId: mongoose.Types.ObjectId, questionId: string): Promise<ChoiceDto[]> => {
+  public getSelectableChoices = async (
+    surveyId: mongoose.Types.ObjectId,
+    questionName: string,
+  ): Promise<ChoiceDto[]> => {
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    const limiter = survey.backendLimiters?.find((limit) => limit.questionId === questionId);
+    const limiter = survey.backendLimiters?.find((limit) => limit.questionName === questionName);
     if (!limiter?.choices?.length) {
       throw new CustomHttpException(SurveyErrorMessages.NoBackendLimiters, HttpStatus.NOT_FOUND);
     }
@@ -34,7 +37,7 @@ class SurveyAnswersService {
 
     const filteredChoices = await Promise.all(
       possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionId, choice.name)) < choice.limit;
+        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.name)) < choice.limit;
         return isVisible ? choice : null;
       }),
     );
@@ -44,12 +47,12 @@ class SurveyAnswersService {
 
   async countChoiceSelections(
     surveyId: mongoose.Types.ObjectId,
-    questionId: string,
+    questionName: string,
     choiceId: string,
   ): Promise<number> {
     return this.surveyAnswerModel.countDocuments({
       surveyId,
-      [`answer.${questionId}`]: choiceId,
+      [`answer.${questionName}`]: choiceId,
     });
   }
 

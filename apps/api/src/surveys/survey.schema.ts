@@ -19,7 +19,7 @@ export class Survey {
 
   @Prop({ required: false })
   backendLimiters?: {
-    questionId: string;
+    questionName: string;
     choices: ChoiceDto[];
   }[];
 

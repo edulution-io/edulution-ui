@@ -9,7 +9,7 @@ class EmptySurveyForm implements SurveyDto {
 
   formula: JSON;
 
-  backendLimiters: { questionId: string; choices: ChoiceDto[] }[];
+  backendLimiters: { questionName: string; choices: ChoiceDto[] }[];
 
   saveNo: number;
 
