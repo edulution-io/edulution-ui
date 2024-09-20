@@ -17,9 +17,9 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import { EDU_API_EDU_API_COLLECT_FILE, EDU_API_EDU_API_COPY_FILE } from '@libs/eduApi/types/eduApiEndPoints';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 const initialState = {
   isLoading: false,
@@ -69,7 +69,7 @@ const useLessonStore = create<LessonStore>(
       shareFiles: async (duplicateFileRequestDto: DuplicateFileRequestDto) => {
         set({ error: null, isLoading: true });
         try {
-          await eduApi.post(EDU_API_EDU_API_COPY_FILE, {
+          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.DUPLICATE}`, {
             originFilePath: duplicateFileRequestDto.originFilePath,
             destinationFilePaths: duplicateFileRequestDto.destinationFilePaths,
           });
@@ -84,7 +84,7 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         const queryParamString = `?userRole=${encodeURIComponent(userRole)}`;
         try {
-          await eduApi.post(`${EDU_API_EDU_API_COLLECT_FILE}${queryParamString}`, {
+          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
             collectFileRequestDTO,
           });
         } catch (error) {
