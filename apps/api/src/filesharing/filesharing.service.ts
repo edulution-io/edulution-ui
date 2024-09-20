@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -273,13 +273,13 @@ class FilesharingService {
       try {
         await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
       } catch (error) {
-        throw new CustomHttpException(FileSharingErrorMessage.CreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+        Logger.log(error);
       }
 
       try {
         await FilesharingService.copyFileViaWebDAV(client, fullOriginPath, destinationPath);
       } catch (error) {
-        throw new CustomHttpException(FileSharingErrorMessage.DuplicateFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+        Logger.log(error);
       }
     });
 
@@ -330,7 +330,7 @@ class FilesharingService {
     try {
       await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.CreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      Logger.log(error);
     }
 
     const operations = collectFileRequestDTO.map(async (item) => {

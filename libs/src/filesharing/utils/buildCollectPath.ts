@@ -15,7 +15,7 @@ const buildCollectPath = (
 
   const newFolderName = buildNewCollectFolderName(schoolClass);
 
-  const destinationPath = `${basePathForCurrentUser}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${student.cn}/`;
+  const destinationPath = `${basePathForCurrentUser}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${student.cn}/${FILE_PATHS.COLLECT}/`;
   const originPath = `${basePathForStudent}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;
 
   return {
