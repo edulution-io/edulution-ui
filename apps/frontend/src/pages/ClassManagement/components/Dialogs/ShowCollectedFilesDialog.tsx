@@ -1,5 +1,6 @@
-import { t } from 'i18next';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -8,9 +9,10 @@ import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDia
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 
-const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
+const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose }) => {
   const { user } = useUserStore();
   const { basePath } = useUserPath();
+  const navigate = useNavigate();
   const collectedFilesPath = `${basePath}/${user?.username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
 
   const getDialogBody = () => (
@@ -27,7 +29,9 @@ const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, is
         type="button"
         size="lg"
         variant="btn-collaboration"
-        onClick={action}
+        onClick={() => {
+          navigate(`/filesharing?path=${collectedFilesPath}`);
+        }}
       >
         {t(`classmanagement.${title}`)}
       </Button>

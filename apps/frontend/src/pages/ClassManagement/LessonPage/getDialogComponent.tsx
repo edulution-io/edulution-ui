@@ -1,56 +1,47 @@
 import React from 'react';
+import { IconType } from 'react-icons';
 import ShareFilesDialog from '@/pages/ClassManagement/components/Dialogs/ShareFilesDialog';
 import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingButtons';
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import { IconType } from 'react-icons';
+import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
 import ShowCollectedFilesDialog from '../components/Dialogs/ShowCollectedFilesDialog';
 import CollectFilesDialog from '../components/Dialogs/CollectFilesDialog';
 
-interface ButtonConfig {
-  title: string;
-  isOpen: boolean;
-  onClose: () => void;
-  action?: () => void;
-  enableAction: () => void;
-  disableAction: () => void;
-  enableText?: string;
-  disableText?: string;
-}
+type ButtonType = Pick<
+  ClassmanagementButtonConfigProps,
+  'enableAction' | 'disableAction' | 'enableText' | 'disableText'
+> & {
+  icon: IconType;
+  text: string;
+};
 
 const getDialogComponent = (
-  button: {
-    icon: IconType;
-    text: string;
-    enableAction: () => Promise<void>;
-    disableAction: () => Promise<void>;
-    enableText?: string;
-    disableText?: string;
-  },
+  button: ButtonType,
   isDialogOpen: string,
   setIsDialogOpen: (value: string) => void,
   updateStudents: () => Promise<void>,
   students?: UserLmnInfo[],
 ) => {
-  const buttonConfig: ButtonConfig = {
+  const buttonConfig: ClassmanagementButtonConfigProps = {
     title: button.text,
     isOpen: isDialogOpen === button.text.toString(),
     onClose: () => setIsDialogOpen(''),
-    action: () => {
-      void button.enableAction();
+    action: async () => {
+      await button.enableAction();
       setIsDialogOpen('');
-      void updateStudents();
+      await updateStudents();
     },
-    enableAction: () => {
-      void button.enableAction().then(() => {
+    enableAction: async () => {
+      await button.enableAction().then(async () => {
         setIsDialogOpen('');
-        void updateStudents();
+        await updateStudents();
       });
     },
-    disableAction: () => {
-      void button.disableAction().then(() => {
+    disableAction: async () => {
+      await button.disableAction().then(async () => {
         setIsDialogOpen('');
-        void updateStudents();
+        await updateStudents();
       });
     },
     enableText: button.enableText,

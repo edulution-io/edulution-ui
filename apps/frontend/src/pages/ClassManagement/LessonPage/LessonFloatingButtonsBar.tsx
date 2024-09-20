@@ -79,14 +79,8 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     {
       icon: FaFileAlt,
       text: ClassMgmtFloatingButtons.ShowCollectedFiles,
-      enableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
-      disableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
+      enableAction: async () => {},
+      disableAction: async () => {},
     },
     {
       icon: FaWifi,

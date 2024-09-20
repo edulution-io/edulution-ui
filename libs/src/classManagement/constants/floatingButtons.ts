@@ -7,6 +7,9 @@ const ClassMgmtFloatingButtons = {
   Internet: 'Internet',
   Printing: 'Printing',
   ExamMode: 'ExamMode',
+  Veyon: 'Veyon',
+  PasswordOptions: 'PasswordOptions',
+  JoinClass: 'JoinClass',
 } as const;
 
 export default ClassMgmtFloatingButtons;
