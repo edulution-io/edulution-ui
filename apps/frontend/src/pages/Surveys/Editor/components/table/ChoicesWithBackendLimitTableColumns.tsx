@@ -1,14 +1,12 @@
-import React /* , { useMemo } */ from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-// import { IconContext } from 'react-icons';
+import { MdRemoveCircleOutline } from 'react-icons/md';
 import { ColumnDef } from '@tanstack/react-table';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { Button } from '@/components/shared/Button';
-import { Input as SHInput } from '@/components/ui/Input';
-// import { TrashIcon} from '@/assets/icons';
 
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {
@@ -87,7 +85,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     id: 'choice-limit',
     header: ({ column }) => (
       <SortableHeader<ChoiceDto, unknown>
-        titleTranslationId="survey.editor.questionSettings.limit"
+        titleTranslationId="survey.editor.questionSettings.upperLimit"
         column={column}
         className="text-foreground"
       />
@@ -97,11 +95,12 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
       const { t } = useTranslation();
       const { setLimit } = useQuestionSettingsDialogStore();
       return (
-        <SHInput
-          type="number"
+        <Input
+          type="text"
           placeholder={t('survey.editor.questionSettings.limit')}
-          value={row.original.title}
+          value={row.original.limit}
           onChange={(e) => setLimit(row.index, Number(e.target.value))}
+          variant="default"
           className="p-2 text-foreground"
         />
       );
@@ -128,28 +127,25 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     id: 'choice-delete-button',
     header: ({ column }) => (
       <SortableHeader<ChoiceDto, unknown>
-        titleTranslationId="common.remove"
+        titleTranslationId="common.actions"
         column={column}
         className="text-foreground"
       />
     ),
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const { removeChoice } = useQuestionSettingsDialogStore();
-      // const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
       return (
-        <Button
-          type="button"
-          onClick={() => removeChoice(row.original.name)}
-          variant="btn-outline"
-          className="items-center text-foreground"
-        >
-          {/* <IconContext.Provider value={iconContextValue}> */}
-          {/*  <TrashIcon /> */}
-          {/* </IconContext.Provider> */}
-          {t('common.remove')}
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            type="button"
+            onClick={() => removeChoice(row.original.name)}
+            variant="btn-outline"
+            className="my-1 flex max-h-[2.25rem] w-[75px] items-center justify-center text-ciRed"
+          >
+            <MdRemoveCircleOutline />
+          </Button>
+        </div>
       );
     },
   },

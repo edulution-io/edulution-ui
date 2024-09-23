@@ -1,26 +1,14 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
 import Input from '@/components/shared/Input';
-import { Button } from '@/components/shared/Button';
 import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
-import ChoicesWithBackendLimitTable from '@/pages/Surveys/Editor/components/table/ChoicesWithBackendLimitTable';
-import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/components/table/ChoicesWithBackendLimitTableColumns';
+import ChoicesByUrl from '@/pages/Surveys/Editor/components/ChoicesByUrl';
 
 const QuestionSettingsDialogBody = () => {
   const { t } = useTranslation();
 
-  const { selectedQuestion, choices, addNewChoice } = useQuestionSettingsDialogStore();
-
-  const choicesTable = useMemo(
-    () => (
-      <ChoicesWithBackendLimitTable
-        columns={ChoicesWithBackendLimitTableColumns}
-        data={choices || []}
-      />
-    ),
-    [choices],
-  );
+  const { selectedQuestion } = useQuestionSettingsDialogStore();
 
   if (!selectedQuestion) return null;
   return (
@@ -55,17 +43,7 @@ const QuestionSettingsDialogBody = () => {
         />
       </div>
 
-      <p className="text-m font-bold text-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
-      <p className="ml-2 text-sm text-foreground">{t('survey.editor.questionSettings.addBackendLimiters')}</p>
-      {choicesTable}
-      <Button
-        type="button"
-        onClick={() => addNewChoice()}
-        variant="btn-outline"
-        className="flex items-center"
-      >
-        <span className="text-foreground">{t('survey.editor.questionSettings.addChoice')}</span>
-      </Button>
+      <ChoicesByUrl />
     </>
   );
 };
