@@ -207,14 +207,17 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         isCommitting={isLoading}
       />
       <SharePublicSurveyDialog />
-      {selectedQuestion ? (
-        <QuestionSettingsDialog
-          backendLimitersWatcher={backendLimiterWatcher || []}
-          isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
-          setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
-          setBackendLimiters={setBackendLimiters}
-        />
-      ) : null}
+      {
+        // TODO: NIEDUUI-397 (THIS): UPDATE JSON WHEN ADDING BACKEND LIMITERS
+        selectedQuestion ? (
+          <QuestionSettingsDialog
+            backendLimitersWatcher={backendLimiterWatcher || []}
+            isOpenQuestionSettingsDialog={isOpenQuestionSettingsDialog}
+            setIsOpenQuestionSettingsDialog={setIsOpenQuestionSettingsDialog}
+            setBackendLimiters={setBackendLimiters}
+          />
+        ) : null
+      }
     </>
   );
 };
