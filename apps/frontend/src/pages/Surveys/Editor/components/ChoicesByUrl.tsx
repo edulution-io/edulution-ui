@@ -13,7 +13,7 @@ const ChoicesByUrl = () => {
     return null;
   }
 
-  const type = selectedQuestion.getType() as string;
+  const type = selectedQuestion.getType();
   if (type !== 'dropdown' && type !== 'radiogroup' && type !== 'checkbox') {
     return null;
   }
