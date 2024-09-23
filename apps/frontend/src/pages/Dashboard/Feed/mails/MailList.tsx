@@ -31,22 +31,22 @@ const MailList = ({ items, className }: MailListProps) => {
   };
 
   return (
-    <ScrollArea className={cn('max-h-[470px] overflow-y-auto', className)}>
-      <div className="flex flex-col gap-2 p-4 pt-0">
+    <ScrollArea className={cn('max-h-[470px] overflow-y-auto scrollbar-thin', className)}>
+      <div className="flex flex-col gap-2 py-2 pt-0">
         {items.map((item) => (
           <NavLink
             to={APPS.MAIL}
             key={item.id}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-ciDarkGrey"
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
-            <div className="flex w-full flex-col gap-1">
-              <div className="flex items-center gap-2 font-semibold">
-                {item.from?.value[0].name || item.from?.value[0].address}
-                <span className="flex h-2 w-2 rounded-full bg-ciLightGreen" />
+            <div className="flex w-full">
+              <span className="text-sm font-semibold">{item.from?.value[0].name || item.from?.value[0].address}</span>
+              <div className="relative mx-2">
+                <p className="absolute h-2 w-2 rounded-full bg-ciLightGreen" />
               </div>
-              <div className="text-xs font-medium">{item.subject}</div>
             </div>
-            <div className="line-clamp-2 text-xs text-muted-foreground">{item.text?.substring(0, 300)}</div>
+            <p className="text-sm">{item.subject}</p>
+            <p className="line-clamp-2 text-xs text-muted-foreground">{item.text?.substring(0, 300)}</p>
             {renderLabelBadges(item)}
           </NavLink>
         ))}

@@ -134,8 +134,9 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference exists",
-    "noMails": "No unread mail exists"
+    "noConferences": "No running conference",
+    "noMails": "No unread mail",
+    "noSurveys": "No open survey"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -288,7 +289,9 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "created": "Created",
     "creationDate": "Creation date",
+    "expires": "Expires",
     "expirationDate": "Expiration date",
     "notFound": "Survey not found",
     "noFormula": "The formula of the survey is not readable",
