@@ -12,9 +12,8 @@ import { APPS } from '@libs/appconfig/types';
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
   const menubarRef = useRef<HTMLDivElement>(null);
-
-  const menuBarEntries = useMenuBarConfig();
   const { pathname, search } = useLocation();
+  const menuBarEntries = useMenuBarConfig();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobileView = useIsMobileView();
@@ -25,6 +24,8 @@ const MenuBar: React.FC = () => {
     return null;
   }
 
+  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+
   const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
   const queryParams = useMemo(() => {
     const params = new URLSearchParams(search);
@@ -32,12 +33,11 @@ const MenuBar: React.FC = () => {
   }, [search]);
 
   const shouldSelectFirstItem = useMemo(() => {
+    const globalCondition = pathParts.length === 2 && firstMenuBarItem === pathParts[1];
     const fileSharingCondition =
       pathParts.length === 1 && pathParts[0] === APPS.FILE_SHARING.toString() && queryParams.length !== 1;
-    const classManagementCondition =
-      pathParts.length === 2 && pathParts[0] === APPS.CLASS_MANAGEMENT.toString() && pathParts[1] === 'lesson';
 
-    return pathname === '/' || fileSharingCondition || classManagementCondition;
+    return pathname === '/' || fileSharingCondition || globalCondition;
   }, [pathParts, queryParams]);
 
   useEffect(() => {
@@ -46,15 +46,11 @@ const MenuBar: React.FC = () => {
     );
 
     if (shouldSelectFirstItem) {
-      setIsSelected(menuBarEntries.menuItems[0]?.id);
+      setIsSelected(firstMenuBarItem);
     } else if (matchedItem) {
       setIsSelected(matchedItem.id);
     }
   }, [pathname, menuBarEntries.menuItems, queryParams, shouldSelectFirstItem]);
-
-  if (menuBarEntries.disabled) {
-    return null;
-  }
 
   const renderMenuBarContent = () => (
     <div
