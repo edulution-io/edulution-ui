@@ -31,8 +31,8 @@ const LoginPage: React.FC = () => {
   const [loginComplete, setLoginComplete] = useState(false);
 
   const formSchema: z.Schema = z.object({
-    username: z.string({ required_error: t('username.required') }).max(32, { message: t('username.too_long') }),
-    password: z.string({ required_error: t('password.required') }).max(32, { message: t('password.too_long') }),
+    username: z.string({ required_error: t('username.required') }).max(32, { message: t('login.username_too_long') }),
+    password: z.string({ required_error: t('password.required') }).max(32, { message: t('login.password_too_long') }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
