@@ -286,6 +286,7 @@
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
   },
   "select": "Select",
+  "selectAll": "Select all",
   "details": "Details",
   "quickAccess": "Quick access",
   "options": "Options",

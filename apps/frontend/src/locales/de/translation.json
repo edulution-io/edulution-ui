@@ -286,6 +286,7 @@
     "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
   },
   "select": "Auswählen",
+  "selectAll": "Alle auswählen",
   "details": "Details",
   "quickAccess": "Schnellzugriff",
   "delete": "Löschen",
