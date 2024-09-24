@@ -25,8 +25,6 @@ const MenuBar: React.FC = () => {
     return null;
   }
 
-  const location = useLocation();
-
   const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
   const queryParams = useMemo(() => {
     const params = new URLSearchParams(search);
@@ -39,7 +37,7 @@ const MenuBar: React.FC = () => {
     const classManagementCondition =
       pathParts.length === 2 && pathParts[0] === APPS.CLASS_MANAGEMENT.toString() && pathParts[1] === 'lesson';
 
-    return location.pathname === '/' || fileSharingCondition || classManagementCondition;
+    return pathname === '/' || fileSharingCondition || classManagementCondition;
   }, [pathParts, queryParams]);
 
   useEffect(() => {
