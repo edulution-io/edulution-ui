@@ -337,13 +337,13 @@ class FilesharingService {
       try {
         await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
       } catch (error) {
-        throw new CustomHttpException(FileSharingErrorMessage.CreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+        Logger.log(error);
       }
 
       try {
         await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
       } catch (error) {
-        throw new CustomHttpException(FileSharingErrorMessage.MoveFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+        Logger.log(error);
       }
     });
 

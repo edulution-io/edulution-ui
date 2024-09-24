@@ -6,21 +6,22 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildSharePath from '@libs/filesharing/utils/buildSharePath';
 
 const buildShareDTO = (
+  userName: string | undefined,
   students: UserLmnInfo[] | null,
   fileName: DirectoryFileDTO,
 ): DuplicateFileRequestDto | undefined => {
   if (!students) return undefined;
 
   const destinationFilePaths = students
-    .map((s) => {
-      const role = extractCnValue(s.memberOf[0]);
-      if (!s.school || !s.schoolclasses || !s.schoolclasses[0]) {
+    .map((student) => {
+      const role = extractCnValue(student.memberOf[0]);
+      if (!student.school || !student.schoolclasses || !student.schoolclasses[0]) {
         return null;
       }
 
-      const { school } = s;
-      const schoolclass = s.schoolclasses[0].replace(`${school}-`, '');
-      return buildSharePath(role, s.cn, schoolclass, fileName.filename);
+      const { school } = student;
+      const schoolclass = student.schoolclasses[0].replace(`${school}-`, '');
+      return buildSharePath(userName || '', role, student.cn, schoolclass, fileName.filename);
     })
     .filter(Boolean) as string[];
 

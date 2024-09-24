@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import React, { useState } from 'react';
 import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
@@ -60,7 +59,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       icon: FaArrowRightFromBracket,
       text: ClassMgmtFloatingButtons.Share,
       enableAction: async () => {
-        const shareDTO = buildShareDTO(member, moveOrCopyItemToPath);
+        const shareDTO = buildShareDTO(user?.cn, member, moveOrCopyItemToPath);
         if (!shareDTO) return;
         await shareFiles(shareDTO);
       },
@@ -70,7 +69,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       icon: FaArrowRightToBracket,
       text: ClassMgmtFloatingButtons.Collect,
       enableAction: async () => {
-        const collectDTO = buildCollectDTO(member, user, currentGroupName || '');
+        const collectDTO = buildCollectDTO(member, user, currentGroupName || '', user?.sophomorixIntrinsic2[0] || '');
         if (!collectDTO) return;
         await collectFiles(collectDTO, user?.sophomorixRole || '');
       },

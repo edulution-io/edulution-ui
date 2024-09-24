@@ -3,17 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
-import useUserStore from '@/store/UserStore/UserStore';
 import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 
 const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose }) => {
-  const { user } = useUserStore();
-  const { basePath } = useUserPath();
+  const { homePath } = useUserPath();
   const navigate = useNavigate();
-  const collectedFilesPath = `${basePath}/${user?.username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
+  const collectedFilesPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
 
   const getDialogBody = () => (
     <MoveContentDialogBody

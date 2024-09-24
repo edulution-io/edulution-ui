@@ -1,14 +1,17 @@
 import buildUserPath from '@libs/filesharing/utils/buildUserPath';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import getPathWithoutRole from '@libs/filesharing/utils/getPathWithoutRole';
 import FILE_PATHS from '../constants/file-paths';
 
-const buildSharePath = (role: string, studentName: string, schoolclass: string, fileName: string): string => {
-  const basePath = buildUserPath(role, schoolclass, studentName);
-  const pathWithoutWebDav = getPathWithoutWebdav(fileName);
-  const cleanFileName = getPathWithoutRole(pathWithoutWebDav);
+const buildSharePath = (
+  userName: string,
+  role: string,
+  studentName: string,
+  schoolclass: string,
+  fileName: string,
+): string => {
+  const homePath = buildUserPath(role, schoolclass, studentName);
+  const file = fileName.split('/').pop();
 
-  return `${basePath}/${FILE_PATHS.TRANSFER}/${cleanFileName}`;
+  return `${homePath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
 };
 
 export default buildSharePath;

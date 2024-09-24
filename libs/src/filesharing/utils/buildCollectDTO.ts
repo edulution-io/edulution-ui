@@ -6,13 +6,12 @@ const buildCollectDTO = (
   students: UserLmnInfo[] | null,
   currentUser: UserLmnInfo | null,
   currentGroupName: string,
+  homePath: string,
 ): CollectFileRequestDTO[] | undefined => {
   if (!students) return undefined;
   if (!currentUser) return undefined;
 
-  return students.map((student) =>
-    buildCollectPath(currentUser.cn, currentUser.sophomorixRole, currentGroupName, student),
-  );
+  return students.map((student) => buildCollectPath(currentUser.cn, homePath, currentGroupName, student));
 };
 
 export default buildCollectDTO;
