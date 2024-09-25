@@ -19,13 +19,13 @@ const appExtensionIMAP: AppConfigExtendedOptions = {
     {
       name: MailAppExtensions.MAIL_IMAP_SECURE,
       width: 'half',
-      type: 'switch',
+      type: 'boolean',
       value: true,
     },
     {
       name: MailAppExtensions.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
       width: 'half',
-      type: 'switch',
+      type: 'boolean',
       value: false,
     },
   ],
