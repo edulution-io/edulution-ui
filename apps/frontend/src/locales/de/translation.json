@@ -134,7 +134,8 @@
   "feed": {
     "title": "Aktuelles",
     "noConferences": "Keine laufende Konferenz",
-    "noMails": "Keine ungelesenen Mails"
+    "noMails": "Keine ungelesenen Mails",
+    "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
     "title": "FILESHARING",
@@ -157,7 +158,8 @@
       "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
-      "SaveFailed": "Speichern fehlgeschlagen"
+      "SaveFailed": "Speichern fehlgeschlagen",
+      "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -288,7 +290,9 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
+    "expires": "Läuft ab",
     "expirationDate": "Ablaufdatum",
     "notFound": "Umfrage nicht gefunden",
     "noFormula": "Das Formular ist nicht lesbar",
