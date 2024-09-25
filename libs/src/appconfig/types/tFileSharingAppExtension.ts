@@ -1,4 +1,4 @@
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 
 type TFileSharingAppExtensions = keyof typeof FileSharingAppExtensions;
 

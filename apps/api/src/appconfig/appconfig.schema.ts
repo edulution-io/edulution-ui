@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AppConfigOptions, AppIntegrationType } from '@libs/appconfig/types';
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 @Schema({ timestamps: true, strict: true })

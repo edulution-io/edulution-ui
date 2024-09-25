@@ -781,7 +781,7 @@
         "MAIL_IMAP_URL": "URL",
         "MAIL_IMAP_PORT": "Port",
         "MAIL_IMAP_SECURE": "Secure connection",
-        "MAIL_IMAP_TLS_REJECT_UNAUTHORIZED": "TLS (Reject Unauthorized)"
+        "MAIL_IMAP_TLS_REJECT_UNAUTHORIZED": "Check for certificate"
       }
     }
   },

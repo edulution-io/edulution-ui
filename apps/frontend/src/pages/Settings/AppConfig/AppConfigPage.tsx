@@ -12,7 +12,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useGroupStore from '@/store/GroupStore';

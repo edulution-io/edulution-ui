@@ -1,4 +1,4 @@
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AppIntegrationType from './appIntegrationType';
 import { AppConfigOptions } from './appConfigOptions';

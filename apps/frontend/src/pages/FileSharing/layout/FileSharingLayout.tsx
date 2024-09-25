@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { APPS } from '@libs/appconfig/types';
-import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
+import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';

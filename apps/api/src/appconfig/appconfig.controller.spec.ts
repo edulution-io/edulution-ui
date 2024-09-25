@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
-import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
+import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';

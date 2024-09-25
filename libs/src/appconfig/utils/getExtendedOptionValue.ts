@@ -1,5 +1,5 @@
 import { AppConfigDto } from '@libs/appconfig/types';
-import AppConfigExtensions from '@libs/appconfig/extensions/types/appConfigExtensions';
+import AppConfigExtensions from '@libs/appconfig/types/appConfigExtensions';
 
 const getExtendedOptionValue = (
   appConfigs: AppConfigDto[],
@@ -8,11 +8,14 @@ const getExtendedOptionValue = (
   appExtensionOptionsName: AppConfigExtensions,
 ): string | undefined => {
   const appConfig = appConfigs.find((config) => config.name === appName);
-  const appExtensions = appConfig?.extendedOptions?.find((extension) => extension.name === appExtensionName);
-  const option = appExtensions?.extensions.find((opt) => opt.name === appExtensionOptionsName);
+  if (!appConfig) return undefined;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return option ? (option.value as string) : undefined;
+  const appExtensions = appConfig.extendedOptions?.find((extension) => extension.name === appExtensionName);
+  if (!appExtensions) return undefined;
+
+  const option = appExtensions.extensions.find((opt) => opt.name === appExtensionOptionsName);
+
+  return option?.value as string | undefined;
 };
 
 export default getExtendedOptionValue;

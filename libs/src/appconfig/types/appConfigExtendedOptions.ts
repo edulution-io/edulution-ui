@@ -1,4 +1,4 @@
-import AppConfigExtendedOption from '@libs/appconfig/extensions/types/appConfigExtendedOption';
+import AppConfigExtendedOption from '@libs/appconfig/types/appConfigExtendedOption';
 
 type AppConfigExtendedOptions = {
   name: string;

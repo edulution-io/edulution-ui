@@ -1,5 +1,5 @@
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 
 const appExtensionOnlyOffice: AppConfigExtendedOptions = {
   name: 'ONLY_OFFICE',

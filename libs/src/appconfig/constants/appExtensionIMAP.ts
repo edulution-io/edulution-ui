@@ -1,5 +1,5 @@
-import MailAppExtensions from '@libs/appconfig/extensions/types/mail-app-extension';
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import MailAppExtensions from '@libs/appconfig/constants/mail-app-extension';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 
 const appExtensionIMAP: AppConfigExtendedOptions = {
   name: 'IMAP',

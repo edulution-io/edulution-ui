@@ -799,7 +799,7 @@
         "MAIL_IMAP_URL": "URL",
         "MAIL_IMAP_PORT": "Port",
         "MAIL_IMAP_SECURE": "Sichere Verbindung",
-        "MAIL_IMAP_TLS_REJECT_UNAUTHORIZED": "TLS (Unbefugte Abweisen)"
+        "MAIL_IMAP_TLS_REJECT_UNAUTHORIZED": "Zertifikat überprüfen"
       }
     }
   },

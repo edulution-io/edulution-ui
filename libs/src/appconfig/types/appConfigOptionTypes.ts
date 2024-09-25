@@ -1,4 +1,4 @@
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 import { AppConfigOptionType } from './appConfigOptions';
 
 export type AppConfigOption = {

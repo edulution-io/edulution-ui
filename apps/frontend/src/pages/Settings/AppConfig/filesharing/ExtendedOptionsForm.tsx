@@ -1,10 +1,10 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import AppConfigExtendedOptions from '@libs/appconfig/extensions/types/appConfigExtendedOptions';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
+import { ValueTypes } from '@libs/appconfig/types/appConfigExtendedOption';
 import FormField from '@/components/shared/FormField';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
-import { ValueTypes } from '@libs/appconfig/extensions/types/appConfigExtendedOption';
 
 interface ExtendedOptionsFormProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,29 +31,28 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({ form, setting
 
   const extendedOptionsWatcher = (form.watch(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]) || [];
 
-  return extendedOptionsWatcher.map((extension) => (
+  return extendedOptionsWatcher.map((option) => (
     <AccordionItem
-      key={`app-extension-${settingLocation}.${extension.name}`}
+      key={`app-extension-${settingLocation}.${option.name}`}
       value={`app-extension-${settingLocation}`}
     >
       <AccordionTrigger className="flex text-xl font-bold">
-        <h4>{t(`appExtendedOptions.${settingLocation}.${extension.name}.title`)}</h4>
+        <h4>{t(`appExtendedOptions.${settingLocation}.${option.name}.title`)}</h4>
       </AccordionTrigger>
-      <AccordionContent className="flex flex-wrap justify-between gap-4 space-y-2 text-foreground">
-        {extension.extensions.map((option) => (
+      <AccordionContent className="flex flex-wrap justify-between gap-4 text-foreground">
+        {option.extensions?.map((extension) => (
           <div
-            key={`${settingLocation}${extension.name}${option.name}`}
-            className={option.width === 'full' ? 'w-full' : 'w-[calc(50%-12px)]'}
+            key={`${settingLocation}${option.name}${extension.name}`}
+            className={extension.width === 'full' ? 'w-full' : 'w-[calc(50%-12px)]'}
           >
             <FormField
               form={form}
-              onChange={(e) => updateExtendedOptions(extension.name, option.name, e.target.value)}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              defaultValue={option.value || option.defaultValue}
-              type={option.type}
-              key={`${settingLocation}${extension.name}${option.name}FormField`}
-              name={`${settingLocation}${extension.name}${option.name}FormField`}
-              labelTranslationId={`appExtendedOptions.${settingLocation}.${extension.name}.${option.name}`}
+              onChange={(e) => updateExtendedOptions(option.name, extension.name, e.target.value)}
+              defaultValue={extension.value || extension.defaultValue}
+              type={extension.type}
+              key={`${settingLocation}${option.name}${extension.name}FormField`}
+              name={`${settingLocation}${option.name}${extension.name}FormField`}
+              labelTranslationId={`appExtendedOptions.${settingLocation}.${option.name}.${extension.name}`}
               variant="lightGray"
             />
           </div>

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { APPS } from '@libs/appconfig/types';
-import FileSharingAppExtensions from '@libs/appconfig/extensions/types/file-sharing-app-extension';
-import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
+import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';

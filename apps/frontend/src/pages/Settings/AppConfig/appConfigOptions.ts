@@ -26,8 +26,8 @@ import {
   WlanIcon,
 } from '@/assets/icons';
 import { AppConfigOption, APPS } from '@libs/appconfig/types';
-import appExtensionOnlyOffice from '@libs/appconfig/extensions/constants/appExtensionOnlyOffice';
-import appExtensionIMAP from '@libs/appconfig/extensions/constants/appExtensionIMAP';
+import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
+import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
