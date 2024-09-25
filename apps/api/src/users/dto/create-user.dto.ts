@@ -8,6 +8,10 @@ class CreateUserDto {
   password?: string;
 
   ldapGroups: LdapGroups;
+
+  mfaEnabled?: boolean;
+
+  isTotpSet?: boolean;
 }
 
 export default CreateUserDto;

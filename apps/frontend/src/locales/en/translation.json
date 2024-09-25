@@ -582,7 +582,8 @@
     "participated": "Participated",
     "not-available": "'Not available'",
     "date": "Date",
-    "time": "Time"
+    "time": "Time",
+    "revert": "Zurücksetzen"
   },
   "form": {
     "path": "Path",

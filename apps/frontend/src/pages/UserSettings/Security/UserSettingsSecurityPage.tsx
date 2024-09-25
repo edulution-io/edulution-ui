@@ -4,6 +4,7 @@ import { SecurityIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
 import PasswordChangeForm from '@/pages/UserSettings/Security/components/PasswordChangeForm';
+import AddMfaForm from './components/AddMfaForm';
 
 const UserSettingsSecurityPage: React.FC = () => {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ const UserSettingsSecurityPage: React.FC = () => {
       <div className="p-4">
         <PasswordChangeForm />
         <Separator className="my-1 bg-ciGrey" />
+        <AddMfaForm />
       </div>
     </div>
   );

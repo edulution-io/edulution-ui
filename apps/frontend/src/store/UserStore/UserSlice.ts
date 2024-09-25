@@ -96,7 +96,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   searchAttendees: async (searchParam) => {
     set({ searchError: null, searchIsLoading: true });
     try {
-      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
+      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}/${searchParam}`);
 
       if (!Array.isArray(response.data)) {
         return [];

@@ -23,6 +23,12 @@ export class User {
 
   @Prop({ type: Object, default: {} })
   ldapGroups?: LdapGroups;
+
+  @Prop({ type: Boolean, default: false })
+  mfaEnabled?: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  isTotpSet?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
