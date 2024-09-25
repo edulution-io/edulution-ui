@@ -4,6 +4,7 @@ const AUTH_PATHS = {
   AUTH_OIDC_TOKEN_PATH: '/protocol/openid-connect/token',
   AUTH_OIDC_USERINFO_PATH: '/protocol/openid-connect/userinfo',
   AUTH_QRCODE: 'qrcode',
+  AUTH_CHECK_TOTP: 'totp',
 } as const;
 
 export default AUTH_PATHS;

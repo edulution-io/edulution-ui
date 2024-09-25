@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import Toaster from '@/components/ui/Sonner';
@@ -9,46 +8,19 @@ import SetupMfaDialog from './SetupMfaDialog';
 
 const AddMfaForm: React.FC = () => {
   const { t } = useTranslation();
-  const { user, getUser } = useUserStore();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const setupMfa = searchParams.get('setupMfa');
+  const { user } = useUserStore();
   const mfaEnabled = user?.mfaEnabled || false;
+  const [isOpen, setIsOpen] = useState(false);
 
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      void getUser(user.username);
-    }
-  }, []);
-
-  useEffect(() => {
     if (checked && !mfaEnabled) {
-      setSearchParams(new URLSearchParams('setupMfa=true'));
-    } else if (checked && mfaEnabled) setSearchParams(new URLSearchParams(''));
-  }, [checked, mfaEnabled]);
-
-  const handleSetMfaEnabled = async (totp: string) => {
-    try {
-      const totpValid = await Promise.resolve(() => true);
-      if (!totpValid) return;
-      console.info(totp);
-      // await updateUserInfo(user, { mfaEnabled: true } as UserInfo);
-      setChecked(true);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setSearchParams(new URLSearchParams(''));
+      setIsOpen(true);
+    } else if (checked && mfaEnabled) {
+      setIsOpen(false);
     }
-  };
-
-  const dialogProps: {
-    isOpen: boolean;
-    handleSetMfaEnabled: (otp: string) => Promise<void>;
-  } = {
-    isOpen: setupMfa === 'true',
-    handleSetMfaEnabled,
-  };
+  }, [checked, mfaEnabled]);
 
   const handleRevertMfaSetup = async () => {
     // setChecked(false);
@@ -62,7 +34,7 @@ const AddMfaForm: React.FC = () => {
       <h3>{t('usersettings.config.mfa')}</h3>
       <div className="mb-4 flex items-center justify-between">
         <Switch
-          className="border-white bg-white"
+          className="border-background bg-foreground"
           checked={checked}
           defaultChecked={mfaEnabled}
           onCheckedChange={(chk) => {
@@ -77,7 +49,10 @@ const AddMfaForm: React.FC = () => {
           {t('common.revert')}
         </Button>
       </div>
-      <SetupMfaDialog {...dialogProps} />
+      <SetupMfaDialog
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
       <Toaster />
     </>
   );

@@ -69,10 +69,8 @@ class AuthService {
     );
   }
 
-  static checkTotp(token: string, username: string, totpSecret: string): boolean {
-    const secret = `${totpSecret}${username.replace(/-/g, '')}`;
+  static checkTotp(token: string, username: string, secret: string): boolean {
     const newTotp = new TOTP({ ...totpConfig, label: username, secret });
-
     return newTotp.validate({ token }) !== null;
   }
 
@@ -134,10 +132,26 @@ class AuthService {
 
   public getQrCode(username: string): string {
     const totpSecret = new Secret({ size: 16 });
-    const secret = `${totpSecret.base32}${username.replace(/-/g, '')}`;
+    const secret = totpSecret.base32;
     const newTotp = new TOTP({ ...totpConfig, label: username, secret });
-    const totpString = newTotp.toString();
-    return totpString;
+    const otpAuthString = newTotp.toString();
+    return otpAuthString;
+  }
+
+  async setupTotp(username: string, body: { totp: string; secret: string }): Promise<User | null> {
+    const { totp, secret } = body;
+    const isTotpValid = AuthService.checkTotp(totp, username, secret);
+    if (isTotpValid) {
+      const user = await this.userModel
+        .findOneAndUpdate<User>(
+          { username },
+          { $set: { mfaEnabled: true, isTotpSet: true, totpSecret: secret } },
+          { new: true },
+        )
+        .lean();
+      return user;
+    }
+    throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
   }
 }
 

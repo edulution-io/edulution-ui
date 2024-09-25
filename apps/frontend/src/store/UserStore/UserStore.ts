@@ -21,7 +21,6 @@ const useUserStore = create<UserStore>()(
         isPreparingLogout: state.isPreparingLogout,
         eduApiToken: state.eduApiToken,
         user: state.user,
-        qrCode: state.qrCode,
       }),
     },
   ),

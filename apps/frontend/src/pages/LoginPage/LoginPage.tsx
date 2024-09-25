@@ -53,7 +53,7 @@ const LoginPage: React.FC = () => {
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
       const username = (form.getValues('username') as string).trim();
-      const password = `${form.getValues('password')}${totp}`;
+      const password = `${form.getValues('password')}:${365134}`;
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password,

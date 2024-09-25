@@ -10,30 +10,18 @@ const initialState = {
   totpIsLoading: false,
 };
 
-const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set, get) => ({
+const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
   ...initialState,
 
-  checkTotp: async (otp) => {
+  setupTotp: async (totp, secret) => {
     set({ totpIsLoading: true });
     try {
-      const response = await eduApi.post(AUTH_PATHS.AUTH_ENDPOINT, { totpToken: otp });
-      const isTotpValid = response.status === 201;
-
-      const { setIsAuthenticated } = get();
-      setIsAuthenticated(isTotpValid);
+      await eduApi.post<boolean>(`${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_CHECK_TOTP}`, {
+        totp,
+        secret,
+      });
     } catch (e) {
-      handleApiError(e, set, 'totpError');
-    } finally {
-      set({ totpIsLoading: false });
-    }
-  },
-
-  setupTotp: async (otp) => {
-    set({ totpIsLoading: true });
-    try {
-      await eduApi.post<boolean>(AUTH_PATHS.AUTH_ENDPOINT, { totpToken: otp });
-    } catch (e) {
-      handleApiError(e, set, 'totpError');
+      handleApiError(e, set);
     } finally {
       set({ totpIsLoading: false });
     }
