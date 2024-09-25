@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/InputOtp';
 import { QRCodeSVG } from 'qrcode.react';
 import useUserStore from '@/store/UserStore/UserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
+import OtpInput from '@/components/shared/OtpInput';
 
 const SetupMfaDialog: React.FC<{
   isOpen: boolean;
@@ -23,25 +23,15 @@ const SetupMfaDialog: React.FC<{
   const getDialogBody = () => (
     <div className="flex flex-col items-center space-y-4">
       <div className="my-4 flex justify-center">
-        <QRCodeSVG value={qrCode} />
+        <QRCodeSVG
+          value={qrCode}
+          size={200}
+        />
       </div>
-      <InputOTP
-        maxLength={6}
-        value={totp}
-        onChange={(value) => setTotp(value)}
-      >
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-        </InputOTPGroup>
-        <InputOTPSeparator />
-        <InputOTPGroup>
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
-        </InputOTPGroup>
-      </InputOTP>
+      <OtpInput
+        totp={totp}
+        setTotp={setTotp}
+      />
     </div>
   );
 

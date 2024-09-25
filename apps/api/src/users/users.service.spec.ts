@@ -9,7 +9,6 @@ import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
-import CreateUserDto from './dto/create-user.dto';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import UpdateUserDto from './dto/update-user.dto';
@@ -34,6 +33,7 @@ const mockUser: UserDocument = {
   },
   mfaEnabled: false,
   isTotpSet: false,
+  totpSecret: '',
 } as unknown as UserDocument;
 
 const cachedUsers: LDAPUser[] = [
@@ -169,33 +169,22 @@ describe(UsersService.name, () => {
       userDto.ldapGroups = mockLdapGroups;
       userDto.password = 'password';
       userDto.email = 'test@example.com';
-      userDto.mfaEnabled = false;
-      userDto.isTotpSet = false;
 
       await service.createOrUpdate(userDto);
 
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
-        { username: 'testuser' },
+        { username: userDto.username },
         {
-          $set: { password: 'password', ldapGroups: mockLdapGroups },
-          $setOnInsert: { email: userDto.email },
+          $set: {
+            email: userDto.email,
+            firstName: userDto.firstName,
+            lastName: userDto.lastName,
+            password: userDto.password,
+            ldapGroups: userDto.ldapGroups,
+          },
         },
         { new: true, upsert: true },
       );
-    });
-  });
-
-  describe('create', () => {
-    it('should create a new user', async () => {
-      const createUserDto = new CreateUserDto();
-      createUserDto.email = 'test@example.com';
-      createUserDto.username = 'testuser';
-      createUserDto.ldapGroups = mockLdapGroups;
-      createUserDto.password = 'password';
-
-      const newUser = await service.create(createUserDto);
-      expect(newUser).toEqual(mockUser);
-      expect(model.create).toHaveBeenCalledWith(createUserDto);
     });
   });
 
@@ -234,8 +223,6 @@ describe(UsersService.name, () => {
       userDto.ldapGroups = mockLdapGroups;
       userDto.password = 'password';
       userDto.email = 'test@example.com';
-      userDto.mfaEnabled = false;
-      userDto.isTotpSet = false;
 
       await service.update(userDto.username, userDto);
 
@@ -243,8 +230,11 @@ describe(UsersService.name, () => {
         1,
         { username: userDto.username },
         {
-          $set: { password: userDto.password, ldapGroups: mockLdapGroups },
-          $setOnInsert: { email: userDto.email },
+          $set: {
+            email: userDto.email,
+            password: userDto.password,
+            ldapGroups: userDto.ldapGroups,
+          },
         },
         { new: true, upsert: true },
       );

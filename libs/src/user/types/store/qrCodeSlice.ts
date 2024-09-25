@@ -1,6 +1,6 @@
 type QrCodeSlice = {
   qrCode: string;
-  getQrCode: (username: string, setIsLoading?: boolean) => Promise<void>;
+  getQrCode: (username: string) => Promise<void>;
   qrCodeIsLoading: boolean;
   qrCodeError: Error | null;
   resetQrCodeSlice: () => void;

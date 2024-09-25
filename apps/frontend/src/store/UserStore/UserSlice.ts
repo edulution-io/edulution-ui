@@ -8,9 +8,6 @@ import UserDto from '@libs/user/types/user.dto';
 import CryptoJS from 'crypto-js';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { getDecryptedPassword } from '@libs/common/utils';
-import { EDU_API_USER_INFO_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
-import processLdapGroups from '@libs/user/utils/processLdapGroups';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 const initialState = {
@@ -41,30 +38,15 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ isAuthenticated: false });
   },
 
-  fetchUserAndUpdateInDatabase: async () => {
+  createOrUpdateUser: async (user: UserDto) => {
     set({ userIsLoading: true });
     try {
-      const response = await eduApi.get<JwtUser>(EDU_API_USER_INFO_ENDPOINT);
-      const newUser = {
-        username: response.data.preferred_username,
-        email: response.data.email,
-        ldapGroups: processLdapGroups(response.data.ldapGroups),
-      };
-      await get().updateUser(newUser);
-      set({ user: { ...get().user, ...newUser } as UserDto });
+      const { data } = await eduApi.post<UserDto>(EDU_API_USERS_ENDPOINT, user);
+      set({ user: data });
+      return data;
     } catch (error) {
       handleApiError(error, set, 'userError');
-    } finally {
-      set({ isAuthenticated: true, userIsLoading: false });
-    }
-  },
-
-  createOrUpdateUser: async (user: UserDto) => {
-    set({ userIsLoading: true, user });
-    try {
-      await eduApi.post<UserDto>(EDU_API_USERS_ENDPOINT, user);
-    } catch (error) {
-      handleApiError(error, set, 'userError');
+      return undefined;
     } finally {
       set({ isAuthenticated: true, userIsLoading: false });
     }

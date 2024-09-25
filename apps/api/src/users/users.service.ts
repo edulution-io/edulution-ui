@@ -10,7 +10,6 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
-import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
@@ -27,16 +26,17 @@ class UsersService {
       .findOneAndUpdate(
         { username: userDto.username },
         {
-          $set: { password: userDto.password, ldapGroups: userDto.ldapGroups },
-          $setOnInsert: { email: userDto.email },
+          $set: {
+            email: userDto.email,
+            firstName: userDto.firstName,
+            lastName: userDto.lastName,
+            password: userDto.password,
+            ldapGroups: userDto.ldapGroups,
+          },
         },
         { new: true, upsert: true },
       )
       .lean();
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
   }
 
   async findAll(): Promise<User[]> {
@@ -68,7 +68,7 @@ class UsersService {
     return fetchedUsers;
   }
 
-  async searchUsersByName(token: string, name: string): Promise<User[]> {
+  async searchUsersByName(token: string, name: string): Promise<Partial<User>[]> {
     const searchString = name.toLowerCase();
     const users = await this.findAllCachedUsers(token);
 
