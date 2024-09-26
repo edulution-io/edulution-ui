@@ -17,8 +17,8 @@ const createQrCodeSlice: StateCreator<UserStore, [], [], QrCodeSlice> = (set) =>
   getQrCode: async () => {
     set({ qrCodeIsLoading: true });
     try {
-      const { data: qrCode } = await eduApi.get<string>(`${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_QRCODE}`);
-      set({ qrCode });
+      const { data } = await eduApi.get<string>(`${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_QRCODE}`);
+      set({ qrCode: atob(data) });
     } catch (e) {
       handleApiError(e, set);
     } finally {

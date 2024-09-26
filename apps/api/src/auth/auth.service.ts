@@ -17,6 +17,7 @@ import AUTH_CACHE from '@libs/auth/constants/auth-cache';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import { User, UserDocument } from '../users/user.schema';
+import { fromBase64 } from '../filesharing/filesharing.utilities';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -95,7 +96,7 @@ class AuthService {
       return this.signin(body);
     }
     const { password: passwordHash } = body;
-    const passwordString = atob(passwordHash);
+    const passwordString = fromBase64(passwordHash);
     const { username } = body;
     const user = (await this.userModel.findOne({ username }, 'mfaEnabled totpSecret').lean()) || ({} as User);
     const { mfaEnabled = false, totpSecret = '' } = user;
@@ -131,7 +132,7 @@ class AuthService {
     const totpSecret = new Secret({ size: 16 });
     const secret = totpSecret.base32;
     const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
-    const otpAuthString = newTotp.toString();
+    const otpAuthString = Buffer.from(newTotp.toString()).toString('base64');
     return otpAuthString;
   }
 
