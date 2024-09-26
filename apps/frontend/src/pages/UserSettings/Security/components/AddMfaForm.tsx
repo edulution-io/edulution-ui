@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdCheck } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
 import Switch from '@/components/ui/Switch';
@@ -11,7 +10,6 @@ const AddMfaForm: React.FC = () => {
   const { user, getUser, disableTotp } = useUserStore();
   const { username = '', mfaEnabled = false } = user ?? {};
   const [isOpen, setIsOpen] = useState(false);
-
   const [checked, setChecked] = useState(mfaEnabled);
 
   useEffect(() => {
@@ -41,27 +39,22 @@ const AddMfaForm: React.FC = () => {
     <>
       <h3>{t('usersettings.config.mfa')}</h3>
       <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Switch
-            className="border-background bg-foreground"
-            checked={checked}
-            defaultChecked={mfaEnabled}
-            disabled={mfaEnabled}
-            onCheckedChange={(chk) => {
-              setChecked(chk);
-            }}
-          />
-          {mfaEnabled ? <MdCheck className="h-6 w-6 text-ciLightGreen" /> : null}
-        </div>
-        {mfaEnabled ? (
-          <Button
-            variant="btn-collaboration"
-            size="sm"
-            onClick={() => handleRevertMfaSetup()}
-          >
-            {t('common.revert')}
-          </Button>
-        ) : null}
+        <Switch
+          className="border-background bg-black"
+          checked={checked}
+          defaultChecked={mfaEnabled}
+          onCheckedChange={(chk) => {
+            setChecked(chk);
+          }}
+        />
+        <Button
+          variant="btn-collaboration"
+          size="sm"
+          onClick={() => handleRevertMfaSetup()}
+          className={checked !== mfaEnabled && !isOpen ? '' : 'invisible'}
+        >
+          {t('common.save')}
+        </Button>
       </div>
       <SetupMfaDialog
         isOpen={isOpen}
