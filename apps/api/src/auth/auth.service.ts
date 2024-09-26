@@ -97,10 +97,10 @@ class AuthService {
     const { password: passwordHash } = body;
     const passwordString = atob(passwordHash);
     const { username } = body;
-    const user = (await this.userModel.findOne({ username }, 'mfaEnabled isTotpSet totpSecret').lean()) || ({} as User);
-    const { mfaEnabled = false, isTotpSet = false, totpSecret = '' } = user;
+    const user = (await this.userModel.findOne({ username }, 'mfaEnabled totpSecret').lean()) || ({} as User);
+    const { mfaEnabled = false, totpSecret = '' } = user;
 
-    if (mfaEnabled && isTotpSet) {
+    if (mfaEnabled) {
       const lastColonIndex = passwordString.lastIndexOf(':');
 
       let password: string;
@@ -142,7 +142,7 @@ class AuthService {
       const user = await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: true, isTotpSet: true, totpSecret: secret } },
+          { $set: { mfaEnabled: true, totpSecret: secret } },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();
@@ -152,10 +152,10 @@ class AuthService {
   }
 
   async getTotpInfo(username: string) {
-    const user = await this.userModel.findOne({ username }, 'mfaEnabled isTotpSet').lean();
+    const user = await this.userModel.findOne({ username }, 'mfaEnabled').lean();
     if (!user) return false;
-    const { mfaEnabled = false, isTotpSet = false } = user;
-    if (mfaEnabled && isTotpSet) {
+    const { mfaEnabled = false } = user;
+    if (mfaEnabled) {
       return true;
     }
     return false;
@@ -166,7 +166,7 @@ class AuthService {
       const user = await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: false, isTotpSet: false, totpSecret: '' } },
+          { $set: { mfaEnabled: false, totpSecret: '' } },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();

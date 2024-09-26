@@ -32,9 +32,8 @@ const mockUser: UserDocument = {
     others: ['group1', 'group2'],
   },
   mfaEnabled: false,
-  isTotpSet: false,
   totpSecret: '',
-} as unknown as UserDocument;
+} as UserDocument;
 
 const cachedUsers: LDAPUser[] = [
   {

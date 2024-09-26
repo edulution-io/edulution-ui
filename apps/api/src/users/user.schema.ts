@@ -27,9 +27,6 @@ export class User {
   @Prop({ type: Boolean, default: false })
   mfaEnabled?: boolean;
 
-  @Prop({ type: Boolean, default: false })
-  isTotpSet?: boolean;
-
   @Prop({ type: String, default: '' })
   totpSecret?: string;
 }
