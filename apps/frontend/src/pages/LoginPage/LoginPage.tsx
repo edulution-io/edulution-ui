@@ -54,14 +54,15 @@ const LoginPage: React.FC = () => {
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
       const username = (form.getValues('username') as string).trim();
-      const password = btoa(`${form.getValues('password')}${isEnterTotpVisible ? `:${totp}` : ''}`);
+      const password = form.getValues('password') as string;
+      const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
-        password,
+        password: passwordHash,
       });
       if (requestUser) {
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(password);
+        setWebdavKey(form.getValues('password') as string);
       }
     } catch (e) {
       //
