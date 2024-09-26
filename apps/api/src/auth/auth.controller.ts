@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ProcessResourceOwnerPasswordCredentialsArgs } from 'oidc-client-ts';
 import { Request } from 'express';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -20,7 +20,7 @@ class AuthController {
 
   @Public()
   @Post()
-  authenticate(@Body() body: ProcessResourceOwnerPasswordCredentialsArgs) {
+  authenticate(@Body() body: AuthRequestArgs) {
     return this.authService.authenticateUser(body);
   }
 
@@ -32,6 +32,17 @@ class AuthController {
   @Post(AUTH_PATHS.AUTH_CHECK_TOTP)
   setupTotp(@GetCurrentUsername() username: string, @Body() body: { totp: string; secret: string }) {
     return this.authService.setupTotp(username, body);
+  }
+
+  @Public()
+  @Get(`${AUTH_PATHS.AUTH_CHECK_TOTP}/:username`)
+  getTotpInfo(@Param() params: { username: string }) {
+    return this.authService.getTotpInfo(params.username);
+  }
+
+  @Put(AUTH_PATHS.AUTH_CHECK_TOTP)
+  disableTotp(@GetCurrentUsername() username: string) {
+    return this.authService.disableTotp(username);
   }
 }
 

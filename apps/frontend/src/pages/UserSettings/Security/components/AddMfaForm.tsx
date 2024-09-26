@@ -8,11 +8,11 @@ import SetupMfaDialog from './SetupMfaDialog';
 
 const AddMfaForm: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useUserStore();
-  const mfaEnabled = user?.mfaEnabled || false;
+  const { user, disableTotp } = useUserStore();
+  const mfaEnabled = user?.mfaEnabled;
   const [isOpen, setIsOpen] = useState(false);
 
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(mfaEnabled);
 
   useEffect(() => {
     if (checked && !mfaEnabled) {
@@ -23,10 +23,8 @@ const AddMfaForm: React.FC = () => {
   }, [checked, mfaEnabled]);
 
   const handleRevertMfaSetup = async () => {
-    // setChecked(false);
-    // await updateUserInfo(user, { mfaEnabled: false } as UserInfo)
-    //   .then(() => toast.success(t('settings.appconfig.update.success')))
-    //   .catch(() => toast.error(t('settings.appconfig.update.failed')));
+    setChecked(false);
+    await disableTotp();
   };
 
   return (

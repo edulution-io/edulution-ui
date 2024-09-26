@@ -25,7 +25,8 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
+  const { eduApiToken, webdavKey, totpIsLoading, createOrUpdateUser, setWebdavKey, setEduApiToken, getTotpStatus } =
+    useUserStore();
 
   const { isLoading } = auth;
   const { setLmnApiToken } = useLmnApiStore();
@@ -53,7 +54,7 @@ const LoginPage: React.FC = () => {
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
       const username = (form.getValues('username') as string).trim();
-      const password = `${form.getValues('password')}:${365134}`;
+      const password = btoa(`${form.getValues('password')}${isEnterTotpVisible ? `:${totp}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password,
@@ -101,14 +102,23 @@ const LoginPage: React.FC = () => {
   }, [auth.isAuthenticated, eduApiToken]);
 
   useEffect(() => {
-    if (loginComplete && !isEnterTotpVisible) {
+    if (loginComplete) {
       const { from } = (location?.state ?? { from: '/' }) as LocationState;
       const toLocation = from === '/login' ? '/' : from;
       navigate(toLocation, {
         replace: true,
       });
     }
-  }, [loginComplete, isEnterTotpVisible]);
+  }, [loginComplete]);
+
+  const handleCheckMfaStatus = async () => {
+    const isMfaEnabled = await getTotpStatus(form.getValues('username') as string);
+    if (!isMfaEnabled) {
+      await form.handleSubmit(onSubmit)();
+    } else {
+      setIsEnterTotpVisible(true);
+    }
+  };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
     <FormFieldSH
@@ -146,7 +156,7 @@ const LoginPage: React.FC = () => {
         data-testid="test-id-login-page-form"
       >
         <form
-          onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
+          onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
           className="space-y-4"
           data-testid="test-id-login-page-form"
         >
@@ -186,7 +196,7 @@ const LoginPage: React.FC = () => {
             size="lg"
             data-testid="test-id-login-page-submit-button"
           >
-            {isLoading ? t('common.loading') : t('common.login')}
+            {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
           </Button>
         </form>
       </Form>

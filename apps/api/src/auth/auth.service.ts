@@ -7,27 +7,18 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { TOTP, Secret } from 'otpauth';
-import {
-  OidcMetadata,
-  SigninResponse,
-  ErrorResponse,
-  ProcessResourceOwnerPasswordCredentialsArgs,
-} from 'oidc-client-ts';
+import { OidcMetadata, SigninResponse, ErrorResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AUTH_CACHE from '@libs/auth/constants/auth-cache';
+import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
+import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import { User, UserDocument } from '../users/user.schema';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
-
-const totpConfig = {
-  issuer: 'edulution-ui',
-  algorithm: 'SHA1',
-  digits: 6,
-  period: 30,
-};
 
 @Injectable()
 class AuthService {
@@ -70,11 +61,11 @@ class AuthService {
   }
 
   static checkTotp(token: string, username: string, secret: string): boolean {
-    const newTotp = new TOTP({ ...totpConfig, label: username, secret });
+    const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
     return newTotp.validate({ token }) !== null;
   }
 
-  async signin(body: ProcessResourceOwnerPasswordCredentialsArgs, password: string) {
+  async signin(body: AuthRequestArgs, password?: string) {
     const extendedBody = {
       ...body,
       password,
@@ -98,8 +89,13 @@ class AuthService {
     }
   }
 
-  async authenticateUser(body: ProcessResourceOwnerPasswordCredentialsArgs): Promise<SigninResponse> {
-    const { password: passwordString } = body;
+  async authenticateUser(body: AuthRequestArgs): Promise<SigninResponse> {
+    const { grant_type: grantType } = body;
+    if (grantType === 'refresh_token') {
+      return this.signin(body);
+    }
+    const { password: passwordHash } = body;
+    const passwordString = atob(passwordHash);
     const { username } = body;
     const user = (await this.userModel.findOne({ username }, 'mfaEnabled isTotpSet totpSecret').lean()) || ({} as User);
     const { mfaEnabled = false, isTotpSet = false, totpSecret = '' } = user;
@@ -130,10 +126,11 @@ class AuthService {
     return this.signin(body, passwordString);
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   public getQrCode(username: string): string {
     const totpSecret = new Secret({ size: 16 });
     const secret = totpSecret.base32;
-    const newTotp = new TOTP({ ...totpConfig, label: username, secret });
+    const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
     const otpAuthString = newTotp.toString();
     return otpAuthString;
   }
@@ -146,12 +143,37 @@ class AuthService {
         .findOneAndUpdate<User>(
           { username },
           { $set: { mfaEnabled: true, isTotpSet: true, totpSecret: secret } },
-          { new: true },
+          { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();
       return user;
     }
     throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+  }
+
+  async getTotpInfo(username: string) {
+    const user = await this.userModel.findOne({ username }, 'mfaEnabled isTotpSet').lean();
+    if (!user) return false;
+    const { mfaEnabled = false, isTotpSet = false } = user;
+    if (mfaEnabled && isTotpSet) {
+      return true;
+    }
+    return false;
+  }
+
+  async disableTotp(username: string) {
+    try {
+      const user = await this.userModel
+        .findOneAndUpdate<User>(
+          { username },
+          { $set: { mfaEnabled: false, isTotpSet: false, totpSecret: '' } },
+          { new: true, projection: { totpSecret: 0, password: 0 } },
+        )
+        .lean();
+      return user;
+    } catch (error) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
   }
 }
 

@@ -14,7 +14,7 @@ type SetupMfaDialogProps = {
 
 const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) => {
   const { t } = useTranslation();
-  const { qrCode, qrCodeIsLoading, getQrCode, setupTotp } = useUserStore();
+  const { qrCode, qrCodeIsLoading, totpIsLoading, getQrCode, setupTotp } = useUserStore();
   const [totp, setTotp] = useState('');
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
         size="lg"
         onClick={handleSetMfaEnabled}
       >
-        {t('common.save')}
+        {totpIsLoading ? <CircleLoader /> : t('common.save')}
       </Button>
     </div>
   );
