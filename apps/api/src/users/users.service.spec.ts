@@ -211,7 +211,7 @@ describe(UsersService.name, () => {
       const user = await service.findOne('testuser');
 
       expect(user).toEqual([mockUser]);
-      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' });
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, { password: 0, totpSecret: 0 });
     });
   });
 

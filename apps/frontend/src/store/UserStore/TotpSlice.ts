@@ -17,10 +17,11 @@ const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
   setupTotp: async (totp, secret) => {
     set({ totpIsLoading: true });
     try {
-      await eduApi.post<boolean>(`${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_CHECK_TOTP}`, {
+      const { data } = await eduApi.post<UserDto>(`${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_CHECK_TOTP}`, {
         totp,
         secret,
       });
+      set({ user: { ...data } });
     } catch (e) {
       handleApiError(e, set);
     } finally {

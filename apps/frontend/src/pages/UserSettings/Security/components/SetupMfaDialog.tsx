@@ -29,18 +29,28 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
     return secret;
   };
 
+  const handleOpenChange = () => {
+    setIsOpen(!isOpen);
+    setTotp('');
+  };
+
   const handleSetMfaEnabled = async () => {
     try {
       await setupTotp(totp, getTotpSecret());
     } catch (error) {
       console.error(error);
     } finally {
-      setIsOpen(false);
+      handleOpenChange();
     }
   };
 
   const getDialogBody = () => (
-    <>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        void handleSetMfaEnabled();
+      }}
+    >
       <div className="flex justify-center">
         {qrCodeIsLoading ? (
           <div className="flex h-[200px] w-[200px] items-center justify-center">
@@ -56,18 +66,20 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
       <OtpInput
         totp={totp}
         setTotp={setTotp}
+        onComplete={handleSetMfaEnabled}
       />
-    </>
+    </form>
   );
 
   const getDialogFooter = () => (
-    <div className="my-4 flex justify-center">
+    <div className="mt-4 flex justify-center">
       <Button
+        type="submit"
         variant="btn-collaboration"
         size="lg"
         onClick={handleSetMfaEnabled}
       >
-        {totpIsLoading ? <CircleLoader /> : t('common.save')}
+        {totpIsLoading ? t('common.loading') : t('common.save')}
       </Button>
     </div>
   );
@@ -75,7 +87,7 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
   return (
     <AdaptiveDialog
       isOpen={isOpen}
-      handleOpenChange={() => setIsOpen(!isOpen)}
+      handleOpenChange={handleOpenChange}
       title={t('usersettings.addTotp.title')}
       body={getDialogBody()}
       footer={getDialogFooter()}

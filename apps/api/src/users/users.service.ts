@@ -44,7 +44,7 @@ class UsersService {
   }
 
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }).lean();
+    return this.userModel.findOne({ username }, { password: 0, totpSecret: 0 }).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {

@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
     useUserStore();
 
   const { isLoading } = auth;
-  const { setLmnApiToken } = useLmnApiStore();
+  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const [loginComplete, setLoginComplete] = useState(false);
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState('');
@@ -95,7 +95,9 @@ const LoginPage: React.FC = () => {
     }
     const registerUser = async () => {
       await handleRegisterUser();
-      await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      if (!lmnApiToken) {
+        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      }
       setLoginComplete(true);
     };
 
@@ -165,6 +167,7 @@ const LoginPage: React.FC = () => {
             <OtpInput
               totp={totp}
               setTotp={setTotp}
+              onComplete={form.handleSubmit(onSubmit)}
             />
           ) : (
             <>

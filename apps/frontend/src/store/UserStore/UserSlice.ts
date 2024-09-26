@@ -55,8 +55,8 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   getUser: async () => {
     set({ userIsLoading: true });
     try {
-      const response = await eduApi.get<UserDto>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}`);
-      set({ user: response.data });
+      const { data } = await eduApi.get<UserDto>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}`);
+      set({ user: { ...data } });
     } catch (e) {
       handleApiError(e, set, 'userError');
     } finally {
