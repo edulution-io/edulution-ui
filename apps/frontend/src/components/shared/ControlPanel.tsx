@@ -30,7 +30,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
   useEffect(() => {
     const existingPanels = document.querySelectorAll('div[data-key^="control-panel-"]');
-    setOffset(existingPanels.length * 75);
+    setOffset((existingPanels.length - 1) * (showMinimize ? 100 : 75));
   }, []);
 
   return (
