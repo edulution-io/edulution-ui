@@ -102,7 +102,7 @@ const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TVa
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-16 text-center"
+                    className="h-16 text-center text-background"
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>

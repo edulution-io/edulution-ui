@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -28,7 +27,7 @@ class OnlyofficeService {
       (option) => option.name === AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
     );
     if (!jwtSecret) {
-      throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     const secret = jwtSecret.value;
     return this.jwtService.sign(payload, { secret });

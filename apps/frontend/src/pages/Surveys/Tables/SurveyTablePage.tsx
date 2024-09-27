@@ -40,7 +40,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         <p className="text-background">{title}</p>
         <p className="text-sm font-normal text-ciGrey">{description}</p>
       </div>
-      <ScrollArea className="overflow-y-auto overflow-x-hidden">
+      <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">
         <SurveyTable
           columns={SurveyTableColumns}
           data={surveys || []}

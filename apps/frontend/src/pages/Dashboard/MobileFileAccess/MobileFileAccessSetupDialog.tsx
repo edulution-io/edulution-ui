@@ -79,7 +79,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         type="button"
         variant="btn-outline"
         onClick={() => setIsStepOne(!isStepOne)}
-        className={`absolute top-1/2 ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
+        className={`absolute top-1/2 text-foreground ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
       >
         {isStepOne ? <MdArrowForwardIos /> : <MdArrowBackIosNew />}
       </Button>

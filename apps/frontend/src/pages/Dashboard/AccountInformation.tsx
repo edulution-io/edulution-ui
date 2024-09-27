@@ -24,7 +24,7 @@ const AccountInformation = () => {
       value: (user?.mail && user.mail.length > 0 && user.mail.at(0)) || '...',
     },
     { label: t('accountData.school'), value: user?.school || '...' },
-    { label: t('accountData.role'), value: user?.sophomorixRole || '...' },
+    { label: t('accountData.role'), value: t(user?.sophomorixRole || '...') },
   ];
 
   return (

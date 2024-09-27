@@ -134,8 +134,9 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference exists",
-    "noMails": "No unread mail exists"
+    "noConferences": "No running conference",
+    "noMails": "No unread mail",
+    "noSurveys": "No open survey"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -158,7 +159,8 @@
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
       "DeleteFromServerFailed": "Delete from server failed",
-      "SaveFailed": "Save failed"
+      "SaveFailed": "Save failed",
+      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator."
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -287,7 +289,9 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "created": "Created",
     "creationDate": "Creation date",
+    "expires": "Expires",
     "expirationDate": "Expiration date",
     "notFound": "Survey not found",
     "noFormula": "The formula of the survey is not readable",
@@ -523,10 +527,13 @@
   "iso": "ISO",
   "program": "Programs",
   "share": "Share",
+  "teacher": "Teacher",
   "student": "Student",
   "students": "Students",
   "user": "User",
   "login": {
+    "username_too_long": "Username to long",
+    "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
   },

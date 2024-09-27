@@ -1,11 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';
 
-@Controller('conferences')
+@ApiTags(CONFERENCES_EDU_API_ENDPOINT)
+@ApiBearerAuth()
+@Controller(CONFERENCES_EDU_API_ENDPOINT)
 class ConferencesController {
   constructor(private readonly conferencesService: ConferencesService) {}
 
