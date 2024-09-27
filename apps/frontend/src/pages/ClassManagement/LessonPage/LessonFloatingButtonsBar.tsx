@@ -22,7 +22,7 @@ interface FloatingButtonsBarProps {
 }
 
 const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
-  const [isDialogOpen, setIsDialogOpen] = useState<string>('');
+  const [whichDialogIsOpen, setWhichDialogIsOpen] = useState<string>('');
   const {
     startExamMode,
     stopExamMode,
@@ -163,7 +163,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     buttons: buttons.map((button) => ({
       icon: button.icon,
       text: t(`classmanagement.${button.text}`),
-      onClick: () => setIsDialogOpen(button.text),
+      onClick: () => setWhichDialogIsOpen(button.text),
     })),
     keyPrefix: 'class-management-page-floating-button_',
   };
@@ -173,7 +173,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       <FloatingButtonsBar config={config} />
       {buttons.map((button) => (
         <div key={button.text}>
-          {getDialogComponent(button, isDialogOpen, setIsDialogOpen, updateStudents, students)}
+          {getDialogComponent(button, whichDialogIsOpen, setWhichDialogIsOpen, updateStudents, students)}
         </div>
       ))}
     </>

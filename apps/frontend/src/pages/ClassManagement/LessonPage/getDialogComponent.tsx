@@ -18,29 +18,29 @@ type ButtonType = Pick<
 
 const getDialogComponent = (
   button: ButtonType,
-  isDialogOpen: string,
-  setIsDialogOpen: (value: string) => void,
+  whichDialogIsOpen: string,
+  setWhichDialogIsOpen: (value: string) => void,
   updateStudents: () => Promise<void>,
   students?: UserLmnInfo[],
 ) => {
   const buttonConfig: ClassmanagementButtonConfigProps = {
     title: button.text,
-    isOpen: isDialogOpen === button.text.toString(),
-    onClose: () => setIsDialogOpen(''),
+    isOpen: whichDialogIsOpen === button.text,
+    onClose: () => setWhichDialogIsOpen(''),
     action: async () => {
       await button.enableAction();
-      setIsDialogOpen('');
+      setWhichDialogIsOpen('');
       await updateStudents();
     },
     enableAction: async () => {
       await button.enableAction().then(async () => {
-        setIsDialogOpen('');
+        setWhichDialogIsOpen('');
         await updateStudents();
       });
     },
     disableAction: async () => {
       await button.disableAction().then(async () => {
-        setIsDialogOpen('');
+        setWhichDialogIsOpen('');
         await updateStudents();
       });
     },
