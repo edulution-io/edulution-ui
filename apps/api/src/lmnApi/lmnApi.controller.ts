@@ -5,6 +5,7 @@ import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsReq
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
 
@@ -127,6 +128,15 @@ export class LmnApiController {
     @GetCurrentUsername() currentUsername: string,
   ) {
     return this.lmnApiService.getUser(lmnApiToken, currentUsername);
+  }
+
+  @Post('user')
+  async updateCurrentUserDetails(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, username);
   }
 
   @Get('user/:username')

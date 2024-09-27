@@ -26,6 +26,7 @@ import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import UsersService from '../users/users.service';
 
 @Injectable()
@@ -318,6 +319,26 @@ class LmnApiService {
       return response.data;
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.GetUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+    }
+  }
+
+  public async updateUser(
+    lmnApiToken: string,
+    userDetails: Partial<UpdateUserDetailsDto>,
+    username: string,
+  ): Promise<UserLmnInfo> {
+    try {
+      const data = JSON.parse(JSON.stringify(userDetails)) as Partial<UpdateUserDetailsDto>;
+      const response = await this.enqueue<UserLmnInfo>(() =>
+        this.lmnApi.post<UserLmnInfo>(
+          `${USERS_LMN_API_ENDPOINT}/${username}`,
+          { ...data },
+          { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(LmnApiErrorMessage.UpdateUserFailed, HttpStatus.BAD_REQUEST, LmnApiService.name);
     }
   }
 

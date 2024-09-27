@@ -16,6 +16,7 @@ export { default as ChatIcon } from '@/assets/icons/edulution/Chat.svg';
 export { default as WlanIcon } from '@/assets/icons/edulution/Wlan.svg';
 export { default as KnowledgeBaseIcon } from '@/assets/icons/edulution/Wissensdatenbank.svg';
 export { default as UserIcon } from '@/assets/icons/edulution/Benutzer.svg';
+export { default as UserDetailsSettingsIcon } from '@/assets/icons/edulution/Benutzer_Einstellungen.svg';
 export { default as SettingsIcon } from '@/assets/icons/edulution/Wartung.svg';
 export { default as OneSourceIcon } from '@/assets/icons/edulution/Aus_einer_Hand.svg';
 export { default as EducationIcon } from '@/assets/icons/edulution/Education.svg';

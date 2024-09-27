@@ -6,7 +6,12 @@ import { HomePage } from '@/pages/Home';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import { MAILS_PATH, SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import {
+  MAILS_PATH,
+  SECURITY_PATH,
+  USER_DETAILS_PATH,
+  USER_SETTINGS_PATH,
+} from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
@@ -14,6 +19,7 @@ import EmptyLayout from '@/components/layout/EmptyLayout';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
+import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -57,6 +63,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 <Route
                   path={SECURITY_PATH}
                   element={<UserSettingsSecurityPage />}
+                />
+                <Route
+                  path={USER_DETAILS_PATH}
+                  element={<UserSettingsDetailsPage />}
                 />
                 <Route
                   path={MAILS_PATH}

@@ -46,6 +46,7 @@
       "GetUserSchoolClassFailed": "Get user school class failed",
       "GetUserProjectsFailed": "Get user projects failed",
       "GetUserFailed": "Fetching failed",
+      "UpdateUserFailed": "Update failed",
       "GetCurrentUserRoomFailed": "Get current user room failed",
       "CreateProjectFailed": "Create project failed",
       "RemoveProjectFailed": "Remove project failed",
@@ -469,6 +470,25 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "details": {
+      "title": "Userdetails",
+      "userInformation": "User related information",
+      "dateOfBirth": "Date of birth",
+      "givenName": "Nickname",
+      "displayName": "Displayname",
+      "name": "Username",
+      "role": "Role",
+      "schoolName": "Schoolname",
+      "schoolSubjects": "Schoolsubjects",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "userData": "Userdata (editable)",
+      "proxyAddresses": "Mail Proxies",
+      "newProxy": "Add a new Proxy",
+      "sophomorixCustom1_teacher": "Schoolsubject 1",
+      "sophomorixCustom2_teacher": "Schoolsubject 2",
+      "sophomorixCustomMulti1_student": "Classes"
+    },
     "security": {
       "title": "Security",
       "sidebar": "Security",

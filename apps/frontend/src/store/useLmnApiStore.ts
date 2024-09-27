@@ -7,6 +7,7 @@ import eduApi from '@/api/eduApi';
 
 import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -14,10 +15,12 @@ interface UseLmnApiStore {
   isLoading: boolean;
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
+  isPatchingUserLoading: boolean;
   error: Error | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string) => Promise<UserLmnInfo | null>;
+  patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<UserLmnInfo | null>;
   reset: () => void;
 }
 
@@ -27,6 +30,7 @@ const initialState = {
   isLoading: false,
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
+  isPatchingUserLoading: false,
   error: null,
 };
 
@@ -42,7 +46,6 @@ const useLmnApiStore = create<UseLmnApiStore>(
 
       setLmnApiToken: async (username, password): Promise<void> => {
         set({ isLoading: true, error: null });
-
         try {
           lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
@@ -70,7 +73,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      fetchUser: async (username): Promise<UserLmnInfo | null> => {
+      fetchUser: async (username: string): Promise<UserLmnInfo | null> => {
         set({ isFetchUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -87,6 +90,23 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       reset: () => set(initialState),
+
+      patchUserDetails: async (userDetails: Partial<UpdateUserDetailsDto>): Promise<UserLmnInfo | null> => {
+        set({ isPatchingUserLoading: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.post<UserLmnInfo>(`${LMN_API_USER_EDU_API_ENDPOINT}`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            userDetails,
+          });
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isPatchingUserLoading: false });
+        }
+      },
     }),
     {
       name: 'lmn-user-storage',

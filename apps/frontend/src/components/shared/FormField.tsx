@@ -1,11 +1,11 @@
-import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
-import React from 'react';
-import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { cva, type VariantProps } from 'class-variance-authority';
-
 import cn from '@/lib/utils';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import Input from '@/components/shared/Input';
+import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
 const variants = cva([], {
   variants: {
@@ -23,10 +23,10 @@ type FormFieldProps<T extends FieldValues> = {
   name: Path<T> | string;
   isLoading?: boolean;
   labelTranslationId: string;
-  type?: 'password';
+  type?: HTMLInputTypeAttribute;
   defaultValue?: PathValue<T, Path<T>> | string;
   readonly?: boolean;
-  value?: string;
+  value?: string | string[] | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & VariantProps<typeof variants>;
 
@@ -43,6 +43,8 @@ const FormField = <T extends FieldValues>({
   value,
   onChange,
 }: FormFieldProps<T>) => {
+  const isMobileView = useIsMobileView();
+
   const { t } = useTranslation();
 
   return (
@@ -53,24 +55,28 @@ const FormField = <T extends FieldValues>({
       defaultValue={defaultValue as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn(variants({ variant }))}>
-            <p className="font-bold">{t(labelTranslationId)}</p>
-          </FormLabel>
-          <FormControl>
-            <Input
-              {...field}
-              type={type}
-              disabled={disabled || isLoading}
-              variant={variant}
-              readOnly={readonly}
-              value={value}
-              defaultValue={defaultValue as string}
-              onChange={(e) => {
-                field.onChange(e);
-                if (onChange) onChange(e);
-              }}
-            />
-          </FormControl>
+          <div className={cn({ 'flex flex-row gap-2': !isMobileView }, { 'space-y-2': isMobileView }, 'items-center')}>
+            <FormLabel className={cn({ 'flex-0 w-[200px]': !isMobileView }, variants({ variant }))}>
+              <p className="font-bold">{t(labelTranslationId)}:</p>
+            </FormLabel>
+            <div className={cn({ 'flex-1 flex-wrap gap-2': !isMobileView })}>
+              <FormControl>
+                <Input
+                  {...field}
+                  type={type}
+                  disabled={disabled || isLoading}
+                  variant={variant}
+                  readOnly={readonly}
+                  value={value}
+                  defaultValue={defaultValue as string}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    if (onChange) onChange(e);
+                  }}
+                />
+              </FormControl>
+            </div>
+          </div>
           <FormMessage className={cn('text-p', variants({ variant }))} />
         </FormItem>
       )}

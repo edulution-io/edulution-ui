@@ -46,6 +46,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
       "RemoveProjectFailed": "Entfernen des Projekts fehlgeschlagen",
@@ -470,6 +471,25 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "details": {
+      "title": "Benutzerdetails",
+      "userInformation": "Benutzerbezogene Informationen",
+      "dateOfBirth": "Geburtsdatum",
+      "givenName": "Spitzname",
+      "displayName": "Anzeigename",
+      "name": "Benutzername",
+      "role": "Rolle",
+      "schoolName": "Schulname",
+      "schoolSubjects": "Klassen",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "userData": "Nutzerdaten (Editierbar)",
+      "proxyAddresses": "E-Mail Proxy-Addressen",
+      "newProxy": "Neue Proxy hinzufügen",
+      "sophomorixCustom1_teacher": "Schulfach 1",
+      "sophomorixCustom2_teacher": "Schulfach 2",
+      "sophomorixCustomMulti1_student": "Klassen"
+    },
     "security": {
       "title": "Sicherheit",
       "sidebar": "Sicherheit",
