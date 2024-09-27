@@ -6,7 +6,7 @@ import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications
 import useUserStore from '@/store/UserStore/UserStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
-import QuotaCard from './QuotaCard';
+import Quota from './Quota';
 import Groups from './Groups';
 
 const Home: React.FC = () => {
@@ -46,7 +46,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
               <div>
-                <QuotaCard />
+                <Quota />
               </div>
             </div>
           </div>

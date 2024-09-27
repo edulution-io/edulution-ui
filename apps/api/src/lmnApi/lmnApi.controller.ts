@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
@@ -136,6 +136,7 @@ export class LmnApiController {
     @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
     @GetCurrentUsername() username: string,
   ) {
+    Logger.log(`Updating user details ${JSON.stringify(body.userDetails, null, 2)}`, 'LmnApiController');
     return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, username);
   }
 

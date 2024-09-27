@@ -326,19 +326,19 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<UserLmnInfo> {
+  ): Promise<void> {
     try {
-      const data = JSON.parse(JSON.stringify(userDetails)) as Partial<UpdateUserDetailsDto>;
-      const response = await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.post<UserLmnInfo>(
-          `${USERS_LMN_API_ENDPOINT}/${username}`,
-          { ...data },
-          { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
-        ),
+      await this.enqueue<UserLmnInfo>(() =>
+        this.lmnApi.post<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}`, userDetails, {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        }),
       );
-      return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.UpdateUserFailed, HttpStatus.BAD_REQUEST, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.UpdateUserFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        LmnApiService.name,
+      );
     }
   }
 

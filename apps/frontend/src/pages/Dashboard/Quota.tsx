@@ -1,16 +1,16 @@
 import React from 'react';
-import Quota from '@/pages/UserSettings/Details/Quota';
+import QuotaBody from '@/pages/UserSettings/Details/QuotaBody';
 import { CardContent, Card } from '@/components/shared/Card';
 
-const QuotaCard = () => (
+const Quota = () => (
   <Card variant="security">
     <CardContent>
       <div className="flex flex-col gap-1">
         <h4 className="text-md font-bold">QUOTAS</h4>
-        <Quota />
+        <QuotaBody />
       </div>
     </CardContent>
   </Card>
 );
 
-export default QuotaCard;
+export default Quota;

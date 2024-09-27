@@ -30,13 +30,15 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
     defaultValues: dataFields,
   });
 
+  const proxyAddresses = form.watch('proxyAddresses') as string[];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit((data) => patchUserDetails(data))}>
-        <div className="space-y-4 md:max-w-[80%]">
+        <div className="space-y-4 md:max-w-[75%]">
           <MailProxiesField
             formControl={form.control}
-            value={form.getValues('proxyAddresses') as string[]}
+            value={proxyAddresses}
             onChange={(mailProxies: string[]) => form.setValue('proxyAddresses', mailProxies)}
           />
           {userDataFields.map((field) => (
@@ -54,7 +56,7 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
 
         <div className="mt-4 flex justify-end">
           <Button
-            variant="btn-security"
+            variant="btn-collaboration"
             size="lg"
             type="submit"
           >

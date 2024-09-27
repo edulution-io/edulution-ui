@@ -1,7 +1,7 @@
 import React from 'react';
 import Separator from '@/components/ui/Separator';
 
-const Quota = () => (
+const QuotaBody = () => (
   <>
     <p>sgm</p>
     <Separator className="my-1 bg-ciGrey" />
@@ -18,4 +18,4 @@ const Quota = () => (
   </>
 );
 
-export default Quota;
+export default QuotaBody;

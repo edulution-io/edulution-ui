@@ -1,21 +1,17 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
-import cn from '@/lib/utils';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import { UserDetailsSettingsIcon } from '@/assets/icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import UserInformation from '@/pages/UserSettings/Details/UserInformation';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
-import Quota from '@/pages/UserSettings/Details/Quota';
+import QuotaBody from '@/pages/UserSettings/Details/QuotaBody';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Separator from '@/components/ui/Separator';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
-
-  const isMobileView = useIsMobileView();
 
   const { user } = useLmnApiStore();
 
@@ -61,15 +57,13 @@ const UserSettingsDetailsPage: React.FC = () => {
         />
       </div>
 
-      <div className="md:max-w-[80%]">
+      <div className="md:max-w-[75%]">
         <h3>{t('usersettings.details.userInformation')}</h3>
         <div className="mb-4 space-y-4 py-4 text-ciGrey">
           <UserInformation userInfoFields={userInfo} />
 
-          <div className={cn({ 'flex flex-row gap-2': !isMobileView })}>
-            <p className={cn({ 'flex-0 w-[200px] min-w-[200px] max-w-[200px]': !isMobileView })}>
-              {t('usersettings.details.schoolSubjects')}:
-            </p>
+          <div>
+            <p>{t('usersettings.details.schoolSubjects')}:</p>
             <div className="flex flex-row flex-wrap gap-2">
               {user?.schoolclasses.map((subject) => (
                 <BadgeSH
@@ -96,10 +90,10 @@ const UserSettingsDetailsPage: React.FC = () => {
 
       <Separator className="my-4 bg-ciGrey" />
 
-      <div className="md:max-w-[80%]">
+      <div className="md:max-w-[75%]">
         <h3>{t('usersettings.details.quotas')}</h3>
         <div className="space-y-4 py-4 text-ciGrey">
-          <Quota />
+          <QuotaBody />
         </div>
 
         <div className="h-[50px]" />
