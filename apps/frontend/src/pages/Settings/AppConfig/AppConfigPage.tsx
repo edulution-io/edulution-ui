@@ -29,6 +29,7 @@ import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
+import formSchema from './appConfigSchema';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -49,24 +50,6 @@ const AppConfigPage: React.FC = () => {
         .at(1) || '';
     setSettingLocation(pathname !== '/settings' ? secondPartFromPath : '');
   }, [pathname]);
-
-  const formSchemaObject: { [key: string]: z.Schema } = {};
-
-  APP_CONFIG_OPTIONS.forEach((item) => {
-    formSchemaObject[`${item.id}.appType`] = z.string().optional();
-    if (item.options) {
-      item.options.forEach((itemOption) => {
-        formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
-      });
-    }
-    if (item.extendedOptions) {
-      item.extendedOptions.forEach((extension) => {
-        formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
-      });
-    }
-  });
-
-  const formSchema = z.object(formSchemaObject);
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
