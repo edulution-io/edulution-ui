@@ -4,11 +4,12 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
-import { AppConfigDto, AppIntegrationType, APPS } from '@libs/appconfig/types';
+import { AppConfigDto, APPS } from '@libs/appconfig/types';
+import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
-  if (appType !== AppIntegrationType.NATIVE) return false;
+  if (appType !== AppIntegrationVariant.native) return false;
   return loadedFrames.includes(appConfig.name);
 };
 

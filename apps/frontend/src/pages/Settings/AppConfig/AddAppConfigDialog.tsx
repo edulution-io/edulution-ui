@@ -5,7 +5,8 @@ import { DropdownMenu } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigDto } from '@libs/appconfig/types';
+import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -50,7 +51,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       const newConfig: AppConfigDto = {
         name: selectedOption,
         icon: optionsConfig.icon,
-        appType: AppIntegrationType.FORWARDED,
+        appType: AppIntegrationVariant.forwarded,
         options: {},
         accessGroups: [],
         extendedOptions: [],

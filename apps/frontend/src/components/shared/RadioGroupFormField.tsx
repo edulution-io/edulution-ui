@@ -4,12 +4,7 @@ import React from 'react';
 import { Control, FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
-
-export interface RadioGroupItem {
-  value: string;
-  translationId: string;
-  disabled: boolean;
-}
+import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 
 interface RadioGroupProps {
   control: Control<FieldValues>;
@@ -43,16 +38,25 @@ const RadioGroupFormField = ({
             <RadioGroupSH
               onValueChange={field.onChange}
               defaultValue={defaultValue}
-              className="flex flex-col space-y-1"
+              className="flex flex-row"
             >
               {items.map((item) => (
                 <FormItem key={`${item.value}`}>
-                  <FormLabel className="flex cursor-pointer items-center space-x-3 space-y-0 text-base">
+                  <FormLabel className="flex cursor-pointer flex-col items-center space-x-3 space-y-0 text-base">
                     <FormControl>
-                      <RadioGroupItemSH
-                        value={item.value}
-                        disabled={item.disabled}
-                      />
+                      <>
+                        <RadioGroupItemSH
+                          value={item.value}
+                          disabled={item.disabled}
+                        />
+                        {item.icon ? (
+                          <img
+                            src={item.icon}
+                            width="100px"
+                            alt=""
+                          />
+                        ) : null}
+                      </>
                     </FormControl>
                     <span>{t(item.translationId)}</span>
                   </FormLabel>

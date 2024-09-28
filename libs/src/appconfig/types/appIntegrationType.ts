@@ -1,7 +1,5 @@
-enum AppIntegrationType {
-  NATIVE = 'native',
-  FORWARDED = 'forwarded',
-  EMBEDDED = 'embedded',
-}
+import AppIntegrationVariant from '../constants/appIntegrationVariants';
+
+type AppIntegrationType = keyof typeof AppIntegrationVariant;
 
 export default AppIntegrationType;

@@ -52,7 +52,7 @@ const AppConfigPage: React.FC = () => {
   const formSchemaObject: { [key: string]: z.Schema } = {};
 
   APP_CONFIG_OPTIONS.forEach((item) => {
-    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppIntegrationType).optional();
+    formSchemaObject[`${item.id}.appType`] = z.string().optional();
     if (item.options) {
       item.options.forEach((itemOption) => {
         formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
@@ -195,6 +195,12 @@ const AppConfigPage: React.FC = () => {
               >
                 {settingLocation === item.id ? (
                   <div className="space-y-10">
+                    <AppConfigTypeSelect
+                      control={control}
+                      settingLocation={settingLocation}
+                      appConfig={appConfigs}
+                      isNativeApp={item.isNativeApp}
+                    />
                     {item.options?.map((itemOption) => (
                       <FormFieldSH
                         key={`${item.id}.${itemOption}`}
@@ -216,13 +222,6 @@ const AppConfigPage: React.FC = () => {
                         )}
                       />
                     ))}
-
-                    <AppConfigTypeSelect
-                      control={control}
-                      settingLocation={settingLocation}
-                      appConfig={appConfigs}
-                      isNativeApp={item.isNativeApp}
-                    />
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
                       control={control}

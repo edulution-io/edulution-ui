@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigDto } from '@libs/appconfig/types';
+import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
 import { AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
@@ -48,7 +49,7 @@ describe('AppConfigController', () => {
         {
           name: 'TestConfig',
           icon: 'test-icon',
-          appType: AppIntegrationType.NATIVE,
+          appType: AppIntegrationVariant.native,
           options: {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
@@ -84,7 +85,7 @@ describe('AppConfigController', () => {
         {
           name: 'TestConfig',
           icon: 'test-icon',
-          appType: AppIntegrationType.NATIVE,
+          appType: AppIntegrationVariant.native,
           options: {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
