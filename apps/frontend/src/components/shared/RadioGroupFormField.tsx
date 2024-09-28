@@ -16,7 +16,7 @@ interface RadioGroupProps {
   labelClassname?: string;
 }
 
-const RadioGroupFormField = ({
+const RadioGroupFormField: React.FC<RadioGroupProps> = ({
   control,
   name,
   titleTranslationId,
@@ -48,17 +48,21 @@ const RadioGroupFormField = ({
                         <RadioGroupItemSH
                           value={item.value}
                           disabled={item.disabled}
+                          checked={field.value === item.value}
                         />
                         {item.icon ? (
-                          <img
-                            src={item.icon}
-                            width="100px"
-                            alt=""
-                          />
+                          <div className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}>
+                            <img
+                              src={item.icon}
+                              width="200px"
+                              aria-label={item.value}
+                              onClickCapture={() => (item.disabled ? {} : field.onChange(item.value))}
+                            />
+                          </div>
                         ) : null}
+                        <p className="cursor-default">{t(item.translationId)}</p>
                       </>
                     </FormControl>
-                    <span>{t(item.translationId)}</span>
                   </FormLabel>
                 </FormItem>
               ))}
