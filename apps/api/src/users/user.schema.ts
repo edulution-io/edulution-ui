@@ -10,19 +10,25 @@ export class User {
   username: string;
 
   @Prop()
-  email?: string;
+  email: string;
 
   @Prop()
-  firstName?: string;
+  firstName: string;
 
   @Prop()
-  lastName?: string;
+  lastName: string;
 
   @Prop()
-  password?: string;
+  password: string;
 
   @Prop({ type: Object, default: {} })
-  ldapGroups?: LdapGroups;
+  ldapGroups: LdapGroups;
+
+  @Prop({ type: Boolean, default: false })
+  mfaEnabled?: boolean;
+
+  @Prop({ type: String, default: '' })
+  totpSecret?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
