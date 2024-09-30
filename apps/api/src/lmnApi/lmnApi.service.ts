@@ -326,20 +326,14 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<void> {
-    try {
-      await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.post<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}`, userDetails, {
-          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-        }),
-      );
-    } catch (error) {
-      throw new CustomHttpException(
-        LmnApiErrorMessage.UpdateUserFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        LmnApiService.name,
-      );
-    }
+  ): Promise<AxiosResponse> {
+    return await this.enqueue(() =>
+      this.lmnApi.post(
+        `${USERS_LMN_API_ENDPOINT}/${username}`,
+        { ...userDetails },
+        { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken, [HTTP_HEADERS.Authorization]: `Bearer ${lmnApiToken}` } },
+      ),
+    );
   }
 
   public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<UserLmnInfo> {

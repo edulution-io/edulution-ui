@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res, Logger } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
@@ -130,19 +130,27 @@ export class LmnApiController {
     return this.lmnApiService.getUser(lmnApiToken, currentUsername);
   }
 
-  @Post('user')
-  async updateCurrentUserDetails(
-    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
-    @GetCurrentUsername() username: string,
-  ) {
-    Logger.log(`Updating user details ${JSON.stringify(body.userDetails, null, 2)}`, 'LmnApiController');
-    return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, username);
-  }
-
   @Get('user/:username')
   async getUser(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
     return this.lmnApiService.getUser(lmnApiToken, params.username);
+  }
+
+  @Patch('user')
+  async updateCurrentUserDetails(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
+    @GetCurrentUsername() currentUsername: string,
+  ) {
+    return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, currentUsername);
+  }
+
+  @Patch('user/:username')
+  async updateUserDetails(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
+    @Param() params: { username: string },
+  ) {
+    return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, params.username);
   }
 
   @Get('search')

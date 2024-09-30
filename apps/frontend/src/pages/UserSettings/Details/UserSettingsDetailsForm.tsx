@@ -32,9 +32,10 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
 
   const proxyAddresses = form.watch('proxyAddresses') as string[];
 
+  if (!user?.name) return null;
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => patchUserDetails(data))}>
+      <form onSubmit={form.handleSubmit((data) => patchUserDetails(user?.name, data))}>
         <div className="space-y-4 md:max-w-[75%]">
           <MailProxiesField
             formControl={form.control}
@@ -56,7 +57,7 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
 
         <div className="mt-4 flex justify-end">
           <Button
-            variant="btn-collaboration"
+            variant="btn-security"
             size="lg"
             type="submit"
           >

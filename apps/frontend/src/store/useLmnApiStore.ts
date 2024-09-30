@@ -1,13 +1,13 @@
 import { create, StateCreator } from 'zustand';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import lmnApi from '@/api/lmnApi';
+import { HttpStatus } from '@nestjs/common';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import handleApiError from '@/utils/handleApiError';
-import eduApi from '@/api/eduApi';
-
 import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import lmnApi from '@/api/lmnApi';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -20,7 +20,7 @@ interface UseLmnApiStore {
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string) => Promise<UserLmnInfo | null>;
-  patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<UserLmnInfo | null>;
+  patchUserDetails: (username: string, details: Partial<UpdateUserDetailsDto>) => Promise<boolean>;
   reset: () => void;
 }
 
@@ -91,18 +91,19 @@ const useLmnApiStore = create<UseLmnApiStore>(
 
       reset: () => set(initialState),
 
-      patchUserDetails: async (userDetails: Partial<UpdateUserDetailsDto>): Promise<UserLmnInfo | null> => {
+      patchUserDetails: async (username: string, userDetails: Partial<UpdateUserDetailsDto>): Promise<boolean> => {
         set({ isPatchingUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<UserLmnInfo>(`${LMN_API_USER_EDU_API_ENDPOINT}`, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-            userDetails,
-          });
-          return response.data;
+          const response = await eduApi.patch(
+            `${LMN_API_USER_EDU_API_ENDPOINT}/${username}`,
+            { userDetails },
+            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+          );
+          return response.status === Number(HttpStatus.OK);
         } catch (error) {
           handleApiError(error, set);
-          return null;
+          return false;
         } finally {
           set({ isPatchingUserLoading: false });
         }

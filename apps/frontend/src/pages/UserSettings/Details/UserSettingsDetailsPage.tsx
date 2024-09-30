@@ -79,14 +79,10 @@ const UserSettingsDetailsPage: React.FC = () => {
       </div>
       <Separator className="my-4 bg-ciGrey" />
 
-      {userData && userData.length > 0 ? (
-        <>
-          <h3>{t('usersettings.details.title')}</h3>
-          <div className="mb-4 space-y-4 py-4">
-            <UserSettingsDetailsForm userDataFields={userData} />
-          </div>
-        </>
-      ) : null}
+      <h3>{t('usersettings.details.title')}</h3>
+      <div className="mb-4 space-y-4 py-4">
+        <UserSettingsDetailsForm userDataFields={userData || []} />
+      </div>
 
       <Separator className="my-4 bg-ciGrey" />
 
