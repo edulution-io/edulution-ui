@@ -63,6 +63,7 @@ module.exports = {
       backgroundImage: {
         ciGreenToBlue: 'linear-gradient(45deg, #88D840, #0081C6)',
       },
+
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
