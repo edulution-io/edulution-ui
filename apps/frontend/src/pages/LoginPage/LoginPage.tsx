@@ -26,22 +26,15 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const {
-    eduApiToken,
-    webdavKey,
-    encryptKey,
-    totpIsLoading,
-    createOrUpdateUser,
-    setWebdavKey,
-    setEduApiToken,
-    getTotpStatus,
-  } = useUserStore();
+  const { eduApiToken, totpIsLoading, createOrUpdateUser, setEduApiToken, getTotpStatus } = useUserStore();
 
   const { isLoading } = auth;
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const [loginComplete, setLoginComplete] = useState(false);
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState('');
+  const [webdavKey, setWebdavKey] = useState('');
+  const [encryptKey, setEncryptKey] = useState('');
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('login.username_too_long') }),
@@ -70,8 +63,10 @@ const LoginPage: React.FC = () => {
         password: passwordHash,
       });
       if (requestUser) {
+        const newEncryptKey = CryptoJS.lib.WordArray.random(32).toString();
+        setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(form.getValues('password') as string, CryptoJS.lib.WordArray.random(32).toString());
+        setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
       }
     } catch (e) {
       //

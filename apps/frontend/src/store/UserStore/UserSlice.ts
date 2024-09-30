@@ -5,13 +5,10 @@ import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';
-import CryptoJS from 'crypto-js';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { getDecryptedPassword } from '@libs/common/utils';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 const initialState = {
-  webdavKey: '',
   isAuthenticated: false,
   isPreparingLogout: false,
   eduApiToken: '',
@@ -28,14 +25,12 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
 
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
-  setWebdavKey: (password: string, encryptKey) =>
-    set({ webdavKey: CryptoJS.AES.encrypt(password, encryptKey).toString(), encryptKey }),
 
   getWebdavKey: async () => {
     set({ userIsLoading: true });
     try {
       const { data } = await eduApi.get<string>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}/key`);
-      return getDecryptedPassword(data, get().encryptKey);
+      return atob(data);
     } catch (error) {
       handleApiError(error, set, 'userError');
       return '';

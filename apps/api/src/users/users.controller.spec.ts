@@ -19,10 +19,10 @@ const mockUsersService = {
   createOrUpdate: jest.fn(),
   create: jest.fn(),
   findOne: jest.fn(),
-  findOneKey: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
   searchUsersByName: jest.fn(),
+  getPassword: jest.fn(),
 };
 
 const mockLdapGroups: LdapGroups = {
@@ -86,10 +86,12 @@ describe(UsersController.name, () => {
   });
 
   describe('findOneKey', () => {
-    it('should call findOneKey method of usersService with correct arguments', async () => {
+    it('should call findOne method of usersService with correct arguments', async () => {
+      jest.spyOn(service, 'getPassword').mockResolvedValue('password');
       const username = 'testuser';
-      await controller.findOne(username);
-      expect(service.findOne).toHaveBeenCalledWith(username);
+      const currentUsername = 'testuser';
+      await controller.findOneKey(username, currentUsername);
+      expect(service.getPassword).toHaveBeenCalledWith(currentUsername);
     });
   });
 

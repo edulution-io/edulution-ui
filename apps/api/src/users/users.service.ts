@@ -44,14 +44,6 @@ class UsersService {
     return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
   }
 
-  async findOneKey(username: string): Promise<string> {
-    const user = await this.userModel.findOne({ username }, 'password').lean();
-    if (!user) {
-      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
-    }
-    return user.password;
-  }
-
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
     return this.userModel.findOneAndUpdate<User>({ username }, updateUserDto, { new: true }).exec();
   }
@@ -88,7 +80,7 @@ class UsersService {
   }
 
   async getPassword(username: string): Promise<string> {
-    const existingUser = await this.userModel.findOne({ username });
+    const existingUser = await this.userModel.findOne({ username }, 'password encryptKey').lean();
     if (!existingUser || !existingUser.password) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }

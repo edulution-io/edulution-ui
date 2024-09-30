@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
@@ -23,8 +25,17 @@ export class UsersController {
   }
 
   @Get(':username/key')
-  findOneKey(@GetCurrentUsername() username: string) {
-    return this.usersService.findOneKey(username);
+  async findOneKey(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
+    }
+    const response = await this.usersService.getPassword(currentUsername);
+
+    if (!response) {
+      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
+    }
+
+    return Buffer.from(response).toString('base64');
   }
 
   @Patch(':username')
