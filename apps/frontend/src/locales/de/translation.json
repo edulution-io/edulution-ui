@@ -24,7 +24,9 @@
       "TokenExpired": "Sitzung abgelaufen.",
       "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
       "Unauthorized": "Du bist nicht autorisiert.",
-      "Unknown": "Nutzer nicht gefunden."
+      "Unknown": "Nutzer nicht gefunden.",
+      "TotpMissing": "Totp fehlt.",
+      "TotpInvalid": "Totp ungültig."
     }
   },
   "lmnApi": {
@@ -582,7 +584,8 @@
     "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
-    "time": "Uhrzeit"
+    "time": "Uhrzeit",
+    "revert": "Zurücksetzen"
   },
   "form": {
     "path": "Link",
