@@ -63,7 +63,7 @@ const LoginPage: React.FC = () => {
         password: passwordHash,
       });
       if (requestUser) {
-        const newEncryptKey = CryptoJS.lib.WordArray.random(32).toString();
+        const newEncryptKey = CryptoJS.lib.WordArray.random(16).toString();
         setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
