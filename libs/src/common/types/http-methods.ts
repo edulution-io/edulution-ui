@@ -2,6 +2,7 @@ export enum HttpMethodsWebDav {
   MOVE = 'move',
   MKCOL = 'mkcol',
   PROPFIND = 'propfind',
+  COPY = 'copy',
 }
 
 export enum HttpMethods {

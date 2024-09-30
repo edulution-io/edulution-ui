@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -11,6 +11,9 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import { Request } from 'express';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -116,7 +119,6 @@ class FilesharingService {
 
   getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
     const client = await this.getClient(username);
-
     return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
@@ -260,6 +262,34 @@ class FilesharingService {
     );
   };
 
+  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+    const client = await this.getClient(username);
+
+    const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
+
+    const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+      const pathWithoutFilename = destinationPath.slice(0, destinationPath.lastIndexOf('/'));
+
+      try {
+        await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+      } catch (error) {
+        Logger.log(error);
+      }
+
+      try {
+        await FilesharingService.copyFileViaWebDAV(client, fullOriginPath, destinationPath);
+      } catch (error) {
+        Logger.log(error);
+      }
+    });
+
+    try {
+      await Promise.all(duplicationPromises);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
@@ -292,6 +322,59 @@ class FilesharingService {
 
   async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
     return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
+  }
+
+  async collectFiles(username: string, collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) {
+    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
+
+    try {
+      await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
+    } catch (error) {
+      Logger.log(error);
+    }
+
+    const operations = collectFileRequestDTO.map(async (item) => {
+      try {
+        await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+      } catch (error) {
+        Logger.log(error);
+      }
+
+      try {
+        await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
+      } catch (error) {
+        Logger.log(error);
+      }
+    });
+
+    try {
+      await Promise.all(operations);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.CollectingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private static async copyFileViaWebDAV(
+    client: AxiosInstance,
+    originPath: string,
+    destinationPath: string,
+  ): Promise<WebdavStatusReplay> {
+    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+      client,
+      {
+        method: HttpMethodsWebDav.COPY,
+        url: originPath,
+        headers: {
+          Destination: destinationPath,
+        },
+      },
+      true,
+      FileSharingErrorMessage.DuplicateFailed,
+      (response: WebdavStatusReplay) => ({
+        success: response.status >= 200 && response.status < 300,
+        status: response.status,
+      }),
+    );
   }
 }
 

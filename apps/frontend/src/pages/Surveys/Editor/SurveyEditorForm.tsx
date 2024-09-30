@@ -151,7 +151,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const formulaWatcher = form.watch('formula');
   const saveNoWatcher = form.watch('saveNo');
 
-  // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(
     () => (
       <SurveyEditor

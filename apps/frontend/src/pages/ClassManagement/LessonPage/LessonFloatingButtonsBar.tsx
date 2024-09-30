@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/require-await */
 import React, { useState } from 'react';
 import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
-import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { FaArrowRightFromBracket, FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -13,27 +11,31 @@ import { IconType } from 'react-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
+import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingButtons';
+import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
+import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
 }
 
-enum FloatingButtons {
-  Share = 'share',
-  Collect = 'collect',
-  ShowCollectedFiles = 'showCollectedFiles',
-  Wifi = 'wifi',
-  WebFilter = 'webfilter',
-  Internet = 'internet',
-  Printing = 'printing',
-  ExamMode = 'exam',
-}
-
 const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
-  const [isDialogOpen, setIsDialogOpen] = useState<string>('');
-  const { startExamMode, stopExamMode, addManagementGroup, removeManagementGroup, setMember, member } =
-    useLessonStore();
-  const { fetchUser } = useLmnApiStore();
+  const [whichDialogIsOpen, setWhichDialogIsOpen] = useState<string>('');
+  const {
+    startExamMode,
+    stopExamMode,
+    addManagementGroup,
+    removeManagementGroup,
+    setMember,
+    shareFiles,
+    collectFiles,
+    member,
+    currentGroupName,
+  } = useLessonStore();
+  const { fetchUser, user } = useLmnApiStore();
+  const { moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
@@ -47,7 +49,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
 
   const buttons: {
     icon: IconType;
-    text: FloatingButtons;
+    text: string;
     enableAction: () => Promise<void>;
     disableAction: () => Promise<void>;
     enableText?: string;
@@ -55,107 +57,97 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   }[] = [
     {
       icon: FaArrowRightFromBracket,
-      text: FloatingButtons.Share,
+      text: ClassMgmtFloatingButtons.Share,
       enableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
+        const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath);
+        if (!shareDTO) return;
+        await shareFiles(shareDTO);
       },
-      disableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
+      disableAction: async () => {},
     },
     {
       icon: FaArrowRightToBracket,
-      text: FloatingButtons.Collect,
+      text: ClassMgmtFloatingButtons.Collect,
       enableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
+        const collectDTO = buildCollectDTO(students, user, currentGroupName || '', user?.sophomorixIntrinsic2[0] || '');
+        if (!collectDTO) return;
+        await collectFiles(collectDTO, user?.sophomorixRole || '');
       },
-      disableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
+      disableAction: async () => {},
     },
     {
       icon: FaFileAlt,
-      text: FloatingButtons.ShowCollectedFiles,
-      enableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
-      disableAction: async () => {
-        // eslint-disable-next-line no-alert
-        alert(t(`classmanagement.featureIsStillInDevelopment`)); // Will be implemented in NIEDUUI-359
-      },
+      text: ClassMgmtFloatingButtons.ShowCollectedFiles,
+      enableAction: async () => {},
+      disableAction: async () => {},
     },
     {
       icon: FaWifi,
-      text: FloatingButtons.Wifi,
+      text: ClassMgmtFloatingButtons.Wifi,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.Wifi,
+          ClassMgmtFloatingButtons.Wifi,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.Wifi,
+          ClassMgmtFloatingButtons.Wifi,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: TbFilterCode,
-      text: FloatingButtons.WebFilter,
+      text: ClassMgmtFloatingButtons.WebFilter,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.WebFilter,
+          ClassMgmtFloatingButtons.WebFilter,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.WebFilter,
+          ClassMgmtFloatingButtons.WebFilter,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: FaEarthAmericas,
-      text: FloatingButtons.Internet,
+      text: ClassMgmtFloatingButtons.Internet,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.Internet,
+          ClassMgmtFloatingButtons.Internet,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.Internet,
+          ClassMgmtFloatingButtons.Internet,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: FiPrinter,
-      text: FloatingButtons.Printing,
+      text: ClassMgmtFloatingButtons.Printing,
       enableAction: async () => {
         await addManagementGroup(
-          FloatingButtons.Printing,
+          ClassMgmtFloatingButtons.Printing,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          FloatingButtons.Printing,
+          ClassMgmtFloatingButtons.Printing,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: MdSchool,
-      text: FloatingButtons.ExamMode,
+      text: ClassMgmtFloatingButtons.ExamMode,
       enableAction: async () => {
         await startExamMode(students.map((m) => m.cn));
       },
@@ -171,7 +163,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     buttons: buttons.map((button) => ({
       icon: button.icon,
       text: t(`classmanagement.${button.text}`),
-      onClick: () => setIsDialogOpen(button.text),
+      onClick: () => setWhichDialogIsOpen(button.text),
     })),
     keyPrefix: 'class-management-page-floating-button_',
   };
@@ -181,24 +173,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       <FloatingButtonsBar config={config} />
       {buttons.map((button) => (
         <div key={button.text}>
-          <LessonConfirmationDialog
-            title={button.text}
-            member={students}
-            isOpen={isDialogOpen === button.text.toString()}
-            onClose={() => setIsDialogOpen('')}
-            enableAction={async () => {
-              await button.enableAction();
-              setIsDialogOpen('');
-              await updateStudents();
-            }}
-            disableAction={async () => {
-              await button.disableAction();
-              setIsDialogOpen('');
-              await updateStudents();
-            }}
-            enableText={button.enableText}
-            disableText={button.disableText}
-          />
+          {getDialogComponent(button, whichDialogIsOpen, setWhichDialogIsOpen, updateStudents, students)}
         </div>
       ))}
     </>
