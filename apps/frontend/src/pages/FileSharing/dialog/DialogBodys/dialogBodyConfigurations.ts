@@ -34,7 +34,7 @@ interface DialogBodyConfigurationBase {
     currentPath: string,
     inputValues: {
       selectedItems?: DirectoryFileDTO[];
-      moveItemsToPath?: DirectoryFileDTO;
+      moveOrCopyItemToPath?: DirectoryFileDTO;
       selectedFileType?: { extension: string; generate: string };
       filesToUpload?: File[];
     },
@@ -217,11 +217,11 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
-      const { moveItemsToPath, selectedItems } = inputValues;
-      if (!moveItemsToPath || !selectedItems) {
+      const { moveOrCopyItemToPath, selectedItems } = inputValues;
+      if (!moveOrCopyItemToPath || !selectedItems) {
         return Promise.resolve([]);
       }
-      const newCleanedPath = getPathWithoutWebdav(moveItemsToPath.filename);
+      const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filename);
       const cleanedPath = getPathWithoutWebdav(currentPath);
       return Promise.resolve(
         selectedItems.map((item) => ({

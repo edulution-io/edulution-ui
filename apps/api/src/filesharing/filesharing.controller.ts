@@ -24,6 +24,8 @@ import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
@@ -123,6 +125,24 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)
   getOnlyofficeToken(@Body() payload: string) {
     return this.filesharingService.getOnlyOfficeToken(payload);
+  }
+
+  @Post(FileSharingApiEndpoints.DUPLICATE)
+  async duplicateFile(
+    @Body() duplicateFileRequestDto: DuplicateFileRequestDto,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+  }
+
+  @Post(FileSharingApiEndpoints.COLLECT)
+  async collectFiles(
+    @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
+    @Query('userRole') userRole: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    const { collectFileRequestDTO } = body;
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole);
   }
 
   @Public()

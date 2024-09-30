@@ -9,19 +9,29 @@ import { useTranslation } from 'react-i18next';
 
 interface UserCardProps {
   user: UserLmnInfo;
+  selectedMember: UserLmnInfo[];
   setSelectedMember: React.Dispatch<React.SetStateAction<UserLmnInfo[]>>;
   isTeacherInSameClass: boolean;
   isTeacherInSameSchool: boolean;
 }
 
-const UserCard = ({ user, setSelectedMember, isTeacherInSameClass, isTeacherInSameSchool }: UserCardProps) => {
+const UserCard = ({
+  user,
+  selectedMember,
+  setSelectedMember,
+  isTeacherInSameClass,
+  isTeacherInSameSchool,
+}: UserCardProps) => {
   const { t } = useTranslation();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [isSelected, setIsSelected] = useState<boolean>(false);
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
+  const isSelectable = isTeacherInSameSchool && isStudent;
+  const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
+
+  const isActive = isHovered || isMemberSelected;
 
   const onCardClick = () => {
     if (!isStudent) {
@@ -35,18 +45,13 @@ const UserCard = ({ user, setSelectedMember, isTeacherInSameClass, isTeacherInSa
       return;
     }
 
-    setSelectedMember((prevState) => {
-      if (isSelected) {
-        setIsSelected(false);
-        return prevState.filter((m) => m.dn !== user.dn);
+    setSelectedMember(() => {
+      if (isMemberSelected) {
+        return selectedMember.filter((m) => m.dn !== user.dn);
       }
-      setIsSelected(true);
-      return [...prevState, user];
+      return [...selectedMember, user];
     });
   };
-
-  const isActive = isSelected || isHovered;
-  const isSelectable = isTeacherInSameSchool && isStudent;
 
   return (
     <Card
@@ -62,7 +67,7 @@ const UserCard = ({ user, setSelectedMember, isTeacherInSameClass, isTeacherInSa
             {isSelectable && (
               <Checkbox
                 className="ml-2 rounded-lg"
-                checked={isSelected}
+                checked={isMemberSelected}
                 onCheckedChange={onCardClick}
                 aria-label={t('select')}
               />
