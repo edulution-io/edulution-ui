@@ -11,9 +11,15 @@ interface ExtendedOptionsFormProps {
   form: UseFormReturn<any>;
   settingLocation: string;
   extendedOptions: AppConfigExtendedOptions[];
+  onExtendedOptionsChange: (extendedOptions: AppConfigExtendedOptions[]) => void;
 }
 
-const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({ form, settingLocation, extendedOptions }) => {
+const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
+  form,
+  settingLocation,
+  extendedOptions,
+  onExtendedOptionsChange,
+}) => {
   const { t } = useTranslation();
 
   const updateExtendedOptions = (appExtension: string, appExtensionOption: string, value: ValueTypes) => {
@@ -24,14 +30,14 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({ form, setting
     );
     if (appExtensionOptionIndex === -1) return;
 
-    const extendedOptionsUpdate = form.getValues(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[];
+    const extendedOptionsUpdate = structuredClone(extendedOptions);
     extendedOptionsUpdate[appExtensionIndex].extensions[appExtensionOptionIndex].value = value;
-    form.setValue(`${settingLocation}.extendedOptions`, extendedOptionsUpdate);
+    onExtendedOptionsChange(extendedOptionsUpdate);
   };
 
-  const extendedOptionsWatcher = (form.watch(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]) || [];
-
-  return extendedOptionsWatcher.map((option) => (
+  if (!extendedOptions) return null;
+  if (extendedOptions.length === 0) return null;
+  return extendedOptions.map((option) => (
     <AccordionItem
       key={`app-extension-${settingLocation}.${option.name}`}
       value={`app-extension-${settingLocation}`}

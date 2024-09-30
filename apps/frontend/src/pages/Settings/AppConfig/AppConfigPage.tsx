@@ -96,7 +96,7 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
+    if (!currentConfig || !currentConfig.accessGroups) {
       return;
     }
 
@@ -108,26 +108,32 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       label: item.label,
     }));
 
-    const newExtendedOptions = currentConfig.extendedOptions?.map((app) => ({
-      name: app.name,
-      extensions: app.extensions?.map((item) => ({
-        name: item.name,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        value: item.value,
-        width: item.width,
-        type: item.type,
-      })),
-    }));
-
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
-    setValue(`${settingLocation}.extendedOptions`, newExtendedOptions);
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
       });
     }
+
+    const possibleExtensions = APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.extendedOptions;
+    const newExtendedOptions = possibleExtensions?.map((plugin) => {
+      const currentExtension = currentConfig.extendedOptions?.find((item) => item.name === plugin.name);
+      return {
+        name: plugin.name,
+        extensions: plugin.extensions?.map((pluginOption) => {
+          const currentOption = currentExtension?.extensions?.find((item) => item.name === pluginOption.name);
+          return {
+            name: currentOption ? currentOption.name : pluginOption.name,
+            value: currentOption ? currentOption.value : pluginOption.value || pluginOption.defaultValue,
+            width: currentOption ? currentOption.width : pluginOption.width || 'full',
+            type: currentOption ? currentOption.type : pluginOption.type || 'text',
+          };
+        }),
+      };
+    });
+    setValue(`${settingLocation}.extendedOptions`, newExtendedOptions);
   };
 
   useEffect(() => {
@@ -163,7 +169,6 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
       name: app.name,
       extensions: app.extensions?.map((item) => ({
         name: item.name,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         value: item.value,
         width: item.width,
         type: item.type,
@@ -275,7 +280,11 @@ const AppConfigPage: React.FC = (): React.ReactNode => {
                           <ExtendedOptionsForm
                             form={form}
                             settingLocation={settingLocation}
-                            extendedOptions={item.extendedOptions}
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                            extendedOptions={form.watch(`${settingLocation}.extendedOptions`)}
+                            onExtendedOptionsChange={(extensionValues: AppConfigExtendedOptions[]) =>
+                              form.setValue(`${item.id}.extendedOptions`, extensionValues)
+                            }
                           />
                         </AccordionSH>
                       </div>
