@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/contants/pubKeyFilePath';
 import JWTUser from '../../types/JWTUser';
 
 @Injectable()
@@ -12,8 +13,7 @@ class TokenService {
       throw new UnauthorizedException('JWT or Token is missing');
     }
 
-    const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
-    const pubKey = readFileSync(pubKeyPath, 'utf8');
+    const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
 
     try {
       await this.jwtService.verifyAsync(token, {
@@ -28,8 +28,7 @@ class TokenService {
 
   async getCurrentUser(token: string): Promise<JWTUser> {
     if (token) {
-      const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
-      const pubKey = readFileSync(pubKeyPath, 'utf8');
+      const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
       try {
         const user: JWTUser = await this.jwtService.verifyAsync<JWTUser>(token, {
           publicKey: pubKey,

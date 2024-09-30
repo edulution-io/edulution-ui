@@ -5,6 +5,7 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/contants/pubKeyFilePath';
 import JWTUser from '../types/JWTUser';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
@@ -30,8 +31,7 @@ class AuthenticationGuard implements CanActivate {
     const token = AuthenticationGuard.extractTokenFromHeader(request);
 
     try {
-      const pubKeyPath = process.env.PUBLIC_KEY_FILE_PATH as string;
-      const pubKey = readFileSync(pubKeyPath, 'utf8');
+      const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
 
       request.user = await this.jwtService.verifyAsync<JWTUser>(token, {
         publicKey: pubKey,

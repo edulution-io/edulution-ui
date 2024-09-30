@@ -15,16 +15,12 @@ import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/contants/pubKeyFilePath';
 
-const {
-  KEYCLOAK_EDU_UI_REALM,
-  KEYCLOAK_API,
-  KEYCLOAK_EDU_API_CLIENT_ID,
-  KEYCLOAK_EDU_API_CLIENT_SECRET,
-  PUBLIC_KEY_FILE_PATH,
-} = process.env as {
-  [key: string]: string;
-};
+const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
+  process.env as {
+    [key: string]: string;
+  };
 
 @Injectable()
 class GroupsService {
