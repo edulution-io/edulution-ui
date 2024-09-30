@@ -34,17 +34,13 @@ class UsersService {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true },
+        { new: true, upsert: true, projection: { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } },
       )
       .lean();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().lean();
-  }
-
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }, { password: 0, totpSecret: 0 }).lean();
+    return this.userModel.findOne({ username }, { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 }).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {

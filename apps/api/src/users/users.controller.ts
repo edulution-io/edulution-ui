@@ -16,11 +16,6 @@ export class UsersController {
     return this.usersService.createOrUpdate(userDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
   @Get(':username')
   findOne(@Param('username') username: string) {
     return this.usersService.findOne(username);

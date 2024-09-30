@@ -18,7 +18,6 @@ const mockUserModel = {
 const mockUsersService = {
   createOrUpdate: jest.fn(),
   create: jest.fn(),
-  findAll: jest.fn(),
   findOne: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
@@ -74,13 +73,6 @@ describe(UsersController.name, () => {
       };
       await controller.createOrUpdate(registerDto);
       expect(service.createOrUpdate).toHaveBeenCalledWith(registerDto);
-    });
-  });
-
-  describe('findAll', () => {
-    it('should call findAll method of usersService', async () => {
-      await controller.findAll();
-      expect(service.findAll).toHaveBeenCalled();
     });
   });
 

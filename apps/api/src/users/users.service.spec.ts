@@ -182,22 +182,8 @@ describe(UsersService.name, () => {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true },
+        { new: true, upsert: true, projection: { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } },
       );
-    });
-  });
-
-  describe('findAll', () => {
-    it('should return an array of users', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      jest.spyOn(model, 'find').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue([mockUser]),
-      } as unknown as any);
-
-      const users = await service.findAll();
-
-      expect(users).toEqual([mockUser]);
-      expect(model.find).toHaveBeenCalled();
     });
   });
 
@@ -211,7 +197,10 @@ describe(UsersService.name, () => {
       const user = await service.findOne('testuser');
 
       expect(user).toEqual([mockUser]);
-      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, { password: 0, totpSecret: 0 });
+      expect(model.findOne).toHaveBeenCalledWith(
+        { username: 'testuser' },
+        { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 },
+      );
     });
   });
 
@@ -235,7 +224,7 @@ describe(UsersService.name, () => {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true },
+        { new: true, upsert: true, projection: { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } },
       );
     });
   });
