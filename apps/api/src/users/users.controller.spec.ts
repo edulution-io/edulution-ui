@@ -86,7 +86,7 @@ describe(UsersController.name, () => {
   });
 
   describe('findOneKey', () => {
-    it('should call findOne method of usersService with correct arguments', async () => {
+    it('should call getPassword method of usersService with correct arguments', async () => {
       jest.spyOn(service, 'getPassword').mockResolvedValue('password');
       const username = 'testuser';
       const currentUsername = 'testuser';
