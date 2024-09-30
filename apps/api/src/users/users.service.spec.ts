@@ -8,6 +8,7 @@ import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
+import { getDecryptedPassword } from '@libs/common/utils';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import GroupsService from '../groups/groups.service';
@@ -293,6 +294,21 @@ describe(UsersService.name, () => {
       const result = await service.searchUsersByName(mockToken, 'john');
       expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
       expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken);
+    });
+  });
+
+  describe('getPassword', () => {
+    it("should return the user's password", async () => {
+      const userData = { password: 'password', encryptKey: 'encryptKey' };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      jest.spyOn(model, 'findOne').mockReturnValueOnce({
+        lean: jest.fn().mockResolvedValue(userData),
+      } as unknown as any);
+
+      const user = await service.getPassword('testuser');
+
+      expect(user).toEqual(getDecryptedPassword('password', 'encryptKey'));
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, 'password encryptKey');
     });
   });
 });
