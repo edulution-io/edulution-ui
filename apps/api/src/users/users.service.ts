@@ -10,7 +10,6 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
-import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
@@ -23,36 +22,29 @@ class UsersService {
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: userDto.username }).exec();
-
-    let newUser;
-    if (!existingUser) {
-      newUser = await this.create({
-        email: userDto.email,
-        username: userDto.username,
-        password: userDto.password,
-        ldapGroups: userDto.ldapGroups,
-      });
-    } else {
-      newUser = await this.update(userDto.username, {
-        password: userDto.password,
-        ldapGroups: userDto.ldapGroups,
-      });
-    }
-
-    return newUser;
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
+    return this.userModel
+      .findOneAndUpdate(
+        { username: userDto.username },
+        {
+          $set: {
+            email: userDto.email,
+            firstName: userDto.firstName,
+            lastName: userDto.lastName,
+            password: userDto.password,
+            ldapGroups: userDto.ldapGroups,
+          },
+        },
+        { new: true, upsert: true },
+      )
+      .lean();
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find().lean();
   }
 
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne<User>({ username }).exec();
+    return this.userModel.findOne({ username }, { password: 0, totpSecret: 0 }).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
@@ -76,7 +68,7 @@ class UsersService {
     return fetchedUsers;
   }
 
-  async searchUsersByName(token: string, name: string): Promise<User[]> {
+  async searchUsersByName(token: string, name: string): Promise<Partial<User>[]> {
     const searchString = name.toLowerCase();
     const users = await this.findAllCachedUsers(token);
 
