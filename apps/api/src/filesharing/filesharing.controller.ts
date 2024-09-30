@@ -159,7 +159,7 @@ class FilesharingController {
       if (status === 1) {
         return res.status(HttpStatus.OK).send();
       }
-      return this.filesharingService.handleCallback(req, path, filename, eduToken);
+      return this.filesharingService.handleCallback(req, res, path, filename, eduToken);
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
     }

@@ -3,7 +3,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
@@ -34,37 +34,38 @@ class OnlyofficeService {
 
   async handleCallback(
     req: Request,
+    res: Response,
     path: string,
     filename: string,
     eduToken: string,
     uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusReplay>,
-  ): Promise<void> {
+  ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const cleanedPath = getPathWithoutWebdav(path);
 
     try {
-      const isValid = await this.tokenService.isTokenValid(eduToken);
-      Logger.log(isValid);
-
-      // eslint-disable-next-line prefer-const
       const user = await this.tokenService.getCurrentUser(eduToken);
 
       if (!user) {
         throw new CustomHttpException(FileSharingErrorMessage.UploadFailed, HttpStatus.FORBIDDEN);
       }
+
       if (callbackData.status === 2 || callbackData.status === 4) {
         const file = await FilesystemService.retrieveAndSaveFile(filename, callbackData);
 
         if (file) {
           await uploadFile(user.preferred_username, cleanedPath, file, '');
+          res.status(HttpStatus.OK).json({ error: 0 });
         } else {
           throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+      } else {
+        res.status(HttpStatus.OK).json({ error: 0 });
       }
     } catch (error) {
       Logger.error('Error handling callback:', error);
-    } finally {
-      req.res?.status(200).send();
+
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
   }
 }
