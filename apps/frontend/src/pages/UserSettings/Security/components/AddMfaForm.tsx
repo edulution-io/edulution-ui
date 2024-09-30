@@ -38,24 +38,29 @@ const AddMfaForm: React.FC = () => {
   return (
     <>
       <h3>{t('usersettings.config.mfa')}</h3>
-      <div className="mb-4 flex items-center justify-between">
-        <Switch
-          className="border-background bg-black"
-          checked={checked}
-          defaultChecked={mfaEnabled}
-          onCheckedChange={(chk) => {
-            setChecked(chk);
-          }}
-        />
-        <Button
-          variant="btn-collaboration"
-          size="sm"
-          onClick={() => handleRevertMfaSetup()}
-          className={checked !== mfaEnabled && !isOpen ? '' : 'invisible'}
-        >
-          {t('common.save')}
-        </Button>
+      <div className="flex flex-col">
+        <div className="mb-4 flex justify-start">
+          <Switch
+            className="border-background bg-black"
+            checked={checked}
+            defaultChecked={mfaEnabled}
+            onCheckedChange={(chk) => {
+              setChecked(chk);
+            }}
+          />
+        </div>
+        <div className="flex justify-end">
+          <Button
+            variant="btn-security"
+            size="lg"
+            onClick={() => handleRevertMfaSetup()}
+            className={mfaEnabled && checked !== mfaEnabled && !isOpen ? '' : 'invisible'}
+          >
+            {t('common.save')}
+          </Button>
+        </div>
       </div>
+
       <SetupMfaDialog
         isOpen={isOpen}
         setIsOpen={setIsOpen}
