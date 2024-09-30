@@ -327,7 +327,7 @@ class LmnApiService {
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
   ): Promise<AxiosResponse> {
-    return await this.enqueue(() =>
+    return this.enqueue(() =>
       this.lmnApi.post(
         `${USERS_LMN_API_ENDPOINT}/${username}`,
         { ...userDetails },
