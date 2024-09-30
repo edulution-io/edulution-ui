@@ -5,7 +5,6 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { getDecryptedPassword } from '@libs/common/utils';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
@@ -31,6 +30,7 @@ class UsersService {
             firstName: userDto.firstName,
             lastName: userDto.lastName,
             password: userDto.password,
+            encryptKey: userDto.encryptKey,
             ldapGroups: userDto.ldapGroups,
           },
         },
@@ -83,18 +83,12 @@ class UsersService {
   }
 
   async getPassword(username: string): Promise<string> {
-    const { EDUI_ENCRYPTION_KEY } = process.env;
-
-    if (!EDUI_ENCRYPTION_KEY) {
-      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
-    }
-
     const existingUser = await this.userModel.findOne({ username });
     if (!existingUser || !existingUser.password) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    return getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
+    return getDecryptedPassword(existingUser.password, existingUser.encryptKey);
   }
 }
 

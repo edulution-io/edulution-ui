@@ -20,17 +20,17 @@ const initialState = {
   userIsLoading: false,
   searchError: null,
   searchIsLoading: false,
+  encryptKey: '',
 };
-
-const WEBDAV_SECRET = import.meta.env.VITE_WEBDAV_KEY as string;
 
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
   ...initialState,
 
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
-  setWebdavKey: (password: string) => set({ webdavKey: CryptoJS.AES.encrypt(password, WEBDAV_SECRET).toString() }),
-  getWebdavKey: () => getDecryptedPassword(get().webdavKey, WEBDAV_SECRET),
+  setWebdavKey: (password: string, encryptKey) =>
+    set({ webdavKey: CryptoJS.AES.encrypt(password, encryptKey).toString(), encryptKey }),
+  getWebdavKey: () => getDecryptedPassword(get().webdavKey, get().encryptKey),
 
   logout: async () => {
     set({ isPreparingLogout: true });

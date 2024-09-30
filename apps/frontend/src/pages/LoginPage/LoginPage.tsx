@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
@@ -25,8 +26,16 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { eduApiToken, webdavKey, totpIsLoading, createOrUpdateUser, setWebdavKey, setEduApiToken, getTotpStatus } =
-    useUserStore();
+  const {
+    eduApiToken,
+    webdavKey,
+    encryptKey,
+    totpIsLoading,
+    createOrUpdateUser,
+    setWebdavKey,
+    setEduApiToken,
+    getTotpStatus,
+  } = useUserStore();
 
   const { isLoading } = auth;
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
@@ -62,7 +71,7 @@ const LoginPage: React.FC = () => {
       });
       if (requestUser) {
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(form.getValues('password') as string);
+        setWebdavKey(form.getValues('password') as string, CryptoJS.lib.WordArray.random(32).toString());
       }
     } catch (e) {
       //
@@ -82,6 +91,7 @@ const LoginPage: React.FC = () => {
       email: profile.email!,
       ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
       password: webdavKey,
+      encryptKey,
     };
     const response = await createOrUpdateUser(newUser);
 

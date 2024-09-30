@@ -70,6 +70,7 @@ describe(UsersController.name, () => {
         email: 'test@example.com',
         ldapGroups: mockLdapGroups,
         password: 'password',
+        encryptKey: 'encryptKey',
       };
       await controller.createOrUpdate(registerDto);
       expect(service.createOrUpdate).toHaveBeenCalledWith(registerDto);

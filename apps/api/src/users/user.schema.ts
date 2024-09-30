@@ -21,6 +21,9 @@ export class User {
   @Prop()
   password: string;
 
+  @Prop()
+  encryptKey: string;
+
   @Prop({ type: Object, default: {} })
   ldapGroups: LdapGroups;
 

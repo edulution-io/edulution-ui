@@ -10,8 +10,9 @@ type UserSlice = {
   updateUser: (user: Partial<UserDto>) => Promise<void>;
   eduApiToken: string;
   setEduApiToken: (eduApiToken: string) => void;
+  encryptKey: string;
   webdavKey: string;
-  setWebdavKey: (webdavKey: string) => void;
+  setWebdavKey: (password: string, encryptKey: string) => void;
   getWebdavKey: () => string;
   isPreparingLogout: boolean;
   logout: () => Promise<void>;
