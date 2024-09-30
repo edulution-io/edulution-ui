@@ -19,6 +19,7 @@ const mockUsersService = {
   createOrUpdate: jest.fn(),
   create: jest.fn(),
   findOne: jest.fn(),
+  findOneKey: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
   searchUsersByName: jest.fn(),
@@ -78,6 +79,14 @@ describe(UsersController.name, () => {
 
   describe('findOne', () => {
     it('should call findOne method of usersService with correct arguments', async () => {
+      const username = 'testuser';
+      await controller.findOne(username);
+      expect(service.findOne).toHaveBeenCalledWith(username);
+    });
+  });
+
+  describe('findOneKey', () => {
+    it('should call findOneKey method of usersService with correct arguments', async () => {
       const username = 'testuser';
       await controller.findOne(username);
       expect(service.findOne).toHaveBeenCalledWith(username);

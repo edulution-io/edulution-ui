@@ -13,7 +13,7 @@ type UserSlice = {
   encryptKey: string;
   webdavKey: string;
   setWebdavKey: (password: string, encryptKey: string) => void;
-  getWebdavKey: () => string;
+  getWebdavKey: () => Promise<string>;
   isPreparingLogout: boolean;
   logout: () => Promise<void>;
   userIsLoading: boolean;

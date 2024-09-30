@@ -7,6 +7,7 @@ import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import GroupsService from '../groups/groups.service';
@@ -182,7 +183,7 @@ describe(UsersService.name, () => {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true, projection: { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
       );
     });
   });
@@ -197,10 +198,7 @@ describe(UsersService.name, () => {
       const user = await service.findOne('testuser');
 
       expect(user).toEqual([mockUser]);
-      expect(model.findOne).toHaveBeenCalledWith(
-        { username: 'testuser' },
-        { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 },
-      );
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, USER_DB_PROJECTION);
     });
   });
 
@@ -224,7 +222,7 @@ describe(UsersService.name, () => {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true, projection: { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
       );
     });
   });

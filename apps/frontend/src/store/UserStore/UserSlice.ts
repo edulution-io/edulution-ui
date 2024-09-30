@@ -30,7 +30,19 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
   setWebdavKey: (password: string, encryptKey) =>
     set({ webdavKey: CryptoJS.AES.encrypt(password, encryptKey).toString(), encryptKey }),
-  getWebdavKey: () => getDecryptedPassword(get().webdavKey, get().encryptKey),
+
+  getWebdavKey: async () => {
+    set({ userIsLoading: true });
+    try {
+      const { data } = await eduApi.get<string>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}/key`);
+      return getDecryptedPassword(data, get().encryptKey);
+    } catch (error) {
+      handleApiError(error, set, 'userError');
+      return '';
+    } finally {
+      set({ userIsLoading: false });
+    }
+  },
 
   logout: async () => {
     set({ isPreparingLogout: true });

@@ -9,6 +9,7 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
@@ -34,13 +35,21 @@ class UsersService {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true, projection: { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
       )
       .lean();
   }
 
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }, { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 }).lean();
+    return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
+  }
+
+  async findOneKey(username: string): Promise<string> {
+    const user = await this.userModel.findOne({ username }, 'password').lean();
+    if (!user) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+    return user.password;
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {

@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
+import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -19,6 +20,11 @@ export class UsersController {
   @Get(':username')
   findOne(@Param('username') username: string) {
     return this.usersService.findOne(username);
+  }
+
+  @Get(':username/key')
+  findOneKey(@GetCurrentUsername() username: string) {
+    return this.usersService.findOneKey(username);
   }
 
   @Patch(':username')
