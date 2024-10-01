@@ -5,7 +5,6 @@ import {
   Get,
   Header,
   HttpStatus,
-  Logger,
   Patch,
   Post,
   Put,
@@ -164,7 +163,6 @@ class FilesharingController {
 
       return await this.filesharingService.handleCallback(req, res, path, filename, eduToken);
     } catch (error) {
-      Logger.error('Error in callback handler:', FilesharingController.name, error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
   }
