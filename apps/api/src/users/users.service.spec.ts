@@ -300,11 +300,9 @@ describe(UsersService.name, () => {
   describe('getPassword', () => {
     it("should return the user's password", async () => {
       const userData = { password: 'password', encryptKey: 'encryptKey' };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      jest.spyOn(model, 'findOne').mockReturnValueOnce({
+      model.findOne = jest.fn().mockReturnValue({
         lean: jest.fn().mockResolvedValue(userData),
-      } as unknown as any);
-
+      });
       const user = await service.getPassword('testuser');
 
       expect(user).toEqual(getDecryptedPassword('password', 'encryptKey'));
