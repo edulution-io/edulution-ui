@@ -56,7 +56,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                             className={cn(
                               'opacity-60',
                               item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
-                              field.value === item.value ? 'opacity-100' : '',
+                              { 'opacity-100': field.value === item.value },
                             )}
                           >
                             <img
@@ -68,11 +68,9 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                           </div>
                         ) : null}
                         <p
-                          className={cn(
-                            'opacity-60',
-                            'cursor-default',
-                            field.value === item.value ? 'font-bold opacity-100' : '',
-                          )}
+                          className={cn('cursor-default opacity-60', {
+                            'font-bold opacity-100': field.value === item.value,
+                          })}
                         >
                           {t(item.translationId)}
                         </p>
