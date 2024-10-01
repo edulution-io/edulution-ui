@@ -49,9 +49,16 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                           value={item.value}
                           disabled={item.disabled}
                           checked={field.value === item.value}
+                          className="hidden"
                         />
                         {item.icon ? (
-                          <div className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}>
+                          <div
+                            className={cn(
+                              'opacity-60',
+                              item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
+                              field.value === item.value ? 'opacity-100' : '',
+                            )}
+                          >
                             <img
                               src={item.icon}
                               width="200px"
@@ -60,7 +67,15 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                             />
                           </div>
                         ) : null}
-                        <p className="cursor-default">{t(item.translationId)}</p>
+                        <p
+                          className={cn(
+                            'opacity-60',
+                            'cursor-default',
+                            field.value === item.value ? 'font-bold opacity-100' : '',
+                          )}
+                        >
+                          {t(item.translationId)}
+                        </p>
                       </>
                     </FormControl>
                   </FormLabel>
