@@ -38,7 +38,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
             <RadioGroupSH
               onValueChange={field.onChange}
               defaultValue={defaultValue}
-              className="flex flex-row"
+              className="flex flex-row flex-wrap"
             >
               {items.map((item) => (
                 <FormItem key={`${item.value}`}>
@@ -49,7 +49,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                           value={item.value}
                           disabled={item.disabled}
                           checked={field.value === item.value}
-                          className="hidden"
+                          className={item.icon ? 'hidden' : ''}
                         />
                         {item.icon ? (
                           <div
