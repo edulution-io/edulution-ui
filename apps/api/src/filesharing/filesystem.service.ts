@@ -85,12 +85,13 @@ class FilesystemService {
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, new Uint8Array(response.data));
       const fileBuffer = readFileSync(filePath);
+      const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
 
       return {
         fieldname: 'file',
         originalname: filename,
         encoding: '7bit',
-        mimetype: 'text/plain',
+        mimetype,
         buffer: fileBuffer,
         size: fileBuffer.length,
       } as CustomFile;
