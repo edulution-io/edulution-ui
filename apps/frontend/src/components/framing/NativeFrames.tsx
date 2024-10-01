@@ -5,11 +5,11 @@ import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
-import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
-  if (appType !== AppIntegrationVariant.native) return false;
+  if (appType !== APP_INTEGRATION_VARIANT.native) return false;
   return loadedFrames.includes(appConfig.name);
 };
 

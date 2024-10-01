@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import BlankLayout from '@/components/layout/BlankLayout';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import { AppConfigDto } from '@libs/appconfig/types';
-import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const getForwardedRoutes = (appConfigs: AppConfigDto[]) => [
   <Route
@@ -11,7 +11,7 @@ const getForwardedRoutes = (appConfigs: AppConfigDto[]) => [
     element={<BlankLayout />}
   >
     {appConfigs
-      .filter((item) => item.appType === AppIntegrationVariant.forwarded)
+      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.forwarded)
       .map((item) => (
         <Route
           key={item.name}

@@ -3,7 +3,7 @@ import { Control } from 'react-hook-form';
 import { findAppConfigByName } from '@/utils/common';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import { AppConfigDto } from '@libs/appconfig/types';
-import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { EmbeddedIcon, ForwardIcon, NativeIcon } from '@/assets/icons';
 
 interface AppConfigTypeSelectProps {
@@ -20,9 +20,9 @@ const AppConfigTypeSelect: React.FC<AppConfigTypeSelectProps> = ({
   isNativeApp,
 }) => {
   const radioGroupItems = [
-    { value: AppIntegrationVariant.native, translationId: 'form.native', disabled: !isNativeApp, icon: NativeIcon },
-    { value: AppIntegrationVariant.forwarded, translationId: 'form.forwarded', disabled: false, icon: ForwardIcon },
-    { value: AppIntegrationVariant.embedded, translationId: 'form.embedded', disabled: false, icon: EmbeddedIcon },
+    { value: APP_INTEGRATION_VARIANT.native, translationId: 'form.native', disabled: !isNativeApp, icon: NativeIcon },
+    { value: APP_INTEGRATION_VARIANT.forwarded, translationId: 'form.forwarded', disabled: false, icon: ForwardIcon },
+    { value: APP_INTEGRATION_VARIANT.embedded, translationId: 'form.embedded', disabled: false, icon: EmbeddedIcon },
   ];
 
   return (

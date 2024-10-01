@@ -4,7 +4,7 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
 import { AppConfigDto } from '@libs/appconfig/types';
-import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
@@ -34,7 +34,7 @@ const initialState = {
     {
       name: '',
       icon: '',
-      appType: AppIntegrationVariant.native,
+      appType: APP_INTEGRATION_VARIANT.native,
       options: {},
       accessGroups: [],
       extendedOptions: [],

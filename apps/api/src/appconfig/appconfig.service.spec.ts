@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import AppConfigService from './appconfig.service';
 import mockAppConfigService from './appconfig.service.mock';
 import { AppConfig } from './appconfig.schema';
@@ -42,7 +42,7 @@ describe('AppConfigService', () => {
         {
           name: 'Test',
           icon: 'icon-path',
-          appType: AppIntegrationVariant.embedded,
+          appType: APP_INTEGRATION_VARIANT.embedded,
           options: {
             url: 'test/path',
             apiKey: '123456789',
@@ -64,7 +64,7 @@ describe('AppConfigService', () => {
         {
           name: 'Test',
           icon: 'icon-path',
-          appType: AppIntegrationVariant.embedded,
+          appType: APP_INTEGRATION_VARIANT.embedded,
           options: {
             url: 'test/path',
             apiKey: '123456789',
@@ -86,7 +86,7 @@ describe('AppConfigService', () => {
         {
           name: 'Test',
           icon: 'icon-path',
-          appType: AppIntegrationVariant.embedded,
+          appType: APP_INTEGRATION_VARIANT.embedded,
           options: {},
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
@@ -108,7 +108,7 @@ describe('AppConfigService', () => {
         {
           name: appConfigName,
           icon: 'icon-path',
-          appType: AppIntegrationVariant.embedded,
+          appType: APP_INTEGRATION_VARIANT.embedded,
           options: {},
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },

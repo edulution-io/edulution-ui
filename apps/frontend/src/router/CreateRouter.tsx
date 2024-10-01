@@ -5,7 +5,7 @@ import { HomePage } from '@/pages/Home';
 
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto, APPS } from '@libs/appconfig/types';
-import AppIntegrationVariant from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import { MAILS_PATH, SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
@@ -79,7 +79,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 </Route>
               ) : null}
               {appConfigs.map((item) =>
-                item.appType === AppIntegrationVariant.native ? (
+                item.appType === APP_INTEGRATION_VARIANT.native ? (
                   <Route
                     key={item.name}
                     path={item.name}

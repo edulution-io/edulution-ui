@@ -1,5 +1,5 @@
-import AppIntegrationVariant from '../constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '../constants/appIntegrationVariants';
 
-type AppIntegrationType = keyof typeof AppIntegrationVariant;
+type AppIntegrationType = keyof typeof APP_INTEGRATION_VARIANT;
 
 export default AppIntegrationType;
