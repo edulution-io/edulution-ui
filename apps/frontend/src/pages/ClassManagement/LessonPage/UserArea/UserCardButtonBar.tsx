@@ -14,7 +14,8 @@ import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
-import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingButtons';
+import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
+import ClassmgmtOptionsType from '@libs/classManagement/types/classmgmtOptionsType';
 
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
@@ -24,7 +25,7 @@ interface UserCardButtonBarProps {
 interface UserCardButton {
   icon: IconType;
   value: boolean | null;
-  title: keyof typeof ClassMgmtFloatingButtons;
+  title: ClassmgmtOptionsType;
   defaultColor?: string;
 }
 
@@ -49,18 +50,18 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
 
     const users = [user.cn];
 
-    if (button.title === ClassMgmtFloatingButtons.Veyon) {
+    if (button.title === CLASSMGMT_OPTIONS.VEYON) {
       // eslint-disable-next-line no-alert
       alert(t('classmanagement.featureIsStillInDevelopment')); // Will be implemented in NIEDUUI-359
-    } else if (button.title === ClassMgmtFloatingButtons.ExamMode) {
+    } else if (button.title === CLASSMGMT_OPTIONS.EXAMMODE) {
       if (button.value) {
         await stopExamMode(users, groupType, groupName);
       } else {
         await startExamMode(users);
       }
-    } else if (button.title === ClassMgmtFloatingButtons.JoinClass) {
+    } else if (button.title === CLASSMGMT_OPTIONS.JOINCLASS) {
       await toggleSchoolClassJoined(false, user.sophomorixAdminClass);
-    } else if (button.title === ClassMgmtFloatingButtons.PasswordOptions) {
+    } else if (button.title === CLASSMGMT_OPTIONS.PASSWORDOPTIONS) {
       setCurrentUser(user);
       return;
     } else if (button.value) {
@@ -78,14 +79,14 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
     {
       icon: FaWifi,
       value: wifi,
-      title: ClassMgmtFloatingButtons.Wifi,
+      title: CLASSMGMT_OPTIONS.WIFI,
     },
-    { icon: TbFilterCode, value: webfilter, title: ClassMgmtFloatingButtons.WebFilter },
-    { icon: FaEarthAmericas, value: internet, title: ClassMgmtFloatingButtons.Internet },
-    { icon: FiPrinter, value: printing, title: ClassMgmtFloatingButtons.Printing },
-    { icon: MdSchool, value: examMode, title: ClassMgmtFloatingButtons.ExamMode },
-    { icon: PiEyeFill, value: null, title: ClassMgmtFloatingButtons.Veyon, defaultColor: 'bg-gray-600' },
-    { icon: PiKey, value: null, title: ClassMgmtFloatingButtons.PasswordOptions, defaultColor: 'bg-gray-600' },
+    { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER },
+    { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET },
+    { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING },
+    { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE },
+    { icon: PiEyeFill, value: null, title: CLASSMGMT_OPTIONS.VEYON, defaultColor: 'bg-gray-600' },
+    { icon: PiKey, value: null, title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS, defaultColor: 'bg-gray-600' },
   ];
 
   const getButtonDescription = (isEnabled: boolean | null) => {
@@ -99,7 +100,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
     booleanButtons.push({
       icon: FaArrowRightToBracket,
       value: null,
-      title: ClassMgmtFloatingButtons.JoinClass,
+      title: CLASSMGMT_OPTIONS.JOINCLASS,
       defaultColor: 'bg-ciRed',
     });
   }

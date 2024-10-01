@@ -13,7 +13,7 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
-import ClassMgmtFloatingButtons from '@libs/classManagement/constants/floatingButtons';
+import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 
@@ -36,7 +36,6 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   } = useLessonStore();
   const { fetchUser, user } = useLmnApiStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
-
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
 
@@ -46,6 +45,8 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       ),
     );
   };
+
+  const schoolName = user?.sophomorixSchoolname !== 'default-school' ? user?.sophomorixSchoolname : '';
 
   const buttons: {
     icon: IconType;
@@ -57,7 +58,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   }[] = [
     {
       icon: FaArrowRightFromBracket,
-      text: ClassMgmtFloatingButtons.Share,
+      text: CLASSMGMT_OPTIONS.SHARE,
       enableAction: async () => {
         const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath);
         if (!shareDTO) return;
@@ -67,7 +68,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     },
     {
       icon: FaArrowRightToBracket,
-      text: ClassMgmtFloatingButtons.Collect,
+      text: CLASSMGMT_OPTIONS.COLLECT,
       enableAction: async () => {
         const collectDTO = buildCollectDTO(students, user, currentGroupName || '', user?.sophomorixIntrinsic2[0] || '');
         if (!collectDTO) return;
@@ -77,77 +78,78 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     },
     {
       icon: FaFileAlt,
-      text: ClassMgmtFloatingButtons.ShowCollectedFiles,
+      text: CLASSMGMT_OPTIONS.SHOWCOLLECTEDFILES,
       enableAction: async () => {},
       disableAction: async () => {},
     },
     {
       icon: FaWifi,
-      text: ClassMgmtFloatingButtons.Wifi,
+      text: CLASSMGMT_OPTIONS.WIFI,
       enableAction: async () => {
         await addManagementGroup(
-          ClassMgmtFloatingButtons.Wifi,
+          `${schoolName}-${CLASSMGMT_OPTIONS.WIFI}`,
           students.map((m) => m.cn),
         );
       },
+
       disableAction: async () => {
         await removeManagementGroup(
-          ClassMgmtFloatingButtons.Wifi,
+          `${schoolName}-${CLASSMGMT_OPTIONS.WIFI}`,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: TbFilterCode,
-      text: ClassMgmtFloatingButtons.WebFilter,
+      text: CLASSMGMT_OPTIONS.WEBFILTER,
       enableAction: async () => {
         await addManagementGroup(
-          ClassMgmtFloatingButtons.WebFilter,
+          CLASSMGMT_OPTIONS.WEBFILTER,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          ClassMgmtFloatingButtons.WebFilter,
+          CLASSMGMT_OPTIONS.WEBFILTER,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: FaEarthAmericas,
-      text: ClassMgmtFloatingButtons.Internet,
+      text: CLASSMGMT_OPTIONS.INTERNET,
       enableAction: async () => {
         await addManagementGroup(
-          ClassMgmtFloatingButtons.Internet,
+          CLASSMGMT_OPTIONS.INTERNET,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          ClassMgmtFloatingButtons.Internet,
+          CLASSMGMT_OPTIONS.INTERNET,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: FiPrinter,
-      text: ClassMgmtFloatingButtons.Printing,
+      text: CLASSMGMT_OPTIONS.PRINTING,
       enableAction: async () => {
         await addManagementGroup(
-          ClassMgmtFloatingButtons.Printing,
+          CLASSMGMT_OPTIONS.PRINTING,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          ClassMgmtFloatingButtons.Printing,
+          CLASSMGMT_OPTIONS.PRINTING,
           students.map((m) => m.cn),
         );
       },
     },
     {
       icon: MdSchool,
-      text: ClassMgmtFloatingButtons.ExamMode,
+      text: CLASSMGMT_OPTIONS.EXAMMODE,
       enableAction: async () => {
         await startExamMode(students.map((m) => m.cn));
       },
