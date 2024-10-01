@@ -49,7 +49,7 @@ describe('AppConfigController', () => {
         {
           name: 'TestConfig',
           icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.native,
+          appType: APP_INTEGRATION_VARIANT.NATIVE,
           options: {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
@@ -85,7 +85,7 @@ describe('AppConfigController', () => {
         {
           name: 'TestConfig',
           icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.native,
+          appType: APP_INTEGRATION_VARIANT.NATIVE,
           options: {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',

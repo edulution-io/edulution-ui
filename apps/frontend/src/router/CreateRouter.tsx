@@ -79,7 +79,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 </Route>
               ) : null}
               {appConfigs.map((item) =>
-                item.appType === APP_INTEGRATION_VARIANT.native ? (
+                item.appType === APP_INTEGRATION_VARIANT.NATIVE ? (
                   <Route
                     key={item.name}
                     path={item.name}

@@ -34,7 +34,7 @@ const initialState = {
     {
       name: '',
       icon: '',
-      appType: APP_INTEGRATION_VARIANT.native,
+      appType: APP_INTEGRATION_VARIANT.NATIVE,
       options: {},
       accessGroups: [],
       extendedOptions: [],

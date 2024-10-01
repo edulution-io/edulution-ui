@@ -7,7 +7,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [
   <Route key="embedded">
     {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.embedded)
+      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
       .map((item) => (
         <Route
           key={item.name}

@@ -10,7 +10,7 @@ const EmbeddedIframes = () => {
   const getStyle = (appName: string) => (activeFrame === appName ? { display: 'block' } : { display: 'none' });
 
   return appConfigs
-    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.embedded)
+    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
     .map((appConfig) => (
       <iframe
         key={appConfig.name}

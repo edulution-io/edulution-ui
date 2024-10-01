@@ -11,7 +11,7 @@ const getForwardedRoutes = (appConfigs: AppConfigDto[]) => [
     element={<BlankLayout />}
   >
     {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.forwarded)
+      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FORWARDED)
       .map((item) => (
         <Route
           key={item.name}

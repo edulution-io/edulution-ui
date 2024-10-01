@@ -20,9 +20,9 @@ const AppConfigTypeSelect: React.FC<AppConfigTypeSelectProps> = ({
   isNativeApp,
 }) => {
   const radioGroupItems = [
-    { value: APP_INTEGRATION_VARIANT.native, translationId: 'form.native', disabled: !isNativeApp, icon: NativeIcon },
-    { value: APP_INTEGRATION_VARIANT.forwarded, translationId: 'form.forwarded', disabled: false, icon: ForwardIcon },
-    { value: APP_INTEGRATION_VARIANT.embedded, translationId: 'form.embedded', disabled: false, icon: EmbeddedIcon },
+    { value: APP_INTEGRATION_VARIANT.NATIVE, translationId: 'form.native', disabled: !isNativeApp, icon: NativeIcon },
+    { value: APP_INTEGRATION_VARIANT.FORWARDED, translationId: 'form.forwarded', disabled: false, icon: ForwardIcon },
+    { value: APP_INTEGRATION_VARIANT.EMBEDDED, translationId: 'form.embedded', disabled: false, icon: EmbeddedIcon },
   ];
 
   return (

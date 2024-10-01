@@ -42,7 +42,7 @@ describe('AppConfigService', () => {
         {
           name: 'Test',
           icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.embedded,
+          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
           options: {
             url: 'test/path',
             apiKey: '123456789',
@@ -64,7 +64,7 @@ describe('AppConfigService', () => {
         {
           name: 'Test',
           icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.embedded,
+          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
           options: {
             url: 'test/path',
             apiKey: '123456789',
@@ -86,7 +86,7 @@ describe('AppConfigService', () => {
         {
           name: 'Test',
           icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.embedded,
+          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
           options: {},
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
@@ -108,7 +108,7 @@ describe('AppConfigService', () => {
         {
           name: appConfigName,
           icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.embedded,
+          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
           options: {},
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },

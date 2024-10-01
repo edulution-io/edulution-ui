@@ -9,7 +9,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
-  if (appType !== APP_INTEGRATION_VARIANT.native) return false;
+  if (appType !== APP_INTEGRATION_VARIANT.NATIVE) return false;
   return loadedFrames.includes(appConfig.name);
 };
 

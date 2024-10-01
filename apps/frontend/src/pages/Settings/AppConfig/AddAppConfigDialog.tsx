@@ -51,7 +51,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       const newConfig: AppConfigDto = {
         name: selectedOption,
         icon: optionsConfig.icon,
-        appType: APP_INTEGRATION_VARIANT.forwarded,
+        appType: APP_INTEGRATION_VARIANT.FORWARDED,
         options: {},
         accessGroups: [],
         extendedOptions: [],
