@@ -16,7 +16,6 @@ services:
     environment:
       EDUI_PORT: 3000
       EDUI_CORS_URL: '*'
-      EDUI_ENCRYPTION_KEY: <KEY>
       EDUI_WEBDAV_URL: <WEBDAV_URL>
 
       LMN_VDI_API_URL: http://localhost:5555
@@ -25,8 +24,6 @@ services:
       GUACAMOLE_API_URL: http://localhost:8081
       GUACAMOLE_API_USER: <GUAC_ADMIN>
       GUACAMOLE_API_PASSWORD: <GUAC_PW>
-
-      PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
 
       MONGODB_DATABASE_NAME: edulution
       MONGODB_USERNAME: <DBUSER>

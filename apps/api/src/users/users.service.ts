@@ -5,11 +5,11 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { getDecryptedPassword } from '@libs/common/utils';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
@@ -31,20 +31,17 @@ class UsersService {
             firstName: userDto.firstName,
             lastName: userDto.lastName,
             password: userDto.password,
+            encryptKey: userDto.encryptKey,
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
       )
       .lean();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().lean();
-  }
-
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }, { password: 0, totpSecret: 0 }).lean();
+    return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
@@ -83,18 +80,12 @@ class UsersService {
   }
 
   async getPassword(username: string): Promise<string> {
-    const { EDUI_ENCRYPTION_KEY } = process.env;
-
-    if (!EDUI_ENCRYPTION_KEY) {
-      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
-    }
-
-    const existingUser = await this.userModel.findOne({ username });
+    const existingUser = await this.userModel.findOne({ username }, 'password encryptKey').lean();
     if (!existingUser || !existingUser.password) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    return getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
+    return getDecryptedPassword(existingUser.password, existingUser.encryptKey);
   }
 }
 

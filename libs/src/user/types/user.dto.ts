@@ -15,6 +15,8 @@ class UserDto {
 
   password: string;
 
+  encryptKey: string;
+
   mfaEnabled?: boolean;
 }
 

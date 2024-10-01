@@ -4,7 +4,7 @@ import { dirname, extname, join, resolve } from 'path';
 import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
 import { promisify } from 'util';
-import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
+import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import { HttpService } from '@nestjs/axios';
 import axios, { AxiosResponse } from 'axios';
 import getProtocol from '@libs/common/utils/getProtocol';
