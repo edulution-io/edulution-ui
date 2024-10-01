@@ -5,6 +5,7 @@ import {
   Get,
   Header,
   HttpStatus,
+  Logger,
   Patch,
   Post,
   Put,
@@ -147,7 +148,7 @@ class FilesharingController {
 
   @Public()
   @Post('callback')
-  handleCallback(
+  async handleCallback(
     @Req() req: Request,
     @Res() res: Response,
     @Query('path') path: string,
@@ -156,12 +157,15 @@ class FilesharingController {
   ) {
     try {
       const { status } = req.body as OnlyOfficeCallbackData;
+
       if (status === 1) {
-        return res.status(HttpStatus.OK).send();
+        return res.status(HttpStatus.OK).json({ error: 0 });
       }
-      return this.filesharingService.handleCallback(req, res, path, filename, eduToken);
+
+      return await this.filesharingService.handleCallback(req, res, path, filename, eduToken);
     } catch (error) {
-      return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+      Logger.error('Error in callback handler:', FilesharingController.name, error);
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
   }
 }

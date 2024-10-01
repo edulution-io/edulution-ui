@@ -55,17 +55,18 @@ class OnlyofficeService {
 
         if (file) {
           await uploadFile(user.preferred_username, cleanedPath, file, '');
-          res.status(HttpStatus.OK).json({ error: 0 });
-        } else {
-          throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
+          Logger.log('Callback success:', OnlyofficeService.name);
+          return res.status(HttpStatus.OK).json({ error: 0 });
         }
+        throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        res.status(HttpStatus.OK).json({ error: 0 });
+        Logger.log('Callback success:', OnlyofficeService.name);
+        return res.status(HttpStatus.OK).json({ error: 0 });
       }
     } catch (error) {
-      Logger.error('Error handling callback:', error);
+      Logger.error('Error handling callback:', OnlyofficeService.name);
 
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
   }
 }
