@@ -5,7 +5,7 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/contants/pubKeyFilePath';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '../types/JWTUser';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 

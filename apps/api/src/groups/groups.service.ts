@@ -5,7 +5,7 @@ import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
-import { GROUPS_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import { GROUPS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -15,7 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/contants/pubKeyFilePath';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
   process.env as {

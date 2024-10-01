@@ -9,7 +9,7 @@ import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { Card } from '@/components/shared/Card';
-import { EDU_APP_APPSTORE_URL } from '@libs/common/contants';
+import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
 
 type MobileFileAccessSetupDialogProps = {
   isOpen: boolean;

@@ -8,7 +8,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';

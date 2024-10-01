@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/contants/pubKeyFilePath';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '../../types/JWTUser';
 
 @Injectable()
