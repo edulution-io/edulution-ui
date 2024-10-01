@@ -10,7 +10,8 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigOptions, AppConfigOptionType, AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigOptions, AppConfigOptionType } from '@libs/appconfig/types';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
@@ -28,6 +29,7 @@ import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
+import formSchema from './appConfigSchema';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -48,24 +50,6 @@ const AppConfigPage: React.FC = () => {
         .at(1) || '';
     setSettingLocation(pathname !== '/settings' ? secondPartFromPath : '');
   }, [pathname]);
-
-  const formSchemaObject: { [key: string]: z.Schema } = {};
-
-  APP_CONFIG_OPTIONS.forEach((item) => {
-    formSchemaObject[`${item.id}.appType`] = z.nativeEnum(AppIntegrationType).optional();
-    if (item.options) {
-      item.options.forEach((itemOption) => {
-        formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
-      });
-    }
-    if (item.extendedOptions) {
-      item.extendedOptions.forEach((extension) => {
-        formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
-      });
-    }
-  });
-
-  const formSchema = z.object(formSchemaObject);
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: 'onChange',
@@ -195,6 +179,12 @@ const AppConfigPage: React.FC = () => {
               >
                 {settingLocation === item.id ? (
                   <div className="space-y-10">
+                    <AppConfigTypeSelect
+                      control={control}
+                      settingLocation={settingLocation}
+                      appConfig={appConfigs}
+                      isNativeApp={item.isNativeApp}
+                    />
                     {item.options?.map((itemOption) => (
                       <FormFieldSH
                         key={`${item.id}.${itemOption}`}
@@ -216,13 +206,6 @@ const AppConfigPage: React.FC = () => {
                         )}
                       />
                     ))}
-
-                    <AppConfigTypeSelect
-                      control={control}
-                      settingLocation={settingLocation}
-                      appConfig={appConfigs}
-                      isNativeApp={item.isNativeApp}
-                    />
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
                       control={control}
