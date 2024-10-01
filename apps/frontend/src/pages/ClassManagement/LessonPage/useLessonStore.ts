@@ -17,6 +17,9 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 const initialState = {
   isLoading: false,
@@ -56,6 +59,34 @@ const useLessonStore = create<LessonStore>(
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      shareFiles: async (duplicateFileRequestDto: DuplicateFileRequestDto) => {
+        set({ error: null, isLoading: true });
+        try {
+          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.DUPLICATE}`, {
+            originFilePath: duplicateFileRequestDto.originFilePath,
+            destinationFilePaths: duplicateFileRequestDto.destinationFilePaths,
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      collectFiles: async (collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) => {
+        set({ error: null, isLoading: true });
+        const queryParamString = `?userRole=${encodeURIComponent(userRole)}`;
+        try {
+          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
+            collectFileRequestDTO,
+          });
         } catch (error) {
           handleApiError(error, set);
         } finally {

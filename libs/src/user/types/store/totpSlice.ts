@@ -1,6 +1,7 @@
 type TotpSlice = {
-  checkTotp: (otp: string) => Promise<void>;
-  setupTotp: (otp: string) => Promise<void>;
+  setupTotp: (totp: string, totpSecret: string) => Promise<void>;
+  getTotpStatus: (username: string) => Promise<boolean>;
+  disableTotp: () => Promise<void>;
   totpIsLoading: boolean;
   totpError: Error | null;
   resetTotpSlice: () => void;
