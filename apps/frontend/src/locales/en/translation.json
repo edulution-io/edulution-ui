@@ -470,7 +470,9 @@
     "errors": {
       "WriteAppConfigFailed": "Save app failed",
       "ReadAppConfigFailed": "Read app failed",
-      "DisableAppConfigFailed": "Disable app failed"
+      "DisableAppConfigFailed": "Disable app failed",
+      "WriteTraefikConfigFailed": "Write traefik config failed",
+      "ReadTraefikConfigFailed": "Read traefik config failed"
     }
   },
   "usersettings": {

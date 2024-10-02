@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { parse } from 'yaml';
+import cn from '@/lib/utils';
 import { Textarea } from '../ui/Textarea';
 
 type YamlEditorProps = {
@@ -35,10 +36,12 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange }) => {
         placeholder={t('yamleditor.placeholder')}
         className="h-max-[200px] h-[200px] overflow-y-auto bg-ciDarkGrey text-p text-ciLightGrey scrollbar-thin placeholder:text-p focus:outline-none"
       />
-      {error && <p className="mt-2 text-ciLightRed">{error}</p>}
-      <pre className="mt-4 h-64 w-full overflow-auto overflow-y-auto rounded-md bg-ciDarkGrey p-4 text-ciLightGrey scrollbar-thin">
-        {value}
-      </pre>
+      <p className={cn('mt-2 text-ciLightRed', !error && 'invisible')}>{error}</p>
+      {value !== '' ? (
+        <pre className="mt-4 h-64 w-full overflow-auto overflow-y-auto rounded-md bg-ciDarkGrey p-4 text-ciLightGrey scrollbar-thin">
+          {value}
+        </pre>
+      ) : null}
     </div>
   );
 };

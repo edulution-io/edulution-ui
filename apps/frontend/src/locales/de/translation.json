@@ -471,7 +471,9 @@
     "errors": {
       "WriteAppConfigFailed": "App speichern fehlgeschlagen",
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
-      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
+      "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
     }
   },
   "usersettings": {

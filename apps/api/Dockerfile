@@ -3,6 +3,8 @@ FROM node@sha256:05412f5b9ed819c373a2535804e473a155fc91bfb7adf469ec2312e056a9e87
 
 RUN mkdir -p /opt/edulution/public/downloads
 
+RUN mkdir -p /opt/edulution/api/traefik
+
 WORKDIR /opt/edulution/api
 
 ENV NODE_ENV production

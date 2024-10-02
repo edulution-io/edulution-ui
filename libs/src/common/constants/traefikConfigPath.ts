@@ -1,3 +1,3 @@
-const TRAEFIK_CONFIG_FILE_PATH = 'traefik/dynamic/example.yml';
+const TRAEFIK_CONFIG_FILES_PATH = './traefik';
 
-export default TRAEFIK_CONFIG_FILE_PATH;
+export default TRAEFIK_CONFIG_FILES_PATH;
