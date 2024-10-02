@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { readFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -106,6 +107,20 @@ class AppConfigService {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  getFileAsBase64(filePath: string): string {
+    try {
+      const fileBuffer = readFileSync(filePath);
+      return fileBuffer.toString('base64');
+    } catch (e) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadAppConfigFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         AppConfigService.name,
       );
     }

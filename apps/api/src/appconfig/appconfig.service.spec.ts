@@ -1,14 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import AppConfigService from './appconfig.service';
-import mockAppConfigService from './appconfig.service.mock';
 import { AppConfig } from './appconfig.schema';
+
+jest.mock('fs');
 
 const mockAppConfigModel = {
   insertMany: jest.fn(),
   bulkWrite: jest.fn(),
   find: jest.fn(),
+  findOne: jest.fn(),
   deleteOne: jest.fn(),
 };
 
@@ -18,10 +21,7 @@ describe('AppConfigService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        {
-          provide: AppConfigService,
-          useValue: mockAppConfigService,
-        },
+        AppConfigService,
         {
           provide: getModelToken(AppConfig.name),
           useValue: mockAppConfigModel,
@@ -30,10 +30,6 @@ describe('AppConfigService', () => {
     }).compile();
 
     service = module.get<AppConfigService>(AppConfigService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
   });
 
   describe('insertConfig', () => {
@@ -54,7 +50,7 @@ describe('AppConfigService', () => {
         },
       ];
       await service.insertConfig(appConfigs);
-      expect(mockAppConfigService.insertConfig).toHaveBeenCalledWith(appConfigs);
+      expect(mockAppConfigModel.insertMany).toHaveBeenCalledWith(appConfigs);
     });
   });
 
@@ -75,58 +71,91 @@ describe('AppConfigService', () => {
           ],
         },
       ];
+
       await service.updateConfig(appConfigs);
-      expect(mockAppConfigService.updateConfig).toHaveBeenCalledWith(appConfigs);
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(expect.any(Array)); // Oder detailliertere Prüfung
     });
   });
 
   describe('getAppConfigs', () => {
     it('should return app configs', async () => {
-      const expectedConfigs = [
+      const appConfigObjects = [
         {
           name: 'Test',
           icon: 'icon-path',
           appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {},
+          options: { url: 'test/path' },
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
             { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
           ],
+          extendedOptions: [],
         },
       ];
+
+      const expectedConfigs = appConfigObjects.map((config) => ({
+        name: config.name,
+        icon: config.icon,
+        appType: config.appType,
+        options: { url: config.options.url ?? '' },
+        accessGroups: [],
+        extendedOptions: config.extendedOptions ?? [],
+      }));
+
       const ldapGroups = ['group1', 'group2'];
-      mockAppConfigService.getAppConfigs.mockResolvedValue(expectedConfigs);
+
+      mockAppConfigModel.find.mockResolvedValue(appConfigObjects);
+
       const configs = await service.getAppConfigs(ldapGroups);
+
       expect(configs).toEqual(expectedConfigs);
     });
   });
 
   describe('getAppConfigByName', () => {
-    it('should return a app config', async () => {
+    it('should return an app config', async () => {
       const appConfigName = 'Test';
-      const expectedConfigs = [
-        {
-          name: appConfigName,
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {},
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      mockAppConfigService.getAppConfigByName.mockResolvedValue(expectedConfigs);
-      const configs = await service.getAppConfigByName(appConfigName);
-      expect(configs).toEqual(expectedConfigs);
+      const expectedConfig = {
+        name: appConfigName,
+        icon: 'icon-path',
+        appType: APP_INTEGRATION_VARIANT.EMBEDDED,
+        options: {},
+        accessGroups: [
+          { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+          { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+        ],
+      };
+
+      mockAppConfigModel.findOne.mockResolvedValue(expectedConfig);
+
+      const config = await service.getAppConfigByName(appConfigName);
+
+      expect(config).toEqual(expectedConfig);
+      expect(mockAppConfigModel.findOne).toHaveBeenCalledWith({ name: appConfigName });
     });
   });
 
   describe('deleteConfig', () => {
     it('should delete a config', async () => {
       const configName = 'Test';
+
       await service.deleteConfig(configName);
-      expect(mockAppConfigService.deleteConfig).toHaveBeenCalledWith(configName);
+
+      expect(mockAppConfigModel.deleteOne).toHaveBeenCalledWith({ name: configName });
+    });
+  });
+
+  describe('getFileAsBase64', () => {
+    it('should return base64 encoded string of the file', () => {
+      const filePath = 'path/to/testfile.txt';
+      const fileContent = 'Test file content';
+      const base64Content = Buffer.from(fileContent).toString('base64');
+
+      (readFileSync as jest.Mock).mockReturnValue(Buffer.from(fileContent));
+
+      const result = service.getFileAsBase64(filePath);
+      expect(result).toEqual(base64Content);
+      expect(readFileSync).toHaveBeenCalledWith(filePath);
     });
   });
 });
