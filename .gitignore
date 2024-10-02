@@ -371,4 +371,4 @@ $RECYCLE.BIN/
 /swagger-spec.json
 
 # Traefik config
-traefik/*
+traefik

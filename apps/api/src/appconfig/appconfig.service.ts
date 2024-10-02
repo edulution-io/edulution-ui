@@ -30,7 +30,7 @@ class AppConfigService {
       const bulkOperations = appConfigDto.map((appConfig) => {
         if (appConfig?.options?.proxyConfig && appConfig?.options?.proxyConfig !== '') {
           writeFileSync(
-            `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig.name}.yml`,
+            `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
             JSON.parse(appConfig?.options?.proxyConfig) as string,
           );
         }
@@ -124,23 +124,19 @@ class AppConfigService {
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  // private writeConfigFile(_appName: string, _content: string) {
-  //   try {
-  //     // const filePath = `${TRAEFIK_CONFIG_FILE_PATH}/${appName}.yml`;
+  writeConfigFile(appName: string, content: string) {
+    try {
+      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
 
-  //     if (!existsSync(TRAEFIK_CONFIG_FILE_PATH)) {
-  //       mkdirSync(TRAEFIK_CONFIG_FILE_PATH, { recursive: true });
-  //     }
-
-  //     writeFileSync('./traefik.yml', JSON.stringify(''));
-  //   } catch (e) {
-  //     throw new CustomHttpException(
-  //       AppConfigErrorMessages.WriteTraefikConfigFailed,
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       AppConfigService.name,
-  //     );
-  //   }
-  // }
+      writeFileSync(filePath, JSON.parse(content) as string);
+    } catch (e) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.WriteTraefikConfigFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        AppConfigService.name,
+      );
+    }
+  }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getFileAsBase64(filePath: string): string {
