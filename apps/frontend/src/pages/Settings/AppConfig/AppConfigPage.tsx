@@ -26,7 +26,7 @@ import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/con
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import YamlEditor from '@/components/shared/YamlEditor';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import TRAEFIK_CONFIG_FILE_PATH from '@libs/common/constants/traefikConfigPath';
+import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -37,8 +37,7 @@ const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry, getConfigFile } =
-    useAppConfigsStore();
+  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
@@ -90,7 +89,12 @@ const AppConfigPage: React.FC = () => {
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
-        setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
+        setValue(
+          `${settingLocation}.${key}`,
+          key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
+            ? JSON.parse(currentConfig.options[key] as string)
+            : currentConfig.options[key as AppConfigOptionsType],
+        );
       });
     }
   };
@@ -138,7 +142,10 @@ const AppConfigPage: React.FC = () => {
       appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
       options:
         selectedOption.options?.reduce((acc, o) => {
-          acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionsType;
+          acc[o] =
+            o === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
+              ? JSON.stringify(getValues(`${settingLocation}.${o}`) as string)
+              : (getValues(`${settingLocation}.${o}`) as string);
           return acc;
         }, {} as AppConfigOptions) || {},
       extendedOptions,
@@ -166,16 +173,6 @@ const AppConfigPage: React.FC = () => {
       void postExternalMailProviderConfig(mailProviderConfig);
     }
   };
-
-  useEffect(() => {
-    if (areSettingsVisible) {
-      const fetchConfig = async () => {
-        const response = await getConfigFile(TRAEFIK_CONFIG_FILE_PATH);
-        setValue(`${settingLocation}.proxyConfig`, response);
-      };
-      void fetchConfig();
-    }
-  }, [areSettingsVisible, settingLocation, appConfigs]);
 
   const settingsForm = () => {
     if (areSettingsVisible) {
