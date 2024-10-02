@@ -80,15 +80,18 @@ const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
     inset?: boolean;
+    onClick?: () => void;
   }
->(({ className, inset, ...props }, ref) => (
+>(({ className, inset, onClick, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-sm bg-white px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-ciLightGrey focus:text-accent-foreground',
+      'relative flex cursor-pointer select-none items-center rounded-sm bg-white px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-ciGrey focus:text-accent-foreground',
       inset && 'pl-8',
       className,
     )}
+    onClick={onClick}
+    onTouchStart={onClick}
     {...props}
   />
 ));

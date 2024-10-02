@@ -3,11 +3,59 @@
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "preparing": "preparing...",
+  "closeEditingWindow": "Close editing window",
   "dashboard": {
     "mobileAccess": {
-      "title": "MOBILE DATA ACCESS",
+      "title": "Mobile File Access",
       "manual": "Manual",
-      "content": "You can access the school server from many mobile devices. Select your operating system to see how it works."
+      "accessData": "Login data",
+      "content": "You can access the school server from many mobile devices. Click on Manual to start.",
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
+      "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
+      "nextStepPreview": "In the next step you can transfer the access data.",
+      "copyCredentials": "Or enter manually:",
+      "downloadDirect": "Or download the app directly:",
+      "downloadApp": "Download the edulution-io app here:"
+    }
+  },
+  "auth": {
+    "errors": {
+      "TokenExpired": "Session expired.",
+      "SessionExpiring": "You will be logged off in less than a minute.",
+      "Unauthorized": "You are not authorized.",
+      "Unknown": "User not found.",
+      "TotpMissing": "Totp missing.",
+      "TotpInvalid": "Totp invalid."
+    }
+  },
+  "lmnApi": {
+    "errors": {
+      "ToggleSchoolClassJoinedFailed": "Failed to join or leave the classroom",
+      "ToggleProjectJoinedFailed": "Failed to join or leave the project",
+      "TogglePrinterJoinedFailed": "Failed to add or remove the printer",
+      "GetUserSessionsFailed": "Get user session failed",
+      "AddUserSessionsFailed": "Add user session failed",
+      "GetPrintersFailed": "Fetching printers failed",
+      "RemoveUserSessionsFailed": "Remove user session failed",
+      "UpdateUserSessionsFailed": "Update user session failed",
+      "StartExamModeFailed": "Start exam mode failed",
+      "PrintPasswordsFailed": "Print passwords failed",
+      "StopExamModeFailed": "Stop exam mode failed",
+      "RemoveManagementGroupFailed": "Remove management group failed",
+      "AddManagementGroupFailed": "Add management group failed",
+      "GetUserSchoolClassesFailed": "Get user school classes failed",
+      "GetUserSchoolClassFailed": "Get user school class failed",
+      "GetUserProjectsFailed": "Get user projects failed",
+      "GetUserFailed": "Fetching failed",
+      "GetCurrentUserRoomFailed": "Get current user room failed",
+      "CreateProjectFailed": "Create project failed",
+      "RemoveProjectFailed": "Remove project failed",
+      "UpdateProjectFailed": "Update project failed",
+      "SearchUsersOrGroupsFailed": "Search users or groups failed",
+      "GetProjectFailed": "Get project failed",
+      "PasswordMismatch": "The current password is wrong",
+      "PasswordChangeFailed": "Password change failed"
     }
   },
   "ticketsystem": {
@@ -16,32 +64,119 @@
   },
   "mail": {
     "title": "MAIL",
-    "sidebar": "Mail"
+    "sidebar": "Mail",
+    "importer": {
+      "title": "E-Mail Importer",
+      "provider": "E-Mail Provider",
+      "configName": "Name der Konfiguration",
+      "hostname": "Hostname",
+      "port": "Port",
+      "encryption": "Encryption",
+      "interval": "Sync Interval",
+      "isActive": "Active",
+      "syncJobsTable": "Importer Jobs",
+      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "mailAddress": "E-Mail Address"
+    }
   },
   "chat": {
     "title": "CHAT",
     "sidebar": "Chat"
   },
-  "conferences": {
-    "title": "CONFERENCES",
-    "sidebar": "Conferences"
+  "errors": {
+    "automaticLoginFailed": "Automatic login failed",
+    "unexpectedError": "An unexpected error occurred"
   },
+  "conferences": {
+    "errors": {
+      "MeetingNotFound": "A meeting with this ID was not found",
+      "BbbServerNotReachable": "The external BBB is not reachable",
+      "BbbUnauthorized": "You are not authorized at external BBB server",
+      "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
+      "YouAreNotTheCreator": "You are not the creator of the conference",
+      "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one."
+    },
+    "title": "CONFERENCES",
+    "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
+    "sidebar": "Conferences",
+    "create": "Create conference",
+    "creator": "Creator",
+    "delete": "Delete",
+    "deleteConference": "Delete conference",
+    "deleteConferences": "Delete {count}} conferences",
+    "editConference": "Edit conference",
+    "confirmSingleDelete": "Should this conference really be deleted?",
+    "confirmMultiDelete": "Should these conferences really be deleted?",
+    "name": "Name of conference",
+    "conference": "Conference",
+    "password": "Password",
+    "attendee": "Attendee",
+    "attendees": "Attendees",
+    "invitedAttendees": "Invited",
+    "joinedAttendees": "Joined",
+    "privacyStatus": "Access",
+    "public": "Public",
+    "private": "Private",
+    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "cancel": "Cancel",
+    "password_required": "No Password entered",
+    "error": "Error",
+    "action": "Action",
+    "start": "Start",
+    "stop": "Stop",
+    "join": "Join",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Leave conference"
+  },
+  "delete": "Delete",
   "knowledgebase": {
     "title": "KNOWLEDGEBASE",
     "sidebar": "Knowledgebase"
   },
+  "feed": {
+    "title": "Current affairs",
+    "noConferences": "No running conference",
+    "noMails": "No unread mail",
+    "noSurveys": "No open survey"
+  },
   "filesharing": {
     "title": "FILE SHARING",
-    "sidebar": "File Sharing"
+    "sidebar": "File Sharing",
+    "previewTitle": "File Preview",
+    "saveFile": "Save file",
+    "loadingDocument": "Loading document...",
+    "closeEditor": "Close editor",
+    "errors": {
+      "FileNotFound": "File not found",
+      "MountPointsNotFound": "Mount points not found",
+      "FolderNotFound": "Folder not found",
+      "UploadFailed": "File could not be added",
+      "DeletionFailed": "Deletion failed",
+      "RenameFailed": "Rename failed",
+      "MoveFailed": "Move failed",
+      "CreationFailed": "Creation failed",
+      "DbAccessFailed": "Database access failed",
+      "WebDavError": "Data server access failed",
+      "DownloadFailed": "Download failed",
+      "FolderCreationFailed": "Folder creation failed",
+      "DeleteFromServerFailed": "Delete from server failed",
+      "SaveFailed": "Save failed",
+      "DuplicateFailed": "Copy failed",
+      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
+      "CollectingFailed": "Collecting files failed",
+      "SharingFailed": "Sharing files failed"
+    },
+    "tooltips": {
+      "folderNameRequired": "Folder name is required",
+      "FileNameRequired": "File name is required",
+      "NewFileNameRequired": "New file name is required",
+      "NameRequired": "Name is required"
+    }
   },
   "forums": {
     "title": "FORUMS",
     "sidebar": "Forums"
-  },
-  "roombooking": {
-    "title": "ROOM BOOKING",
-    "sidebar": "Room Booking",
-    "rooms": "Rooms"
   },
   "learningmanagement": {
     "title": "LEARNING MANAGEMENT",
@@ -51,13 +186,195 @@
     "title": "SCHOOL INFORMATION",
     "sidebar": "School Information"
   },
-  "schoolmanagement": {
-    "title": "SCHOOL MANAGEMENT",
-    "sidebar": "School Management"
+  "schoolclass": "School Class",
+  "project": "Project",
+  "unknown": "Unknown",
+  "device": "Device",
+  "globalbinduser": "System User",
+  "globaladministrator": "Global Administrator",
+  "schoolbinduser": "System User",
+  "schooladministrator": "School Administrator",
+  "classroom-studentcomputer": "Classroom Student Computer",
+  "server": "Server",
+  "loginname": "Login name",
+  "classmanagement": {
+    "title": "CLASS ROOM",
+    "sidebar": "Class Room",
+    "detailsprinters": "Details of printer",
+    "classes": "Classes",
+    "name": "Name",
+    "notMemberOfClass": "You are no member of a class.",
+    "noGroupsToShow": "No groups available.",
+    "overview": "Overview",
+    "lesson": "Lesson",
+    "enrol": "Enrol",
+    "printPasswords": "Print passwords",
+    "Printers": "Printers",
+    "projects": "Projects",
+    "editmyProjects": "Edit project",
+    "createmyProjects": "Create project",
+    "detailsmyProjects": "Details of project",
+    "myClasses": "My classes",
+    "detailsmyClasses": "Details of school class",
+    "session": "Session",
+    "startSession": "Start session",
+    "mySessions": "My sessions",
+    "closeSession": "Close",
+    "editmySessions": "Edit session",
+    "createmySessions": "Create a session",
+    "addsessions": "Create session",
+    "myProjects": "My Projects",
+    "members": "Members",
+    "member": "Member",
+    "noneAvailable": "None available",
+    "isJoinable": "Users can join",
+    "joinclass": "Join class to share files",
+    "hide": "Hide for other users",
+    "teacher": "Teacher",
+    "typeToSearchUsersGroupsProjects": "Type to add students, classes or projects",
+    "typeToSearchUsersGroupsProjectsToNewSession": "Type to add students, classes or projects to a new session",
+    "itsNotPossibleToEditOtherTeacher": "At the moment it is not possible to create the directory for sharing in another teacher's home directory or to manage the administration groups.",
+    "itsNotPossibleToEditOtherSchoolStudents": "At the moment it is not possible to create the directory for sharing in a student's home directory of another school or to manage the administration groups.",
+    "usersInThisSession": "Users in this session",
+    "webfilter": "Webfilter",
+    "internet": "Internet",
+    "noStudentsForAction": "There are no students to whom this action can be applied.",
+    "wifi": "Wifi",
+    "exammode": "Exam mode",
+    "exam": "Exam",
+    "printPasswordsPageDescription": "Create files to print the passwords of individual classes or select classes to print several at the same time.",
+    "userPasswordDialogTitle": "Password of {{displayName}}",
+    "firstPassword": "Standard password",
+    "currentPassword": "Current password",
+    "restoreFirstPassword": "Restore standard password",
+    "setRandom": "Set random",
+    "currentPasswordChangedSuccessfully": "Current password changed successfully",
+    "firstPasswordChangedSuccessfully": "First password changed successfully",
+    "passwordRequirements": "Use upper case letters, lower case letters and special characters or numbers.",
+    "projectsPageDescription": "Here you will find an overview of all projects in which you are an admin.",
+    "typeToFilter": "Type to filter...",
+    "systemName": "System name",
+    "printing": "Printing",
+    "veyon": "Veyon",
+    "enable": "enable",
+    "disable": "disable",
+    "featureIsStillInDevelopment": "The feature is still under development and will be implemented in the next version.",
+    "collect": "Collect",
+    "CollectFilesDescription": "Here you will collect all files.",
+    "showcollectedfiles": "Show files",
+    "share": "Hand out",
+    "exammodeDescription": "Toggle the exam mode for {{count}} students",
+    "wifiDescription": "Toggle the Wifi for {{count}} students",
+    "webfilterDescription": "Toggle the webfilter for {{count}} students",
+    "internetDescription": "Toggle the internet for {{count}} students",
+    "printingDescription": "Toggle the printing for {{count}} students",
+    "collectDescription": "Collect the files for {{count}} students",
+    "shareDescription": "Share the files with {{count}} students",
+    "showcollectedfilesDescription": "Show the collected files of {{count}} students",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "passwordoptions": "Password options",
+    "createFile": "file creation",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "usePdfLatexInsteadOfLatex": "Use pdfLatex instead of Latex",
+    "pdfDescription": "Create a PDF file to print the passwords for these school classes",
+    "csvDescription": "Create a CSV file to print the passwords for these school classes",
+    "printOneItemPerPage": "Print one password per page",
+    "selectSavedSession": "Select from saved sessions",
+    "saveSession": "Save session",
+    "myRoom": "My room",
+    "sharedMailBox": "Shared mailbox",
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+  },
+  "select": "Select",
+  "selectAll": "Select all",
+  "details": "Details",
+  "quickAccess": "Quick access",
+  "options": "Options",
+  "downloadFile": "Download file",
+  "cancel": "Cancel",
+  "survey": {
+    "created": "Created",
+    "creationDate": "Creation date",
+    "expires": "Expires",
+    "expirationDate": "Expiration date",
+    "notFound": "Survey not found",
+    "noFormula": "The formula of the survey is not readable",
+    "noAnswer": "No answer available",
+    "canSubmitMultiple": "Allow multiple submission",
+    "editor": {
+      "new": "New (blank)",
+      "abort": "Revert all changes",
+      "addDescription": "Add a description",
+      "expectingUserInput": "Expecting the user to answer here, ... "
+    },
+    "errors": {
+      "updateOrCreateError": "Neither able to update a survey nor to create a new one",
+      "deleteError": "Not able to delete the surveys",
+      "noAnswerError": "No answers available jet",
+      "noFormulaError": "The formula of the survey is not readable",
+      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
+      "notFoundError": "Survey not found",
+      "participationErrorUserNotAssigned": "User is no participant of the survey",
+      "participationErrorAlreadyParticipated": "User has already participated in the survey",
+      "participationErrorSurveyExpired": "Survey has already expired",
+      "idTypeError": "Missing survey id",
+      "missingAnswerError": "Please, provide an answer for the submission"
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer",
+      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
+    }
+  },
+  "surveys": {
+    "title": "SURVEYS",
+    "sidebar": "Surveys",
+    "view": {
+      "open": "Open Surveys",
+      "created": "Owned Surveys",
+      "answered": "Answered Surveys",
+      "editor": "Create new"
+    },
+    "actions": {
+      "showResultsChart": "Chart",
+      "showResultsTable": "Table",
+      "showCommittedAnswers": "Answers"
+    },
+    "commitedAnswersDialog": {
+      "title": "Commited survey answer"
+    },
+    "saveDialog": {
+      "title": "Save and assign to participants",
+      "settingsFlags": "Options",
+      "isAnonymous": "Should the survey be anonymous?",
+      "isPublic": "Should the survey be public?",
+      "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
+    },
+    "sharePublicSurveyDialog": {
+      "title": "Share survey",
+      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
+      "savedToClipboard": "Saved to clipboard",
+      "savedToClipboardError": "Unable to save into clipboard"
+    },
+    "participateDialog": {
+      "title": "Participate in the survey"
+    },
+    "resultChartDialog": {
+      "title": "Results - Chart"
+    },
+    "resultTableDialog": {
+      "title": "Results - Table"
+    }
   },
   "printer": {
     "title": "PRINTER",
-    "sidebar": "Printe"
+    "sidebar": "Printer"
   },
   "network": {
     "title": "NETWORK",
@@ -68,8 +385,28 @@
     "sidebar": "Location Services"
   },
   "desktopdeployment": {
-    "title": "DESKTOP DEPLOYMENT",
-    "sidebar": "Desktop Deployment"
+    "title": "DESKTOP",
+    "topic": "Desktop Deployment",
+    "description": "Here you can connect to your virtual desktop.",
+    "sidebar": "Desktop",
+    "close": "Close connection",
+    "connect": "Connect",
+    "reload": "Reload",
+    "error": {
+      "title": "Connection error",
+      "description": "Please check your network connection and try again."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients available",
+    "client": "Client available",
+    "errors": {
+      "GuacamoleNotResponding": "RDP service not available.",
+      "GuacamoleUserNotFound": "Username or password could not be found.",
+      "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
+      "SessionNotFound": "Session not found."
+    }
   },
   "wlan": {
     "title": "WLAN",
@@ -95,6 +432,13 @@
     "title": "BACKUP",
     "sidebar": "Backup"
   },
+  "aichat": {
+    "title": "KI CHAT",
+    "sidebar": "KI Chat"
+  },
+  "roombooking": {
+    "sidebar": "Room booking"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -102,11 +446,78 @@
       "title": "Add app",
       "description": "Please select an app:"
     },
-    "description": "Here you can make all settings."
+    "deleteApp": {
+      "title": "Delete App",
+      "description": "Are you sure you want to delete this app?"
+    },
+    "delete": "Remove",
+    "description": "Here you can make all settings.",
+    "appconfig": {
+      "update": {
+        "success": "App saved successfully",
+        "failed": "Update failed"
+      },
+      "delete": {
+        "success": "App removed",
+        "failed": "App deletion failed"
+      },
+      "create": {
+        "success": "App created",
+        "failed": "App creation failed"
+      }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "Save app failed",
+      "ReadAppConfigFailed": "Read app failed",
+      "DisableAppConfigFailed": "Disable app failed",
+      "WriteTraefikConfigFailed": "Write traefik config failed",
+      "ReadTraefikConfigFailed": "Read traefik config failed"
+    },
+    "yamleditor": {
+      "invalidYaml": "Wrong YAML syntax",
+      "placeholder": "Enter your Traefik config here"
+    }
+  },
+  "usersettings": {
+    "title": "MY PROFILE",
+    "sidebar": "My Profile",
+    "security": {
+      "title": "Security",
+      "sidebar": "Security",
+      "description": "Configure here the security settings of your account",
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "confirm": "Change Password",
+        "passwordChangedSuccessfully": "Password changed successfully"
+      }
+    },
+    "mails": {
+      "title": "E-Mail"
+    },
+    "faq": "FAQ",
+    "externalIntegration": "External Integration",
+    "config": {
+      "mfa": "Setup Two-Factor-Authentication"
+    },
+    "addTotp": {
+      "title": "QR-Code",
+      "description": "Please scan the QR-Code and enter the TOTP:"
+    },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "confirmPasswordRequired": "Repeat the new password for the confirmation",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 8 characters long"
+    }
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window. No further authorization is required."
+    "description": "The application opens in a new window. No further authorization is required.",
+    "missing_link": "Missing link"
   },
   "menu": "Menu",
   "home": "Home",
@@ -114,36 +525,97 @@
   "iso": "ISO",
   "program": "Programs",
   "share": "Share",
+  "teacher": "Teacher",
+  "student": "Student",
   "students": "Students",
+  "user": "User",
   "login": {
+    "username_too_long": "Username to long",
+    "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me"
   },
+  "edit": "Edit",
   "common": {
+    "errors": {
+      "dbAccessFailed": "Database access failed",
+      "envAccessError": "Not able to read environment variables"
+    },
+    "actions": "Actions",
+    "and": "and",
+    "yes": "Yes",
+    "no": "No",
+    "title": "Title",
     "add": "Add",
     "reload": "Reload",
+    "stop": "Stop",
     "logout": "Logout",
+    "selected": "selected",
     "save": "Save",
     "successful": "Successful",
     "failed": "Failed",
     "login": "Login",
     "username": "Username",
     "password": "Password",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "overview": "Overview",
+    "create": "Create",
+    "icon": "Icon",
+    "group": "Group",
+    "groups": "Groups",
+    "min_chars": "Minimum {{count}} characters",
+    "max_chars": "Maximum {{count}} characters",
+    "groupAdmins": "Group administrators",
+    "admins": "Administrators",
+    "adminsShort": "Admins",
+    "adminShort": "Admin",
+    "admin": "Administrator",
+    "teacher": "Teacher",
+    "users": "Users",
+    "groupUsers": "Group users",
+    "description": "Description",
+    "school": "School",
+    "properties": "Properties",
+    "type": "Type",
+    "creationDate": "Creation date",
+    "schoolName": "School name",
+    "mailList": "Mailing List",
+    "invalid_chars": "Contains invalid characters",
+    "clearSelection": "Clear selection",
+    "start": "Start",
+    "close": "Close",
+    "delete": "Delete",
+    "connect": "Connect",
+    "custom": "Custom",
+    "select": "Select...",
+    "edit": "Edit",
+    "copy": "Copy",
+    "participate": "Participate",
+    "participated": "Participated",
+    "not-available": "'Not available'",
+    "date": "Date",
+    "time": "Time",
+    "revert": "Zurücksetzen"
   },
   "form": {
     "path": "Path",
     "pathDescription": "Please enter a valid URL.",
-    "apptype": "Link Type",
+    "apptype": "App type",
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
-    "saved": "Configuration saved!"
+    "saved": "Configuration saved!",
+    "url": "URL",
+    "urlDescription": "Please insert an URL to the application",
+    "apiKey": "API Key",
+    "apiKeyDescription": "The API Key will be used for authentication",
+    "proxyConfig": "Proxy Configuration",
+    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
-    "filename": "File Name",
+    "filename": "Filename",
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type"
@@ -151,17 +623,34 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
+    "dataLimitExceeded": "Data limit from 50 MB exceeded",
+    "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
-    "filesToUpload": "Files to upload"
+    "filesToUpload": "Files to upload",
+    "limitExceeded": "Reached the limit of 5 files"
+  },
+  "linuxmuster": {
+    "title": "LINUXMUSTER",
+    "sidebar": "Linuxmuster"
+  },
+  "whiteboard": {
+    "title": "WHITEBOARD",
+    "sidebar": "Whiteboard"
   },
   "table": {
     "rowsSelected": "{{selected}} of {{total}} row(s) selected",
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait while we process your request..."
+    "message": "Please wait..."
+  },
+  "search": {
+    "type-to-search": "Type to search",
+    "loading": "Loading",
+    "no-results": "No results",
+    "usersAdded": "{{ count }} added"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -169,15 +658,31 @@
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
-    "acrobat": "PDF"
+    "acrobat": "PDF",
+    "presentation": "Presentation",
+    "spreadsheet": "Table",
+    "vector": "Diagram"
   },
   "fileCreateNewContent": {
+    "documentFile": "Create a new document",
+    "spreadsheetFile": "Create a new table",
+    "presentationFile": "Create a new presentation",
+    "textFile": "Create a new textfile",
+    "drawIoFile": "Create a new Draw.io-File",
     "fileDialogTitle": "Create a new file",
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
+    "min_3_chars": "Minimum 3 characters",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
-    "unknownErrorOccurred": "An unknown error occurred"
+    "unknownErrorOccurred": "An unknown error occurred",
+    "newFileFromType": {
+      "drawIoFile": "New Draw.io-File",
+      "textFile": "New Textfile",
+      "spreadsheetFile": "New Table",
+      "presentationFile": "New Presentation",
+      "documentFile": "New Document"
+    }
   },
   "fileRenameContent": {
     "placeholder": "Enter new name",
@@ -199,7 +704,7 @@
     "moveTo": "Move to",
     "move": "Move",
     "unknownErrorOccurred": "An unknown error occurred",
-    "selectedItem": "Ausgewählter Ordner"
+    "selectedItem": "selected item"
   },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
@@ -244,6 +749,7 @@
     "directory_created_successfully": "Directory {{directoryName}} created successfully",
     "file_created_successfully": "File {{fileName}} created successfully",
     "file_was_deleted_successfully": "File {{fileName}} was deleted successfully",
+    "files_deleted_successfully": "File was deleted successfully",
     "all_items_moved_successfully": "All items moved successfully",
     "destination_path_is_undefined": "Destination path is undefined"
   },
@@ -260,8 +766,52 @@
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
-
-  "groupsPage": {
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Group could not be found by path",
+      "CouldNotGetUsers": "Users could not be found",
+      "CouldNotFetchGroupMembers": "Group members could not be found",
+      "CouldNotFetchUserById": "User could not be found by ID",
+      "CouldNotSearchGroups": "Could not search for groups"
+    },
     "classes": "Classes"
+  },
+  "users": {
+    "errors": {
+      "notFoundError": "User does not exist",
+      "updateError": "Not able to update the user"
+    }
+  },
+  "permission": {
+    "groups": "User groups",
+    "selectGroupsDescription": "Select the user groups that should have access to the app."
+  },
+  "appExtendedOptions": {
+    "title": "Extensions",
+    "onlyOfficeUrl": "Please enter the OnlyOffice URL",
+    "onlyOfficeUrlTitle": "OnlyOffice URL",
+    "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
+    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToConnectClientError": "Could not connect to the imap server",
+      "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
+      "NotAbleToFetchMailsError": "Could not fetch mails",
+      "NotValidPortTypeError": "The port must be specified as a number",
+      "MailProviderNotFound": "E-Mail provider not found",
+      "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
+      "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
+      "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"
+    }
+  },
+  "licensing": {
+    "communityLicenseDialog": {
+      "title": "Community Edition",
+      "description": "Free Community Edition of edulution. This version does not receive any support."
+    }
+  },
+  "preview": {
+    "failedToLoadImage": "Failed to load image"
   }
 }

@@ -32,22 +32,29 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { showCloseButton?: boolean }
->(({ className, children, showCloseButton = true, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    showCloseButton?: boolean;
+    variant?: 'primary' | 'secondary' | 'tertiary';
+  }
+>(({ className, children, showCloseButton = true, variant, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border bg-white p-6 shadow-lg duration-200',
+        { 'color-black bg-white text-foreground': variant === 'primary' },
+        { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+        { 'bg-ciGray': variant === 'secondary' },
+        { 'bg-black': variant === 'tertiary' },
+        'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl border p-6 shadow-lg duration-200',
         className,
       )}
       {...props}
     >
       {children}
       {showCloseButton && (
-        <DialogPrimitive.Close className="absolute right-4 top-4">
-          <Cross2Icon className="h-4 w-4" />
+        <DialogPrimitive.Close className="absolute right-5 top-5">
+          <Cross2Icon className="h-4 w-4 text-black" />
           <span className="sr-only">${translateKey('dialog.close')}</span>
         </DialogPrimitive.Close>
       )}
@@ -82,7 +89,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('rounded-xl text-lg font-semibold leading-none tracking-tight text-black', className)}
+    className={cn('rounded-xl text-lg font-semibold leading-none tracking-tight', className)}
     {...props}
   />
 ));

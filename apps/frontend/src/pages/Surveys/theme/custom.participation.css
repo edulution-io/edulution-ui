@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.survey-participation {
+  /* Structured */
+  .sd-header__text .sd-title {
+    .sv-string-viewer {
+      font-size: 20pt;
+      line-height: 20pt;
+      line-break: normal;
+      white-space: pre-wrap;
+    }
+  }
+  .sd-header__text .sd-description {
+    .sv-string-viewer {
+      font-size: 16pt;
+      line-height: 16pt;
+      line-break: normal;
+      white-space: pre-wrap;
+    }
+  }
+
+  .sd-page {
+    .sd-page__title {
+      .sv-string-viewer {
+        font-size: 16pt !important;
+        line-height: 16pt;
+        line-break: normal;
+        white-space: pre-wrap;
+      }
+    }
+
+    .sd-page__description {
+      .sv-string-viewer {
+        font-size: 12pt;
+        line-height: 12pt;
+        line-break: normal;
+        white-space: pre-wrap;
+      }
+    }
+
+    .sd-input,
+    .sd-text {
+      color: theme("colors.black") !important;
+      background: theme("colors.ciLightGrey") !important;
+      border: 1px solid rgba(0, 0, 0, 0.5) !important;
+      border-radius: 4px !important;
+
+      .sd-text__content {
+        color: theme("colors.black") !important;
+
+        .sv-string-viewer {
+          color: theme("colors.black") !important;
+        }
+      }
+      .sv-string-viewer {
+        color: theme("colors.black") !important;
+      }
+    }
+  }
+
+  /* Coloring */
+  .sd-element__content,
+  .sd-question__content {
+    .sv-dropdown_select-wrapper {
+      color: theme("colors.black") !important;
+      background: theme("colors.ciLightGrey") !important;
+      border: 1px solid rgba(0, 0, 0, 0.5) !important;
+      border-radius: 4px !important;
+
+      .sd-input,
+      .sd-dropdown,
+      .sd-dropdown--empty,
+      .sd-dropdown__filter-string-input {
+        color: theme("colors.black") !important;
+
+        .sv-string-viewer,
+        .sd-dropdown__value {
+          color: theme("colors.black") !important;
+        }
+      }
+
+      .sd-dropdown_chevron-button {
+        fill: theme("colors.black") !important;
+        color: theme("colors.black") !important;
+      }
+    }
+  }
+
+  .sd-body.sd-body--static {
+    width: 80vw;
+    max-width: 80vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+  }
+}

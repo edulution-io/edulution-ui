@@ -1,14 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-import React from 'react';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { render, screen, cleanup } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { cleanup, render, screen } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 import LoginPage from './LoginPage';
 
 vi.mock('react-oidc-context', () => ({
@@ -22,9 +23,25 @@ vi.mock('react-oidc-context', () => ({
   })),
 }));
 
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return {
+    ...(actual as typeof Object),
+    useNavigate: vi.fn(),
+    useLocation: vi.fn().mockReturnValue({
+      state: { from: { pathname: '/' } },
+    }),
+  };
+});
+
 describe('LoginPage', () => {
   beforeEach(() => {
-    render(<LoginPage />);
+    render(
+      <BrowserRouter>
+        <LoginPage />
+      </BrowserRouter>,
+    );
   });
 
   afterEach(() => {
@@ -32,7 +49,7 @@ describe('LoginPage', () => {
   });
 
   it('1 should render the fields that are needed on the page', () => {
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
@@ -42,7 +59,7 @@ describe('LoginPage', () => {
   });
 
   it('2 should be able to change the values for the input of the input components', async () => {
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
 
@@ -97,8 +114,8 @@ describe('LoginPage', () => {
 
   it('3 should be able to use the useForm hook', () => {
     const formSchema: z.Schema = z.object({
-      username: z.string({ required_error: 'username.required' }).max(32, { message: 'username.too_long' }),
-      password: z.string({ required_error: 'password.required' }).max(32, { message: 'password.too_long' }),
+      username: z.string({ required_error: 'username.required' }).max(32, { message: 'login.username_too_long' }),
+      password: z.string({ required_error: 'password.required' }).max(32, { message: 'login.password_too_long' }),
     });
 
     const { result } = renderHook(() =>
@@ -130,8 +147,8 @@ describe('LoginPage', () => {
 
   it('4 ensure, that changing the values using the form functions, updates the component', async () => {
     const formSchema: z.Schema = z.object({
-      username: z.string({ required_error: 'username.required' }).max(32, { message: 'username.too_long' }),
-      password: z.string({ required_error: 'password.required' }).max(32, { message: 'password.too_long' }),
+      username: z.string({ required_error: 'username.required' }).max(32, { message: 'login.username_too_long' }),
+      password: z.string({ required_error: 'password.required' }).max(32, { message: 'login.password_too_long' }),
     });
 
     const { result } = renderHook(() =>
@@ -143,9 +160,15 @@ describe('LoginPage', () => {
 
     const spyOnSubmit = vi.spyOn(result.current, 'handleSubmit');
 
-    const userNameInput = screen.getByTestId('test-id-login-page-user-name-input');
+    const userNameInput = screen.getByTestId('test-id-login-page-username-input');
     const passwordInput = screen.getByTestId('test-id-login-page-password-input');
     const submitButton = screen.getByTestId('test-id-login-page-submit-button');
+    submitButton.onclick = () => {
+      result.current.handleSubmit(
+        () => {},
+        () => {},
+      );
+    };
 
     await userEvent.clear(userNameInput);
     await userEvent.type(userNameInput, 'success');
@@ -159,9 +182,8 @@ describe('LoginPage', () => {
       'success',
     );
 
-    // TODO: NIEDUUI-107: Check why the trigger of the submit button is not working
     await userEvent.click(submitButton);
-    expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(0);
+    expect(spyOnSubmit, 'When submitting the handle submit function should have been called ').toHaveBeenCalledTimes(1);
 
     expect(result.error).toBeUndefined();
   });

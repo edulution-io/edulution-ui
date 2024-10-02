@@ -1,0 +1,7 @@
+{
+  "extends": ["../.eslintrc.json"],
+  "ignorePatterns": ["vite.config.mts"],
+  "parserOptions": {
+    "project": ["./tsconfig.lib.json"]
+  }
+}

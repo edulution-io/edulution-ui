@@ -1,31 +1,43 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import MobileLogo from '@/assets/logos/edulution-logo-long-colorfull-white.svg';
-import { useMediaQuery } from 'usehooks-ts';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
+import MobileLogo from '@/assets/logos/edulution.io_USER INTERFACE-small.svg';
+import { useTranslation } from 'react-i18next';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import useUserStore from '@/store/UserStore/UserStore';
 
-type HeaderProps = {
-  isLogoShown: boolean;
-};
+interface HeaderProps {
+  hideHeadingText?: boolean;
+}
 
-const Header: React.FC<HeaderProps> = ({ isLogoShown }) => {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps) => {
+  const isMobileView = useIsMobileView();
+  const { t } = useTranslation();
+  const { user } = useUserStore();
+  const getHeadingText = () => {
+    if (isMobileView || hideHeadingText) return null;
+    return (
+      <h2 className="ml-4 items-center text-2xl font-bold text-white">
+        {t('heading', {
+          givenName: user?.firstName || '-',
+          familyName: user?.lastName || '-',
+        })}
+      </h2>
+    );
+  };
+
   return (
-    <div className="mb-3 pb-1">
-      <div className="flex max-w-[1440px] justify-between align-middle">
-        {isLogoShown ? (
-          <div className={`w-[150px] rounded-b-[8px] ${isDesktop ? 'mt-0 w-[250px] bg-white' : 'mt-3'}`}>
-            <Link to="/">
-              <img
-                src={isDesktop ? DesktopLogo : MobileLogo}
-                alt="edulution"
-                className={isDesktop ? 'm-4' : 'm-1'}
-              />
-            </Link>
-          </div>
-        ) : null}
-        {/* Add your navigation links or other content here */}
+    <div className="mb-3 flex items-center pb-1">
+      <div className={`rounded-b-[8px] ${isMobileView ? 'mt-3 w-[150px]' : 'mt-0 w-[250px] bg-white'}`}>
+        <Link to="/">
+          <img
+            src={isMobileView ? MobileLogo : DesktopLogo}
+            alt="edulution"
+            className={isMobileView ? 'm-1' : 'm-4'}
+          />
+        </Link>
       </div>
+      {getHeadingText()}
     </div>
   );
 };

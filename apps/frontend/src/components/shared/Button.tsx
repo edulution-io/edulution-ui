@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { HexagonIcon } from '@/assets/layout';
 import cn from '@/lib/utils';
 
-const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl'], {
+const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-background'], {
   variants: {
     variant: {
       'btn-collaboration': 'bg-ciDarkBlue',
@@ -14,7 +14,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl'], {
       'btn-outline': 'border border-input shadow-sm hover:bg-accent hover:text-accent-foreground',
       'btn-hexagon': 'bg-cover bg-center flex items-center justify-center',
       'btn-attention': 'bg-ciRed',
-      'btn-ok': 'bg-ciGreen',
+      'btn-small': 'hover:bg-grey-700 mr-1 rounded bg-white px-4 text-white h-8',
     },
     size: {
       lg: 'h-10 rounded-md px-8',
@@ -42,7 +42,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
       {...props}
     >
       {variant === 'btn-hexagon' ? (
-        <div className="relative flex items-center justify-center ">
+        <div className="relative flex items-center justify-center bg-black bg-opacity-50">
           <img
             className="absolute"
             src={HexagonIcon}

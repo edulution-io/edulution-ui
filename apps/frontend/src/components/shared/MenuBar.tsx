@@ -1,24 +1,56 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { MenubarMenu, MenubarSeparator, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
+import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
-import { getFromPathName } from '@/utils/common';
-
-import { useMediaQuery, useToggle, useOnClickOutside } from 'usehooks-ts';
+import { useOnClickOutside, useToggle } from 'usehooks-ts';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import { getFromPathName } from '@libs/common/utils';
+import { APPS } from '@libs/appconfig/types';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
   const menubarRef = useRef<HTMLDivElement>(null);
-
+  const { pathname, search } = useLocation();
   const menuBarEntries = useMenuBarConfig();
-  const { pathname } = useLocation();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobileView = useIsMobileView();
 
   useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
+
+  if (menuBarEntries.disabled) {
+    return null;
+  }
+
+  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams(search);
+    return Array.from(params.entries()).map(([key, value]) => ({ key, value }));
+  }, [search]);
+
+  const shouldSelectFirstItem = useMemo(() => {
+    const globalCondition = pathParts.length === 2 && firstMenuBarItem === pathParts[1];
+    const fileSharingCondition =
+      pathParts.length === 1 && pathParts[0] === APPS.FILE_SHARING.toString() && queryParams.length !== 1;
+
+    return pathname === '/' || fileSharingCondition || globalCondition;
+  }, [pathParts, queryParams]);
+
+  useEffect(() => {
+    const matchedItem = menuBarEntries.menuItems.find((item) =>
+      queryParams.some((param) => item.id?.toLowerCase().includes(param.value.toLowerCase())),
+    );
+
+    if (shouldSelectFirstItem) {
+      setIsSelected(firstMenuBarItem);
+    } else if (matchedItem) {
+      setIsSelected(matchedItem.id);
+    }
+  }, [pathname, menuBarEntries.menuItems, queryParams, shouldSelectFirstItem]);
 
   const renderMenuBarContent = () => (
     <div
@@ -31,22 +63,21 @@ const MenuBar: React.FC = () => {
           alt=""
           className="h-20 w-20 object-contain"
         />
-        <h3 className="mb-4 mt-4 font-bold">{menuBarEntries.title}</h3>
+        <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
       </div>
-      <MenubarSeparator />
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
             <MenubarTrigger
               className={cn(
-                'flex w-full cursor-pointer items-center gap-5 px-10 py-1 transition-colors',
+                'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',
                 menuBarEntries.color,
                 isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
               )}
               onClick={() => {
-                item.action();
                 setIsSelected(item.id);
                 toggle();
+                item.action();
               }}
             >
               <img
@@ -56,7 +87,6 @@ const MenuBar: React.FC = () => {
               />
               <p className="text-nowrap">{item.label}</p>
             </MenubarTrigger>
-            <MenubarSeparator />
           </React.Fragment>
         ))}
       </MenubarMenu>
@@ -65,7 +95,7 @@ const MenuBar: React.FC = () => {
 
   return (
     <div>
-      {isMobile ? (
+      {isMobileView ? (
         <>
           {isOpen && (
             <div
@@ -100,7 +130,7 @@ const MenuBar: React.FC = () => {
         </>
       ) : (
         <div className="relative flex h-screen">
-          <VerticalMenubar className={cn('h-full overflow-hidden', 'w-64', 'bg-black', 'bg-opacity-40')}>
+          <VerticalMenubar className="w-64 overflow-y-auto bg-black bg-opacity-40 scrollbar-thin">
             {renderMenuBarContent()}
           </VerticalMenubar>
         </div>

@@ -1,10 +1,22 @@
 services:
-  app:
-    container_name: edulution-ui
-    image: edulution-ui
-    build:
-      context: .
-    ports:
-      - '80:80'
-      - '443:443'
+  mongoEdu:
+    container_name: mongoEdu
+    image: mongo:7
     restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - db:/data/db
+
+  redis:
+    container_name: redisEdu
+    image: redis:7.2
+    restart: always
+    ports:
+      - '6379:6379'
+
+volumes:
+  db:

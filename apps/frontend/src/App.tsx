@@ -1,37 +1,54 @@
 import React, { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import Router from '@/routes/Router';
+import AppRouter from '@/router/AppRouter';
 import i18n from '@/i18n';
 import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
-
-const queryClient = new QueryClient();
+import eduApi from '@/api/eduApi';
+import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
+import NativeFrames from '@/components/framing/NativeFrames';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import lmnApi from '@/api/lmnApi';
+import useUserStore from '@/store/UserStore/UserStore';
+import Toaster from '@/components/ui/Sonner';
+import { WebStorageStateStore } from 'oidc-client-ts';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import VDIFrame from './pages/DesktopDeployment/VDIFrame';
+import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 
 const App = () => {
   const { lang } = useLanguage();
+  const { eduApiToken } = useUserStore();
+  const { lmnApiToken } = useLmnApiStore();
+
+  lmnApi.defaults.headers.common[HTTP_HEADERS.XApiKey] = lmnApiToken;
+  eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
-    i18n.changeLanguage(lang).catch((e) => {
-      console.error(e);
-    });
+    i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
   }, [lang]);
 
-  // TODO: Move config to backend NIEDUUI-26
   const oidcConfig: AuthProviderProps = {
-    authority: `https://auth.schulung.multi.schule/auth/realms/edulution`,
-    client_id: 'edulution-ui',
+    authority: `${window.location.origin}/edu-api/auth`,
+    client_id: ' ',
+    client_secret: ' ',
     redirect_uri: '',
-    scope: 'openid',
-    silent_redirect_uri: window.location.origin,
+    loadUserInfo: true,
+    automaticSilentRenew: true,
+    userStore: new WebStorageStateStore({
+      store: localStorage,
+    }),
   };
 
   return (
     <AuthProvider {...oidcConfig}>
-      <QueryClientProvider client={queryClient}>
-        <Router />
-        <ReactQueryDevtools />
-      </QueryClientProvider>
+      <BBBFrame />
+      <VDIFrame />
+      <AppRouter />
+      <EmbeddedIframes />
+      <NativeFrames />
+      <CommunityLicenseDialog />
+      <Toaster />
     </AuthProvider>
   );
 };

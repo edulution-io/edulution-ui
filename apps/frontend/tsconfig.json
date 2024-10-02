@@ -1,1 +1,19 @@
-{ "extends": "../../tsconfig.json" }
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "declaration": true,
+    "composite": true,
+    "jsx": "react"
+  },
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ],
+  "exclude": ["postcss.config.js", "tailwind.config.ts"]
+}

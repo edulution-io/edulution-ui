@@ -1,0 +1,79 @@
+name: CI API
+
+on:
+  push:
+    tags:
+      - v*.*.*
+  workflow_dispatch:
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 1
+
+    outputs:
+      docker-tags: ${{ steps.generate_docker_tags.outputs.docker_tags }}
+
+    steps:
+      - id: generate_docker_tags
+        run: |
+          docker_registry_path="ghcr.io/edulution-io/edulution-api"
+          docker_tags="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
+          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]
+          then
+            docker_tags+=",$docker_registry_path:latest"
+          fi
+          echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
+
+  build:
+    runs-on: ubuntu-22.04
+    needs: prepare
+    timeout-minutes: 10
+
+    steps:
+      - run: echo Use docker tags ${{ needs.prepare.outputs.docker-tags }}
+
+      - uses: actions/checkout@v4.1.7
+        with:
+          token: ${{ github.token }}
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4.0.2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Backend
+        run: npm run build:api
+
+      # - name: Set Commit SHA in package.json
+      #   run: npx json -I -f package.json -e "this.config.gitCommitSHA='${{ github.sha }}'"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
+
+      - name: Build and push docker image
+        uses: docker/build-push-action@v6.7.0
+        with:
+          build-args: |
+            buildId=${{ github.sha }}
+            version=${{ needs.prepare.outputs.docker-tags }}
+          context: .
+          file: apps/api/Dockerfile
+          push: true
+          tags: ${{ needs.prepare.outputs.docker-tags }}

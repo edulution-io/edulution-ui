@@ -4,13 +4,21 @@
   "projectType": "application",
   "styles": ["./src/index.scss"],
   "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "cache": true,
+      "options": {
+        "fix": true
+      }
+    },
     "build": {
       "executor": "@nx/vite:build",
       "defaultConfiguration": "production",
+      "cache": true,
 
       "options": {
         "outputPath": "./dist/apps/frontend",
-        "configFile": "./vite.config.ts",
+        "configFile": "./apps/frontend/vite.config.ts",
         "postcssConfig": "./postcss.config.js"
       }
     },
