@@ -469,7 +469,13 @@
     "errors": {
       "WriteAppConfigFailed": "Save app failed",
       "ReadAppConfigFailed": "Read app failed",
-      "DisableAppConfigFailed": "Disable app failed"
+      "DisableAppConfigFailed": "Disable app failed",
+      "WriteTraefikConfigFailed": "Write traefik config failed",
+      "ReadTraefikConfigFailed": "Read traefik config failed"
+    },
+    "yamleditor": {
+      "invalidYaml": "Wrong YAML syntax",
+      "placeholder": "Enter your Traefik config here"
     }
   },
   "usersettings": {
@@ -602,7 +608,9 @@
     "url": "URL",
     "urlDescription": "Please insert an URL to the application",
     "apiKey": "API Key",
-    "apiKeyDescription": "The API Key will be used for authentication"
+    "apiKeyDescription": "The API Key will be used for authentication",
+    "proxyConfig": "Proxy Configuration",
+    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
