@@ -473,6 +473,10 @@
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
       "ReadTraefikConfigFailed": "Read traefik config failed"
+    },
+    "yamleditor": {
+      "invalidYaml": "Wrong YAML syntax",
+      "placeholder": "Enter your Traefik config here"
     }
   },
   "usersettings": {

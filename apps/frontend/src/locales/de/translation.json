@@ -474,6 +474,10 @@
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
       "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+    },
+    "yamleditor": {
+      "invalidYaml": "Ungültiger YAML Syntax",
+      "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
     }
   },
   "usersettings": {

@@ -25,6 +25,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import YamlEditor from '@/components/shared/YamlEditor';
+import Switch from '@/components/ui/Switch';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
@@ -41,6 +42,7 @@ const AppConfigPage: React.FC = () => {
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
+  const [proxyConfigEnabled, setProxyConfigEnabled] = useState(false);
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
@@ -61,7 +63,6 @@ const AppConfigPage: React.FC = () => {
   const { control, handleSubmit, setValue, getValues } = form;
 
   const areSettingsVisible = settingLocation !== '';
-
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
     if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
@@ -89,12 +90,13 @@ const AppConfigPage: React.FC = () => {
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
-        setValue(
-          `${settingLocation}.${key}`,
-          key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
-            ? JSON.parse(currentConfig.options[key] as string)
-            : currentConfig.options[key as AppConfigOptionsType],
-        );
+        if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
+          const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
+          setProxyConfigEnabled(proxyConfig !== '');
+          setValue(`${settingLocation}.${key}`, proxyConfig);
+        } else {
+          setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
+        }
       });
     }
   };
@@ -103,7 +105,7 @@ const AppConfigPage: React.FC = () => {
     if (areSettingsVisible) {
       updateSettings();
     }
-  }, [areSettingsVisible, settingLocation, appConfigs, setValue]);
+  }, [areSettingsVisible, settingLocation, appConfigs]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorOptionSH[], fieldName: string) => {
     const currentGroups = (getValues(fieldName) as MultipleSelectorOptionSH[]) || [];
@@ -232,10 +234,18 @@ const AppConfigPage: React.FC = () => {
                                   variant="lightGray"
                                 />
                               ) : (
-                                <YamlEditor
-                                  value={field.value as string}
-                                  onChange={field.onChange}
-                                />
+                                <>
+                                  <Switch
+                                    checked={proxyConfigEnabled}
+                                    onCheckedChange={setProxyConfigEnabled}
+                                  />
+                                  {proxyConfigEnabled ? (
+                                    <YamlEditor
+                                      value={field.value as string}
+                                      onChange={field.onChange}
+                                    />
+                                  ) : null}
+                                </>
                               )}
                             </FormControl>
                             <p>{t(`form.${itemOption}Description`)}</p>

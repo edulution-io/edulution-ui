@@ -6,7 +6,7 @@ import { Textarea } from '../ui/Textarea';
 
 type YamlEditorProps = {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (value: string) => void;
 };
 
 const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange }) => {
@@ -18,14 +18,36 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange }) => {
       parse(yamlValue);
       setError(null);
     } catch (err) {
-      setError(t('yamleditor.invalidYaml'));
+      setError(t('settings.yamleditor.invalidYaml'));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     validateYaml(newValue);
-    onChange(e);
+    onChange(newValue);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+
+      const textarea = e.target as HTMLTextAreaElement;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+
+      const tab = '  ';
+      const newValue = value.substring(0, start) + tab + value.substring(end);
+
+      onChange(newValue);
+
+      setTimeout(() => {
+        textarea.selectionStart = start + tab.length;
+        textarea.selectionEnd = start + tab.length;
+      }, 0);
+
+      validateYaml(newValue);
+    }
   };
 
   return (
@@ -33,15 +55,15 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange }) => {
       <Textarea
         value={value}
         onChange={handleChange}
-        placeholder={t('yamleditor.placeholder')}
-        className="h-max-[200px] h-[200px] overflow-y-auto bg-ciDarkGrey text-p text-ciLightGrey scrollbar-thin placeholder:text-p focus:outline-none"
+        onKeyDown={handleKeyDown}
+        placeholder={t('settings.yamleditor.placeholder')}
+        style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
+        className={cn(
+          'overflow-y-auto bg-ciDarkGrey text-p text-ciLightGrey scrollbar-thin placeholder:text-p focus:outline-none',
+          error ? 'border border-ciLightRed' : 'border border-ciDarkGrey',
+        )}
       />
-      <p className={cn('mt-2 text-ciLightRed', !error && 'invisible')}>{error}</p>
-      {value !== '' ? (
-        <pre className="mt-4 h-64 w-full overflow-auto overflow-y-auto rounded-md bg-ciDarkGrey p-4 text-ciLightGrey scrollbar-thin">
-          {value}
-        </pre>
-      ) : null}
+      {error && <p className="mt-2 text-ciLightRed">{error}</p>}
     </div>
   );
 };
