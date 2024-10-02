@@ -1,4 +1,4 @@
 export * from './appconfig';
-export * from './appConfigOptions';
+export * from './appConfigOptionsType';
 export { default as APPS } from './apps';
-export * from './appConfigOptionTypes';
+export * from './appConfigOption';

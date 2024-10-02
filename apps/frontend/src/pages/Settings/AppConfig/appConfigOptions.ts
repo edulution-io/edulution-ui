@@ -32,7 +32,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.TICKET_SYSTEM,
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
-    options: ['url'],
+    options: ['url', 'proxyConfig'],
     isNativeApp: false,
   },
   { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url'], isNativeApp: true },

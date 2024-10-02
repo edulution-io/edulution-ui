@@ -603,7 +603,9 @@
     "url": "URL",
     "urlDescription": "Bitte eine URL zur Applikation eintragen",
     "apiKey": "API Schlüssel",
-    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet"
+    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
+    "proxyConfig": "Proxy-Konfiguration",
+    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy."
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",

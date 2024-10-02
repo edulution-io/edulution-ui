@@ -10,7 +10,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigOptions, AppConfigOptionType } from '@libs/appconfig/types';
+import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
@@ -24,7 +24,9 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import YamlEditor from '@/components/shared/YamlEditor';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
+import TRAEFIK_CONFIG_FILE_PATH from '@libs/common/constants/traefikConfigPath';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -35,7 +37,8 @@ const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry, getConfigFile } =
+    useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
@@ -87,7 +90,7 @@ const AppConfigPage: React.FC = () => {
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
-        setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionType]);
+        setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
       });
     }
   };
@@ -135,7 +138,7 @@ const AppConfigPage: React.FC = () => {
       appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
       options:
         selectedOption.options?.reduce((acc, o) => {
-          acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionType;
+          acc[o] = getValues(`${settingLocation}.${o}`) as AppConfigOptionsType;
           return acc;
         }, {} as AppConfigOptions) || {},
       extendedOptions,
@@ -164,6 +167,16 @@ const AppConfigPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (areSettingsVisible) {
+      const fetchConfig = async () => {
+        const response = await getConfigFile(TRAEFIK_CONFIG_FILE_PATH);
+        setValue(`${settingLocation}.proxyConfig`, response);
+      };
+      void fetchConfig();
+    }
+  }, [areSettingsVisible, settingLocation, appConfigs]);
+
   const settingsForm = () => {
     if (areSettingsVisible) {
       return (
@@ -185,27 +198,6 @@ const AppConfigPage: React.FC = () => {
                       appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
                     />
-                    {item.options?.map((itemOption) => (
-                      <FormFieldSH
-                        key={`${item.id}.${itemOption}`}
-                        control={control}
-                        name={`${item.id}.${itemOption}`}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <h4>{t(`form.${itemOption}`)}</h4>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                variant="lightGray"
-                              />
-                            </FormControl>
-                            <p>{t(`form.${itemOption}Description`)}</p>
-                            <FormMessage className="text-p" />
-                          </FormItem>
-                        )}
-                      />
-                    ))}
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
                       control={control}
@@ -227,6 +219,34 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {item.options?.map((itemOption) => (
+                      <FormFieldSH
+                        key={`${item.id}.${itemOption}`}
+                        control={control}
+                        name={`${item.id}.${itemOption}`}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <h4>{t(`form.${itemOption}`)}</h4>
+                            <FormControl>
+                              {itemOption !== 'proxyConfig' ? (
+                                <Input
+                                  {...field}
+                                  variant="lightGray"
+                                />
+                              ) : (
+                                <YamlEditor
+                                  value={field.value as string}
+                                  onChange={field.onChange}
+                                />
+                              )}
+                            </FormControl>
+                            <p>{t(`form.${itemOption}Description`)}</p>
+                            <FormMessage className="text-p" />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
