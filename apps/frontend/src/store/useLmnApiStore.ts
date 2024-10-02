@@ -7,6 +7,7 @@ import eduApi from '@/api/eduApi';
 
 import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -15,6 +16,7 @@ interface UseLmnApiStore {
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
   error: Error | null;
+  schoolPrefix: string;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string) => Promise<UserLmnInfo | null>;
@@ -28,6 +30,7 @@ const initialState = {
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
   error: null,
+  schoolPrefix: '',
 };
 
 type PersistedUserLmnInfoStore = (
@@ -62,7 +65,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
           const response = await eduApi.get<UserLmnInfo>(LMN_API_USER_EDU_API_ENDPOINT, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
-          set({ user: response.data });
+          set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -94,6 +97,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       partialize: (state) => ({
         lmnApiToken: state.lmnApiToken,
         user: state.user,
+        schoolPrefix: state.schoolPrefix,
       }),
     },
   ),

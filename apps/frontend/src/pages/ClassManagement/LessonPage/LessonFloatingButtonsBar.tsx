@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
@@ -16,7 +16,6 @@ import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
-import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
@@ -35,7 +34,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     member,
     currentGroupName,
   } = useLessonStore();
-  const { fetchUser, user } = useLmnApiStore();
+  const { fetchUser, user, schoolPrefix } = useLmnApiStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
@@ -46,8 +45,6 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       ),
     );
   };
-
-  const schoolName = useMemo(() => getSchoolPrefix(user), [user]);
 
   const buttons: {
     icon: IconType;
@@ -88,14 +85,14 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       text: CLASSMGMT_OPTIONS.WIFI,
       enableAction: async () => {
         await addManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.WIFI}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`,
           students.map((m) => m.cn),
         );
       },
 
       disableAction: async () => {
         await removeManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.WIFI}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`,
           students.map((m) => m.cn),
         );
       },
@@ -105,13 +102,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       text: CLASSMGMT_OPTIONS.WEBFILTER,
       enableAction: async () => {
         await addManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.WEBFILTER}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.WEBFILTER}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`,
           students.map((m) => m.cn),
         );
       },
@@ -121,13 +118,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       text: CLASSMGMT_OPTIONS.INTERNET,
       enableAction: async () => {
         await addManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.INTERNET}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.INTERNET}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`,
           students.map((m) => m.cn),
         );
       },
@@ -137,13 +134,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       text: CLASSMGMT_OPTIONS.PRINTING,
       enableAction: async () => {
         await addManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.PRINTING}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`,
           students.map((m) => m.cn),
         );
       },
       disableAction: async () => {
         await removeManagementGroup(
-          `${schoolName}${CLASSMGMT_OPTIONS.PRINTING}`,
+          `${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`,
           students.map((m) => m.cn),
         );
       },

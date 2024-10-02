@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { FaWifi } from 'react-icons/fa';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ interface UserCardButton {
 
 const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
-  const { fetchUser } = useLmnApiStore();
+  const { fetchUser, schoolPrefix } = useLmnApiStore();
   const {
     addManagementGroup,
     removeManagementGroup,
@@ -41,11 +41,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
     setMember,
     toggleSchoolClassJoined,
   } = useLessonStore();
-  const { internet, printing, examMode, webfilter, wifi, cn: commonName, sophomorixSchoolname } = user;
-  const schoolName = useMemo(
-    () => (sophomorixSchoolname !== 'default-school' ? `${sophomorixSchoolname}-` : ''),
-    [user],
-  );
+  const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
   const { setCurrentUser, currentUser } = useLmnApiPasswordStore();
 
@@ -69,9 +65,9 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       setCurrentUser(user);
       return;
     } else if (button.value) {
-      await removeManagementGroup(`${schoolName}${button.title}`, users);
+      await removeManagementGroup(`${schoolPrefix}${button.title}`, users);
     } else {
-      await addManagementGroup(`${schoolName}${button.title}`, users);
+      await addManagementGroup(`${schoolPrefix}${button.title}`, users);
     }
 
     const updatedUser = await fetchUser(commonName);
