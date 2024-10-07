@@ -3,13 +3,15 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
-import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigDto } from '@libs/appconfig/types';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
 type AppConfigsStore = {
   appConfigs: AppConfigDto[];
   isLoading: boolean;
+  isConfigFileLoading: boolean;
   error: Error | null;
   isAddAppConfigDialogOpen: boolean;
   isDeleteAppConfigDialogOpen: boolean;
@@ -19,6 +21,7 @@ type AppConfigsStore = {
   getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
+  getConfigFile: (filePath: string) => Promise<string>;
 };
 
 type PersistedAppConfigsStore = (
@@ -33,13 +36,14 @@ const initialState = {
     {
       name: '',
       icon: '',
-      appType: AppIntegrationType.NATIVE,
+      appType: APP_INTEGRATION_VARIANT.NATIVE,
       options: {},
       accessGroups: [],
       extendedOptions: [],
     },
   ],
   isLoading: false,
+  isConfigFileLoading: false,
   error: null,
 };
 
@@ -99,6 +103,19 @@ const useAppConfigsStore = create<AppConfigsStore>(
           handleApiError(e, set);
         } finally {
           set({ isLoading: false });
+        }
+      },
+
+      getConfigFile: async (filePath) => {
+        set({ isConfigFileLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<string>(`${EDU_API_CONFIG_ENDPOINT}/configfiles?filePath=${filePath}`);
+          return atob(data);
+        } catch (e) {
+          handleApiError(e, set);
+          return '';
+        } finally {
+          set({ isConfigFileLoading: false });
         }
       },
     }),

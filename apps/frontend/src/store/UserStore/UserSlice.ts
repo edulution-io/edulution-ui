@@ -5,13 +5,10 @@ import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';
-import CryptoJS from 'crypto-js';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { getDecryptedPassword } from '@libs/common/utils';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 const initialState = {
-  webdavKey: '',
   isAuthenticated: false,
   isPreparingLogout: false,
   eduApiToken: '',
@@ -20,17 +17,27 @@ const initialState = {
   userIsLoading: false,
   searchError: null,
   searchIsLoading: false,
+  encryptKey: '',
 };
-
-const WEBDAV_SECRET = import.meta.env.VITE_WEBDAV_KEY as string;
 
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
   ...initialState,
 
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
-  setWebdavKey: (password: string) => set({ webdavKey: CryptoJS.AES.encrypt(password, WEBDAV_SECRET).toString() }),
-  getWebdavKey: () => getDecryptedPassword(get().webdavKey, WEBDAV_SECRET),
+
+  getWebdavKey: async () => {
+    set({ userIsLoading: true });
+    try {
+      const { data } = await eduApi.get<string>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}/key`);
+      return atob(data);
+    } catch (error) {
+      handleApiError(error, set, 'userError');
+      return '';
+    } finally {
+      set({ userIsLoading: false });
+    }
+  },
 
   logout: async () => {
     set({ isPreparingLogout: true });

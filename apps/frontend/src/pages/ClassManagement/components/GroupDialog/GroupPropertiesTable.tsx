@@ -69,12 +69,6 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
       disabled,
       component: 'checkbox',
     },
-    {
-      labelTranslationId: 'classmanagement.proxyAddresses',
-      name: 'proxyAddresses',
-      disabled,
-      component: 'text',
-    },
   ];
 
   const getComponent = (groupProperty: GroupProperty) => {
@@ -100,7 +94,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         return (
           <Input
             {...register(groupProperty.name)}
-            variant="default"
+            variant="light"
           />
         );
     }

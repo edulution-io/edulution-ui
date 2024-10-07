@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
@@ -34,6 +34,12 @@ class AppConfigController {
   @UseGuards(AppConfigGuard)
   deleteConfig(@Param('name') name: string) {
     this.appConfigService.deleteConfig(name).catch((e) => Logger.error(e, AppConfigController.name));
+  }
+
+  @Get('configfiles')
+  @UseGuards(AppConfigGuard)
+  getConfigFile(@Query('filePath') filePath: string) {
+    return this.appConfigService.getFileAsBase64(filePath);
   }
 }
 

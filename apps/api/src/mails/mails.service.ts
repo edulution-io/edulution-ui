@@ -3,7 +3,7 @@ import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { InjectModel } from '@nestjs/mongoose';
 import axios, { AxiosInstance } from 'axios';
