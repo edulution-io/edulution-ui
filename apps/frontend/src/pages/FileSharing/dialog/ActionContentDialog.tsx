@@ -24,7 +24,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const {
     isDialogOpen,
     closeDialog,
-    moveItemsToPath,
+    moveOrCopyItemToPath,
     openDialog,
     isLoading,
     error,
@@ -33,7 +33,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     selectedFileType,
     filesToUpload,
     setSelectedFileType,
-    setMoveItemsToPath,
+    setMoveOrCopyItemToPath,
     setFilesToUpload,
     isSubmitButtonInActive,
     setSubmitButtonIsInActive,
@@ -50,13 +50,18 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
-    setMoveItemsToPath({} as DirectoryFileDTO);
+    setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType({} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]);
     setFilesToUpload([]);
   };
 
   const onSubmit = async () => {
-    const data = await getData(form, currentPath, { selectedItems, moveItemsToPath, selectedFileType, filesToUpload });
+    const data = await getData(form, currentPath, {
+      selectedItems,
+      moveOrCopyItemToPath,
+      selectedFileType,
+      filesToUpload,
+    });
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {

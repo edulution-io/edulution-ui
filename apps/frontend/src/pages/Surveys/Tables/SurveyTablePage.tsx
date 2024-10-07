@@ -37,7 +37,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
 
   return (
     <>
-      <ScrollArea className="overflow-y-auto overflow-x-hidden">
+      <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">
         <SurveyTable
           title={title}
           surveys={surveys || []}

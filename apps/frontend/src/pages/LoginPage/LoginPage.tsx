@@ -3,9 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
@@ -14,6 +15,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
+import OtpInput from '@/components/shared/OtpInput';
 
 type LocationState = {
   from: string;
@@ -24,11 +26,15 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { eduApiToken, webdavKey, createOrUpdateUser, setWebdavKey, setEduApiToken } = useUserStore();
+  const { eduApiToken, totpIsLoading, createOrUpdateUser, setEduApiToken, getTotpStatus } = useUserStore();
 
   const { isLoading } = auth;
-  const { setLmnApiToken } = useLmnApiStore();
+  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const [loginComplete, setLoginComplete] = useState(false);
+  const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
+  const [totp, setTotp] = useState('');
+  const [webdavKey, setWebdavKey] = useState('');
+  const [encryptKey, setEncryptKey] = useState('');
 
   const formSchema: z.Schema = z.object({
     username: z.string({ required_error: t('username.required') }).max(32, { message: t('login.username_too_long') }),
@@ -51,13 +57,16 @@ const LoginPage: React.FC = () => {
     try {
       const username = (form.getValues('username') as string).trim();
       const password = form.getValues('password') as string;
+      const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
-        password,
+        password: passwordHash,
       });
       if (requestUser) {
+        const newEncryptKey = CryptoJS.lib.WordArray.random(16).toString();
+        setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
-        setWebdavKey(password);
+        setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
       }
     } catch (e) {
       //
@@ -77,8 +86,11 @@ const LoginPage: React.FC = () => {
       email: profile.email!,
       ldapGroups: processLdapGroups(profile.ldapGroups as string[]),
       password: webdavKey,
+      encryptKey,
     };
-    await createOrUpdateUser(newUser);
+    const response = await createOrUpdateUser(newUser);
+
+    setIsEnterTotpVisible(!!response?.mfaEnabled);
   };
 
   useEffect(() => {
@@ -88,7 +100,9 @@ const LoginPage: React.FC = () => {
     }
     const registerUser = async () => {
       await handleRegisterUser();
-      await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      if (!lmnApiToken) {
+        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+      }
       setLoginComplete(true);
     };
 
@@ -104,6 +118,15 @@ const LoginPage: React.FC = () => {
       });
     }
   }, [loginComplete]);
+
+  const handleCheckMfaStatus = async () => {
+    const isMfaEnabled = await getTotpStatus(form.getValues('username') as string);
+    if (!isMfaEnabled) {
+      await form.handleSubmit(onSubmit)();
+    } else {
+      setIsEnterTotpVisible(true);
+    }
+  };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
     <FormFieldSH
@@ -141,12 +164,22 @@ const LoginPage: React.FC = () => {
         data-testid="test-id-login-page-form"
       >
         <form
-          onSubmit={form.handleSubmit(onSubmit) as VoidFunction}
+          onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
           className="space-y-4"
           data-testid="test-id-login-page-form"
         >
-          {renderFormField('username', t('common.username'))}
-          {renderFormField('password', t('common.password'), 'password')}
+          {isEnterTotpVisible ? (
+            <OtpInput
+              totp={totp}
+              setTotp={setTotp}
+              onComplete={form.handleSubmit(onSubmit)}
+            />
+          ) : (
+            <>
+              {renderFormField('username', t('common.username'))}
+              {renderFormField('password', t('common.password'), 'password')}
+            </>
+          )}
           <div className="flex justify-between">
             {/* TODO: Add valid Password reset page -> NIEDUUI-53 */}
             {/* <div className="my-4 block font-bold text-gray-500">
@@ -172,7 +205,7 @@ const LoginPage: React.FC = () => {
             size="lg"
             data-testid="test-id-login-page-submit-button"
           >
-            {isLoading ? t('common.loading') : t('common.login')}
+            {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
           </Button>
         </form>
       </Form>

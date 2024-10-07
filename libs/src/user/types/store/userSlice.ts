@@ -6,14 +6,11 @@ type UserSlice = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   user: UserDto | null;
   getUser: (username: string) => Promise<void>;
-  fetchUserAndUpdateInDatabase: () => Promise<void>;
-  createOrUpdateUser: (user: UserDto) => Promise<void>;
+  createOrUpdateUser: (user: UserDto) => Promise<UserDto | undefined>;
   updateUser: (user: Partial<UserDto>) => Promise<void>;
   eduApiToken: string;
   setEduApiToken: (eduApiToken: string) => void;
-  webdavKey: string;
-  setWebdavKey: (webdavKey: string) => void;
-  getWebdavKey: () => string;
+  getWebdavKey: () => Promise<string>;
   isPreparingLogout: boolean;
   logout: () => Promise<void>;
   userIsLoading: boolean;

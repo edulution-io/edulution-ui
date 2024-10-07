@@ -1,64 +1,4 @@
 services:
-  edu-ui:
-    container_name: edulution-ui
-    image: ghcr.io/edulution-io/edulution-ui:latest
-    ports:
-      - '80:80'
-      - '443:443'
-    restart: always
-
-  edu-api:
-    container_name: edulution-api
-    image: ghcr.io/edulution-io/edulution-api:latest
-    ports:
-      - 3000:3000
-    restart: always
-    environment:
-      EDUI_PORT: 3000
-      EDUI_CORS_URL: '*'
-      EDUI_ENCRYPTION_KEY: <KEY>
-      EDUI_WEBDAV_URL: <WEBDAV_URL>
-
-      LMN_VDI_API_URL: http://localhost:5555
-      LMN_VDI_API_SECRET: <LMN_VDI_SECRET>
-
-      GUACAMOLE_API_URL: http://localhost:8081
-      GUACAMOLE_API_USER: <GUAC_ADMIN>
-      GUACAMOLE_API_PASSWORD: <GUAC_PW>
-
-      PUBLIC_KEY_FILE_PATH: <PATH_TO_YOUR_PUBLIC_KEY_FILE>
-
-      MONGODB_DATABASE_NAME: edulution
-      MONGODB_USERNAME: <DBUSER>
-      MONGODB_PASSWORD: <DBPASSWORD>
-      MONGODB_SERVER_URL: mongodb://<DBUSER>:<DBPASSWORD>@mongoEdu:27017/
-
-      KEYCLOAK_API: http://keycloakEdu:8080/auth
-      KEYCLOAK_EDU_UI_REALM: <REALM>
-      KEYCLOAK_EDU_UI_CLIENT_ID: <UI_CLIENT_ID>
-      KEYCLOAK_EDU_UI_SECRET: <UI_SECRET>
-      KEYCLOAK_EDU_API_CLIENT_ID: <API_CLIENT_ID>
-      KEYCLOAK_EDU_API_CLIENT_SECRET: <API_SECRET>
-
-      REDIS_HOST: redisEdu
-      REDIS_PORT: 6379
-
-      LMN_API_BASE_URL: https://<LMN_URL_OR_IP>:8001/v1/
-
-      MAIL_IMAP_URL: <MAIL_URL>
-      MAIL_IMAP_PORT: 993
-      MAIL_IMAP_SECURE: true
-      MAIL_IMAP_TLS_REJECT_UNAUTHORIZED: false
-      MAIL_API_URL: <MAILCOW_API_URL>
-      MAIL_API_KEY: <MAILCOW_API_KEY>
-
-    volumes:
-      - ./public.pem:/opt/edulution/api/public.pem
-      - ./public/downloads:/opt/edulution/public/downloads
-    depends_on:
-      - mongoEdu
-      - redis
-
   mongoEdu:
     container_name: mongoEdu
     image: mongo:7
@@ -66,8 +6,10 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: <DBUSER>
-      MONGO_INITDB_ROOT_PASSWORD: <DBPASSWORD>
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - db:/data/db
 
   redis:
     container_name: redisEdu
@@ -75,34 +17,6 @@ services:
     restart: always
     ports:
       - '6379:6379'
-  keycloak:
-    container_name: keycloakEdu
-    image: quay.io/keycloak/keycloak:25.0
-    command: ['start', '--proxy-headers=xforwarded', '--http-enabled=true', '--hostname-strict=false']
-    environment:
-      KC_DB: postgres
-      KC_DB_URL_DATABASE: keycloak
-      KC_DB_SCHEMA: public
-      KC_DB_URL: jdbc:postgresql://postgres/keycloak
-      KC_DB_USERNAME: <POSTGRES_USER>
-      KC_DB_PASSWORD: <POSTGRES_PASSWORD>
 
-      KEYCLOAK_ADMIN: <DEFAULT_USER>
-      KEYCLOAK_ADMIN_PASSWORD: <DEFAULT_PASSWORD>
-
-      KC_HTTP_RELATIVE_PATH: /auth
-      PROXY_ADDRESS_FORWARDING: true
-    ports:
-      - '8080:8080'
-    restart: always
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:16
-    container_name: postgresEdu
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: <DB_USER>
-      POSTGRES_PASSWORD: <DB_PASSWORD>
-    restart: always
+volumes:
+  db:

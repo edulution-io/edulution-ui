@@ -358,7 +358,6 @@ class LmnApiService {
   private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
     admins: Array.from(new Set([...formValues.admins])),
     displayName: formValues.displayName,
-    proxyAddresses: formValues.proxyAddresses.split(','),
     admingroups: formValues.admingroups,
     description: formValues.description,
     join: formValues.join,

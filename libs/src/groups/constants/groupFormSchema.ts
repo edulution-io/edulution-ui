@@ -12,7 +12,6 @@ const getGroupFormSchema = (t: TFunction<'translation', undefined>) =>
       .min(3, { message: t('common.min_chars', { count: 3 }) })
       .max(60, { message: t('common.max_chars', { count: 60 }) }),
     description: z.string().max(160, { message: t('common.max_chars', { count: 160 }) }),
-    proxyAddresses: z.string(),
     join: z.boolean(),
     hide: z.boolean(),
     admins: z.array(z.any()),

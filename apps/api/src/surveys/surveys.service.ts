@@ -2,7 +2,7 @@ import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
 import Attendee from '../conferences/attendee.schema';
