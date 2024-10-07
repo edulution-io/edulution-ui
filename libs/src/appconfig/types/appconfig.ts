@@ -1,7 +1,7 @@
 import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AppIntegrationType from './appIntegrationType';
-import { AppConfigOptions } from './appConfigOptions';
+import { AppConfigOptions } from './appConfigOptionsType';
 
 export type AppConfigDto = {
   name: string;

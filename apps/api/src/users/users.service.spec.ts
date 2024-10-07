@@ -5,8 +5,10 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
+import { getDecryptedPassword } from '@libs/common/utils';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import GroupsService from '../groups/groups.service';
@@ -182,22 +184,8 @@ describe(UsersService.name, () => {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
       );
-    });
-  });
-
-  describe('findAll', () => {
-    it('should return an array of users', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      jest.spyOn(model, 'find').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue([mockUser]),
-      } as unknown as any);
-
-      const users = await service.findAll();
-
-      expect(users).toEqual([mockUser]);
-      expect(model.find).toHaveBeenCalled();
     });
   });
 
@@ -211,7 +199,7 @@ describe(UsersService.name, () => {
       const user = await service.findOne('testuser');
 
       expect(user).toEqual([mockUser]);
-      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, { password: 0, totpSecret: 0 });
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, USER_DB_PROJECTION);
     });
   });
 
@@ -235,7 +223,7 @@ describe(UsersService.name, () => {
             ldapGroups: userDto.ldapGroups,
           },
         },
-        { new: true, upsert: true },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
       );
     });
   });
@@ -306,6 +294,19 @@ describe(UsersService.name, () => {
       const result = await service.searchUsersByName(mockToken, 'john');
       expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
       expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken);
+    });
+  });
+
+  describe('getPassword', () => {
+    it("should return the user's password", async () => {
+      const userData = { password: 'password', encryptKey: 'encryptKey' };
+      model.findOne = jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(userData),
+      });
+      const user = await service.getPassword('testuser');
+
+      expect(user).toEqual(getDecryptedPassword('password', 'encryptKey'));
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, 'password encryptKey');
     });
   });
 });

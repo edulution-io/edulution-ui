@@ -10,7 +10,7 @@ import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult'
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
@@ -320,8 +320,8 @@ class FilesharingService {
     }
   }
 
-  async handleCallback(req: Request, path: string, filename: string, eduToken: string) {
-    return this.onlyofficeService.handleCallback(req, path, filename, eduToken, this.uploadFile);
+  async handleCallback(req: Request, res: Response, path: string, filename: string, eduToken: string) {
+    return this.onlyofficeService.handleCallback(req, res, path, filename, eduToken, this.uploadFile);
   }
 
   async collectFiles(username: string, collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) {

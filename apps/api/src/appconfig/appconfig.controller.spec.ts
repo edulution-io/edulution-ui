@@ -1,12 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigDto } from '@libs/appconfig/types';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 import mockAppConfigService from './appconfig.service.mock';
+
+jest.mock('./appconfig.service');
 
 const mockAppConfigModel = {
   insertMany: jest.fn(),
@@ -49,7 +52,7 @@ describe('AppConfigController', () => {
         {
           name: 'TestConfig',
           icon: 'test-icon',
-          appType: AppIntegrationType.NATIVE,
+          appType: APP_INTEGRATION_VARIANT.NATIVE,
           options: {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
@@ -88,7 +91,7 @@ describe('AppConfigController', () => {
         {
           name: 'TestConfig',
           icon: 'test-icon',
-          appType: AppIntegrationType.NATIVE,
+          appType: APP_INTEGRATION_VARIANT.NATIVE,
           options: {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
@@ -136,6 +139,32 @@ describe('AppConfigController', () => {
       const name = 'TestConfig';
       controller.deleteConfig(name);
       expect(service.deleteConfig).toHaveBeenCalledWith(name);
+    });
+  });
+
+  describe('getConfigFile', () => {
+    it('should return base64 string from AppConfigService', () => {
+      const filePath = 'test/path/to/file.txt';
+      const base64Content = 'dGVzdCBmaWxlIGNvbnRlbnQ=';
+
+      jest.spyOn(service, 'getFileAsBase64').mockReturnValue(base64Content);
+
+      const result = controller.getConfigFile(filePath);
+
+      expect(service.getFileAsBase64).toHaveBeenCalledWith(filePath);
+      expect(result).toEqual(base64Content);
+    });
+
+    it('should throw an error if AppConfigService throws an error', () => {
+      const filePath = 'test/path/to/invalidfile.txt';
+
+      jest.spyOn(service, 'getFileAsBase64').mockImplementation(() => {
+        throw new Error('File not found');
+      });
+
+      expect(() => {
+        controller.getConfigFile(filePath);
+      }).toThrow('File not found');
     });
   });
 });

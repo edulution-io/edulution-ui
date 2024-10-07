@@ -10,7 +10,7 @@ import MAIL_IMAP_CACHE from '@libs/mail/constants/mail-chache';
 import MailImapOptions from '@libs/mail/types/mail-imap-options';
 import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';

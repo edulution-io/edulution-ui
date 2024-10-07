@@ -8,7 +8,7 @@ import type { RedisClientOptions } from 'redis';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { resolve } from 'path';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { ScheduleModule } from '@nestjs/schedule';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
