@@ -5,7 +5,10 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 
-import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
+import {
+  LMN_API_USER_EDU_API_ENDPOINT,
+  LMN_API_USERS_QUOTA_EDU_API_ENDPOINT,
+} from '@libs/lmnApi/types/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
@@ -95,9 +98,12 @@ const useLmnApiStore = create<UseLmnApiStore>(
         set({ isFetchUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<QuotaResponse>(`${LMN_API_USER_EDU_API_ENDPOINT}/${username}/quotas`, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          });
+          const response = await eduApi.get<QuotaResponse>(
+            `${LMN_API_USER_EDU_API_ENDPOINT}/${username}/${LMN_API_USERS_QUOTA_EDU_API_ENDPOINT}`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
           return response.data;
         } catch (error) {
           handleApiError(error, set);

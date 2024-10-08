@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
+import { LMN_API_EDU_API_ENDPOINT, LMN_API_USERS_QUOTA_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -134,7 +134,7 @@ export class LmnApiController {
     return this.lmnApiService.getUser(lmnApiToken, params.username);
   }
 
-  @Get('user/:username/quotas')
+  @Get(`user/:username/${LMN_API_USERS_QUOTA_EDU_API_ENDPOINT}`)
   async getUsersQuota(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
     return this.lmnApiService.getUsersQuota(lmnApiToken, params.username);
   }
