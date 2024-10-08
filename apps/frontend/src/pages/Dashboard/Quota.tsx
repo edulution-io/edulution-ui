@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
 import Separator from '@/components/ui/Separator';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useTranslation } from 'react-i18next';
 
 const Quota: React.FC = () => {
   const { t } = useTranslation();
-  const { user: lmnUser, fetchUsersQuota } = useLmnApiStore();
+  const { user: lmnUser, usersQuota, fetchUsersQuota } = useLmnApiStore();
   const { user } = useUserStore();
-  const [usersQuota, setUsersQuota] = useState<QuotaResponse | null>(null);
 
   useEffect(() => {
     if (usersQuota === null) {
-      const fetchQuota = async () => {
-        const usersQuotaResponse = await fetchUsersQuota(user?.username || '');
-        setUsersQuota(usersQuotaResponse);
-      };
-
-      void fetchQuota();
+      void fetchUsersQuota(user?.username || '');
     }
   }, [user]);
 

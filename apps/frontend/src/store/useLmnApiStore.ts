@@ -21,10 +21,11 @@ interface UseLmnApiStore {
   isFetchUserLoading: boolean;
   error: Error | null;
   schoolPrefix: string;
+  usersQuota: QuotaResponse | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string) => Promise<UserLmnInfo | null>;
-  fetchUsersQuota: (name: string) => Promise<QuotaResponse | null>;
+  fetchUsersQuota: (name: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -36,6 +37,7 @@ const initialState = {
   isFetchUserLoading: false,
   error: null,
   schoolPrefix: '',
+  usersQuota: null,
 };
 
 type PersistedUserLmnInfoStore = (
@@ -94,20 +96,19 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      fetchUsersQuota: async (username): Promise<QuotaResponse | null> => {
+      fetchUsersQuota: async (username): Promise<void> => {
         set({ isFetchUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<QuotaResponse>(
+          const { data } = await eduApi.get<QuotaResponse>(
             `${LMN_API_USER_EDU_API_ENDPOINT}/${username}/${LMN_API_USERS_QUOTA_EDU_API_ENDPOINT}`,
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
-          return response.data;
+          set({ usersQuota: data });
         } catch (error) {
           handleApiError(error, set);
-          return null;
         } finally {
           set({ isFetchUserLoading: false });
         }
