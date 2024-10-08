@@ -17,6 +17,12 @@
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
       "downloadApp": "Download the edulution-io app here:"
+    },
+    "quota": {
+      "title": "QUOTAS",
+      "globalQuota": "Standardquota global",
+      "mailQuota": "Mailquota berechnet",
+      "mibibyte": "MiB"
     }
   },
   "auth": {
@@ -55,7 +61,8 @@
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
       "GetProjectFailed": "Get project failed",
       "PasswordMismatch": "The current password is wrong",
-      "PasswordChangeFailed": "Password change failed"
+      "PasswordChangeFailed": "Password change failed",
+      "GetUsersQuotaFailed": "Get users quota failed"
     }
   },
   "ticketsystem": {

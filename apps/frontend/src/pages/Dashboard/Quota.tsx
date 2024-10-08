@@ -1,28 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
 import Separator from '@/components/ui/Separator';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import useUserStore from '@/store/UserStore/UserStore';
+import { useTranslation } from 'react-i18next';
 
-const Quota = () => (
-  <Card variant="security">
-    <CardContent>
-      <div className="flex flex-col gap-1">
-        <h4 className="text-md font-bold">QUOTAS</h4>
+const Quota: React.FC = () => {
+  const { t } = useTranslation();
+  const { user: lmnUser, fetchUsersQuota } = useLmnApiStore();
+  const { user } = useUserStore();
+  const [usersQuota, setUsersQuota] = useState<QuotaResponse | null>(null);
 
-        <p>sgm</p>
-        <Separator className="my-1 bg-ciGrey" />
-        <div color="white">
-          <p>0.1 MiB / 2506 MiB</p>
-          <p>linuxmuster-global</p>
+  useEffect(() => {
+    if (usersQuota === null) {
+      const fetchQuota = async () => {
+        const usersQuotaResponse = await fetchUsersQuota(user?.username || '');
+        setUsersQuota(usersQuotaResponse);
+      };
+
+      void fetchQuota();
+    }
+  }, [user]);
+
+  const quota = usersQuota?.[lmnUser?.school || 'default-school'];
+
+  return (
+    <Card variant="security">
+      <CardContent>
+        <div className="flex flex-col gap-1">
+          <h4 className="text-md font-bold">{t('dashboard.quota.title')}</h4>
+
+          <p>{lmnUser?.school}</p>
+          <Separator className="my-1 bg-ciGrey" />
+          <div color="white">
+            <p>
+              {quota && 'used' in quota ? quota.used : '--'} / {quota && 'used' in quota ? quota.hard_limit : '--'}{' '}
+              {t('dashboard.quota.mibibyte')}
+            </p>
+          </div>
+
+          <Separator className="my-1 bg-ciGrey" />
+          <div color="white">
+            <p className="font-bold">
+              {t('dashboard.quota.globalQuota')}: {quota && 'used' in quota ? quota.soft_limit : '--'}{' '}
+              {t('dashboard.quota.mibibyte')}
+            </p>
+            <p className="font-bold">
+              {t('dashboard.quota.mailQuota')}: {lmnUser?.sophomorixMailQuotaCalculated[0] || '--'}{' '}
+              {t('dashboard.quota.mibibyte')}
+            </p>
+          </div>
         </div>
-        <Separator className="my-1 bg-ciGrey" />
-        <div color="white">
-          <p>0 MiB / 2006 MiB</p>
-          <p className="font-bold">Cloudquota berechnet in MB: 2506 MB</p>
-          <p className="font-bold">Mailquota berechnet in MB: 5120 MB</p>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 export default Quota;

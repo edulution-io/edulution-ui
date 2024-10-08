@@ -17,6 +17,12 @@
       "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
       "downloadApp": "Lade hier die edulution-io App herunter:"
+    },
+    "quota": {
+      "title": "QUOTAS",
+      "globalQuota": "Standardquota global",
+      "mailQuota": "Mailquota berechnet",
+      "mibibyte": "MiB"
     }
   },
   "auth": {
@@ -55,7 +61,8 @@
       "SearchUsersOrGroupsFailed": "Suche nach Benutzern oder Gruppen fehlgeschlagen",
       "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
-      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen"
+      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
+      "GetUsersQuotaFailed": "Abrufen der Benutzerkontigente fehlgeschlagen."
     }
   },
   "ticketsystem": {

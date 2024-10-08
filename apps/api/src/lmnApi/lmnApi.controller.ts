@@ -134,6 +134,11 @@ export class LmnApiController {
     return this.lmnApiService.getUser(lmnApiToken, params.username);
   }
 
+  @Get('user/:username/quotas')
+  async getUsersQuota(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
+    return this.lmnApiService.getUsersQuota(lmnApiToken, params.username);
+  }
+
   @Get('search')
   async searchUsersOrGroups(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,

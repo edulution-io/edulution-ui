@@ -24,6 +24,7 @@ enum LmnApiErrorMessage {
   GetProjectFailed = 'lmnApi.errors.GetProjectFailed',
   PasswordMismatch = 'lmnApi.errors.PasswordMismatch',
   PasswordChangeFailed = 'lmnApi.errors.PasswordChangeFailed',
+  GetUsersQuotaFailed = 'lmnApi.errors.GetUsersQuotaFailed',
 }
 
 export default LmnApiErrorMessage;

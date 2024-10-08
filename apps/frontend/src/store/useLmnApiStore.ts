@@ -8,6 +8,7 @@ import eduApi from '@/api/eduApi';
 import { LMN_API_USER_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
+import QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -20,6 +21,7 @@ interface UseLmnApiStore {
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string) => Promise<UserLmnInfo | null>;
+  fetchUsersQuota: (name: string) => Promise<QuotaResponse | null>;
   reset: () => void;
 }
 
@@ -78,6 +80,22 @@ const useLmnApiStore = create<UseLmnApiStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(`${LMN_API_USER_EDU_API_ENDPOINT}/${username}`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isFetchUserLoading: false });
+        }
+      },
+
+      fetchUsersQuota: async (username): Promise<QuotaResponse | null> => {
+        set({ isFetchUserLoading: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.get<QuotaResponse>(`${LMN_API_USER_EDU_API_ENDPOINT}/${username}/quotas`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
           return response.data;
