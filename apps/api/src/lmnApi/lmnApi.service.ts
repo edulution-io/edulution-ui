@@ -11,6 +11,7 @@ import {
   SESSIONS_LMN_API_ENDPOINT,
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
+  QUOTAS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
@@ -27,7 +28,6 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import UsersService from '../users/users.service';
 
 @Injectable()
@@ -326,12 +326,9 @@ class LmnApiService {
   public async getUsersQuota(lmnApiToken: string, username: string): Promise<QuotaResponse> {
     try {
       const response = await this.enqueue<QuotaResponse>(() =>
-        this.lmnApi.get<QuotaResponse>(
-          `${USERS_LMN_API_ENDPOINT}/${username}/${LMN_API_EDU_API_ENDPOINTS.USERS_QUOTA}`,
-          {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          },
-        ),
+        this.lmnApi.get<QuotaResponse>(`${USERS_LMN_API_ENDPOINT}/${username}/${QUOTAS_LMN_API_ENDPOINT}`, {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        }),
       );
       return response.data;
     } catch (error) {

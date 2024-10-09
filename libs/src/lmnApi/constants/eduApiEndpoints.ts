@@ -1,4 +1,4 @@
-const LMN_API_EDU_API_ENDPOINT = `lmn-api`;
+const LMN_API_EDU_API_ENDPOINT = 'lmn-api';
 
 const LMN_API_EDU_API_ENDPOINTS = {
   ROOT: LMN_API_EDU_API_ENDPOINT,
