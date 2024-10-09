@@ -1,15 +1,15 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 class InitialSurveyForm implements SurveyDto {
   readonly id: mongoose.Types.ObjectId;
 
   formula: JSON;
 
-  backendLimiters: { questionId: string; choices: ChoiceDto[] }[];
+  backendLimiters: { questionName: string; choices: ChoiceDto[] }[];
 
   saveNo: number;
 

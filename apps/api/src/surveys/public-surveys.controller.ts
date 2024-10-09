@@ -28,11 +28,11 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswerToPublicSurvey(surveyId, saveNo, answer);
   }
 
-  @Get(`${RESTFUL_CHOICES_ENDPOINT}/:surveyId/:questionId`)
+  @Get(`${RESTFUL_CHOICES_ENDPOINT}/:surveyId/:questionName`)
   @Public()
-  async getChoices(@Param() params: { surveyId: mongoose.Types.ObjectId; questionId: string }) {
-    const { surveyId, questionId } = params;
-    return this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+  async getChoices(@Param() params: { surveyId: mongoose.Types.ObjectId; questionName: string }) {
+    const { surveyId, questionName } = params;
+    return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
   }
 }
 

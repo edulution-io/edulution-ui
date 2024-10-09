@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Question } from 'survey-core/typings/question';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import cn from '@/lib/utils';
 import ChoicesWithBackendLimits
@@ -8,15 +7,14 @@ import ChoicesWithBackendLimits
 import Switch from '@/components/ui/Switch';
 import ChoicesWithBackendLimitsShowOtherItem
   from '@/pages/Surveys/Editor/components/ChoicesWithBackendLimitsShowOtherItem';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 
-interface ChoicesByUrlProps {
-  selectedQuestion: Question;
-  choices: ChoiceDto[];
-  updateChoices: (updatedChoices: ChoiceDto[]) => void;
-}
-
-const ChoicesByUrl = (props: ChoicesByUrlProps) => {
-  const {selectedQuestion, choices, updateChoices} = props;
+const ChoicesByUrl = () => {
+  const {
+    selectedQuestion,
+    choices,
+    updateLimitersChoices: updateChoices,
+  } = useQuestionSettingsDialogStore();
 
   const { t } = useTranslation();
 
@@ -36,7 +34,13 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     updateChoices(updatedChoices);
   };
 
-  const useBackendLimits = !!selectedQuestion.choicesByUrl;
+  if (!selectedQuestion) return null;
+
+  const questionType = selectedQuestion.getType();
+  const hasChoices = questionType === 'radiogroup' || questionType === 'checkbox' || questionType === 'dropdown';
+  if (!hasChoices) return null;
+
+  const useBackendLimits = !!selectedQuestion?.choicesByUrl;
   const setUseBackendLimits = (state: boolean) => {
     if (!state) {
       selectedQuestion.choicesByUrl = null;
@@ -44,12 +48,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       selectedQuestion.choicesByUrl = { url: '' }
     }
   }
-
-  const questionType = selectedQuestion.getType();
-  console.log('questionType', questionType);
-
-  const hasChoices = questionType === 'radiogroup' || questionType === 'checkbox' || questionType === 'dropdown';
-  if (!hasChoices) return null;
 
   return (
     <>

@@ -302,8 +302,12 @@
         "questionTitle": "Title",
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
-        "backendLimiters": "Choices with limiters",
-        "addBackendLimiters": "Add choices with an upper limit, such that the option can only be selected that many times.",
+        "limit": "Limit",
+        "backendLimiters": "Choices fetched from backend",
+        "addBackendLimiters": "This will replace the standard choices with new choices that will be fetched from the backend.",
+        "upperLimit": "Upper limit",
+        "upperBackendLimiters": "Choices with an upper limit",
+        "addUpperBackendLimiters": "Add choices with an upper limit, such that the option can only be selected that many times.",
         "addChoice": "Add"
       }
     },

@@ -1,22 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Question } from 'survey-core/typings/question';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import cn from '@/lib/utils';
 import ChoicesByUrl from '@/pages/Surveys/Editor/components/ChoicesByUrl';
 import Input from '@/components/shared/Input';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 
-interface QuestionSettingsDialogBodyProps {
-  selectedQuestion: Question;
-  choices: ChoiceDto[];
-  updateChoices: (updatedChoices: ChoiceDto[]) => void;
-}
-
-const QuestionSettingsDialogBody = (props: QuestionSettingsDialogBodyProps) => {
-  const { selectedQuestion, choices, updateChoices } = props;
+const QuestionSettingsDialogBody = () => {
+  const {
+    selectedQuestion,
+  } = useQuestionSettingsDialogStore();
 
   const { t } = useTranslation();
 
+  if (!selectedQuestion) return null;
   return (
     <>
       <p className="text-m font-bold text-foreground">{t('survey.editor.questionSettings.questionTitle')}</p>
@@ -49,11 +45,7 @@ const QuestionSettingsDialogBody = (props: QuestionSettingsDialogBodyProps) => {
         />
       </div>
 
-      <ChoicesByUrl
-        selectedQuestion={selectedQuestion}
-        choices={choices}
-        updateChoices={updateChoices}
-      />
+      <ChoicesByUrl />
     </>
   );
 };

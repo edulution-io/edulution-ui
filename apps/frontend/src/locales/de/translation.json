@@ -303,8 +303,12 @@
         "questionTitle": "Titel",
         "questionDescription": "Beschreibung",
         "addQuestionDescription": "Beschreibung hinzufügen",
-        "backendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
-        "addBackendLimiters": "Füge Auswahlsmöglichleiten mit einer Obergrenze hinzu, so dass die Option nur begrenzt oft ausgewählt werden kann.",
+        "limit": "Grenzwert",
+        "backendLimiters": "Auswahlmöglichkeiten per Backend",
+        "addBackendLimiters": "Dies ersetzt die standart Auswahlmöglichkeiten der Frage mit neuen Optionen welche aus dem Backend geladen werden.",
+        "upperLimit": "Obergrenze",
+        "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
+        "addUpperBackendLimiters": "Füge Auswahlsmöglichleiten mit einer Obergrenze hinzu, so dass die Option nur begrenzt oft ausgewählt werden kann.",
         "addChoice": "Hinzufügen"
       }
     },
