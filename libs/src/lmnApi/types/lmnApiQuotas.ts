@@ -1,4 +1,4 @@
-type QuotaInfo = {
+export type QuotaInfo = {
   used: number;
   soft_limit: number;
   hard_limit: number;

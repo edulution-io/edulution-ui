@@ -19,9 +19,9 @@
       "downloadApp": "Download the edulution-io app here:"
     },
     "quota": {
-      "title": "QUOTAS",
-      "globalQuota": "Standardquota global",
-      "mailQuota": "Mailquota berechnet",
+      "title": "Quotas",
+      "globalQuota": "Cloud quota calculated",
+      "mailQuota": "Mail quota calculated",
       "mibibyte": "MiB"
     }
   },

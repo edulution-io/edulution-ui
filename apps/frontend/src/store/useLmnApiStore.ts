@@ -11,7 +11,7 @@ import {
 } from '@libs/lmnApi/types/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
-import QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 
 interface UseLmnApiStore {
   lmnApiToken: string;

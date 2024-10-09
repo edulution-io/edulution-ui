@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
-import Separator from '@/components/ui/Separator';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useTranslation } from 'react-i18next';
+import { type QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 
 const Quota: React.FC = () => {
   const { t } = useTranslation();
@@ -16,7 +16,21 @@ const Quota: React.FC = () => {
     }
   }, [user]);
 
-  const quota = usersQuota?.[lmnUser?.school || 'default-school'];
+  const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
+  const quotaUsed = quota?.used || '--';
+  const quotaHardLimit = quota?.hard_limit || '--';
+  const mailQuota = lmnUser?.sophomorixMailQuotaCalculated?.[0] || '--';
+  const percentageUsed = quota ? (quota.used / quota.hard_limit) * 100 : 0;
+
+  const getSeparatorColor = () => {
+    if (percentageUsed <= 75) {
+      return 'bg-ciLightGreen';
+    }
+    if (percentageUsed <= 90) {
+      return 'bg-yellow-500';
+    }
+    return 'bg-ciRed';
+  };
 
   return (
     <Card variant="security">
@@ -25,23 +39,23 @@ const Quota: React.FC = () => {
           <h4 className="text-md font-bold">{t('dashboard.quota.title')}</h4>
 
           <p>{lmnUser?.school}</p>
-          <Separator className="my-1 bg-ciGrey" />
+          <div className="relative my-1 h-1 w-full bg-gray-300">
+            <div
+              className={`absolute left-0 top-0 h-1 ${getSeparatorColor()}`}
+              style={{ width: `${percentageUsed}%` }}
+            />
+          </div>
           <div color="white">
             <p>
-              {quota && 'used' in quota ? quota.used : '--'} / {quota && 'used' in quota ? quota.hard_limit : '--'}{' '}
-              {t('dashboard.quota.mibibyte')}
+              {quotaUsed} / {quotaHardLimit} {t('dashboard.quota.mibibyte')}
             </p>
           </div>
-
-          <Separator className="my-1 bg-ciGrey" />
           <div color="white">
             <p className="font-bold">
-              {t('dashboard.quota.globalQuota')}: {quota && 'used' in quota ? quota.soft_limit : '--'}{' '}
-              {t('dashboard.quota.mibibyte')}
+              {t('dashboard.quota.globalQuota')}: {quotaHardLimit} {t('dashboard.quota.mibibyte')}
             </p>
             <p className="font-bold">
-              {t('dashboard.quota.mailQuota')}: {lmnUser?.sophomorixMailQuotaCalculated[0] || '--'}{' '}
-              {t('dashboard.quota.mibibyte')}
+              {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
             </p>
           </div>
         </div>
