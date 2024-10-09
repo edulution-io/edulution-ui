@@ -4,7 +4,7 @@ import { dirname, extname, join, resolve } from 'path';
 import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
 import { promisify } from 'util';
-import HashAlgorithm from '@libs/common/contants/hashAlgorithm';
+import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import { HttpService } from '@nestjs/axios';
 import axios, { AxiosResponse } from 'axios';
 import getProtocol from '@libs/common/utils/getProtocol';
@@ -85,12 +85,13 @@ class FilesystemService {
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, new Uint8Array(response.data));
       const fileBuffer = readFileSync(filePath);
+      const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
 
       return {
         fieldname: 'file',
         originalname: filename,
         encoding: '7bit',
-        mimetype: 'text/plain',
+        mimetype,
         buffer: fileBuffer,
         size: fileBuffer.length,
       } as CustomFile;

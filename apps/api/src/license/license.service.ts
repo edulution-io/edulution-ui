@@ -3,7 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { License, LicenseDocument } from './license.schema';
 
 @Injectable()

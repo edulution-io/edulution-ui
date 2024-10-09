@@ -1,18 +1,13 @@
 import React from 'react';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import { Button } from '@/components/shared/Button';
+import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
 
-interface ConfirmationDialogProps {
-  title: string;
+type ConfirmationDialogProps = ClassmanagementButtonConfigProps & {
   member: UserLmnInfo[];
-  isOpen: boolean;
-  onClose: () => void;
-  enableAction: () => void;
-  disableAction: () => void;
-  enableText?: string;
-  disableText?: string;
-}
+};
 
 const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   member,
@@ -38,20 +33,18 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between space-x-4">
-      <button
-        type="button"
-        className="hover:ciRed rounded-md bg-ciLightRed px-4 py-2 text-foreground"
+      <Button
+        variant="btn-attention"
         onClick={disableAction}
       >
         {t(disableText || 'classmanagement.deactivate')}
-      </button>
-      <button
-        type="button"
-        className="hover:ciGreen rounded-md bg-ciLightGreen px-4 py-2 text-foreground"
+      </Button>
+      <Button
+        variant="btn-infrastructure"
         onClick={enableAction}
       >
         {t(enableText || 'classmanagement.activate')}
-      </button>
+      </Button>
     </div>
   );
 

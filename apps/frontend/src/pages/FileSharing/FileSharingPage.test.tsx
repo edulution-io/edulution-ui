@@ -7,6 +7,16 @@ import { render, screen } from '@testing-library/react';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import { BrowserRouter } from 'react-router-dom';
 
+vi.mock('react-oidc-context', () => ({
+  useAuth: vi.fn(() => ({
+    user: {
+      profile: {
+        ldapGroups: ['globaladmin'],
+      },
+    },
+  })),
+}));
+
 vi.mock('usehooks-ts', () => ({
   useMediaQuery: vi.fn(),
 }));

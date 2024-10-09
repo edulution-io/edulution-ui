@@ -4,12 +4,20 @@ import { Request } from 'express';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import CustomHttpException from '@libs/error/CustomHttpException';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { TOTP, Secret } from 'otpauth';
+import { OidcMetadata, SigninResponse, ErrorResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { OidcMetadata, SigninResponse, SigninRequest, ErrorResponse } from 'oidc-client-ts';
+import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AUTH_CACHE from '@libs/auth/constants/auth-cache';
+import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
+import type AuthRequestArgs from '@libs/auth/types/auth-request';
+import { User, UserDocument } from '../users/user.schema';
+import { fromBase64 } from '../filesharing/filesharing.utilities';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -17,7 +25,10 @@ const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM
 class AuthService {
   private keycloakApi: AxiosInstance;
 
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
       timeout: 5000,
@@ -50,9 +61,15 @@ class AuthService {
     );
   }
 
-  async authenticateUser(body: SigninRequest): Promise<SigninResponse> {
+  static checkTotp(token: string, username: string, secret: string): boolean {
+    const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
+    return newTotp.validate({ token }) !== null;
+  }
+
+  async signin(body: AuthRequestArgs, password?: string) {
     const extendedBody = {
       ...body,
+      password,
       client_id: KEYCLOAK_EDU_UI_CLIENT_ID,
       client_secret: KEYCLOAK_EDU_UI_SECRET,
     };
@@ -70,6 +87,93 @@ class AuthService {
         throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
       }
       throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error);
+    }
+  }
+
+  async authenticateUser(body: AuthRequestArgs): Promise<SigninResponse> {
+    const { grant_type: grantType } = body;
+    if (grantType === 'refresh_token') {
+      return this.signin(body);
+    }
+    const { password: passwordHash } = body;
+    const passwordString = fromBase64(passwordHash);
+    const { username } = body;
+    const user = (await this.userModel.findOne({ username }, 'mfaEnabled totpSecret').lean()) || ({} as User);
+    const { mfaEnabled = false, totpSecret = '' } = user;
+
+    if (mfaEnabled) {
+      const lastColonIndex = passwordString.lastIndexOf(':');
+
+      let password: string;
+      let token: string | undefined;
+
+      if (lastColonIndex !== -1) {
+        password = passwordString.slice(0, lastColonIndex);
+        token = passwordString.slice(lastColonIndex + 1);
+      } else {
+        throw new CustomHttpException(AuthErrorMessages.TotpMissing, HttpStatus.UNAUTHORIZED);
+      }
+
+      if (!token) throw new CustomHttpException(AuthErrorMessages.TotpMissing, HttpStatus.UNAUTHORIZED);
+
+      const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
+
+      if (isTotpValid) {
+        return this.signin(body, password);
+      }
+
+      throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+    }
+    return this.signin(body, passwordString);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  public getQrCode(username: string): string {
+    const totpSecret = new Secret({ size: 16 });
+    const secret = totpSecret.base32;
+    const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
+    const otpAuthString = Buffer.from(newTotp.toString()).toString('base64');
+    return otpAuthString;
+  }
+
+  async setupTotp(username: string, body: { totp: string; secret: string }): Promise<User | null> {
+    const { totp, secret } = body;
+    const isTotpValid = AuthService.checkTotp(totp, username, secret);
+    if (isTotpValid) {
+      const user = await this.userModel
+        .findOneAndUpdate<User>(
+          { username },
+          { $set: { mfaEnabled: true, totpSecret: secret } },
+          { new: true, projection: { totpSecret: 0, password: 0 } },
+        )
+        .lean();
+      return user;
+    }
+    throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+  }
+
+  async getTotpInfo(username: string) {
+    const user = await this.userModel.findOne({ username }, 'mfaEnabled').lean();
+    if (!user) return false;
+    const { mfaEnabled = false } = user;
+    if (mfaEnabled) {
+      return true;
+    }
+    return false;
+  }
+
+  async disableTotp(username: string) {
+    try {
+      const user = await this.userModel
+        .findOneAndUpdate<User>(
+          { username },
+          { $set: { mfaEnabled: false, totpSecret: '' } },
+          { new: true, projection: { totpSecret: 0, password: 0 } },
+        )
+        .lean();
+      return user;
+    } catch (error) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
   }
 }

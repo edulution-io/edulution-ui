@@ -15,9 +15,9 @@ class UserDto {
 
   password: string;
 
-  mfaEnabled?: boolean;
+  encryptKey: string;
 
-  isTotpSet?: boolean;
+  mfaEnabled?: boolean;
 }
 
 export default UserDto;

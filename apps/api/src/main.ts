@@ -2,9 +2,10 @@ import { Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
+import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
@@ -22,6 +23,10 @@ async function bootstrap() {
 
   const reflector = new Reflector();
   app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
+
+  if (!existsSync(TRAEFIK_CONFIG_FILES_PATH)) {
+    mkdirSync(TRAEFIK_CONFIG_FILES_PATH, { recursive: true });
+  }
 
   if (process.env.NODE_ENV === 'development') {
     const swaggerConfig = new DocumentBuilder()

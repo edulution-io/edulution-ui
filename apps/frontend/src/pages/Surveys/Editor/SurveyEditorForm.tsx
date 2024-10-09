@@ -33,11 +33,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading } =
     useSurveyEditorFormStore();
-  const {
-    setIsOpenQuestionSettingsDialog,
-    selectedQuestion,
-    setSelectedQuestion,
-  } = useQuestionSettingsDialogStore();
+  const { setIsOpenQuestionSettingsDialog, selectedQuestion, setSelectedQuestion } = useQuestionSettingsDialogStore();
 
   if (!user || !user.username) {
     return null;
@@ -171,7 +167,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const saveNoWatcher = form.watch('saveNo');
   const backendLimiterWatcher = form.watch('backendLimiters');
 
-  // useMemo to not update the SurveyEditor component when changing values in dialog
   const getSurveyEditor = useMemo(
     () => (
       <SurveyEditor
@@ -194,7 +189,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
       <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ScrollArea className="overflow-y-auto overflow-x-hidden">{getSurveyEditor}</ScrollArea>
+        <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">{getSurveyEditor}</ScrollArea>
       </div>
       <FloatingButtonsBar config={config} />
       <SaveSurveyDialog
@@ -207,11 +202,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       <SharePublicSurveyDialog />
       {
         // TODO: NIEDUUI-397 (THIS): UPDATE JSON WHEN ADDING BACKEND LIMITERS
-        selectedQuestion ? (
-          <QuestionSettingsDialog
-            backendLimitersWatcher={backendLimiterWatcher || []}
-          />
-        ) : null
+        selectedQuestion ? <QuestionSettingsDialog backendLimitersWatcher={backendLimiterWatcher || []} /> : null
       }
     </>
   );

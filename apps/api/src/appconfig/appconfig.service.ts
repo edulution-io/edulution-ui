@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { readFileSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
@@ -25,21 +27,31 @@ class AppConfigService {
 
   async updateConfig(appConfigDto: AppConfigDto[]) {
     try {
-      const bulkOperations = appConfigDto.map((appConfig) => ({
-        updateOne: {
-          filter: { name: appConfig.name },
-          update: {
-            $set: {
-              icon: appConfig.icon,
-              appType: appConfig.appType,
-              options: appConfig.options,
-              accessGroups: appConfig.accessGroups,
-              extendedOptions: appConfig.extendedOptions,
+      const bulkOperations = appConfigDto.map((appConfig) => {
+        if (appConfig?.options?.proxyConfig && appConfig?.options?.proxyConfig !== '') {
+          writeFileSync(
+            `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
+            JSON.parse(appConfig?.options?.proxyConfig) as string,
+          );
+        }
+
+        return {
+          updateOne: {
+            filter: { name: appConfig.name },
+            update: {
+              $set: {
+                icon: appConfig.icon,
+                appType: appConfig.appType,
+                options: appConfig.options,
+                accessGroups: appConfig.accessGroups,
+                extendedOptions: appConfig.extendedOptions,
+              },
             },
+            upsert: true,
           },
-          upsert: true,
-        },
-      }));
+        };
+      });
+
       await this.appConfigModel.bulkWrite(bulkOperations);
     } catch (e) {
       throw new CustomHttpException(
@@ -106,6 +118,35 @@ class AppConfigService {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  writeConfigFile(appName: string, content: string) {
+    try {
+      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
+
+      writeFileSync(filePath, JSON.parse(content) as string);
+    } catch (e) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.WriteTraefikConfigFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        AppConfigService.name,
+      );
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  getFileAsBase64(filePath: string): string {
+    try {
+      const fileBuffer = readFileSync(filePath);
+      return fileBuffer.toString('base64');
+    } catch (e) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadTraefikConfigFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         AppConfigService.name,
       );
     }

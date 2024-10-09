@@ -5,6 +5,7 @@ const mockAppConfigService = {
   updateConfig: jest.fn().mockResolvedValue(undefined),
   getAppConfigs: jest.fn().mockResolvedValue([]),
   deleteConfig: jest.fn().mockResolvedValue(undefined),
+  getFileAsBase64: jest.fn(),
   getAppConfigByName: jest.fn().mockResolvedValue({
     options: {
       url: 'https://example.com/api/',

@@ -1,7 +1,7 @@
 import React from 'react';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { AppIntegrationType } from '@libs/appconfig/types';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const EmbeddedIframes = () => {
   const { appConfigs } = useAppConfigsStore();
@@ -10,7 +10,7 @@ const EmbeddedIframes = () => {
   const getStyle = (appName: string) => (activeFrame === appName ? { display: 'block' } : { display: 'none' });
 
   return appConfigs
-    .filter((appConfig) => appConfig.appType === AppIntegrationType.EMBEDDED)
+    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
     .map((appConfig) => (
       <iframe
         key={appConfig.name}

@@ -94,8 +94,8 @@ const PasswordChangeForm: FC = () => {
         </div>
         <div className="flex justify-end">
           <Button
-            variant="btn-collaboration"
-            size="sm"
+            variant="btn-security"
+            size="lg"
             type="submit"
           >
             {t('usersettings.security.changePassword.confirm')}

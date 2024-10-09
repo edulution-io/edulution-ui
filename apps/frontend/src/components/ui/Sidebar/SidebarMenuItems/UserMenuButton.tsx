@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import Avatar from '@/components/shared/Avatar';
 import {
   DropdownMenuContent,
@@ -19,7 +19,7 @@ const UserMenuButton: React.FC = () => {
   const handleLogout = useLogout();
 
   const handleUserSettingsClick = () => {
-    navigate(USER_SETTINGS_PATH);
+    navigate(USER_SETTINGS_SECURITY_PATH);
   };
 
   return (

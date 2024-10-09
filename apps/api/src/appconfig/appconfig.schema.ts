@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AppConfigOptions, AppIntegrationType } from '@libs/appconfig/types';
+import { AppConfigOptions } from '@libs/appconfig/types';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtendedType';
 

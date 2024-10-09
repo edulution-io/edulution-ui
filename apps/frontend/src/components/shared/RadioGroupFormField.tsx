@@ -4,12 +4,7 @@ import React from 'react';
 import { Control, FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import cn from '@/lib/utils';
-
-export interface RadioGroupItem {
-  value: string;
-  translationId: string;
-  disabled: boolean;
-}
+import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 
 interface RadioGroupProps {
   control: Control<FieldValues>;
@@ -21,7 +16,7 @@ interface RadioGroupProps {
   labelClassname?: string;
 }
 
-const RadioGroupFormField = ({
+const RadioGroupFormField: React.FC<RadioGroupProps> = ({
   control,
   name,
   titleTranslationId,
@@ -43,18 +38,44 @@ const RadioGroupFormField = ({
             <RadioGroupSH
               onValueChange={field.onChange}
               defaultValue={defaultValue}
-              className="flex flex-col space-y-1"
+              className="flex flex-row flex-wrap"
             >
               {items.map((item) => (
                 <FormItem key={`${item.value}`}>
-                  <FormLabel className="flex cursor-pointer items-center space-x-3 space-y-0 text-base">
+                  <FormLabel className="flex cursor-pointer flex-col items-center space-x-3 space-y-0 text-base">
                     <FormControl>
-                      <RadioGroupItemSH
-                        value={item.value}
-                        disabled={item.disabled}
-                      />
+                      <>
+                        <RadioGroupItemSH
+                          value={item.value}
+                          disabled={item.disabled}
+                          checked={field.value === item.value}
+                          className={item.icon ? 'hidden' : ''}
+                        />
+                        {item.icon ? (
+                          <div
+                            className={cn(
+                              'opacity-60',
+                              item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
+                              { 'opacity-100': field.value === item.value },
+                            )}
+                          >
+                            <img
+                              src={item.icon}
+                              width="200px"
+                              aria-label={item.value}
+                              onClickCapture={() => (item.disabled ? {} : field.onChange(item.value))}
+                            />
+                          </div>
+                        ) : null}
+                        <p
+                          className={cn('cursor-default opacity-60', {
+                            'font-bold opacity-100': field.value === item.value,
+                          })}
+                        >
+                          {t(item.translationId)}
+                        </p>
+                      </>
                     </FormControl>
-                    <span>{t(item.translationId)}</span>
                   </FormLabel>
                 </FormItem>
               ))}

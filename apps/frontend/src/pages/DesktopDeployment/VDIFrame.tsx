@@ -1,19 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
 import Guacamole from 'guacamole-common-js';
-import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { SIDEBAR_WIDTH } from '@libs/ui/constants';
+import { APPS } from '@libs/appconfig/types';
+import ControlPanel from '@/components/shared/ControlPanel';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
-  const isMobileView = useIsMobileView();
-  const { t } = useTranslation();
   const {
     error,
     guacToken,
@@ -141,23 +138,12 @@ const VDIFrame = () => {
     !error ? (
       <>
         {clientState < 3 && <LoadingIndicator isOpen />}
-        <div className="fixed -top-1 left-1/2 z-[99] -translate-x-1/2 transform md:flex md:items-center md:space-x-4">
-          <button
-            type="button"
-            className="mr-1 rounded bg-ciLightBlue px-4 hover:bg-ciDarkBlue"
-            onClick={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
-          >
-            {isVdiConnectionMinimized ? <MdMaximize className="inline" /> : <MdMinimize className="inline" />}{' '}
-            {isMobileView ? '' : t(isVdiConnectionMinimized ? 'conferences.maximize' : 'conferences.minimize')}
-          </button>
-          <button
-            type="button"
-            className="rounded bg-ciRed px-4 hover:bg-ciRed/90"
-            onClick={handleDisconnect}
-          >
-            <MdClose className="inline" /> {isMobileView ? '' : t('desktopdeployment.close')}
-          </button>
-        </div>
+        <ControlPanel
+          isMinimized={isVdiConnectionMinimized}
+          toggleMinimized={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
+          onClose={handleDisconnect}
+          label={APPS.DESKTOP_DEPLOYMENT}
+        />
         <div
           id="display"
           ref={displayRef}

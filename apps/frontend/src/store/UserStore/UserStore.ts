@@ -16,12 +16,10 @@ const useUserStore = create<UserStore>()(
       name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        webdavKey: state.webdavKey,
         isAuthenticated: state.isAuthenticated,
         isPreparingLogout: state.isPreparingLogout,
         eduApiToken: state.eduApiToken,
         user: state.user,
-        qrCode: state.qrCode,
       }),
     },
   ),

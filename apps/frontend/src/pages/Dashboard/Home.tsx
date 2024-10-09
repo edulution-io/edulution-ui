@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import Feed from '@/pages/Dashboard/Feed/Feed';
+import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications';
 import useUserStore from '@/store/UserStore/UserStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
@@ -12,6 +13,8 @@ const Home: React.FC = () => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const { user } = useUserStore();
+
+  useNotifications();
 
   return (
     <>

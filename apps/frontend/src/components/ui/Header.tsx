@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import DesktopLogo from '@/assets/logos/edulution-logo-long-colorfull.svg';
-import MobileLogo from '@/assets/logos/edulution-logo-long-colorfull-white.svg';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
+import MobileLogo from '@/assets/logos/edulution.io_USER INTERFACE-small.svg';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useUserStore from '@/store/UserStore/UserStore';
