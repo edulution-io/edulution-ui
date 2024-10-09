@@ -8,7 +8,7 @@ import eduApi from '@/api/eduApi';
 import {
   LMN_API_USER_EDU_API_ENDPOINT,
   LMN_API_USERS_QUOTA_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/types/eduApiEndpoints';
+} from '@libs/lmnApi/constants/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';

@@ -11,7 +11,7 @@ import {
   SESSIONS_LMN_API_ENDPOINT,
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
-} from '@libs/lmnApi/types/lmnApiEndpoints';
+} from '@libs/lmnApi/constants/lmnApiEndpoints';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -27,7 +27,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import { LMN_API_USERS_QUOTA_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
+import { LMN_API_USERS_QUOTA_EDU_API_ENDPOINT } from '@libs/lmnApi/constants/eduApiEndpoints';
 import UsersService from '../users/users.service';
 
 @Injectable()

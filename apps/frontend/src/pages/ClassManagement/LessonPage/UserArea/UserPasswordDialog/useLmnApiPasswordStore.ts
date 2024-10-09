@@ -5,7 +5,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import {
   LMN_API_CHANGE_PASSWORD_EDU_API_ENDPOINT,
   LMN_API_FIRST_PASSWORD_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/types/eduApiEndpoints';
+} from '@libs/lmnApi/constants/eduApiEndpoints';
 import LmnApiStore from '@libs/lmnApi/types/lmnApiPasswordStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';

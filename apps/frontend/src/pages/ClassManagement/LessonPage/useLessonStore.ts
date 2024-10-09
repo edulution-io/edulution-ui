@@ -8,7 +8,7 @@ import {
   LMN_API_EXAM_MODE_EDU_API_ENDPOINT,
   LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
   LMN_API_PRINTERS_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/types/eduApiEndpoints';
+} from '@libs/lmnApi/constants/eduApiEndpoints';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LessonStore from '@libs/classManagement/types/store/lessonStore';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';

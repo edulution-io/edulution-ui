@@ -13,7 +13,7 @@ import {
   LMN_API_ROOM_EDU_API_ENDPOINT,
   LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT,
   LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/types/eduApiEndpoints';
+} from '@libs/lmnApi/constants/eduApiEndpoints';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';

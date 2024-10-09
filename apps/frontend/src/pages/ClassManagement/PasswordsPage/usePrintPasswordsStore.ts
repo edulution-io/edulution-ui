@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { LMN_API_PRINT_PASSWORDS_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
+import { LMN_API_PRINT_PASSWORDS_EDU_API_ENDPOINT } from '@libs/lmnApi/constants/eduApiEndpoints';
 import PrintPasswordsStore from '@libs/classManagement/types/store/printPasswordsStore';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
