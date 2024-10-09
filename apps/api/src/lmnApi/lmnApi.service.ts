@@ -27,7 +27,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import { LMN_API_USERS_QUOTA_EDU_API_ENDPOINT } from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import UsersService from '../users/users.service';
 
 @Injectable()
@@ -327,7 +327,7 @@ class LmnApiService {
     try {
       const response = await this.enqueue<QuotaResponse>(() =>
         this.lmnApi.get<QuotaResponse>(
-          `${USERS_LMN_API_ENDPOINT}/${username}/${LMN_API_USERS_QUOTA_EDU_API_ENDPOINT}`,
+          `${USERS_LMN_API_ENDPOINT}/${username}/${LMN_API_EDU_API_ENDPOINTS.USERS_QUOTA}`,
           {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           },

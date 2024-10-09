@@ -6,14 +6,7 @@ import handleApiError from '@/utils/handleApiError';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
-import {
-  LMN_API_EDU_API_PROJECT_ENDPOINT,
-  LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT,
-  LMN_API_PRINTERS_EDU_API_ENDPOINT,
-  LMN_API_ROOM_EDU_API_ENDPOINT,
-  LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT,
-  LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
@@ -26,6 +19,8 @@ import minimizeFormValues from '@libs/groups/utils/minimizeFormValues';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+
+const { PROJECT, SCHOOL_CLASSES, PRINTERS, ROOM, SEARCH_USERS_OR_GROUPS, USER_SESSIONS } = LMN_API_EDU_API_ENDPOINTS;
 
 const initialState = {
   isLoading: false,
@@ -59,12 +54,9 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isProjectLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiProjectWithMembers>(
-            `${LMN_API_EDU_API_PROJECT_ENDPOINT}/${projectName}`,
-            {
-              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-            },
-          );
+          const response = await eduApi.get<LmnApiProjectWithMembers>(`${PROJECT}/${projectName}`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
 
           return response.data;
         } catch (error) {
@@ -81,7 +73,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           const { lmnApiToken } = useLmnApiStore.getState();
           const formValues = form.getValues();
           await eduApi.post(
-            LMN_API_EDU_API_PROJECT_ENDPOINT,
+            PROJECT,
             {
               formValues: minimizeFormValues(formValues),
             },
@@ -102,7 +94,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           const { lmnApiToken } = useLmnApiStore.getState();
           const formValues = form.getValues();
           await eduApi.patch(
-            LMN_API_EDU_API_PROJECT_ENDPOINT,
+            PROJECT,
             {
               formValues: minimizeFormValues(formValues),
             },
@@ -122,7 +114,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
 
-          await eduApi.delete(`${LMN_API_EDU_API_PROJECT_ENDPOINT}/${projectName}`, {
+          await eduApi.delete(`${PROJECT}/${projectName}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {
@@ -136,7 +128,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiProject[]>(LMN_API_EDU_API_PROJECT_ENDPOINT, {
+          const response = await eduApi.get<LmnApiProject[]>(PROJECT, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
 
@@ -152,7 +144,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSessionLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiSession>(`${LMN_API_USER_SESSIONS_EDU_API_ENDPOINT}/${sessionSid}`, {
+          const response = await eduApi.get<LmnApiSession>(`${USER_SESSIONS}/${sessionSid}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
 
@@ -172,7 +164,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           const formValues = form.getValues();
 
           await eduApi.post(
-            LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
+            USER_SESSIONS,
             {
               formValues: minimizeFormValues(formValues),
             },
@@ -194,7 +186,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           const formValues = form.getValues();
 
           await eduApi.patch(
-            LMN_API_USER_SESSIONS_EDU_API_ENDPOINT,
+            USER_SESSIONS,
             {
               formValues: minimizeFormValues(formValues),
             },
@@ -213,7 +205,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSessionLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.delete(`${LMN_API_USER_SESSIONS_EDU_API_ENDPOINT}/${sessionId}`, {
+          await eduApi.delete(`${USER_SESSIONS}/${sessionId}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {
@@ -227,7 +219,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiSession[]>(LMN_API_USER_SESSIONS_EDU_API_ENDPOINT, {
+          const response = await eduApi.get<LmnApiSession[]>(USER_SESSIONS, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
 
@@ -243,12 +235,9 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSchoolClassLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiSchoolClassWithMembers>(
-            `${LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT}/${schoolClassName}`,
-            {
-              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-            },
-          );
+          const response = await eduApi.get<LmnApiSchoolClassWithMembers>(`${SCHOOL_CLASSES}/${schoolClassName}`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
 
           return response.data;
         } catch (error) {
@@ -263,7 +252,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiSchoolClass[]>(LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT, {
+          const response = await eduApi.get<LmnApiSchoolClass[]>(SCHOOL_CLASSES, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
 
@@ -279,7 +268,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isRoomLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiRoom>(LMN_API_ROOM_EDU_API_ENDPOINT, {
+          const response = await eduApi.get<LmnApiRoom>(ROOM, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
 
@@ -295,7 +284,7 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isPrinterLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiPrinter[]>(LMN_API_PRINTERS_EDU_API_ENDPOINT, {
+          const response = await eduApi.get<LmnApiPrinter[]>(PRINTERS, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
 
@@ -311,12 +300,9 @@ const useClassManagementStore = create<ClassManagementStore>(
         try {
           set({ isPrinterLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiPrinterWithMembers>(
-            `${LMN_API_PRINTERS_EDU_API_ENDPOINT}/${printer}`,
-            {
-              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-            },
-          );
+          const response = await eduApi.get<LmnApiPrinterWithMembers>(`${PRINTERS}/${printer}`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
 
           return response.data;
         } catch (error) {
@@ -332,7 +318,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           set({ searchGroupsError: null, isSearchGroupsLoading: true });
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiSearchResult[]>(
-            `${LMN_API_SEARCH_USERS_OR_GROUPS_EDU_API_ENDPOINT}?searchQuery=${searchQuery}`,
+            `${SEARCH_USERS_OR_GROUPS}?searchQuery=${searchQuery}`,
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
