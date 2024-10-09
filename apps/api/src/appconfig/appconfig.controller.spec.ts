@@ -60,7 +60,7 @@ describe('AppConfigController', () => {
           extendedOptions: [
             {
               name: appExtensionOnlyOffice.name,
-              extensions: [
+              options: [
                 {
                   name: FileSharingAppExtensions.ONLY_OFFICE_URL,
                   value: 'https://example.com/api/',
@@ -99,7 +99,7 @@ describe('AppConfigController', () => {
           extendedOptions: [
             {
               name: appExtensionOnlyOffice.name,
-              extensions: [
+              options: [
                 {
                   name: FileSharingAppExtensions.ONLY_OFFICE_URL,
                   value: 'https://example.com/api/',

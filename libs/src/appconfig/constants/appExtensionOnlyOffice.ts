@@ -3,7 +3,7 @@ import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOpt
 
 const appExtensionOnlyOffice: AppConfigExtendedOptions = {
   name: 'ONLY_OFFICE',
-  extensions: [
+  options: [
     {
       name: FileSharingAppExtensions.ONLY_OFFICE_URL,
       width: 'full',

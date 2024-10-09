@@ -3,7 +3,7 @@ import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOpt
 
 const appExtensionIMAP: AppConfigExtendedOptions = {
   name: 'IMAP',
-  extensions: [
+  options: [
     {
       name: MailAppExtensions.MAIL_IMAP_URL,
       width: 'full',

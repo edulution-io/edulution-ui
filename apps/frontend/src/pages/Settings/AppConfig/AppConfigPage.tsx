@@ -97,8 +97,8 @@ const AppConfigPage: React.FC = () => {
       const currentExtension = currentConfig.extendedOptions?.find((item) => item.name === plugin.name);
       return {
         name: plugin.name,
-        extensions: plugin.extensions?.map((pluginOption) => {
-          const currentOption = currentExtension?.extensions?.find((item) => item.name === pluginOption.name);
+        options: plugin.options?.map((pluginOption) => {
+          const currentOption = currentExtension?.options?.find((item) => item.name === pluginOption.name);
           return {
             name: currentOption ? currentOption.name : pluginOption.name,
             value: currentOption ? currentOption.value : pluginOption.value || pluginOption.defaultValue,
@@ -138,18 +138,6 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const currentExtendedOptions =
-      (getValues(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]) || [];
-    const newExtendedOptions = currentExtendedOptions?.map((app) => ({
-      name: app.name,
-      extensions: app.extensions?.map((item) => ({
-        name: item.name,
-        value: item.value,
-        width: item.width,
-        type: item.type,
-      })),
-    }));
-
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
@@ -163,7 +151,7 @@ const AppConfigPage: React.FC = () => {
           return acc;
         }, {} as AppConfigOptions) || {},
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
-      extendedOptions: newExtendedOptions,
+      extendedOptions: getValues(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[],
     };
 
     const updatedConfig = appConfigs.map((entry) => {
@@ -272,8 +260,9 @@ const AppConfigPage: React.FC = () => {
                           <ExtendedOptionsForm
                             form={form}
                             settingLocation={settingLocation}
-                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                            extendedOptions={form.watch(`${settingLocation}.extendedOptions`)}
+                            extendedOptions={
+                              form.watch(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]
+                            }
                             onExtendedOptionsChange={(extensionValues: AppConfigExtendedOptions[]) =>
                               form.setValue(`${item.id}.extendedOptions`, extensionValues)
                             }

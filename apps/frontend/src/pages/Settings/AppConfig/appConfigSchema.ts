@@ -12,12 +12,12 @@ APP_CONFIG_OPTIONS.forEach((item) => {
   }
   if (item.extendedOptions) {
     item.extendedOptions.forEach((appExtension) => {
-      if (appExtension.extensions) {
+      if (appExtension.options) {
         formSchemaObject[`${item.id}.extendedOptions`] = z
           .array(
             z.object({
               name: z.string(),
-              extensions: z.array(
+              options: z.array(
                 z.object({
                   name: z.string(),
                   value: z.any(),

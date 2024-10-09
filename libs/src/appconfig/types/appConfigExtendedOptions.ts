@@ -2,7 +2,7 @@ import AppConfigExtendedOption from '@libs/appconfig/types/appConfigExtendedOpti
 
 type AppConfigExtendedOptions = {
   name: string;
-  extensions: AppConfigExtendedOption[];
+  options: AppConfigExtendedOption[];
 };
 
 export default AppConfigExtendedOptions;

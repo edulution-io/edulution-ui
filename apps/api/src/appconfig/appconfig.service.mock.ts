@@ -14,7 +14,7 @@ const mockAppConfigService = {
     extendedOptions: [
       {
         name: 'ONLY_OFFICE',
-        extensions: [
+        options: [
           {
             name: FileSharingAppExtensions.ONLY_OFFICE_URL,
             value: 'https://example.com/api/',
