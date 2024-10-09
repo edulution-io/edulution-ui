@@ -25,7 +25,8 @@ import {
   WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
-import { AppConfigOption, APPS } from '@libs/appconfig/types';
+import { AppConfigOption } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
