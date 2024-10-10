@@ -66,7 +66,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
       <AccordionTrigger className="flex text-xl font-bold">
         <h4>{t(`appExtendedOptions.${settingLocation}.${option.name}.title`)}</h4>
       </AccordionTrigger>
-      <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p text-foreground">
+      <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-foreground text-p">
         {option.options?.map((extension) => (
           <div
             key={`${settingLocation}${option.name}${extension.name}`}
@@ -84,6 +84,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
               name={`${settingLocation}${option.name}${extension.name}FormField`}
               labelTranslationId={`appExtendedOptions.${settingLocation}.${option.name}.${extension.name}`}
               variant="lightGray"
+              className="text-white text-p"
             />
           </div>
         ))}

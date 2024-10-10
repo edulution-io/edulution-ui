@@ -1,5 +1,5 @@
 import React from 'react';
-import { ControllerRenderProps, FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@/lib/utils';
@@ -26,6 +26,7 @@ type FormFieldProps<T extends FieldValues> = {
   type?: React.HTMLInputTypeAttribute;
   defaultValue?: PathValue<T, Path<T>> | string;
   value?: string | number | boolean;
+  className?: string;
   onChange?: (e: string | number | boolean | React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
 } & VariantProps<typeof variants>;
@@ -40,12 +41,14 @@ const FormField = <T extends FieldValues>({
   defaultValue,
   value,
   onChange,
+  className,
   variant = 'lightGray',
   readOnly = false,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
-  const getInputComponent = (field: ControllerRenderProps<T, Path<T>>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getInputComponent = (field: any) => {
     switch (type) {
       case 'boolean': {
         return (
@@ -97,11 +100,11 @@ const FormField = <T extends FieldValues>({
       defaultValue={defaultValue as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn(variants({ variant }))}>
-            <p className="font-bold">{t(labelTranslationId)}</p>
+          <FormLabel className={cn(variants({ variant }), className)}>
+            <p className={className}>{t(labelTranslationId)}</p>
           </FormLabel>
           <FormControl>{getInputComponent(field)}</FormControl>
-          <FormMessage className={cn(variants({ variant }), 'text-p')} />
+          <FormMessage className={cn(variants({ variant }), className)} />
         </FormItem>
       )}
     />
