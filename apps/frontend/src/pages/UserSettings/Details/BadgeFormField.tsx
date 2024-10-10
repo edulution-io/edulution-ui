@@ -10,23 +10,28 @@ interface UserSettingsDetailsFormProps {
   formControl: Control;
   value: string[];
   onChange: (mailProxies: string[]) => void;
+  fieldName: string;
+  placeholder?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
 }
 
-const MailProxiesField = (props: UserSettingsDetailsFormProps) => {
-  const { value: mailProxies, onChange: updateMailProxies, formControl } = props;
-  const [newMailProxy, setNewMailProxy] = React.useState<string>('');
+const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
+  const { value: badges, onChange: handleChange, formControl, fieldName, placeholder, disabled, readOnly } = props;
+
+  const [newLabel, setNewLabel] = React.useState<string>('');
 
   const { t } = useTranslation();
 
   return (
     <FormFieldSH
       control={formControl}
-      name="proxyAddresses"
+      name={fieldName}
       render={() => (
         <FormItem>
           <p className="font-bold">{t('usersettings.details.proxyAddresses')}:</p>
           <div className="flex flex-row flex-wrap gap-2">
-            {mailProxies.map((proxyAddress) => (
+            {badges.map((proxyAddress) => (
               <BadgeSH
                 key={`badge-${proxyAddress}`}
                 className="color-white h-[38px] text-white"
@@ -37,32 +42,33 @@ const MailProxiesField = (props: UserSettingsDetailsFormProps) => {
                   className="ml-2"
                   onClick={() => {
                     if (!proxyAddress) return;
-                    const newMailProxies = mailProxies.filter((mp) => mp !== proxyAddress);
-                    updateMailProxies(newMailProxies);
+                    const newMailProxies = badges.filter((mp) => mp !== proxyAddress);
+                    handleChange(newMailProxies);
                   }}
                 >
                   <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
                 </button>
               </BadgeSH>
             ))}
-            <InputWithChildButton
-              className="min-w-[250px]"
-              placeholder={t('usersettings.details.newProxy')}
-              value={newMailProxy}
-              onChange={(e) => setNewMailProxy(e.target.value)}
-              inputButtons={[
-                {
-                  buttonIcon: MdAddCircleOutline,
-                  buttonOnClick: () => {
-                    if (!newMailProxy) return;
-                    const newMailProxies = structuredClone(mailProxies);
-                    newMailProxies.push(newMailProxy);
-                    updateMailProxies(newMailProxies);
-                    setNewMailProxy('');
+            {!readOnly && !disabled ? (
+              <InputWithChildButton
+                className="min-w-[250px]"
+                placeholder={placeholder}
+                value={newLabel}
+                onChange={(e) => setNewLabel(e.target.value)}
+                inputButtons={[
+                  {
+                    buttonIcon: MdAddCircleOutline,
+                    buttonOnClick: () => {
+                      if (!newLabel) return;
+                      const updatedBadges = [...badges, newLabel];
+                      handleChange(updatedBadges);
+                      setNewLabel('');
+                    },
                   },
-                },
-              ]}
-            />
+                ]}
+              />
+            ) : null}
           </div>
         </FormItem>
       )}
@@ -70,4 +76,4 @@ const MailProxiesField = (props: UserSettingsDetailsFormProps) => {
   );
 };
 
-export default MailProxiesField;
+export default BadgeFormField;

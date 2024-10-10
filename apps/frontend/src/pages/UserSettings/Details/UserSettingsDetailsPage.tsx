@@ -27,6 +27,7 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user],
   );
 
+  // TODO: NIEDUUI-417: Make this dynamic using the user object
   const userData = useMemo(() => {
     if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
       return [
@@ -41,6 +42,21 @@ const UserSettingsDetailsPage: React.FC = () => {
           name: 'sophomorixCustom2',
           label: t('usersettings.details.sophomorixCustom2_teacher'),
           value: user?.sophomorixCustom2 || '...',
+        },
+      ];
+    }
+    return undefined;
+  }, [user]);
+
+  // TODO: NIEDUUI-417: Make this dynamic using the user object
+  const userDataMulti = useMemo(() => {
+    if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
+      return [
+        {
+          type: 'badges',
+          name: 'sophomorixCustomMulti1',
+          label: t('usersettings.details.sophomorixCustomMulti1_teacher'),
+          value: user?.sophomorixCustomMulti1 || [],
         },
       ];
     }
@@ -81,7 +97,10 @@ const UserSettingsDetailsPage: React.FC = () => {
 
       <h3>{t('usersettings.details.title')}</h3>
       <div className="mb-4 space-y-4 py-4">
-        <UserSettingsDetailsForm userDataFields={userData || []} />
+        <UserSettingsDetailsForm
+          userDataFields={userData || []}
+          userDataMultiFields={userDataMulti || []}
+        />
       </div>
 
       <Separator className="my-4 bg-ciGrey" />
