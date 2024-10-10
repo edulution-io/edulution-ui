@@ -1,26 +1,26 @@
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
-import MainLayout from '@/components/layout/MainLayout';
-import { HomePage } from '@/pages/Home';
-
-import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
-import { AppConfigDto, APPS } from '@libs/appconfig/types';
+import { AppConfigDto } from '@libs/appconfig/types';
+import TApps from '@libs/appconfig/types/appsType';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import {
   MAILS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
-import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
-import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
-import EmptyLayout from '@/components/layout/EmptyLayout';
-import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
+import { HomePage } from '@/pages/Home';
+import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
+import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
+import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
+import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import EmptyLayout from '@/components/layout/EmptyLayout';
+import MainLayout from '@/components/layout/MainLayout';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -93,7 +93,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                   <Route
                     key={item.name}
                     path={item.name}
-                    element={<NativeAppPage page={item.name as APPS} />}
+                    element={<NativeAppPage page={item.name as TApps} />}
                   />
                 ) : null,
               )}

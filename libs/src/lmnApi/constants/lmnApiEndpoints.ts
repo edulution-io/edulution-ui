@@ -8,3 +8,4 @@ export const PROJECTS_LMN_API_ENDPOINT = 'projects';
 export const QUERY_LMN_API_ENDPOINT = 'query';
 export const PRINT_PASSWORDS_LMN_API_ENDPOINT = 'print-passwords/schoolclasses';
 export const PRINTERS_LMN_API_ENDPOINT = 'printers';
+export const QUOTAS_LMN_API_ENDPOINT = 'quotas';

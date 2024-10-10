@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';

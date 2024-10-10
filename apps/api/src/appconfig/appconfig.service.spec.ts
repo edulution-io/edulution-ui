@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
+import { getModelToken, getConnectionToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import AppConfigService from './appconfig.service';
@@ -15,6 +15,15 @@ const mockAppConfigModel = {
   deleteOne: jest.fn(),
 };
 
+const mockConnection = {
+  db: {
+    listCollections: jest.fn().mockReturnValue({
+      toArray: jest.fn().mockResolvedValue([]),
+    }),
+    createCollection: jest.fn().mockResolvedValue({}),
+  },
+};
+
 describe('AppConfigService', () => {
   let service: AppConfigService;
 
@@ -25,6 +34,10 @@ describe('AppConfigService', () => {
         {
           provide: getModelToken(AppConfig.name),
           useValue: mockAppConfigModel,
+        },
+        {
+          provide: getConnectionToken(),
+          useValue: mockConnection,
         },
       ],
     }).compile();

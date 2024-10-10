@@ -11,7 +11,7 @@ services:
     volumes:
       - db:/data/db
 
-  redis:
+  redisEdu:
     container_name: redisEdu
     image: redis:7.2
     restart: always

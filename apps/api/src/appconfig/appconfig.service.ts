@@ -1,17 +1,35 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Model, Connection } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
+import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
-class AppConfigService {
-  constructor(@InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>) {}
+class AppConfigService implements OnModuleInit {
+  constructor(
+    @InjectConnection() private readonly connection: Connection,
+    @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+  ) {}
+
+  async onModuleInit() {
+    const collections = await this.connection.db?.listCollections({ name: 'appconfigs' }).toArray();
+
+    if (collections?.length === 0) {
+      await this.connection.db?.createCollection('appconfigs');
+    }
+
+    const count = await this.appConfigModel.countDocuments();
+
+    if (count === 0) {
+      await this.appConfigModel.insertMany(defaultAppConfig);
+    }
+  }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
     try {

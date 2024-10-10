@@ -10,7 +10,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import ControlPanel from '@/components/shared/ControlPanel';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface FileViewerLayoutProps {
   isLoading: boolean;
