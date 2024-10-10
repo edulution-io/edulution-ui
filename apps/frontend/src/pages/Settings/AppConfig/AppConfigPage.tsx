@@ -41,7 +41,6 @@ const AppConfigPage: React.FC = () => {
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
-  const [proxyConfigEnabled, setProxyConfigEnabled] = useState(false);
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
@@ -91,7 +90,6 @@ const AppConfigPage: React.FC = () => {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
           const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
-          setProxyConfigEnabled(proxyConfig !== '');
           setValue(`${settingLocation}.${key}`, proxyConfig);
         } else {
           setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
@@ -240,10 +238,9 @@ const AppConfigPage: React.FC = () => {
                       ) : (
                         <ProxyConfigForm
                           key={`${item.id}.${itemOption}`}
+                          settingLocation={settingLocation}
                           item={item}
                           form={form}
-                          proxyConfigEnabled={proxyConfigEnabled}
-                          setProxyConfigEnabled={setProxyConfigEnabled}
                         />
                       ),
                     )}

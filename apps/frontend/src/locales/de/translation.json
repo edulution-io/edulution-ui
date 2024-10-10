@@ -620,7 +620,8 @@
     "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
-    "proxyDestination": "Zielhost"
+    "proxyDestination": "Zielhost",
+    "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
