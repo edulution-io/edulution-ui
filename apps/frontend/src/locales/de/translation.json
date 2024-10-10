@@ -617,7 +617,10 @@
     "apiKey": "API Schlüssel",
     "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
     "proxyConfig": "Proxy-Konfiguration",
-    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy."
+    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
+    "expertMode": "Expertenmodus",
+    "proxyPath": "Proxy Pfad",
+    "proxyDestination": "Zielhost"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",

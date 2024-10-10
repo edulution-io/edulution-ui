@@ -41,7 +41,6 @@ const AddMfaForm: React.FC = () => {
       <div className="flex flex-col">
         <div className="mb-4 flex justify-start">
           <Switch
-            className="border-background bg-black"
             checked={checked}
             defaultChecked={mfaEnabled}
             onCheckedChange={(chk) => {
