@@ -115,7 +115,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
       {moveOrCopyItemToPath && showSelectedFile && (
         <p className="pt-10 text-foreground">
-          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.filename}
+          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
         </p>
       )}
     </>

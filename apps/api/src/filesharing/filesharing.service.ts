@@ -277,7 +277,8 @@ class FilesharingService {
       }
 
       try {
-        await FilesharingService.copyFileViaWebDAV(client, fullOriginPath, destinationPath);
+        const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, '_').replace('%20', '_');
+        await FilesharingService.copyFileViaWebDAV(client, encodeURI(fullOriginPath), sanitizedDestinationPath);
       } catch (error) {
         Logger.log(error);
       }
@@ -359,6 +360,7 @@ class FilesharingService {
     originPath: string,
     destinationPath: string,
   ): Promise<WebdavStatusReplay> {
+    Logger.log(`Copying file from ${originPath} to ${destinationPath}`);
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
