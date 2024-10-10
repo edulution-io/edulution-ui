@@ -182,7 +182,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column space-y-6 md:w-2/3"
+            className="column space-y-6 md:w-[80%]"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div

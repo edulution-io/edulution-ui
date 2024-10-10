@@ -5,7 +5,7 @@ import { ParsedMail, simpleParser } from 'mailparser';
 import { ArgumentMetadata, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import APPS from '@libs/appconfig/types/apps';
+import APPS from '@libs/appconfig/constants/apps';
 import MAIL_IMAP_CACHE from '@libs/mail/constants/mail-chache';
 import MailImapOptions from '@libs/mail/types/mail-imap-options';
 import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';

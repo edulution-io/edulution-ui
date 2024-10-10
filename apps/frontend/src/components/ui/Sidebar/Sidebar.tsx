@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import { SettingsIcon } from '@/assets/icons';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -9,6 +9,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import type TApps from '@libs/appconfig/types/appsType';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -21,7 +22,7 @@ const Sidebar: React.FC = () => {
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
 
-  const getNotificationCounter = (app: APPS): number | undefined => {
+  const getNotificationCounter = (app: TApps): number | undefined => {
     switch (app) {
       case APPS.MAIL:
         return mails.length || 0;
@@ -38,7 +39,7 @@ const Sidebar: React.FC = () => {
       link: `/${item.id}`,
       icon: item.icon,
       color: 'bg-ciGreenToBlue',
-      notificationCounter: getNotificationCounter(item.id as APPS),
+      notificationCounter: getNotificationCounter(item.id as TApps),
     })),
     ...(isSuperAdmin
       ? [

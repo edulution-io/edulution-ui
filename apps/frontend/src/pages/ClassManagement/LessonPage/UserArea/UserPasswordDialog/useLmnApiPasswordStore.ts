@@ -2,14 +2,13 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import {
-  LMN_API_CHANGE_PASSWORD_EDU_API_ENDPOINT,
-  LMN_API_FIRST_PASSWORD_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/types/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import LmnApiStore from '@libs/lmnApi/types/lmnApiPasswordStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+
+const { CHANGE_PASSWORD, FIRST_PASSWORD } = LMN_API_EDU_API_ENDPOINTS;
 
 const initialState = {
   isLoading: false,
@@ -29,7 +28,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
       await eduApi.put(
-        LMN_API_FIRST_PASSWORD_EDU_API_ENDPOINT,
+        FIRST_PASSWORD,
         {
           username,
           password,
@@ -51,7 +50,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
       await eduApi.post(
-        LMN_API_CHANGE_PASSWORD_EDU_API_ENDPOINT,
+        CHANGE_PASSWORD,
         {
           username,
           password,

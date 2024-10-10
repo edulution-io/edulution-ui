@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';

@@ -25,7 +25,8 @@ import {
   WhiteBoardIcon,
   WlanIcon,
 } from '@/assets/icons';
-import { AppConfigOption, APPS } from '@libs/appconfig/types';
+import { AppConfigOption } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
