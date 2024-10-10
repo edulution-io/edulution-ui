@@ -808,7 +808,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition von edulution. Diese Version erhält keinen Support."
+      "description": "Kostenlose Community Edition der edulution.io UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {
