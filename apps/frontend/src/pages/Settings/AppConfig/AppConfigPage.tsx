@@ -25,7 +25,7 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 
 import { AccordionSH } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import ExtendedOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOptionsForm';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import YamlEditor from '@/components/shared/YamlEditor';
 import Switch from '@/components/ui/Switch';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
