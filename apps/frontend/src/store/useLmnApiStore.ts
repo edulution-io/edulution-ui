@@ -118,7 +118,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.patch(
-            `${LMN_API_USER_EDU_API_ENDPOINT}/${username}`,
+            `${USER}/${username}`,
             { userDetails },
             { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
           );
