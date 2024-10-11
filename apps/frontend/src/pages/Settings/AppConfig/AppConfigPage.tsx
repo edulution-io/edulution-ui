@@ -17,15 +17,13 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/filesharing/ExtendedOnlyOfficeOptionsForm';
+import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOnlyOfficeOptionsForm';
 
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import YamlEditor from '@/components/shared/YamlEditor';
-import Switch from '@/components/ui/Switch';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
@@ -33,6 +31,7 @@ import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
+import ProxyConfigForm from './components/ProxyConfigForm';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -42,7 +41,6 @@ const AppConfigPage: React.FC = () => {
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
-  const [proxyConfigEnabled, setProxyConfigEnabled] = useState(false);
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
@@ -92,7 +90,6 @@ const AppConfigPage: React.FC = () => {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
           const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
-          setProxyConfigEnabled(proxyConfig !== '');
           setValue(`${settingLocation}.${key}`, proxyConfig);
         } else {
           setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
@@ -218,42 +215,35 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {item.options?.map((itemOption) => (
-                      <FormFieldSH
-                        key={`${item.id}.${itemOption}`}
-                        control={control}
-                        name={`${item.id}.${itemOption}`}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <h4>{t(`form.${itemOption}`)}</h4>
-                            <FormControl>
-                              {itemOption !== 'proxyConfig' ? (
+                    {item.options?.map((itemOption) =>
+                      itemOption !== 'proxyConfig' ? (
+                        <FormFieldSH
+                          key={`${item.id}.${itemOption}`}
+                          control={control}
+                          name={`${item.id}.${itemOption}`}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <FormItem>
+                              <h4>{t(`form.${itemOption}`)}</h4>
+                              <FormControl>
                                 <Input
                                   {...field}
                                   variant="lightGray"
                                 />
-                              ) : (
-                                <>
-                                  <Switch
-                                    checked={proxyConfigEnabled}
-                                    onCheckedChange={setProxyConfigEnabled}
-                                  />
-                                  {proxyConfigEnabled ? (
-                                    <YamlEditor
-                                      value={field.value as string}
-                                      onChange={field.onChange}
-                                    />
-                                  ) : null}
-                                </>
-                              )}
-                            </FormControl>
-                            <p>{t(`form.${itemOption}Description`)}</p>
-                            <FormMessage className="text-p" />
-                          </FormItem>
-                        )}
-                      />
-                    ))}
+                              </FormControl>
+                              <FormMessage className="text-p" />
+                            </FormItem>
+                          )}
+                        />
+                      ) : (
+                        <ProxyConfigForm
+                          key={`${item.id}.${itemOption}`}
+                          settingLocation={settingLocation}
+                          item={item}
+                          form={form}
+                        />
+                      ),
+                    )}
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
