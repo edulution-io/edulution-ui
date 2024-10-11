@@ -1,7 +1,7 @@
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -46,11 +46,21 @@ class AppConfigService implements OnModuleInit {
   async updateConfig(appConfigDto: AppConfigDto[]) {
     try {
       const bulkOperations = appConfigDto.map((appConfig) => {
-        if (appConfig?.options?.proxyConfig && appConfig?.options?.proxyConfig !== '') {
-          writeFileSync(
-            `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
-            JSON.parse(appConfig?.options?.proxyConfig) as string,
-          );
+        if (appConfig?.options?.proxyConfig) {
+          const { proxyConfig } = appConfig.options;
+          if (proxyConfig !== '' && proxyConfig !== '""') {
+            writeFileSync(
+              `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
+              JSON.parse(appConfig?.options?.proxyConfig) as string,
+            );
+          } else {
+            const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`;
+
+            if (existsSync(filePath)) {
+              unlinkSync(filePath);
+              Logger.log(`Datei ${filePath} wurde gelöscht.`, AppConfigService.name);
+            }
+          }
         }
 
         return {

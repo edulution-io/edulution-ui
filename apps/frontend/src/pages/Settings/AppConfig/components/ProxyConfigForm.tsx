@@ -11,11 +11,20 @@ import { parse, stringify } from 'yaml';
 import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
 
+type AppConfigForm = {
+  [key: string]: {
+    proxyPath: string;
+    proxyDestination: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    stripPrefix: any;
+    proxyConfig: string;
+  };
+};
+
 type ProxyConfigFormProps = {
   settingLocation: string;
   item: AppConfigOption;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<AppConfigForm>;
 };
 
 const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item, form }) => {
@@ -51,11 +60,11 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
   });
 
   const updateYaml = () => {
-    const proxyPath = form.getValues(`${item.id}.proxyPath`) as string;
-    const proxyDestination = form.getValues(`${item.id}.proxyDestination`) as string;
+    const proxyPath = form.getValues(`${item.id}.proxyPath`);
+    const proxyDestination = form.getValues(`${item.id}.proxyDestination`);
     const stripPrefix = form.getValues(`${item.id}.stripPrefix`) as boolean;
 
-    const jsonData = parse((form.getValues(`${item.id}.proxyConfig`) as string) || defaultYaml) as YamlDokument;
+    const jsonData = parse(form.getValues(`${item.id}.proxyConfig`) || defaultYaml) as YamlDokument;
     if (proxyPath) {
       jsonData.http.routers[settingLocation].rule = `PathPrefix(\`/${proxyPath}\`)`;
       if (stripPrefix) {
@@ -149,18 +158,18 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               key={`${item.id}.stripPrefix`}
               control={form.control}
               name={`${item.id}.stripPrefix`}
-              defaultValue=""
+              defaultValue={false}
               render={({ field }) => (
                 <FormItem>
                   <p className="font-bold">{t('form.stripPrefix')}</p>
                   <FormControl>
                     <Switch
+                      {...field}
                       checked={field.value as boolean}
-                      onCheckedChange={(e) => {
-                        field.onChange(e);
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
                         updateYaml();
                       }}
-                      {...field}
                     />
                   </FormControl>
                   <FormMessage className="text-p" />
@@ -196,8 +205,8 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
                 <p className="font-bold">{t(`form.proxyConfig`)}</p>
                 <FormControl>
                   <YamlEditor
-                    value={field.value as string}
-                    onChange={(newValue: string) => {
+                    value={field.value}
+                    onChange={(newValue) => {
                       field.onChange(newValue);
                     }}
                     disabled={!expertModeEnabled}
