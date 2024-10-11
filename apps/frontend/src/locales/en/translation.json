@@ -17,6 +17,12 @@
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
       "downloadApp": "Download the edulution-io app here:"
+    },
+    "quota": {
+      "title": "Quotas",
+      "globalQuota": "Cloud quota calculated",
+      "mailQuota": "Mail quota calculated",
+      "mibibyte": "MiB"
     }
   },
   "auth": {
@@ -55,7 +61,8 @@
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
       "GetProjectFailed": "Get project failed",
       "PasswordMismatch": "The current password is wrong",
-      "PasswordChangeFailed": "Password change failed"
+      "PasswordChangeFailed": "Password change failed",
+      "GetUsersQuotaFailed": "Get users quota failed"
     }
   },
   "ticketsystem": {
@@ -611,7 +618,11 @@
     "apiKey": "API Key",
     "apiKeyDescription": "The API Key will be used for authentication",
     "proxyConfig": "Proxy Configuration",
-    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration"
+    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
+    "expertMode": "Expert mode",
+    "proxyPath": "Proxy path",
+    "proxyDestination": "Proxy destination",
+    "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
@@ -809,7 +820,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free Community Edition of edulution. This version does not receive any support."
+      "description": "Free community edition of edulution.io UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
     }
   },
   "preview": {

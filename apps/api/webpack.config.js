@@ -5,6 +5,14 @@ module.exports = {
   output: {
     path: join(__dirname, '../../dist/apps/api'),
   },
+  module: {
+    rules: [
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
+    ],
+  },
   plugins: [
     new NxWebpackPlugin({
       target: 'node',

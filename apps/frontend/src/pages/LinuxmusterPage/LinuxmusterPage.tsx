@@ -3,7 +3,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import NativeIframeLayout from '@/components/framing/NativeIframeLayout';
 import getLoginScript from '@/pages/LinuxmusterPage/scripts/login';
 import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 
 const LinuxmusterPage: React.FC = () => {
   const { user, getWebdavKey } = useUserStore();

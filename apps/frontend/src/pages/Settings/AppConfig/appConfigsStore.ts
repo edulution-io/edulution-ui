@@ -2,7 +2,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { toast } from 'sonner';
@@ -68,7 +68,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
         }
         set({ isLoading: true, error: null });
         try {
-          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
+          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT);
           set({ appConfigs: response.data });
           return true;
         } catch (e) {
@@ -82,7 +82,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
       updateAppConfig: async (appConfigs) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.put<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT, appConfigs);
+          await eduApi.put<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT, appConfigs);
           set({ appConfigs });
           toast.success(i18n.t('settings.appconfig.update.success'));
         } catch (e) {
@@ -95,7 +95,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
       deleteAppConfigEntry: async (name) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.delete(`${EDU_API_CONFIG_ENDPOINT}/${name}`);
+          await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/${name}`);
           const newAppConfigs = get().appConfigs.filter((item) => item.name !== name);
           set({ appConfigs: newAppConfigs });
           toast.success(`${i18n.t(`${name}.sidebar`)} - ${i18n.t('settings.appconfig.delete.success')}`);
@@ -109,7 +109,9 @@ const useAppConfigsStore = create<AppConfigsStore>(
       getConfigFile: async (filePath) => {
         set({ isConfigFileLoading: true, error: null });
         try {
-          const { data } = await eduApi.get<string>(`${EDU_API_CONFIG_ENDPOINT}/configfiles?filePath=${filePath}`);
+          const { data } = await eduApi.get<string>(
+            `${EDU_API_CONFIG_ENDPOINTS.ROOT}/${EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG}?filePath=${filePath}`,
+          );
           return atob(data);
         } catch (e) {
           handleApiError(e, set);

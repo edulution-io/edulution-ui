@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { getFromPathName } from '@libs/common/utils';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
@@ -35,7 +35,7 @@ const MenuBar: React.FC = () => {
   const shouldSelectFirstItem = useMemo(() => {
     const globalCondition = pathParts.length === 2 && firstMenuBarItem === pathParts[1];
     const fileSharingCondition =
-      pathParts.length === 1 && pathParts[0] === APPS.FILE_SHARING.toString() && queryParams.length !== 1;
+      pathParts.length === 1 && pathParts[0] === APPS.FILE_SHARING && queryParams.length !== 1;
 
     return pathname === '/' || fileSharingCondition || globalCondition;
   }, [pathParts, queryParams]);

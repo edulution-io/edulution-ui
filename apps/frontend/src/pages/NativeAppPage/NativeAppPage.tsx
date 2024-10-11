@@ -1,12 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
+import type TApps from '@libs/appconfig/types/appsType';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 
-const pages: Partial<Record<APPS, JSX.Element>> = {
+const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
   [APPS.FILE_SHARING]: <FileSharingPage />,
   [APPS.MAIL]: <FramePlaceholder />,
@@ -17,7 +18,7 @@ const pages: Partial<Record<APPS, JSX.Element>> = {
 };
 
 type NativeAppPageProps = {
-  page: APPS;
+  page: TApps;
 };
 
 const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) => pages[page];

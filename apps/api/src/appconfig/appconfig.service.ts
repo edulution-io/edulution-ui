@@ -1,17 +1,35 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { readFileSync, writeFileSync } from 'fs';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Model, Connection } from 'mongoose';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
+import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
-class AppConfigService {
-  constructor(@InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>) {}
+class AppConfigService implements OnModuleInit {
+  constructor(
+    @InjectConnection() private readonly connection: Connection,
+    @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+  ) {}
+
+  async onModuleInit() {
+    const collections = await this.connection.db?.listCollections({ name: 'appconfigs' }).toArray();
+
+    if (collections?.length === 0) {
+      await this.connection.db?.createCollection('appconfigs');
+    }
+
+    const count = await this.appConfigModel.countDocuments();
+
+    if (count === 0) {
+      await this.appConfigModel.insertMany(defaultAppConfig);
+    }
+  }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
     try {
@@ -28,11 +46,21 @@ class AppConfigService {
   async updateConfig(appConfigDto: AppConfigDto[]) {
     try {
       const bulkOperations = appConfigDto.map((appConfig) => {
-        if (appConfig?.options?.proxyConfig && appConfig?.options?.proxyConfig !== '') {
-          writeFileSync(
-            `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
-            JSON.parse(appConfig?.options?.proxyConfig) as string,
-          );
+        if (appConfig?.options?.proxyConfig) {
+          const { proxyConfig } = appConfig.options;
+          if (proxyConfig !== '' && proxyConfig !== '""') {
+            writeFileSync(
+              `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
+              JSON.parse(appConfig?.options?.proxyConfig) as string,
+            );
+          } else {
+            const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`;
+
+            if (existsSync(filePath)) {
+              unlinkSync(filePath);
+              Logger.log(`${filePath} deleted.`, AppConfigService.name);
+            }
+          }
         }
 
         return {
