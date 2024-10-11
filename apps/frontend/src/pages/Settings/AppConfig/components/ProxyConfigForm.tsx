@@ -10,16 +10,7 @@ import Input from '@/components/shared/Input';
 import { parse, stringify } from 'yaml';
 import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
-
-type AppConfigForm = {
-  [key: string]: {
-    proxyPath: string;
-    proxyDestination: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    stripPrefix: any;
-    proxyConfig: string;
-  };
-};
+import AppConfigForm from '@libs/appconfig/types/appConfigForm';
 
 type ProxyConfigFormProps = {
   settingLocation: string;
