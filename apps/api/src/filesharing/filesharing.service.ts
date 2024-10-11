@@ -277,7 +277,7 @@ class FilesharingService {
       }
 
       try {
-        const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, '_').replace('%20', '_');
+        const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
         await FilesharingService.copyFileViaWebDAV(client, encodeURI(fullOriginPath), sanitizedDestinationPath);
       } catch (error) {
         Logger.log(error);
