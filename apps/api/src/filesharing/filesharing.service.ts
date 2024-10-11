@@ -360,7 +360,6 @@ class FilesharingService {
     originPath: string,
     destinationPath: string,
   ): Promise<WebdavStatusReplay> {
-    Logger.log(`Copying file from ${originPath} to ${destinationPath}`);
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
