@@ -66,8 +66,10 @@ const useLessonStore = create<LessonStore>(
         set({ error: null, isLoading: true });
         try {
           await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.DUPLICATE}`, {
-            originFilePath: duplicateFileRequestDto.originFilePath,
-            destinationFilePaths: duplicateFileRequestDto.destinationFilePaths,
+            originFilePath: decodeURIComponent(duplicateFileRequestDto.originFilePath),
+            destinationFilePaths: duplicateFileRequestDto.destinationFilePaths.map((destinationFilePath) =>
+              decodeURIComponent(destinationFilePath),
+            ),
           });
         } catch (error) {
           handleApiError(error, set);
