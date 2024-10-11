@@ -4,35 +4,33 @@ import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Input from '@/components/shared/Input';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { findAppConfigByName } from '@/utils/common';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
+import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
-import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
-import useGroupStore from '@/store/GroupStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import { SettingsIcon } from '@/assets/icons';
+import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
 import useIsMobileView from '@/hooks/useIsMobileView';
-
-import { AccordionSH } from '@/components/ui/AccordionSH';
+import { findAppConfigByName } from '@/utils/common';
+import { SettingsIcon } from '@/assets/icons';
+import useGroupStore from '@/store/GroupStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
+import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
-import YamlEditor from '@/components/shared/YamlEditor';
-import Switch from '@/components/ui/Switch';
+import Input from '@/components/shared/Input';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
+import { AccordionSH } from '@/components/ui/AccordionSH';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
+import ProxyConfigForm from './components/ProxyConfigForm';
 
 const AppConfigPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -42,7 +40,6 @@ const AppConfigPage: React.FC = () => {
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const [settingLocation, setSettingLocation] = useState('');
-  const [proxyConfigEnabled, setProxyConfigEnabled] = useState(false);
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
@@ -84,7 +81,6 @@ const AppConfigPage: React.FC = () => {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
           const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
-          setProxyConfigEnabled(proxyConfig !== '');
           setValue(`${settingLocation}.${key}`, proxyConfig);
         } else {
           setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
@@ -218,42 +214,35 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {item.options?.map((itemOption) => (
-                      <FormFieldSH
-                        key={`${item.id}.${itemOption}`}
-                        control={control}
-                        name={`${item.id}.${itemOption}`}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <h4>{t(`form.${itemOption}`)}</h4>
-                            <FormControl>
-                              {itemOption !== 'proxyConfig' ? (
+                    {item.options?.map((itemOption) =>
+                      itemOption !== 'proxyConfig' ? (
+                        <FormFieldSH
+                          key={`${item.id}.${itemOption}`}
+                          control={control}
+                          name={`${item.id}.${itemOption}`}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <FormItem>
+                              <h4>{t(`form.${itemOption}`)}</h4>
+                              <FormControl>
                                 <Input
                                   {...field}
                                   variant="lightGray"
                                 />
-                              ) : (
-                                <>
-                                  <Switch
-                                    checked={proxyConfigEnabled}
-                                    onCheckedChange={setProxyConfigEnabled}
-                                  />
-                                  {proxyConfigEnabled ? (
-                                    <YamlEditor
-                                      value={field.value as string}
-                                      onChange={field.onChange}
-                                    />
-                                  ) : null}
-                                </>
-                              )}
-                            </FormControl>
-                            <p>{t(`form.${itemOption}Description`)}</p>
-                            <FormMessage className="text-p" />
-                          </FormItem>
-                        )}
-                      />
-                    ))}
+                              </FormControl>
+                              <FormMessage className="text-p" />
+                            </FormItem>
+                          )}
+                        />
+                      ) : (
+                        <ProxyConfigForm
+                          key={`${item.id}.${itemOption}`}
+                          settingLocation={settingLocation}
+                          item={item}
+                          form={form}
+                        />
+                      ),
+                    )}
                     {item.extendedOptions && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
