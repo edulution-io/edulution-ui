@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AppConfigOption } from '@libs/appconfig/types';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
@@ -11,6 +11,7 @@ import { parse, stringify } from 'yaml';
 import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
 import AppConfigForm from '@libs/appconfig/types/appConfigForm';
+import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 
 type ProxyConfigFormProps = {
   settingLocation: string;
@@ -23,32 +24,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
   const isYamlConfigured = form.watch(`${item.id}.proxyConfig`) !== '';
 
-  const defaultYaml = stringify({
-    http: {
-      routers: {
-        [settingLocation]: {
-          rule: `PathPrefix(\`/${settingLocation}\`)`,
-          service: settingLocation,
-          tls: {},
-          middlewares: ['strip-prefix'],
-        },
-      },
-      middlewares: {
-        'strip-prefix': {
-          stripPrefix: {
-            prefixes: ['/api'],
-          },
-        },
-      },
-      services: {
-        [settingLocation]: {
-          loadBalancer: {
-            servers: [{ url: '' }],
-          },
-        },
-      },
-    },
-  });
+  const defaultYaml = useMemo(() => getDefaultYaml(settingLocation), [settingLocation]);
 
   const updateYaml = () => {
     const proxyPath = form.getValues(`${item.id}.proxyPath`);

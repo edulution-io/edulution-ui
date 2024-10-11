@@ -58,7 +58,7 @@ class AppConfigService implements OnModuleInit {
 
             if (existsSync(filePath)) {
               unlinkSync(filePath);
-              Logger.log(`Datei ${filePath} wurde gelöscht.`, AppConfigService.name);
+              Logger.log(`${filePath} deleted.`, AppConfigService.name);
             }
           }
         }
