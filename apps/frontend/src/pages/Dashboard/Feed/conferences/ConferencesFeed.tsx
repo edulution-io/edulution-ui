@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConferencesIcon } from '@/assets/icons';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import ConferencesList from '@/pages/Dashboard/Feed/conferences/ConferencesList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useIsConferenceActive from '@/pages/ConferencePage/useIsConferenceActive';

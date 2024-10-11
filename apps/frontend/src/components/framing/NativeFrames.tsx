@@ -4,8 +4,10 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
-import { AppConfigDto, APPS } from '@libs/appconfig/types';
+import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import TApps from '@libs/appconfig/types/appsType';
+import APPS from '@libs/appconfig/constants/apps';
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
@@ -20,7 +22,7 @@ const NativeFrames = () => {
   return appConfigs
     .filter((appConfig) => isActiveNativeFrame(appConfig, loadedFrames))
     .map((appConfig) => {
-      switch (appConfig.name as APPS) {
+      switch (appConfig.name as TApps) {
         case APPS.MAIL:
           return <MailPage key={appConfig.name} />;
         case APPS.LINUXMUSTER:

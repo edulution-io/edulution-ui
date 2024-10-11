@@ -15,11 +15,9 @@ const useMailsStore = create<MailsStore>((set) => ({
   getMails: async (): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<MailDto[]>(MAIL_ENDPOINT);
-      const mails = response.data;
-      set({ mails });
+      const { data } = await eduApi.get<MailDto[]>(MAIL_ENDPOINT);
+      set({ mails: data });
     } catch (error) {
-      set({ mails: [] });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });

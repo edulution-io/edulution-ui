@@ -17,6 +17,12 @@
       "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
       "downloadApp": "Lade hier die edulution-io App herunter:"
+    },
+    "quota": {
+      "title": "Quotas",
+      "globalQuota": "Cloudquota berechnet ",
+      "mailQuota": "Mailquota berechnet",
+      "mibibyte": "MiB"
     }
   },
   "auth": {
@@ -55,7 +61,8 @@
       "SearchUsersOrGroupsFailed": "Suche nach Benutzern oder Gruppen fehlgeschlagen",
       "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
-      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen"
+      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
+      "GetUsersQuotaFailed": "Abrufen der Benutzerkontigente fehlgeschlagen."
     }
   },
   "ticketsystem": {
@@ -610,7 +617,11 @@
     "apiKey": "API Schlüssel",
     "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
     "proxyConfig": "Proxy-Konfiguration",
-    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy."
+    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
+    "expertMode": "Expertenmodus",
+    "proxyPath": "Proxy Pfad",
+    "proxyDestination": "Zielhost",
+    "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -801,7 +812,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition von edulution. Diese Version erhält keinen Support."
+      "description": "Kostenlose Community Edition der edulution.io UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {

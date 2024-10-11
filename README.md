@@ -30,7 +30,7 @@
 A Full Stack Application build with Vite+React (frontend) and Nest.js for the API. NX is used to organise the monorepo.
 
    <a href="https://github.com/edulution-io/edulution-ui">
-        <img src="https://raw.githubusercontent.com/edulution-io/edulution-docs/main/source/_static/Grafik_edulution_Tech_Stack.png" alt="Tech-Stack"/>
+        <img src="https://raw.githubusercontent.com/edulution-io/edulution-docs/main/source/_static/Grafik_edulution_Tech_Stack.png" alt="Tech-Stack" style="background-color: #0d1117 ;"/>
     </a>
 
 ## Maintenance Details

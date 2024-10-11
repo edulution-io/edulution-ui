@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SurveysSidebarIcon } from '@/assets/icons';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useIsSurveysActive from '@/pages/Surveys/useIsSurveysActive';

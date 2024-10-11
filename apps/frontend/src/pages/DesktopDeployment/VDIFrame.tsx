@@ -4,7 +4,7 @@ import Guacamole from 'guacamole-common-js';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { SIDEBAR_WIDTH } from '@libs/ui/constants';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import ControlPanel from '@/components/shared/ControlPanel';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import { createPortal } from 'react-dom';
 import ControlPanel from '@/components/shared/ControlPanel';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 
 const BBBIFrame = () => {
   const { joinConferenceUrl, setJoinConferenceUrl, toggleIsJoinedConferenceMinimized, isJoinedConferenceMinimized } =
