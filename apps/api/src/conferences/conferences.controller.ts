@@ -1,17 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Put,
-  Sse,
-  MessageEvent,
-  Query,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Sse, MessageEvent } from '@nestjs/common';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Observable, Subject, map } from 'rxjs';
@@ -20,8 +7,6 @@ import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';
-import TokenService from '../common/services/token.service';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()
@@ -29,10 +14,7 @@ import { Public } from '../common/decorators/public.decorator';
 class ConferencesController {
   private conferenceCreated$ = new Subject<MessageEvent>();
 
-  constructor(
-    private readonly conferencesService: ConferencesService,
-    private readonly tokenService: TokenService,
-  ) {}
+  constructor(private readonly conferencesService: ConferencesService) {}
 
   @Post()
   create(@Body() createConferenceDto: CreateConferenceDto, @GetCurrentUser() user: JWTUser) {
@@ -67,6 +49,13 @@ class ConferencesController {
   @Put()
   async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUser() user: JWTUser) {
     await this.conferencesService.toggleConferenceIsRunning(conference.meetingID, user.preferred_username);
+
+    this.conferenceCreated$.next({
+      data: {
+        message: 'Conference started',
+      },
+    });
+
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
@@ -83,14 +72,9 @@ class ConferencesController {
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
-  @Public()
   @Sse('sse')
-  async sse(@Query('token') token: string): Promise<Observable<MessageEvent>> {
-    const user = await this.tokenService.getCurrentUser(token);
-    if (user) {
-      return this.conferenceCreated$.asObservable().pipe(map((event) => ({ data: event.data }) as MessageEvent));
-    }
-    throw new UnauthorizedException('User not found in JWT');
+  sse(): Observable<MessageEvent> {
+    return this.conferenceCreated$.asObservable().pipe(map((event) => ({ data: event.data }) as MessageEvent));
   }
 }
 

@@ -9,7 +9,6 @@ import { Conference } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
 import JWTUser from '../types/JWTUser';
-import TokenService from '../common/services/token.service';
 
 const mockConferencesModel = {
   insertMany: jest.fn(),
@@ -49,11 +48,6 @@ const jwtUser: JWTUser = {
   ldapGroups: [],
 };
 
-const mockTokenService = {
-  isValid: jest.fn().mockResolvedValue(true),
-  getCurrentUser: jest.fn().mockResolvedValue(jwtUser),
-};
-
 describe(ConferencesController.name, () => {
   let controller: ConferencesController;
   let service: ConferencesService;
@@ -73,10 +67,6 @@ describe(ConferencesController.name, () => {
         {
           provide: AppConfigService,
           useValue: mockAppConfigService,
-        },
-        {
-          provide: TokenService,
-          useValue: mockTokenService,
         },
       ],
     }).compile();
