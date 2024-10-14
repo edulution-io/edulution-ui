@@ -49,7 +49,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const getSegmentKey = (index: number) => segments.slice(0, index + 1).join('/');
 
   const handleSegmentClick = (index: number) => {
-    if (!showHome && (hiddenSegments?.length ?? 0) >= index) return;
+    if (!showHome && (hiddenSegments?.length ?? 0) > index) return;
     setShowEditor(false);
     setCurrentlyEditingFile(null);
 

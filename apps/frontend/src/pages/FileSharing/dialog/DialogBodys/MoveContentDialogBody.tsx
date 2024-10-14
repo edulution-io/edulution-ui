@@ -64,8 +64,12 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     }
   };
 
-  const getIndexOfCollectedSegement = (segements: string[]) =>
-    segements.findIndex((segment) => segment === 'collected');
+  const getHiddenSegments = (): string[] => {
+    const segements = pathToFetch?.split('/');
+    const index = segements?.findIndex((segment) => segment === 'collected');
+    const hiddenSegments = segements?.slice(0, index) || [];
+    return hiddenSegments;
+  };
 
   const renderTableRow = (row: DirectoryFileDTO) => (
     <TableRow
@@ -117,14 +121,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         path={currentPath}
         onNavigate={handleBreadcrumbNavigate}
         showHome={showHome}
-        hiddenSegments={
-          !showHome
-            ? pathToFetch
-                ?.split('/')
-                .filter(Boolean)
-                .slice(0, getIndexOfCollectedSegement(pathToFetch.split('/')) - 1)
-            : []
-        }
+        hiddenSegments={getHiddenSegments()}
       />
       <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
       {moveOrCopyItemToPath && showSelectedFile && (
