@@ -24,6 +24,8 @@ const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 class MailsService {
   private mailcowApi: AxiosInstance;
 
+  private imapClient: ImapFlow;
+
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
@@ -64,7 +66,11 @@ class MailsService {
 
     const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = imapOptions;
 
-    const client = new ImapFlow({
+    if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
+      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
+    }
+
+    this.imapClient = new ImapFlow({
       host: MAIL_IMAP_URL,
       port: MAIL_IMAP_PORT,
       secure: MAIL_IMAP_SECURE,
@@ -79,13 +85,13 @@ class MailsService {
       connectionTimeout: 5000,
     });
 
-    client.on('error', (err: Error): void => {
+    this.imapClient.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void client.logout();
-      client.close();
+      void this.imapClient.logout();
+      this.imapClient.close();
     });
 
-    await client.connect().catch((err) => {
+    await this.imapClient.connect().catch((err) => {
       throw new CustomHttpException(
         MailsErrorMessages.NotAbleToConnectClientError,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -93,10 +99,12 @@ class MailsService {
       );
     });
 
-    const mailboxLock: MailboxLockObject = await client.getMailboxLock('INBOX');
+    let mailboxLock: MailboxLockObject | undefined;
     const mails: MailDto[] = [];
     try {
-      const fetchMail: AsyncGenerator<FetchMessageObject> = client.fetch(
+      mailboxLock = await this.imapClient.getMailboxLock('INBOX');
+
+      const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
         { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
@@ -120,11 +128,13 @@ class MailsService {
       }
     } catch (err) {
       throw new CustomHttpException(MailsErrorMessages.NotAbleToFetchMailsError, HttpStatus.INTERNAL_SERVER_ERROR, err);
+    } finally {
+      if (mailboxLock) {
+        mailboxLock.release();
+      }
     }
-
-    mailboxLock?.release();
-    await client.logout();
-    client.close();
+    await this.imapClient.logout();
+    this.imapClient.close();
 
     Logger.log(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;
