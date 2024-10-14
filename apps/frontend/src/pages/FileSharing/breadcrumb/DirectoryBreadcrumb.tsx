@@ -23,9 +23,17 @@ interface DirectoryBreadcrumbProps {
   path: string;
   onNavigate: (path: string) => void;
   style?: React.CSSProperties;
+  showHome?: boolean;
+  hiddenSegments?: string[];
 }
 
-const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavigate, style }) => {
+const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
+  path,
+  showHome = true,
+  hiddenSegments,
+  onNavigate,
+  style,
+}) => {
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
@@ -37,26 +45,34 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({ path, onNavig
     .split('/')
     .map((segment) => segment.replace(/%20/g, ' '))
     .filter(Boolean);
+
   const getSegmentKey = (index: number) => segments.slice(0, index + 1).join('/');
 
   const handleSegmentClick = (index: number) => {
+    if (!showHome && (hiddenSegments?.length ?? 0) >= index) return;
     setShowEditor(false);
     setCurrentlyEditingFile(null);
-    onNavigate(getSegmentKey(index));
+
+    const newPath = getSegmentKey(index);
+    if (newPath !== path) {
+      onNavigate(newPath);
+    }
   };
 
   return (
     <Breadcrumb style={style}>
       <p className="mr-2 text-background">{t('currentDirectory')}</p>
       <BreadcrumbList>
-        <BreadcrumbItem key="home">
-          <BreadcrumbLink
-            href="#"
-            onClick={() => onNavigate(homePath)}
-          >
-            {t('home')}
-          </BreadcrumbLink>
-        </BreadcrumbItem>
+        {showHome && (
+          <BreadcrumbItem key="home">
+            <BreadcrumbLink
+              href="#"
+              onClick={() => onNavigate(homePath)}
+            >
+              {t('home')}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        )}
 
         {segments.length > displaySegments ? (
           <>
