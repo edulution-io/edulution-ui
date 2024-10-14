@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
@@ -71,6 +72,11 @@ const conferencesModelMock = {
   }),
 };
 
+const cacheManagerMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+};
+
 describe(ConferencesService.name, () => {
   let service: ConferencesService;
   let model: Model<ConferenceDocument>;
@@ -86,6 +92,10 @@ describe(ConferencesService.name, () => {
         {
           provide: AppConfigService,
           useValue: mockAppConfigService,
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: cacheManagerMock,
         },
       ],
     }).compile();
@@ -103,7 +113,7 @@ describe(ConferencesService.name, () => {
       const createDto: CreateConferenceDto = { ...mockConference };
       const result = await service.create(createDto, mockJWTUser);
       expect(model.create).toHaveBeenCalled();
-      expect(result.creator).toEqual(mockCreator);
+      expect(result?.creator).toEqual(mockCreator);
     });
   });
 
