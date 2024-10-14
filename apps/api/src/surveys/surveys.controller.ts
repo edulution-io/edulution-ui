@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageEvent } from '@nestjs/common';
+import { Observable, Subject, map } from 'rxjs';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -17,6 +18,8 @@ import JWTUser from '../types/JWTUser';
 @ApiBearerAuth()
 @Controller(SURVEYS)
 class SurveysController {
+  private surveyCreated$ = new Subject<MessageEvent>();
+
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
@@ -48,6 +51,12 @@ class SurveysController {
       created,
     };
 
+    this.surveyCreated$.next({
+      data: {
+        message: 'Survey created',
+      },
+    });
+
     return this.surveyService.updateOrCreateSurvey(survey);
   }
 
@@ -56,12 +65,22 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
+    this.surveyCreated$.next({
+      data: {
+        message: 'Survey deleted',
+      },
+    });
   }
 
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, user, answer);
+  }
+
+  @Sse('sse')
+  sse(): Observable<MessageEvent> {
+    return this.surveyCreated$.asObservable().pipe(map((event) => ({ data: event.data }) as MessageEvent));
   }
 }
 

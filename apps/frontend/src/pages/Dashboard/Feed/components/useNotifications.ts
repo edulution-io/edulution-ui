@@ -24,9 +24,6 @@ const useNotifications = () => {
     if (isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
-    if (isSurveysAppActivated) {
-      void updateOpenSurveys();
-    }
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
@@ -46,6 +43,22 @@ const useNotifications = () => {
   }, [isConferenceAppActivated]);
 
   useEffect(() => {
+    if (isSurveysAppActivated) {
+      const eventSource = new EventSource(`${window.location.origin}/edu-api/surveys/sse?token=${eduApiToken}`);
+
+      eventSource.onmessage = () => {
+        void updateOpenSurveys();
+      };
+
+      return () => {
+        eventSource.close();
+      };
+    }
+
+    return undefined;
+  }, [isSurveysAppActivated]);
+
+  useEffect(() => {
     if (isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
@@ -53,7 +66,11 @@ const useNotifications = () => {
     if (isSurveysAppActivated) {
       void updateOpenSurveys();
     }
-  }, [isMailsAppActivated, isSuperAdmin, isSurveysAppActivated]);
+
+    if (isConferenceAppActivated) {
+      void getConferences();
+    }
+  }, [isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 };
 
 export default useNotifications;
