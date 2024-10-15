@@ -6,20 +6,20 @@ import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useUserStore from '@/store/UserStore/UserStore';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import QuestionSettingsDialog from '@/pages/Surveys/Editor/dialog/QuestionSettingsDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -33,7 +33,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading } =
     useSurveyEditorFormStore();
-  const { setIsOpenQuestionSettingsDialog, selectedQuestion, setSelectedQuestion } = useQuestionSettingsDialogStore();
+  const { setIsOpenQuestionSettingsDialog, setSelectedQuestion } = useQuestionSettingsDialogStore();
 
   if (!user || !user.username) {
     return null;
@@ -163,6 +163,11 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     setIsOpenSaveSurveyDialog(false);
   };
 
+  const config: FloatingButtonsBarConfig = {
+    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true)), CreateButton(() => form.reset(emptyFormValues))],
+    keyPrefix: 'surveys-page-floating-button_',
+  };
+
   const formulaWatcher = form.watch('formula');
   const saveNoWatcher = form.watch('saveNo');
   const backendLimiterWatcher = form.watch('backendLimiters');
@@ -180,11 +185,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     [formulaWatcher, saveNoWatcher],
   );
 
-  const config: FloatingButtonsBarConfig = {
-    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true)), CreateButton(() => form.reset(emptyFormValues))],
-    keyPrefix: 'surveys-page-floating-button_',
-  };
-
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
@@ -200,10 +200,10 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         isCommitting={isLoading}
       />
       <SharePublicSurveyDialog />
-      {
-        // TODO: NIEDUUI-397 (THIS): UPDATE JSON WHEN ADDING BACKEND LIMITERS
-        selectedQuestion ? <QuestionSettingsDialog backendLimitersWatcher={backendLimiterWatcher || []} /> : null
-      }
+      <QuestionSettingsDialog
+        form={form}
+        backendLimitersWatcher={backendLimiterWatcher || []}
+      />
     </>
   );
 };

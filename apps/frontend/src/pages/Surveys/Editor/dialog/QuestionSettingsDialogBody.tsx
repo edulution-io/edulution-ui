@@ -1,14 +1,19 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import cn from '@/lib/utils';
 import ChoicesByUrl from '@/pages/Surveys/Editor/components/ChoicesByUrl';
-import Input from '@/components/shared/Input';
 import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
+import Input from '@/components/shared/Input';
 
-const QuestionSettingsDialogBody = () => {
-  const {
-    selectedQuestion,
-  } = useQuestionSettingsDialogStore();
+interface QuestionSettingsDialogBodyProps {
+  backendLimiters: { questionName: string; choices: ChoiceDto[] }[];
+}
+
+const QuestionSettingsDialogBody = (props: QuestionSettingsDialogBodyProps) => {
+  const { backendLimiters } = props;
+  const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
+    useQuestionSettingsDialogStore();
 
   const { t } = useTranslation();
 
@@ -19,12 +24,10 @@ const QuestionSettingsDialogBody = () => {
       <div className="ml-2 flex-1 items-center text-foreground">
         <Input
           type="text"
-          value={selectedQuestion.title}
-          onChange={(e) => {
-            selectedQuestion.title = e.target.value;
-          }}
+          value={questionTitle}
+          onChange={(e) => setQuestionTitle(e.target.value)}
           variant="default"
-          className={cn({ 'text-gray-300': !selectedQuestion.title }, { 'text-foreground': selectedQuestion.title })}
+          className={cn({ 'text-gray-300': !questionTitle }, { 'text-foreground': questionTitle })}
         />
       </div>
 
@@ -33,19 +36,14 @@ const QuestionSettingsDialogBody = () => {
         <Input
           type="text"
           placeholder={t('survey.editor.questionSettings.addQuestionDescription')}
-          value={selectedQuestion.description}
-          onChange={(e) => {
-            selectedQuestion.description = e.target.value;
-          }}
+          value={questionDescription}
+          onChange={(e) => setQuestionDescription(e.target.value)}
           variant="default"
-          className={cn(
-            { 'text-gray-300': !selectedQuestion.description },
-            { 'text-foreground': selectedQuestion.description },
-          )}
+          className={cn({ 'text-gray-300': !questionDescription }, { 'text-foreground': questionDescription })}
         />
       </div>
 
-      <ChoicesByUrl />
+      <ChoicesByUrl backendLimiters={backendLimiters} />
     </>
   );
 };

@@ -1,0 +1,3 @@
+const CHOOSE_OTHER_ITEM_CHOICE_NAME = 'showOtherItem';
+
+export default CHOOSE_OTHER_ITEM_CHOICE_NAME;

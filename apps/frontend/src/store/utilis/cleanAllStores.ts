@@ -23,6 +23,7 @@ import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialog
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetTotpSlice();
@@ -52,6 +53,7 @@ const cleanAllStores = () => {
   useCommitedAnswersDialogStore.getState().reset();
   useResultDialogStore.getState().reset();
   useParticipatePublicSurveyStore.getState().reset();
+  useQuestionSettingsDialogStore.getState().reset();
 };
 
 export default cleanAllStores;

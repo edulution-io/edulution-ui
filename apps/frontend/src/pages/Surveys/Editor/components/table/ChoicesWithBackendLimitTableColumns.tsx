@@ -21,13 +21,13 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { t } = useTranslation();
-      const { setName } = useQuestionSettingsDialogStore();
+      const { setChoiceName } = useQuestionSettingsDialogStore();
       return (
         <Input
           type="text"
           placeholder={t('common.name')}
           value={row.original.name}
-          onChange={(e) => setName(row.index, e.target.value)}
+          onChange={(e) => setChoiceName(row.original.name, e.target.value)}
           variant="default"
           className="p-2 text-foreground"
         />
@@ -57,15 +57,15 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     accessorFn: (row) => row.title,
     cell: ({ row }) => {
       const { t } = useTranslation();
-      const { setTitle } = useQuestionSettingsDialogStore();
+      const { setChoiceTitle } = useQuestionSettingsDialogStore();
       return (
         <Input
           type="text"
           placeholder={t('common.title')}
           value={row.original.title}
-          onChange={(e) => setTitle(row.index, e.target.value)}
+          onChange={(e) => setChoiceTitle(row.original.name, e.target.value)}
           variant="default"
-          className="p-2 text-foreground"
+          className="flex-1 p-2 text-foreground"
         />
       );
     },
@@ -93,13 +93,13 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     accessorFn: (row) => row.limit,
     cell: ({ row }) => {
       const { t } = useTranslation();
-      const { setLimit } = useQuestionSettingsDialogStore();
+      const { setChoiceLimit } = useQuestionSettingsDialogStore();
       return (
         <Input
-          type="text"
+          type="number"
           placeholder={t('survey.editor.questionSettings.limit')}
           value={row.original.limit}
-          onChange={(e) => setLimit(row.index, Number(e.target.value))}
+          onChange={(e) => setChoiceLimit(row.original.name, Number(e.target.value))}
           variant="default"
           className="p-2 text-foreground"
         />
@@ -129,19 +129,19 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
       <SortableHeader<ChoiceDto, unknown>
         titleTranslationId="common.actions"
         column={column}
-        className="text-foreground"
+        className="m-0 w-[90px] p-0 text-foreground"
       />
     ),
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { removeChoice } = useQuestionSettingsDialogStore();
       return (
-        <div className="flex justify-center">
+        <div className="m-0 flex w-[85px] justify-center p-0">
           <Button
             type="button"
             onClick={() => removeChoice(row.original.name)}
             variant="btn-outline"
-            className="my-1 flex max-h-[2.25rem] w-[75px] items-center justify-center text-ciRed"
+            className="m-0 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md p-0 text-ciRed"
           >
             <MdRemoveCircleOutline />
           </Button>

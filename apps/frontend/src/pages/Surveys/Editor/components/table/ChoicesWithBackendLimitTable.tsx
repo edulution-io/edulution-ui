@@ -69,7 +69,9 @@ const ChoicesWithBackendLimitTable = <TData, TValue>({
                       key={cell.id}
                       className="m-0 p-0 text-left text-foreground"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <div className="mx-1 my-1 flex justify-center">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
                     </TableCell>
                   ))}
                 </TableRow>
@@ -99,7 +101,7 @@ const ChoicesWithBackendLimitTable = <TData, TValue>({
                   type="button"
                   onClick={addNewChoice}
                   variant="btn-outline"
-                  className="my-1 flex max-h-[2.25rem] w-[75px] items-center justify-center text-foreground"
+                  className="my-1 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md text-foreground"
                 >
                   <MdAddCircleOutline />
                 </Button>

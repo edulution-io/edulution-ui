@@ -1,65 +1,54 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Question } from 'survey-core/typings/question';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import cn from '@/lib/utils';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionSettingsDialogStore';
 import Switch from '@/components/ui/Switch';
-import { Input as SHInput } from '@/components/ui/Input';
+import Input from '@/components/shared/Input';
+import Label from '@/components/ui/Label';
+import CHOOSE_OTHER_ITEM_CHOICE_NAME from '@libs/survey/constants/CHOOSE_OTHER_ITEM_CHOICE_NAME';
 
-export const CHOOSE_OTHER_ITEM_CHOICE_NAME = 'showOtherItem';
-
-interface ChoicesWithBackendLimitsShowOtherItemProps {
-  selectedQuestion: Question;
-  choices: ChoiceDto[];
-
-  addChoice: (name: string, title?: string, limit?: number) => void;
-  removeChoice: (name: string) => void;
-  updateChoice: (name: string, choice: ChoiceDto) => void;
-}
-
-const ChoicesWithBackendLimitsShowOtherItem = (props: ChoicesWithBackendLimitsShowOtherItemProps) => {
-  const { selectedQuestion, choices, addChoice, removeChoice, updateChoice } = props;
+const ChoicesWithBackendLimitsShowOtherItem = () => {
+  const { useBackendLimits, showOtherItem, toggleShowOtherItem, setChoiceLimit, choices, addChoice } =
+    useQuestionSettingsDialogStore();
 
   const { t } = useTranslation();
 
-  const showOtherItem = selectedQuestion.showOtherItem;
-  const setShowOtherItem = (state: boolean) => {
-    if (!state) {
-      removeChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
-      selectedQuestion.showOtherItem = false;
-    } else {
-      addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
-      selectedQuestion.showOtherItem = true;
-    }
-  }
+  const otherItemsChoiceWithBackendLimit = choices.find((choice) => choice.name === CHOOSE_OTHER_ITEM_CHOICE_NAME);
 
-  const otherItemsChoiceWithBackendLimit = choices.find((choice) => choice.name === CHOOSE_OTHER_ITEM_CHOICE_NAME)
-
+  if (!useBackendLimits) return null;
   return (
     <div className="ml-2 flex-1 items-center text-foreground">
-      <Switch
-        checked={showOtherItem}
-        onCheckedChange={setShowOtherItem}
-        className={cn(
-          {'text-gray-300': !showOtherItem},
-          {'text-foreground': showOtherItem},
-        )}
-      />
-      { showOtherItem
-        ? (
-          <SHInput
-            type="number"
-            placeholder={t('common.limit')}
-            value={otherItemsChoiceWithBackendLimit?.limit || 0}
-            onChange={(e) => otherItemsChoiceWithBackendLimit
-              ? updateChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME, { ...otherItemsChoiceWithBackendLimit, limit: Number(e.target.value) })
-              : addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME, '', Number(e.target.value))
-            }
-            className="text-foreground"
-          />
-        )
-        : null
-      }
+      <div className="ml-2 inline-flex">
+        <Switch
+          checked={showOtherItem}
+          onCheckedChange={toggleShowOtherItem}
+          className={cn({ 'text-gray-300': !useBackendLimits }, { 'text-foreground': useBackendLimits })}
+        />
+        <p className="ml-2 text-sm font-bold text-foreground">{t('survey.editor.questionSettings.useOtherItem')}</p>
+      </div>
+      {showOtherItem ? (
+        <>
+          <p className="ml-4 mt-2 text-sm text-foreground">
+            {t('survey.editor.questionSettings.addBackendLimiterForOtherItem')}
+          </p>
+          <div className="ml-4 inline-flex items-center">
+            <Label className="text-m flex-0 font-bold text-foreground">
+              {t('survey.editor.questionSettings.limit')}:
+            </Label>
+            <Input
+              type="number"
+              placeholder={t('common.limit')}
+              value={otherItemsChoiceWithBackendLimit?.limit || 0}
+              onChange={(e) =>
+                otherItemsChoiceWithBackendLimit
+                  ? setChoiceLimit(CHOOSE_OTHER_ITEM_CHOICE_NAME, Number(e.target.value))
+                  : addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME, '', Number(e.target.value))
+              }
+              className="ml-2 flex-1 text-foreground"
+            />
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };

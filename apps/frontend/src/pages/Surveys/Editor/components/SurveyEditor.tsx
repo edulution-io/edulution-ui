@@ -90,7 +90,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     // eslint-disable-next-line no-param-reassign
     options.items[settingsItemIndex].visibleIndex = 10;
     // eslint-disable-next-line no-param-reassign
-    options.items[settingsItemIndex].title = i18next.t('survey.editor.questionSettings');
+    options.items[settingsItemIndex].title = i18next.t('survey.editor.questionSettings.defaultTitle');
     // eslint-disable-next-line no-param-reassign
     options.items[settingsItemIndex].action = () => {
       if (_.isObjQuestion(_.selectedElement)) {
