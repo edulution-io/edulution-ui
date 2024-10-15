@@ -7,11 +7,11 @@ import {
   PRINTERS_LMN_API_ENDPOINT,
   PROJECTS_LMN_API_ENDPOINT,
   QUERY_LMN_API_ENDPOINT,
+  QUOTAS_LMN_API_ENDPOINT,
   SCHOOL_CLASSES_LMN_API_ENDPOINT,
   SESSIONS_LMN_API_ENDPOINT,
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
-  QUOTAS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
@@ -174,7 +174,7 @@ class LmnApiService {
     }
   }
 
-  public async getUserSchoolClasses(lmnApiToken: string): Promise<LmnApiSchoolClass[]> {
+  public async getUserSchoolClasses(lmnApiToken: string, school: string): Promise<LmnApiSchoolClass[]> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}`;
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -184,7 +184,7 @@ class LmnApiService {
       const response = await this.enqueue<LmnApiSchoolClass[]>(() =>
         this.lmnApi.get<LmnApiSchoolClass[]>(requestUrl, config),
       );
-      return response.data;
+      return response.data.filter((schoolClass) => schoolClass.sophomorixSchoolname === school);
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSchoolClassesFailed,
@@ -494,14 +494,15 @@ class LmnApiService {
     }
   }
 
-  public async getPrinters(lmnApiToken: string): Promise<LmnApiPrinter[]> {
+  public async getPrinters(lmnApiToken: string, school: string): Promise<LmnApiPrinter[]> {
     try {
       const response = await this.enqueue<LmnApiPrinter[]>(() =>
         this.lmnApi.get<LmnApiPrinter[]>(PRINTERS_LMN_API_ENDPOINT, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
-      return response.data;
+
+      return response.data.filter((printer) => printer.sophomorixSchoolname === school);
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.GetPrintersFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
