@@ -7,16 +7,20 @@ import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import JWTUser from '../types/JWTUser';
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()
 @Controller(CONFERENCES_EDU_API_ENDPOINT)
 class ConferencesController {
+  private conferencesSseConnections: UserConnections = new Map();
+
   constructor(private readonly conferencesService: ConferencesService) {}
 
   @Post()
   create(@Body() createConferenceDto: CreateConferenceDto, @GetCurrentUser() user: JWTUser) {
-    return this.conferencesService.create(createConferenceDto, user);
+    return this.conferencesService.create(createConferenceDto, user, this.conferencesSseConnections);
   }
 
   @Get('join/:meetingID')
@@ -38,19 +42,23 @@ class ConferencesController {
 
   @Put()
   async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.toggleConferenceIsRunning(conference.meetingID, user.preferred_username);
+    await this.conferencesService.toggleConferenceIsRunning(
+      conference.meetingID,
+      user.preferred_username,
+      this.conferencesSseConnections,
+    );
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
   @Delete()
   async remove(@Body() meetingIDs: string[], @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.remove(meetingIDs, user.preferred_username);
+    await this.conferencesService.remove(meetingIDs, user.preferred_username, this.conferencesSseConnections);
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
   @Sse('sse')
   sse(@GetCurrentUsername() username: string): Observable<MessageEvent> {
-    return this.conferencesService.subscribe(username);
+    return SseService.subscribe(username, this.conferencesSseConnections);
   }
 }
 

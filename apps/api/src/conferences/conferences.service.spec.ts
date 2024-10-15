@@ -12,6 +12,7 @@ import JWTUser from '../types/JWTUser';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
 import Attendee from './attendee.schema';
+import type UserConnections from '../types/userConnections';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -56,6 +57,8 @@ const mockConferenceDocument: ConferenceDocument = {
   joinedAttendees: [mockCreator],
   toObject: jest.fn().mockImplementation(() => mockConferenceDocument),
 } as unknown as ConferenceDocument;
+
+const mockSseConnections: UserConnections = new Map();
 
 const conferencesModelMock = {
   create: jest.fn().mockResolvedValue(mockConferenceDocument),
@@ -112,7 +115,7 @@ describe(ConferencesService.name, () => {
   describe('create', () => {
     it('should create and save a conference', async () => {
       const createDto: CreateConferenceDto = { ...mockConference };
-      const result = await service.create(createDto, mockJWTUser);
+      const result = await service.create(createDto, mockJWTUser, mockSseConnections);
       expect(model.create).toHaveBeenCalled();
       expect(result?.creator).toEqual(mockCreator);
     });
@@ -145,7 +148,7 @@ describe(ConferencesService.name, () => {
 
   describe('remove', () => {
     it('should remove a conference', async () => {
-      const result = await service.remove(['1'], mockCreator.username);
+      const result = await service.remove(['1'], mockCreator.username, mockSseConnections);
       expect(result).toBeTruthy();
       expect(model.deleteMany).toHaveBeenCalled();
     });
@@ -161,11 +164,11 @@ describe(ConferencesService.name, () => {
       jest.spyOn(service, 'startConference').mockResolvedValue(undefined);
 
       mockConferenceDocument.isRunning = false;
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
+      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username, mockSseConnections);
       expect(service.startConference).toHaveBeenCalled();
 
       mockConferenceDocument.isRunning = true;
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
+      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username, mockSseConnections);
       expect(service.stopConference).toHaveBeenCalled();
     });
   });
@@ -199,7 +202,7 @@ describe(ConferencesService.name, () => {
       });
       jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
 
-      await service.startConference(mockConferenceDocument);
+      await service.startConference(mockConferenceDocument, mockSseConnections);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
     });
@@ -215,7 +218,7 @@ describe(ConferencesService.name, () => {
       });
       jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
 
-      await service.stopConference(mockConferenceDocument);
+      await service.stopConference(mockConferenceDocument, mockSseConnections);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
     });

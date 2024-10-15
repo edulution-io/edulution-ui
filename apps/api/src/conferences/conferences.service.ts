@@ -1,11 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable, MessageEvent } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
 import { createHash } from 'crypto';
-import { Subject, Observable, map } from 'rxjs';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -19,21 +18,14 @@ import JWTUser from '../types/JWTUser';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
-
-type SseEvent = {
-  username: string;
-  data: {
-    message: string;
-  };
-};
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
 
 @Injectable()
 class ConferencesService {
   private BBB_API_URL: string;
 
   private BBB_SECRET: string;
-
-  private userConnections: Map<string, Subject<SseEvent>> = new Map();
 
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
@@ -113,7 +105,11 @@ class ConferencesService {
     return invitedMembersList;
   }
 
-  async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
+  async create(
+    createConferenceDto: CreateConferenceDto,
+    currentUser: JWTUser,
+    conferencesSseConnections: UserConnections,
+  ): Promise<Conference | undefined> {
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -136,24 +132,24 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
-      this.sendEventToUsers(invitedMembersList);
+      SseService.sendEventToUsers(invitedMembersList, 'created', conferencesSseConnections);
     }
   }
 
-  async toggleConferenceIsRunning(meetingID: string, username: string) {
+  async toggleConferenceIsRunning(meetingID: string, username: string, conferencesSseConnections: UserConnections) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
       throw new CustomHttpException(ConferencesErrorMessage.YouAreNotTheCreator, HttpStatus.UNAUTHORIZED);
     }
 
     if (conference.isRunning) {
-      await this.stopConference(conference);
+      await this.stopConference(conference, conferencesSseConnections);
     } else {
-      await this.startConference(conference);
+      await this.startConference(conference, conferencesSseConnections);
     }
   }
 
-  async startConference(conference: Conference) {
+  async startConference(conference: Conference, conferencesSseConnections: UserConnections) {
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('create', query);
@@ -168,11 +164,11 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
-      this.sendEventToUsers(invitedMembersList);
+      SseService.sendEventToUsers(invitedMembersList, 'started', conferencesSseConnections);
     }
   }
 
-  async stopConference(conference: Conference) {
+  async stopConference(conference: Conference, conferencesSseConnections: UserConnections) {
     try {
       const query = `meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('end', query);
@@ -187,7 +183,7 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
-      this.sendEventToUsers(invitedMembersList);
+      SseService.sendEventToUsers(invitedMembersList, 'stopped', conferencesSseConnections);
     }
   }
 
@@ -251,7 +247,7 @@ class ConferencesService {
       .exec();
   }
 
-  async remove(meetingIDs: string[], username: string): Promise<boolean> {
+  async remove(meetingIDs: string[], username: string, conferencesSseConnections: UserConnections): Promise<boolean> {
     try {
       const result = await this.conferenceModel
         .deleteMany({
@@ -263,7 +259,7 @@ class ConferencesService {
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
     } finally {
-      this.informAllUsers('Conference deleted');
+      SseService.informAllUsers('deleted', conferencesSseConnections);
     }
   }
 
@@ -296,41 +292,6 @@ class ConferencesService {
     });
 
     return Promise.all(promises);
-  }
-
-  subscribe(username: string): Observable<MessageEvent> {
-    if (!this.userConnections.has(username)) {
-      this.userConnections.set(username, new Subject<SseEvent>());
-    }
-
-    const userConnection = this.userConnections.get(username);
-
-    if (userConnection) {
-      return userConnection.pipe(map((event: SseEvent) => ({ data: event.data }) as MessageEvent));
-    }
-    throw new Error(`User connection for ${username} is undefined.`);
-  }
-
-  sendEventToUser(username: string) {
-    const userStream = this.userConnections.get(username);
-    if (userStream) {
-      userStream.next({ username, data: { message: 'Conference updated' } });
-    }
-  }
-
-  sendEventToUsers(attendees: string[]) {
-    attendees.forEach((usr) => this.sendEventToUser(usr));
-  }
-
-  informAllUsers(message: string): void {
-    this.userConnections.forEach((subject, username) => {
-      subject.next({
-        username,
-        data: {
-          message,
-        },
-      });
-    });
   }
 }
 
