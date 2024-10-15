@@ -16,8 +16,7 @@ class ConferencesController {
 
   @Post()
   create(@Body() createConferenceDto: CreateConferenceDto, @GetCurrentUser() user: JWTUser) {
-    const conference = this.conferencesService.create(createConferenceDto, user);
-    return conference;
+    return this.conferencesService.create(createConferenceDto, user);
   }
 
   @Get('join/:meetingID')
@@ -40,14 +39,12 @@ class ConferencesController {
   @Put()
   async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUser() user: JWTUser) {
     await this.conferencesService.toggleConferenceIsRunning(conference.meetingID, user.preferred_username);
-
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
   @Delete()
   async remove(@Body() meetingIDs: string[], @GetCurrentUser() user: JWTUser) {
     await this.conferencesService.remove(meetingIDs, user.preferred_username);
-
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 

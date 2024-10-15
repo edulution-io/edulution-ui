@@ -9,6 +9,8 @@ import useIsConferenceActive from '@/pages/ConferencePage/useIsConferenceActive'
 import useIsSurveysActive from '@/pages/Surveys/useIsSurveysActive';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import APPS from '@libs/appconfig/constants/apps';
 
 const useNotifications = () => {
   const { isSuperAdmin } = useLdapGroups();
@@ -28,7 +30,7 @@ const useNotifications = () => {
 
   useEffect(() => {
     if (isConferenceAppActivated) {
-      const eventSource = new EventSource(`${window.location.origin}/edu-api/conferences/sse?token=${eduApiToken}`);
+      const eventSource = new EventSource(`${EDU_API_ROOT}/${APPS.CONFERENCES}/sse?token=${eduApiToken}`);
 
       eventSource.onmessage = () => {
         void getConferences();
@@ -44,7 +46,7 @@ const useNotifications = () => {
 
   useEffect(() => {
     if (isSurveysAppActivated) {
-      const eventSource = new EventSource(`${window.location.origin}/edu-api/surveys/sse?token=${eduApiToken}`);
+      const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.SURVEYS}/sse?token=${eduApiToken}`);
 
       eventSource.onmessage = () => {
         void updateOpenSurveys();

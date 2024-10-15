@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable, Logger, MessageEvent } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, MessageEvent } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -14,24 +14,17 @@ import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
-import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import JWTUser from '../types/JWTUser';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
 
-interface SseEvent {
+type SseEvent = {
   username: string;
   data: {
     message: string;
   };
-}
-
-type GroupWithMembers = {
-  id: string;
-  name: string;
-  path: string;
-  members: GroupMemberDto[];
 };
 
 @Injectable()
@@ -102,21 +95,22 @@ class ConferencesService {
     this.BBB_SECRET = appConfig.options.apiKey;
   }
 
-  async getInvitedMembers(createConferenceDto: CreateConferenceDto): Promise<string[]> {
+  async getInvitedMembers(createConferenceDto: CreateConferenceDto | Conference): Promise<string[]> {
     const usersInGroups = await Promise.all(
       createConferenceDto.invitedGroups.map(async (group) => {
-        const groupWithMembers = (await this.cacheManager.get(
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
           `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-        )) as GroupWithMembers;
-        Logger.log(groupWithMembers, Conference.name);
-        const members = groupWithMembers?.members;
-        Logger.log(groupWithMembers, Conference.name);
-        const users = members?.map((member) => member.username);
-        return users;
+        );
+
+        return groupWithMembers?.members?.map((member) => member.username) || [];
       }),
     );
 
-    return usersInGroups.flat();
+    const invitedMembersList = Array.from(
+      new Set([...createConferenceDto.invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]),
+    );
+
+    return invitedMembersList;
   }
 
   async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
@@ -141,11 +135,8 @@ class ConferencesService {
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
-      const invitedGroups = await this.getInvitedMembers(createConferenceDto);
-      const allUsers = [...createConferenceDto.invitedAttendees.map((attendee) => attendee.username), ...invitedGroups];
-
-      const sanitizedUsers = Array.from(new Set(allUsers));
-      this.sendEventToUsers(sanitizedUsers);
+      const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
+      this.sendEventToUsers(invitedMembersList);
     }
   }
 
@@ -176,7 +167,8 @@ class ConferencesService {
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
-      this.sendEventToUsers(conference.invitedAttendees.map((attendee) => attendee.username));
+      const invitedMembersList = await this.getInvitedMembers(conference);
+      this.sendEventToUsers(invitedMembersList);
     }
   }
 
@@ -194,7 +186,8 @@ class ConferencesService {
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
-      this.sendEventToUsers(conference.invitedAttendees.map((attendee) => attendee.username));
+      const invitedMembersList = await this.getInvitedMembers(conference);
+      this.sendEventToUsers(invitedMembersList);
     }
   }
 

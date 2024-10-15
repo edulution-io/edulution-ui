@@ -49,6 +49,7 @@ const mockJWTUser: JWTUser = {
 const mockConferenceDocument: ConferenceDocument = {
   name: mockConference.name,
   invitedAttendees: [],
+  invitedGroups: [],
   creator: mockCreator,
   meetingID: 'mockMeetingId',
   isRunning: false,
