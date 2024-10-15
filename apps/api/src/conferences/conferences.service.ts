@@ -129,7 +129,7 @@ class ConferencesService {
     try {
       return await this.conferenceModel.create(newConference);
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(ConferencesErrorMessage.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
       SseService.sendEventToUsers(invitedMembersList, 'created', conferencesSseConnections);
@@ -214,7 +214,7 @@ class ConferencesService {
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY);
     }
   }
 
