@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Response } from 'express';
 import SseEvent from '@libs/common/types/sseEvent';
 import type UserConnections from '../types/userConnections';
 
@@ -8,10 +9,16 @@ type SseStatus = 'created' | 'updated' | 'started' | 'stopped' | 'deleted';
 
 @Injectable()
 class SseService {
-  static subscribe(username: string, userConnections: UserConnections): Observable<MessageEvent> {
+  static subscribe(username: string, userConnections: UserConnections, res: Response): Observable<MessageEvent> {
+    const subject = new Subject<SseEvent>();
     if (!userConnections.has(username)) {
-      userConnections.set(username, new Subject<SseEvent>());
+      userConnections.set(username, subject);
     }
+
+    res.on('close', () => {
+      userConnections.delete(username);
+      subject.complete();
+    });
 
     const userConnection = userConnections.get(username);
     if (userConnection) {

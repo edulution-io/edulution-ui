@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageEvent } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageEvent, Res } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { Response } from 'express';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -70,8 +71,8 @@ class SurveysController {
   }
 
   @Sse('sse')
-  sse(@GetCurrentUsername() username: string): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.surveysSseConnections);
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.surveysSseConnections, res);
   }
 }
 

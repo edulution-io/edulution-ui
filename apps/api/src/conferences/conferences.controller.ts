@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Sse, MessageEvent } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Sse, MessageEvent, Res } from '@nestjs/common';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { Response } from 'express';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
@@ -57,8 +58,8 @@ class ConferencesController {
   }
 
   @Sse('sse')
-  sse(@GetCurrentUsername() username: string): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.conferencesSseConnections);
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.conferencesSseConnections, res);
   }
 }
 
