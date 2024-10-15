@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, MessageEvent } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
-import SseEvent from '@libs/common/types/sseEvent';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import type SseStatus from '@libs/common/types/sseMessageType';
 import type UserConnections from '../types/userConnections';
-
-type SseStatus = 'created' | 'updated' | 'started' | 'stopped' | 'deleted';
+import type SseEvent from '../types/sseEvent';
+import type SseEventData from '../types/sseEventData';
 
 @Injectable()
 class SseService {
@@ -22,29 +23,37 @@ class SseService {
 
     const userConnection = userConnections.get(username);
     if (userConnection) {
-      return userConnection.pipe(map((event: SseEvent) => ({ data: event.data }) as MessageEvent));
+      return userConnection.pipe(map((event: SseEvent) => ({ data: event.data, type: event.type }) as MessageEvent));
     }
     throw new Error(`User connection for ${username} is undefined.`);
   }
 
-  static sendEventToUser(username: string, status: SseStatus, userConnections: UserConnections) {
+  static sendEventToUser(
+    username: string,
+    userConnections: UserConnections,
+    data: SseEventData,
+    type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE,
+  ) {
     const userStream = userConnections.get(username);
     if (userStream) {
-      userStream.next({ username, data: { message: status } });
+      userStream.next({ username, type, data });
     }
   }
 
-  static sendEventToUsers(attendees: string[], status: SseStatus, userConnections: UserConnections) {
-    attendees.forEach((username) => SseService.sendEventToUser(username, status, userConnections));
+  static sendEventToUsers(attendees: string[], userConnections: UserConnections, data: SseEventData, type: SseStatus) {
+    attendees.forEach((username) => SseService.sendEventToUser(username, userConnections, data, type));
   }
 
-  static informAllUsers(status: SseStatus, userConnections: UserConnections): void {
+  static informAllUsers(
+    userConnections: UserConnections,
+    data: SseEventData,
+    type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE,
+  ): void {
     userConnections.forEach((subject, username) => {
       subject.next({
         username,
-        data: {
-          message: status,
-        },
+        type,
+        data,
       });
     });
   }

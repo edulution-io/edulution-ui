@@ -9,6 +9,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Survey, SurveyDocument } from './survey.schema';
 import type UserConnections from '../types/userConnections';
 import SseService from '../sse/sse.service';
@@ -35,7 +36,7 @@ class SurveysService {
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
-      SseService.informAllUsers('deleted', surveysSseConnections);
+      SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
     }
   }
 
@@ -53,9 +54,9 @@ class SurveysService {
     } finally {
       if (!survey.isPublic) {
         const invitedMembersList = await this.getInvitedMembers(survey);
-        SseService.sendEventToUsers(invitedMembersList, 'updated', surveysSseConnections);
+        SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
       } else {
-        SseService.informAllUsers('updated', surveysSseConnections);
+        SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
       }
     }
   }
@@ -68,9 +69,9 @@ class SurveysService {
     } finally {
       if (!survey.isPublic) {
         const invitedMembersList = await this.getInvitedMembers(survey);
-        SseService.sendEventToUsers(invitedMembersList, 'updated', surveysSseConnections);
+        SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
       } else {
-        SseService.informAllUsers('created', surveysSseConnections);
+        SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
       }
     }
   }

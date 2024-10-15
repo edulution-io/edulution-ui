@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import SseEvent from '@libs/common/types/sseEvent';
+import SseEvent from './sseEvent';
 
 type UserConnections = Map<string, Subject<SseEvent>>;
 

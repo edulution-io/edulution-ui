@@ -14,6 +14,8 @@ import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '../types/JWTUser';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -78,7 +80,7 @@ class ConferencesService {
       return;
     }
 
-    const appConfig = await this.appConfigService.getAppConfigByName('conferences');
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
     if (!appConfig?.options.url || !appConfig.options.apiKey) {
       throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -132,7 +134,12 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
-      SseService.sendEventToUsers(invitedMembersList, 'created', conferencesSseConnections);
+      SseService.sendEventToUsers(
+        invitedMembersList,
+        conferencesSseConnections,
+        createConferenceDto,
+        SSE_MESSAGE_TYPE.CREATED,
+      );
     }
   }
 
@@ -164,7 +171,12 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
-      SseService.sendEventToUsers(invitedMembersList, 'started', conferencesSseConnections);
+      SseService.sendEventToUsers(
+        invitedMembersList,
+        conferencesSseConnections,
+        conference.meetingID,
+        SSE_MESSAGE_TYPE.STARTED,
+      );
     }
   }
 
@@ -183,7 +195,12 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
-      SseService.sendEventToUsers(invitedMembersList, 'stopped', conferencesSseConnections);
+      SseService.sendEventToUsers(
+        invitedMembersList,
+        conferencesSseConnections,
+        conference.meetingID,
+        SSE_MESSAGE_TYPE.STOPPED,
+      );
     }
   }
 
@@ -259,7 +276,7 @@ class ConferencesService {
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
     } finally {
-      SseService.informAllUsers('deleted', conferencesSseConnections);
+      SseService.informAllUsers(conferencesSseConnections, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
     }
   }
 
