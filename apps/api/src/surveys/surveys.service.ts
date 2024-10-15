@@ -51,8 +51,12 @@ class SurveysService {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
-      const invitedMembersList = await this.getInvitedMembers(survey);
-      SseService.sendEventToUsers(invitedMembersList, 'updated', surveysSseConnections);
+      if (!survey.isPublic) {
+        const invitedMembersList = await this.getInvitedMembers(survey);
+        SseService.sendEventToUsers(invitedMembersList, 'updated', surveysSseConnections);
+      } else {
+        SseService.informAllUsers('updated', surveysSseConnections);
+      }
     }
   }
 
@@ -62,8 +66,12 @@ class SurveysService {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
-      const invitedMembersList = await this.getInvitedMembers(survey);
-      SseService.sendEventToUsers(invitedMembersList, 'created', surveysSseConnections);
+      if (!survey.isPublic) {
+        const invitedMembersList = await this.getInvitedMembers(survey);
+        SseService.sendEventToUsers(invitedMembersList, 'updated', surveysSseConnections);
+      } else {
+        SseService.informAllUsers('created', surveysSseConnections);
+      }
     }
   }
 
