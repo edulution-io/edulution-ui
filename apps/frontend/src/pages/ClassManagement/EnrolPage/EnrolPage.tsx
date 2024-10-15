@@ -64,12 +64,15 @@ const EnrolPage: React.FC = () => {
 
   return (
     <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto scrollbar-thin">
-      <Input
-        name="filter"
-        onChange={(e) => setFilterKeyWord(e.target.value)}
-        placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
-      />
+      <div className="sticky top-0 z-10 bg-black pb-2">
+        {' '}
+        <Input
+          name="filter"
+          onChange={(e) => setFilterKeyWord(e.target.value)}
+          placeholder={t('classmanagement.typeToFilter')}
+          variant="lightGray"
+        />
+      </div>
       <div className="mt-2 text-lg">{t('classmanagement.enrolPageDescription')}</div>
       <LoadingIndicator isOpen={isLoading} />
       {groupRows.map((row) => (
