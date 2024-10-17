@@ -101,7 +101,7 @@ const LoginPage: React.FC = () => {
     const registerUser = async () => {
       await handleRegisterUser();
       if (!lmnApiToken) {
-        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
+        await setLmnApiToken((form.getValues('username') as string).trim(), form.getValues('password') as string);
       }
       setLoginComplete(true);
     };
@@ -120,7 +120,7 @@ const LoginPage: React.FC = () => {
   }, [loginComplete]);
 
   const handleCheckMfaStatus = async () => {
-    const isMfaEnabled = await getTotpStatus(form.getValues('username') as string);
+    const isMfaEnabled = await getTotpStatus((form.getValues('username') as string).trim());
     if (!isMfaEnabled) {
       await form.handleSubmit(onSubmit)();
     } else {
