@@ -349,8 +349,8 @@
         "description": "Here, you find the surveys you were invited to participate."
       },
       "created": {
-        "menu": "Owned Surveys",
-        "title": "Owned Surveys",
+        "menu": "Own Surveys",
+        "title": "Own Surveys",
         "description": "Here, you find the surveys that you have created by yourself."
       },
       "answered": {
