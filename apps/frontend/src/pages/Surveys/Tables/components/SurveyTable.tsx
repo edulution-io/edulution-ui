@@ -60,19 +60,19 @@ const SurveyTable = (props: SurveyTableProps) => {
               />
             </TableCell>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            <TableCell className="text-white">{surveyObj?.title || t('common.not-available')}</TableCell>
-            <TableCell className="text-white">
+            <TableCell className="text-background">{surveyObj?.title || t('common.not-available')}</TableCell>
+            <TableCell className="text-background">
               {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
             </TableCell>
-            <TableCell className="text-white">
+            <TableCell className="text-background">
               {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
             </TableCell>
-            <TableCell className="text-white">
-              {survey?.invitedAttendees && survey?.participatedAttendees
+            <TableCell className="text-background">
+              {survey?.invitedAttendees && survey?.participatedAttendees && survey.isPublic !== true
                 ? `${survey?.participatedAttendees.length || 0}/${survey?.invitedAttendees.length || 0}`
-                : t('common.not-available')}
+                : survey.answers.length}
             </TableCell>
-            <TableCell className="text-white">
+            <TableCell className="text-background">
               {survey?.canSubmitMultipleAnswers ? t('common.yes') : t('common.no')}
             </TableCell>
           </TableRow>
@@ -86,7 +86,7 @@ const SurveyTable = (props: SurveyTableProps) => {
       <h4>{title}</h4>
       <Table>
         <TableHeader>
-          <TableRow className="text-white">
+          <TableRow className="text-background">
             <TableHead
               key="tableHead-checkbox"
               className="w-20px"
@@ -103,7 +103,7 @@ const SurveyTable = (props: SurveyTableProps) => {
             <TableRow>
               <TableCell
                 colSpan={SURVEY_TABLE_HEADERS.length + 1} // +1 for the checkbox column
-                className="h-24 text-center text-white"
+                className="h-24 text-center text-background"
               >
                 {t('table.noDataAvailable')}
               </TableCell>

@@ -1,28 +1,67 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CardContent, Card } from '@/components/shared/Card';
-import Separator from '@/components/ui/Separator';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import useUserStore from '@/store/UserStore/UserStore';
+import { useTranslation } from 'react-i18next';
+import { type QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 
-const Quota = () => (
-  <Card variant="security">
-    <CardContent>
-      <div className="flex flex-col gap-1">
-        <h4 className="text-md font-bold">QUOTAS</h4>
+const Quota: React.FC = () => {
+  const { t } = useTranslation();
+  const { user: lmnUser, usersQuota, fetchUsersQuota } = useLmnApiStore();
+  const { user } = useUserStore();
 
-        <p>sgm</p>
-        <Separator className="my-1 bg-ciGrey" />
-        <div color="white">
-          <p>0.1 MiB / 2506 MiB</p>
-          <p>linuxmuster-global</p>
+  useEffect(() => {
+    if (usersQuota === null) {
+      void fetchUsersQuota(user?.username || '');
+    }
+  }, [user]);
+
+  const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
+  const quotaUsed = quota?.used || '--';
+  const quotaHardLimit = quota?.hard_limit || '--';
+  const mailQuota = lmnUser?.sophomorixMailQuotaCalculated?.[0] || '--';
+  const percentageUsed = quota ? (quota.used / quota.hard_limit) * 100 : 0;
+
+  const getSeparatorColor = () => {
+    if (percentageUsed <= 75) {
+      return 'bg-ciLightGreen';
+    }
+    if (percentageUsed <= 90) {
+      return 'bg-yellow-500';
+    }
+    return 'bg-ciRed';
+  };
+
+  return (
+    <Card variant="security">
+      <CardContent>
+        <div className="flex flex-col gap-1">
+          <h4 className="text-md font-bold">{t('dashboard.quota.title')}</h4>
+
+          <p>{lmnUser?.school}</p>
+          <div className="relative my-1 h-1 w-full bg-gray-300">
+            <div
+              className={`absolute left-0 top-0 h-1 ${getSeparatorColor()}`}
+              style={{ width: `${percentageUsed}%` }}
+            />
+          </div>
+          <div color="white">
+            <p>
+              {quotaUsed} / {quotaHardLimit} {t('dashboard.quota.mibibyte')}
+            </p>
+          </div>
+          <div color="white">
+            <p className="font-bold">
+              {t('dashboard.quota.globalQuota')}: {quotaHardLimit} {t('dashboard.quota.mibibyte')}
+            </p>
+            <p className="font-bold">
+              {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
+            </p>
+          </div>
         </div>
-        <Separator className="my-1 bg-ciGrey" />
-        <div color="white">
-          <p>0 MiB / 2006 MiB</p>
-          <p className="font-bold">Cloudquota berechnet in MB: 2506 MB</p>
-          <p className="font-bold">Mailquota berechnet in MB: 5120 MB</p>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 export default Quota;

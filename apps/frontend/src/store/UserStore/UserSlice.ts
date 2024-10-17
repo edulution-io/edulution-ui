@@ -1,20 +1,14 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
-import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 import delay from '@/lib/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';
-import CryptoJS from 'crypto-js';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { getDecryptedPassword } from '@libs/common/utils';
-import { EDU_API_USER_INFO_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
-import processLdapGroups from '@libs/user/utils/processLdapGroups';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
+import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
 
 const initialState = {
-  webdavKey: '',
   isAuthenticated: false,
   isPreparingLogout: false,
   eduApiToken: '',
@@ -23,17 +17,27 @@ const initialState = {
   userIsLoading: false,
   searchError: null,
   searchIsLoading: false,
+  encryptKey: '',
 };
-
-const WEBDAV_SECRET = import.meta.env.VITE_WEBDAV_KEY as string;
 
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
   ...initialState,
 
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
-  setWebdavKey: (password: string) => set({ webdavKey: CryptoJS.AES.encrypt(password, WEBDAV_SECRET).toString() }),
-  getWebdavKey: () => getDecryptedPassword(get().webdavKey, WEBDAV_SECRET),
+
+  getWebdavKey: async () => {
+    set({ userIsLoading: true });
+    try {
+      const { data } = await eduApi.get<string>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}/key`);
+      return atob(data);
+    } catch (error) {
+      handleApiError(error, set, 'userError');
+      return '';
+    } finally {
+      set({ userIsLoading: false });
+    }
+  },
 
   logout: async () => {
     set({ isPreparingLogout: true });
@@ -41,30 +45,15 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ isAuthenticated: false });
   },
 
-  fetchUserAndUpdateInDatabase: async () => {
+  createOrUpdateUser: async (user: UserDto) => {
     set({ userIsLoading: true });
     try {
-      const response = await eduApi.get<JwtUser>(EDU_API_USER_INFO_ENDPOINT);
-      const newUser = {
-        username: response.data.preferred_username,
-        email: response.data.email,
-        ldapGroups: processLdapGroups(response.data.ldapGroups),
-      };
-      await get().updateUser(newUser);
-      set({ user: { ...get().user, ...newUser } as UserDto });
+      const { data } = await eduApi.post<UserDto>(EDU_API_USERS_ENDPOINT, user);
+      set({ user: data });
+      return data;
     } catch (error) {
       handleApiError(error, set, 'userError');
-    } finally {
-      set({ isAuthenticated: true, userIsLoading: false });
-    }
-  },
-
-  createOrUpdateUser: async (user: UserDto) => {
-    set({ userIsLoading: true, user });
-    try {
-      await eduApi.post<UserDto>(EDU_API_USERS_ENDPOINT, user);
-    } catch (error) {
-      handleApiError(error, set, 'userError');
+      return undefined;
     } finally {
       set({ isAuthenticated: true, userIsLoading: false });
     }
@@ -73,8 +62,8 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   getUser: async () => {
     set({ userIsLoading: true });
     try {
-      const response = await eduApi.get<UserDto>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}`);
-      set({ user: response.data });
+      const { data } = await eduApi.get<UserDto>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}`);
+      set({ user: { ...data } });
     } catch (e) {
       handleApiError(e, set, 'userError');
     } finally {
@@ -96,7 +85,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
   searchAttendees: async (searchParam) => {
     set({ searchError: null, searchIsLoading: true });
     try {
-      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}${searchParam}`);
+      const response = await eduApi.get<AttendeeDto[]>(`${EDU_API_USERS_SEARCH_ENDPOINT}/${searchParam}`);
 
       if (!Array.isArray(response.data)) {
         return [];

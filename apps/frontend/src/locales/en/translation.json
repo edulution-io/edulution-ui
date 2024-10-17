@@ -17,6 +17,12 @@
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
       "downloadApp": "Download the edulution-io app here:"
+    },
+    "quota": {
+      "title": "Quotas",
+      "globalQuota": "Cloud quota calculated",
+      "mailQuota": "Mail quota calculated",
+      "mibibyte": "MiB"
     }
   },
   "auth": {
@@ -24,7 +30,9 @@
       "TokenExpired": "Session expired.",
       "SessionExpiring": "You will be logged off in less than a minute.",
       "Unauthorized": "You are not authorized.",
-      "Unknown": "User not found."
+      "Unknown": "User not found.",
+      "TotpMissing": "Totp missing.",
+      "TotpInvalid": "Totp invalid."
     }
   },
   "lmnApi": {
@@ -53,7 +61,8 @@
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
       "GetProjectFailed": "Get project failed",
       "PasswordMismatch": "The current password is wrong",
-      "PasswordChangeFailed": "Password change failed"
+      "PasswordChangeFailed": "Password change failed",
+      "GetUsersQuotaFailed": "Get users quota failed"
     }
   },
   "ticketsystem": {
@@ -134,8 +143,9 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference exists",
-    "noMails": "No unread mail exists"
+    "noConferences": "No running conference",
+    "noMails": "No unread mail",
+    "noSurveys": "No open survey"
   },
   "filesharing": {
     "title": "FILE SHARING",
@@ -158,7 +168,11 @@
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
       "DeleteFromServerFailed": "Delete from server failed",
-      "SaveFailed": "Save failed"
+      "SaveFailed": "Save failed",
+      "DuplicateFailed": "Copy failed",
+      "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
+      "CollectingFailed": "Collecting files failed",
+      "SharingFailed": "Sharing files failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -221,7 +235,7 @@
     "member": "Member",
     "noneAvailable": "None available",
     "isJoinable": "Users can join",
-    "joinClass": "Join class to share files",
+    "joinclass": "Join class to share files",
     "hide": "Hide for other users",
     "teacher": "Teacher",
     "typeToSearchUsersGroupsProjects": "Type to add students, classes or projects",
@@ -233,7 +247,7 @@
     "internet": "Internet",
     "noStudentsForAction": "There are no students to whom this action can be applied.",
     "wifi": "Wifi",
-    "examMode": "Exam mode",
+    "exammode": "Exam mode",
     "exam": "Exam",
     "printPasswordsPageDescription": "Create files to print the passwords of individual classes or select classes to print several at the same time.",
     "userPasswordDialogTitle": "Password of {{displayName}}",
@@ -247,26 +261,26 @@
     "projectsPageDescription": "Here you will find an overview of all projects in which you are an admin.",
     "typeToFilter": "Type to filter...",
     "systemName": "System name",
-    "proxyAddresses": "Proxy Addresses (comma separated)",
     "printing": "Printing",
     "veyon": "Veyon",
     "enable": "enable",
     "disable": "disable",
     "featureIsStillInDevelopment": "The feature is still under development and will be implemented in the next version.",
     "collect": "Collect",
-    "showCollectedFiles": "Show files",
+    "CollectFilesDescription": "Here you will collect all files.",
+    "showcollectedfiles": "Show files",
     "share": "Hand out",
-    "examDescription": "Toggle the exam mode for {{count}} students",
+    "exammodeDescription": "Toggle the exam mode for {{count}} students",
     "wifiDescription": "Toggle the Wifi for {{count}} students",
     "webfilterDescription": "Toggle the webfilter for {{count}} students",
     "internetDescription": "Toggle the internet for {{count}} students",
     "printingDescription": "Toggle the printing for {{count}} students",
     "collectDescription": "Collect the files for {{count}} students",
     "shareDescription": "Share the files with {{count}} students",
-    "showCollectedFilesDescription": "Show the collected files of {{count}} students",
+    "showcollectedfilesDescription": "Show the collected files of {{count}} students",
     "deactivate": "Deactivate",
     "activate": "Activate",
-    "passwordOptions": "Password options",
+    "passwordoptions": "Password options",
     "createFile": "file creation",
     "pdf": "PDF",
     "csv": "CSV",
@@ -281,13 +295,16 @@
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
   },
   "select": "Select",
+  "selectAll": "Select all",
   "details": "Details",
   "quickAccess": "Quick access",
   "options": "Options",
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "created": "Created",
     "creationDate": "Creation date",
+    "expires": "Expires",
     "expirationDate": "Expiration date",
     "notFound": "Survey not found",
     "noFormula": "The formula of the survey is not readable",
@@ -459,7 +476,13 @@
     "errors": {
       "WriteAppConfigFailed": "Save app failed",
       "ReadAppConfigFailed": "Read app failed",
-      "DisableAppConfigFailed": "Disable app failed"
+      "DisableAppConfigFailed": "Disable app failed",
+      "WriteTraefikConfigFailed": "Write traefik config failed",
+      "ReadTraefikConfigFailed": "Read traefik config failed"
+    },
+    "yamleditor": {
+      "invalidYaml": "Wrong YAML syntax",
+      "placeholder": "Enter your Traefik config here"
     }
   },
   "usersettings": {
@@ -509,6 +532,7 @@
   "iso": "ISO",
   "program": "Programs",
   "share": "Share",
+  "teacher": "Teacher",
   "student": "Student",
   "students": "Students",
   "user": "User",
@@ -577,7 +601,8 @@
     "participated": "Participated",
     "not-available": "'Not available'",
     "date": "Date",
-    "time": "Time"
+    "time": "Time",
+    "revert": "Zurücksetzen"
   },
   "form": {
     "path": "Path",
@@ -590,7 +615,13 @@
     "url": "URL",
     "urlDescription": "Please insert an URL to the application",
     "apiKey": "API Key",
-    "apiKeyDescription": "The API Key will be used for authentication"
+    "apiKeyDescription": "The API Key will be used for authentication",
+    "proxyConfig": "Proxy Configuration",
+    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
+    "expertMode": "Expert mode",
+    "proxyPath": "Proxy path",
+    "proxyDestination": "Proxy destination",
+    "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
@@ -684,7 +715,7 @@
     "moveTo": "Move to",
     "move": "Move",
     "unknownErrorOccurred": "An unknown error occurred",
-    "selectedItem": "Ausgewählter Ordner"
+    "selectedItem": "selected item"
   },
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
@@ -788,7 +819,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free Community Edition of edulution. This version does not receive any support."
+      "description": "Free community edition of edulution.io UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
     }
   },
   "preview": {

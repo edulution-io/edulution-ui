@@ -9,7 +9,7 @@ import { NavLink } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { Card } from '@/components/shared/Card';
-import { EDU_APP_APPSTORE_URL } from '@libs/common/contants';
+import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
 
 type MobileFileAccessSetupDialogProps = {
   isOpen: boolean;
@@ -79,7 +79,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         type="button"
         variant="btn-outline"
         onClick={() => setIsStepOne(!isStepOne)}
-        className={`absolute top-1/2 ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
+        className={`absolute top-1/2 text-foreground ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
       >
         {isStepOne ? <MdArrowForwardIos /> : <MdArrowBackIosNew />}
       </Button>

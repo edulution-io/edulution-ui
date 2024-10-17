@@ -1,13 +1,18 @@
 import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { LMN_API_EDU_API_ENDPOINT } from '@libs/lmnApi/types/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
 
-@Controller(LMN_API_EDU_API_ENDPOINT)
+const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
+
+@ApiTags(ROOT)
+@ApiBearerAuth()
+@Controller(ROOT)
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
@@ -129,6 +134,11 @@ export class LmnApiController {
   @Get('user/:username')
   async getUser(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
     return this.lmnApiService.getUser(lmnApiToken, params.username);
+  }
+
+  @Get(`user/:username/${USERS_QUOTA}`)
+  async getUsersQuota(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
+    return this.lmnApiService.getUsersQuota(lmnApiToken, params.username);
   }
 
   @Get('search')

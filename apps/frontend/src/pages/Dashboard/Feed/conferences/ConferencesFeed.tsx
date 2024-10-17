@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConferencesIcon } from '@/assets/icons';
-import { APPS } from '@libs/appconfig/types';
-import RunningConferencesList from '@/pages/Dashboard/Feed/conferences/RunningConferencesList';
+import APPS from '@libs/appconfig/constants/apps';
+import ConferencesList from '@/pages/Dashboard/Feed/conferences/ConferencesList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
-import useIsConferenceActive from '@/pages/Dashboard/Feed/conferences/useIsConferenceActive';
+import useIsConferenceActive from '@/pages/ConferencePage/useIsConferenceActive';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { AccordionContent, AccordionItem } from '@/components/ui/AccordionSH';
 
@@ -25,14 +25,14 @@ const ConferencesFeed = () => {
         alt={`${APPS.CONFERENCES}-notification-icon`}
         labelTranslationId="conferences.sidebar"
       />
-      <AccordionContent>
+      <AccordionContent className="pb-2">
         {runningConferences.length > 0 ? (
-          <RunningConferencesList
+          <ConferencesList
             items={runningConferences}
-            className="mb-6 mt-2"
+            className="my-2"
           />
         ) : (
-          <div className="mb-6 mt-2 text-center">{t('feed.noConferences')}</div>
+          <span className="my-2 text-center text-sm">{t('feed.noConferences')}</span>
         )}
       </AccordionContent>
     </AccordionItem>

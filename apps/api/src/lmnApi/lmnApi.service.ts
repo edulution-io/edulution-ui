@@ -11,7 +11,8 @@ import {
   SESSIONS_LMN_API_ENDPOINT,
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
-} from '@libs/lmnApi/types/lmnApiEndpoints';
+  QUOTAS_LMN_API_ENDPOINT,
+} from '@libs/lmnApi/constants/lmnApiEndpoints';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -26,6 +27,7 @@ import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import UsersService from '../users/users.service';
 
 @Injectable()
@@ -321,6 +323,19 @@ class LmnApiService {
     }
   }
 
+  public async getUsersQuota(lmnApiToken: string, username: string): Promise<QuotaResponse> {
+    try {
+      const response = await this.enqueue<QuotaResponse>(() =>
+        this.lmnApi.get<QuotaResponse>(`${USERS_LMN_API_ENDPOINT}/${username}/${QUOTAS_LMN_API_ENDPOINT}`, {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        }),
+      );
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(LmnApiErrorMessage.GetUsersQuotaFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+    }
+  }
+
   public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<UserLmnInfo> {
     try {
       const response = await this.enqueue<UserLmnInfo>(() =>
@@ -358,7 +373,6 @@ class LmnApiService {
   private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
     admins: Array.from(new Set([...formValues.admins])),
     displayName: formValues.displayName,
-    proxyAddresses: formValues.proxyAddresses.split(','),
     admingroups: formValues.admingroups,
     description: formValues.description,
     join: formValues.join,

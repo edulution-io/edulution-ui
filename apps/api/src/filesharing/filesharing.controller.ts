@@ -23,10 +23,15 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
 
+@ApiTags(FileSharingApiEndpoints.BASE)
+@ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   constructor(private readonly filesharingService: FilesharingService) {}
@@ -122,9 +127,27 @@ class FilesharingController {
     return this.filesharingService.getOnlyOfficeToken(payload);
   }
 
+  @Post(FileSharingApiEndpoints.DUPLICATE)
+  async duplicateFile(
+    @Body() duplicateFileRequestDto: DuplicateFileRequestDto,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+  }
+
+  @Post(FileSharingApiEndpoints.COLLECT)
+  async collectFiles(
+    @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
+    @Query('userRole') userRole: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    const { collectFileRequestDTO } = body;
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole);
+  }
+
   @Public()
   @Post('callback')
-  handleCallback(
+  async handleCallback(
     @Req() req: Request,
     @Res() res: Response,
     @Query('path') path: string,
@@ -133,12 +156,14 @@ class FilesharingController {
   ) {
     try {
       const { status } = req.body as OnlyOfficeCallbackData;
+
       if (status === 1) {
-        return res.status(HttpStatus.OK).send();
+        return res.status(HttpStatus.OK).json({ error: 0 });
       }
-      return this.filesharingService.handleCallback(req, path, filename, eduToken);
+
+      return await this.filesharingService.handleCallback(req, res, path, filename, eduToken);
     } catch (error) {
-      return res.status(HttpStatus.BAD_REQUEST).send({ error: 1 });
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
   }
 }

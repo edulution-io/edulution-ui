@@ -19,6 +19,7 @@
 .AppleDouble
 .LSOverride
 
+
 # Icon must end with two \r
 Icon
 
@@ -364,3 +365,10 @@ $RECYCLE.BIN/
 *.crt
 *.key
 *.pem
+
+
+#swagger
+/swagger-spec.json
+
+# Traefik config
+traefik

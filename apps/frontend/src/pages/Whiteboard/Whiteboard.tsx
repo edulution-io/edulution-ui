@@ -2,7 +2,7 @@ import React from 'react';
 import { Excalidraw, THEME } from '@excalidraw/excalidraw';
 import cn from '@/lib/utils';
 import useFrameStore from '@/components/framing/FrameStore';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 
 const Whiteboard = () => {
   const { activeFrame } = useFrameStore();

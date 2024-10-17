@@ -2,13 +2,7 @@ import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import {
-  LMN_API_EDU_API_PROJECT_ENDPOINT,
-  LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT,
-  LMN_API_EXAM_MODE_EDU_API_ENDPOINT,
-  LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
-  LMN_API_PRINTERS_EDU_API_ENDPOINT,
-} from '@libs/lmnApi/types/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LessonStore from '@libs/classManagement/types/store/lessonStore';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
@@ -17,6 +11,11 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+
+const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
 const initialState = {
   isLoading: false,
@@ -47,7 +46,7 @@ const useLessonStore = create<LessonStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           await eduApi.post(
-            LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT,
+            MANAGEMENT_GROUPS,
             {
               group,
               users,
@@ -63,11 +62,41 @@ const useLessonStore = create<LessonStore>(
         }
       },
 
+      shareFiles: async (duplicateFileRequestDto: DuplicateFileRequestDto) => {
+        set({ error: null, isLoading: true });
+        try {
+          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.DUPLICATE}`, {
+            originFilePath: decodeURIComponent(duplicateFileRequestDto.originFilePath),
+            destinationFilePaths: duplicateFileRequestDto.destinationFilePaths.map((destinationFilePath) =>
+              decodeURIComponent(destinationFilePath),
+            ),
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      collectFiles: async (collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) => {
+        set({ error: null, isLoading: true });
+        const queryParamString = `?userRole=${encodeURIComponent(userRole)}`;
+        try {
+          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
+            collectFileRequestDTO,
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
       removeManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.delete(LMN_API_MANAGEMENT_GROUPS_EDU_API_ENDPOINT, {
+          await eduApi.delete(MANAGEMENT_GROUPS, {
             data: {
               group,
               users,
@@ -86,7 +115,7 @@ const useLessonStore = create<LessonStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           await eduApi.put<LmnApiSession>(
-            `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/start`,
+            `${EXAM_MODE}/start`,
             {
               users,
             },
@@ -106,7 +135,7 @@ const useLessonStore = create<LessonStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           await eduApi.put<LmnApiSession>(
-            `${LMN_API_EXAM_MODE_EDU_API_ENDPOINT}/stop`,
+            `${EXAM_MODE}/stop`,
             {
               users,
               groupName,
@@ -128,13 +157,9 @@ const useLessonStore = create<LessonStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const param = isAlreadyJoined ? GroupJoinState.Quit : GroupJoinState.Join;
-          await eduApi.put<LmnApiSchoolClass>(
-            `${LMN_API_EDU_API_SCHOOL_CLASSES_ENDPOINT}/${schoolClass}/${param}`,
-            undefined,
-            {
-              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-            },
-          );
+          await eduApi.put<LmnApiSchoolClass>(`${SCHOOL_CLASSES}/${schoolClass}/${param}`, undefined, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -147,7 +172,7 @@ const useLessonStore = create<LessonStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const param = isAlreadyJoined ? GroupJoinState.Quit : GroupJoinState.Join;
-          await eduApi.put<LmnApiProject>(`${LMN_API_EDU_API_PROJECT_ENDPOINT}/${project}/${param}`, undefined, {
+          await eduApi.put<LmnApiProject>(`${PROJECT}/${project}/${param}`, undefined, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {
@@ -162,7 +187,7 @@ const useLessonStore = create<LessonStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const param = isAlreadyJoined ? GroupJoinState.Quit : GroupJoinState.Join;
-          await eduApi.put<LmnApiPrinter>(`${LMN_API_PRINTERS_EDU_API_ENDPOINT}/${printer}/${param}`, undefined, {
+          await eduApi.put<LmnApiPrinter>(`${PRINTERS}/${printer}/${param}`, undefined, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
         } catch (error) {

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import { getFromPathName } from '@libs/common/utils';
 import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
@@ -13,6 +13,7 @@ import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
+import type TApps from '@libs/appconfig/types/appsType';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -33,7 +34,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
     if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
 
-    switch (rootPathName as APPS) {
+    switch (rootPathName as TApps) {
       case APPS.FILE_SHARING: {
         return FILE_SHARING_MENUBAR_CONFIG;
       }

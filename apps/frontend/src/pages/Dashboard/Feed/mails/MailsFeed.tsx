@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
-import { APPS } from '@libs/appconfig/types';
+import APPS from '@libs/appconfig/constants/apps';
 import MailList from '@/pages/Dashboard/Feed/mails/MailList';
 import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
 import useMailsStore from '@/pages/Mail/useMailsStore';
@@ -26,14 +26,14 @@ const MailsFeed = () => {
         alt={`${APPS.MAIL}-notification-icon`}
         labelTranslationId="mail.sidebar"
       />
-      <AccordionContent>
+      <AccordionContent className="pb-2">
         {mails.length > 0 ? (
           <MailList
             items={mails}
-            className="mb-6 mt-2"
+            className="my-2"
           />
         ) : (
-          <div className="mb-6 mt-2 text-center">{t('feed.noMails')}</div>
+          <span className="my-2 text-center text-sm">{t('feed.noMails')}</span>
         )}
       </AccordionContent>
     </AccordionItem>

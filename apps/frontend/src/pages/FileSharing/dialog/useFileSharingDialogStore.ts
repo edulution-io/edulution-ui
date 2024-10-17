@@ -24,9 +24,9 @@ interface FileSharingDialogStore {
   isLoading: boolean;
   userInput: string;
   filesToUpload: File[];
-  moveItemsToPath: DirectoryFileDTO;
+  moveOrCopyItemToPath: DirectoryFileDTO;
   selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
-  setMoveItemsToPath: (item: DirectoryFileDTO) => void;
+  setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
   fileOperationStatus: boolean | undefined;
@@ -54,7 +54,7 @@ const initialState: Partial<FileSharingDialogStore> = {
   isLoading: false,
   error: null,
   userInput: '',
-  moveItemsToPath: {} as DirectoryFileDTO,
+  moveOrCopyItemToPath: {} as DirectoryFileDTO,
   selectedFileType: {} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey],
   filesToUpload: [],
   isSubmitButtonInActive: false,
@@ -72,7 +72,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
   setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
-  setMoveItemsToPath: (path) => set({ moveItemsToPath: path }),
+  setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),
   setSubmitButtonIsInActive: (isSubmitButtonInActive) => set({ isSubmitButtonInActive }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),
   setFileOperationResult: (success, message = t('unknownErrorOccurred'), status = 500) => {

@@ -58,20 +58,36 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  public getOpenSurveys = async (username: string): Promise<Survey[]> => {
+  async getOpenSurveys(username: string): Promise<Survey[]> {
+    const currentDate = new Date();
     const openSurveys = await this.surveyModel.find<Survey>({
-      $and: [
-        { 'invitedAttendees.username': username },
+      $or: [
         {
-          $or: [
-            { $nor: [{ participatedAttendees: { $elemMatch: { username } } }] },
-            { canSubmitMultipleAnswers: true },
+          $and: [
+            { isPublic: true },
+            {
+              $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+            },
+          ],
+        },
+        {
+          $and: [
+            { 'invitedAttendees.username': username },
+            {
+              $or: [
+                { $nor: [{ participatedAttendees: { $elemMatch: { username } } }] },
+                { canSubmitMultipleAnswers: true },
+              ],
+            },
+            {
+              $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+            },
           ],
         },
       ],
     });
-    return openSurveys || [];
-  };
+    return openSurveys;
+  }
 
   async getAnswers(username: string): Promise<SurveyAnswer[]> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ 'attendee.username': username });
