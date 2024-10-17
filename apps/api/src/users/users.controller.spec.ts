@@ -18,11 +18,11 @@ const mockUserModel = {
 const mockUsersService = {
   createOrUpdate: jest.fn(),
   create: jest.fn(),
-  findAll: jest.fn(),
   findOne: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
   searchUsersByName: jest.fn(),
+  getPassword: jest.fn(),
 };
 
 const mockLdapGroups: LdapGroups = {
@@ -70,16 +70,10 @@ describe(UsersController.name, () => {
         email: 'test@example.com',
         ldapGroups: mockLdapGroups,
         password: 'password',
+        encryptKey: 'encryptKey',
       };
       await controller.createOrUpdate(registerDto);
       expect(service.createOrUpdate).toHaveBeenCalledWith(registerDto);
-    });
-  });
-
-  describe('findAll', () => {
-    it('should call findAll method of usersService', async () => {
-      await controller.findAll();
-      expect(service.findAll).toHaveBeenCalled();
     });
   });
 
@@ -88,6 +82,16 @@ describe(UsersController.name, () => {
       const username = 'testuser';
       await controller.findOne(username);
       expect(service.findOne).toHaveBeenCalledWith(username);
+    });
+  });
+
+  describe('findOneKey', () => {
+    it('should call getPassword method of usersService with correct arguments', async () => {
+      jest.spyOn(service, 'getPassword').mockResolvedValue('password');
+      const username = 'testuser';
+      const currentUsername = 'testuser';
+      await controller.findOneKey(username, currentUsername);
+      expect(service.getPassword).toHaveBeenCalledWith(currentUsername);
     });
   });
 

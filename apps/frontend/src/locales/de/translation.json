@@ -17,6 +17,12 @@
       "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
       "downloadApp": "Lade hier die edulution-io App herunter:"
+    },
+    "quota": {
+      "title": "Quotas",
+      "globalQuota": "Cloudquota berechnet ",
+      "mailQuota": "Mailquota berechnet",
+      "mibibyte": "MiB"
     }
   },
   "auth": {
@@ -24,7 +30,9 @@
       "TokenExpired": "Sitzung abgelaufen.",
       "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
       "Unauthorized": "Du bist nicht autorisiert.",
-      "Unknown": "Nutzer nicht gefunden."
+      "Unknown": "Nutzer nicht gefunden.",
+      "TotpMissing": "Totp fehlt.",
+      "TotpInvalid": "Totp ungültig."
     }
   },
   "lmnApi": {
@@ -53,7 +61,8 @@
       "SearchUsersOrGroupsFailed": "Suche nach Benutzern oder Gruppen fehlgeschlagen",
       "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
-      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen"
+      "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
+      "GetUsersQuotaFailed": "Abrufen der Benutzerkontigente fehlgeschlagen."
     }
   },
   "ticketsystem": {
@@ -159,7 +168,10 @@
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
       "SaveFailed": "Speichern fehlgeschlagen",
-      "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
+      "DuplicateFailed": "Kopieren fehlgeschlagen",
+      "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
+      "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -223,7 +235,7 @@
     "member": "Mitglied",
     "noneAvailable": "Keine vorhanden",
     "isJoinable": "Nutzer können beitreten",
-    "joinClass": "Klasse betreten zum Dateien teilen",
+    "joinclass": "Klasse betreten zum Dateien teilen",
     "hide": "Anderen Nutzern nicht anzeigen",
     "typeToSearchUsersGroupsProjects": "Tippen um Schüler, Klassen oder Projekte hinzuzufügen",
     "typeToSearchUsersGroupsProjectsToNewSession": "Tippen um Schüler, Klassen oder Projekte zu einer neuen Sitzung hinzuzufügen",
@@ -235,7 +247,7 @@
     "noStudentsForAction": "Es gibt keine Schüler auf die diese Aktion angewendet werden kann.",
     "wifi": "Wifi",
     "teacher": "Lehrer",
-    "examMode": "Klassenarbeitsmodus",
+    "exammode": "Klassenarbeitsmodus",
     "exam": "Klassenarbeit",
     "printPasswordsPageDescription": "Erstelle Dateien um die Passwörter einzelner Klassen auszudrucken oder selektiere Klassen um gleichzeitig mehrere auszudrucken.",
     "userPasswordDialogTitle": "Passwort von {{displayName}}",
@@ -249,26 +261,26 @@
     "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
     "systemName": "Systemname",
-    "proxyAddresses": "Proxy Adressen (kommasepariert)",
     "printing": "Drucken",
     "veyon": "Veyon",
     "enable": "einschalten",
     "disable": "ausschalten",
     "featureIsStillInDevelopment": "Das Feature ist noch in der Entwicklung und wird in der nächsten Version implementiert werden.",
     "collect": "Einsammeln",
-    "showCollectedFiles": "Dateien anzeigen",
+    "CollectFilesDescription": "Hier werden alle Dateien der Schüler wieder eingesammelt.",
+    "showcollectedfiles": "Dateien anzeigen",
     "share": "Austeilen",
-    "examDescription": "Den Klassenarbeitsmodus für {{count}} Schüler umschalten",
+    "exammodeDescription": "Den Klassenarbeitsmodus für {{count}} Schüler umschalten",
     "wifiDescription": "Das Wifi für {{count}} Schüler umschalten",
     "webfilterDescription": "Den Webfilter für {{count}} Schüler umschalten",
     "internetDescription": "Das Internet für {{count}} Schüler umschalten",
     "printingDescription": "Das Drucken für {{count}} Schüler umschalten",
     "collectDescription": "Die Dateien von {{count}} Schüler einsammeln",
     "shareDescription": "Die Dateien an {{count}} Schüler austeilen",
-    "showCollectedFilesDescription": "Die Dateien von {{count}} Schüler anzeigen",
+    "showcollectedfilesDescription": "Die Dateien von {{count}} Schüler anzeigen",
     "deactivate": "Deaktivieren",
     "activate": "Aktivieren",
-    "passwordOptions": "Passwortoptionen",
+    "passwordoptions": "Passwortoptionen",
     "createFile": "Datei erstellen",
     "pdf": "PDF",
     "csv": "CSV",
@@ -283,6 +295,7 @@
     "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
   },
   "select": "Auswählen",
+  "selectAll": "Alle auswählen",
   "details": "Details",
   "quickAccess": "Schnellzugriff",
   "delete": "Löschen",
@@ -478,7 +491,13 @@
     "errors": {
       "WriteAppConfigFailed": "App speichern fehlgeschlagen",
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
-      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen"
+      "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
+      "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+    },
+    "yamleditor": {
+      "invalidYaml": "Ungültiger YAML Syntax",
+      "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
     }
   },
   "usersettings": {
@@ -596,7 +615,8 @@
     "participated": "Teilgenommen",
     "not-available": "'Nicht verfügbar'",
     "date": "Datum",
-    "time": "Uhrzeit"
+    "time": "Uhrzeit",
+    "revert": "Zurücksetzen"
   },
   "form": {
     "path": "Link",
@@ -609,7 +629,13 @@
     "url": "URL",
     "urlDescription": "Bitte eine URL zur Applikation eintragen",
     "apiKey": "API Schlüssel",
-    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet"
+    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
+    "proxyConfig": "Proxy-Konfiguration",
+    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
+    "expertMode": "Expertenmodus",
+    "proxyPath": "Proxy Pfad",
+    "proxyDestination": "Zielhost",
+    "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -703,7 +729,7 @@
     "moveTo": "Verschieben nach",
     "move": "Verschieben",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
-    "selectedItem": "Ausgewählter Ordner"
+    "selectedItem": "Ausgewähltes Element"
   },
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",
@@ -800,7 +826,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition von edulution. Diese Version erhält keinen Support."
+      "description": "Kostenlose Community Edition der edulution.io UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {

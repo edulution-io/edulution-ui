@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
@@ -7,13 +7,13 @@ import { useLocation } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { getFromPathName } from '@libs/common/utils';
+import APPS from '@libs/appconfig/constants/apps';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
   const menubarRef = useRef<HTMLDivElement>(null);
-
+  const { pathname, search } = useLocation();
   const menuBarEntries = useMenuBarConfig();
-  const { pathname } = useLocation();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobileView = useIsMobileView();
@@ -23,6 +23,34 @@ const MenuBar: React.FC = () => {
   if (menuBarEntries.disabled) {
     return null;
   }
+
+  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams(search);
+    return Array.from(params.entries()).map(([key, value]) => ({ key, value }));
+  }, [search]);
+
+  const shouldSelectFirstItem = useMemo(() => {
+    const globalCondition = pathParts.length === 2 && firstMenuBarItem === pathParts[1];
+    const fileSharingCondition =
+      pathParts.length === 1 && pathParts[0] === APPS.FILE_SHARING && queryParams.length !== 1;
+
+    return pathname === '/' || fileSharingCondition || globalCondition;
+  }, [pathParts, queryParams]);
+
+  useEffect(() => {
+    const matchedItem = menuBarEntries.menuItems.find((item) =>
+      queryParams.some((param) => item.id?.toLowerCase().includes(param.value.toLowerCase())),
+    );
+
+    if (shouldSelectFirstItem) {
+      setIsSelected(firstMenuBarItem);
+    } else if (matchedItem) {
+      setIsSelected(matchedItem.id);
+    }
+  }, [pathname, menuBarEntries.menuItems, queryParams, shouldSelectFirstItem]);
 
   const renderMenuBarContent = () => (
     <div
@@ -47,9 +75,9 @@ const MenuBar: React.FC = () => {
                 isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
               )}
               onClick={() => {
-                item.action();
                 setIsSelected(item.id);
                 toggle();
+                item.action();
               }}
             >
               <img

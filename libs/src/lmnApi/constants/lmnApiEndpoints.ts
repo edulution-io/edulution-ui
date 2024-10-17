@@ -1,0 +1,11 @@
+export const EXAM_MODE_LMN_API_ENDPOINT = 'exammode';
+export const MANAGEMENT_GROUPS_LMN_API_ENDPOINT = 'managementgroups';
+export const SCHOOL_CLASSES_LMN_API_ENDPOINT = 'schoolclasses';
+export const SESSIONS_LMN_API_ENDPOINT = 'sessions';
+export const USERS_LMN_API_ENDPOINT = 'users';
+export const USER_ROOM_LMN_API_ENDPOINT = 'samba/userInRoom';
+export const PROJECTS_LMN_API_ENDPOINT = 'projects';
+export const QUERY_LMN_API_ENDPOINT = 'query';
+export const PRINT_PASSWORDS_LMN_API_ENDPOINT = 'print-passwords/schoolclasses';
+export const PRINTERS_LMN_API_ENDPOINT = 'printers';
+export const QUOTAS_LMN_API_ENDPOINT = 'quotas';

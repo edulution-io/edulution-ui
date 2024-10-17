@@ -4,6 +4,7 @@ export default {
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
+    '^.+\\.svg$': 'jest-transform-stub',
   },
   collectCoverage: true,
   moduleFileExtensions: ['ts', 'js', 'html'],

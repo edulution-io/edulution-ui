@@ -9,18 +9,38 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import ContentType from '@libs/filesharing/types/contentType';
-import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 import useLmnApiStore from '@/store/useLmnApiStore';
 
-const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
+}
+
+const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
+  showAllFiles = false,
+  pathToFetch,
+  showSelectedFile = true,
+}) => {
   const { t } = useTranslation();
-  const [currentPath, setCurrentPath] = useState('');
-  const { setMoveItemsToPath, moveItemsToPath } = useFileSharingDialogStore();
-  const { fetchDirs, directorys } = useFileSharingStore();
+  const [currentPath, setCurrentPath] = useState(pathToFetch || '');
+  const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const { fetchDirs, fetchFiles, directorys, files } = useFileSharingStore();
   const { user } = useLmnApiStore();
 
   useEffect(() => {
-    void fetchDirs(currentPath);
+    if (showAllFiles && !pathToFetch) {
+      void fetchFiles(currentPath);
+    }
+    if (pathToFetch && showAllFiles) {
+      if (currentPath.includes(pathToFetch)) {
+        void fetchFiles(currentPath);
+      } else {
+        void fetchFiles(pathToFetch);
+      }
+    } else {
+      void fetchDirs(currentPath);
+    }
   }, [currentPath]);
 
   const handleBreadcrumbNavigate = (path: string) => {
@@ -47,19 +67,19 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
       key={row.filename}
       onClick={(e) => {
         e.preventDefault();
-        setMoveItemsToPath(row);
+        setMoveOrCopyItemToPath(row);
       }}
       onDoubleClick={(event) => {
         event.stopPropagation();
         handleNextFolder(row);
       }}
-      style={{
-        backgroundColor: moveItemsToPath?.filename === row.filename ? 'bg-ciDarkBlue bg-opacity-30' : 'bg-transparent',
-        cursor: 'pointer',
-      }}
     >
-      <TableCell>
-        <div className="flex w-full items-center justify-between">
+      <TableCell
+        className={`${
+          moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue' : ''
+        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-foreground`}
+      >
+        <div className="flex w-full items-center justify-between text-ellipsis">
           <div>{row.basename}</div>
           <Button onClick={() => handleNextFolder(row)}>
             <ArrowRightIcon />
@@ -69,7 +89,7 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
     </TableRow>
   );
 
-  const renderDirectoryTable = () => (
+  const renderTable = () => (
     <ScrollArea className="h-[200px]">
       <Table>
         <TableHeader>
@@ -77,7 +97,11 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
             <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>{directorys.map(renderTableRow)}</TableBody>
+        {showAllFiles ? (
+          <TableBody>{files.map(renderTableRow)}</TableBody>
+        ) : (
+          <TableBody>{directorys.map(renderTableRow)}</TableBody>
+        )}
       </Table>
     </ScrollArea>
   );
@@ -88,10 +112,10 @@ const MoveContentDialogBody: React.FC<EmptyDialogProps> = () => {
         path={currentPath}
         onNavigate={handleBreadcrumbNavigate}
       />
-      <ScrollArea className="h-[200px]">{renderDirectoryTable()}</ScrollArea>
-      {moveItemsToPath && (
+      <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
+      {moveOrCopyItemToPath && showSelectedFile && (
         <p className="pt-10 text-foreground">
-          {t('moveItemDialog.selectedItem')}: {moveItemsToPath.filename}
+          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
         </p>
       )}
     </>

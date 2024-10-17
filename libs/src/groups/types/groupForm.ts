@@ -16,7 +16,6 @@ interface GroupForm {
   admingroups: MultipleSelectorGroup[];
   members: MultipleSelectorOptionSH[];
   membergroups: MultipleSelectorGroup[];
-  proxyAddresses: string;
   school: string;
   creationDate?: string;
 }

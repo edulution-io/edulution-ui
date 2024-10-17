@@ -5,12 +5,11 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { getDecryptedPassword } from '@libs/common/utils';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/contants/cacheTtl';
-import CreateUserDto from './dto/create-user.dto';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
@@ -23,36 +22,26 @@ class UsersService {
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
-    const existingUser = await this.userModel.findOne<User>({ username: userDto.username }).exec();
-
-    let newUser;
-    if (!existingUser) {
-      newUser = await this.create({
-        email: userDto.email,
-        username: userDto.username,
-        password: userDto.password,
-        ldapGroups: userDto.ldapGroups,
-      });
-    } else {
-      newUser = await this.update(userDto.username, {
-        password: userDto.password,
-        ldapGroups: userDto.ldapGroups,
-      });
-    }
-
-    return newUser;
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
-  }
-
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel
+      .findOneAndUpdate(
+        { username: userDto.username },
+        {
+          $set: {
+            email: userDto.email,
+            firstName: userDto.firstName,
+            lastName: userDto.lastName,
+            password: userDto.password,
+            encryptKey: userDto.encryptKey,
+            ldapGroups: userDto.ldapGroups,
+          },
+        },
+        { new: true, upsert: true, projection: USER_DB_PROJECTION },
+      )
+      .lean();
   }
 
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne<User>({ username }).exec();
+    return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
@@ -76,7 +65,7 @@ class UsersService {
     return fetchedUsers;
   }
 
-  async searchUsersByName(token: string, name: string): Promise<User[]> {
+  async searchUsersByName(token: string, name: string): Promise<Partial<User>[]> {
     const searchString = name.toLowerCase();
     const users = await this.findAllCachedUsers(token);
 
@@ -91,18 +80,12 @@ class UsersService {
   }
 
   async getPassword(username: string): Promise<string> {
-    const { EDUI_ENCRYPTION_KEY } = process.env;
-
-    if (!EDUI_ENCRYPTION_KEY) {
-      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
-    }
-
-    const existingUser = await this.userModel.findOne({ username });
+    const existingUser = await this.userModel.findOne({ username }, 'password encryptKey').lean();
     if (!existingUser || !existingUser.password) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    return getDecryptedPassword(existingUser.password, EDUI_ENCRYPTION_KEY);
+    return getDecryptedPassword(existingUser.password, existingUser.encryptKey);
   }
 }
 
