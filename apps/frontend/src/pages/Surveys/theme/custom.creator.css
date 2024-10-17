@@ -119,13 +119,6 @@
     background-color: unset !important;
   }
 
-  /*.svc-page__content-actions {*/
-  /*  visibility: hidden !important;*/
-  /*  max-height: 0px !important;*/
-  /*  height: 0px !important;*/
-  /*  display: none !important;*/
-  /*}*/
-
   /* Colors */
   .sd-rating__item-star svg {
     fill: theme("colors.ciLightGrey") !important;
@@ -165,5 +158,13 @@
   }
   .svc-toolbox__item-title {
     padding: theme("container.padding");
+  }
+
+  .sv-list__item-body {
+    color: theme("colors.ciGrey") !important;
+  }
+  .sv-list__item--selected.sv-list__item--group > .sv-list__item-body,
+  .sv-list__item.sv-list__item--selected:hover.sv-list__item--group > .sv-list__item-body {
+    color: theme("colors.ciLightGrey") !important;
   }
 }
