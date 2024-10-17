@@ -1,15 +1,17 @@
 const logoutScript = `
-    function clearCookies() {
+    function clearAllCookies() {
         const cookies = document.cookie.split("; ");
-        for (let c of cookies) {
-            const d = window.location.hostname.split(".");
-            while (d.length > 0) {
-                const cookieBase = encodeURIComponent(c.split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=";
-                const domain = d.join(".");
+        for (let cookie of cookies) {
+            const cookieName = cookie.split("=")[0].trim();
+            const domainParts = window.location.hostname.split(".");
+            while (domainParts.length > 0) {
+                const domain = domainParts.join(".");
+                const cookieBase = \`\${encodeURIComponent(cookieName)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=\`;
                 document.cookie = cookieBase + domain;
                 document.cookie = cookieBase + "." + domain;
-                d.shift();
+                domainParts.shift();
             }
+            document.cookie = \`\${encodeURIComponent(cookieName)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/\`;
         }
     }
     
@@ -29,9 +31,9 @@ const logoutScript = `
         });
     });
     
-    clearCookies();
+    clearAllCookies();
     
-    window.location.reload(); 
+    window.location.reload();
   `;
 
 export default logoutScript;

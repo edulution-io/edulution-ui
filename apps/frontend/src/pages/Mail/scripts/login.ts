@@ -1,7 +1,7 @@
 const getLoginScript = (user: string, password: string) => `
     function fillAndSubmitLoginForm() {
-      const usernameField = document.getElementById('mx_LoginForm_username');
-      const passwordField = document.getElementById('mx_LoginForm_password');
+      const usernameField = document.getElementById('input_1');
+      const passwordField = document.getElementById('passwordField');
 
       if (usernameField && passwordField) {
         usernameField.value = '${user}';
@@ -10,13 +10,13 @@ const getLoginScript = (user: string, password: string) => `
         passwordField.value = '${password}';
         passwordField.dispatchEvent(new Event('input', { bubbles: true }));
 
-        const submitButton = document.querySelector('.mx_Login_submit');
+        const submitButton = document.querySelector('button[type="submit"]');
         if (submitButton && !submitButton.disabled) {
           submitButton.click();
         }
       }
     }
-    
+
     document.addEventListener('DOMContentLoaded', function() {
       fillAndSubmitLoginForm();
     });
