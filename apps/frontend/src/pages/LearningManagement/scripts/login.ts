@@ -1,18 +1,18 @@
-const getLoginScript = (user: string, password: string) => `
+const getLoginScript = (user: string, password: string) => `    
     function fillAndSubmitLoginForm() {
-      const usernameField = document.querySelector('input[ng\\:model="username"]');
-      const passwordField = document.querySelector('input[ng\\:model="password"]');
-
+      const usernameField = document.getElementById('username');
+      const passwordField = document.getElementById('password');
+  
       if (usernameField && passwordField) {
         usernameField.value = '${user}';
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
 
         passwordField.value = '${password}';
         passwordField.dispatchEvent(new Event('input', { bubbles: true }));
-  
-        const submitButton = document.querySelector('a.btn.btn-primary.btn-block');
+
+        const submitButton = document.getElementById('loginbtn');
         if (submitButton && !submitButton.disabled) {
-          submitButton.click();
+            submitButton.click();
         }
       }
     }

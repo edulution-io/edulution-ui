@@ -1,15 +1,15 @@
 import React from 'react';
-import getLoginScript from '@/pages/Mail/scripts/login';
+import getLoginScript from '@/pages/Chat/scripts/login';
 import APPS from '@libs/appconfig/constants/apps';
 import NativeIframeWithScripts from '@/components/framing/Native/NativeIframeWithScripts';
-import logoutScript from '@/pages/Mail/scripts/logout';
+import logoutScript from '@/pages/Chat/scripts/logout';
 
-const MailPage: React.FC = () => (
+const ChatPage: React.FC = () => (
   <NativeIframeWithScripts
-    appName={APPS.MAIL}
+    appName={APPS.CHAT}
     getLoginScript={getLoginScript}
     logoutScript={logoutScript}
   />
 );
 
-export default MailPage;
+export default ChatPage;

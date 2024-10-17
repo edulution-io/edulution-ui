@@ -34,10 +34,10 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
-    isNativeApp: false,
+    isNativeApp: true,
   },
   { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: true },
-  { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
+  { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: true },
   {
     id: APPS.CONFERENCES,
     icon: ConferencesIcon,
@@ -79,7 +79,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: LearningManagementIcon,
     color: 'bg-ciLightBlue',
     options: ['url', 'proxyConfig'],
-    isNativeApp: false,
+    isNativeApp: true,
   },
   {
     id: APPS.SCHOOL_INFORMATION,
