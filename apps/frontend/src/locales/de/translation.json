@@ -292,7 +292,10 @@
     "saveSession": "Sitzung speichern",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "collectAndCut": "Ausschneiden",
+    "collectAndCopy": "Kopieren",
+    "copyOrCut": "Möchten Sie die Dateien ausschneiden oder kopieren?"
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",

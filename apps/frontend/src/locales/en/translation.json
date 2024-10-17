@@ -292,7 +292,10 @@
     "saveSession": "Save session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "collectAndCut": "Cut",
+    "collectAndCopy": "Copy",
+    "copyOrCut": "Would you like to cut or copy the files?"
   },
   "select": "Select",
   "selectAll": "Select all",

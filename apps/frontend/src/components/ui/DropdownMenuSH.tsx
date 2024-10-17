@@ -8,7 +8,25 @@ import cn from '@/lib/utils';
 
 const DropdownMenuSH = DropdownMenuPrimitive.Root;
 
-const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+const DropdownMenuTrigger = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger> & {
+    selectedOptionIcon?: JSX.Element;
+    selectedOptionLabel?: string;
+  }
+>(({ className, selectedOptionIcon, selectedOptionLabel, children, ...props }, ref) => (
+  <DropdownMenuPrimitive.Trigger
+    ref={ref}
+    className={cn('flex items-center gap-2', className)}
+    {...props}
+  >
+    <div className="flex items-center gap-2">
+      {selectedOptionIcon && <span>{selectedOptionIcon}</span>}
+      {selectedOptionLabel ? <span>{selectedOptionLabel}</span> : children}
+    </div>
+  </DropdownMenuPrimitive.Trigger>
+));
+DropdownMenuTrigger.displayName = DropdownMenuPrimitive.Trigger.displayName;
 
 const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 
@@ -60,19 +78,18 @@ const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
-    <DropdownMenuPrimitive.Content
-      ref={ref}
-      sideOffset={sideOffset}
-      className={cn(
-        'z-10 min-w-[8rem] overflow-hidden rounded-xl border bg-popover bg-white p-1 text-popover-foreground shadow-md',
-        'transition duration-700 ease-in-out',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-        className,
-      )}
-      {...props}
-    />
-  </DropdownMenuPrimitive.Portal>
+  <DropdownMenuPrimitive.Content
+    ref={ref}
+    sideOffset={sideOffset}
+    className={cn(
+      'z-10 min-w-[8rem] overflow-hidden rounded-xl border bg-popover bg-white p-1 text-popover-foreground shadow-md',
+      'transition duration-700 ease-in-out',
+      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+      'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+      className,
+    )}
+    {...props}
+  />
 ));
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 
@@ -81,8 +98,9 @@ const DropdownMenuItem = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
     inset?: boolean;
     onClick?: () => void;
+    icon?: JSX.Element;
   }
->(({ className, inset, onClick, ...props }, ref) => (
+>(({ className, inset, onClick, icon, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
@@ -93,7 +111,10 @@ const DropdownMenuItem = React.forwardRef<
     onClick={onClick}
     onTouchStart={onClick}
     {...props}
-  />
+  >
+    {icon && <span className="mr-2">{icon}</span>}
+    {props.children}
+  </DropdownMenuPrimitive.Item>
 ));
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
 

@@ -75,9 +75,18 @@ const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 );
 DialogHeader.displayName = 'DialogHeader';
 
-const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+interface DialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  layout?: 'one-column' | 'two-column';
+}
+
+const DialogFooter = ({ className, layout = 'one-column', ...props }: DialogFooterProps) => (
   <div
-    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    className={cn(
+      layout === 'two-column'
+        ? 'flex flex-col justify-between '
+        : 'flex flex-col sm:flex-row sm:justify-end sm:space-x-2',
+      className,
+    )}
     {...props}
   />
 );
