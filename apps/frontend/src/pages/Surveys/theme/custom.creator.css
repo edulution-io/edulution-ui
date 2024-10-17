@@ -119,12 +119,12 @@
     background-color: unset !important;
   }
 
-  .svc-page__content-actions {
-    visibility: hidden !important;
-    max-height: 0px !important;
-    height: 0px !important;
-    display: none !important;
-  }
+  /*.svc-page__content-actions {*/
+  /*  visibility: hidden !important;*/
+  /*  max-height: 0px !important;*/
+  /*  height: 0px !important;*/
+  /*  display: none !important;*/
+  /*}*/
 
   /* Colors */
   .sd-rating__item-star svg {
