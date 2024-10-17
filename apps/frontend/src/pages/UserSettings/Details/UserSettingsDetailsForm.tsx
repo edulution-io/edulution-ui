@@ -1,15 +1,18 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import BooleanInputProp from '@libs/common/types/boolean-input-prop';
+import SingleInputProp from '@libs/common/types/single-input-prop';
+import MultiInputProp from '@libs/common/types/multi-input-prop';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import BadgeFormField from '@/pages/UserSettings/Details/BadgeFormField';
+import BadgeFormField from '@/components/shared/BadgeFormField';
 import FormField from '@/components/shared/FormField';
 import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
 
 interface UserSettingsDetailsFormProps {
-  userDataFields: { type: string; name: string; label: string; value: string | boolean | string[] | undefined }[];
-  userDataMultiFields: { type: string; name: string; label: string; value: string[] | undefined }[];
+  userDataFields: Array<SingleInputProp | BooleanInputProp>;
+  userDataMultiFields: MultiInputProp[];
 }
 
 const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
@@ -18,9 +21,16 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
   const { user, patchUserDetails } = useLmnApiStore();
   const { t } = useTranslation();
 
-  const mailProxyField = { proxyAddresses: user?.proxyAddresses || [] };
-  let dataFields: { [key: string]: string | string[] | boolean | undefined } = mailProxyField;
+  let dataFields: { [key: string]: string | string[] | number | boolean | undefined } = {
+    proxyAddresses: user?.proxyAddresses || [],
+  };
   userDataFields.forEach((field) => {
+    dataFields = {
+      ...dataFields,
+      [field.name]: field.value,
+    };
+  });
+  userDataMultiFields.forEach((field) => {
     dataFields = {
       ...dataFields,
       [field.name]: field.value,
@@ -36,19 +46,20 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
   if (!user?.name) return null;
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => patchUserDetails(user?.name, data))}>
+      <form onSubmit={form.handleSubmit((data) => patchUserDetails(data))}>
         <div className="space-y-4 md:max-w-[75%]">
           <BadgeFormField
             formControl={form.control}
+            labelTranslationId="usersettings.details.proxyAddresses"
             value={proxyAddresses}
             onChange={(mailProxies: string[]) => form.setValue('proxyAddresses', mailProxies)}
             fieldName="proxyAddresses"
-            placeholder={t('usersettings.details.newProxy')}
+            placeholder={t('usersettings.details.addNew')}
           />
           {userDataFields.map((field) => (
             <FormField
-              key={field.name}
               form={form}
+              key={field.name}
               type={field.type}
               name={field.name}
               labelTranslationId={field.label}
@@ -62,7 +73,8 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
               formControl={form.control}
               value={field.value || []}
               onChange={(badges: string[]) => form.setValue(field.name, badges)}
-              fieldName={field.name}
+              fieldName={field.name || field.label}
+              labelTranslationId={field.label}
               placeholder={t('common.add')}
             />
           ))}

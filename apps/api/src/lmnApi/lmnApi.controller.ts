@@ -146,15 +146,6 @@ export class LmnApiController {
     return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, currentUsername);
   }
 
-  @Patch('user/:username')
-  async updateUserDetails(
-    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
-    @Param() params: { username: string },
-  ) {
-    return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, params.username);
-  }
-
   @Get(`user/:username/${USERS_QUOTA}`)
   async getUsersQuota(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
     return this.lmnApiService.getUsersQuota(lmnApiToken, params.username);

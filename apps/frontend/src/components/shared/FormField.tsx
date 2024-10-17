@@ -25,7 +25,7 @@ type FormFieldProps<T extends FieldValues> = {
   type?: HTMLInputTypeAttribute;
   defaultValue?: PathValue<T, Path<T>> | string;
   readonly?: boolean;
-  value?: string | string[] | number;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & VariantProps<typeof variants>;
 

@@ -8,6 +8,7 @@ import {
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import Field from '@/components/shared/Field';
 
 const AccountInformation = () => {
   const { user, getOwnUser } = useLmnApiStore();
@@ -21,13 +22,15 @@ const AccountInformation = () => {
   }, [user]);
 
   const userInfoFields = [
-    { label: t('accountData.name'), value: user?.displayName || '...' },
+    { name: 'name', label: t('accountData.name'), value: user?.displayName || '...', readOnly: true },
     {
+      name: 'mail',
       label: t('accountData.email'),
       value: (user?.mail && user.mail.length > 0 && user.mail.at(0)) || '...',
+      readOnly: true,
     },
-    { label: t('accountData.school'), value: user?.school || '...' },
-    { label: t('accountData.role'), value: t(user?.sophomorixRole || '...') },
+    { name: 'school', label: t('accountData.school'), value: user?.school || '...', readOnly: true },
+    { name: 'role', label: t('accountData.role'), value: t(user?.sophomorixRole || '...'), readOnly: true },
   ];
 
   return (
@@ -38,15 +41,14 @@ const AccountInformation = () => {
       <CardContent>
         <div className="flex flex-col gap-3">
           <h4 className="font-bold">{t('accountData.account_info')}</h4>
-          {userInfoFields.map(({ label, value }) => (
-            <div
-              key={label}
-              className="flex flex-col"
-            >
-              <p className="text-nowrap">
-                {label}: {value}
-              </p>
-            </div>
+          {userInfoFields.map((field) => (
+            <Field
+              key={`userInfoField-${field.name}`}
+              value={field.value}
+              labelTranslationId={field.label}
+              readOnly={field.readOnly}
+              variant="lightGrayDisabled"
+            />
           ))}
           <Button
             variant="btn-collaboration"

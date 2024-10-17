@@ -3,25 +3,48 @@ import { Control } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
 import InputWithChildButton from '@/components/shared/InputWithChildButtons';
+import { FormFieldSH, FormItem, FormLabel } from '@/components/ui/Form';
 import { BadgeSH } from '@/components/ui/BadgeSH';
-import { FormFieldSH, FormItem } from '@/components/ui/Form';
 
 interface UserSettingsDetailsFormProps {
   formControl: Control;
   value: string[];
-  onChange: (mailProxies: string[]) => void;
+  onChange: (itemList: string[]) => void;
   fieldName: string;
+  labelTranslationId?: string;
   placeholder?: string;
   disabled?: boolean;
   readOnly?: boolean;
 }
 
 const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
-  const { value: badges, onChange: handleChange, formControl, fieldName, placeholder, disabled, readOnly } = props;
+  const {
+    value: badges,
+    onChange: handleChange,
+    formControl,
+    fieldName,
+    labelTranslationId,
+    placeholder,
+    disabled,
+    readOnly,
+  } = props;
 
   const [newLabel, setNewLabel] = React.useState<string>('');
 
   const { t } = useTranslation();
+
+  const handleRemoveBadge = (listItem: string) => {
+    if (!listItem) return;
+    const newList = badges.filter((mp) => mp !== listItem);
+    handleChange(newList);
+  };
+
+  const handleAddBadge = () => {
+    if (!newLabel) return;
+    const updatedBadges = [...badges, newLabel];
+    handleChange(updatedBadges);
+    setNewLabel('');
+  };
 
   return (
     <FormFieldSH
@@ -29,46 +52,42 @@ const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
       name={fieldName}
       render={() => (
         <FormItem>
-          <p className="font-bold">{t('usersettings.details.proxyAddresses')}:</p>
+          {labelTranslationId && (
+            <FormLabel>
+              <p className="font-bold text-ciLightGrey">{t(labelTranslationId)}:</p>
+            </FormLabel>
+          )}
           <div className="flex flex-row flex-wrap gap-2">
-            {badges.map((proxyAddress) => (
+            {badges.map((listItem) => (
               <BadgeSH
-                key={`badge-${proxyAddress}`}
+                key={`badge-${listItem}`}
                 className="color-white h-[38px] text-white"
               >
-                {proxyAddress}
+                {listItem}
                 <button
                   type="button"
                   className="ml-2"
-                  onClick={() => {
-                    if (!proxyAddress) return;
-                    const newMailProxies = badges.filter((mp) => mp !== proxyAddress);
-                    handleChange(newMailProxies);
-                  }}
+                  onClick={() => handleRemoveBadge(listItem)}
                 >
                   <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
                 </button>
               </BadgeSH>
             ))}
-            {!readOnly && !disabled ? (
+            {!readOnly && !disabled && (
               <InputWithChildButton
                 className="min-w-[250px]"
                 placeholder={placeholder}
                 value={newLabel}
                 onChange={(e) => setNewLabel(e.target.value)}
+                disabled={disabled || !newLabel}
                 inputButtons={[
                   {
-                    buttonIcon: MdAddCircleOutline,
-                    buttonOnClick: () => {
-                      if (!newLabel) return;
-                      const updatedBadges = [...badges, newLabel];
-                      handleChange(updatedBadges);
-                      setNewLabel('');
-                    },
+                    Icon: MdAddCircleOutline,
+                    onClick: handleAddBadge,
                   },
                 ]}
               />
-            ) : null}
+            )}
           </div>
         </FormItem>
       )}
