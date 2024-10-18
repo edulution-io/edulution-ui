@@ -86,7 +86,7 @@ const UserSettingsDetailsPage: React.FC = () => {
             ))}
 
             <Label>
-              <p className="font-bold">{t('usersettings.details.schoolSubjects')}:</p>
+              <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
             </Label>
             <BadgeField
               value={user?.schoolclasses || []}

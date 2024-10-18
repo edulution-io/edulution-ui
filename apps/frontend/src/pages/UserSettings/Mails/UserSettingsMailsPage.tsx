@@ -15,8 +15,8 @@ import syncjobDefaultConfig from '@libs/mail/constants/sync-job-default-config';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
-import MailImporterTable from './MailImporterTable';
 import FormField from '@/components/shared/FormField';
+import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
   const { t } = useTranslation();

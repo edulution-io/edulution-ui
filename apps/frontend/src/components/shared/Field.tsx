@@ -34,7 +34,7 @@ const Field = ({
     <>
       {labelTranslationId && (
         <Label>
-          <p className="font-bold">{t(labelTranslationId)}:</p>
+          <p className="font-bold">{t(labelTranslationId)}</p>
         </Label>
       )}
       <Input

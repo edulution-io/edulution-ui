@@ -1,5 +1,4 @@
 import { create, StateCreator } from 'zustand';
-import { HttpStatus } from '@nestjs/common';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
@@ -117,12 +116,12 @@ const useLmnApiStore = create<UseLmnApiStore>(
         set({ isPatchingUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.patch(
+          const response = await eduApi.post<boolean>(
             `${USER}`,
             { userDetails },
             { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
           );
-          return response.status === Number(HttpStatus.OK);
+          return response.data;
         } catch (error) {
           handleApiError(error, set);
           return false;
