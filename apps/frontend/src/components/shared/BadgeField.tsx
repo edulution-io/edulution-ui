@@ -44,36 +44,39 @@ const BadgeField = (props: BadgeFieldProps) => {
     setNewLabel('');
   };
 
+  const isEmpty = badges.length === 0;
   return (
     <>
       {labelTranslationId && (
         <Label>
-          <p className="font-bold text-foreground">{t(labelTranslationId)}:</p>
+          <p className="font-bold text-foreground">{t(labelTranslationId)}</p>
         </Label>
       )}
       <div className="flex flex-row flex-wrap gap-2">
-        {badges.map((listItem) => (
-          <BadgeSH
-            key={`badge-${listItem}`}
-            className={cn(
-              'h-[38px]',
-              { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },
-              { 'color-white text-white': !readOnly },
-              className,
-            )}
-          >
-            {listItem}
-            {!readOnly && (
-              <button
-                type="button"
-                className="ml-2"
-                onClick={() => handleRemoveBadge(listItem)}
-              >
-                <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
-              </button>
-            )}
-          </BadgeSH>
-        ))}
+        {isEmpty && <BadgeSH className={cn('bg-ciDarkGreyDisabled px-4', className)}>{t('common.none')}</BadgeSH>}
+        {!isEmpty &&
+          badges.map((listItem) => (
+            <BadgeSH
+              key={`badge-${listItem}`}
+              className={cn(
+                'h-[38px]',
+                { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },
+                { 'color-white text-white': !readOnly },
+                className,
+              )}
+            >
+              {listItem}
+              {!readOnly && (
+                <button
+                  type="button"
+                  className="ml-2"
+                  onClick={() => handleRemoveBadge(listItem)}
+                >
+                  <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
+                </button>
+              )}
+            </BadgeSH>
+          ))}
         {!readOnly && (
           <InputWithChildButton
             className="min-w-[250px]"

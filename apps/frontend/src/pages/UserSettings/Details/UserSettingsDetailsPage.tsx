@@ -7,9 +7,9 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import QuotaBody from '@/pages/UserSettings/Details/QuotaBody';
 import Separator from '@/components/ui/Separator';
-import SchoolClasses from '@/pages/UserSettings/Details/SchoolClasses';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
+import BadgeField from '@/components/shared/BadgeField';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -90,8 +90,10 @@ const UserSettingsDetailsPage: React.FC = () => {
           <Label>
             <p className="font-bold">{t('usersettings.details.schoolSubjects')}:</p>
           </Label>
-          <SchoolClasses
-            schoolClasses={user?.schoolclasses}
+          <BadgeField
+            value={user?.schoolclasses || []}
+            onChange={() => {}}
+            readOnly
             className="mt-2"
           />
         </div>

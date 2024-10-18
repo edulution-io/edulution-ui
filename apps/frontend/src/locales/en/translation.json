@@ -614,6 +614,7 @@
     "connect": "Connect",
     "custom": "Custom",
     "select": "Select...",
+    "none": "None",
     "edit": "Edit",
     "copy": "Copy",
     "participate": "Participate",
