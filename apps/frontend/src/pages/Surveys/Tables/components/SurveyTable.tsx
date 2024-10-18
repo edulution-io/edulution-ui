@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
+import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/survey.dto';
+import { format } from 'date-fns';
+import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
 
@@ -11,12 +14,20 @@ interface SurveyTableProps {
   selectedSurvey?: SurveyDto;
 }
 
-const SURVEY_TABLE_HEADERS: string[] = ['Title', 'survey.creationDate', 'survey.expirationDate', 'participated'];
+const SURVEY_TABLE_HEADERS: string[] = [
+  'common.title',
+  'survey.creationDate',
+  'survey.expirationDate',
+  'common.participated',
+  'survey.canSubmitMultiple',
+];
 
 const SurveyTable = (props: SurveyTableProps) => {
   const { title, surveys, selectedSurvey, selectSurvey } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation', { lng: i18n.options.lng || 'en' });
+
+  const localDateFormat = getLocaleDateFormat();
 
   const surveyRows = useMemo(
     () =>
@@ -49,12 +60,20 @@ const SurveyTable = (props: SurveyTableProps) => {
               />
             </TableCell>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            <TableCell className="text-white">{surveyObj?.title || t('common.not-available')}</TableCell>
-            <TableCell className="text-white">
-              {survey?.created ? survey?.created.toString() : t('common.not-available')}
+            <TableCell className="text-background">{surveyObj?.title || t('common.not-available')}</TableCell>
+            <TableCell className="text-background">
+              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
             </TableCell>
-            <TableCell className="text-white">
-              {survey?.expirationDate ? survey?.expirationDate.toString() : t('common.not-available')}
+            <TableCell className="text-background">
+              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+            </TableCell>
+            <TableCell className="text-background">
+              {survey?.invitedAttendees && survey?.participatedAttendees && survey.isPublic !== true
+                ? `${survey?.participatedAttendees.length || 0}/${survey?.invitedAttendees.length || 0}`
+                : survey.answers.length}
+            </TableCell>
+            <TableCell className="text-background">
+              {survey?.canSubmitMultipleAnswers ? t('common.yes') : t('common.no')}
             </TableCell>
           </TableRow>
         );
@@ -67,7 +86,7 @@ const SurveyTable = (props: SurveyTableProps) => {
       <h4>{title}</h4>
       <Table>
         <TableHeader>
-          <TableRow className="text-white">
+          <TableRow className="text-background">
             <TableHead
               key="tableHead-checkbox"
               className="w-20px"
@@ -84,7 +103,7 @@ const SurveyTable = (props: SurveyTableProps) => {
             <TableRow>
               <TableCell
                 colSpan={SURVEY_TABLE_HEADERS.length + 1} // +1 for the checkbox column
-                className="h-24 text-center text-white"
+                className="h-24 text-center text-background"
               >
                 {t('table.noDataAvailable')}
               </TableCell>

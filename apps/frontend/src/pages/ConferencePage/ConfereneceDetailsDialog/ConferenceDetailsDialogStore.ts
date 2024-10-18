@@ -1,9 +1,14 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import apiEndpoint, { CONFERENCES_JOIN_EDU_API_ENDPOINT } from '@/pages/ConferencePage/apiEndpoint';
 import Conference from '@libs/conferences/types/conference.dto';
+import {
+  CONFERENCES_EDU_API_ENDPOINT,
+  CONFERENCES_JOIN_EDU_API_ENDPOINT,
+} from '@libs/conferences/constants/apiEndpoints';
 
 interface ConferenceDetailsDialogStore {
   selectedConference: Conference | null;
@@ -29,7 +34,7 @@ const initialState = {
   isJoinedConferenceMinimized: false,
 };
 
-const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set) => ({
+const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set, get) => ({
   ...initialState,
   setSelectedConference: (conference) => set({ selectedConference: conference }),
   setIsLoading: (isLoading) => set({ isLoading }),
@@ -39,7 +44,12 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   joinConference: async (meetingID) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}${meetingID}`);
+      if (get().joinConferenceUrl) {
+        toast.error(i18n.t('conferences.errors.AlreadyInAnotherMeeting'));
+        return;
+      }
+
+      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}/${meetingID}`);
       set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
@@ -53,7 +63,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   updateConference: async (conference) => {
     set({ isLoading: true });
     try {
-      await eduApi.patch<Conference[]>(apiEndpoint, conference);
+      await eduApi.patch<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, conference);
       set({ selectedConference: null });
     } catch (error) {
       handleApiError(error, set);

@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { CacheModule } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import UserDto from '@libs/user/types/user.dto';
+import LdapGroups from '@libs/groups/types/ldapGroups';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
-import DEFAULT_CACHE_TTL_MS from '../app/cache-ttl';
-import CreateUserDto from './dto/create-user.dto';
-import RegisterUserDto from './dto/register-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
 
 const mockUserModel = {
@@ -18,7 +16,7 @@ const mockUserModel = {
 };
 
 const mockUsersService = {
-  register: jest.fn(),
+  createOrUpdate: jest.fn(),
   create: jest.fn(),
   findAll: jest.fn(),
   findOne: jest.fn(),
@@ -27,17 +25,22 @@ const mockUsersService = {
   searchUsersByName: jest.fn(),
 };
 
+const mockLdapGroups: LdapGroups = {
+  schools: ['school'],
+  projects: ['project1', 'project2'],
+  projectPaths: ['/path/to/project1', '/path/to/project2'],
+  classes: ['class1A', 'class2B'],
+  classPaths: ['/path/to/class1A', '/path/to/class2B'],
+  roles: ['teacher'],
+  others: ['group1', 'group2'],
+};
+
 describe(UsersController.name, () => {
   let controller: UsersController;
   let service: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CacheModule.register({
-          ttl: DEFAULT_CACHE_TTL_MS,
-        }),
-      ],
       controllers: [UsersController],
       providers: [
         {
@@ -60,28 +63,16 @@ describe(UsersController.name, () => {
     expect(service).toBeDefined();
   });
 
-  describe('register', () => {
+  describe('createOrUpdate', () => {
     it('should call register method of usersService with correct arguments', async () => {
-      const registerDto: RegisterUserDto = {
-        preferred_username: 'testuser',
-        email: 'test@example.com',
-        ldapGroups: ['group1'],
-      };
-      await controller.register(registerDto);
-      expect(service.register).toHaveBeenCalledWith(registerDto);
-    });
-  });
-
-  describe('create', () => {
-    it('should call create method of usersService with correct arguments', async () => {
-      const createUserDto: CreateUserDto = {
+      const registerDto: UserDto = {
         username: 'testuser',
         email: 'test@example.com',
+        ldapGroups: mockLdapGroups,
         password: 'password',
-        roles: ['role1'],
       };
-      await controller.create(createUserDto);
-      expect(service.create).toHaveBeenCalledWith(createUserDto);
+      await controller.createOrUpdate(registerDto);
+      expect(service.createOrUpdate).toHaveBeenCalledWith(registerDto);
     });
   });
 
@@ -106,6 +97,7 @@ describe(UsersController.name, () => {
       const updateUserDto: UpdateUserDto = {
         username: 'updatedUser',
         email: 'updated@example.com',
+        password: 'password',
       };
       await controller.update(username, updateUserDto);
       expect(service.update).toHaveBeenCalledWith(username, updateUserDto);

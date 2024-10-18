@@ -86,6 +86,7 @@ describe(ConferencesController.name, () => {
         name: 'Test Conference',
         password: 'testpassword',
         invitedAttendees: [],
+        invitedGroups: [],
       };
       await controller.create(createConferenceDto, jwtUser);
       expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser);
@@ -102,9 +103,8 @@ describe(ConferencesController.name, () => {
 
   describe('findAll', () => {
     it('should call findAllConferencesTheUserHasAccessTo method of conferencesService with correct arguments', async () => {
-      const username = 'testuser';
-      await controller.findAll(username);
-      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
+      await controller.findAll(jwtUser);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });
 
@@ -117,13 +117,14 @@ describe(ConferencesController.name, () => {
         password: 'testpassword',
         isRunning: false,
         invitedAttendees: [],
+        invitedGroups: [],
         joinedAttendees: [],
       };
       const username = 'testuser';
-      await controller.update(conference, username);
+      await controller.update(conference, jwtUser);
       expect(service.isCurrentUserTheCreator).toHaveBeenCalledWith(conference.meetingID, username);
       expect(service.update).toHaveBeenCalledWith(conference);
-      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });
 
@@ -131,9 +132,9 @@ describe(ConferencesController.name, () => {
     it('should call toggleConferenceIsRunning method of conferencesService with correct arguments', async () => {
       const conference: Pick<Conference, 'meetingID'> = { meetingID: '123' };
       const username = 'testuser';
-      await controller.toggleIsRunning(conference, username);
+      await controller.toggleIsRunning(conference, jwtUser);
       expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(conference.meetingID, username);
-      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });
 
@@ -141,9 +142,9 @@ describe(ConferencesController.name, () => {
     it('should call remove method of conferencesService with correct arguments', async () => {
       const meetingIDs = ['123', '456'];
       const username = 'testuser';
-      await controller.remove(meetingIDs, username);
+      await controller.remove(meetingIDs, jwtUser);
       expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
-      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(username);
+      expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });
 });

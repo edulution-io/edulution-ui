@@ -2,16 +2,16 @@ import React from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
-import getConferencesFormSchema from '@/pages/ConferencePage/formSchema';
+import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -19,15 +19,15 @@ interface ConferenceDetailsDialogProps {
 
 const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
-  const { username } = useUserStore();
+  const { user } = useUserStore();
   const { getConferences } = useConferenceStore();
   const { isLoading, selectedConference, setSelectedConference, updateConference } = useConferenceDetailsDialogStore();
 
   const initialFormValues: ConferencesForm = {
     name: selectedConference?.name || '',
     password: selectedConference?.password || '',
-    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== username) || [],
-    invitedGroups: [],
+    invitedAttendees: selectedConference?.invitedAttendees.filter((ia) => ia.username !== user?.username) || [],
+    invitedGroups: selectedConference?.invitedGroups || [],
   };
 
   const form = useForm<ConferencesForm>({
@@ -40,7 +40,8 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
-      invitedAttendees: [...form.getValues('invitedAttendees'), { username } as AttendeeDto],
+      invitedAttendees: [...form.getValues('invitedAttendees'), { username: user?.username } as AttendeeDto],
+      invitedGroups: form.getValues('invitedGroups'),
       meetingID: selectedConference?.meetingID,
     };
 
@@ -71,7 +72,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   );
 
   return (
-    <AdaptiveDialogSH
+    <AdaptiveDialog
       isOpen
       trigger={trigger}
       handleOpenChange={() => setSelectedConference(null)}

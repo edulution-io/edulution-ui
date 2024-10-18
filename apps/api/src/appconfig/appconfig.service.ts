@@ -1,21 +1,25 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
-import LoggerEnum from '../types/logger';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
 class AppConfigService {
-  constructor(@InjectModel('AppConfig') private readonly appConfigModel: Model<AppConfig>) {}
+  constructor(@InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>) {}
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
     try {
       await this.appConfigModel.insertMany(appConfigDto);
-      Logger.log(`Wrote appConfig to mongoDB`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
-      Logger.error(e, LoggerEnum.MONGODB);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new CustomHttpException(
+        AppConfigErrorMessages.WriteAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
     }
   }
 
@@ -29,28 +33,53 @@ class AppConfigService {
               icon: appConfig.icon,
               appType: appConfig.appType,
               options: appConfig.options,
+              accessGroups: appConfig.accessGroups,
+              extendedOptions: appConfig.extendedOptions,
             },
           },
           upsert: true,
         },
       }));
       await this.appConfigModel.bulkWrite(bulkOperations);
-
-      Logger.log(`Updated settings appConfig at mongoDB`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
-      Logger.error(e, LoggerEnum.MONGODB);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new CustomHttpException(
+        AppConfigErrorMessages.WriteAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
     }
   }
 
-  async getAppConfigs(): Promise<AppConfig[]> {
+  async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      const appConfig = await this.appConfigModel.find();
-      Logger.log('Get settings appConfig from mongoDB', LoggerEnum.EDULUTIONAPI);
-      return appConfig;
+      let appConfigDto: AppConfigDto[];
+      if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups extendedOptions');
+      } else {
+        const appConfigObjects = await this.appConfigModel.find(
+          {
+            'accessGroups.path': { $in: ldapGroups },
+          },
+          'name icon appType options extendedOptions',
+        );
+
+        appConfigDto = appConfigObjects.map((config) => ({
+          name: config.name,
+          icon: config.icon,
+          appType: config.appType,
+          options: { url: config.options.url ?? '' },
+          accessGroups: [],
+          extendedOptions: config.extendedOptions ?? [],
+        }));
+      }
+
+      return appConfigDto;
     } catch (e) {
-      Logger.error(e, LoggerEnum.MONGODB);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
     }
   }
 
@@ -60,21 +89,25 @@ class AppConfigService {
       if (!appConfig) {
         throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
       }
-      Logger.log(`Get ${name} appConfig from mongoDB`, LoggerEnum.EDULUTIONAPI);
       return appConfig;
     } catch (e) {
-      Logger.error(e, LoggerEnum.MONGODB);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
     }
   }
 
   async deleteConfig(configName: string) {
     try {
       await this.appConfigModel.deleteOne({ name: configName });
-      Logger.log(`Delete ${configName} entry in apps collection`, LoggerEnum.EDULUTIONAPI);
     } catch (e) {
-      Logger.error(e, LoggerEnum.MONGODB);
-      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.SERVICE_UNAVAILABLE);
+      throw new CustomHttpException(
+        AppConfigErrorMessages.DisableAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        AppConfigService.name,
+      );
     }
   }
 }

@@ -2,13 +2,19 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import EDU_API_CONFIG_ENDPOINT from '@/api/endpoints/appconfig';
+import { EDU_API_CONFIG_ENDPOINT } from '@libs/appconfig/constants';
 import { AppConfigDto, AppIntegrationType } from '@libs/appconfig/types';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 type AppConfigsStore = {
   appConfigs: AppConfigDto[];
   isLoading: boolean;
   error: Error | null;
+  isAddAppConfigDialogOpen: boolean;
+  isDeleteAppConfigDialogOpen: boolean;
+  setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen: boolean) => void;
+  setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
   getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
@@ -21,7 +27,18 @@ type PersistedAppConfigsStore = (
 ) => StateCreator<AppConfigsStore>;
 
 const initialState = {
-  appConfigs: [{ name: '', icon: '', appType: AppIntegrationType.NATIVE, options: {} }],
+  isAddAppConfigDialogOpen: false,
+  isDeleteAppConfigDialogOpen: false,
+  appConfigs: [
+    {
+      name: '',
+      icon: '',
+      appType: AppIntegrationType.NATIVE,
+      options: {},
+      accessGroups: [],
+      extendedOptions: [],
+    },
+  ],
   isLoading: false,
   error: null,
 };
@@ -32,7 +49,19 @@ const useAppConfigsStore = create<AppConfigsStore>(
       ...initialState,
       reset: () => set(initialState),
 
+      setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
+        set({ isAddAppConfigDialogOpen });
+      },
+
+      setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen) => {
+        set({ isDeleteAppConfigDialogOpen });
+      },
+
       getAppConfigs: async () => {
+        const { isLoading } = get();
+        if (isLoading) {
+          return false;
+        }
         set({ isLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT);
@@ -49,8 +78,9 @@ const useAppConfigsStore = create<AppConfigsStore>(
       updateAppConfig: async (appConfigs) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.put(EDU_API_CONFIG_ENDPOINT, appConfigs);
+          await eduApi.put<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINT, appConfigs);
           set({ appConfigs });
+          toast.success(i18n.t('settings.appconfig.update.success'));
         } catch (e) {
           handleApiError(e, set);
         } finally {
@@ -64,6 +94,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
           await eduApi.delete(`${EDU_API_CONFIG_ENDPOINT}/${name}`);
           const newAppConfigs = get().appConfigs.filter((item) => item.name !== name);
           set({ appConfigs: newAppConfigs });
+          toast.success(`${i18n.t(`${name}.sidebar`)} - ${i18n.t('settings.appconfig.delete.success')}`);
         } catch (e) {
           handleApiError(e, set);
         } finally {
@@ -73,7 +104,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
     }),
     {
       name: 'appConfig-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ appConfigs: state.appConfigs }),
     },
   ),

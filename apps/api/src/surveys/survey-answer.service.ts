@@ -2,135 +2,181 @@ import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import UsersSurveys from '@libs/survey/types/users-surveys';
-import UserErrorMessages from '@libs/user/user-error-messages';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
-import { User, UserDocument } from '../users/user.schema';
+import SurveyStatus from '@libs/survey/survey-status-enum';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import Attendee from '../conferences/attendee.schema';
+import JWTUser from '../types/JWTUser';
 
 @Injectable()
 class SurveyAnswersService {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async getAllSurveys(): Promise<Survey[]> {
-    const surveys = this.surveyModel.find().exec();
-    if (surveys == null) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveysError, HttpStatus.NOT_FOUND);
+  public getSelectableChoices = async (surveyId: mongoose.Types.ObjectId, questionId: string): Promise<ChoiceDto[]> => {
+    const survey = await this.surveyModel.findById(surveyId);
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
-    return surveys;
-  }
 
-  async onUserRemoval(userNames: mongoose.Types.ObjectId[]): Promise<void> {
-    try {
-      await this.surveyAnswerModel.deleteMany({ user: { $in: userNames } }).exec();
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
-        HttpStatus.NOT_MODIFIED,
-        error,
-      );
+    const limiter = survey.backendLimiters?.find((limit) => limit.questionId === questionId);
+    if (!limiter?.choices?.length) {
+      throw new CustomHttpException(SurveyErrorMessages.NoBackendLimiters, HttpStatus.NOT_FOUND);
     }
-  }
 
-  async onSurveyRemoval(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
-    try {
-      await this.surveyAnswerModel.deleteMany({ survey: { $in: surveyIds } }, { ordered: false }).exec();
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
-        HttpStatus.NOT_MODIFIED,
-        error,
-      );
-    }
-  }
+    const possibleChoices = limiter.choices;
 
-  async createNewAnswer(
+    const filteredChoices = await Promise.all(
+      possibleChoices.map(async (choice) => {
+        const isVisible = (await this.countChoiceSelections(surveyId, questionId, choice.name)) < choice.limit;
+        return isVisible ? choice : null;
+      }),
+    );
+
+    return filteredChoices.filter((choice) => choice !== null);
+  };
+
+  async countChoiceSelections(
     surveyId: mongoose.Types.ObjectId,
-    username: string,
-    usersSurveys: UsersSurveys,
-    saveNo: number,
-    answer: JSON,
-    canSubmitMultipleAnswers: boolean = false,
-  ): Promise<SurveyAnswer | undefined> {
-    const isCreator = usersSurveys?.createdSurveys?.find((survey: mongoose.Types.ObjectId) => survey === surveyId);
-    const isParticipant = usersSurveys?.openSurveys?.find((survey: mongoose.Types.ObjectId) => survey === surveyId);
-    const canParticipate = isCreator || isParticipant;
-    if (!canParticipate) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotAbleToParticipateNotAnParticipantError,
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    const time = new Date().getTime();
-    const id = mongoose.Types.ObjectId.createFromTime(time);
-    const newUsersSurveyAnswer = await this.surveyAnswerModel.create({
-      _id: id,
-      id,
-      saveNo,
-      user: username,
-      survey: surveyId,
-      answer,
+    questionId: string,
+    choiceId: string,
+  ): Promise<number> {
+    return this.surveyAnswerModel.countDocuments({
+      surveyId,
+      [`answer.${questionId}`]: choiceId,
     });
-    if (newUsersSurveyAnswer == null) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    const updateUsersOpenSurveys = canSubmitMultipleAnswers
-      ? usersSurveys?.openSurveys || []
-      : usersSurveys?.openSurveys?.filter((openSurvey: mongoose.Types.ObjectId) => openSurvey !== surveyId) || [];
-
-    const updateUsersUsersSurveyAnswers =
-      usersSurveys && usersSurveys.answeredSurveys
-        ? [...usersSurveys.answeredSurveys, newUsersSurveyAnswer.id]
-        : [newUsersSurveyAnswer.id];
-
-    const updatedUsersSurveys = {
-      openSurveys: updateUsersOpenSurveys,
-      createdSurveys: usersSurveys?.createdSurveys || [],
-      answeredSurveys: updateUsersUsersSurveyAnswers,
-    };
-
-    const updateExistingUser = await this.userModel
-      .findOneAndUpdate<User>({ username }, { usersSurveys: updatedUsersSurveys })
-      .exec();
-    if (updateExistingUser == null) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToUpdateUserError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    return newUsersSurveyAnswer;
   }
 
-  async updateExistingAnswer(
-    idExistingSurveyAnswer: mongoose.Types.ObjectId,
+  async getCreatedSurveys(username: string): Promise<Survey[]> {
+    const createdSurveys = await this.surveyModel.find<Survey>({ 'creator.username': username });
+    return createdSurveys || [];
+  }
+
+  async getOpenSurveys(username: string): Promise<Survey[]> {
+    const openSurveys = await this.surveyModel.find({
+      $or: [
+        { isPublic: true },
+        {
+          $and: [
+            { 'invitedAttendees.username': username },
+            {
+              $or: [
+                { $nor: [{ participatedAttendees: { $elemMatch: { username } } }] },
+                { canSubmitMultipleAnswers: true },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    return openSurveys;
+  }
+
+  async getAnswers(username: string): Promise<SurveyAnswer[]> {
+    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ 'attendee.username': username });
+    return surveyAnswers || [];
+  }
+
+  async getAnsweredSurveys(username: string): Promise<Survey[]> {
+    const surveyAnswers = await this.getAnswers(username);
+    const answeredSurveyIds = surveyAnswers.map((answer: SurveyAnswer) => answer.surveyId);
+    const answeredSurveys = await this.surveyModel.find<Survey>({ _id: { $in: answeredSurveyIds } });
+    return answeredSurveys || [];
+  }
+
+  async findUserSurveys(status: SurveyStatus, username: string): Promise<Survey[] | null> {
+    switch (status) {
+      case SurveyStatus.OPEN:
+        return this.getOpenSurveys(username);
+      case SurveyStatus.ANSWERED:
+        return this.getAnsweredSurveys(username);
+      case SurveyStatus.CREATED:
+        return this.getCreatedSurveys(username);
+      default:
+        return [];
+    }
+  }
+
+  async addAnswer(
+    surveyId: mongoose.Types.ObjectId,
     saveNo: number,
+    user: JWTUser,
     answer: JSON,
-    canUpdateFormerAnswer: boolean = true,
   ): Promise<SurveyAnswer | undefined> {
-    if (!idExistingSurveyAnswer) {
-      throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.BAD_REQUEST);
+    if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    const canNotParticipateAgain = !canUpdateFormerAnswer;
-    if (canNotParticipateAgain) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotAbleToParticipateAlreadyParticipatedError,
-        HttpStatus.FORBIDDEN,
-      );
+    const username = user.preferred_username;
+    const attendee = { firstName: user.given_name, lastName: user.family_name, username };
+
+    const survey = await this.surveyModel.findById<Survey>(surveyId);
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+    const { expires, canUpdateFormerAnswer, canSubmitMultipleAnswers } = survey;
+
+    if (expires && expires < new Date()) {
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
     }
 
-    const updatedSurveyAnswer = await this.surveyAnswerModel
-      .findOneAndUpdate<SurveyAnswer>({ _id: idExistingSurveyAnswer }, { answer, saveNo })
-      .exec();
+    const hasParticipated = survey.participatedAttendees.find(
+      (participant: Attendee) => participant.username === username,
+    );
+    if (hasParticipated && !canSubmitMultipleAnswers && !canUpdateFormerAnswer) {
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorAlreadyParticipated, HttpStatus.FORBIDDEN);
+    }
+
+    const isCreator = survey.creator.username === username;
+    const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
+    const canParticipate = isCreator || !!isAttendee;
+    if (!canParticipate) {
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
+    }
+
+    const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
+      $and: [{ 'attendee.username': username }, { surveyId }],
+    });
+
+    if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
+      const time = new Date().getTime();
+      const id = mongoose.Types.ObjectId.createFromTime(time);
+      const newSurveyAnswer = await this.surveyAnswerModel.create({
+        _id: id,
+        id,
+        attendee,
+        surveyId,
+        saveNo,
+        answer,
+      });
+      if (newSurveyAnswer == null) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
+        participatedAttendees: [...survey.participatedAttendees, attendee],
+        answers: [...survey.answers, newSurveyAnswer.id],
+      });
+      if (updateSurvey == null) {
+        throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      return newSurveyAnswer;
+    }
+
+    const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(idExistingUsersAnswer, {
+      answer,
+      saveNo,
+    });
     if (updatedSurveyAnswer == null) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
@@ -138,77 +184,66 @@ class SurveyAnswersService {
     return updatedSurveyAnswer;
   }
 
-  async addAnswer(
+  async addAnswerToPublicSurvey(
     surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
     answer: JSON,
-    participant: string,
   ): Promise<SurveyAnswer | undefined> {
     if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    const survey = await this.surveyModel.findById<Survey>(surveyId);
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    const { expires, isPublic } = survey;
+
+    if (expires && expires < new Date()) {
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
+    }
+
+    if (!isPublic) {
+      throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
+    }
+
+    const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}` };
+
+    const time = new Date().getTime();
+    const id = mongoose.Types.ObjectId.createFromTime(time);
+    const newSurveyAnswer = await this.surveyAnswerModel.create({
+      _id: id,
+      id,
+      attendee: pseudoAttendee,
+      surveyId,
+      saveNo,
+      answer,
+    });
+    if (newSurveyAnswer == null) {
       throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    const existingSurvey = await this.surveyModel.findOne<Survey>({ _id: surveyId }).exec();
-    if (!existingSurvey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotAbleToFindSurveyError, HttpStatus.NOT_FOUND);
+    const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
+      answers: [...survey.answers, newSurveyAnswer.id],
+    });
+    if (updateSurvey == null) {
+      throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const {
-      expirationDate,
-      expirationTime,
-      canUpdateFormerAnswer,
-      canSubmitMultipleAnswers,
-      saveNo = 0,
-    } = existingSurvey;
-
-    if (expirationDate && expirationTime) {
-      const expirationDateAndTime = new Date(`${expirationDate.toDateString()}T${expirationTime.toString()}`);
-      const isExpired = expirationDateAndTime < new Date();
-      if (isExpired) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.NotAbleToParticipateSurveyExpiredError,
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
-    }
-
-    const existingUser = await this.userModel.findOne<User>({ username: participant }).exec();
-    if (!existingUser) {
-      throw new CustomHttpException(UserErrorMessages.NotAbleToFindUserError, HttpStatus.NOT_FOUND);
-    }
-
-    const idExistingUsersAnswer = await this.surveyAnswerModel
-      .findOne<SurveyAnswer>({ survey: surveyId, user: participant })
-      .exec();
-
-    if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
-      return this.createNewAnswer(
-        surveyId,
-        participant,
-        {
-          openSurveys: existingUser.usersSurveys?.openSurveys || [],
-          createdSurveys: existingUser.usersSurveys?.createdSurveys || [],
-          answeredSurveys: existingUser.usersSurveys?.answeredSurveys || [],
-        },
-        saveNo,
-        answer,
-      );
-    }
-    return this.updateExistingAnswer(idExistingUsersAnswer.id, saveNo, answer, canUpdateFormerAnswer);
+    return newSurveyAnswer;
   }
 
   async getPrivateAnswer(surveyId: mongoose.Types.ObjectId, username: string): Promise<SurveyAnswer> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
-    const usersSurveyAnswer = await this.surveyAnswerModel
-      .findOne<SurveyAnswer>({ survey: surveyId, user: username })
-      .exec();
+    const usersSurveyAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
+      $and: [{ 'attendee.username': username }, { surveyId }],
+    });
 
     if (usersSurveyAnswer == null) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
@@ -218,16 +253,27 @@ class SurveyAnswersService {
 
   async getPublicAnswers(surveyId: mongoose.Types.ObjectId): Promise<JSON[] | null> {
     if (!mongoose.isValidObjectId(surveyId)) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotValidSurveyIdIsNoMongooseObjectId,
-        HttpStatus.NOT_ACCEPTABLE,
-      );
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
-    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ survey: surveyId }).exec();
+    const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId });
     if (surveyAnswers.length === 0) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
-    return surveyAnswers.map((surveyAnswer: SurveyAnswer) => surveyAnswer.answer);
+
+    const answers = surveyAnswers.filter((answer) => answer.answer !== null);
+    return answers.map((answer) => answer.answer);
+  }
+
+  async onSurveyRemoval(surveyIds: mongoose.Types.ObjectId[]): Promise<void> {
+    try {
+      await this.surveyAnswerModel.deleteMany({ surveyId: { $in: surveyIds } }, { ordered: false });
+    } catch (error) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
+        HttpStatus.NOT_MODIFIED,
+        error,
+      );
+    }
   }
 }
 

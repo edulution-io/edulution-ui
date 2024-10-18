@@ -1,19 +1,24 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import GetTokenDecorator from '../common/decorators/getToken.decorator';
+import { Controller, Get, Query } from '@nestjs/common';
+import { EDU_API_GROUPS_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GroupsService from './groups.service';
+import GetToken from '../common/decorators/getToken.decorator';
 
-@Controller('groups')
+@ApiTags(EDU_API_GROUPS_ENDPOINT)
+@ApiBearerAuth()
+@Controller(EDU_API_GROUPS_ENDPOINT)
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
-  async getGroups(@GetTokenDecorator() token: string) {
-    return this.groupsService.searchGroups(token);
+  async searchGroups(@Query('groupName') groupName: string) {
+    return this.groupsService.searchGroups(groupName);
   }
 
-  @Get(':searchString')
-  async searchGroups(@GetTokenDecorator() token: string, @Param('searchString') searchString: string) {
-    return this.groupsService.searchGroups(token, searchString);
+  @Get('user')
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async fetchCurrentUser(@GetToken() token: string) {
+    return GroupsService.fetchCurrentUser(token);
   }
 }
 

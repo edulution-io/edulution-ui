@@ -1,18 +1,17 @@
-import React from 'react';
-import { toast } from 'sonner';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
+import { setHours, setMinutes, getHours, getMinutes } from 'date-fns';
 import cn from '@/lib/utils';
-import AttendeeDto from '@libs/conferences/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/user/types/groups/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/UserStore';
 import Input from '@/components/shared/Input';
 import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
-import CircleLoader from '@/components/ui/CircleLoader';
-import { MultipleSelectorOptionSH } from '@/components/ui/MultipleSelectorSH';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+import useGroupStore from '@/store/GroupStore';
 
 interface EditSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,16 +19,16 @@ interface EditSurveyDialogBodyProps {
 }
 
 const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
-  const {
-    form, // saveSurveyLocally
-  } = props;
+  const { form } = props;
   const { setValue, getValues, watch } = form;
-  const { username } = useUserStore();
-  const { isLoading, searchAttendees, searchGroups, getGroupMembers, isGetGroupMembersLoading } =
-    useCreateConferenceDialogStore();
+  const { user } = useUserStore();
+  const { searchAttendees } = useUserStore();
+  const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
 
-  if (isLoading) return <CircleLoader className="mx-auto" />;
+  const [expirationTime, setExpirationTime] = useState<string>(
+    `${getHours(getValues('expires')) || '00'}:${getMinutes(getValues('expires')) || '00'}`,
+  );
 
   const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -37,41 +36,32 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
 
   const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
-    return result.filter((r) => r.username !== username);
-  };
-
-  const handleGroupsChange = async (groups: MultipleSelectorOptionSH[]) => {
-    const selectedGroups = getValues('invitedGroups') as MultipleSelectorGroup[];
-
-    const newlySelectedGroups = groups.filter((g) => !selectedGroups.some((sg) => sg.id === g.id));
-
-    if (newlySelectedGroups.length > 0 && newlySelectedGroups[0].path) {
-      const groupMembers = await getGroupMembers(newlySelectedGroups[0].path as string);
-      const attendees = getValues('invitedAttendees') as AttendeeDto[];
-
-      const combinedAttendees = [...groupMembers, ...attendees];
-
-      const uniqueAttendeesMap = new Map(combinedAttendees.map((a) => [a.username, a]));
-      const uniqueAttendees = Array.from(uniqueAttendeesMap.values());
-
-      uniqueAttendees.sort((a, b) => a.username.localeCompare(b.username));
-
-      const newlyAddedAttendeesCount = groupMembers.filter(
-        (member) => !attendees.some((attendee) => attendee.username === member.username),
-      ).length;
-
-      setValue('invitedAttendees', uniqueAttendees, { shouldValidate: true });
-
-      toast.success(t('search.usersAdded', { count: newlyAddedAttendeesCount }));
+    if (!user) {
+      return result;
     }
-
-    setValue('invitedGroups', groups);
+    return result.filter((r) => r.username !== user.username);
   };
 
-  const expirationDateWatched = watch('expirationDate') as Date;
-  const expirationTimeWatched = watch('expirationTime') as string[];
+  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
+    setValue('invitedGroups', groups /* , { shouldValidate: true } */);
+  };
+
+  const expiresWatched = watch('expires') as Date;
   const isAnonymousWatched = watch('isAnonymous') as boolean;
+  const isPublicWatched = watch('isPublic') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
+
+  const handleExpirationDateChange = (value: Date | undefined) => {
+    setValue('expires', value /* , { shouldValidate: true } */);
+  };
+  const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setExpirationTime(e.target.value);
+    const time = e.target.value.split(':');
+    let updateExpiration = getValues('expires') as Date;
+    updateExpiration = setHours(updateExpiration, Number(time[0]));
+    updateExpiration = setMinutes(updateExpiration, Number(time[1]));
+    setValue('expires', updateExpiration);
+  };
 
   return (
     <>
@@ -82,30 +72,31 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         groups={watch('invitedGroups') as MultipleSelectorGroup[]}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
-        isGetGroupMembersLoading={isGetGroupMembersLoading}
+        variant="light"
       />
-
-      <p className={cn('text-m font-bold', 'text-black')}>{t('survey.expirationDate')}</p>
-      <div className="flex items-center text-black">
+      <p className="text-m font-bold text-foreground">{t('survey.expirationDate')}</p>
+      <div className="flex items-center text-foreground">
         {t('common.date')}
         <div className="ml-2">
           <DatePicker
-            selected={expirationDateWatched}
-            onSelect={(value: Date | undefined) => setValue('expirationDate', value, { shouldValidate: true })}
+            selected={expiresWatched}
+            onSelect={handleExpirationDateChange}
           />
         </div>
       </div>
-      <div className="flex items-center text-black">
+      <div className="flex items-center text-foreground">
         {t('common.time')}
         <Input
           type="time"
-          value={expirationTimeWatched}
-          onChange={(e) => setValue('expirationTime', e.target.value, { shouldValidate: true })}
-          className="ml-2"
+          value={expirationTime}
+          onChange={handleExpirationTimeChange}
+          variant="default"
+          className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
+          disabled={!getValues('expires')}
         />
       </div>
-      <p className={cn('text-m font-bold', 'text-black')}>{t('surveys.saveDialog.flags')}</p>
-      <div className="flex items-center text-black">
+      <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>
+      <div className="flex items-center text-foreground">
         <Checkbox
           checked={isAnonymousWatched}
           onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
@@ -114,7 +105,16 @@ const SaveSurveyDialogBody = (props: EditSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.isAnonymous')}
       </div>
-      <div className="flex items-center text-black">
+      <div className="flex items-center text-foreground">
+        <Checkbox
+          checked={isPublicWatched}
+          onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
+          aria-label={`${t('survey.isPublic')}`}
+          className="mr-2"
+        />
+        {t('surveys.saveDialog.isPublic')}
+      </div>
+      <div className="flex items-center text-foreground">
         <Checkbox
           checked={canSubmitMultipleAnswersWatched}
           onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}

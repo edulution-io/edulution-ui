@@ -19,9 +19,9 @@
 .AppleDouble
 .LSOverride
 
+
 # Icon must end with two \r
 Icon
-
 
 # Thumbnails
 ._*
@@ -365,3 +365,7 @@ $RECYCLE.BIN/
 *.crt
 *.key
 *.pem
+
+
+#swagger
+/swagger-spec.json

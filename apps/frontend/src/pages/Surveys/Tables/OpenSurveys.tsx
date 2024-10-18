@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-// import SurveysPageView from '@libs/survey/types/page-view';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
+import SurveysPageView from '@libs/survey/types/api/page-view';
+import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
+import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const OpenSurveys = () => {
   const {
-    // selectedPageView,
-    // updateSelectedPageView,
+    selectedPageView,
+    updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
     openSurveys,
@@ -18,29 +19,28 @@ const OpenSurveys = () => {
 
   const { t } = useTranslation();
 
-  const getOpenSurveys = useCallback(() => {
-    if (!isFetchingOpenSurveys) {
-      void updateOpenSurveys();
-    }
-  }, []);
-
-  useEffect((): void => {
-    getOpenSurveys();
-  }, []);
-
-  if (isFetchingOpenSurveys) {
-    return <LoadingIndicator isOpen={isFetchingOpenSurveys} />;
-  }
+  useSurveysPageHook(
+    selectedPageView,
+    SurveysPageView.OPEN,
+    updateSelectedPageView,
+    selectSurvey,
+    updateOpenSurveys,
+    isFetchingOpenSurveys,
+    openSurveys,
+  );
 
   return (
-    <SurveysPage
-      title={t('surveys.view.open')}
-      selectSurvey={selectSurvey}
-      surveys={openSurveys || []}
-      selectedSurvey={selectedSurvey}
-      canShowResults
-      canParticipate
-    />
+    <>
+      {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
+      <SurveyTablePage
+        title={t('surveys.view.open')}
+        selectSurvey={selectSurvey}
+        surveys={openSurveys || []}
+        selectedSurvey={selectedSurvey}
+        canShowResults
+        canParticipate
+      />
+    </>
   );
 };
 

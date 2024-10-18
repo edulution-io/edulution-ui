@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/page-view';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/SurveysTablesPageStore';
-import SurveysPage from '@/pages/Surveys/Tables/components/SurveyTablePage';
+import SurveysPageView from '@libs/survey/types/api/page-view';
+import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
+import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const AnsweredSurveys = () => {
@@ -18,39 +19,31 @@ const AnsweredSurveys = () => {
 
   const { t } = useTranslation();
 
-  const getAnsweredSurveys = useCallback(() => {
-    if (!answeredSurveys || answeredSurveys.length === 0) {
-      if (!isFetchingAnsweredSurveys) {
-        void updateAnsweredSurveys();
-      }
-    }
-  }, []);
-
-  useEffect((): void => {
-    if (selectedPageView !== SurveysPageView.ANSWERED_SURVEYS) {
-      selectSurvey(undefined);
-      updateSelectedPageView(SurveysPageView.ANSWERED_SURVEYS);
-    }
-
-    getAnsweredSurveys();
-  }, []);
-
-  if (isFetchingAnsweredSurveys) {
-    return <LoadingIndicator isOpen={isFetchingAnsweredSurveys} />;
-  }
+  useSurveysPageHook(
+    selectedPageView,
+    SurveysPageView.ANSWERED,
+    updateSelectedPageView,
+    selectSurvey,
+    updateAnsweredSurveys,
+    isFetchingAnsweredSurveys,
+    answeredSurveys,
+  );
 
   return (
-    <SurveysPage
-      title={t('surveys.view.answered')}
-      selectedSurvey={selectedSurvey}
-      surveys={answeredSurveys}
-      selectSurvey={selectSurvey}
-      canEdit={false}
-      canDelete={false}
-      canShowResults
-      canParticipate
-      canShowCommitedAnswers
-    />
+    <>
+      {isFetchingAnsweredSurveys ? <LoadingIndicator isOpen={isFetchingAnsweredSurveys} /> : null}
+      <SurveyTablePage
+        title={t('surveys.view.answered')}
+        selectedSurvey={selectedSurvey}
+        surveys={answeredSurveys}
+        selectSurvey={selectSurvey}
+        canEdit={false}
+        canDelete={false}
+        canShowResults
+        canParticipate
+        canShowCommitedAnswers
+      />
+    </>
   );
 };
 

@@ -1,15 +1,27 @@
-import AuthErrorMessages from '@libs/auth/authErrorMessages';
-import UserErrorMessages from '@libs/user/user-error-messages';
-import GroupsErrorMessage from '@libs/user/types/groups/groupsErrorMessage';
+import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
-import SurveyErrorMessages from '@libs/survey/survey-error-messages';
-import SurveyAnswerErrorMessages from '@libs/survey/survey-answer-error-messages';
+import VdiErrorMessages from '@libs/desktopdeployment/types/vdiErrorMessages';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
+import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
+import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
+import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 
 type ErrorMessage =
-  | AuthErrorMessages
+  | CommonErrorMessages
   | UserErrorMessages
-  | GroupsErrorMessage
   | ConferencesErrorMessage
+  | GroupsErrorMessage
+  | AuthErrorMessages
+  | VdiErrorMessages
+  | LmnApiErrorMessage
+  | AppConfigErrorMessages
+  | FileSharingErrorMessage
+  | MailsErrorMessages
   | SurveyErrorMessages
   | SurveyAnswerErrorMessages;
 

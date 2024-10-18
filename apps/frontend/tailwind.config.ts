@@ -15,7 +15,7 @@ module.exports = {
       text: 'text-white',
     },
     extend: {
-      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt' },
+      fontSize: { h1: '37pt', h2: '30pt', h3: '20pt', h4: '17pt', p: '12pt', span: '0.875rem' },
       colors: {
         ciDarkBlue: 'hsla(var(--primary))',
         ciLightBlue: '#66B2DF',
@@ -23,7 +23,9 @@ module.exports = {
         ciRed: '#ee0505',
         ciLightRed: '#F87171',
         ciGreen: '#37ee05',
-        ciLightGrey: '#848493',
+        ciLightGrey: '#D1D5DB',
+        ciGrey: '#848493',
+        ciDarkGrey: '#2D2D30',
         border: 'hsla(var(--border))',
         input: 'hsla(var(--input))',
         ring: 'hsla(var(--ring))',
@@ -98,7 +100,7 @@ module.exports = {
   },
   plugins: [
     require('tailwindcss-animate'),
-    require('tailwind-scrollbar'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
     plugin(function ({ addBase, theme }) {
       addBase({
         ':root': {
@@ -123,12 +125,14 @@ module.exports = {
           '--destructive-foreground': '210 40% 98%',
           '--ring': '215 20.2% 65.1%',
           '--sidebar-width': '56px',
+          '--floating-buttons-height': '150px',
         },
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
         h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em', fontWeight: '700' },
         h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
+        span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
       });
     }),
   ],

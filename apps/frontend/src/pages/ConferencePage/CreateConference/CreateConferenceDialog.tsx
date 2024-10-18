@@ -1,5 +1,5 @@
 import React from 'react';
-import AdaptiveDialogSH from '@/components/ui/AdaptiveDialogSH';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import getConferencesFormSchema from '@/pages/ConferencePage/formSchema';
+import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
@@ -45,6 +45,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
       name: form.getValues('name'),
       password: form.getValues('password'),
       invitedAttendees: form.getValues('invitedAttendees'),
+      invitedGroups: form.getValues('invitedGroups'),
     };
 
     await createConference(newConference);
@@ -75,7 +76,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   );
 
   return (
-    <AdaptiveDialogSH
+    <AdaptiveDialog
       isOpen={isCreateConferenceDialogOpen}
       trigger={trigger}
       handleOpenChange={isCreateConferenceDialogOpen ? closeCreateConferenceDialog : openCreateConferenceDialog}

@@ -1,3 +1,0 @@
-const DEFAULT_CACHE_TTL_MS = 30000;
-
-export default DEFAULT_CACHE_TTL_MS;
