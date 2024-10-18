@@ -27,42 +27,45 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
 
   return (
     <>
-      <SHInput
-        {...props}
-        type={showPassword ? 'text' : type}
-        className={cn(originInputVariants({ variant, className }))}
-        ref={ref}
-      />
-      {type === 'password' ? (
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
-          {showPassword ? (
-            <button
-              type="button"
-              onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
-            >
-              <img
-                src={EyeDarkIcon}
-                alt="eye"
-                width="25px"
-              />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
-            >
-              <img
-                src={EyeDarkSlashIcon}
-                alt="eye"
-                width="25px"
-              />
-            </button>
-          )}
-        </div>
-      ) : null}
+      <div className="relative">
+        <SHInput
+          {...props}
+          type={showPassword ? 'text' : type}
+          className={cn(originInputVariants({ variant, className }))}
+          ref={ref}
+        />
+        {type === 'password' ? (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
+            {showPassword ? (
+              <button
+                type="button"
+                onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
+              >
+                <img
+                  src={EyeDarkIcon}
+                  alt="eye"
+                  width="25px"
+                />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
+              >
+                <img
+                  src={EyeDarkSlashIcon}
+                  alt="eye"
+                  width="25px"
+                />
+              </button>
+            )}
+          </div>
+        ) : null}
+      </div>
     </>
   );
 });
+
 Input.displayName = 'Input';
 
 export default Input;

@@ -28,7 +28,7 @@ const InputWithChildButton = React.forwardRef<HTMLInputElement, InputProps>(
             onClickCapture={onClick}
             disabled={disabled}
           >
-            <ButtonIcon className="h-[24px] w-[24px]" />
+            <ButtonIcon className={cn({ 'text-ciGrey': disabled }, 'h-[24px] w-[24px]')} />
           </button>
         ))}
       </div>

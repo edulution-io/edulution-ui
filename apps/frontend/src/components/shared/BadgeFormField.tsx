@@ -61,7 +61,7 @@ const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
             {badges.map((listItem) => (
               <BadgeSH
                 key={`badge-${listItem}`}
-                className="color-white h-[38px] text-white"
+                className="color-white h-[36px] text-white"
               >
                 {listItem}
                 <button
@@ -73,9 +73,9 @@ const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
                 </button>
               </BadgeSH>
             ))}
-            {!readOnly && !disabled && (
+            {!readOnly && (
               <InputWithChildButton
-                className="min-w-[250px]"
+                className="h-[36px] min-w-[250px] rounded-md"
                 placeholder={placeholder}
                 value={newLabel}
                 onChange={(e) => setNewLabel(e.target.value)}

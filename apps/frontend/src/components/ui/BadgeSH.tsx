@@ -24,7 +24,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, Varian
 
 const BadgeSH = ({ className, variant, ...props }: BadgeProps) => (
   <div
-    className={cn(badgeVariants({ variant }), className)}
+    className={cn(badgeVariants({ variant }), className, 'h-[36px]')}
     {...props}
   />
 );
