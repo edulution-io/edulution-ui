@@ -54,7 +54,7 @@ const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
         <FormItem>
           {labelTranslationId && (
             <FormLabel>
-              <p className="font-bold text-ciLightGrey">{t(labelTranslationId)}:</p>
+              <p className="font-bold text-ciLightGrey">{t(labelTranslationId)}</p>
             </FormLabel>
           )}
           <div className="flex flex-row flex-wrap gap-2">

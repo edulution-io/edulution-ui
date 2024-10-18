@@ -27,6 +27,7 @@ type FormFieldProps<T extends FieldValues> = {
   readonly?: boolean;
   value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
@@ -41,6 +42,7 @@ const FormField = <T extends FieldValues>({
   readonly = false,
   value,
   onChange,
+  className,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -53,7 +55,7 @@ const FormField = <T extends FieldValues>({
       render={({ field }) => (
         <FormItem className="items-center space-y-2">
           <FormLabel className={cn(variants({ variant }))}>
-            <p className="font-bold">{t(labelTranslationId)}:</p>
+            <p className="font-bold">{t(labelTranslationId)}</p>
           </FormLabel>
           <FormControl>
             <Input
@@ -68,6 +70,7 @@ const FormField = <T extends FieldValues>({
                 field.onChange(e);
                 if (onChange) onChange(e);
               }}
+              className={className}
             />
           </FormControl>
           <FormMessage className={cn('text-p', variants({ variant }))} />

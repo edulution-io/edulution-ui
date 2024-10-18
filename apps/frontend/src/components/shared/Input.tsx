@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Input as SHInput } from '@/components/ui/Input';
-import { EyeDarkIcon, EyeDarkSlashIcon } from '@/assets/icons';
+import { EyeLightIcon, EyeDarkIcon, EyeLightSlashIcon, EyeDarkSlashIcon } from '@/assets/icons';
 
 import cn from '@/lib/utils';
 
@@ -25,44 +25,45 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & VariantProps<typ
 const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, variant, ...props }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
 
+  const isVariantSchemeDark = variant ? ['lightGray', 'lightGrayDisabled'].includes(variant) : false;
+
   return (
-    <>
-      <div className="relative">
-        <SHInput
-          {...props}
-          type={showPassword ? 'text' : type}
-          className={cn(originInputVariants({ variant, className }))}
-          ref={ref}
-        />
-        {type === 'password' ? (
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
-            {showPassword ? (
-              <button
-                type="button"
-                onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
-              >
-                <img
-                  src={EyeDarkIcon}
-                  alt="eye"
-                  width="25px"
-                />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
-              >
-                <img
-                  src={EyeDarkSlashIcon}
-                  alt="eye"
-                  width="25px"
-                />
-              </button>
-            )}
-          </div>
-        ) : null}
-      </div>
-    </>
+    <div className="relative">
+      <SHInput
+        {...props}
+        type={showPassword ? 'text' : type}
+        className={cn(originInputVariants({ variant, className }))}
+        ref={ref}
+      />
+      {type === 'password' ? (
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
+          {showPassword ? (
+            <button
+              type="button"
+              onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
+            >
+              <img
+                src={isVariantSchemeDark ? EyeLightIcon : EyeDarkIcon}
+                alt="eye"
+                width="25px"
+                className="opacity-75"
+              />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
+            >
+              <img
+                src={isVariantSchemeDark ? EyeLightSlashIcon : EyeDarkSlashIcon}
+                alt="eye"
+                width="25px"
+              />
+            </button>
+          )}
+        </div>
+      ) : null}
+    </div>
   );
 });
 
