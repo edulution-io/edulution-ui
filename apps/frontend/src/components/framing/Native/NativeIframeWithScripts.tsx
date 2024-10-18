@@ -10,21 +10,22 @@ interface IframeAppProps {
 
 const NativeIframeWithScripts: React.FC<IframeAppProps> = ({ appName, getLoginScript, logoutScript }) => {
   const { user, getWebdavKey } = useUserStore();
-  const [webdavKey, setWebdavKey] = useState<string | null>(null);
+  const [loginScript, setLoginScript] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!webdavKey) {
-      const fetchWebdavKey = async () => {
-        const key = await getWebdavKey();
-        setWebdavKey(key);
-      };
-      void fetchWebdavKey();
-    }
+    const fetchLoginScript = async () => {
+      if (user) {
+        const webdavKey = await getWebdavKey();
+        setLoginScript(getLoginScript(user.username, webdavKey));
+      }
+    };
+
+    void fetchLoginScript();
   }, [user]);
 
-  return webdavKey ? (
+  return loginScript ? (
     <NativeIframeLayout
-      scriptOnStartUp={getLoginScript(user?.username as string, webdavKey)}
+      scriptOnStartUp={loginScript}
       scriptOnStop={logoutScript}
       appName={appName}
     />
