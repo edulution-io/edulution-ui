@@ -190,12 +190,17 @@ describe('SurveyAnswerService', () => {
 
       expect(service.getOpenSurveys).toHaveBeenCalledWith(firstUsername);
       expect(surveyModel.find).toHaveBeenCalledWith({
-        $and: [
-          { 'invitedAttendees.username': firstUsername },
+        $or: [
+          { isPublic: true },
           {
-            $or: [
-              { $nor: [{ participatedAttendees: { $elemMatch: { username: firstUsername } } }] },
-              { canSubmitMultipleAnswers: true },
+            $and: [
+              { 'invitedAttendees.username': firstUsername },
+              {
+                $or: [
+                  { $nor: [{ participatedAttendees: { $elemMatch: { username: firstUsername } } }] },
+                  { canSubmitMultipleAnswers: true },
+                ],
+              },
             ],
           },
         ],

@@ -33,8 +33,7 @@ class InitialSurveyForm implements SurveyDto {
   canShowResultsChart: boolean;
 
   constructor(creator: AttendeeDto, selectedSurvey?: SurveyDto) {
-    const time = new Date().getTime();
-    this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(time);
+    this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(new Date().getTime());
     this.formula = selectedSurvey?.formula || ({} as JSON);
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.creator = creator;

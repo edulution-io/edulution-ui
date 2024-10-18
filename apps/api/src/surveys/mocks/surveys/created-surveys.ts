@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { Survey } from '../../survey.schema';
 import { firstMockUser, secondMockUser } from '../user';
 
-export const createdSurveyId01 = new mongoose.Types.ObjectId(110);
+export const createdSurveyId01 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
 export const createdSurvey01: Survey = {
   _id: createdSurveyId01,
   id: createdSurveyId01,
@@ -32,7 +32,7 @@ export const createdSurvey01: Survey = {
   canUpdateFormerAnswer: false,
 };
 
-export const createdSurveyId02 = new mongoose.Types.ObjectId(120);
+export const createdSurveyId02 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
 export const createdSurvey02: Survey = {
   _id: createdSurveyId02,
   id: createdSurveyId02,

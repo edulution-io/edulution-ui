@@ -33,8 +33,7 @@ class EmptySurveyForm implements SurveyDto {
   canShowResultsChart: boolean;
 
   constructor(creator: AttendeeDto) {
-    const time = new Date().getTime();
-    this.id = mongoose.Types.ObjectId.createFromTime(time);
+    this.id = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
     this.formula = {} as JSON;
     this.saveNo = 0;
     this.creator = creator;

@@ -145,8 +145,7 @@ class SurveyAnswersService {
     });
 
     if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
-      const time = new Date().getTime();
-      const id = mongoose.Types.ObjectId.createFromTime(time);
+      const id = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
       const newSurveyAnswer = await this.surveyAnswerModel.create({
         _id: id,
         id,
@@ -210,8 +209,7 @@ class SurveyAnswersService {
 
     const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}` };
 
-    const time = new Date().getTime();
-    const id = mongoose.Types.ObjectId.createFromTime(time);
+    const id = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
     const newSurveyAnswer = await this.surveyAnswerModel.create({
       _id: id,
       id,

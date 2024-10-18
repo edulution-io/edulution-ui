@@ -5,7 +5,7 @@ import { firstMockUser, secondMockUser } from '../user/users';
 import { mockedParticipants } from '../user/participants';
 import { Survey } from '../../survey.schema';
 
-export const surveyUpdateSurveyId = new mongoose.Types.ObjectId(120);
+export const surveyUpdateSurveyId = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
 
 export const surveyUpdateInitialSurvey: Survey = {
   _id: surveyUpdateSurveyId,
