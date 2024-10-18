@@ -4,13 +4,13 @@ import { type VariantProps } from 'class-variance-authority';
 import cn from '@/lib/utils';
 import Input, { originInputVariants } from '@/components/shared/Input';
 
-type InputButton = { Icon: IconType; onClick: () => void };
+type ActionIcon = { Icon: IconType; onClick: () => void };
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof originInputVariants> & { inputButtons?: InputButton[] };
+  VariantProps<typeof originInputVariants> & { actionIcons?: ActionIcon[] };
 
-const InputWithChildButton = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ inputButtons, className, variant, disabled, readOnly, ...props }, ref) => (
+const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ actionIcons, className, variant, disabled, readOnly, ...props }, ref) => (
     <div className="relative">
       <Input
         {...props}
@@ -20,7 +20,7 @@ const InputWithChildButton = React.forwardRef<HTMLInputElement, InputProps>(
         readOnly={readOnly}
       />
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5 text-background">
-        {inputButtons?.map(({ Icon: ButtonIcon, onClick }, index) => (
+        {actionIcons?.map(({ Icon: ButtonIcon, onClick }, index) => (
           <button
             // eslint-disable-next-line react/no-array-index-key
             key={`input-buttons-${index}`}
@@ -35,6 +35,6 @@ const InputWithChildButton = React.forwardRef<HTMLInputElement, InputProps>(
     </div>
   ),
 );
-InputWithChildButton.displayName = 'Input';
+InputWithActionIcons.displayName = 'Input';
 
-export default InputWithChildButton;
+export default InputWithActionIcons;

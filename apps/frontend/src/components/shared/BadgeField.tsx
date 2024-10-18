@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
 import cn from '@/lib/utils';
-import InputWithChildButton from '@/components/shared/InputWithChildButtons';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Label from '@/components/ui/Label';
 
@@ -78,13 +78,13 @@ const BadgeField = (props: BadgeFieldProps) => {
             </BadgeSH>
           ))}
         {!readOnly && (
-          <InputWithChildButton
+          <InputWithActionIcons
             className="min-w-[250px]"
             placeholder={placeholder}
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             disabled={disabled || !newLabel}
-            inputButtons={[
+            actionIcons={[
               {
                 Icon: MdAddCircleOutline,
                 onClick: handleAddBadge,
