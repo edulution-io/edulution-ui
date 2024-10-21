@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import GroupList from '@/pages/ClassManagement/components/GroupList/GroupList';
 import { useTranslation } from 'react-i18next';
@@ -10,10 +10,14 @@ import { FaUsersGear } from 'react-icons/fa6';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
 import Input from '@/components/shared/Input';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
+import useScroll from '@/hooks/useScroll';
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
   const { getOwnUser, user } = useLmnApiStore();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isScrolled = useScroll(scrollContainerRef);
+
   const {
     createProject,
     updateProject,
@@ -52,13 +56,18 @@ const ProjectsPage = () => {
   ];
 
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
-      <Input
-        name="filter"
-        onChange={(e) => setFilterKeyWord(e.target.value)}
-        placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
-      />
+    <div
+      className="mt-2 max-h-[calc(100vh-50px)] overflow-y-auto scrollbar-thin"
+      ref={scrollContainerRef}
+    >
+      <div className={`sticky top-0 z-10 ${isScrolled ? ' bg-ciDarkGrey pb-1' : ''}`}>
+        <Input
+          name="filter"
+          onChange={(e) => setFilterKeyWord(e.target.value)}
+          placeholder={t('classmanagement.typeToFilter')}
+          variant="lightGray"
+        />
+      </div>
       <div className="mt-2 text-lg">{t('classmanagement.projectsPageDescription')}</div>
       <LoadingIndicator isOpen={isLoading} />
       {groupRows.map((row) => (
