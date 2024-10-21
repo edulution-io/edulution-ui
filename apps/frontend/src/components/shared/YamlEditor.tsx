@@ -7,9 +7,10 @@ import { Textarea } from '../ui/Textarea';
 type YamlEditorProps = {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 };
 
-const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange }) => {
+const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange, disabled = false }) => {
   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +63,7 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange }) => {
           'overflow-y-auto bg-ciDarkGrey text-p text-ciLightGrey scrollbar-thin placeholder:text-p focus:outline-none',
           error ? 'border border-ciLightRed' : 'border border-ciDarkGrey',
         )}
+        disabled={disabled}
       />
       {error && <p className="mt-2 text-ciLightRed">{error}</p>}
     </div>

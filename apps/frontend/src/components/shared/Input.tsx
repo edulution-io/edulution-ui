@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Input as SHInput } from '@/components/ui/Input';
 import { EyeLightIcon, EyeDarkIcon, EyeLightSlashIcon, EyeDarkSlashIcon } from '@/assets/icons';
-
 import cn from '@/lib/utils';
 
 export const originInputVariants = cva(['rounded'], {
@@ -20,52 +19,61 @@ export const originInputVariants = cva(['rounded'], {
   },
 });
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement> & VariantProps<typeof originInputVariants>;
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+  VariantProps<typeof originInputVariants> & {
+    shouldTrim?: boolean;
+  };
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, variant, ...props }, ref) => {
-  const [showPassword, setShowPassword] = useState(false);
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, variant, shouldTrim = false, onChange, ...props }, ref) => {
+    const [showPassword, setShowPassword] = useState(false);
 
-  const isVariantSchemeDark = variant ? ['lightGray', 'lightGrayDisabled'].includes(variant) : false;
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
 
-  return (
-    <div className="relative">
-      <SHInput
-        {...props}
-        type={showPassword ? 'text' : type}
-        className={cn(originInputVariants({ variant, className }))}
-        ref={ref}
-      />
-      {type === 'password' ? (
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
-          {showPassword ? (
+      const newValue = shouldTrim ? value.trim() : value;
+
+      if (onChange) {
+        onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: newValue,
+          },
+        });
+      }
+    };
+
+    const isVariantSchemeDark = variant ? ['lightGray', 'lightGrayDisabled'].includes(variant) : false;
+    const closedIcon = isVariantSchemeDark ? EyeLightIcon : EyeDarkIcon;
+    const openedIcon = isVariantSchemeDark ? EyeLightSlashIcon : EyeDarkSlashIcon;
+    return (
+      <div className="relative">
+        <SHInput
+          type={showPassword ? 'text' : type}
+          className={cn(originInputVariants({ variant, className }))}
+          ref={ref}
+          onChange={handleChange}
+          {...props}
+        />
+        {type === 'password' ? (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
             <button
               type="button"
               onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
             >
               <img
-                src={isVariantSchemeDark ? EyeLightIcon : EyeDarkIcon}
-                alt="eye"
-                width="25px"
-                className="opacity-75"
-              />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
-            >
-              <img
-                src={isVariantSchemeDark ? EyeLightSlashIcon : EyeDarkSlashIcon}
+                src={showPassword ? closedIcon : openedIcon}
                 alt="eye"
                 width="25px"
               />
             </button>
-          )}
-        </div>
-      ) : null}
-    </div>
-  );
-});
+          </div>
+        ) : null}
+      </div>
+    );
+  },
+);
 
 Input.displayName = 'Input';
 
