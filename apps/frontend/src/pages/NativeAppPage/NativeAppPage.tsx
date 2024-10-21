@@ -17,9 +17,6 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.SURVEYS]: <SurveysPage />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
-  [APPS.LEARNING_MANAGEMENT]: <FramePlaceholder />,
-  [APPS.CHAT]: <FramePlaceholder />,
-  [APPS.TICKET_SYSTEM]: <FramePlaceholder />,
 };
 
 type NativeAppPageProps = {

@@ -14,9 +14,6 @@ import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import type TApps from '@libs/appconfig/types/appsType';
-import useLearningManagementPageMenu from '@/pages/LearningManagement/useLearningManagementPageMenu';
-import useTicketSystemPageMenu from '@/pages/TicketSystem/useTicketSystemPageMenu';
-import useChatPageMenu from '@/pages/Chat/useChatPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -30,9 +27,6 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
-  const LEARNING_MANAGEMENT_MENUBAR_CONFIG = useLearningManagementPageMenu();
-  const TICKET_SYSTEM_MENUBAR_CONFIG = useTicketSystemPageMenu();
-  const CHAT_MENUBAR_CONFIG = useChatPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntryProps => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -61,15 +55,6 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
-      }
-      case APPS.LEARNING_MANAGEMENT: {
-        return LEARNING_MANAGEMENT_MENUBAR_CONFIG;
-      }
-      case APPS.TICKET_SYSTEM: {
-        return TICKET_SYSTEM_MENUBAR_CONFIG;
-      }
-      case APPS.CHAT: {
-        return CHAT_MENUBAR_CONFIG;
       }
       default: {
         return { menuItems: [], title: '', icon: '', color: '', disabled: false };
