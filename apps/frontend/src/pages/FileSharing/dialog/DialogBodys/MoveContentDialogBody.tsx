@@ -66,9 +66,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const getHiddenSegments = (): string[] => {
     const segements = pathToFetch?.split('/');
-    const index = segements?.findIndex((segment) => segment === 'collected');
-    const hiddenSegments = segements?.slice(0, index) || [];
-    return hiddenSegments;
+    const index = segements?.findIndex((segment) => segment === segements.at(segment.length));
+    return segements?.slice(0, index) || [];
   };
 
   const renderTableRow = (row: DirectoryFileDTO) => (
