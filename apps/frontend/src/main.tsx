@@ -8,7 +8,9 @@ const root = document.getElementById('root');
 if (root) {
   ReactDOM.createRoot(root).render(<App />);
 
-  window.addEventListener('load', () => {
+  const removeLoader = () => {
     root.classList.remove('loader');
-  });
+    document.removeEventListener('DOMContentLoaded', removeLoader);
+  };
+  document.addEventListener('DOMContentLoaded', removeLoader);
 }
