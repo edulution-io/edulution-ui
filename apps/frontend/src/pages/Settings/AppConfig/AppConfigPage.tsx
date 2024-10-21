@@ -96,10 +96,10 @@ const AppConfigPage: React.FC = () => {
         options: plugin.options?.map((pluginOption) => {
           const currentOption = currentExtension?.options?.find((item) => item.name === pluginOption.name);
           return {
-            name: currentOption ? currentOption.name : pluginOption.name,
-            value: currentOption ? currentOption.value : pluginOption.value || false,
-            width: currentOption ? currentOption.width : pluginOption.width || 'full',
-            type: currentOption ? currentOption.type : pluginOption.type || 'text',
+            name: currentOption?.name || pluginOption.name,
+            value: currentOption?.value || pluginOption.value || pluginOption.defaultValue,
+            width: currentOption?.width || pluginOption.width || 'full',
+            type: currentOption?.type || pluginOption.type || 'text',
           };
         }),
       };

@@ -47,7 +47,9 @@ class MailsService {
       if (!appConfig) return undefined;
       const imapExtension = appConfig?.extendedOptions.find((option) => option.name === appExtensionIMAP.name);
       if (!imapExtension) return undefined;
-      const imapExtendedOptions = imapExtension?.options.map((item) => ({ [item.name]: item.value }));
+      const imapExtendedOptions = imapExtension?.options.map((item) => ({
+        [item.name]: item.value || item.defaultValue,
+      }));
       const imapOptions = imapExtendedOptions?.reduce((acc, item) => ({ ...acc, ...item }), {});
       if (!imapOptions) {
         throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
