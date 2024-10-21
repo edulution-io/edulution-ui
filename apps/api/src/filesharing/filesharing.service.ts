@@ -14,6 +14,7 @@ import { Request, Response } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
+import LmnApiCollectOperations from '@libs/lmnApi/types/lmnApiCollectOperations';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -325,9 +326,14 @@ class FilesharingService {
     return this.onlyofficeService.handleCallback(req, res, path, filename, eduToken, this.uploadFile);
   }
 
-  async collectFiles(username: string, collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) {
+  async collectFiles(
+    username: string,
+    collectFileRequestDTO: CollectFileRequestDTO[],
+    userRole: string,
+    type: LmnApiCollectOperations,
+  ) {
     const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
-
+    Logger.log(`Collecting files for ${username} with ${type} operation`);
     try {
       await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     } catch (error) {
@@ -342,7 +348,14 @@ class FilesharingService {
       }
 
       try {
-        await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
+        if (type === LmnApiCollectOperations.CUT) {
+          await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
+        } else {
+          await this.duplicateFile(username, {
+            originFilePath: item.originPath,
+            destinationFilePaths: [item.destinationPath],
+          });
+        }
       } catch (error) {
         Logger.log(error);
       }
