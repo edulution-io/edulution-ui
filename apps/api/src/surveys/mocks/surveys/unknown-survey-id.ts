@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 
-const unknownSurveyId = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+const unknownSurveyId = getNewSurveyId();
 
 export default unknownSurveyId;

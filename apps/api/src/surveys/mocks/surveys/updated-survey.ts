@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 import { firstUsername, secondUsername } from '../user/usernames';
 import { firstMockUser, secondMockUser } from '../user/users';
 import { mockedParticipants } from '../user/participants';
 import { Survey } from '../../survey.schema';
 
-export const surveyUpdateSurveyId = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const surveyUpdateSurveyId = getNewSurveyId();
 
 export const surveyUpdateInitialSurvey: Survey = {
   _id: surveyUpdateSurveyId,

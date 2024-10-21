@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 import { Survey } from '../../survey.schema';
 import { SurveyAnswer } from '../../survey-answer.schema';
 import { firstMockUser, secondMockUser } from '../user';
@@ -6,11 +6,11 @@ import { firstMockUser, secondMockUser } from '../user';
 // -------------------------
 // Answered Survey 01
 // -------------------------
-export const idOfAnsweredSurvey01 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfAnsweredSurvey01 = getNewSurveyId();
 
 export const saveNoAnsweredSurvey01: number = 117;
-const firstUsersMockedAnswerForTheAnsweredSurvey01 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
-const secondUsersMockedAnswerForTheAnsweredSurvey01 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+const firstUsersMockedAnswerForTheAnsweredSurvey01 = getNewSurveyId();
+const secondUsersMockedAnswerForTheAnsweredSurvey01 = getNewSurveyId();
 
 export const firstUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse('{"Frage1": "User1 Antwort1"}') as JSON;
 export const secondUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse('{"Frage1": "User2 Antwort1"}') as JSON;
@@ -75,10 +75,10 @@ export const answeredSurvey01: Survey = {
 // -------------------------
 // Answered Survey 02
 // -------------------------
-export const idOfAnsweredSurvey02 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfAnsweredSurvey02 = getNewSurveyId();
 
 export const saveNoAnsweredSurvey02: number = 1;
-export const idOfTheSurveyAnswerForTheAnsweredSurvey02 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfTheSurveyAnswerForTheAnsweredSurvey02 = getNewSurveyId();
 
 export const mockedAnswerForAnsweredSurveys02: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 
@@ -128,10 +128,10 @@ export const answeredSurvey02: Survey = {
 // -------------------------
 // Answered Survey 03
 // -------------------------
-export const idOfAnsweredSurvey03 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfAnsweredSurvey03 = getNewSurveyId();
 
 export const saveNoAnsweredSurvey03: number = 3;
-const idOfTheSurveyAnswerForTheAnsweredSurvey03 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+const idOfTheSurveyAnswerForTheAnsweredSurvey03 = getNewSurveyId();
 
 export const mockedAnswerForAnsweredSurveys03: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 export const updatedMockedAnswerForAnsweredSurveys03: JSON = JSON.parse(
@@ -202,10 +202,10 @@ export const answeredSurvey03: Survey = {
 // -------------------------
 // Answered Survey 04
 // -------------------------
-export const idOfAnsweredSurvey04 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfAnsweredSurvey04 = getNewSurveyId();
 
 export const saveNoAnsweredSurvey04: number = 4;
-export const idOfTheSurveyAnswerForTheAnsweredSurvey04 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfTheSurveyAnswerForTheAnsweredSurvey04 = getNewSurveyId();
 
 export const mockedAnswerForAnsweredSurveys04: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 
@@ -255,10 +255,10 @@ export const answeredSurvey04: Survey = {
 // -------------------------
 // Answered Survey 05
 // -------------------------
-export const idOfAnsweredSurvey05 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfAnsweredSurvey05 = getNewSurveyId();
 
 export const saveNoAnsweredSurvey05: number = 5;
-export const idOfTheSurveyAnswerForTheAnsweredSurvey05 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const idOfTheSurveyAnswerForTheAnsweredSurvey05 = getNewSurveyId();
 
 export const mockedAnswerForAnsweredSurveys05: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 export const newMockedAnswerForAnsweredSurveys05: JSON = JSON.parse(

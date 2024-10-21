@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 import { Survey } from '../../survey.schema';
 import { firstMockUser, secondMockUser } from '../user/users';
 
-export const openSurveyId01 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const openSurveyId01 = getNewSurveyId();
 export const openSurvey01: Survey = {
   _id: openSurveyId01,
   id: openSurveyId01,
@@ -31,7 +31,7 @@ export const openSurvey01: Survey = {
   canSubmitMultipleAnswers: false,
 };
 
-export const openSurveyId02 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const openSurveyId02 = getNewSurveyId();
 export const openSurvey02: Survey = {
   _id: openSurveyId02,
   id: openSurveyId02,

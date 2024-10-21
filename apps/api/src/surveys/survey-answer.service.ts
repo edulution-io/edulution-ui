@@ -7,6 +7,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -145,7 +146,7 @@ class SurveyAnswersService {
     });
 
     if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
-      const id = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+      const id = getNewSurveyId();
       const newSurveyAnswer = await this.surveyAnswerModel.create({
         _id: id,
         id,
@@ -209,7 +210,7 @@ class SurveyAnswersService {
 
     const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}` };
 
-    const id = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+    const id = getNewSurveyId();
     const newSurveyAnswer = await this.surveyAnswerModel.create({
       _id: id,
       id,

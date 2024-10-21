@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 import { Survey } from '../../survey.schema';
 import { firstMockUser, secondMockUser } from '../user';
 
-export const createdSurveyId01 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const createdSurveyId01 = getNewSurveyId();
 export const createdSurvey01: Survey = {
   _id: createdSurveyId01,
   id: createdSurveyId01,
@@ -32,7 +32,7 @@ export const createdSurvey01: Survey = {
   canUpdateFormerAnswer: false,
 };
 
-export const createdSurveyId02 = mongoose.Types.ObjectId.createFromTime(new Date().getTime());
+export const createdSurveyId02 = getNewSurveyId();
 export const createdSurvey02: Survey = {
   _id: createdSurveyId02,
   id: createdSurveyId02,
