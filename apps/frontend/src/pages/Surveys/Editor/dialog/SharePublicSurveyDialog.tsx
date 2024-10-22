@@ -12,9 +12,7 @@ const SharePublicSurveyDialog = () => {
 
   const { t } = useTranslation();
 
-  // TODO: Replace the next line after the "Leistungsschau-2024 (23.09.2024)"
-  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS_ENDPOINT}/?surveyId=${publicSurveyId}` : '';
-  // `${window.location.origin}/${PUBLIC_SURVEYS_ENDPOINT}/${publicSurveyId}` : '';
+  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS_ENDPOINT}/${publicSurveyId}` : '';
 
   const copyToClipboard = () => {
     navigator.clipboard

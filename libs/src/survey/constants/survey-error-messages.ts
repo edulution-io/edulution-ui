@@ -9,6 +9,7 @@ enum SurveyErrorMessages {
   ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',
   ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
   ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
+  PermissionDenied = 'survey.errors.permissionDeniedError',
 }
 
 export default SurveyErrorMessages;

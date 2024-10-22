@@ -14,7 +14,7 @@ class SurveysService {
   async findSurvey(surveyId: mongoose.Types.ObjectId, username: string): Promise<Survey | null> {
     const survey = await this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
     if (survey == null) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
     const isCreator = survey.creator.username === username;
@@ -22,7 +22,7 @@ class SurveysService {
     if (isCreator || isAttendee) {
       return survey;
     }
-    throw new CustomHttpException(CommonErrorMessages.PermissionDenied, HttpStatus.NOT_FOUND);
+    throw new CustomHttpException(SurveyErrorMessages.PermissionDenied, HttpStatus.FORBIDDEN);
   }
 
   async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
