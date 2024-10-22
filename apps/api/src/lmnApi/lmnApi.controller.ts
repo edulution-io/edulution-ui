@@ -5,8 +5,9 @@ import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsReq
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetCurrentSchool, GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
+import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 

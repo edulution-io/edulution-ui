@@ -6,7 +6,7 @@ import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()

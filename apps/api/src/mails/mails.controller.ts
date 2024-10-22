@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/c
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto } from '@libs/mail/types';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(MAIL_ENDPOINT)
 @ApiBearerAuth()

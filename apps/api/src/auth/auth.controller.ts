@@ -5,7 +5,7 @@ import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(AUTH_PATHS.AUTH_ENDPOINT)
 @Controller(AUTH_PATHS.AUTH_ENDPOINT)
