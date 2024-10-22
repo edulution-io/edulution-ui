@@ -1,33 +1,31 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useInterval } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
+import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const AnsweredSurveys = () => {
-  const {
-    selectedPageView,
-    updateSelectedPageView,
-    selectedSurvey,
-    selectSurvey,
-    answeredSurveys,
-    isFetchingAnsweredSurveys,
-    updateAnsweredSurveys,
-  } = useSurveyTablesPageStore();
+  const { selectedSurvey, selectSurvey, answeredSurveys, isFetchingAnsweredSurveys, updateAnsweredSurveys } =
+    useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
-  useSurveysPageHook(
-    selectedPageView,
-    SurveysPageView.ANSWERED,
-    updateSelectedPageView,
-    selectSurvey,
-    updateAnsweredSurveys,
-    isFetchingAnsweredSurveys,
-    answeredSurveys,
-  );
+  const fetch = useCallback(() => {
+    if (!isFetchingAnsweredSurveys) {
+      void updateAnsweredSurveys();
+    }
+  }, []);
+
+  useEffect(() => {
+    selectSurvey(undefined);
+    void fetch();
+  }, []);
+
+  useInterval(() => {
+    void fetch();
+  }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   return (
     <>

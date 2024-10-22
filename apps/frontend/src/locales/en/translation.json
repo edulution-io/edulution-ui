@@ -327,7 +327,8 @@
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
       "participationErrorSurveyExpired": "Survey has already expired",
       "idTypeError": "Missing survey id",
-      "missingAnswerError": "Please, provide an answer for the submission"
+      "missingAnswerError": "Please, provide an answer for the submission",
+      "permissionDeniedError": "Access denied, you are neither the creator nor a participant"
     }
   },
   "survey-answer": {
@@ -545,6 +546,7 @@
   "edit": "Edit",
   "common": {
     "errors": {
+      "permissionDenied": "Access denied",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },

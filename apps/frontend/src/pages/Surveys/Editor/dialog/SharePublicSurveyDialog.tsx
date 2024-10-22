@@ -12,7 +12,7 @@ const SharePublicSurveyDialog = () => {
 
   const { t } = useTranslation();
 
-  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS_ENDPOINT}/?surveyId=${publicSurveyId}` : '';
+  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS_ENDPOINT}/${publicSurveyId}` : '';
 
   const copyToClipboard = () => {
     navigator.clipboard

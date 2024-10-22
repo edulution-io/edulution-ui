@@ -6,11 +6,9 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';
 import cn from '@/lib/utils';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface SurveysListProps {
@@ -22,14 +20,7 @@ const SurveysList = (props: SurveysListProps) => {
   const { items, className } = props;
   const { t } = useTranslation();
 
-  const { selectSurvey, updateSelectedPageView } = useSurveyTablesPageStore();
-  const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
-
-  const updateSurveyStores = (survey: SurveyDto) => {
-    updateSelectedPageView(SurveysPageView.OPEN);
-    selectSurvey(survey);
-    setIsOpenParticipateSurveyDialog(true);
-  };
+  const { selectSurvey } = useSurveyTablesPageStore();
 
   const locale = getLocaleDateFormat();
 
@@ -59,7 +50,7 @@ const SurveysList = (props: SurveysListProps) => {
         {items.map((item) => (
           <NavLink
             to={APPS.SURVEYS}
-            onClick={() => updateSurveyStores(item)}
+            onClick={() => selectSurvey(item)}
             key={item.id.toString('base64')}
             className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
           >

@@ -28,7 +28,6 @@ interface ParticipateDialogBodyProps {
   ) => Promise<void>;
   updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   className?: string;
 }
 
@@ -44,9 +43,9 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     commitAnswer,
     updateOpenSurveys,
     updateAnsweredSurveys,
-    setIsOpenParticipateSurveyDialog,
     className,
   } = props;
+
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
@@ -73,8 +72,8 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     await commitAnswer(surveyId, saveNo, answer /* , _options */);
     updateOpenSurveys();
     updateAnsweredSurveys();
-    setIsOpenParticipateSurveyDialog(false);
   });
+
   return (
     <div className={className}>
       <Survey model={surveyModel} />

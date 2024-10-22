@@ -1,12 +1,11 @@
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 
 interface SurveysTablesPageStore {
-  selectedPageView: SurveysPageView;
-  updateSelectedPageView: (pageView: SurveysPageView) => void;
-
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
+
+  updateSelectedSurvey: (surveyId: string) => Promise<void>;
+  isFetching: boolean;
 
   updateUsersSurveys: () => Promise<void>;
 

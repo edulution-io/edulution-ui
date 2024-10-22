@@ -1,10 +1,11 @@
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SurveysPageView from '@libs/survey/types/api/page-view';
+import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 
 const useSurveysPageMenu = () => {
-  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const menuBar = (): MenuBarEntryProps => ({
     title: 'surveys.title',
@@ -16,7 +17,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.open',
         icon: SurveysViewOpenIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.OPEN });
+          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.OPEN}`);
         },
       },
       {
@@ -24,7 +25,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.answered',
         icon: SurveysViewAnsweredIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.ANSWERED });
+          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.ANSWERED}`);
         },
       },
       {
@@ -32,7 +33,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.created',
         icon: UserIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.CREATED });
+          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.CREATED}`);
         },
       },
       {
@@ -40,7 +41,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.editor',
         icon: PlusIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.CREATOR });
+          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.CREATOR}`);
         },
       },
     ],
