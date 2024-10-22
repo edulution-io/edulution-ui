@@ -41,23 +41,44 @@ class MailsService {
   }
 
   async getImapOptions(): Promise<MailImapOptions | undefined> {
-    const chachedData = await this.cacheManager.get<MailImapOptions>(MAIL_IMAP_CACHE.CACHE_KEY);
-    if (!chachedData) {
-      const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
-      if (!appConfig) return undefined;
-      const imapExtension = appConfig?.extendedOptions.find((option) => option.name === appExtensionIMAP.name);
-      if (!imapExtension) return undefined;
-      const imapExtendedOptions = imapExtension?.options.map((item) => ({
-        [item.name]: item.value || item.defaultValue,
-      }));
-      const imapOptions = imapExtendedOptions?.reduce((acc, item) => ({ ...acc, ...item }), {});
-      if (!imapOptions) {
-        throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
-      }
-      void this.cacheManager.set(MAIL_IMAP_CACHE.CACHE_KEY, imapOptions, MAIL_IMAP_CACHE.CACHE_TTL);
-      return imapOptions as MailImapOptions;
+    const cachedData = await this.cacheManager.get<MailImapOptions>(MAIL_IMAP_CACHE.CACHE_KEY);
+    if (
+      cachedData &&
+      cachedData.MAIL_IMAP_URL !== undefined &&
+      cachedData.MAIL_IMAP_PORT !== undefined &&
+      cachedData.MAIL_IMAP_SECURE !== undefined &&
+      cachedData.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED !== undefined
+    ) {
+      return cachedData;
     }
-    return chachedData;
+
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+    if (!appConfig) return undefined;
+
+    const imapExtension = appConfig?.extendedOptions.find((option) => option.name === appExtensionIMAP.name);
+    if (!imapExtension) return undefined;
+
+    const imapOptions = imapExtension.options.reduce(
+      (acc, item) => {
+        acc[item.name] = item.value !== undefined ? item.value : item.defaultValue;
+        return acc;
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<string, any>,
+    ) as MailImapOptions;
+
+    if (
+      imapOptions &&
+      imapOptions.MAIL_IMAP_URL !== undefined &&
+      imapOptions.MAIL_IMAP_PORT !== undefined &&
+      imapOptions.MAIL_IMAP_SECURE !== undefined &&
+      imapOptions.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED !== undefined
+    ) {
+      void this.cacheManager.set(MAIL_IMAP_CACHE.CACHE_KEY, imapOptions, MAIL_IMAP_CACHE.CACHE_TTL);
+      return imapOptions;
+    }
+
+    throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
   }
 
   async getMails(username: string, password: string): Promise<MailDto[]> {
@@ -67,8 +88,12 @@ class MailsService {
     }
 
     const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = imapOptions;
-
-    if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT) {
+    if (
+      !MAIL_IMAP_URL ||
+      !MAIL_IMAP_PORT ||
+      MAIL_IMAP_SECURE === undefined ||
+      MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === undefined
+    ) {
       throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
 
@@ -107,7 +132,7 @@ class MailsService {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { or: [{ new: true }, { seen: false }, { recent: true }] },
+        '1:*', // { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
           envelope: true,
