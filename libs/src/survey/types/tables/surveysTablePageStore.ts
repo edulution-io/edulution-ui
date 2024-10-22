@@ -23,9 +23,6 @@ interface SurveysTablesPageStore {
   updateAnsweredSurveys: () => Promise<void>;
   isFetchingAnsweredSurveys: boolean;
 
-  updateSelectedSurvey: (surveyId: string) => Promise<void>;
-  isFetching: boolean;
-
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   selectedItems: SurveyDto[];

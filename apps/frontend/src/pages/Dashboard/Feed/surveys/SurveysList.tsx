@@ -7,11 +7,11 @@ import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
-import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';
 import cn from '@/lib/utils';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import getSurveyTitle from '@libs/survey/utils/getSurveyTitle';
 
 interface SurveysListProps {
   items: SurveyDto[];
@@ -34,11 +34,10 @@ const SurveysList = (props: SurveysListProps) => {
   const locale = getLocaleDateFormat();
 
   const getSurveyInfo = (survey: SurveyDto) => {
-    const surveyFormula = JSON.parse(JSON.stringify(survey.formula)) as SurveyFormulaDto;
-
+    const surveyTitle = getSurveyTitle(survey);
     return (
       <div className="flex w-full flex-col gap-1">
-        <span className="text-sm font-semibold">{surveyFormula?.title || survey.id.toString('hex')}</span>
+        <span className="text-sm font-semibold">{surveyTitle}</span>
         <p className="line-clamp-2 text-sm text-muted-foreground">
           {`${t('survey.created')}:  `}
           {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : t('not-available')}

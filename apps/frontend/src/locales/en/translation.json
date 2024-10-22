@@ -643,7 +643,8 @@
     "filename": "Filename",
     "size": "Size",
     "lastModified": "Last Modified",
-    "type": "Type"
+    "type": "Type",
+    "rowsSelected": "{{selected}} of {{total}} file(s) were selected"
   },
   "filesharingUpload": {
     "title": "Upload Files",

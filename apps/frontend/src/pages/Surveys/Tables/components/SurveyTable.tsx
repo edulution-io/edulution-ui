@@ -22,14 +22,13 @@ interface DataTableProps<TData, TValue> {
 
 const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const setSelectedItems = useSurveyTablesPageStore((state) => state.setSelectedItems);
+
+  const { setSelectedItems, selectedRows, setSelectedRows } = useSurveyTablesPageStore();
+
   const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
-    const newValue =
-      typeof updaterOrValue === 'function'
-        ? updaterOrValue(useSurveyTablesPageStore.getState().selectedRows)
-        : updaterOrValue;
-    useSurveyTablesPageStore.getState().setSelectedRows(newValue);
+    const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
+    setSelectedRows(newValue);
   };
 
   const table = useReactTable({
@@ -43,7 +42,7 @@ const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TVa
     onRowSelectionChange: handleRowSelectionChange,
     state: {
       sorting,
-      rowSelection: useSurveyTablesPageStore((state) => state.selectedRows),
+      rowSelection: selectedRows,
     },
   });
 
@@ -53,66 +52,55 @@ const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TVa
   }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
-    <>
-      {table.getFilteredSelectedRowModel().rows.length > 0 && (
-        <div className="flex-1 text-sm text-background">
-          {t('table.rowsSelected', {
-            selected: table.getFilteredSelectedRowModel().rows.length,
-            total: table.getFilteredRowModel().rows.length,
-          })}
-        </div>
-      )}
-
-      <div className="w-full flex-1 ">
-        <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
+    <div className="w-full flex-1 ">
+      <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow
+                key={headerGroup.id}
+                className="text-background"
+              >
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody className="container">
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={headerGroup.id}
-                  className="text-background"
+                  key={row.id}
+                  data-state={row.getIsSelected() ? 'selected' : undefined}
+                  className="cursor-pointer"
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="h-[40px] text-background"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    className="cursor-pointer"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="h-[40px] text-background"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-16 text-center text-background"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </div>
-    </>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-16 text-center text-background"
+                >
+                  {t('table.noDataAvailable')}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </ScrollArea>
+    </div>
   );
 };
 

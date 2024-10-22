@@ -643,7 +643,8 @@
     "filename": "Dateiname",
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
-    "type": "Typ"
+    "type": "Typ",
+    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
@@ -666,7 +667,7 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Zeile(n) ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
