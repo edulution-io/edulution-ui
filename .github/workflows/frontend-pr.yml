@@ -1,4 +1,4 @@
-name: Pull Request -> Build + Tests and Checks
+name: On Pull Request -> Build + Tests and Checks
 
 on:
   pull_request:
@@ -139,7 +139,7 @@ jobs:
             buildId=${{ github.sha }}
             version=${{ steps.generate_docker_tags_api.outputs.docker_tags_api }}
           context: .
-          file: apps/frontend/Dockerfile
+          file: apps/api/Dockerfile
           push: true
           tags: ${{ steps.generate_docker_tags_api.outputs.docker_tags_api }}
 
