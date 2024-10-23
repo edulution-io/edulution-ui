@@ -6,29 +6,25 @@
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import PublicSurveysController from './public-surveys.controller';
 import {
-  unknownSurveyId,
-  idOfPublicSurvey01,
-  publicSurvey01,
-  idOfPublicSurvey02,
-  saveNoPublicSurvey02,
-  publicSurvey02,
-  // idOfTheValidSurveyAnswerForThePublicSurvey02,
-  surveyValidAnswerPublicSurvey02,
-  mockedValidAnswerForPublicSurveys02,
-  publicSurvey02AfterAddingValidAnswer,
   filteredChoices,
   filteredChoicesAfterAddingValidAnswer,
-  // surveyInvalidAnswerPublicSurvey02,
-  // mockedInvalidAnswerForPublicSurveys02,
-  // publicSurvey02BackendLimiter,
+  idOfPublicSurvey01,
+  idOfPublicSurvey02,
+  mockedValidAnswerForPublicSurveys02,
+  publicSurvey01,
+  publicSurvey02,
+  publicSurvey02AfterAddingValidAnswer,
   publicSurvey02QuestionIdWithLimiters,
+  saveNoPublicSurvey02,
+  surveyValidAnswerPublicSurvey02,
+  unknownSurveyId,
 } from './mocks';
 
 describe(PublicSurveysController.name, () => {

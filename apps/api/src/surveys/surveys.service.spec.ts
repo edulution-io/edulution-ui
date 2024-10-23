@@ -9,17 +9,17 @@ import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/contants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import {
-  surveyUpdateInitialSurvey,
-  surveyUpdateUpdatedSurvey,
-  surveyUpdateSurveyId,
   createdSurvey02,
-  unknownSurveyId,
   idOfPublicSurvey01,
   publicSurvey01,
+  surveyUpdateInitialSurvey,
+  surveyUpdateSurveyId,
+  surveyUpdateUpdatedSurvey,
+  unknownSurveyId,
 } from './mocks';
 
 describe('SurveyService', () => {
