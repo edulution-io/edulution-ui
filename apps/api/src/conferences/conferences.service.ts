@@ -270,19 +270,30 @@ class ConferencesService {
   }
 
   async remove(meetingIDs: string[], username: string, conferencesSseConnections: UserConnections): Promise<boolean> {
-    try {
-      const result = await this.conferenceModel
-        .deleteMany({
-          meetingID: { $in: meetingIDs },
-          'creator.username': username,
-        })
-        .exec();
-      return result.deletedCount > 0;
-    } catch (e) {
+    const conferences = await this.conferenceModel.find({ meetingID: { $in: meetingIDs } }, { _id: 0, __v: 0 }).lean();
+
+    if (conferences.length === 0) {
       throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
-    } finally {
-      SseService.informAllUsers(conferencesSseConnections, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
     }
+
+    const result = await this.conferenceModel
+      .deleteMany({
+        meetingID: { $in: meetingIDs },
+        'creator.username': username,
+      })
+      .exec();
+
+    if (result.deletedCount === 0) {
+      throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
+    }
+
+    const invitedMembersList = (
+      await Promise.all(conferences.map((conference) => this.getInvitedMembers(conference)))
+    ).flat();
+
+    SseService.sendEventToUsers(invitedMembersList, conferencesSseConnections, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
+
+    return true;
   }
 
   async createChecksum(method = '', query = '') {

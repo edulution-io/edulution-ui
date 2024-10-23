@@ -63,6 +63,7 @@ const mockSseConnections: UserConnections = new Map();
 const conferencesModelMock = {
   create: jest.fn().mockResolvedValue(mockConferenceDocument),
   find: jest.fn().mockReturnValue({
+    lean: jest.fn().mockResolvedValue([mockConferenceDocument]),
     exec: jest.fn().mockResolvedValue([mockConferenceDocument]),
   }),
   findOne: jest.fn().mockReturnValue({
@@ -149,9 +150,21 @@ describe(ConferencesService.name, () => {
 
   describe('remove', () => {
     it('should remove a conference', async () => {
-      const result = await service.remove(['1'], mockCreator.username, mockSseConnections);
+      const result = await service.remove(
+        [mockConferenceDocument.meetingID],
+        mockJWTUser.preferred_username,
+        mockSseConnections,
+      );
+
       expect(result).toBeTruthy();
-      expect(model.deleteMany).toHaveBeenCalled();
+      expect(conferencesModelMock.find).toHaveBeenCalledWith(
+        { meetingID: { $in: [mockConferenceDocument.meetingID] } },
+        { _id: 0, __v: 0 },
+      );
+      expect(conferencesModelMock.deleteMany).toHaveBeenCalledWith({
+        meetingID: { $in: [mockConferenceDocument.meetingID] },
+        'creator.username': mockCreator.username,
+      });
     });
   });
 
