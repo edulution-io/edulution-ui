@@ -66,6 +66,7 @@ const conferencesModelMock = {
     exec: jest.fn().mockResolvedValue([mockConferenceDocument]),
   }),
   findOne: jest.fn().mockReturnValue({
+    lean: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue(mockConferenceDocument),
   }),
   findOneAndUpdate: jest.fn().mockReturnValue({

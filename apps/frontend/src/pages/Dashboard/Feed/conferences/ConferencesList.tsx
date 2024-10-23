@@ -1,5 +1,5 @@
 import React from 'react';
-import Conference from '@libs/conferences/types/conference.dto';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 import cn from '@/lib/utils';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -7,7 +7,7 @@ import { Button } from '@/components/shared/Button';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 
 interface ConferencesListProps {
-  items: Conference[];
+  items: ConferenceDto[];
   className?: string;
 }
 
@@ -18,7 +18,7 @@ const ConferencesList = (props: ConferencesListProps) => {
 
   const { joinConference } = useConferenceDetailsDialogStore();
 
-  const getShownBadges = (item: Conference) => {
+  const getShownBadges = (item: ConferenceDto) => {
     const badges: React.ReactNode[] = [];
     for (let i = 0; i < Math.min(NUMBER_OF_BADGES_TO_SHOW, item.joinedAttendees.length); i += 1) {
       const name =

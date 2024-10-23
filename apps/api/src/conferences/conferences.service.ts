@@ -134,12 +134,17 @@ class ConferencesService {
       throw new CustomHttpException(ConferencesErrorMessage.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
-      SseService.sendEventToUsers(
-        invitedMembersList,
-        conferencesSseConnections,
-        createConferenceDto,
-        SSE_MESSAGE_TYPE.CREATED,
-      );
+      const conference = await this.conferenceModel
+        .findOne({ meetingID: newConference.meetingID }, { _id: 0, __v: 0 })
+        .lean();
+      if (conference) {
+        SseService.sendEventToUsers(
+          invitedMembersList,
+          conferencesSseConnections,
+          conference,
+          SSE_MESSAGE_TYPE.CREATED,
+        );
+      }
     }
   }
 

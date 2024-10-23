@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
@@ -11,6 +11,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import APPS from '@libs/appconfig/constants/apps';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 
 const useNotifications = () => {
   const { isSuperAdmin } = useLdapGroups();
@@ -18,9 +19,28 @@ const useNotifications = () => {
   const isMailsAppActivated = useIsMailsActive();
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsConferenceActive();
-  const { getConferences } = useConferenceStore();
+  const { conferences, getConferences, setConferences } = useConferenceStore();
+  const conferencesRef = useRef(conferences);
   const isSurveysAppActivated = useIsSurveysActive();
   const { updateOpenSurveys } = useSurveyTablesPageStore();
+
+  useEffect(() => {
+    conferencesRef.current = conferences;
+  }, [conferences]);
+
+  useEffect(() => {
+    if (isMailsAppActivated && !isSuperAdmin) {
+      void getMails();
+    }
+
+    if (isSurveysAppActivated) {
+      void updateOpenSurveys();
+    }
+
+    if (isConferenceAppActivated) {
+      void getConferences();
+    }
+  }, [isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 
   useInterval(() => {
     if (isMailsAppActivated && !isSuperAdmin) {
@@ -32,17 +52,50 @@ const useNotifications = () => {
     if (isConferenceAppActivated) {
       const eventSource = new EventSource(`${EDU_API_ROOT}/${APPS.CONFERENCES}/sse?token=${eduApiToken}`);
 
-      eventSource.onmessage = () => {
-        void getConferences();
+      const createConferenceHandler = (e: MessageEvent<string>) => {
+        const conferenceDto = JSON.parse(e.data) as ConferenceDto;
+        const newConferences = [...conferencesRef.current, conferenceDto];
+        setConferences(newConferences);
       };
 
+      const updateConferenceHandler = (e: MessageEvent<string>) => {
+        if (conferencesRef.current.length === 0) return;
+        const { type, data } = e;
+        const newConferences = conferencesRef.current.map((conference) => {
+          if (conference.meetingID === data) {
+            return {
+              ...conference,
+              isRunning: type === 'started',
+            };
+          }
+          return conference;
+        });
+        setConferences(newConferences);
+      };
+
+      const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
+        const { data } = e;
+        const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
+        setConferences(newConferences);
+      };
+
+      eventSource.addEventListener('created', createConferenceHandler);
+      eventSource.addEventListener('started', updateConferenceHandler);
+      eventSource.addEventListener('stopped', updateConferenceHandler);
+      eventSource.addEventListener('deleted', deleteConferenceHandler);
+
       return () => {
+        eventSource.removeEventListener('created', createConferenceHandler);
+        eventSource.removeEventListener('started', updateConferenceHandler);
+        eventSource.removeEventListener('stopped', updateConferenceHandler);
+        eventSource.removeEventListener('deleted', deleteConferenceHandler);
+
         eventSource.close();
       };
     }
 
     return undefined;
-  }, [isConferenceAppActivated]);
+  }, [isConferenceAppActivated, eduApiToken]);
 
   useEffect(() => {
     if (isSurveysAppActivated) {
@@ -59,20 +112,6 @@ const useNotifications = () => {
 
     return undefined;
   }, [isSurveysAppActivated]);
-
-  useEffect(() => {
-    if (isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
-
-    if (isSurveysAppActivated) {
-      void updateOpenSurveys();
-    }
-
-    if (isConferenceAppActivated) {
-      void getConferences();
-    }
-  }, [isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 };
 
 export default useNotifications;
