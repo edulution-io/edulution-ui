@@ -66,11 +66,8 @@ export class LmnApiController {
   }
 
   @Get('school-classes')
-  async getUserSchoolClasses(
-    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @GetCurrentSchool() schoolClasses: string,
-  ) {
-    return this.lmnApiService.getUserSchoolClasses(lmnApiToken, schoolClasses);
+  async getUserSchoolClasses(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentSchool() school: string) {
+    return this.lmnApiService.getUserSchoolClasses(lmnApiToken, school);
   }
 
   @Put('school-classes/:schoolClass/:action')
