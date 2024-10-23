@@ -1,11 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -34,6 +29,7 @@ describe('SurveyService', () => {
   let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
+    Logger.error = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       providers: [
@@ -85,8 +81,8 @@ describe('SurveyService', () => {
       try {
         await service.findPublicSurvey(idOfPublicSurvey01);
       } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
+        const error = e as Error;
+        expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
       expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
     });
@@ -110,8 +106,8 @@ describe('SurveyService', () => {
       try {
         await service.deleteSurveys(surveyIds, mockSseConnections);
       } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(SurveyErrorMessages.DeleteError);
+        const error = e as Error;
+        expect(error.message).toEqual(SurveyErrorMessages.DeleteError);
       }
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     });
@@ -140,8 +136,8 @@ describe('SurveyService', () => {
       try {
         await service.createSurvey(surveyUpdateInitialSurvey, mockSseConnections);
       } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
+        const error = e as Error;
+        expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
       expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
     });
@@ -177,8 +173,8 @@ describe('SurveyService', () => {
       try {
         await service.updateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);
       } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(CommonErrorMessages.DBAccessFailed);
+        const error = e as Error;
+        expect(error.message).toBe(CommonErrorMessages.DBAccessFailed);
       }
     });
 
@@ -217,8 +213,8 @@ describe('SurveyService', () => {
       try {
         await service.updateOrCreateSurvey(surveyUpdateInitialSurvey, mockSseConnections);
       } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.UpdateOrCreateError);
+        const error = e as Error;
+        expect(error.message).toBe(SurveyErrorMessages.UpdateOrCreateError);
       }
     });
   });
