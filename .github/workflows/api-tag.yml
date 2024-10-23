@@ -1,4 +1,4 @@
-name: CI API
+name: CI API for creating an Image
 
 on:
   push:
