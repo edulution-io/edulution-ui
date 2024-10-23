@@ -62,8 +62,8 @@ jobs:
 
       - name: Wait for MongoDB and Redis to be ready
         run: |
-          docker-compose exec mongoEdu mongo --eval 'db.runCommand({ connectionStatus: 1 })'
-          docker-compose exec redisEdu redis-cli ping
+          docker-compose exec -T mongoEdu mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+          docker-compose exec -T redisEdu redis-cli ping
 
       - name: Build Frontend
         run: |
