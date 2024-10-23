@@ -550,6 +550,9 @@
       "envAccessError": "Not able to read environment variables"
     },
     "actions": "Actions",
+    "forward": "Forward",
+    "showOptions": "Show options",
+    "open": "Open",
     "and": "and",
     "yes": "Yes",
     "no": "No",

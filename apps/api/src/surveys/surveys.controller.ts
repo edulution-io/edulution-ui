@@ -9,11 +9,11 @@ import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import JWTUser from '../types/JWTUser';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 

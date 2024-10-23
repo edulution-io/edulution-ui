@@ -16,7 +16,7 @@ import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys'
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import APPS from '@libs/appconfig/constants/apps';
-import JWTUser from '../types/JWTUser';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';

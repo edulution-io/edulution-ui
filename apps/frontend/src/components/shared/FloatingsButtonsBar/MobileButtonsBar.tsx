@@ -1,13 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import { HiOutlineChevronDoubleUp, HiOutlineChevronDoubleDown } from 'react-icons/hi';
+import React, { useMemo, useState } from 'react';
+import { HiOutlineChevronDoubleDown, HiOutlineChevronDoubleUp } from 'react-icons/hi';
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
 import { Button } from '@/components/shared/Button';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { IconContext } from 'react-icons';
+import { useTranslation } from 'react-i18next';
 
 const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const { config } = props;
+  const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,6 +50,7 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
         variant="btn-hexagon"
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-8 left-1/2 -translate-x-1/2"
+        hexagonIconAltText={isOpen ? t('common.close') : t('common.open')}
       >
         <IconContext.Provider value={iconContextValue}>
           {isOpen ? <HiOutlineChevronDoubleDown /> : <HiOutlineChevronDoubleUp />}

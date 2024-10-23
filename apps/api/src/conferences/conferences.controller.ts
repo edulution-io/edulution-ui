@@ -4,10 +4,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import JWTUser from '../types/JWTUser';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 
