@@ -45,7 +45,7 @@ const jwtUser: JWTUser = {
   given_name: '',
   family_name: '',
   email: '',
-  school: '',
+  school: 'default-school',
   ldapGroups: [],
 };
 
