@@ -8,7 +8,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';

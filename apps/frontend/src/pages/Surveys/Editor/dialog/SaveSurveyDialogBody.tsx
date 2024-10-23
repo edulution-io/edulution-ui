@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { setHours, setMinutes, getHours, getMinutes } from 'date-fns';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/UserStore';
