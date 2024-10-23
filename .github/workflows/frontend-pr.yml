@@ -35,7 +35,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
   build-frontend:
     runs-on: ubuntu-22.04
@@ -65,8 +65,13 @@ jobs:
           node-version: 20.x
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Restore cached Node.js modules
+        uses: actions/cache@v4.0.2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Build Frontend
         run: |
@@ -119,8 +124,13 @@ jobs:
           node-version: 20.x
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Restore cached Node.js modules
+        uses: actions/cache@v4.0.2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Build Backend
         run: npm run build:api
@@ -160,14 +170,19 @@ jobs:
           node-version: 20.x
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Restore cached Node.js modules
+        uses: actions/cache@v4.0.2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Run Checks and Tests
         run: |
           npm run check-circular-deps
           npm run check-translations
           npm run check-error-message-translations
-          pretty-quick --check
+          npx pretty-quick --check
           npm run lint
           npm run test
