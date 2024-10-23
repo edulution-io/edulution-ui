@@ -68,7 +68,7 @@ jobs:
       - name: Check environment
         run: |
           echo $PATH
-          ls node_modules
+          ls -la
 
       - name: Restore cached Node.js modules
         uses: actions/cache@v4.0.2
@@ -132,7 +132,7 @@ jobs:
       - name: Check environment
         run: |
           echo $PATH
-          ls node_modules
+          ls -la
 
       - name: Restore cached Node.js modules
         uses: actions/cache@v4.0.2
@@ -183,7 +183,7 @@ jobs:
       - name: Check environment
         run: |
           echo $PATH
-          ls node_modules
+          ls -la
 
       - name: Restore cached Node.js modules
         uses: actions/cache@v4.0.2
