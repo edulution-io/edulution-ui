@@ -2,7 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
-import JWTUser from '../../types/JWTUser';
+
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 
 @Injectable()
 class TokenService {

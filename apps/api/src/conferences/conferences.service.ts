@@ -10,7 +10,7 @@ import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMes
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
-import JWTUser from '../types/JWTUser';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';

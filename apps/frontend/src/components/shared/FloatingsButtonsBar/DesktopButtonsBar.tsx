@@ -1,5 +1,5 @@
 import React from 'react';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
