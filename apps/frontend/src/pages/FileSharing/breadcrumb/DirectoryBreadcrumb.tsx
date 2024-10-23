@@ -60,12 +60,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
     }
   };
 
-  const shouldShowDropdown = () => {
-    if (clearSegments?.length === 0) {
-      return segments.length > displaySegments;
-    }
-    return segments.length - clearSegments.length > displaySegments;
-  };
+  const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (
     <Breadcrumb style={style}>
@@ -82,7 +77,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
           </BreadcrumbItem>
         )}
 
-        {shouldShowDropdown() ? (
+        {shouldShowDropdown ? (
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
