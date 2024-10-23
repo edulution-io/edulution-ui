@@ -6,7 +6,7 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
 import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
-import NativeFrames from '@/components/framing/NativeFrames';
+import NativeFrames from '@/components/framing/Native/NativeFrames';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';

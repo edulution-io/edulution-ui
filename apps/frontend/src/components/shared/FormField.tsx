@@ -5,7 +5,7 @@ import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 
 const variants = cva([], {
   variants: {

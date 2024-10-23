@@ -1,6 +1,6 @@
 import useUserStore from '@/store/UserStore/UserStore';
 import { useAuth } from 'react-oidc-context';
-import cleanAllStores from '@/store/utilis/cleanAllStores';
+import cleanAllStores from '@/store/utils/cleanAllStores';
 
 const useLogout = () => {
   const auth = useAuth();
