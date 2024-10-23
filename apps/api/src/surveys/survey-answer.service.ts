@@ -8,6 +8,7 @@ import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-erro
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -146,7 +147,7 @@ class SurveyAnswersService {
 
     const isCreator = survey.creator.username === username;
     const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
-    const canParticipate = isCreator || isAttendee;
+    const canParticipate = isCreator || !!isAttendee;
     if (!canParticipate) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
     }
@@ -156,8 +157,7 @@ class SurveyAnswersService {
     });
 
     if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
-      const time = new Date().getTime();
-      const id = mongoose.Types.ObjectId.createFromTime(time);
+      const id = getNewSurveyId();
       const newSurveyAnswer = await this.surveyAnswerModel.create({
         _id: id,
         id,
@@ -221,8 +221,7 @@ class SurveyAnswersService {
 
     const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}` };
 
-    const time = new Date().getTime();
-    const id = mongoose.Types.ObjectId.createFromTime(time);
+    const id = getNewSurveyId();
     const newSurveyAnswer = await this.surveyAnswerModel.create({
       _id: id,
       id,
