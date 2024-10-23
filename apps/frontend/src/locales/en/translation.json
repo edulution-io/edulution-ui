@@ -507,7 +507,12 @@
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": {
-      "mfa": "Setup Two-Factor-Authentication"
+      "mfa": "Two-Factor-Authentication",
+      "mfaInfo": "Currently the Two-Factor-Authentication is",
+      "enabled": "enabled",
+      "enable": "Enable",
+      "disabled": "disabled",
+      "disable": "Disable"
     },
     "addTotp": {
       "title": "QR-Code",

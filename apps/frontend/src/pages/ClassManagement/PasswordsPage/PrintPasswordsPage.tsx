@@ -9,12 +9,17 @@ import ClassList from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassList
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
+import useElementHeight from '@/hooks/useElementHeight';
+
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 const PrintPasswordsPage: React.FC = () => {
   const { t } = useTranslation();
   const { getOwnUser, user } = useLmnApiStore();
   const { userSchoolClasses, fetchUserSchoolClasses } = useClassManagementStore();
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
+  const [selectedClasses, setSelectedClasses] = useState<LmnApiSchoolClass[]>([]);
 
   useEffect(() => {
     void getOwnUser();
@@ -40,24 +45,37 @@ const PrintPasswordsPage: React.FC = () => {
     },
   ];
 
+  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FILTER_BAR_ID, FOOTER_ID], selectedClasses) + 10;
+
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
+    <div>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
         variant="lightGray"
+        id={FILTER_BAR_ID}
+        className="my-2"
       />
-      <div className="mt-2 text-lg">{t('classmanagement.printPasswordsPageDescription')}</div>
-      {groupRows.map((row) => (
-        <div
-          key={row.name}
-          className="mt-4"
-        >
-          <h4>{t(`classmanagement.printPasswords`)}</h4>
-          <ClassList row={row} />
-        </div>
-      ))}
+      <div
+        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        <div className="mt-2 text-lg">{t('classmanagement.printPasswordsPageDescription')}</div>
+        {groupRows.map((row) => (
+          <div
+            key={row.name}
+            className="mt-4"
+          >
+            <h4>{t(`classmanagement.printPasswords`)}</h4>
+            <ClassList
+              row={row}
+              selectedClasses={selectedClasses}
+              setSelectedClasses={setSelectedClasses}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

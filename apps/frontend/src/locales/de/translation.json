@@ -508,7 +508,12 @@
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
     "config": {
-      "mfa": "Zweifaktorauthentifizierung aktivieren"
+      "mfa": "Zwei-Faktor-Authentisierung",
+      "mfaInfo": "Aktuell ist die Zwei-Faktor-Authentisierung",
+      "enabled": "aktiviert",
+      "enable": "Aktivieren",
+      "disabled": "deaktiviert",
+      "disable": "Deaktivieren"
     },
     "addTotp": {
       "title": "QR-Code",

@@ -1,7 +1,7 @@
-import JWTUser from '../../../types/JWTUser';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 import { firstUsername, secondUsername } from './usernames';
 
-export const firstMockJWTUser: JWTUser = {
+export const firstMockJWTUser: JwtUser = {
   exp: 0,
   iat: 0,
   jti: '',
@@ -22,7 +22,7 @@ export const firstMockJWTUser: JWTUser = {
   ldapGroups: [],
 };
 
-export const secondMockJWTUser: JWTUser = {
+export const secondMockJWTUser: JwtUser = {
   exp: 0,
   iat: 0,
   jti: '',

@@ -8,7 +8,10 @@ interface LoadingIndicatorProps {
 
 const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => (
   <Dialog open={isOpen}>
-    <DialogContent showCloseButton={false}>
+    <DialogContent
+      showCloseButton={false}
+      variant="primary"
+    >
       <DialogTitle aria-disabled />
       <DialogHeader>
         <div className="flex flex-col items-center justify-center space-y-4">

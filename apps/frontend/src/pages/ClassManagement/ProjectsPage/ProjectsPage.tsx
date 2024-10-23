@@ -10,6 +10,10 @@ import { FaUsersGear } from 'react-icons/fa6';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
 import Input from '@/components/shared/Input';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
+
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
@@ -51,26 +55,35 @@ const ProjectsPage = () => {
     },
   ];
 
+  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FILTER_BAR_ID, FOOTER_ID]) + 10;
+
   return (
-    <div className="mt-6 max-h-[calc(100vh-50px)] overflow-y-auto">
+    <div>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
         variant="lightGray"
+        id={FILTER_BAR_ID}
+        className="my-2"
       />
-      <div className="mt-2 text-lg">{t('classmanagement.projectsPageDescription')}</div>
-      <LoadingIndicator isOpen={isLoading} />
-      {groupRows.map((row) => (
-        <div
-          key={row.name}
-          className="mt-4"
-        >
-          <h4>{t(`classmanagement.${row.name}`)}</h4>
-          <GroupList row={row} />
-        </div>
-      ))}
+      <div
+        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        <div className="mt-2 text-lg">{t('classmanagement.projectsPageDescription')}</div>
+        {groupRows.map((row) => (
+          <div
+            key={row.name}
+            className="mt-4"
+          >
+            <h4>{t(`classmanagement.${row.name}`)}</h4>
+            <GroupList row={row} />
+          </div>
+        ))}
+      </div>
       <ProjectsFloatingButtonsBar />
+      <LoadingIndicator isOpen={isLoading} />
     </div>
   );
 };
