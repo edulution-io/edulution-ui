@@ -42,6 +42,7 @@ const mockJWTUser: JWTUser = {
   given_name: 'firstName',
   family_name: 'lastName',
   email: '',
+  school: 'default-school',
   ldapGroups: [],
 };
 

@@ -11,7 +11,8 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
