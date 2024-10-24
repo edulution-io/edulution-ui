@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ColumnDef,
@@ -10,7 +10,6 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -23,7 +22,7 @@ interface DataTableProps<TData, TValue> {
 const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const { setSelectedItems, selectedRows, setSelectedRows } = useSurveyTablesPageStore();
+  const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -45,11 +44,6 @@ const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TVa
       rowSelection: selectedRows,
     },
   });
-
-  useEffect(() => {
-    const selectedItemFilenames = table.getFilteredSelectedRowModel().rows.map((row) => row.original as SurveyDto);
-    setSelectedItems(selectedItemFilenames);
-  }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
     <div className="w-full flex-1 ">

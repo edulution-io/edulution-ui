@@ -26,19 +26,14 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       />
     ),
     cell: ({ row }) => {
-      const { selectSurvey, setSelectedRows } = useSurveyTablesPageStore();
-      const survey = row.original;
-      const surveyTitle = getSurveyTitle(survey);
+      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
+      const surveyTitle = getSurveyTitle(row.original);
       return (
         <div className="w-full">
           <SelectableTextCell
             row={row}
             text={surveyTitle}
-            onClick={() => {
-              setSelectedRows({});
-              selectSurvey(survey);
-              row.toggleSelected();
-            }}
+            onClick={() => onClickSurveysTableCell(row)}
           />
         </div>
       );
@@ -55,20 +50,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       />
     ),
     cell: ({ row }) => {
-      const { selectSurvey, setSelectedRows } = useSurveyTablesPageStore();
-      const survey = row.original;
+      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       const localDateFormat = getLocaleDateFormat();
       return (
-        <ButtonSH
-          onClick={() => {
-            setSelectedRows({});
-            selectSurvey(survey);
-            row.toggleSelected();
-          }}
-        >
+        <ButtonSH onClick={() => onClickSurveysTableCell(row)}>
           <span className="overflow-hidden text-ellipsis font-medium">
-            {survey?.created
-              ? format(survey.created, 'PPP', { locale: localDateFormat })
+            {row.original?.created
+              ? format(row.original.created, 'PPP', { locale: localDateFormat })
               : i18next.t('common.not-available')}
           </span>
         </ButtonSH>
@@ -86,20 +74,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       />
     ),
     cell: ({ row }) => {
-      const { selectSurvey, setSelectedRows } = useSurveyTablesPageStore();
-      const survey = row.original;
+      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       const localDateFormat = getLocaleDateFormat();
       return (
-        <ButtonSH
-          onClick={() => {
-            setSelectedRows({});
-            selectSurvey(survey);
-            row.toggleSelected();
-          }}
-        >
+        <ButtonSH onClick={() => onClickSurveysTableCell(row)}>
           <span className="overflow-hidden text-ellipsis font-medium">
-            {survey?.expires
-              ? format(survey.expires, 'PPP', { locale: localDateFormat })
+            {row.original?.expires
+              ? format(row.original.expires, 'PPP', { locale: localDateFormat })
               : i18next.t('common.not-available')}
           </span>
         </ButtonSH>
@@ -118,19 +99,14 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       />
     ),
     cell: ({ row }) => {
-      const { selectSurvey, setSelectedRows } = useSurveyTablesPageStore();
-      const survey = row.original;
+      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       return (
         <ButtonSH
           className="hidden lg:flex"
-          onClick={() => {
-            setSelectedRows({});
-            selectSurvey(survey);
-            row.toggleSelected();
-          }}
+          onClick={() => onClickSurveysTableCell(row)}
         >
           <span className="flex justify-center font-medium">
-            {survey?.participatedAttendees.length || 0} / {survey?.invitedAttendees.length || 0}
+            {row.original?.participatedAttendees.length || 0} / {row.original?.invitedAttendees.length || 0}
           </span>
         </ButtonSH>
       );

@@ -1,4 +1,4 @@
-import { RowSelectionState } from '@tanstack/react-table';
+import { Row, RowSelectionState } from '@tanstack/react-table';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 
@@ -25,8 +25,8 @@ interface SurveysTablesPageStore {
 
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
-  selectedItems: SurveyDto[];
-  setSelectedItems: (items: SurveyDto[]) => void;
+
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => void;
 
   reset: () => void;
 }
