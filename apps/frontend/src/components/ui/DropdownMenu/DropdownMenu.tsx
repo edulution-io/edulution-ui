@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import styles from './dropdownmenu.module.scss';
 
 export type DropdownOptions = {

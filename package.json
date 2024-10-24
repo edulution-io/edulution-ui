@@ -1,10 +1,11 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.0.15",
+  "version": "1.0.20",
   "scripts": {
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test --detectOpenHandles",
+    "test:frontend": "nx run frontend:test",
     "test-with-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "dev": "nx serve frontend",
@@ -21,6 +22,7 @@
     "lint:fix": "nx run-many --target=lint --projects=frontend,api,libs --fix",
     "preview": "nx preview frontend",
     "prepare": "husky install",
+    "precommit": "npm run test && npm run build:all",
     "check-circular-deps": "./scripts/checkCircDeps.sh",
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
