@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sv-svg-icon {
+  background-color: unset;
+  fill: theme("colors.ciLightGrey");
+  color: theme("colors.ciLightGrey");
+}
+
+.sv-action-bar-item__icon,
+.sv-action-bar-item__icon use,
+.sv-action-bar-item--secondary,
+.sv-action-bar-item--secondary use .sv-action-bar-item__icon use {
+  fill: theme("colors.ciLightGrey");
+  color: theme("colors.ciLightGrey");
+}
+
+.sv-list__item,
+.sv-list__item-body {
+  fill: theme("colors.ciDarkGrey") !important;
+  background-color: theme("colors.ciDarkGrey") !important;
+}
+
+.sv-list__item:hover,
+.sv-list__item:focus,
+.sv-list__item--hovered,
+.sv-list__item--focused,
+.sv-list__item--pressed,
+.sv-list__item-body:hover,
+.sv-list__item-body:focus,
+.sv-list__item-body--hovered,
+.sv-list__item-body--focused,
+.sv-list__item-body--pressed {
+  fill: theme("colors.ciGrey") !important;
+  background-color: theme("colors.ciGrey") !important;
+}
+
+.sd-title,
+.sd-table,
+.sd-table__cell,
+.sd-table-wrapper:before,
+.sd-table-wrapper:after,
+.sd-root-modern,
+.spg-panel__title {
+  background-color: unset !important;
+}
+
+.sd-description,
+.sd-page__title,
+.spg-panel__title,
+.spg-question__title,
+.sd-question__title,
+.spg-action-button__text,
+.sd-item__control-label,
+.sv-action-bar-item__title {
+  color: theme("colors.ciLightGrey") !important;
+}
+
+.spg-panel__title--expanded {
+  background-color: theme("colors.ciGrey") !important;
+}
+
+.spg-checkbox__svg {
+  fill: theme("colors.ciLightGrey") !important;
+  color: theme("colors.ciLightGrey") !important;
+}
+
+.spg-search-editor_container {
+  height: 56px;
+  width: 100%;
+  background: theme("colors.ciGrey") !important;
+}
+
+.sv-popup--dropdown-overlay .sv-list__filter {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.spg-panel__content,
+.sv-popup__body-content,
+.sd-element--collapsed > .sd-element__header {
+  background-color: theme("colors.ciDarkGrey") !important;
+}
+
+.sd-container-modern,
+.sd-container-modern--static {
+  max-width: calc(100% - 20px) !important;
+  width: 100%;
+  max-height: calc(100% - 20px) !important;
+  height: 100%;
+}

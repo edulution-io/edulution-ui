@@ -27,25 +27,23 @@ class SurveysService {
     }
   }
 
-  async updateSurvey(survey: Survey): Promise<Survey | null> {
-    return this.surveyModel
-      .findByIdAndUpdate<Survey>(
-        // eslint-disable-next-line no-underscore-dangle
-        survey._id,
-        { ...survey },
-      )
-      .exec()
-      .catch((error) => {
-        throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-      });
-  }
-
   async createSurvey(survey: Survey): Promise<Survey | null> {
     try {
       return await this.surveyModel.create(survey);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
+  }
+
+  async updateSurvey(survey: Survey): Promise<Survey | null> {
+    try {
+      // eslint-disable-next-line no-underscore-dangle
+      return await this.surveyModel.findByIdAndUpdate(survey._id, { ...survey });
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+
+    // TODO: NIEDUUI-405: Survey: Update backendLimiters on question removal or name change of a question
   }
 
   async updateOrCreateSurvey(survey: Survey): Promise<Survey | null> {

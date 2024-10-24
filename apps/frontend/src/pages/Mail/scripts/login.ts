@@ -9,14 +9,14 @@ const getLoginScript = (user: string, password: string) => `
 
         passwordField.value = '${password}';
         passwordField.dispatchEvent(new Event('input', { bubbles: true }));
-      }
 
-      const submitButton = document.querySelector('button[type="submit"]');
-      if (submitButton && !submitButton.disabled) {
-        submitButton.click();
+        const submitButton = document.querySelector('button[type="submit"]');
+        if (submitButton && !submitButton.disabled) {
+          submitButton.click();
+        }
       }
     }
-    
+
     document.addEventListener('DOMContentLoaded', function() {
       fillAndSubmitLoginForm();
     });
