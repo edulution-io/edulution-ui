@@ -7,6 +7,8 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 
+import { FLOATING_BUTTONS_BAR_ID } from '@libs/common/constants/pageElementIds';
+
 const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const { config } = props;
   const { t } = useTranslation();
@@ -39,13 +41,14 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
     ) : null;
   });
 
-  const getDialogBody = () => <div className="flex flex-wrap justify-center p-4">{floatingButtons}</div>;
+  const getDialogBody = () => <div className="flex flex-wrap justify-center px-4">{floatingButtons}</div>;
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   return (
     <>
       <Button
+        id={FLOATING_BUTTONS_BAR_ID}
         type="button"
         variant="btn-hexagon"
         onClick={() => setIsOpen(!isOpen)}
@@ -62,8 +65,7 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
         handleOpenChange={() => setIsOpen(!isOpen)}
         title=""
         body={getDialogBody()}
-        mobileContentClassName="h-fit h-max-1/2"
-        desktopContentClassName=" bg-black"
+        mobileContentClassName="bg-black h-fit h-max-1/2"
       />
     </>
   );
