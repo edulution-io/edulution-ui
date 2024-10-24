@@ -12,20 +12,28 @@ import type SseEventData from '../types/sseEventData';
 class SseService {
   static subscribe(username: string, userConnections: UserConnections, res: Response): Observable<MessageEvent> {
     const subject = new Subject<SseEvent>();
+
     if (!userConnections.has(username)) {
-      userConnections.set(username, subject);
+      userConnections.set(username, []);
     }
 
+    userConnections.get(username)?.push(subject);
+
     res.on('close', () => {
-      userConnections.delete(username);
+      const connections = userConnections.get(username);
+      if (connections) {
+        const index = connections.indexOf(subject);
+        if (index !== -1) {
+          connections.splice(index, 1);
+        }
+        if (connections.length === 0) {
+          userConnections.delete(username);
+        }
+      }
       subject.complete();
     });
 
-    const userConnection = userConnections.get(username);
-    if (userConnection) {
-      return userConnection.pipe(map((event: SseEvent) => ({ data: event.data, type: event.type }) as MessageEvent));
-    }
-    throw new Error(`User connection for ${username} is undefined.`);
+    return subject.pipe(map((event: SseEvent) => ({ data: event.data, type: event.type }) as MessageEvent));
   }
 
   static sendEventToUser(
@@ -34,9 +42,11 @@ class SseService {
     data: SseEventData,
     type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE,
   ) {
-    const userStream = userConnections.get(username);
-    if (userStream) {
-      userStream.next({ username, type, data });
+    const userStreams = userConnections.get(username);
+    if (userStreams) {
+      userStreams.forEach((subject) => {
+        subject.next({ username, type, data });
+      });
     }
   }
 
@@ -49,11 +59,13 @@ class SseService {
     data: SseEventData,
     type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE,
   ): void {
-    userConnections.forEach((subject, username) => {
-      subject.next({
-        username,
-        type,
-        data,
+    userConnections.forEach((subjects, username) => {
+      subjects.forEach((subject) => {
+        subject.next({
+          username,
+          type,
+          data,
+        });
       });
     });
   }
