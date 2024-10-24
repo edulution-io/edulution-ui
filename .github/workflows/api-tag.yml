@@ -1,4 +1,4 @@
-name: CI API for creating an Image
+name: CI API for building the container
 
 on:
   push:
