@@ -111,7 +111,7 @@ const useNotifications = () => {
     }
 
     return undefined;
-  }, [isSurveysAppActivated]);
+  }, [isSurveysAppActivated, eduApiToken]);
 };
 
 export default useNotifications;
