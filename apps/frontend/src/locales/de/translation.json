@@ -568,6 +568,9 @@
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
     "actions": "Aktionen",
+    "forward": "Weiterleiten",
+    "showOptions": "Optionen zeigen",
+    "open": "Öffnen",
     "and": "und",
     "yes": "Ja",
     "no": "Nein",

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import cn from '@libs/common/utils/className';
 import { Input as SHInput } from '@/components/ui/Input';
 import { EyeLightIcon, EyeDarkIcon, EyeLightSlashIcon, EyeDarkSlashIcon } from '@/assets/icons';
-import cn from '@/lib/utils';
 
 export const originInputVariants = cva(['rounded'], {
   variants: {

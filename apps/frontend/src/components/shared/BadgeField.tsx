@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Label from '@/components/ui/Label';

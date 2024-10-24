@@ -3,7 +3,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
 import { Card, CardContent } from '@/components/shared/Card';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import Checkbox from '@/components/ui/Checkbox';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';

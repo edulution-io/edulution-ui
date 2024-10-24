@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ButtonSH as SHButton } from '@/components/ui/ButtonSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { HexagonIcon } from '@/assets/layout';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 
 const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-background'], {
   variants: {
@@ -26,36 +26,39 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof originButtonVariants> & {
     asChild?: boolean;
+    hexagonIconAltText?: string;
   };
 
 const defaultProps: Partial<ButtonProps> = {
   asChild: false,
 };
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, children, ...props }, ref) => {
-  Button.displayName = 'Button';
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, hexagonIconAltText, children, ...props }, ref) => {
+    Button.displayName = 'Button';
 
-  return (
-    <SHButton
-      {...props}
-      className={cn(originButtonVariants({ variant, className }))}
-      ref={ref}
-    >
-      {variant === 'btn-hexagon' ? (
-        <div className="relative flex items-center justify-center bg-black bg-opacity-50">
-          <img
-            className="absolute"
-            src={HexagonIcon}
-            alt=""
-          />
-          <div className="">{children}</div>
-        </div>
-      ) : (
-        children
-      )}
-    </SHButton>
-  );
-});
+    return (
+      <SHButton
+        {...props}
+        className={cn(originButtonVariants({ variant, className }))}
+        ref={ref}
+      >
+        {variant === 'btn-hexagon' ? (
+          <div className="relative flex items-center justify-center">
+            <img
+              className="absolute"
+              src={HexagonIcon}
+              alt={hexagonIconAltText}
+            />
+            <div className="">{children}</div>
+          </div>
+        ) : (
+          children
+        )}
+      </SHButton>
+    );
+  },
+);
 
 Button.defaultProps = defaultProps;
 

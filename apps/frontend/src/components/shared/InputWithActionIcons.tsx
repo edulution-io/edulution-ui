@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconType } from 'react-icons';
 import { type VariantProps } from 'class-variance-authority';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import Input, { originInputVariants } from '@/components/shared/Input';
 
 type ActionIcon = { Icon: IconType; onClick: () => void };

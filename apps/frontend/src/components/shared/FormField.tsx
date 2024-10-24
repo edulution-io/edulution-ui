@@ -2,7 +2,7 @@ import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { cva, type VariantProps } from 'class-variance-authority';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import Input from '@/components/shared/Input';
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
