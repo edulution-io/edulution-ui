@@ -644,7 +644,7 @@
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt"
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {

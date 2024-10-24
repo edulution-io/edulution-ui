@@ -644,7 +644,7 @@
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type",
-    "rowsSelected": "{{selected}} of {{total}} file(s) were selected"
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
   },
   "filesharingUpload": {
     "title": "Upload Files",
