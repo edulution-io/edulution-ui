@@ -13,6 +13,7 @@ import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
 import Attendee from './attendee.schema';
 import type UserConnections from '../types/userConnections';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -76,11 +77,6 @@ const conferencesModelMock = {
   deleteMany: jest.fn().mockReturnValue({
     exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
   }),
-};
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
 };
 
 describe(ConferencesService.name, () => {

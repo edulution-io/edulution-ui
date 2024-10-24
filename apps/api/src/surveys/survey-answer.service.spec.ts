@@ -63,11 +63,7 @@ import {
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import SurveysService from './surveys.service';
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-};
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswersService;

@@ -27,11 +27,7 @@ import {
   surveyValidAnswerPublicSurvey02,
   unknownSurveyId,
 } from './mocks';
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-};
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;

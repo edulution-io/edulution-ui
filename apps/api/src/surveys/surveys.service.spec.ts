@@ -17,12 +17,9 @@ import {
   unknownSurveyId,
 } from './mocks';
 import UserConnections from '../types/userConnections';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockSseConnections: UserConnections = new Map();
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-};
 
 describe('SurveyService', () => {
   let service: SurveysService;
