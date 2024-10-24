@@ -58,7 +58,7 @@ const ProjectsPage = () => {
   const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FILTER_BAR_ID, FOOTER_ID]) + 10;
 
   return (
-    <div>
+    <>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
@@ -84,7 +84,7 @@ const ProjectsPage = () => {
       </div>
       <ProjectsFloatingButtonsBar />
       <LoadingIndicator isOpen={isLoading} />
-    </div>
+    </>
   );
 };
 

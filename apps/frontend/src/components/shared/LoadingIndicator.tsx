@@ -10,7 +10,7 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => (
   <Dialog open={isOpen}>
     <DialogContent
       showCloseButton={false}
-      variant="primary"
+      variant="loadingSpinner"
     >
       <DialogTitle aria-disabled />
       <DialogHeader>
