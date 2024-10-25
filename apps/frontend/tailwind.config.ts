@@ -26,6 +26,7 @@ module.exports = {
         ciLightGrey: '#D1D5DB',
         ciGrey: '#848493',
         ciDarkGrey: '#2D2D30',
+        ciDarkGreyDisabled: '#1a1a1b',
         border: 'hsla(var(--border))',
         input: 'hsla(var(--input))',
         ring: 'hsla(var(--ring))',

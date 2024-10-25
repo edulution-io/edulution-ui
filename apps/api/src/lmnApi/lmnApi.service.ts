@@ -27,6 +27,7 @@ import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import UsersService from '../users/users.service';
 
@@ -321,6 +322,35 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.GetUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
+  }
+
+  public async updateUser(
+    lmnApiToken: string,
+    userDetails: Partial<UpdateUserDetailsDto>,
+    username: string,
+  ): Promise<boolean> {
+    try {
+      const answer = await this.enqueue(() =>
+        this.lmnApi.post(
+          `${USERS_LMN_API_ENDPOINT}/${username}`,
+          { ...userDetails },
+          {
+            headers: {
+              accept: 'text/plain',
+              'Content-Type': 'application/json',
+              [HTTP_HEADERS.Authorization]: `Bearer ${lmnApiToken}`,
+              [HTTP_HEADERS.XApiKey]: lmnApiToken,
+            },
+          },
+        ),
+      );
+      if (answer.status === 200) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 
   public async getUsersQuota(lmnApiToken: string, username: string): Promise<QuotaResponse> {
