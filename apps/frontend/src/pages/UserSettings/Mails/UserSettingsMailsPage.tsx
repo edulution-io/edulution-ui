@@ -97,13 +97,15 @@ const UserSettingsMailsPage: React.FC = () => {
   );
 
   return (
-    <div className="bottom-[32px] left-4 right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
-      <NativeAppHeader
-        title={t('mail.sidebar')}
-        description={null}
-        iconSrc={MailIcon}
-      />
-      <StateLoader isLoading={isEditSyncJobLoading} />
+    <div className="bottom-[32px] left-[16px] right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
+      <div className="flex flex-row justify-between">
+        <NativeAppHeader
+          title={t('mail.sidebar')}
+          description={null}
+          iconSrc={MailIcon}
+        />
+        <StateLoader isLoading={isEditSyncJobLoading} />
+      </div>
       <div className="p-4">
         <h3>{t('mail.importer.title')}</h3>
         <div className="space-y-4">
@@ -123,10 +125,12 @@ const UserSettingsMailsPage: React.FC = () => {
             </form>
           </Form>
         </div>
+      </div>
+      <div className="px-4">
         <h3 className="pt-5">{t('mail.importer.syncJobsTable')}</h3>
         <MailImporterTable />
-        <FloatingButtonsBar config={config} />
       </div>
+      <FloatingButtonsBar config={config} />
     </div>
   );
 };

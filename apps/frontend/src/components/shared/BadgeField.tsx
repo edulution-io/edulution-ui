@@ -59,7 +59,7 @@ const BadgeField = (props: BadgeFieldProps) => {
             <BadgeSH
               key={`badge-${listItem}`}
               className={cn(
-                'h-[38px]',
+                'h-[36px] py-0',
                 { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },
                 { 'color-white text-white': !readOnly },
                 className,

@@ -4,6 +4,8 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
 
+import { FLOATING_BUTTONS_BAR_ID } from '@libs/common/constants/pageElementIds';
+
 const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const { config } = props;
   const { buttons, keyPrefix } = config;
@@ -36,13 +38,14 @@ const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   });
   return (
     <div
+      id={FLOATING_BUTTONS_BAR_ID}
       className={cn(
-        'fixed bottom-8 right-[var(--sidebar-width)] p-4',
+        'fixed bottom-8 right-[var(--sidebar-width)] px-4',
         { 'left-0': menuBar.disabled },
         { 'left-64': !menuBar.disabled },
       )}
     >
-      <div className="flex-basis-0 flex flex-grow-0 flex-wrap justify-start overflow-y-auto ">{floatingButtons}</div>
+      <div className="flex flex-grow-0 flex-wrap justify-start overflow-y-auto ">{floatingButtons}</div>
     </div>
   );
 };
