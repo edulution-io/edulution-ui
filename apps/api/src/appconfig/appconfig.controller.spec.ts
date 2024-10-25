@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import { AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
+import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
@@ -58,18 +59,21 @@ describe('AppConfigController', () => {
           },
           extendedOptions: [
             {
-              name: AppExtendedOptions.ONLY_OFFICE_URL,
-              value: 'https://example.com/api/',
-              title: 'OnlyOffice URL',
-              description: 'The URL for OnlyOffice',
-              type: 'input',
-            },
-            {
-              name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
-              value: 'secret-key',
-              title: 'OnlyOffice Secret',
-              description: 'The secret key for OnlyOffice',
-              type: 'input',
+              name: appExtensionOnlyOffice.name,
+              options: [
+                {
+                  name: FileSharingAppExtensions.ONLY_OFFICE_URL,
+                  value: 'https://example.com/api/',
+                  type: 'text',
+                  width: 'full',
+                },
+                {
+                  name: FileSharingAppExtensions.ONLY_OFFICE_JWT_SECRET,
+                  value: 'secret-key',
+                  type: 'text',
+                  width: 'full',
+                },
+              ],
             },
           ],
           accessGroups: [
@@ -94,18 +98,21 @@ describe('AppConfigController', () => {
           },
           extendedOptions: [
             {
-              name: AppExtendedOptions.ONLY_OFFICE_URL,
-              value: 'https://example.com/api/',
-              title: 'OnlyOffice URL',
-              description: 'The URL for OnlyOffice',
-              type: 'input',
-            },
-            {
-              name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
-              value: 'secret-key',
-              title: 'OnlyOffice Secret',
-              description: 'The secret key for OnlyOffice',
-              type: 'input',
+              name: appExtensionOnlyOffice.name,
+              options: [
+                {
+                  name: FileSharingAppExtensions.ONLY_OFFICE_URL,
+                  value: 'https://example.com/api/',
+                  type: 'text',
+                  width: 'full',
+                },
+                {
+                  name: FileSharingAppExtensions.ONLY_OFFICE_JWT_SECRET,
+                  value: 'secret-key',
+                  type: 'text',
+                  width: 'full',
+                },
+              ],
             },
           ],
           accessGroups: [

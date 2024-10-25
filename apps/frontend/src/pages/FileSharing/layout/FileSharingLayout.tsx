@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
+import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
@@ -10,7 +13,6 @@ import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import isValidFile from '@libs/filesharing/utils/isValidFile';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import { appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 
 interface FileSharingLayoutProps {
   files: DirectoryFileDTO[];
@@ -23,7 +25,13 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   const { appConfigs } = useAppConfigsStore();
 
   const documentServerURL = useMemo(
-    () => getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_URL),
+    () =>
+      getExtendedOptionValue(
+        appConfigs,
+        APPS.FILE_SHARING,
+        appExtensionOnlyOffice.name,
+        FileSharingAppExtensions.ONLY_OFFICE_URL,
+      ),
     [appConfigs],
   );
 

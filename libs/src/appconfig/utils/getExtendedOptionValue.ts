@@ -1,23 +1,29 @@
 import { AppConfigDto } from '@libs/appconfig/types';
-import { AppExtendedOptions, AppExtendedType } from '@libs/appconfig/constants/appExtendedType';
+import AppConfigExtensions from '@libs/appconfig/types/appConfigExtensions';
 
 const getExtendedOptionValue = (
   appConfigs: AppConfigDto[],
-  extendedOptionsConfig: AppExtendedType,
-  optionName: AppExtendedOptions,
-): string | undefined => {
-  const validOptionNames = extendedOptionsConfig['ONLY_OFFICE'].map((item) => item.name);
+  appName: string,
+  appExtensionName: string,
+  appExtensionOptionsName: AppConfigExtensions,
+): string | number | boolean | undefined => {
+  const appConfig = appConfigs.find((config) => config.name === appName);
+  if (!appConfig) return undefined;
 
-  const appConfig = appConfigs.find(
-    (config) => config.extendedOptions && config.extendedOptions.some((opt) => validOptionNames.includes(opt.name)),
-  );
+  const appExtensions = appConfig.extendedOptions?.find((extension) => extension.name === appExtensionName);
+  if (!appExtensions) return undefined;
 
-  if (appConfig && appConfig.extendedOptions) {
-    const foundOption = appConfig.extendedOptions.find((opt) => opt.name === optionName);
-    return foundOption?.value;
+  const option = appExtensions.options.find((opt) => opt.name === appExtensionOptionsName);
+  switch (option?.type) {
+    case 'text':
+      return option?.value as string;
+    case 'number':
+      return option?.value as number;
+    case 'boolean':
+      return option?.value as boolean;
+    default:
+      return undefined;
   }
-
-  return undefined;
 };
 
 export default getExtendedOptionValue;

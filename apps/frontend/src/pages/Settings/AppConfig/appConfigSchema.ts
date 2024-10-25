@@ -11,8 +11,26 @@ APP_CONFIG_OPTIONS.forEach((item) => {
     });
   }
   if (item.extendedOptions) {
-    item.extendedOptions.forEach((extension) => {
-      formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
+    item.extendedOptions.forEach((appExtension) => {
+      if (appExtension.options) {
+        formSchemaObject[`${item.id}.extendedOptions`] = z
+          .array(
+            z.object({
+              name: z.string(),
+              options: z.array(
+                z.object({
+                  name: z.string(),
+                  value: z.any(),
+                  width: z.string().optional(),
+                  type: z.string().optional(),
+                  defaultValue: z.any().optional(),
+                  choices: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
+                }),
+              ),
+            }),
+          )
+          .optional();
+      }
     });
   }
 });

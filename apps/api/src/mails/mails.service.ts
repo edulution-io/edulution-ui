@@ -1,24 +1,24 @@
 import { Model } from 'mongoose';
+import axios, { AxiosInstance } from 'axios';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
-import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
+import { ArgumentMetadata, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import axios, { AxiosInstance } from 'axios';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import APPS from '@libs/appconfig/constants/apps';
+import MAIL_IMAP_CACHE from '@libs/mail/constants/mail-chache';
+import MailImapOptions from '@libs/mail/types/mail-imap-options';
+import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
+import AppConfigService from '../appconfig/appconfig.service';
 
-const {
-  MAIL_IMAP_URL,
-  MAIL_API_URL,
-  MAIL_IMAP_PORT,
-  MAIL_IMAP_SECURE,
-  MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
-  MAIL_API_KEY,
-} = process.env;
+const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
 class MailsService {
@@ -26,7 +26,11 @@ class MailsService {
 
   private imapClient: ImapFlow;
 
-  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
+    private readonly appConfigService: AppConfigService,
+  ) {
     this.mailcowApi = axios.create({
       baseURL: `${MAIL_API_URL}/api/v1`,
       headers: {
@@ -36,21 +40,69 @@ class MailsService {
     });
   }
 
-  async getMails(username: string, password: string): Promise<MailDto[]> {
-    // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT || !MAIL_IMAP_SECURE || !MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) {
-      return [];
+  async getImapOptions(): Promise<MailImapOptions | undefined> {
+    const cachedData = await this.cacheManager.get<MailImapOptions>(MAIL_IMAP_CACHE.CACHE_KEY);
+    if (
+      cachedData &&
+      cachedData.MAIL_IMAP_URL !== undefined &&
+      cachedData.MAIL_IMAP_PORT !== undefined &&
+      cachedData.MAIL_IMAP_SECURE !== undefined &&
+      cachedData.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED !== undefined
+    ) {
+      return cachedData;
     }
-    if (Number.isNaN(Number(MAIL_IMAP_PORT))) {
-      throw new CustomHttpException(MailsErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
+
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+    if (!appConfig) return undefined;
+
+    const imapExtension = appConfig?.extendedOptions.find((option) => option.name === appExtensionIMAP.name);
+    if (!imapExtension) return undefined;
+
+    const imapOptions = imapExtension.options.reduce(
+      (acc, item) => {
+        acc[item.name] = item.value !== undefined ? item.value : item.defaultValue;
+        return acc;
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<string, any>,
+    ) as MailImapOptions;
+
+    if (
+      imapOptions &&
+      imapOptions.MAIL_IMAP_URL !== undefined &&
+      imapOptions.MAIL_IMAP_PORT !== undefined &&
+      imapOptions.MAIL_IMAP_SECURE !== undefined &&
+      imapOptions.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED !== undefined
+    ) {
+      void this.cacheManager.set(MAIL_IMAP_CACHE.CACHE_KEY, imapOptions, MAIL_IMAP_CACHE.CACHE_TTL);
+      return imapOptions;
+    }
+
+    throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
+  }
+
+  async getMails(username: string, password: string): Promise<MailDto[]> {
+    const imapOptions = await this.getImapOptions();
+    if (!imapOptions) {
+      throw new CustomHttpException(MailsErrorMessages.NotAbleToFetchMailsError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    const { MAIL_IMAP_URL, MAIL_IMAP_PORT, MAIL_IMAP_SECURE, MAIL_IMAP_TLS_REJECT_UNAUTHORIZED } = imapOptions;
+    if (
+      !MAIL_IMAP_URL ||
+      !MAIL_IMAP_PORT ||
+      MAIL_IMAP_SECURE === undefined ||
+      MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === undefined
+    ) {
+      throw new CustomHttpException(CommonErrorMessages.EnvAccessError, HttpStatus.FAILED_DEPENDENCY);
     }
 
     this.imapClient = new ImapFlow({
       host: MAIL_IMAP_URL,
-      port: Number(MAIL_IMAP_PORT),
-      secure: MAIL_IMAP_SECURE === 'true',
+      port: MAIL_IMAP_PORT,
+      secure: MAIL_IMAP_SECURE,
       tls: {
-        rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',
+        rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
       },
       auth: {
         user: username,
@@ -80,7 +132,7 @@ class MailsService {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { or: [{ new: true }, { seen: false }, { recent: true }] },
+        '1:*', // { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
           envelope: true,

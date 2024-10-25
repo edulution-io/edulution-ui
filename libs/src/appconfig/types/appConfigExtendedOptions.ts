@@ -1,3 +1,8 @@
-type AppConfigExtendedOptionsType = 'name' | 'type' | 'description' | 'value';
+import AppConfigExtendedOption from '@libs/appconfig/types/appConfigExtendedOption';
 
-export default AppConfigExtendedOptionsType;
+type AppConfigExtendedOptions = {
+  name: string;
+  options: AppConfigExtendedOption[];
+};
+
+export default AppConfigExtendedOptions;
