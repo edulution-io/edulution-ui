@@ -33,6 +33,7 @@ export const surveyUpdateInitialSurvey: Survey = {
   expirationTime: '14:30',
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+  isPublic: false,
 };
 
 export const surveyUpdateUpdatedSurvey: Survey = {
@@ -53,6 +54,7 @@ export const surveyUpdateUpdatedSurvey: Survey = {
   },
   participatedAttendees: [],
   invitedAttendees: [firstMockUser, secondMockUser],
+  invitedGroups: [],
   answers: [],
   saveNo: 2,
   created: new Date('2020-11-29T00:00:00.000Z'),
@@ -60,6 +62,7 @@ export const surveyUpdateUpdatedSurvey: Survey = {
   expirationTime: '14:30',
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+  isPublic: false,
 };
 export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   ...surveyUpdateUpdatedSurvey,
@@ -75,4 +78,5 @@ export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
     { ...secondMockUser, label: 'pupil2-name2', value: secondUsername },
   ],
   saveNo: 1,
+  isPublic: false,
 };

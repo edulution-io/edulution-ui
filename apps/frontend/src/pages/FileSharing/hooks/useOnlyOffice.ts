@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useAuth } from 'react-oidc-context';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/utilities/documentsEditorType';
@@ -9,6 +8,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import { appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -21,7 +21,7 @@ interface UseOnlyOfficeProps {
 const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
   const [editorsConfig, setEditorsConfig] = useState<OnlyOfficeEditorConfig | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { user } = useAuth();
+  const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
 
   const fileExtension = getFileExtension(fileName);
@@ -32,7 +32,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const callbackUrl = callbackBaseUrl({
     fileName,
     filePath,
-    accessToken: user?.access_token || 'notfound',
+    token: eduApiToken,
   });
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
         documentUrl: url,
         callbackUrl,
         mode,
-        username: user?.profile.preferred_username || 'Anonymous',
+        username: user?.username || '',
       });
       onlyOfficeConfig.token = await getOnlyOfficeJwtToken(onlyOfficeConfig);
       setEditorsConfig(onlyOfficeConfig);
@@ -64,7 +64,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
     editorType.key,
     type,
     mode,
-    user?.profile.preferred_username,
+    user,
   ]);
 
   return {
