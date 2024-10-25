@@ -10,14 +10,12 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
 import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
 import AppConfigService from '../appconfig/appconfig.service';
-import TokenService from '../common/services/token.service';
 import FilesystemService from './filesystem.service';
 
 @Injectable()
 class OnlyofficeService {
   constructor(
     private readonly appConfigService: AppConfigService,
-    private readonly tokenService: TokenService,
     private jwtService: JwtService,
   ) {}
 
@@ -30,34 +28,26 @@ class OnlyofficeService {
     if (!jwtSecret) {
       throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const secret = jwtSecret.value as string;
+    const secret = jwtSecret.value;
     return this.jwtService.sign(payload, { secret });
   }
 
-  async handleCallback(
+  static async handleCallback(
     req: Request,
     res: Response,
     path: string,
     filename: string,
-    eduToken: string,
+    username: string,
     uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusReplay>,
   ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const cleanedPath = getPathWithoutWebdav(path);
 
     try {
-      await this.tokenService.isTokenValid(eduToken);
-      const user = await this.tokenService.getCurrentUser(eduToken);
-
-      if (!user) {
-        throw new CustomHttpException(FileSharingErrorMessage.UploadFailed, HttpStatus.FORBIDDEN);
-      }
-
       if (callbackData.status === 2 || callbackData.status === 4) {
         const file = await FilesystemService.retrieveAndSaveFile(filename, callbackData);
-
         if (file) {
-          await uploadFile(user.preferred_username, cleanedPath, file, '');
+          await uploadFile(username, cleanedPath, file, '');
           return res.status(HttpStatus.OK).json({ error: 0 });
         }
         throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.NOT_FOUND);

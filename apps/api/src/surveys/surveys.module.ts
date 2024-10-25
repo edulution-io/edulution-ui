@@ -6,6 +6,7 @@ import SurveysService from './surveys.service';
 import SurveysController from './surveys.controller';
 import SurveyAnswersService from './survey-answer.service';
 import PublicSurveysController from './public-surveys.controller';
+import SseService from '../sse/sse.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import PublicSurveysController from './public-surveys.controller';
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswerSchema }]),
   ],
   controllers: [SurveysController, PublicSurveysController],
-  providers: [SurveysService, SurveyAnswersService],
+  providers: [SurveysService, SurveyAnswersService, SseService],
 })
 export default class SurveysModule {}

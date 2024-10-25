@@ -34,7 +34,7 @@ const SurveysList = (props: SurveysListProps) => {
   const locale = getLocaleDateFormat();
 
   const getSurveyInfo = (survey: SurveyDto) => {
-    const surveyFormula = JSON.parse(JSON.stringify(survey.formula)) as SurveyFormulaDto;
+    const surveyFormula = JSON.parse(JSON.stringify(survey.formula || {})) as SurveyFormulaDto;
 
     return (
       <div className="flex w-full flex-col gap-1">
