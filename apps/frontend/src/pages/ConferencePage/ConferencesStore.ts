@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
-import Conference from '@libs/conferences/types/conference.dto';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
@@ -8,12 +8,13 @@ import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEnd
 interface ConferencesStore {
   selectedRows: RowSelectionState;
   setSelectedRows: (selectedRows: RowSelectionState) => void;
-  conferences: Conference[];
-  runningConferences: Conference[];
+  setConferences: (conferences: ConferenceDto[]) => void;
+  conferences: ConferenceDto[];
+  runningConferences: ConferenceDto[];
   isLoading: boolean;
   error: Error | null;
   getConferences: (isLoading?: boolean) => Promise<void>;
-  deleteConferences: (conferences: Conference[]) => Promise<void>;
+  deleteConferences: (conferences: ConferenceDto[]) => Promise<void>;
   isDeleteConferencesDialogOpen: boolean;
   setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
   toggleConferenceRunningState: (conferenceID: string) => Promise<void>;
@@ -33,35 +34,36 @@ const initialValues = {
   isDeleteConferencesDialogOpen: false,
 };
 
-const useConferenceStore = create<ConferencesStore>((set) => ({
+const useConferenceStore = create<ConferencesStore>((set, get) => ({
   ...initialValues,
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+  setConferences: (conferences: ConferenceDto[]) => {
+    const runningConferences = conferences.filter((c) => c.isRunning);
+    set({ conferences, runningConferences });
+  },
 
   getConferences: async (isLoading = true) => {
     set({ isLoading, error: null });
     try {
-      const response = await eduApi.get<Conference[]>(CONFERENCES_EDU_API_ENDPOINT);
-      const conferences = response.data;
-      // // TODO: NIEDUUI-287: Instead of filtering the conferences in the frontend we should create a new endpoint that only returns the running conferences
-      const runningConferences = conferences.filter((c) => c.isRunning);
-      set({ conferences, runningConferences });
+      const { data } = await eduApi.get<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT);
+      get().setConferences(data);
     } catch (error) {
       handleApiError(error, set);
-      set({ conferences: [], runningConferences: [] });
+      set({ conferences: [] });
     } finally {
       set({ isLoading: false });
     }
   },
 
   setIsDeleteConferencesDialogOpen: (isOpen) => set({ isDeleteConferencesDialogOpen: isOpen }),
-  deleteConferences: async (conferences: Conference[]) => {
+  deleteConferences: async (conferences: ConferenceDto[]) => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.delete<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, {
+      const { data } = await eduApi.delete<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT, {
         data: conferences.map((c) => c.meetingID),
       });
-      set({ conferences: response.data, selectedRows: {} });
+      set({ conferences: data, selectedRows: {} });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -71,8 +73,8 @@ const useConferenceStore = create<ConferencesStore>((set) => ({
   toggleConferenceRunningState: async (meetingID) => {
     set({ toggleConferenceRunningStateIsLoading: true });
     try {
-      const response = await eduApi.put<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, { meetingID });
-      set({ conferences: response.data });
+      const { data } = await eduApi.put<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT, { meetingID });
+      set({ conferences: data });
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');
     } finally {

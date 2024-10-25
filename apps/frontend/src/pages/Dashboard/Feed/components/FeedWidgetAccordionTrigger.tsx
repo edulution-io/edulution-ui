@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import { AccordionTrigger } from '@/components/ui/AccordionSH';
 
 interface FeedWidgetAccordionTriggerProps {

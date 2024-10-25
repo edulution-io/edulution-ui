@@ -1,7 +1,7 @@
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-class Conference {
+class ConferenceDto {
   name: string;
 
   meetingID: string;
@@ -19,4 +19,4 @@ class Conference {
   joinedAttendees: AttendeeDto[];
 }
 
-export default Conference;
+export default ConferenceDto;

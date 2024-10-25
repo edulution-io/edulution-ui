@@ -1,4 +1,4 @@
-name: CI API
+name: CI API for building the container
 
 on:
   push:

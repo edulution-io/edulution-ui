@@ -4,7 +4,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Column, Table } from '@tanstack/react-table';
 import { translateKey } from '@/utils/common';
 import Checkbox from '@/components/ui/Checkbox';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 
 interface SortableHeaderProps<TData, TValue> {
   titleTranslationId: string;

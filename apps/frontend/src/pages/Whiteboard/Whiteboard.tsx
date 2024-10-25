@@ -1,6 +1,6 @@
 import React from 'react';
 import { Excalidraw, THEME } from '@excalidraw/excalidraw';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import useFrameStore from '@/components/framing/FrameStore';
 import APPS from '@libs/appconfig/constants/apps';
 

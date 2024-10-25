@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MdClose, MdMaximize, MdMinimize } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { Card } from './Card';
 import { TooltipProvider } from '../ui/Tooltip';

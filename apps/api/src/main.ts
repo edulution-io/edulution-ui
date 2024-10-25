@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 
 import AppModule from './app/app.module';
@@ -14,7 +15,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
   });
-  const globalPrefix = 'edu-api';
+  const globalPrefix = EDU_API_ROOT;
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.EDUI_PORT || 3000;
   app.set('trust proxy', true);

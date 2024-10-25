@@ -14,7 +14,7 @@ import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTab
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import Conference from '@libs/conferences/types/conference.dto';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -33,15 +33,13 @@ const ConferencesTable = () => {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: handleRowSelectionChange,
-    getRowId: (originalRow: Conference) => originalRow.meetingID,
+    getRowId: (originalRow: ConferenceDto) => originalRow.meetingID,
     state: {
       sorting,
       rowSelection: selectedRows,
     },
   });
 
-  // TODO: NIEDUUI-285 use SSE to update the conferences list and the selection (THIS will replace the useInterval
-  //       which fetches every 5seconds and notifies the user about running conferences (Sidebar.tsx (useNotifications.ts)))
   useEffect(() => {
     void getConferences(undefined);
   }, []);
@@ -50,7 +48,7 @@ const ConferencesTable = () => {
 
   return (
     <>
-      {isLoading && conferences.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading && conferences?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
       {selectedRowsCount > 0 ? (
         <div className="flex-1 text-sm text-muted-foreground text-white">
           {t('conferences.selected-x-rows', {
@@ -99,7 +97,7 @@ const ConferencesTable = () => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={conferences.length}
+                    colSpan={conferences?.length}
                     className="h-24 text-center text-white"
                   >
                     {t('table.noDataAvailable')}

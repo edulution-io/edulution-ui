@@ -55,7 +55,7 @@ const LoginPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
     try {
-      const username = (form.getValues('username') as string).trim();
+      const username = form.getValues('username') as string;
       const password = form.getValues('password') as string;
       const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
@@ -128,7 +128,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const renderFormField = (fieldName: string, label: string, type?: string) => (
+  const renderFormField = (fieldName: string, label: string, type?: string, shouldTrim?: boolean) => (
     <FormFieldSH
       control={form.control}
       name={fieldName}
@@ -140,6 +140,7 @@ const LoginPage: React.FC = () => {
             <Input
               {...field}
               type={type}
+              shouldTrim={shouldTrim}
               disabled={isLoading}
               placeholder={label}
               variant="login"
@@ -176,7 +177,7 @@ const LoginPage: React.FC = () => {
             />
           ) : (
             <>
-              {renderFormField('username', t('common.username'))}
+              {renderFormField('username', t('common.username'), undefined, true)}
               {renderFormField('password', t('common.password'), 'password')}
             </>
           )}

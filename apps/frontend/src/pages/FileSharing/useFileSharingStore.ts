@@ -11,6 +11,7 @@ import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult'
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -87,7 +88,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
           if (isOnlyOfficeDocument(file.filename)) {
             const publicLink = await get().getDownloadLinkURL(file.filename, file.basename);
-            set({ publicDownloadLink: `${getFrontEndUrl()}/edu-api/downloads/${publicLink}` || ' ' });
+            set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` || ' ' });
           }
 
           set({ isEditorLoading: false });

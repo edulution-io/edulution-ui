@@ -8,8 +8,11 @@ import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
 import 'survey-creator-core/i18n/spanish';
 import 'survey-creator-core/i18n/italian';
+import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
+import '@/pages/Surveys/theme/custom.survey.css';
+import '@/pages/Surveys/theme/custom.creator.css';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,7 +39,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       'rating',
       'checkbox',
       'dropdown',
-      'tagbox',
+      // 'tagbox',
       'boolean',
       'file',
       'imagepicker',
@@ -52,11 +55,12 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       'image',
       // 'html',
       // 'expression',
-      // 'image',
       // 'signaturepad',
     ],
   };
   const creator = new SurveyCreator(creatorOptions);
+
+  creator.theme = surveyTheme;
 
   creator.saveNo = saveNumber;
   if (formula) {
@@ -64,25 +68,43 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   }
 
   // TOOLBAR (HEADER)
-  const settingsAction = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
-  creator.toolbar.actions.splice(settingsAction, 1);
+  const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
+  creator.toolbar.actions.splice(settingsActionHeader, 1);
 
-  const expandSettingsAction = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
-  creator.toolbar.actions.splice(expandSettingsAction, 1);
+  const expandGridActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
+  creator.toolbar.actions.splice(expandGridActionHeader, 1);
+
+  // TOOLBAR (FOOTER)
+  const designerActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-designer');
+  creator.footerToolbar.actions.splice(designerActionFooter, 1);
+
+  const previewActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-preview');
+  creator.footerToolbar.actions.splice(previewActionFooter, 1);
+
+  const settingsActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-settings');
+  creator.footerToolbar.actions.splice(settingsActionFooter, 1);
 
   // TOOLBOX (LEFT SIDEBAR)
-  creator.showToolbox = true; // TODO: Ask
-  creator.toolbox.overflowBehavior = 'scroll';
-  creator.toolbox.searchEnabled = false;
+  creator.showToolbox = false;
 
   // PROPERTY GRID (RIGHT SIDEBAR)
   creator.showSidebar = false;
-  // TODO: NIEDUUI-334: add a placeholder to for the description of the question (invisible - accessible in sidebar)
+
+  creator.startEditTitleOnQuestionAdded = true;
+
+  creator.onElementAllowOperations.add((_, options) => {
+    // eslint-disable-next-line no-param-reassign
+    options.allowShowSettings = false;
+  });
 
   // ELEMENT MENU (part of the ELEMENT/QUESTION)
   creator.onDefineElementMenuItems.add((_, options) => {
     const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
     options.items.splice(settingsItemIndex, 1);
+  });
+
+  creator.onModified.add(() => {
+    form.setValue('formula', creator.JSON);
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
@@ -91,18 +113,16 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     callback(saveNo, true);
   };
 
-  creator.onModified.add(() => {
-    form.setValue('formula', creator.JSON);
-  });
-
   return (
-    <SurveyCreatorComponent
-      creator={creator}
-      style={{
-        height: '85vh',
-        width: '100%',
-      }}
-    />
+    <div className="survey-editor">
+      <SurveyCreatorComponent
+        creator={creator}
+        style={{
+          height: '85vh',
+          width: '100%',
+        }}
+      />
+    </div>
   );
 };
 

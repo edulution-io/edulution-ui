@@ -101,7 +101,8 @@
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
-      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst."
+      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
+      "DBAccessFailed": "Datenbankzugriff fehlgeschlagen"
     },
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
@@ -508,7 +509,12 @@
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
     "config": {
-      "mfa": "Zweifaktorauthentifizierung aktivieren"
+      "mfa": "Zwei-Faktor-Authentisierung",
+      "mfaInfo": "Aktuell ist die Zwei-Faktor-Authentisierung",
+      "enabled": "aktiviert",
+      "enable": "Aktivieren",
+      "disabled": "deaktiviert",
+      "disable": "Deaktivieren"
     },
     "addTotp": {
       "title": "QR-Code",
@@ -549,6 +555,9 @@
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
     "actions": "Aktionen",
+    "forward": "Weiterleiten",
+    "showOptions": "Optionen zeigen",
+    "open": "Öffnen",
     "and": "und",
     "yes": "Ja",
     "no": "Nein",

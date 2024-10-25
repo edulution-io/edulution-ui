@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import { useLocation } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -60,7 +60,7 @@ const MenuBar: React.FC = () => {
       <div className="bg flex flex-col items-center justify-center py-6">
         <img
           src={menuBarEntries.icon}
-          alt=""
+          alt={menuBarEntries.title}
           className="h-20 w-20 object-contain"
         />
         <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
@@ -82,7 +82,7 @@ const MenuBar: React.FC = () => {
             >
               <img
                 src={item.icon}
-                alt=""
+                alt={item.label}
                 className="h-12 w-12 object-contain"
               />
               <p className="text-nowrap">{item.label}</p>

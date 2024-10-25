@@ -28,7 +28,6 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -145,23 +144,21 @@ class FilesharingController {
     return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole);
   }
 
-  @Public()
   @Post('callback')
   async handleCallback(
     @Req() req: Request,
     @Res() res: Response,
     @Query('path') path: string,
     @Query('filename') filename: string,
-    @Query('eduToken') eduToken: string,
+    @GetCurrentUsername() username: string,
   ) {
     try {
       const { status } = req.body as OnlyOfficeCallbackData;
-
       if (status === 1) {
         return res.status(HttpStatus.OK).json({ error: 0 });
       }
 
-      return await this.filesharingService.handleCallback(req, res, path, filename, eduToken);
+      return await this.filesharingService.handleCallback(req, res, path, filename, username);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }

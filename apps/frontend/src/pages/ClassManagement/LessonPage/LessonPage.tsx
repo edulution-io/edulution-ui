@@ -15,6 +15,7 @@ import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDia
 import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
@@ -118,7 +119,10 @@ const LessonPage = () => {
 
   return (
     <>
-      <div className="my-2 flex flex-col gap-2 md:flex-row">
+      <div
+        className="my-2 flex flex-col gap-2 md:flex-row"
+        id={FILTER_BAR_ID}
+      >
         <LoadingIndicator isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (

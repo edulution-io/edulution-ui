@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import getNewSurveyId from '@libs/survey/getNewSurveyId';
 
 class InitialSurveyForm implements SurveyDto {
   readonly id: mongoose.Types.ObjectId;
@@ -33,8 +34,7 @@ class InitialSurveyForm implements SurveyDto {
   canShowResultsChart: boolean;
 
   constructor(creator: AttendeeDto, selectedSurvey?: SurveyDto) {
-    const time = new Date().getTime();
-    this.id = selectedSurvey?.id || mongoose.Types.ObjectId.createFromTime(time);
+    this.id = selectedSurvey?.id || getNewSurveyId();
     this.formula = selectedSurvey?.formula || ({} as JSON);
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.creator = creator;

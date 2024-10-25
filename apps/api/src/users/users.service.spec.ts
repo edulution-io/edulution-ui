@@ -14,6 +14,7 @@ import UsersService from './users.service';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import UpdateUserDto from './dto/update-user.dto';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 jest.mock('axios');
 const mockToken = 'token';
@@ -122,11 +123,6 @@ const userModelMock = {
   deleteOne: jest.fn().mockReturnValue({
     exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
   }),
-};
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
 };
 
 const mockLdapGroups: LdapGroups = {

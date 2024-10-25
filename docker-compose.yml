@@ -10,6 +10,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - db:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+      start_period: 10s
 
   redisEdu:
     container_name: redisEdu
@@ -17,6 +23,12 @@ services:
     restart: always
     ports:
       - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 1s
+      retries: 3
+      start_period: 10s
 
 volumes:
   db:

@@ -4,7 +4,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
-import Conference from '@libs/conferences/types/conference.dto';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -16,7 +16,7 @@ interface CreateConferenceDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
   createConference: (conference: CreateConferenceDto) => Promise<void>;
-  createdConference: Conference | null;
+  createdConference: ConferenceDto | null;
 }
 
 const initialState: Partial<CreateConferenceDialogStore> = {
@@ -37,7 +37,7 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
   createConference: async (conference) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<Conference>(CONFERENCES_EDU_API_ENDPOINT, conference);
+      const response = await eduApi.post<ConferenceDto>(CONFERENCES_EDU_API_ENDPOINT, conference);
       set({ createdConference: response.data, isCreateConferenceDialogOpen: false });
     } catch (error) {
       handleApiError(error, set);

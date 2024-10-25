@@ -9,6 +9,9 @@ import sortByName from '@libs/common/utils/sortByName';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import Checkbox from '@/components/ui/Checkbox';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FILTER_BAR_ID, LESSON_SESSION_HEADER_ID } from '@libs/classManagement/constants/pageElementIds';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 const UserArea = () => {
   const { t } = useTranslation();
@@ -52,9 +55,16 @@ const UserArea = () => {
     } else setSelectedMember([]);
   };
 
+  const pageBarsHeight =
+    useElementHeight([FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID], isMemberSelected) +
+    10;
+
   return (
-    <div className="mt-3 h-full ">
-      <div className="flex items-center">
+    <>
+      <div
+        className="flex items-center"
+        id={LESSON_SESSION_HEADER_ID}
+      >
         <div
           className="flew-row ml-2 flex cursor-pointer"
           onClickCapture={onCheckAll}
@@ -67,12 +77,15 @@ const UserArea = () => {
           <p className="ml-2">{t('selectAll')}</p>
         </div>
 
-        <h3 className="mb-2 flex flex-grow justify-center text-center">
+        <h3 className="mb-2 flex flex-grow justify-center text-center text-lg md:text-xl">
           {member.length} {t('classmanagement.usersInThisSession')}{' '}
           {isMemberSelected ? `(${isMemberSelected} ${t('common.selected')})` : null}
         </h3>
       </div>
-      <div className="flex max-h-[calc(100vh-390px)] max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin md:max-h-[calc(100vh-240px)]">
+      <div
+        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
         {member.sort(sortByName).map((m) => (
           <UserCard
             key={m.dn}
@@ -85,7 +98,7 @@ const UserArea = () => {
         ))}
       </div>
       {isMemberSelected ? <LessonFloatingButtonsBar students={getSelectedStudents()} /> : null}
-    </div>
+    </>
   );
 };
 

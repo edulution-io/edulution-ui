@@ -1,7 +1,7 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
-import delay from '@/lib/delay';
+import delay from '@libs/common/utils/delay';
 import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';

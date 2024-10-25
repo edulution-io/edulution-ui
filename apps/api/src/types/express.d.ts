@@ -1,5 +1,6 @@
 import 'express';
-import JWTUser from './JWTUser';
+
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 
 declare module 'express' {
   interface Request {

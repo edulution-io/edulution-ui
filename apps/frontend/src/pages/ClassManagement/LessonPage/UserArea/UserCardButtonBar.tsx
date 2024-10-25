@@ -8,7 +8,7 @@ import { MdSchool } from 'react-icons/md';
 import { FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import { TbFilterCode } from 'react-icons/tb';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import { PiEyeFill, PiKey } from 'react-icons/pi';
 import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
