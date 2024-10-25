@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { Row, RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -60,6 +61,22 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     } finally {
       set({ isFetchingAnsweredSurveys: false });
     }
+  },
+
+  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => {
+    set({ selectedRows: {} });
+
+    const survey = row.original;
+    const { selectedSurvey } = get();
+    if (selectedSurvey && survey.id === selectedSurvey.id) {
+      set({ selectedSurvey: undefined });
+      return;
+    }
+    set({ selectedSurvey: survey });
+
+    row.toggleSelected();
   },
 }));
 

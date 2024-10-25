@@ -1,15 +1,9 @@
+import sortString from '@libs/common/utils/sortString';
+
 interface Nameable {
   name: string;
 }
 
-function sortByName<T extends Nameable>(a: T, b: T): number {
-  if (a.name < b.name) {
-    return -1;
-  }
-  if (a.name > b.name) {
-    return 1;
-  }
-  return 0;
-}
+const sortByName = <T extends Nameable>(a: T, b: T) => sortString(a.name, b.name);
 
 export default sortByName;

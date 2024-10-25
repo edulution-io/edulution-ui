@@ -12,6 +12,7 @@ const AnsweredSurveys = () => {
     updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
+    setSelectedRows,
     answeredSurveys,
     isFetchingAnsweredSurveys,
     updateAnsweredSurveys,
@@ -24,6 +25,7 @@ const AnsweredSurveys = () => {
     SurveysPageView.ANSWERED,
     updateSelectedPageView,
     selectSurvey,
+    setSelectedRows,
     updateAnsweredSurveys,
     isFetchingAnsweredSurveys,
     answeredSurveys,
@@ -33,12 +35,10 @@ const AnsweredSurveys = () => {
     <>
       {isFetchingAnsweredSurveys ? <LoadingIndicator isOpen={isFetchingAnsweredSurveys} /> : null}
       <SurveyTablePage
-        title={t('surveys.view.answered')}
+        title={t('surveys.view.answered.title')}
+        description={t('surveys.view.answered.description')}
         selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
-        selectSurvey={selectSurvey}
-        canEdit={false}
-        canDelete={false}
         canShowResults
         canParticipate
         canShowCommitedAnswers
