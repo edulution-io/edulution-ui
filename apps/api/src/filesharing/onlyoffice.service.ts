@@ -28,7 +28,7 @@ class OnlyofficeService {
     if (!jwtSecret) {
       throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const secret = jwtSecret.value;
+    const secret = jwtSecret.value as string;
     return this.jwtService.sign(payload, { secret });
   }
 
