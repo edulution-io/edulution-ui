@@ -27,6 +27,7 @@ interface AdaptiveDialogProps {
   body: React.ReactNode;
   footer?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
+  layout?: 'one-column' | 'two-column';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
 }
@@ -39,6 +40,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   body,
   footer,
   variant = 'primary',
+  layout = 'one-column',
   mobileContentClassName,
   desktopContentClassName,
 }) => {
@@ -75,7 +77,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       >
         <DialogTitle>{title}</DialogTitle>
         {body}
-        <DialogFooter>{footer}</DialogFooter>
+        <DialogFooter layout={layout}>{footer}</DialogFooter>
         <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>
