@@ -12,14 +12,32 @@ import {
 import { Button } from '@/components/shared/Button';
 import { FaCopy, FaCut } from 'react-icons/fa';
 import { ChevronRightIcon } from '@radix-ui/react-icons';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import LmnApiCollectOperations from '@libs/lmnApi/types/lmnApiCollectOperations';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
+  const { setCollectionType } = useLessonStore();
+
   const options = [
-    { id: '1', label: t('classmanagement.collectAndCut'), icon: <FaCut /> },
-    { id: '2', label: t('classmanagement.collectAndCopy'), icon: <FaCopy /> },
+    {
+      id: '1',
+      label: t('classmanagement.collectAndCut'),
+      icon: <FaCut />,
+      action: () => setCollectionType(LmnApiCollectOperations.CUT),
+    },
+    {
+      id: '2',
+      label: t('classmanagement.collectAndCopy'),
+      icon: <FaCopy />,
+      action: () => setCollectionType(LmnApiCollectOperations.COPY),
+    },
   ];
 
   const [selectedOption, setSelectedOption] = useState(options[0]);
+
+  React.useEffect(() => {
+    selectedOption.action();
+  }, [selectedOption]);
 
   const getDialogBody = () => (
     <div className="w-full items-center ">{t('classmanagement.CollectFilesDescription')}</div>
