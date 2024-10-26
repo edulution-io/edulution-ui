@@ -264,43 +264,67 @@ class FilesharingService {
     );
   };
 
+  private async createFolderIfNotExists(username: string, destinationPath: string) {
+    const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
+    const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
+    try {
+      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.CreationFailed,
+        HttpStatus.NOT_FOUND,
+        error,
+        FilesharingService.name,
+      );
+    }
+  }
+
+  private async copyFile(client: AxiosInstance, originPath: string, destinationPath: string) {
+    const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
+    try {
+      await FilesharingService.copyFileViaWebDAV(client, encodeURI(originPath), sanitizedDestinationPath);
+    } catch (error) {
+      Logger.log(error); // TODO: Replace this with a custom exception. Issue #217
+    }
+  }
+
   cuteCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
-    const pathWithoutFilename = originPath.slice(0, originPath.lastIndexOf('/'));
     const result = await this.moveOrRenameResource(username, originPath, newPath);
 
     try {
-      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+      await this.createFolderIfNotExists(username, originPath);
     } catch (error) {
       Logger.log(error);
     }
     return result;
   };
 
-  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+  copyCollectedItems = async (
+    username: string,
+    duplicateFile: DuplicateFileRequestDto,
+  ): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
-
     const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      const pathWithoutFilename = destinationPath.slice(0, destinationPath.lastIndexOf('/'));
+      await this.createFolderIfNotExists(username, destinationPath);
+      await this.copyFile(client, fullOriginPath, destinationPath);
+    });
 
-      try {
-        await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
-      } catch (error) {
-        throw new CustomHttpException(
-          FileSharingErrorMessage.CreationFailed,
-          HttpStatus.NOT_FOUND,
-          error,
-          FilesharingService.name,
-        );
-      }
+    try {
+      await Promise.all(duplicationPromises);
+      return { success: true, status: HttpStatus.OK };
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  };
 
-      try {
-        const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
-        await FilesharingService.copyFileViaWebDAV(client, encodeURI(fullOriginPath), sanitizedDestinationPath);
-      } catch (error) {
-        Logger.log(error); // TODO: Replace this with a custom exception. Waiting for Arnold to identify why the command is throwing a 500 error, even though the copying process is working correctly. Issue #217
-      }
+  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+    const client = await this.getClient(username);
+    const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
+
+    const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+      await this.copyFile(client, fullOriginPath, destinationPath);
     });
 
     try {
@@ -331,7 +355,6 @@ class FilesharingService {
     return this.onlyofficeService.generateOnlyOfficeToken(payload);
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteFileFromServer(path: string): Promise<void> {
     try {
       await FilesystemService.deleteFile(path);
@@ -368,7 +391,7 @@ class FilesharingService {
         if (type === LmnApiCollectOperations.CUT) {
           await this.cuteCollectedItems(username, item.originPath, item.destinationPath);
         } else {
-          await this.duplicateFile(username, {
+          await this.copyCollectedItems(username, {
             originFilePath: item.originPath,
             destinationFilePaths: [`${item.destinationPath}/${getCurrentTimestamp()}`],
           });
