@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -37,6 +38,10 @@ import {
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import { surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
+import UserConnections from '../types/userConnections';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
+
+const mockSseConnections: UserConnections = new Map();
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -59,6 +64,10 @@ describe(SurveysController.name, () => {
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: cacheManagerMock,
         },
       ],
     }).compile();
@@ -174,8 +183,9 @@ describe(SurveysController.name, () => {
   describe('updateOrCreateSurvey', () => {
     it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
       jest.spyOn(surveysService, 'updateOrCreateSurvey');
-
-      surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue(surveyUpdateUpdatedSurvey);
+      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+      });
 
       const { id, created = new Date() } = surveyUpdateUpdatedSurveyDto;
       const createSurvey: Survey = {
@@ -185,7 +195,7 @@ describe(SurveysController.name, () => {
       };
 
       await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto);
-      expect(surveysService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey);
+      expect(surveysService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey, mockSseConnections);
     });
   });
 
@@ -199,7 +209,7 @@ describe(SurveysController.name, () => {
 
       await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01] });
 
-      expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
+      expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
@@ -224,7 +234,7 @@ describe(SurveysController.name, () => {
         expect(e.message).toEqual(SurveyErrorMessages.DeleteError);
       }
 
-      expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
+      expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledTimes(0);
     });
   });

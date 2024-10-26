@@ -11,6 +11,8 @@ import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
 @Injectable()
 class AuthenticationGuard implements CanActivate {
+  private token: string;
+
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
@@ -21,6 +23,14 @@ class AuthenticationGuard implements CanActivate {
     return type === 'Bearer' ? token : '';
   }
 
+  private static extractTokenFromQuery(request: Request): string {
+    const { token } = request.query;
+    if (token) {
+      return token as string;
+    }
+    return '';
+  }
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.get<boolean>(PUBLIC_ROUTE_KEY, context.getHandler());
     if (isPublic) {
@@ -28,16 +38,19 @@ class AuthenticationGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    const token = AuthenticationGuard.extractTokenFromHeader(request);
+    this.token = AuthenticationGuard.extractTokenFromHeader(request);
+    if (!this.token) {
+      this.token = AuthenticationGuard.extractTokenFromQuery(request);
+    }
 
     try {
       const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
 
-      request.user = await this.jwtService.verifyAsync<JWTUser>(token, {
+      request.user = await this.jwtService.verifyAsync<JWTUser>(this.token, {
         publicKey: pubKey,
         algorithms: ['RS256'],
       });
-      request.token = token;
+      request.token = this.token;
 
       return true;
     } catch (e) {

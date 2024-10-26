@@ -61,8 +61,8 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
       return;
     }
 
-    const sanitizedName = displayName.replace(' ', '_').replace(/[^a-z0-9_+-]/gi, '');
-    setValue('name', sanitizedName);
+    const sanitizedName = displayName.replace(/\s+/g, '_').replace(/[^a-z0-9_+-]/gi, '');
+    setValue('name', `p_${sanitizedName}`);
   }, [displayName, setValue]);
 
   const adminUsers = watch('admins') as AttendeeDto[];

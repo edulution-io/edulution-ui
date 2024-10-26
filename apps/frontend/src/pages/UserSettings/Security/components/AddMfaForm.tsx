@@ -35,12 +35,27 @@ const AddMfaForm: React.FC = () => {
     await disableTotp();
   };
 
+  const switchId = 'mfa-switch';
+
   return (
     <>
       <h3>{t('usersettings.config.mfa')}</h3>
       <div className="flex flex-col">
-        <div className="mb-4 flex justify-start">
+        <div className="my-4 flex justify-start">
+          <div>
+            {t('usersettings.config.mfaInfo')}{' '}
+            <span className="font-bold">{t(`usersettings.config.${checked ? 'enabled' : 'disabled'}`)}</span>.
+          </div>
+        </div>
+        <div className="flex justify-end">
+          <label
+            htmlFor={switchId}
+            className="mr-2 cursor-pointer"
+          >
+            {t(`usersettings.config.${checked ? 'disable' : 'enable'}`)}
+          </label>
           <Switch
+            id={switchId}
             checked={checked}
             defaultChecked={mfaEnabled}
             onCheckedChange={(chk) => {

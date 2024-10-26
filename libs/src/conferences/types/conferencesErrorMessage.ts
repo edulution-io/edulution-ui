@@ -5,6 +5,7 @@ enum ConferencesErrorMessage {
   AppNotProperlyConfigured = 'conferences.errors.AppNotProperlyConfigured',
   YouAreNotTheCreator = 'conferences.errors.YouAreNotTheCreator',
   AlreadyInAnotherMeeting = 'conferences.errors.AlreadyInAnotherMeeting',
+  DBAccessFailed = 'conferences.errors.DBAccessFailed',
 }
 
 export default ConferencesErrorMessage;

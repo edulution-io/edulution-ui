@@ -340,8 +340,8 @@ class FilesharingService {
     }
   }
 
-  async handleCallback(req: Request, res: Response, path: string, filename: string, eduToken: string) {
-    return this.onlyofficeService.handleCallback(req, res, path, filename, eduToken, this.uploadFile);
+  async handleCallback(req: Request, res: Response, path: string, filename: string, username: string) {
+    return OnlyofficeService.handleCallback(req, res, path, filename, username, this.uploadFile);
   }
 
   async collectFiles(
