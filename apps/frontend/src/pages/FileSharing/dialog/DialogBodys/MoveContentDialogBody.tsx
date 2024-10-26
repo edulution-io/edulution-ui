@@ -15,12 +15,14 @@ interface MoveContentDialogBodyProps {
   showAllFiles?: boolean;
   pathToFetch?: string;
   showSelectedFile?: boolean;
+  showHome?: boolean;
 }
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
   pathToFetch,
   showSelectedFile = true,
+  showHome = true,
 }) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
@@ -60,6 +62,12 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       }
       setCurrentPath(newCurrentPath);
     }
+  };
+
+  const getHiddenSegments = (): string[] => {
+    const segements = pathToFetch?.split('/');
+    const index = segements?.findIndex((segment) => segment === segements.at(segment.length));
+    return segements?.slice(0, index) || [];
   };
 
   const renderTableRow = (row: DirectoryFileDTO) => (
@@ -111,6 +119,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <DirectoryBreadcrumb
         path={currentPath}
         onNavigate={handleBreadcrumbNavigate}
+        showHome={showHome}
+        hiddenSegments={getHiddenSegments()}
       />
       <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
       {moveOrCopyItemToPath && showSelectedFile && (
