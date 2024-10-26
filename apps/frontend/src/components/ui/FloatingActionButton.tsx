@@ -10,6 +10,7 @@ import { IconContext, IconType } from 'react-icons';
 import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import { useTranslation } from 'react-i18next';
 
 interface FloatingActionButtonProps {
   icon: IconType;
@@ -30,6 +31,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   options = [],
   onSelectFileSelect,
 }) => {
+  const { t } = useTranslation();
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   const renderContent = () => {
@@ -41,6 +43,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               type="button"
               variant="btn-hexagon"
               className="bg-opacity-90 p-4"
+              hexagonIconAltText={t('common.showOptions')}
             >
               <IconContext.Provider value={iconContextValue}>
                 <Icon />
@@ -76,6 +79,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
         variant="btn-hexagon"
         className="bg-opacity-90 p-4"
         onClick={onClick}
+        hexagonIconAltText={text}
       >
         <IconContext.Provider value={iconContextValue}>
           <Icon />

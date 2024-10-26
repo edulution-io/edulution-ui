@@ -4,15 +4,15 @@ import { toast } from 'sonner';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import Conference from '@libs/conferences/types/conference.dto';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 import {
   CONFERENCES_EDU_API_ENDPOINT,
   CONFERENCES_JOIN_EDU_API_ENDPOINT,
 } from '@libs/conferences/constants/apiEndpoints';
 
 interface ConferenceDetailsDialogStore {
-  selectedConference: Conference | null;
-  setSelectedConference: (conference: Conference | null) => void;
+  selectedConference: ConferenceDto | null;
+  setSelectedConference: (conference: ConferenceDto | null) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -23,7 +23,7 @@ interface ConferenceDetailsDialogStore {
   setJoinConferenceUrl: (url: string) => void;
   isJoinedConferenceMinimized: boolean;
   toggleIsJoinedConferenceMinimized: () => void;
-  updateConference: (conference: Partial<Conference>) => Promise<void>;
+  updateConference: (conference: Partial<ConferenceDto>) => Promise<void>;
 }
 
 const initialState = {
@@ -63,7 +63,7 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   updateConference: async (conference) => {
     set({ isLoading: true });
     try {
-      await eduApi.patch<Conference[]>(CONFERENCES_EDU_API_ENDPOINT, conference);
+      await eduApi.patch<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT, conference);
       set({ selectedConference: null });
     } catch (error) {
       handleApiError(error, set);

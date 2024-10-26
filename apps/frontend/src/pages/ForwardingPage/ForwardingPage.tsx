@@ -37,6 +37,8 @@ const ForwardingPage: React.FC = () => {
     setIsForwarding(false);
   }, [isForwarding, rootPathName, appConfigs]);
 
+  const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
+
   return (
     <div className="grid h-[80%] items-center justify-center">
       <h2 className="text-center">{t('forwardingpage.action')}</h2>
@@ -44,7 +46,7 @@ const ForwardingPage: React.FC = () => {
         <img
           className="hidden md:flex"
           src={RoundArrowIcon}
-          alt=""
+          alt={t('forwardingpage.action')}
           width="200px"
         />
         <Button
@@ -53,11 +55,12 @@ const ForwardingPage: React.FC = () => {
           onClick={() => {
             setIsForwarding((prevVal) => !prevVal);
           }}
+          hexagonIconAltText={t('common.forward')}
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
-            src={findAppConfigByName(appConfigs, rootPathName)?.icon}
-            alt="icon"
+            src={currentAppConfig?.icon}
+            alt={currentAppConfig?.name}
           />
         </Button>
       </div>
