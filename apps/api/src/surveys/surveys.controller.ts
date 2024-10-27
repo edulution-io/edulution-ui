@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageEvent, Res } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { Response } from 'express';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -13,11 +15,15 @@ import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
 @Controller(SURVEYS)
 class SurveysController {
+  private surveysSseConnections: UserConnections = new Map();
+
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
@@ -49,13 +55,13 @@ class SurveysController {
       created,
     };
 
-    return this.surveyService.updateOrCreateSurvey(survey);
+    return this.surveyService.updateOrCreateSurvey(survey, this.surveysSseConnections);
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    await this.surveyService.deleteSurveys(surveyIds);
+    await this.surveyService.deleteSurveys(surveyIds, this.surveysSseConnections);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
   }
 
@@ -63,6 +69,11 @@ class SurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, user, answer);
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.surveysSseConnections, res);
   }
 }
 

@@ -1,21 +1,28 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Put, Res, Sse } from '@nestjs/common';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Observable } from 'rxjs';
+import { Response } from 'express';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()
 @Controller(CONFERENCES_EDU_API_ENDPOINT)
 class ConferencesController {
+  private conferencesSseConnections: UserConnections = new Map();
+
   constructor(private readonly conferencesService: ConferencesService) {}
 
   @Post()
   create(@Body() createConferenceDto: CreateConferenceDto, @GetCurrentUser() user: JWTUser) {
-    return this.conferencesService.create(createConferenceDto, user);
+    return this.conferencesService.create(createConferenceDto, user, this.conferencesSseConnections);
   }
 
   @Get('join/:meetingID')
@@ -37,14 +44,23 @@ class ConferencesController {
 
   @Put()
   async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.toggleConferenceIsRunning(conference.meetingID, user.preferred_username);
+    await this.conferencesService.toggleConferenceIsRunning(
+      conference.meetingID,
+      user.preferred_username,
+      this.conferencesSseConnections,
+    );
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
   @Delete()
   async remove(@Body() meetingIDs: string[], @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.remove(meetingIDs, user.preferred_username);
+    await this.conferencesService.remove(meetingIDs, user.preferred_username, this.conferencesSseConnections);
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.conferencesSseConnections, res);
   }
 }
 
