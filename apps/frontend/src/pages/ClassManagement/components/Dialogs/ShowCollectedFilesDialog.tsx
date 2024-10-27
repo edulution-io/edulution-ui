@@ -18,6 +18,7 @@ const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, is
       showAllFiles
       pathToFetch={collectedFilesPath}
       showSelectedFile={false}
+      showHome={false}
     />
   );
 
