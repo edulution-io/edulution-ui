@@ -66,8 +66,8 @@ export class LmnApiController {
   }
 
   @Get('school-classes')
-  async getUserSchoolClasses(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentSchool() school: string) {
-    return this.lmnApiService.getUserSchoolClasses(lmnApiToken, school);
+  async getUserSchoolClasses(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
 
   @Put('school-classes/:schoolClass/:action')
@@ -146,8 +146,9 @@ export class LmnApiController {
   async searchUsersOrGroups(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Query('searchQuery') searchQuery: string,
+    @GetCurrentSchool() school: string,
   ) {
-    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, searchQuery);
+    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, school, searchQuery);
   }
 
   @Post('projects')
@@ -200,8 +201,8 @@ export class LmnApiController {
   }
 
   @Get('printers')
-  async getPrinters(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentSchool() school: string) {
-    return this.lmnApiService.getPrinters(lmnApiToken, school);
+  async getPrinters(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.getPrinters(lmnApiToken);
   }
 
   @Put('password')

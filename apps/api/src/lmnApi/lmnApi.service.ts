@@ -174,7 +174,7 @@ class LmnApiService {
     }
   }
 
-  public async getUserSchoolClasses(lmnApiToken: string, school: string): Promise<LmnApiSchoolClass[]> {
+  public async getUserSchoolClasses(lmnApiToken: string): Promise<LmnApiSchoolClass[]> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}`;
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -184,7 +184,7 @@ class LmnApiService {
       const response = await this.enqueue<LmnApiSchoolClass[]>(() =>
         this.lmnApi.get<LmnApiSchoolClass[]>(requestUrl, config),
       );
-      return response.data.filter((schoolClass) => schoolClass.sophomorixSchoolname === school);
+      return response.data;
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSchoolClassesFailed,
@@ -353,10 +353,14 @@ class LmnApiService {
     }
   }
 
-  public async searchUsersOrGroups(lmnApiToken: string, searchQuery: string): Promise<LmnApiSearchResult[]> {
+  public async searchUsersOrGroups(
+    lmnApiToken: string,
+    school: string,
+    searchQuery: string,
+  ): Promise<LmnApiSearchResult[]> {
     try {
       const response = await this.enqueue<LmnApiSearchResult[]>(() =>
-        this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/global/${searchQuery}`, {
+        this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/${school}/${searchQuery}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
@@ -494,7 +498,7 @@ class LmnApiService {
     }
   }
 
-  public async getPrinters(lmnApiToken: string, school: string): Promise<LmnApiPrinter[]> {
+  public async getPrinters(lmnApiToken: string): Promise<LmnApiPrinter[]> {
     try {
       const response = await this.enqueue<LmnApiPrinter[]>(() =>
         this.lmnApi.get<LmnApiPrinter[]>(PRINTERS_LMN_API_ENDPOINT, {
@@ -502,7 +506,7 @@ class LmnApiService {
         }),
       );
 
-      return response.data.filter((printer) => printer.sophomorixSchoolname === school);
+      return response.data;
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.GetPrintersFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
