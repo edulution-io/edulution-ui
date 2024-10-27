@@ -6,6 +6,7 @@
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
@@ -26,6 +27,7 @@ import {
   surveyValidAnswerPublicSurvey02,
   unknownSurveyId,
 } from './mocks';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -48,6 +50,10 @@ describe(PublicSurveysController.name, () => {
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: cacheManagerMock,
         },
       ],
     }).compile();

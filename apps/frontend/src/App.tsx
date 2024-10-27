@@ -13,6 +13,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Sonner';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 
@@ -29,7 +30,7 @@ const App = () => {
   }, [lang]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${window.location.origin}/edu-api/auth`,
+    authority: `${window.location.origin}/${EDU_API_ROOT}/auth`,
     client_id: ' ',
     client_secret: ' ',
     redirect_uri: '',
