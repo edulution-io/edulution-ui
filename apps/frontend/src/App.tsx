@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import AppRouter from '@/router/AppRouter';
-import i18n from '@/i18n';
-import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import eduApi from '@/api/eduApi';
 import BBBFrame from '@/pages/ConferencePage/BBBFrame';
@@ -18,16 +16,11 @@ import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 
 const App = () => {
-  const { lang } = useLanguage();
   const { eduApiToken } = useUserStore();
   const { lmnApiToken } = useLmnApiStore();
 
   lmnApi.defaults.headers.common[HTTP_HEADERS.XApiKey] = lmnApiToken;
   eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
-
-  useEffect(() => {
-    i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
-  }, [lang]);
 
   const oidcConfig: AuthProviderProps = {
     authority: `${window.location.origin}/${EDU_API_ROOT}/auth`,
