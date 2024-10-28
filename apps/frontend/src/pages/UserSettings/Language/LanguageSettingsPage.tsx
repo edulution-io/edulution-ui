@@ -3,11 +3,17 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { LanguageIcon } from '@/assets/icons';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import UserLanguage from '@libs/user/constants/userLanguage';
 import SelectLanguage from './components/SelectLanguage';
 
 const LanguageSettingsPage = () => {
   const { t } = useTranslation();
-  const methods = useForm();
+
+  const methods = useForm({
+    defaultValues: {
+      userLanguage: UserLanguage.SYSTEM_LANGUAGE,
+    },
+  });
 
   return (
     <FormProvider {...methods}>
@@ -18,10 +24,7 @@ const LanguageSettingsPage = () => {
           iconSrc={LanguageIcon}
         />
         <div className="p-4">
-          <SelectLanguage
-            control={methods.control}
-            settingLocation="usersettings"
-          />
+          <SelectLanguage settingLocation="usersettings" />
         </div>
       </div>
     </FormProvider>
