@@ -1,9 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: '[REPORT] '
-labels: 'enhancement'
-assignees: 'tomldev'
+title: "[REPORT] "
+labels: enhancement
+assignees: ''
 
 ---
 
