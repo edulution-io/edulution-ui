@@ -94,6 +94,10 @@ export default defineConfig({
   //  plugins: [ nxViteTsPaths() ],
   // },
 
+  optimizeDeps: {
+    exclude: [],
+  },
+
   build: {
     outDir: '../../dist/apps/frontend',
     emptyOutDir: true,

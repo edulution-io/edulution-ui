@@ -516,6 +516,13 @@
       "disabled": "deaktiviert",
       "disable": "Deaktivieren"
     },
+    "language": {
+      "title": "Sprache",
+      "description": "Wählen Sie die Sprache für die Benutzeroberfläche aus.",
+      "german": "Deutsch",
+      "english": "Englisch",
+      "system": "Systemsprache"
+    },
     "addTotp": {
       "title": "QR-Code",
       "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"

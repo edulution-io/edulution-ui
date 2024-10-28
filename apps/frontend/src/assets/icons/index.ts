@@ -53,3 +53,4 @@ export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg'
 export { default as EmbeddedIcon } from '@/assets/icons/edulution/Icon_Embedded.svg';
 export { default as ForwardIcon } from '@/assets/icons/edulution/Icon_Forward.svg';
 export { default as NativeIcon } from '@/assets/icons/edulution/Icon_Nativ.svg';
+export { default as LanguageIcon } from '@/assets/icons/edulution/Sprache.svg';
