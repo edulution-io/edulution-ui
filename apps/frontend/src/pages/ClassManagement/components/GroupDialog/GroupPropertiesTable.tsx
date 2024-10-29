@@ -13,7 +13,7 @@ type GroupProperty = {
   labelTranslationId: string;
   name: keyof GroupForm;
   disabled?: boolean;
-  component: 'checkbox' | 'text' | 'date';
+  component: 'checkbox' | 'text' | 'date' | 'number';
 };
 
 interface GroupPropertiesTableProps {
@@ -69,6 +69,24 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
       disabled,
       component: 'checkbox',
     },
+    {
+      labelTranslationId: 'classmanagement.mailQuota',
+      name: 'mailquota',
+      disabled,
+      component: 'number',
+    },
+    {
+      labelTranslationId: 'classmanagement.proxyAddresses',
+      name: 'proxyAddresses',
+      disabled,
+      component: 'text',
+    },
+    {
+      labelTranslationId: 'classmanagement.quota',
+      name: 'quota',
+      disabled,
+      component: 'text',
+    },
   ];
 
   const getComponent = (groupProperty: GroupProperty) => {
@@ -86,6 +104,19 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         return watch(groupProperty.name)
           ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]').format()
           : '-';
+      case 'number':
+        if (groupProperty.disabled) {
+          return <>{watch(groupProperty.name)}</>;
+        }
+        return (
+          <Input
+            {...register(groupProperty.name)}
+            variant="light"
+            min="0"
+            step="1"
+            type="number"
+          />
+        );
       case 'text':
       default:
         if (groupProperty.disabled) {

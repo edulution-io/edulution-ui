@@ -47,6 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className="relative">
         <SHInput
           type={showPassword ? 'text' : type}
+          inputMode={type === 'number' ? 'numeric' : undefined}
           className={cn(originInputVariants({ variant, className }))}
           ref={ref}
           onChange={handleChange}
