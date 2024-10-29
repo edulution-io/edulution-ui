@@ -33,13 +33,25 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+      - name: Check if version bump is necessary
+        id: version-check
+        run: |
+          # Skip if last commit is a version bump
+          LAST_COMMIT=$(git log -1 --pretty=%B)
+          if [[ "$LAST_COMMIT" == "Bump version"* ]]; then
+            echo "Version bump already done. Exiting."
+            exit 0
+          fi
+
       - name: Bump version
+        if: steps.version-check.outcome == "success"
         run: |
           if [ "${{ github.ref_name }}" == "dev" ]; then
             npm version patch
           fi
 
       - name: Commit and push changes
+        if: steps.version-check.outcome == "success"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
