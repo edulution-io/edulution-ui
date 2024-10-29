@@ -126,7 +126,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
         ) : (
           <>
             <div className="flex w-full flex-col justify-around">
-              <div className="flew-row flex ">
+              <div className="flew-row flex overflow-hidden">
                 {sophomorixJoinable && isEnrolEnabled ? (
                   <Checkbox
                     className="-mr-1 ml-2 rounded-lg"
