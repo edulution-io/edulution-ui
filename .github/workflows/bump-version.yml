@@ -44,14 +44,12 @@ jobs:
           fi
 
       - name: Bump version
-        if: steps.version-check.outcome == "success"
+        if: ${{ steps.version-check.outcome == 'success' && github.ref_name == 'dev' }}
         run: |
-          if [ "${{ github.ref_name }}" == "dev" ]; then
-            npm version patch
-          fi
+          npm version patch
 
       - name: Commit and push changes
-        if: steps.version-check.outcome == "success"
+        if: ${{ steps.version-check.outcome == 'success' && github.ref_name == 'dev' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
