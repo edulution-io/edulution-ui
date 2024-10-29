@@ -491,10 +491,10 @@
     "title": "MY PROFILE",
     "sidebar": "My Profile",
     "details": {
-      "title": "Userdetails",
+      "title": "User details",
       "userInformation": "User related information",
       "dateOfBirth": "Date of birth",
-      "givenName": "Givenname",
+      "givenName": "Given name",
       "displayName": "Display name",
       "name": "Username",
       "role": "Role",

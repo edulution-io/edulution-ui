@@ -5,7 +5,7 @@ import { UserDetailsSettingsIcon } from '@/assets/icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
-import QuotaBody from '@/pages/UserSettings/Details/QuotaBody';
+import Quota from '@/pages/Dashboard/Quota';
 import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
@@ -111,7 +111,7 @@ const UserSettingsDetailsPage: React.FC = () => {
         <div className="md:max-w-[75%]">
           <h3>{t('usersettings.details.quotas')}</h3>
           <div className="space-y-4 py-4 text-ciGrey">
-            <QuotaBody />
+            <Quota />
           </div>
 
           <div className="h-[50px]" />

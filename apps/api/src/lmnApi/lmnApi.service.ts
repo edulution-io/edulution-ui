@@ -328,29 +328,23 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<boolean> {
+  ): Promise<null> {
     try {
-      const answer = await this.enqueue(() =>
-        this.lmnApi.post(
+      const response = await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(
           `${USERS_LMN_API_ENDPOINT}/${username}`,
           { ...userDetails },
           {
             headers: {
-              accept: 'text/plain',
-              'Content-Type': 'application/json',
-              [HTTP_HEADERS.Authorization]: `Bearer ${lmnApiToken}`,
               [HTTP_HEADERS.XApiKey]: lmnApiToken,
             },
           },
         ),
       );
-      if (answer.status === 200) {
-        return true;
-      }
-    } catch (e) {
-      return false;
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(LmnApiErrorMessage.UpdateUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
-    return false;
   }
 
   public async getUsersQuota(lmnApiToken: string, username: string): Promise<QuotaResponse> {

@@ -82,7 +82,7 @@ const BadgeFormField = (props: UserSettingsDetailsFormProps) => {
                 disabled={disabled || !newLabel}
                 actionIcons={[
                   {
-                    Icon: MdAddCircleOutline,
+                    icon: MdAddCircleOutline,
                     onClick: handleAddBadge,
                   },
                 ]}

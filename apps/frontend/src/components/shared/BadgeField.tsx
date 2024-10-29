@@ -86,7 +86,7 @@ const BadgeField = (props: BadgeFieldProps) => {
             disabled={disabled || !newLabel}
             actionIcons={[
               {
-                Icon: MdAddCircleOutline,
+                icon: MdAddCircleOutline,
                 onClick: handleAddBadge,
               },
             ]}
