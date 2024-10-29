@@ -504,6 +504,7 @@
       "quotas": "Quotas",
       "proxyAddresses": "Mail Proxies",
       "addNew": "Type to add",
+      "badgeAlreadyExists": "This entry exists already",
       "sophomorixCustom1_teacher": "Schoolsubject 1",
       "sophomorixCustom2_teacher": "Schoolsubject 2",
       "sophomorixCustomMulti1_teacher": "Coffee-brands"

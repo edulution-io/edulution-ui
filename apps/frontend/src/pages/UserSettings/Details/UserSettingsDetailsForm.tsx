@@ -21,27 +21,13 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
   const { user, patchUserDetails } = useLmnApiStore();
   const { t } = useTranslation();
 
-  let dataFields: { [key: string]: string | string[] | number | boolean | undefined } = {
-    proxyAddresses: user?.proxyAddresses || [],
-  };
-  userDataFields.forEach((field) => {
-    dataFields = {
-      ...dataFields,
-      [field.name]: field.value,
-    };
-  });
-  userDataMultiFields.forEach((field) => {
-    dataFields = {
-      ...dataFields,
-      [field.name]: field.value,
-    };
-  });
-
   const form = useForm({
-    defaultValues: dataFields,
+    defaultValues: {
+      proxyAddresses: user?.proxyAddresses || [],
+      ...userDataFields.reduce((acc, field) => ({ ...acc, [field.name]: field.value }), {}),
+      ...userDataMultiFields.reduce((acc, field) => ({ ...acc, [field.name]: field.value }), {}),
+    },
   });
-
-  const proxyAddresses = form.watch('proxyAddresses') as string[];
 
   if (!user?.name) return null;
   return (
@@ -49,14 +35,12 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
       <form onSubmit={form.handleSubmit((data) => patchUserDetails(data))}>
         <div className="space-y-4 md:max-w-[75%]">
           <BadgeFormField
-            formControl={form.control}
+            form={form}
+            name="proxyAddresses"
             labelTranslationId="usersettings.details.proxyAddresses"
-            value={proxyAddresses}
-            onChange={(mailProxies: string[]) => form.setValue('proxyAddresses', mailProxies)}
-            fieldName="proxyAddresses"
             placeholder={t('usersettings.details.addNew')}
           />
-          {userDataFields.map((field) => (
+          {userDataFields.map((field: SingleInputProp | BooleanInputProp) => (
             <FormField
               form={form}
               key={field.name}
@@ -67,13 +51,11 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
               variant="lightGray"
             />
           ))}
-          {userDataMultiFields.map((field) => (
+          {userDataMultiFields.map((field: MultiInputProp) => (
             <BadgeFormField
+              form={form}
               key={field.name}
-              formControl={form.control}
-              value={field.value || []}
-              onChange={(badges: string[]) => form.setValue(field.name, badges)}
-              fieldName={field.name || field.label}
+              name={field.name || field.label}
               labelTranslationId={field.label}
               placeholder={t('common.add')}
             />
