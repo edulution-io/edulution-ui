@@ -13,12 +13,14 @@ import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
   saveNumber: number;
-  formula?: JSON;
+  formula?: TSurveyFormula;
 }
 
 editorLocalization.defaultLocale = i18next.options.lng || 'en';
@@ -64,7 +66,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   creator.saveNo = saveNumber;
   if (formula) {
-    creator.JSON = formula;
+    creator.JSON = formula as unknown as JSON;
   }
 
   // TOOLBAR (HEADER)
@@ -104,11 +106,11 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   creator.onModified.add(() => {
-    form.setValue('formula', creator.JSON);
+    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', creator.JSON);
+    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };

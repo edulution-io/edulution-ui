@@ -33,7 +33,7 @@ const ResultVisualizationDialogBody = () => {
 
   return (
     <ResultVisualization
-      formula={selectedSurvey.formula}
+      formula={selectedSurvey.formula as unknown as JSON}
       result={result}
     />
   );

@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import getNewSurveyId from '@libs/survey/getNewSurveyId';
 
 class EmptySurveyForm implements SurveyDto {
   readonly id: mongoose.Types.ObjectId;
 
-  formula: JSON;
+  formula: TSurveyFormula;
 
   saveNo: number;
 
@@ -35,7 +36,7 @@ class EmptySurveyForm implements SurveyDto {
 
   constructor(creator: AttendeeDto) {
     this.id = getNewSurveyId();
-    this.formula = {} as JSON;
+    this.formula = { title: '' } as TSurveyFormula;
     this.saveNo = 0;
     this.creator = creator;
     this.invitedAttendees = [];

@@ -45,12 +45,13 @@ const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TVa
     },
   });
 
+  const { getHeaderGroups, getRowModel } = table;
   return (
     <div className="w-full flex-1 ">
       <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
                 className="text-background"
@@ -64,17 +65,17 @@ const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TVa
             ))}
           </TableHeader>
           <TableBody className="container">
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+            {getRowModel().rows.length ? (
+              getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() ? 'selected' : undefined}
-                  className="cursor-pointer"
+                  className="h-[40px] cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="h-[40px] text-background"
+                      className="h-8 text-background"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>

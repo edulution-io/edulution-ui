@@ -622,7 +622,7 @@
     "copy": "Kopieren",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
-    "not-available": "'Nicht verfügbar'",
+    "not-available": "Nicht verfügbar",
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen"
@@ -653,7 +653,7 @@
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
-    "filesOrFoldersSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt"
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Datei(en)/Ordner ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {

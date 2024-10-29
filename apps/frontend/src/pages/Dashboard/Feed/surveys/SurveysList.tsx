@@ -11,7 +11,6 @@ import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import getSurveyTitle from '@libs/survey/utils/getSurveyTitle';
 
 interface SurveysListProps {
   items: SurveyDto[];
@@ -33,24 +32,21 @@ const SurveysList = (props: SurveysListProps) => {
 
   const locale = getLocaleDateFormat();
 
-  const getSurveyInfo = (survey: SurveyDto) => {
-    const surveyTitle = getSurveyTitle(survey);
-    return (
-      <div className="flex w-full flex-col gap-1">
-        <span className="text-sm font-semibold">{surveyTitle}</span>
-        <p className="line-clamp-2 text-sm text-muted-foreground">
-          {`${t('survey.created')}:  `}
-          {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : t('not-available')}
+  const getSurveyInfo = (survey: SurveyDto) => (
+    <div className="flex w-full flex-col gap-1">
+      <span className="text-sm font-semibold">{survey.formula.title || t('common.not-available')}</span>
+      <p className="line-clamp-2 text-sm text-muted-foreground">
+        {`${t('survey.created')}:  `}
+        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : t('common.not-available')}
+      </p>
+      {survey.expires ? (
+        <p className="text-muted-background line-clamp-2 text-sm">
+          {`${t('survey.expires')}:  `}
+          {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
         </p>
-        {survey.expires ? (
-          <p className="text-muted-background line-clamp-2 text-sm">
-            {`${t('survey.expires')}:  `}
-            {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
-          </p>
-        ) : null}
-      </div>
-    );
-  };
+      ) : null}
+    </div>
+  );
 
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto scrollbar-thin', className)}>

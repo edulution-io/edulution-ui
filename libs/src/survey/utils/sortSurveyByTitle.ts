@@ -1,14 +1,10 @@
 import sortString from '@libs/common/utils/sortString';
-import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
-interface ObjectWithFormula {
-  formula: JSON;
-}
-
-function sortSurveyByTitle<T extends ObjectWithFormula>(a: T, b: T): number {
-  const surveyFormulaA = convertJSONToSurveyFormula(a.formula);
-  const surveyFormulaB = convertJSONToSurveyFormula(b.formula);
-  return sortString(surveyFormulaA?.title, surveyFormulaB?.title);
-}
+const sortSurveyByTitle = (a: SurveyDto, b: SurveyDto): number => {
+  const surveyTitleA = a.formula.title;
+  const surveyTitleB = b.formula.title;
+  return sortString(surveyTitleA, surveyTitleB);
+};
 
 export default sortSurveyByTitle;
