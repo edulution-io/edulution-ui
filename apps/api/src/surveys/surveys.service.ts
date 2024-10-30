@@ -71,7 +71,7 @@ class SurveysService {
           survey._id,
           { ...survey },
         )
-        .exec();
+        .lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {

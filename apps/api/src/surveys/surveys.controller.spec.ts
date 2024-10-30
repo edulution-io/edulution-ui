@@ -212,7 +212,7 @@ describe(SurveysController.name, () => {
     it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
       jest.spyOn(surveyService, 'updateOrCreateSurvey');
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
       const { id, created = new Date() } = surveyUpdateUpdatedSurveyDto;
