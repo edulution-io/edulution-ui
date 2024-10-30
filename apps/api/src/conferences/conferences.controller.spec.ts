@@ -2,6 +2,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { Response } from 'express';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
@@ -9,7 +10,6 @@ import ConferencesController from './conferences.controller';
 import { Conference } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
-import type UserConnections from '../types/userConnections';
 
 const mockConferencesModel = {
   insertMany: jest.fn(),
@@ -26,6 +26,7 @@ const mockConferencesService = {
   update: jest.fn(),
   toggleConferenceIsRunning: jest.fn(),
   remove: jest.fn(),
+  subscribe: jest.fn(),
 };
 
 const jwtUser: JWTUser = {
@@ -48,8 +49,6 @@ const jwtUser: JWTUser = {
   email: '',
   ldapGroups: [],
 };
-
-const mockSseConnections: UserConnections = new Map();
 
 describe(ConferencesController.name, () => {
   let controller: ConferencesController;
@@ -92,7 +91,7 @@ describe(ConferencesController.name, () => {
         invitedGroups: [],
       };
       await controller.create(createConferenceDto, jwtUser);
-      expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser, mockSseConnections);
+      expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser);
     });
   });
 
@@ -136,11 +135,7 @@ describe(ConferencesController.name, () => {
       const conference: Pick<Conference, 'meetingID'> = { meetingID: '123' };
       const username = 'testuser';
       await controller.toggleIsRunning(conference, jwtUser);
-      expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(
-        conference.meetingID,
-        username,
-        mockSseConnections,
-      );
+      expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(conference.meetingID, username);
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });
@@ -150,8 +145,17 @@ describe(ConferencesController.name, () => {
       const meetingIDs = ['123', '456'];
       const username = 'testuser';
       await controller.remove(meetingIDs, jwtUser);
-      expect(service.remove).toHaveBeenCalledWith(meetingIDs, username, mockSseConnections);
+      expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
+    });
+  });
+
+  describe('sse', () => {
+    it('should call subscribe method of conferencesService with correct arguments', () => {
+      const username = 'testuser';
+      const mockResponse = { setHeader: jest.fn(), flushHeaders: jest.fn(), on: jest.fn() } as unknown as Response;
+      controller.sse(username, mockResponse);
+      expect(service.subscribe).toHaveBeenCalledWith(username, mockResponse);
     });
   });
 });

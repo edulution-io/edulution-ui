@@ -7,6 +7,7 @@ import axios from 'axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -59,6 +60,11 @@ const mockConferenceDocument: ConferenceDocument = {
   toObject: jest.fn().mockImplementation(() => mockConferenceDocument),
 } as unknown as ConferenceDocument;
 
+const schedulerRegistryMock = {
+  addInterval: jest.fn().mockImplementation((_, interval: NodeJS.Timeout) => interval.unref()),
+  deleteInterval: jest.fn(),
+};
+
 const mockSseConnections: UserConnections = new Map();
 
 const conferencesModelMock = {
@@ -99,6 +105,10 @@ describe(ConferencesService.name, () => {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
         },
+        {
+          provide: SchedulerRegistry,
+          useValue: schedulerRegistryMock,
+        },
       ],
     }).compile();
 
@@ -113,7 +123,7 @@ describe(ConferencesService.name, () => {
   describe('create', () => {
     it('should create and save a conference', async () => {
       const createDto: CreateConferenceDto = { ...mockConference };
-      const result = await service.create(createDto, mockJWTUser, mockSseConnections);
+      const result = await service.create(createDto, mockJWTUser);
       expect(model.create).toHaveBeenCalled();
       expect(result?.creator).toEqual(mockCreator);
     });
@@ -146,11 +156,7 @@ describe(ConferencesService.name, () => {
 
   describe('remove', () => {
     it('should remove a conference', async () => {
-      const result = await service.remove(
-        [mockConferenceDocument.meetingID],
-        mockJWTUser.preferred_username,
-        mockSseConnections,
-      );
+      const result = await service.remove([mockConferenceDocument.meetingID], mockJWTUser.preferred_username);
 
       expect(result).toBeTruthy();
       expect(conferencesModelMock.find).toHaveBeenCalledWith(
@@ -174,11 +180,11 @@ describe(ConferencesService.name, () => {
       jest.spyOn(service, 'startConference').mockResolvedValue(undefined);
 
       mockConferenceDocument.isRunning = false;
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username, mockSseConnections);
+      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
       expect(service.startConference).toHaveBeenCalled();
 
       mockConferenceDocument.isRunning = true;
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username, mockSseConnections);
+      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
       expect(service.stopConference).toHaveBeenCalled();
     });
   });
@@ -232,5 +238,10 @@ describe(ConferencesService.name, () => {
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
     });
+  });
+
+  afterAll(() => {
+    schedulerRegistryMock.deleteInterval.mockClear();
+    schedulerRegistryMock.addInterval.mockClear();
   });
 });
