@@ -5,24 +5,32 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
-import Attendee from '../conferences/attendee.schema';
 
 @Injectable()
 class SurveysService {
   constructor(@InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>) {}
 
   async findSurvey(surveyId: mongoose.Types.ObjectId, username: string): Promise<Survey | null> {
-    const survey = await this.surveyModel.findOne<Survey>({ id: surveyId }).exec();
-    if (survey == null) {
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [
+          {
+            $or: [
+              { isPublic: true },
+              { 'creator.username': username },
+              { invitedAttendees: { $elemMatch: { username } } },
+            ],
+          },
+          { _id: surveyId },
+        ],
+      })
+      .lean();
+
+    if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    const isCreator = survey.creator.username === username;
-    const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
-    if (isCreator || isAttendee) {
-      return survey;
-    }
-    throw new CustomHttpException(SurveyErrorMessages.PermissionDenied, HttpStatus.FORBIDDEN);
+    return survey;
   }
 
   async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {

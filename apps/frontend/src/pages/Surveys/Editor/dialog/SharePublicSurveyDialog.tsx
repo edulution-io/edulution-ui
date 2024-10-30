@@ -2,13 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { Button } from '@/components/shared/Button';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 const SharePublicSurveyDialog = () => {
-  const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorFormStore();
+  const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
 

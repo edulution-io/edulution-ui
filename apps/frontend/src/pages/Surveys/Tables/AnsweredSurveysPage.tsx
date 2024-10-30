@@ -6,7 +6,7 @@ import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-const AnsweredSurveys = () => {
+const AnsweredSurveysPage = () => {
   const { selectedSurvey, selectSurvey, answeredSurveys, isFetchingAnsweredSurveys, updateAnsweredSurveys } =
     useSurveyTablesPageStore();
 
@@ -45,4 +45,4 @@ const AnsweredSurveys = () => {
   );
 };
 
-export default AnsweredSurveys;
+export default AnsweredSurveysPage;

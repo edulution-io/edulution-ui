@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ANSWER_ENDPOINT, FIND_ONE_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import {
+  ANSWER_ENDPOINT,
+  // FIND_ONE_ENDPOINT,
+  RESULT_ENDPOINT,
+  SURVEYS,
+} from '@libs/survey/constants/surveys-endpoint';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
@@ -22,13 +27,13 @@ class SurveysController {
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
-  @Get(FIND_ONE_ENDPOINT)
-  async findOne(@Query('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
+  @Get(':surveyId')
+  async findOne(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
     return this.surveyService.findSurvey(surveyId, username);
   }
 
   @Get()
-  async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
+  async findByStatus(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
     return this.surveyAnswerService.findUserSurveys(status, username);
   }
 

@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { z } from 'zod';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
@@ -9,7 +10,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
@@ -19,23 +20,17 @@ import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCo
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
-interface SurveyEditorFormProps {
-  editMode?: boolean;
-}
-
-const SurveyEditorForm = (props: SurveyEditorFormProps) => {
-  const { editMode = false } = props;
-
+const SurveyEditorPage = () => {
+  const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading } =
+    useSurveyEditorPageStore();
   const { user } = useUserStore();
 
-  const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
-  const {
-    isOpenSaveSurveyDialog,
-    setIsOpenSaveSurveyDialog,
+  const { surveyId } = useParams();
 
-    updateOrCreateSurvey,
-    isLoading,
-  } = useSurveyEditorFormStore();
+  useEffect(() => {
+    void updateSelectedSurvey(surveyId, false);
+  }, [surveyId]);
 
   if (!user || !user.username) {
     return null;
@@ -51,7 +46,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const emptyFormValues: SurveyDto = new EmptySurveyForm(surveyCreator);
 
   const initialFormValues: SurveyDto = useMemo(
-    () => (editMode && selectedSurvey ? new InitialSurveyForm(surveyCreator, selectedSurvey) : emptyFormValues),
+    () => (selectedSurvey ? new InitialSurveyForm(surveyCreator, selectedSurvey) : emptyFormValues),
     [selectedSurvey],
   );
 
@@ -170,20 +165,26 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
-      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">{getSurveyEditor}</ScrollArea>
-      </div>
-      <FloatingButtonsBar config={config} />
-      <SaveSurveyDialog
-        form={form}
-        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        commitSurvey={saveSurvey}
-        isCommitting={isLoading}
-      />
-      <SharePublicSurveyDialog />
+      {isFetching ? (
+        <LoadingIndicator isOpen={isFetching} />
+      ) : (
+        <>
+          <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+            <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">{getSurveyEditor}</ScrollArea>
+          </div>
+          <FloatingButtonsBar config={config} />
+          <SaveSurveyDialog
+            form={form}
+            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+            commitSurvey={saveSurvey}
+            isCommitting={isLoading}
+          />
+          <SharePublicSurveyDialog />
+        </>
+      )}
     </>
   );
 };
 
-export default SurveyEditorForm;
+export default SurveyEditorPage;

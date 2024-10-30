@@ -1,4 +1,6 @@
-const SurveyEditorFormStoreInitialState = {
+const SurveyEditorPageStoreInitialState = {
+  survey: undefined,
+
   isOpenSaveSurveyDialog: false,
   isLoading: false,
 
@@ -6,4 +8,4 @@ const SurveyEditorFormStoreInitialState = {
   publicSurveyId: '',
 };
 
-export default SurveyEditorFormStoreInitialState;
+export default SurveyEditorPageStoreInitialState;

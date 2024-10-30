@@ -4,7 +4,7 @@ interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
-  updateSelectedSurvey: (surveyId: string) => Promise<void>;
+  updateSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
   isFetching: boolean;
 
   updateUsersSurveys: () => Promise<void>;

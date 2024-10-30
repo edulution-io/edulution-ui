@@ -1,6 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import {
+  ANSWERED_SURVEYS_PAGE,
+  CREATED_SURVEYS_PAGE,
+  CREATOR_SURVEYS_PAGE,
+  OPEN_SURVEYS_PAGE,
+} from '@libs/survey/constants/surveys-endpoint';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 
@@ -17,7 +21,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.open',
         icon: SurveysViewOpenIcon,
         action: () => {
-          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.OPEN}`);
+          navigate(OPEN_SURVEYS_PAGE);
         },
       },
       {
@@ -25,7 +29,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.answered',
         icon: SurveysViewAnsweredIcon,
         action: () => {
-          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.ANSWERED}`);
+          navigate(ANSWERED_SURVEYS_PAGE);
         },
       },
       {
@@ -33,7 +37,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.created',
         icon: UserIcon,
         action: () => {
-          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.CREATED}`);
+          navigate(CREATED_SURVEYS_PAGE);
         },
       },
       {
@@ -41,7 +45,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.editor',
         icon: PlusIcon,
         action: () => {
-          navigate(`${SURVEYS_ENDPOINT}${SurveysPageView.CREATOR}`);
+          navigate(CREATOR_SURVEYS_PAGE);
         },
       },
     ],

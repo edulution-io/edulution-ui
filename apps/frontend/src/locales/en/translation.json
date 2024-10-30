@@ -306,6 +306,8 @@
     "creationDate": "Creation date",
     "expires": "Expires",
     "expirationDate": "Expiration date",
+    "finished": "You successfully completed the survey.",
+    "thanks": "Thank you for your participation.",
     "notFound": "Survey not found",
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
@@ -327,7 +329,7 @@
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
       "participationErrorSurveyExpired": "Survey has already expired",
       "idTypeError": "Missing survey id",
-      "missingAnswerError": "Please, provide an answer for the submission",
+      "missingAnswerError": "Please provide an answer before submitting.",
       "permissionDeniedError": "Access denied, you are neither the creator nor a participant"
     }
   },

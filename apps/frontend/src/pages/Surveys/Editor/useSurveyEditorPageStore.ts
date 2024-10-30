@@ -1,14 +1,16 @@
 import { create } from 'zustand';
-import SurveyEditorFormStore from '@libs/survey/types/editor/surveyEditorFormStore';
-import SurveyEditorFormStoreInitialState from '@libs/survey/types/editor/surveyEditorFormStoreInitialState';
+import SurveyEditorPageStore from '@libs/survey/types/editor/surveyEditorPageStore';
+import SurveyEditorPageStoreInitialState from '@libs/survey/types/editor/surveyEditorPageStoreInitialState';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
-const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
-  ...SurveyEditorFormStoreInitialState,
-  reset: () => set(SurveyEditorFormStoreInitialState),
+const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
+  ...SurveyEditorPageStoreInitialState,
+  reset: () => set(SurveyEditorPageStoreInitialState),
+
+  setSurvey: (survey: SurveyDto | undefined) => set({ survey }),
 
   setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 
@@ -33,7 +35,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   },
 
   closeSharePublicSurveyDialog: () =>
-    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorFormStoreInitialState.publicSurveyId }),
+    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorPageStoreInitialState.publicSurveyId }),
 }));
 
-export default useSurveyEditorFormStore;
+export default useSurveyEditorPageStore;

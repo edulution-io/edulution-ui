@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Body, Controller, Query, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { PUBLIC_SURVEYS_ENDPOINT, RESTFUL_CHOICES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -15,9 +15,10 @@ class PublicSurveysController {
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
-  @Get()
+  @Get(`/:surveyId`)
   @Public()
-  async find(@Query('surveyId') surveyId: mongoose.Types.ObjectId) {
+  async find(@Param() params: { surveyId: mongoose.Types.ObjectId }) {
+    const { surveyId } = params;
     return this.surveyService.findPublicSurvey(surveyId);
   }
 

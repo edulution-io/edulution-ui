@@ -1,3 +1,7 @@
+.sd-completedpage h3 {
+  color: theme("colors.ciLightGrey") !important;
+}
+
 /*
  * ADDED BY DM
  */

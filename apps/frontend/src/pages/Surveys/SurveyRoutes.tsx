@@ -2,12 +2,11 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/api/page-view';
-import OpenSurveys from '@/pages/Surveys/Tables/OpenSurveys';
-import AnsweredSurveys from '@/pages/Surveys/Tables/AnsweredSurveys';
-import CreatedSurveys from '@/pages/Surveys/Tables/CreatedSurveys';
-import EditSurvey from '@/pages/Surveys/Editor/EditSurvey';
-import SurveyEditorForm from '@/pages/Surveys/Editor/SurveyEditorForm';
-import ParticipateSurvey from '@/pages/Surveys/Participation/ParticipateSurvey';
+import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
+import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
+import CreatedSurveysPage from '@/pages/Surveys/Tables/CreatedSurveysPage';
+import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
+import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
 
 const getSurveyRoutes = () => [
   <Route
@@ -20,27 +19,27 @@ const getSurveyRoutes = () => [
     />
     <Route
       path={SurveysPageView.OPEN}
-      element={<OpenSurveys />}
+      element={<OpenSurveysPage />}
     />
     <Route
       path={SurveysPageView.ANSWERED}
-      element={<AnsweredSurveys />}
+      element={<AnsweredSurveysPage />}
     />
     <Route
       path={SurveysPageView.CREATED}
-      element={<CreatedSurveys />}
+      element={<CreatedSurveysPage />}
     />
     <Route
       path={SurveysPageView.CREATOR}
-      element={<SurveyEditorForm />}
+      element={<SurveyEditorPage />}
     />
     <Route
       path={`${SurveysPageView.EDITOR}/:surveyId`}
-      element={<EditSurvey />}
+      element={<SurveyEditorPage />}
     />
     <Route
       path={`${SurveysPageView.PARTICIPATION}/:surveyId`}
-      element={<ParticipateSurvey />}
+      element={<SurveyParticipationPage isPublic={false} />}
     />
   </Route>,
 ];

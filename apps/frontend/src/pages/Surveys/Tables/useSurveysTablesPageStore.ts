@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT, { FIND_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT, {
+  // FIND_SURVEYS_ENDPOINT,
+  PUBLIC_SURVEYS_ENDPOINT,
+} from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
@@ -13,12 +16,20 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  updateSelectedSurvey: async (surveyId: string): Promise<void> => {
+  updateSelectedSurvey: async (surveyId: string | undefined, isPublic: boolean): Promise<void> => {
+    if (!surveyId) {
+      set({ selectedSurvey: undefined });
+      return;
+    }
     set({ isFetching: true });
     try {
-      const response = await eduApi.get<SurveyDto>(FIND_SURVEYS_ENDPOINT, { params: { surveyId } });
-      const survey = response.data;
-      set({ selectedSurvey: survey });
+      if (isPublic) {
+        const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS_ENDPOINT}/${surveyId}`);
+        set({ selectedSurvey: response.data });
+      } else {
+        const response = await eduApi.get<SurveyDto>(`${SURVEYS_ENDPOINT}/${surveyId}`);
+        set({ selectedSurvey: response.data });
+      }
     } catch (error) {
       set({ selectedSurvey: undefined });
       handleApiError(error, set);
