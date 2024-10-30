@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.survey-editor {
+  .sd-completedpage h3 {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
+  /* Sturctured */
+  .svc-creator {
+    .svc-top-bar {
+      max-height: 40px;
+      height: 40px;
+      padding: 0;
+
+      .svc-tabbed-menu,
+      .svc-tabbed-menu-item,
+      .svc-tabbed-menu-item--selected {
+        max-height: 40px;
+        height: 40px;
+        padding: 0;
+      }
+
+      .svc-tabbed-menu-item__text {
+        padding: 3px 8px;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .svc-designer-header {
+      border-bottom-color: theme("colors.ciLightGrey") !important;
+      .sd-title {
+        .sv-string-editor {
+          font-size: 20pt;
+          line-height: 20pt;
+          line-break: normal;
+          white-space: pre-wrap;
+        }
+      }
+      .sd-description {
+        .sv-string-editor {
+          font-size: 16pt;
+          line-height: 16pt;
+          line-break: normal;
+          white-space: pre-wrap;
+        }
+      }
+    }
+
+    .sd-page {
+      .sd-page__title {
+        .sv-string-editor {
+          font-size: 16pt;
+          line-height: 16pt;
+          line-break: normal;
+          white-space: pre-wrap;
+        }
+      }
+
+      .sd-page__description {
+        .sv-string-editor {
+          font-size: 12pt;
+          line-height: 12pt;
+          line-break: normal;
+          white-space: pre-wrap;
+        }
+      }
+
+      .sd-text,
+      .sd-text__content {
+        display: none !important;
+      }
+
+      .sv-action-bar-item:not(.sv-action-bar-item--pressed):hover:enabled {
+        background-color: theme("colors.ciGrey") !important;
+      }
+
+      .sv-action-bar-item:not(.sv-action-bar-item--pressed):focus:enabled {
+        background-color: theme("colors.ciGrey") !important;
+      }
+    }
+
+    .svc-footer-bar {
+      .sv-action-bar-separator {
+        display: none !important;
+      }
+
+      .sv-action-bar-item,
+      .sv-action-bar-item--icon {
+        transform: translateX(-5px);
+      }
+    }
+
+    @media only screen and (max-width: 640px) {
+      .svc-top-bar {
+        display: none !important;
+      }
+    }
+  }
+
+  .svc-tab-designer .sd-container-modern.sd-container-modern--static {
+    max-width: 100vw !important;
+  }
+
+  /* Hidden */
+  .svc-creator__non-commercial,
+  .svc-creator__non-commercial-text {
+    visibility: hidden;
+    height: 0px;
+    display: none !important;
+  }
+
+  .svc-flex-row,
+  .svc-flex-column,
+  .svc-side-bar,
+  .svc-side-bar__wrapper,
+  .svc-side-bar__conainer-header,
+  .svc-side-bar__container-content,
+  .svc-side-bar__shadow,
+  .svc-flyout-side-bar {
+    background-color: unset !important;
+  }
+
+  /* Colors */
+  .sd-rating__item-star svg {
+    fill: theme("colors.ciLightGrey") !important;
+  }
+
+  .svc-text,
+  .svc-json-editor-tab__content-area {
+    color: theme("colors.ciLightGrey") !important;
+  }
+  .svc-json-editor-tab__content-area {
+    background-color: unset !important;
+  }
+
+  .svc-btn,
+  .svc-tabbed-menu-item--selected {
+    background-color: theme("colors.ciGrey") !important;
+  }
+
+  .svc-top-bar,
+  .svc-question__content,
+  .svc-side-bar__container,
+  .svc-side-bar__container-header {
+    background-color: theme("colors.ciDarkGrey") !important;
+  }
+
+  /* STUFF */
+  .svc-toolbox__item-title {
+    max-height: 30px;
+    padding: theme("container.padding");
+  }
+  .svc-toolbox__item-title:hover {
+    background: theme("colors.ciDarkGrey") !important;
+    border-radius: theme("borderRadius.lg");
+  }
+  .svc-toolbox__item-subtype {
+    max-height: 50px;
+  }
+  .svc-toolbox__item-title {
+    padding: theme("container.padding");
+  }
+
+  .sv-list__item-body {
+    color: theme("colors.ciGrey") !important;
+  }
+  .sv-list__item--selected.sv-list__item--group > .sv-list__item-body,
+  .sv-list__item.sv-list__item--selected:hover.sv-list__item--group > .sv-list__item-body {
+    color: theme("colors.ciLightGrey") !important;
+  }
+}

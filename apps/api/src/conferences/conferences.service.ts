@@ -1,19 +1,27 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import * as xml2js from 'xml2js';
+import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
-import * as crypto from 'crypto';
+import { createHash } from 'crypto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
-import JWTUser from '../types/JWTUser';
+import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import APPS from '@libs/appconfig/constants/apps';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
 
 @Injectable()
 class ConferencesService {
@@ -23,6 +31,7 @@ class ConferencesService {
 
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly appConfigService: AppConfigService,
   ) {}
 
@@ -34,8 +43,7 @@ class ConferencesService {
 
   static parseXml<T>(xml: string): Promise<T> {
     return new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
+      parseString(xml, { explicitArray: false }, (err, result) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -72,7 +80,7 @@ class ConferencesService {
       return;
     }
 
-    const appConfig = await this.appConfigService.getAppConfigByName('conferences');
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
     if (!appConfig?.options.url || !appConfig.options.apiKey) {
       throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -81,7 +89,29 @@ class ConferencesService {
     this.BBB_SECRET = appConfig.options.apiKey;
   }
 
-  async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference> {
+  async getInvitedMembers(createConferenceDto: CreateConferenceDto | Conference): Promise<string[]> {
+    const usersInGroups = await Promise.all(
+      createConferenceDto.invitedGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        return groupWithMembers?.members?.map((member) => member.username) || [];
+      }),
+    );
+
+    const invitedMembersList = Array.from(
+      new Set([...createConferenceDto.invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]),
+    );
+
+    return invitedMembersList;
+  }
+
+  async create(
+    createConferenceDto: CreateConferenceDto,
+    currentUser: JWTUser,
+    conferencesSseConnections: UserConnections,
+  ): Promise<Conference | undefined> {
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -98,23 +128,40 @@ class ConferencesService {
       isMeetingStarted: false,
     };
 
-    return this.conferenceModel.create(newConference);
+    try {
+      return await this.conferenceModel.create(newConference);
+    } catch (e) {
+      throw new CustomHttpException(ConferencesErrorMessage.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    } finally {
+      const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
+      const conference = await this.conferenceModel
+        .findOne({ meetingID: newConference.meetingID }, { _id: 0, __v: 0 })
+        .lean();
+      if (conference) {
+        SseService.sendEventToUsers(
+          invitedMembersList,
+          conferencesSseConnections,
+          conference,
+          SSE_MESSAGE_TYPE.CREATED,
+        );
+      }
+    }
   }
 
-  async toggleConferenceIsRunning(meetingID: string, username: string) {
+  async toggleConferenceIsRunning(meetingID: string, username: string, conferencesSseConnections: UserConnections) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
       throw new CustomHttpException(ConferencesErrorMessage.YouAreNotTheCreator, HttpStatus.UNAUTHORIZED);
     }
 
     if (conference.isRunning) {
-      await this.stopConference(conference);
+      await this.stopConference(conference, conferencesSseConnections);
     } else {
-      await this.startConference(conference);
+      await this.startConference(conference, conferencesSseConnections);
     }
   }
 
-  async startConference(conference: Conference) {
+  async startConference(conference: Conference, conferencesSseConnections: UserConnections) {
     try {
       const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('create', query);
@@ -127,10 +174,18 @@ class ConferencesService {
       await this.update({ ...conference, isRunning: true });
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+    } finally {
+      const invitedMembersList = await this.getInvitedMembers(conference);
+      SseService.sendEventToUsers(
+        invitedMembersList,
+        conferencesSseConnections,
+        conference.meetingID,
+        SSE_MESSAGE_TYPE.STARTED,
+      );
     }
   }
 
-  async stopConference(conference: Conference) {
+  async stopConference(conference: Conference, conferencesSseConnections: UserConnections) {
     try {
       const query = `meetingID=${conference.meetingID}`;
       const checksum = await this.createChecksum('end', query);
@@ -143,6 +198,14 @@ class ConferencesService {
       await this.update({ ...conference, isRunning: false });
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+    } finally {
+      const invitedMembersList = await this.getInvitedMembers(conference);
+      SseService.sendEventToUsers(
+        invitedMembersList,
+        conferencesSseConnections,
+        conference.meetingID,
+        SSE_MESSAGE_TYPE.STOPPED,
+      );
     }
   }
 
@@ -173,7 +236,7 @@ class ConferencesService {
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -206,7 +269,13 @@ class ConferencesService {
       .exec();
   }
 
-  async remove(meetingIDs: string[], username: string): Promise<boolean> {
+  async remove(meetingIDs: string[], username: string, conferencesSseConnections: UserConnections): Promise<boolean> {
+    const conferences = await this.conferenceModel.find({ meetingID: { $in: meetingIDs } }, { _id: 0, __v: 0 }).lean();
+
+    if (conferences.length === 0) {
+      throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
+    }
+
     const result = await this.conferenceModel
       .deleteMany({
         meetingID: { $in: meetingIDs },
@@ -214,14 +283,24 @@ class ConferencesService {
       })
       .exec();
 
-    return result.deletedCount > 0;
+    if (result.deletedCount === 0) {
+      throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
+    }
+
+    const invitedMembersList = (
+      await Promise.all(conferences.map((conference) => this.getInvitedMembers(conference)))
+    ).flat();
+
+    SseService.sendEventToUsers(invitedMembersList, conferencesSseConnections, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
+
+    return true;
   }
 
   async createChecksum(method = '', query = '') {
     await this.loadConfig();
     const string = method + query + this.BBB_SECRET;
 
-    return crypto.createHash('sha1').update(string).digest('hex');
+    return createHash('sha1').update(string).digest('hex');
   }
 
   private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {

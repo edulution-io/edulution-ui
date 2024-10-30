@@ -3,7 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { LockClosedIcon, LockOpen1Icon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import Conference from '@libs/conferences/types/conference.dto';
+import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { useTranslation } from 'react-i18next';
@@ -46,11 +46,11 @@ function getRowAction(
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
-const ConferencesTableColumns: ColumnDef<Conference>[] = [
+const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   {
     id: 'conference-name',
     header: ({ table, column }) => (
-      <SortableHeader<Conference, unknown>
+      <SortableHeader<ConferenceDto, unknown>
         titleTranslationId="conferences.conference"
         table={table}
         column={column}
@@ -80,7 +80,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
   {
     id: 'conference-creator',
     header: ({ column }) => (
-      <SortableHeader<Conference, unknown>
+      <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
         titleTranslationId="conferences.creator"
         column={column}
@@ -108,7 +108,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
   {
     id: 'conference-password',
     header: ({ column }) => (
-      <SortableHeader<Conference, unknown>
+      <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
         titleTranslationId="conferences.password"
         column={column}
@@ -150,7 +150,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
   {
     id: 'conference-invited-attendees',
     header: ({ column }) => (
-      <SortableHeader<Conference, unknown>
+      <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
         titleTranslationId="conferences.invitedAttendees"
         column={column}
@@ -183,7 +183,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
   {
     id: 'conference-joined-attendees',
     header: ({ column }) => (
-      <SortableHeader<Conference, unknown>
+      <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
         titleTranslationId="conferences.joinedAttendees"
         column={column}
@@ -200,7 +200,7 @@ const ConferencesTableColumns: ColumnDef<Conference>[] = [
   {
     id: 'conference-action-button',
     header: ({ column }) => (
-      <SortableHeader<Conference, unknown>
+      <SortableHeader<ConferenceDto, unknown>
         titleTranslationId="conferences.action"
         column={column}
       />

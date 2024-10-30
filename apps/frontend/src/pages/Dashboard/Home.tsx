@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import Feed from '@/pages/Dashboard/Feed/Feed';
-import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications';
 import useUserStore from '@/store/UserStore/UserStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
@@ -14,10 +13,8 @@ const Home: React.FC = () => {
   const isMobileView = useIsMobileView();
   const { user } = useUserStore();
 
-  useNotifications();
-
   return (
-    <>
+    <div className="md:ml-4">
       <div>
         {isMobileView ? (
           <h2>
@@ -30,7 +27,7 @@ const Home: React.FC = () => {
         <p className="mt-4">{t('content')}</p>
       </div>
 
-      <div className="my-10 md:my-20">
+      <div className="md:my-17 my-10">
         <div className="flex flex-col-reverse justify-between gap-8 md:flex-row">
           <div className="flex-1">
             <AccountInformation />
@@ -55,7 +52,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

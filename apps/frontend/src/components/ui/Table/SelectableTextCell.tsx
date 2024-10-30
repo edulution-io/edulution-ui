@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import Checkbox from '@/components/ui/Checkbox';
 import { Icon } from '@radix-ui/react-select';
 import { Row } from '@tanstack/react-table';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 
 interface SelectableTextCellProps<TData> {
   icon?: React.ReactElement;

@@ -3,12 +3,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
 import ConferencesController from './conferences.controller';
 import { Conference } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import mockAppConfigService from '../appconfig/appconfig.service.mock';
-import JWTUser from '../types/JWTUser';
+import type UserConnections from '../types/userConnections';
 
 const mockConferencesModel = {
   insertMany: jest.fn(),
@@ -47,6 +48,8 @@ const jwtUser: JWTUser = {
   email: '',
   ldapGroups: [],
 };
+
+const mockSseConnections: UserConnections = new Map();
 
 describe(ConferencesController.name, () => {
   let controller: ConferencesController;
@@ -89,7 +92,7 @@ describe(ConferencesController.name, () => {
         invitedGroups: [],
       };
       await controller.create(createConferenceDto, jwtUser);
-      expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser);
+      expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser, mockSseConnections);
     });
   });
 
@@ -133,7 +136,11 @@ describe(ConferencesController.name, () => {
       const conference: Pick<Conference, 'meetingID'> = { meetingID: '123' };
       const username = 'testuser';
       await controller.toggleIsRunning(conference, jwtUser);
-      expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(conference.meetingID, username);
+      expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(
+        conference.meetingID,
+        username,
+        mockSseConnections,
+      );
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });
@@ -143,7 +150,7 @@ describe(ConferencesController.name, () => {
       const meetingIDs = ['123', '456'];
       const username = 'testuser';
       await controller.remove(meetingIDs, jwtUser);
-      expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
+      expect(service.remove).toHaveBeenCalledWith(meetingIDs, username, mockSseConnections);
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });

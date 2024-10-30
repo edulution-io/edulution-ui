@@ -9,11 +9,11 @@ const getLoginScript = (user: string, password: string) => `
 
         passwordField.value = '${password}';
         passwordField.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-
-      const submitButton = document.querySelector('a.btn.btn-primary.btn-block');
-      if (submitButton && !submitButton.disabled) {
-        submitButton.click();
+  
+        const submitButton = document.querySelector('a.btn.btn-primary.btn-block');
+        if (submitButton && !submitButton.disabled) {
+          submitButton.click();
+        }
       }
     }
     
