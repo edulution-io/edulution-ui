@@ -518,7 +518,7 @@
     },
     "language": {
       "title": "Sprache",
-      "description": "Wählen Sie die Sprache für die Benutzeroberfläche aus.",
+      "description": "Bitte wähle die Sprache für die Benutzeroberfläche aus.",
       "german": "Deutsch",
       "english": "Englisch",
       "system": "Systemsprache"

@@ -14,6 +14,7 @@ interface RadioGroupProps {
   items: RadioGroupItem[];
   formClassname?: string;
   labelClassname?: string;
+  imageSize?: 'small' | 'large';
 }
 
 const RadioGroupFormField: React.FC<RadioGroupProps> = ({
@@ -24,8 +25,11 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
   items,
   formClassname,
   labelClassname,
+  imageSize = 'large',
 }: RadioGroupProps) => {
   const { t } = useTranslation();
+
+  const imageWidth = imageSize === 'small' ? '100px' : '150px';
 
   return (
     <FormFieldSH
@@ -54,14 +58,14 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                         {item.icon ? (
                           <div
                             className={cn(
-                              'opacity-60',
+                              'pb-6 opacity-60',
                               item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
                               { 'opacity-100': field.value === item.value },
                             )}
                           >
                             <img
                               src={item.icon}
-                              width="200px"
+                              width={imageWidth}
                               aria-label={item.value}
                               onClickCapture={() => (item.disabled ? {} : field.onChange(item.value))}
                             />

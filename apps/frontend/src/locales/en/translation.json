@@ -517,7 +517,7 @@
     },
     "language": {
       "title": "Language",
-      "description": "Select your preferred language",
+      "description": "Please select the language for the user interface.",
       "german": "German",
       "english": "English",
       "system": "System language"

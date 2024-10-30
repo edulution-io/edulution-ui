@@ -4,7 +4,7 @@ import { LanguageIcon } from '@/assets/icons';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import UserLanguage from '@libs/user/constants/userLanguage';
-import SelectLanguage from './components/SelectLanguage';
+import LanguageSelector from './components/LanguageSelector';
 
 const LanguageSettingsPage = () => {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ const LanguageSettingsPage = () => {
           iconSrc={LanguageIcon}
         />
         <div className="p-4">
-          <SelectLanguage settingLocation="usersettings" />
+          <LanguageSelector settingLocation="usersettings" />
         </div>
       </div>
     </FormProvider>

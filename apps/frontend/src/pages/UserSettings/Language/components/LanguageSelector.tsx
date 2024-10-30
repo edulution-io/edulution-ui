@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import { NativeIcon, SettingsIcon } from '@/assets/icons';
 import useUserStore from '@/store/UserStore/UserStore';
+import useIsMobileView from '@/hooks/useIsMobileView';
 
 interface SelectLanguageProps {
   settingLocation: string;
 }
 
-const SelectLanguage: React.FC<SelectLanguageProps> = ({ settingLocation }) => {
+const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) => {
+  type UserLanguageType = (typeof UserLanguage)[keyof typeof UserLanguage];
+
   const languageOptions = [
     {
       value: UserLanguage.GERMAN,
@@ -32,17 +35,14 @@ const SelectLanguage: React.FC<SelectLanguageProps> = ({ settingLocation }) => {
   ];
 
   const { user, updateUserLanguage } = useUserStore();
+  const { control } = useFormContext();
 
-  const { control } = useForm({
-    defaultValues: {
-      [`${settingLocation}.userLanguage`]: user?.language || UserLanguage.SYSTEM_LANGUAGE,
-    },
-  });
+  const isMobileView = useIsMobileView();
 
   const selectedLanguage = useWatch({
     control,
     name: `${settingLocation}.userLanguage`,
-  }) as unknown as (typeof UserLanguage)[keyof typeof UserLanguage];
+  }) as UserLanguageType;
 
   useEffect(() => {
     if (selectedLanguage !== user?.language) {
@@ -57,8 +57,9 @@ const SelectLanguage: React.FC<SelectLanguageProps> = ({ settingLocation }) => {
       titleTranslationId={`${settingLocation}.language.title`}
       defaultValue={selectedLanguage}
       items={languageOptions}
+      imageSize={isMobileView ? 'small' : 'large'}
     />
   );
 };
 
-export default SelectLanguage;
+export default LanguageSelector;
