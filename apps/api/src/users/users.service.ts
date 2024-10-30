@@ -8,7 +8,6 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -62,23 +61,22 @@ class UsersService {
 
     const fetchedUsers = await GroupsService.fetchAllUsers(token);
 
-    const usersBySchool = fetchedUsers[school].reduce(
+    const usersBySchool = fetchedUsers.reduce(
       (acc, user) => {
         const userSchool = user.attributes.school?.[0];
-        if (userSchool === school) {
-          if (!acc[school]) {
-            acc[school] = [];
+        if (userSchool) {
+          if (!acc[userSchool]) {
+            acc[userSchool] = [];
           }
-          acc[school].push(user);
+          acc[userSchool].push(user);
         }
         return acc;
       },
       {} as Record<string, LDAPUser[]>,
     );
 
-    await this.cacheManager.set('allUsersBySchool', usersBySchool, DEFAULT_CACHE_TTL_MS);
-
-    return usersBySchool;
+    await this.cacheManager.set('allUsersBySchool', usersBySchool);
+    return { [school]: usersBySchool[school] || [] };
   }
 
   async searchUsersByName(token: string, school: string, name: string): Promise<Partial<User>[]> {

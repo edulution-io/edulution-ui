@@ -105,9 +105,9 @@ class GroupsService {
     return response.data;
   }
 
-  static async fetchAllUsers(token: string): Promise<Record<string, LDAPUser[]>> {
+  static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
     try {
-      return await GroupsService.makeAuthorizedRequest<Record<string, LDAPUser[]>>(HttpMethods.GET, 'users', token);
+      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
     } catch (e) {
       throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
     }
