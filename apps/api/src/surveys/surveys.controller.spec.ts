@@ -36,6 +36,8 @@ import {
   answeredSurvey03,
   surveyAnswerAnsweredSurvey03,
   updatedSurveyAnswerAnsweredSurvey03,
+  publicSurvey01,
+  idOfPublicSurvey01,
 } from './mocks';
 import { surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
@@ -45,7 +47,7 @@ const mockSseConnections: UserConnections = new Map();
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
-  let surveysService: SurveysService;
+  let surveyService: SurveysService;
   let surveyAnswerService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
@@ -73,7 +75,7 @@ describe(SurveysController.name, () => {
     }).compile();
 
     controller = module.get<SurveysController>(SurveysController);
-    surveysService = module.get<SurveysService>(SurveysService);
+    surveyService = module.get<SurveysService>(SurveysService);
     surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
@@ -87,14 +89,40 @@ describe(SurveysController.name, () => {
     expect(controller).toBeDefined();
   });
 
-  describe('find', () => {
+  describe('findOne', () => {
+    it('it should return a public survey given the id', async () => {
+      jest.spyOn(surveyService, 'findSurvey');
+
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(publicSurvey01),
+      });
+
+      const result = await controller.findOne(idOfPublicSurvey01, firstUsername);
+      expect(result).toEqual(publicSurvey01);
+
+      expect(surveyModel.findOne).toHaveBeenCalledWith({
+        $and: [
+          {
+            $or: [
+              { isPublic: true },
+              { 'creator.username': firstUsername },
+              { invitedAttendees: { $elemMatch: { username: firstUsername } } },
+            ],
+          },
+          { _id: idOfPublicSurvey01 },
+        ],
+      });
+    });
+  });
+
+  describe('findByStatus', () => {
     it('[OPEN] should return a list of surveys for the requesting user filtered for the survey status (eq. OPEN)', async () => {
       jest.spyOn(surveyAnswerService, 'findUserSurveys');
       jest.spyOn(surveyAnswerService, 'getOpenSurveys');
 
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
 
-      const result = await controller.find(SurveyStatus.OPEN, firstUsername);
+      const result = await controller.findByStatus(SurveyStatus.OPEN, firstUsername);
       expect(result).toEqual([openSurvey01, openSurvey02]);
 
       expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstUsername);
@@ -107,7 +135,7 @@ describe(SurveysController.name, () => {
 
       surveyModel.find = jest.fn().mockReturnValue([surveyUpdateInitialSurvey, createdSurvey01]);
 
-      const result = await controller.find(SurveyStatus.CREATED, firstUsername);
+      const result = await controller.findByStatus(SurveyStatus.CREATED, firstUsername);
       expect(result).toEqual([surveyUpdateInitialSurvey, createdSurvey01]);
 
       expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstUsername);
@@ -124,7 +152,7 @@ describe(SurveysController.name, () => {
 
       surveyModel.find = jest.fn().mockReturnValue([answeredSurvey01, answeredSurvey02]);
 
-      const result = await controller.find(SurveyStatus.ANSWERED, firstUsername);
+      const result = await controller.findByStatus(SurveyStatus.ANSWERED, firstUsername);
       expect(result).toEqual([answeredSurvey01, answeredSurvey02]);
 
       expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstUsername);
@@ -182,7 +210,7 @@ describe(SurveysController.name, () => {
 
   describe('updateOrCreateSurvey', () => {
     it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
-      jest.spyOn(surveysService, 'updateOrCreateSurvey');
+      jest.spyOn(surveyService, 'updateOrCreateSurvey');
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
@@ -195,13 +223,13 @@ describe(SurveysController.name, () => {
       };
 
       await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto);
-      expect(surveysService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey, mockSseConnections);
+      expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey, mockSseConnections);
     });
   });
 
   describe('deleteSurvey', () => {
     it('should also remove the survey answers that are stored', async () => {
-      jest.spyOn(surveysService, 'deleteSurveys');
+      jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
 
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
@@ -209,7 +237,7 @@ describe(SurveysController.name, () => {
 
       await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01] });
 
-      expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
+      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
@@ -219,7 +247,7 @@ describe(SurveysController.name, () => {
     });
 
     it('it should not remove the survey answers if the survey deletion failed', async () => {
-      jest.spyOn(surveysService, 'deleteSurveys');
+      jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
 
       surveyModel.deleteMany = jest
@@ -234,7 +262,7 @@ describe(SurveysController.name, () => {
         expect(e.message).toEqual(SurveyErrorMessages.DeleteError);
       }
 
-      expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
+      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledTimes(0);
     });
   });

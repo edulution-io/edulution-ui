@@ -1,9 +1,6 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT, {
-  // FIND_SURVEYS_ENDPOINT,
-  PUBLIC_SURVEYS_ENDPOINT,
-} from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT, { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';

@@ -309,9 +309,9 @@
     "expirationDate": "Expiration date",
     "finished": "You successfully completed the survey.",
     "thanks": "Thank you for your participation.",
+    "noAnswer": "No answers available jet",
     "notFound": "Survey could not be found",
     "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
@@ -322,7 +322,6 @@
     "errors": {
       "updateOrCreateError": "Neither able to update a survey nor to create a new one",
       "deleteError": "Not able to delete the surveys",
-      "noAnswerError": "No answers available jet",
       "noFormulaError": "The formula of the survey is not readable",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
       "notFoundError": "Survey not found",
@@ -330,8 +329,7 @@
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
       "participationErrorSurveyExpired": "Survey has already expired",
       "idTypeError": "Missing survey id",
-      "missingAnswerError": "Please provide an answer before submitting.",
-      "permissionDeniedError": "Access denied, you are neither the creator nor a participant"
+      "missingAnswerError": "Please provide an answer before submitting."
     }
   },
   "survey-answer": {
@@ -554,7 +552,6 @@
   "edit": "Edit",
   "common": {
     "errors": {
-      "permissionDenied": "Access denied",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },

@@ -310,9 +310,9 @@
     "expirationDate": "Ablaufdatum",
     "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
     "thanks": "Vielen Dank für deine Teilnahme.",
-    "notFound": "Die Umfrage konnte nicht gefunden.",
+    "notFound": "Die Umfrage konnte nicht gefunden werden.",
     "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
+    "noAnswer": "Es sind noch keine Antworten verfügbar.",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",
     "editor": {
       "new": "Neu (Leer)",
@@ -323,7 +323,6 @@
     "errors": {
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
-      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
@@ -331,8 +330,7 @@
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst.",
-      "permissionDeniedError": "Zugriff verweigert, du bist weder der Ersteller noch ein eingeladener Nutzer."
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
@@ -554,7 +552,6 @@
   },
   "common": {
     "errors": {
-      "permissionDenied": "Zugriff verweigert",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
