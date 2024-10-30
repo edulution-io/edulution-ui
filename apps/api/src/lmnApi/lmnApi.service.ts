@@ -7,11 +7,11 @@ import {
   PRINTERS_LMN_API_ENDPOINT,
   PROJECTS_LMN_API_ENDPOINT,
   QUERY_LMN_API_ENDPOINT,
+  QUOTAS_LMN_API_ENDPOINT,
   SCHOOL_CLASSES_LMN_API_ENDPOINT,
   SESSIONS_LMN_API_ENDPOINT,
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
-  QUOTAS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
