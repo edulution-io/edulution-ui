@@ -7,6 +7,8 @@ interface ParticipateSurveyStore {
   setPageNo: (pageNo: number) => void;
   answerSurvey: (answerDto: CommitAnswerDto) => Promise<boolean>;
   isSubmitting: boolean;
+  hasFinished: boolean;
+  setHasFinished: (hasFinished: boolean) => void;
   reset: () => void;
 }
 

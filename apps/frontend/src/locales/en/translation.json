@@ -309,7 +309,7 @@
     "expirationDate": "Expiration date",
     "finished": "You successfully completed the survey.",
     "thanks": "Thank you for your participation.",
-    "notFound": "Survey not found",
+    "notFound": "Survey could not be found",
     "noFormula": "The formula of the survey is not readable",
     "noAnswer": "No answer available",
     "canSubmitMultiple": "Allow multiple submission",

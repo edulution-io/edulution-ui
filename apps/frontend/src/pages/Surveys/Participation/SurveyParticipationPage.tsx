@@ -14,41 +14,51 @@ interface SurveyParticipationPageProps {
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
   const { selectedSurvey, updateSelectedSurvey, isFetching } = useSurveyTablesPageStore();
-  const { answer, setAnswer, pageNo, setPageNo, answerSurvey } = useParticipateSurveyStore();
+  const { answer, setAnswer, pageNo, setPageNo, answerSurvey, hasFinished, setHasFinished } =
+    useParticipateSurveyStore();
 
   const { t } = useTranslation();
 
   const { surveyId } = useParams();
 
   useEffect(() => {
+    setHasFinished(false);
     void updateSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
 
-  const content = useMemo(
-    () => (
+  const content = useMemo(() => {
+    if (hasFinished) {
+      return (
+        <div className="relative top-1/3">
+          <h4 className="flex justify-center">{t('survey.finished')}</h4>
+          <h4 className="flex justify-center">{t('survey.thanks')}</h4>
+        </div>
+      );
+    }
+    if (!selectedSurvey) {
+      return (
+        <div className="relative top-1/3">
+          <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+        </div>
+      );
+    }
+    return (
       <ScrollArea>
-        {!selectedSurvey ? (
-          <div className="h-[50%] w-[50%]">
-            <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h4>
-          </div>
-        ) : (
-          <ParticipateSurvey
-            surveyId={selectedSurvey.id}
-            saveNo={selectedSurvey.saveNo}
-            formula={selectedSurvey.formula}
-            answer={answer}
-            setAnswer={setAnswer}
-            pageNo={pageNo}
-            setPageNo={setPageNo}
-            commitAnswer={answerSurvey}
-            className="survey-participation"
-            isPublic={isPublic}
-          />
-        )}
+        <ParticipateSurvey
+          surveyId={selectedSurvey.id}
+          saveNo={selectedSurvey.saveNo}
+          formula={selectedSurvey.formula}
+          answer={answer}
+          setAnswer={setAnswer}
+          pageNo={pageNo}
+          setPageNo={setPageNo}
+          commitAnswer={answerSurvey}
+          className="survey-participation"
+          isPublic={isPublic}
+        />
       </ScrollArea>
-    ),
-    [selectedSurvey, answer, pageNo],
-  );
+    );
+  }, [selectedSurvey, answer, pageNo, hasFinished]);
 
   return isFetching ? <LoadingIndicator isOpen={isFetching} /> : content;
 };

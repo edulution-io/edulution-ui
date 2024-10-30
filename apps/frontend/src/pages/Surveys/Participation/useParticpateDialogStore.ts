@@ -26,6 +26,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set) => ({
       }
 
       surveyEditorCallbackOnSave?.showSaveSuccess();
+      set({ hasFinished: true });
       return true;
     } catch (error) {
       surveyEditorCallbackOnSave?.showSaveError();
@@ -36,6 +37,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set) => ({
     }
     return false;
   },
+
+  setHasFinished: (hasFinished: boolean) => set({ hasFinished }),
 }));
 
 export default useParticipateSurveyStore;

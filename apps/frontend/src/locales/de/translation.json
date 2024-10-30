@@ -310,7 +310,7 @@
     "expirationDate": "Ablaufdatum",
     "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
     "thanks": "Vielen Dank für deine Teilnahme.",
-    "notFound": "Umfrage nicht gefunden",
+    "notFound": "Die Umfrage konnte nicht gefunden.",
     "noFormula": "Das Formular ist nicht lesbar",
     "noAnswer": "Keine Antwort verfügbar",
     "canSubmitMultiple": "Erlaube Mehrfachantworten",

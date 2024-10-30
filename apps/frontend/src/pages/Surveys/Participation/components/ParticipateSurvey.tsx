@@ -1,6 +1,6 @@
 import React from 'react';
 import mongoose from 'mongoose';
-import i18next, { t } from 'i18next';
+import i18next from 'i18next';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
 import 'survey-core/i18n/english';
@@ -44,8 +44,6 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
     isPublic = false,
   } = props;
 
-  const [hasFinished, setHasFinished] = React.useState<boolean>(false);
-
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
@@ -77,7 +75,6 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
     }
     if (success) {
       _options.showSaveSuccess();
-      setHasFinished(true);
     } else {
       _options.showSaveError();
     }
@@ -85,16 +82,7 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
 
   return (
     <div className={className}>
-      {hasFinished ? (
-        <div className="h-[50%] w-[50%]">
-          <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">
-            {t('survey.finished')}
-            {t('survey.thanks')}
-          </h4>
-        </div>
-      ) : (
-        <Survey model={surveyModel} />
-      )}
+      <Survey model={surveyModel} />
     </div>
   );
 };
