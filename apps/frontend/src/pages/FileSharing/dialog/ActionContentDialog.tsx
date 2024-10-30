@@ -99,6 +99,12 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
+  const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      void handleFormSubmit();
+    }
+  };
+
   return (
     <AdaptiveDialog
       isOpen={isDialogOpen}
@@ -106,18 +112,20 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       trigger={trigger}
       title={t(title)}
       body={
-        isLoading ? (
-          <LoadingIndicator isOpen={isLoading} />
-        ) : (
+        <div
+          role="presentation"
+          onKeyDown={handleDialogKeyDown}
+        >
+          {isLoading && <LoadingIndicator isOpen={isLoading} />}
           <Component
             form={form}
             isRenaming
           />
-        )
+        </div>
       }
       footer={
         error ? (
-          <div className="rounded-xl  bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>
+          <div className="rounded-xl bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>
         ) : (
           <div className="mt-4 flex justify-end">
             <form onSubmit={handleFormSubmit}>
