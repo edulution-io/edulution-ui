@@ -4,14 +4,17 @@ import { LanguageIcon } from '@/assets/icons';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import UserLanguage from '@libs/user/constants/userLanguage';
+import useUserStore from '@/store/UserStore/UserStore';
 import LanguageSelector from './components/LanguageSelector';
 
 const LanguageSettingsPage = () => {
   const { t } = useTranslation();
-
+  const { user } = useUserStore();
   const methods = useForm({
     defaultValues: {
-      userLanguage: UserLanguage.SYSTEM_LANGUAGE,
+      usersettings: {
+        userLanguage: user?.language || UserLanguage.SYSTEM_LANGUAGE,
+      },
     },
   });
 
