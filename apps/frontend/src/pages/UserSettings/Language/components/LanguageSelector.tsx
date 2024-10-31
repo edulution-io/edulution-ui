@@ -5,14 +5,13 @@ import UserLanguage from '@libs/user/constants/userLanguage';
 import { NativeIcon, SettingsIcon } from '@/assets/icons';
 import useUserStore from '@/store/UserStore/UserStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import UserLanguageType from '@libs/user/types/userLanguageType';
 
 interface SelectLanguageProps {
   settingLocation: string;
 }
 
 const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) => {
-  type UserLanguageType = (typeof UserLanguage)[keyof typeof UserLanguage];
-
   const languageOptions = [
     {
       value: UserLanguage.GERMAN,

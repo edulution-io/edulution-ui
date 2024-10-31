@@ -1,5 +1,5 @@
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import UserLanguage from '@libs/user/constants/userLanguage';
+import UserLanguageType from '@libs/user/types/userLanguageType';
 import UserDto from '../user.dto';
 
 type UserSlice = {
@@ -8,7 +8,7 @@ type UserSlice = {
   user: UserDto | null;
   getUser: (username: string) => Promise<void>;
   createOrUpdateUser: (user: UserDto) => Promise<UserDto | undefined>;
-  updateUserLanguage: (language: (typeof UserLanguage)[keyof typeof UserLanguage]) => Promise<void>;
+  updateUserLanguage: (language: UserLanguageType) => Promise<void>;
   updateUser: (user: Partial<UserDto>) => Promise<void>;
   eduApiToken: string;
   setEduApiToken: (eduApiToken: string) => void;
