@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   ColumnDef,
-  flexRender,
   getCoreRowModel,
   getSortedRowModel,
   OnChangeFn,
@@ -9,11 +8,9 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { useTranslation } from 'react-i18next';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -23,7 +20,6 @@ interface DataTableProps<TData, TValue> {
 const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const setSelectedItems = useFileSharingStore((state) => state.setSelectedItems);
-  const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
@@ -53,66 +49,10 @@ const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
-    <>
-      {table.getFilteredSelectedRowModel().rows.length > 0 && (
-        <div className="flex-1 text-sm text-background">
-          {t('table.rowsSelected', {
-            selected: table.getFilteredSelectedRowModel().rows.length,
-            total: table.getFilteredRowModel().rows.length,
-          })}
-        </div>
-      )}
-
-      <div className=" w-full flex-1 ">
-        <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="text-background"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    className="cursor-pointer"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-background"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-16 text-center"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </div>
-    </>
+    <ScrollableTable
+      columns={columns}
+      data={data}
+    />
   );
 };
 
