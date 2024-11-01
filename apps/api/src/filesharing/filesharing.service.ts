@@ -14,8 +14,8 @@ import { Request, Response } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import LmnApiCollectOperations from '@libs/lmnApi/types/lmnApiCollectOperations';
 import getCurrentTimestamp from '@libs/filesharing/utils/getCurrentTimestamp';
+import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperation } from '@libs/lmnApi/types/lmnApiCollectOperations';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -264,7 +264,7 @@ class FilesharingService {
     );
   };
 
-  private async createFolderIfNotExists(username: string, destinationPath: string) {
+  private async createCollectFolderIfNotExists(username: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
     try {
@@ -279,7 +279,7 @@ class FilesharingService {
     }
   }
 
-  private async copyFile(client: AxiosInstance, originPath: string, destinationPath: string) {
+  private static async copyFile(client: AxiosInstance, originPath: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
     try {
       await FilesharingService.copyFileViaWebDAV(client, encodeURI(originPath), sanitizedDestinationPath);
@@ -288,11 +288,11 @@ class FilesharingService {
     }
   }
 
-  cuteCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
+  cutCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
     const result = await this.moveOrRenameResource(username, originPath, newPath);
 
     try {
-      await this.createFolderIfNotExists(username, originPath);
+      await this.createCollectFolderIfNotExists(username, originPath);
     } catch (error) {
       Logger.log(error);
     }
@@ -307,8 +307,8 @@ class FilesharingService {
     const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await this.createFolderIfNotExists(username, destinationPath);
-      await this.copyFile(client, fullOriginPath, destinationPath);
+      await this.createCollectFolderIfNotExists(username, destinationPath);
+      await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
     });
 
     try {
@@ -324,7 +324,7 @@ class FilesharingService {
     const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await this.copyFile(client, fullOriginPath, destinationPath);
+      await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
     });
 
     try {
@@ -355,7 +355,7 @@ class FilesharingService {
     return this.onlyofficeService.generateOnlyOfficeToken(payload);
   }
 
-  async deleteFileFromServer(path: string): Promise<void> {
+  static async deleteFileFromServer(path: string): Promise<void> {
     try {
       await FilesystemService.deleteFile(path);
     } catch (error) {
@@ -371,25 +371,28 @@ class FilesharingService {
     username: string,
     collectFileRequestDTO: CollectFileRequestDTO[],
     userRole: string,
-    type: LmnApiCollectOperations,
+    type: LmnApiCollectOperation,
   ) {
     const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
     try {
       await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     } catch (error) {
-      Logger.log(error);
+      throw new CustomHttpException(FileSharingErrorMessage.FolderCreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const operations = collectFileRequestDTO.map(async (item) => {
       try {
         await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
       } catch (error) {
-        Logger.log(error);
+        throw new CustomHttpException(
+          FileSharingErrorMessage.CreateCollectFolderForStudentFailed,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
 
       try {
-        if (type === LmnApiCollectOperations.CUT) {
-          await this.cuteCollectedItems(username, item.originPath, item.destinationPath);
+        if (type === LMN_API_COLLECT_OPERATIONS.CUT) {
+          await this.cutCollectedItems(username, item.originPath, item.destinationPath);
         } else {
           await this.copyCollectedItems(username, {
             originFilePath: item.originPath,
@@ -397,7 +400,7 @@ class FilesharingService {
           });
         }
       } catch (error) {
-        Logger.log(error);
+        Logger.log(error); // TODO #217
       }
     });
 

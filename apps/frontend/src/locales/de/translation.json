@@ -167,6 +167,7 @@
       "WebDavError": "Dateiserver nicht erreichbar",
       "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
+      "CreateCollectFolderForStudentFailed": "Collect Ordner für Schüler konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
       "SaveFailed": "Speichern fehlgeschlagen",
       "DuplicateFailed": "Kopieren fehlgeschlagen",
@@ -293,10 +294,10 @@
     "saveSession": "Sitzung speichern",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "enrolPageDescription": "Wähle die Klassen und Projekte aus, für die du dich einschreiben möchtest, indem du die Checkboxen aktivierst.",
     "collectAndCut": "Ausschneiden",
     "collectAndCopy": "Kopieren",
-    "copyOrCut": "Möchten Sie die Dateien ausschneiden oder kopieren?"
+    "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?"
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",

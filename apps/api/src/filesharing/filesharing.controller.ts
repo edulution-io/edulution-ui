@@ -26,7 +26,8 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
-import LmnApiCollectOperations from '@libs/lmnApi/types/lmnApiCollectOperations';
+
+import { LmnApiCollectOperation } from '@libs/lmnApi/types/lmnApiCollectOperations';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
@@ -84,7 +85,7 @@ class FilesharingController {
     if (target === DeleteTargetType.FILE_SERVER) {
       return this.filesharingService.deleteFileAtPath(username, path);
     }
-    return this.filesharingService.deleteFileFromServer(path);
+    return FilesharingService.deleteFileFromServer(path);
   }
 
   @Patch()
@@ -138,17 +139,12 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.COLLECT)
   async collectFiles(
     @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
-    @Query('type') type: string,
+    @Query('type') type: LmnApiCollectOperation,
     @Query('userRole') userRole: string,
     @GetCurrentUsername() username: string,
   ) {
     const { collectFileRequestDTO } = body;
-    return this.filesharingService.collectFiles(
-      username,
-      collectFileRequestDTO,
-      userRole,
-      type as LmnApiCollectOperations,
-    );
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
   }
 
   @Post('callback')

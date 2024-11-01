@@ -1,6 +1,6 @@
-enum LmnApiCollectOperations {
-  CUT = 'cut',
-  COPY = 'copy',
-}
+export const LMN_API_COLLECT_OPERATIONS = {
+  CUT: 'cut',
+  COPY: 'copy',
+} as const;
 
-export default LmnApiCollectOperations;
+export type LmnApiCollectOperation = (typeof LMN_API_COLLECT_OPERATIONS)[keyof typeof LMN_API_COLLECT_OPERATIONS];

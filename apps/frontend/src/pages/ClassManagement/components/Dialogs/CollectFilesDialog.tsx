@@ -13,7 +13,8 @@ import { Button } from '@/components/shared/Button';
 import { FaCopy, FaCut } from 'react-icons/fa';
 import { ChevronRightIcon } from '@radix-ui/react-icons';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import LmnApiCollectOperations from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LMN_API_COLLECT_OPERATIONS } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LAYOUT_OPTIONS } from '@libs/ui/constants/layout';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { setCollectionType } = useLessonStore();
@@ -23,13 +24,13 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
       id: '1',
       label: t('classmanagement.collectAndCut'),
       icon: <FaCut />,
-      action: () => setCollectionType(LmnApiCollectOperations.CUT),
+      action: () => setCollectionType(LMN_API_COLLECT_OPERATIONS.CUT),
     },
     {
       id: '2',
       label: t('classmanagement.collectAndCopy'),
       icon: <FaCopy />,
-      action: () => setCollectionType(LmnApiCollectOperations.COPY),
+      action: () => setCollectionType(LMN_API_COLLECT_OPERATIONS.COPY),
     },
   ];
 
@@ -89,7 +90,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
       title={t(`classmanagement.${title}`)}
       body={getDialogBody()}
       footer={getFooter()}
-      layout="two-column"
+      layout={LAYOUT_OPTIONS.TWO_COLUMN}
     />
   );
 };

@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/Dialog';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import { LAYOUT_OPTIONS, LayoutOption } from '@libs/ui/constants/layout';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ interface AdaptiveDialogProps {
   body: React.ReactNode;
   footer?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
-  layout?: 'one-column' | 'two-column';
+  layout?: LayoutOption;
   mobileContentClassName?: string;
   desktopContentClassName?: string;
 }
@@ -40,7 +41,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   body,
   footer,
   variant = 'primary',
-  layout = 'one-column',
+  layout = LAYOUT_OPTIONS.ONE_COLUMN,
   mobileContentClassName,
   desktopContentClassName,
 }) => {

@@ -168,6 +168,7 @@
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
+      "CreateCollectFolderForStudentFailed": "Create collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
       "DuplicateFailed": "Copy failed",
