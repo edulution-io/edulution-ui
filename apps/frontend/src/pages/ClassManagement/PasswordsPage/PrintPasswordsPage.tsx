@@ -58,14 +58,14 @@ const PrintPasswordsPage: React.FC = () => {
         className="my-2"
       />
       <div
-        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
+        className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
-        <div className="mt-2 text-lg">{t('classmanagement.printPasswordsPageDescription')}</div>
+        <div className="mt-2 min-w-full text-lg">{t('classmanagement.printPasswordsPageDescription')}</div>
         {groupRows.map((row) => (
           <div
             key={row.name}
-            className="mt-4"
+            className="mt-4 min-w-full"
           >
             <h4>{t(`classmanagement.printPasswords`)}</h4>
             <ClassList
