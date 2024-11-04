@@ -8,7 +8,7 @@ import Label from '@/components/ui/Label';
 
 interface BadgeFieldProps {
   value: string[];
-  onChange: (itemList: string[]) => void;
+  onChange?: (itemList: string[]) => void;
   labelTranslationId?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -19,7 +19,7 @@ interface BadgeFieldProps {
 const BadgeField = (props: BadgeFieldProps) => {
   const {
     value: badges,
-    onChange: handleChange,
+    onChange: handleChange = () => {},
     labelTranslationId,
     placeholder,
     disabled,
@@ -33,7 +33,7 @@ const BadgeField = (props: BadgeFieldProps) => {
 
   const handleRemoveBadge = (listItem: string) => {
     if (!listItem) return;
-    const newList = badges.filter((mp) => mp !== listItem);
+    const newList = badges.filter((str) => str !== listItem);
     handleChange(newList);
   };
 

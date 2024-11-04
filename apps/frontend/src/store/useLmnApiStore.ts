@@ -26,7 +26,7 @@ interface UseLmnApiStore {
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string) => Promise<UserLmnInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
-  patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<null | undefined>;
+  patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
   reset: () => void;
 }
 
@@ -112,22 +112,16 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      patchUserDetails: async (userDetails): Promise<null | undefined> => {
+      patchUserDetails: async (userDetails) => {
         set({ isPatchingUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.post<null>(
-            `${USER}`,
-            { userDetails },
-            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
-          );
-          return response.data;
+          await eduApi.post<null>(`${USER}`, { userDetails }, { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } });
         } catch (error) {
           handleApiError(error, set);
         } finally {
           set({ isPatchingUserLoading: false });
         }
-        return undefined;
       },
 
       reset: () => set(initialState),

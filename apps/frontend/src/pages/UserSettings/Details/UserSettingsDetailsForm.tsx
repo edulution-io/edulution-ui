@@ -1,25 +1,50 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import BooleanInputProp from '@libs/common/types/boolean-input-prop';
-import SingleInputProp from '@libs/common/types/single-input-prop';
-import MultiInputProp from '@libs/common/types/multi-input-prop';
+import InputProp from '@libs/common/types/input-prop';
+import { SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import BadgeFormField from '@/components/shared/BadgeFormField';
 import FormField from '@/components/shared/FormField';
 import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
 
-interface UserSettingsDetailsFormProps {
-  userDataFields: Array<SingleInputProp | BooleanInputProp>;
-  userDataMultiFields: MultiInputProp[];
-}
-
-const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
-  const { userDataFields, userDataMultiFields } = props;
-
+const UserSettingsDetailsForm = () => {
   const { user, patchUserDetails } = useLmnApiStore();
+
   const { t } = useTranslation();
+
+  // TODO: NIEDUUI-417: Make this dynamic using the user object
+  let userDataFields: Array<InputProp<string> | InputProp<number> | InputProp<boolean>> = [];
+  if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
+    userDataFields = [
+      {
+        type: 'text',
+        name: 'sophomorixCustom1',
+        label: t('usersettings.details.sophomorixCustom1_teacher'),
+        value: user?.sophomorixCustom1 || '',
+      },
+      {
+        type: 'text',
+        name: 'sophomorixCustom2',
+        label: t('usersettings.details.sophomorixCustom2_teacher'),
+        value: user?.sophomorixCustom2 || '',
+      },
+    ];
+  }
+
+  // TODO: NIEDUUI-417: Make this dynamic using the user object
+  let userDataMultiFields: Array<InputProp<string[]>> = [];
+  if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
+    userDataMultiFields = [
+      {
+        type: 'badges',
+        name: 'sophomorixCustomMulti1',
+        label: t('usersettings.details.sophomorixCustomMulti1_teacher'),
+        value: user?.sophomorixCustomMulti1 || [],
+      },
+    ];
+  }
 
   const form = useForm({
     defaultValues: {
@@ -40,7 +65,7 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
             labelTranslationId="usersettings.details.proxyAddresses"
             placeholder={t('usersettings.details.addNew')}
           />
-          {userDataFields.map((field: SingleInputProp | BooleanInputProp) => (
+          {userDataFields.map((field: InputProp<string> | InputProp<number> | InputProp<boolean>) => (
             <FormField
               form={form}
               key={field.name}
@@ -51,7 +76,7 @@ const UserSettingsDetailsForm = (props: UserSettingsDetailsFormProps) => {
               variant="lightGray"
             />
           ))}
-          {userDataMultiFields.map((field: MultiInputProp) => (
+          {userDataMultiFields.map((field: InputProp<string[]>) => (
             <BadgeFormField
               form={form}
               key={field.name}

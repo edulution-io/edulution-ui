@@ -6,6 +6,7 @@ import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
+import NotAvailable from '@/components/shared/NotAvailable';
 
 interface SurveyTableProps {
   title: string;
@@ -60,12 +61,12 @@ const SurveyTable = (props: SurveyTableProps) => {
               />
             </TableCell>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            <TableCell className="text-background">{surveyObj?.title || t('common.not-available')}</TableCell>
+            <TableCell className="text-background">{surveyObj?.title || NotAvailable}</TableCell>
             <TableCell className="text-background">
-              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : NotAvailable}
             </TableCell>
             <TableCell className="text-background">
-              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : NotAvailable}
             </TableCell>
             <TableCell className="text-background">
               {survey?.invitedAttendees && survey?.participatedAttendees && survey.isPublic !== true

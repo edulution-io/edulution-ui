@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { type VariantProps } from 'class-variance-authority';
 import Input, { originInputVariants } from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
+import cn from '@libs/common/utils/className';
 
 type FormFieldProps = {
-  value: string | number;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: HTMLInputTypeAttribute;
   placeholder?: string | undefined;
@@ -42,10 +43,10 @@ const Field = ({
         disabled={disabled || isLoading}
         variant={variant}
         readOnly={readOnly}
-        value={value}
+        value={value || t('common.not-available')}
         placeholder={placeholder}
         onChange={onChange}
-        className={className}
+        className={cn(className, { 'italic text-ciGrey': !value })}
       />
     </>
   );

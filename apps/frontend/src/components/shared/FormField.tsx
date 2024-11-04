@@ -23,7 +23,7 @@ type FormFieldProps<T extends FieldValues> = {
   isLoading?: boolean;
   labelTranslationId: string;
   type?: HTMLInputTypeAttribute;
-  defaultValue?: string | number;
+  defaultValue?: string | number | boolean;
   readonly?: boolean;
   value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;

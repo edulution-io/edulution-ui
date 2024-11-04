@@ -1,10 +1,11 @@
 import { HTMLInputTypeAttribute } from 'react';
 
-interface MultiInputProp {
+interface InputProp<T> {
   name: string;
   label: string;
-  value: string[];
+  value: T;
   type?: HTMLInputTypeAttribute;
+  readOnly?: boolean;
 }
 
-export default MultiInputProp;
+export default InputProp;

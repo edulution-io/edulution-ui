@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
 import { UserDetailsSettingsIcon } from '@/assets/icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
@@ -18,56 +17,20 @@ const UserSettingsDetailsPage: React.FC = () => {
 
   const userInfo = useMemo(
     () => [
-      { name: 'name', label: t('usersettings.details.name'), value: user?.name || '...' },
-      { name: 'displayName', label: t('usersettings.details.displayName'), value: user?.displayName || '...' },
-      { name: 'dateOfBirth', label: t('usersettings.details.dateOfBirth'), value: user?.sophomorixBirthdate || '...' },
-      { name: 'email', label: t('accountData.email'), value: user?.mail?.[0] || '...' },
-      { name: 'schoolName', label: t('usersettings.details.schoolName'), value: user?.school || '...' },
-      { name: 'role', label: t('usersettings.details.role'), value: t(user?.sophomorixRole || '...') },
+      { name: 'name', label: t('usersettings.details.name'), value: user?.name },
+      { name: 'displayName', label: t('usersettings.details.displayName'), value: user?.displayName },
+      { name: 'dateOfBirth', label: t('usersettings.details.dateOfBirth'), value: user?.sophomorixBirthdate },
+      { name: 'email', label: t('accountData.email'), value: user?.mail?.[0] },
+      { name: 'schoolName', label: t('usersettings.details.schoolName'), value: user?.school },
+      { name: 'role', label: t('usersettings.details.role'), value: t(user?.sophomorixRole || '') },
     ],
     [user, t],
   );
 
-  // TODO: NIEDUUI-417: Make this dynamic using the user object
-  const userData = useMemo(() => {
-    if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
-      return [
-        {
-          type: 'text',
-          name: 'sophomorixCustom1',
-          label: t('usersettings.details.sophomorixCustom1_teacher'),
-          value: user?.sophomorixCustom1 || '...',
-        },
-        {
-          type: 'text',
-          name: 'sophomorixCustom2',
-          label: t('usersettings.details.sophomorixCustom2_teacher'),
-          value: user?.sophomorixCustom2 || '...',
-        },
-      ];
-    }
-    return [];
-  }, [user, t]);
-
-  // TODO: NIEDUUI-417: Make this dynamic using the user object
-  const userDataMulti = useMemo(() => {
-    if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
-      return [
-        {
-          type: 'badges',
-          name: 'sophomorixCustomMulti1',
-          label: t('usersettings.details.sophomorixCustomMulti1_teacher'),
-          value: user?.sophomorixCustomMulti1 || [],
-        },
-      ];
-    }
-    return [];
-  }, [user, t]);
-
   return (
     <div className="bottom-[32px] left-4 right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
       <NativeAppHeader
-        title={user?.displayName || '...'}
+        title={user?.displayName || t('common.not-available')}
         description=""
         iconSrc={UserDetailsSettingsIcon}
       />
@@ -90,7 +53,6 @@ const UserSettingsDetailsPage: React.FC = () => {
             </Label>
             <BadgeField
               value={user?.schoolclasses || []}
-              onChange={() => {}}
               readOnly
               className="mt-2"
             />
@@ -100,10 +62,7 @@ const UserSettingsDetailsPage: React.FC = () => {
 
         <h3>{t('usersettings.details.title')}</h3>
         <div className="mb-4 space-y-4 py-4">
-          <UserSettingsDetailsForm
-            userDataFields={userData}
-            userDataMultiFields={userDataMulti}
-          />
+          <UserSettingsDetailsForm />
         </div>
 
         <Separator className="my-4 bg-ciGrey" />
