@@ -29,10 +29,17 @@ class GroupsService {
     private jwtService: JwtService,
     private schedulerRegistry: SchedulerRegistry,
   ) {
+    void this.initializeService();
     this.scheduleTokenRefresh();
   }
 
   private accessTokenRefreshInterval: number = 5000;
+
+  private async initializeService() {
+    await this.obtainAccessToken();
+
+    await this.updateGroupsAndMembersInCache();
+  }
 
   scheduleTokenRefresh() {
     const callback = () => {
