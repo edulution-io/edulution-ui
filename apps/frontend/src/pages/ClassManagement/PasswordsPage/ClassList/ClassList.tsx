@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
@@ -7,11 +7,12 @@ import { useTranslation } from 'react-i18next';
 
 interface EnrolGroupListProps {
   row: GroupColumn;
+  selectedClasses: LmnApiSchoolClass[];
+  setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
 }
 
-const ClassList = ({ row }: EnrolGroupListProps) => {
+const ClassList = ({ row, selectedClasses, setSelectedClasses }: EnrolGroupListProps) => {
   const { t } = useTranslation();
-  const [selectedClasses, setSelectedClasses] = useState<LmnApiSchoolClass[]>([]);
 
   return (
     <div className="flex flex-row flex-wrap">

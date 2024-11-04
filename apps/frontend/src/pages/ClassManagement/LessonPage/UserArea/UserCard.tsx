@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import cn from '@/lib/utils';
+import cn from '@libs/common/utils/className';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Calendar } from '@/components/ui/Calendar';

@@ -16,6 +16,7 @@ import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AUTH_CACHE from '@libs/auth/constants/auth-cache';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { User, UserDocument } from '../users/user.schema';
 import { fromBase64 } from '../filesharing/filesharing.utilities';
 
@@ -45,7 +46,7 @@ class AuthService {
         return from(this.keycloakApi.get<OidcMetadata>(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)).pipe(
           map((response: AxiosResponse<OidcMetadata>) => {
             const oidcConfig = response.data;
-            const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/edu-api/${AUTH_PATHS.AUTH_ENDPOINT}`;
+            const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`;
 
             oidcConfig.authorization_endpoint = apiAuthUrl;
             oidcConfig.token_endpoint = apiAuthUrl;
