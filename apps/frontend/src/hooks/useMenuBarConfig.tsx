@@ -57,7 +57,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
       }
       default: {
-        return { menuItems: [], title: '', icon: '', color: '', disabled: false };
+        return { menuItems: [], title: '', icon: '', color: '', disabled: false, appName: '' };
       }
     }
   };
@@ -76,6 +76,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
     disabled: configValues.disabled,
     icon: configValues.icon,
     color: configValues.color,
+    appName: configValues.appName,
   };
 };
 

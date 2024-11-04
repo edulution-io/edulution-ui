@@ -3,6 +3,7 @@ import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -17,6 +18,8 @@ const ConferencesTable = () => {
     void getConferences(undefined);
   }, []);
 
+  const { appName } = useConferencesPageMenu();
+
   return (
     <ScrollableTable
       columns={ConferencesTableColumns}
@@ -27,6 +30,7 @@ const ConferencesTable = () => {
       setSorting={setSorting}
       selectedRows={selectedRows}
       getRowId={(originalRow) => originalRow.meetingID}
+      applicationName={appName}
     />
   );
 };

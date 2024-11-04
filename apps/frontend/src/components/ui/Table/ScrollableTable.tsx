@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import useElementHeight from '@/hooks/useElementHeight'; // Import the hook
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
@@ -24,6 +25,7 @@ interface DataTableProps<TData> {
   sorting: SortingState;
   getRowId?: (originalRow: TData) => string;
   setSorting: (sorting: SetStateAction<SortingState>) => void;
+  applicationName: string;
 }
 
 const ScrollableTable = <TData,>({
@@ -36,8 +38,13 @@ const ScrollableTable = <TData,>({
   setSorting,
   selectedRows,
   getRowId,
+  applicationName,
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
+
+  // IDs of the elements whose heights you want to consider
+  const ELEMENT_IDS = ['table-header', 'selected-rows-message'];
+  const pageBarsHeight = useElementHeight(ELEMENT_IDS);
 
   const table = useReactTable({
     data,
@@ -59,16 +66,29 @@ const ScrollableTable = <TData,>({
     <>
       {isLoading && data?.length === 0 && <LoadingIndicator isOpen={isLoading} />}
       <div className="flex h-full w-full flex-col">
-        {selectedRowsCount > 0 && (
-          <div className="flex-1 p-2 text-sm text-background">
-            {t('table.rowsSelected', {
+        {selectedRowsCount > 0 ? (
+          <div id="selected-rows-message">
+            {t(`${applicationName}.rowsSelected`, {
               selected: selectedRowsCount,
+              total: table.getFilteredRowModel().rows.length,
+            })}
+          </div>
+        ) : (
+          <div
+            id="placeholder"
+            className="invisible"
+          >
+            {t('table.rowsSelected', {
+              selected: 0,
               total: table.getFilteredRowModel().rows.length,
             })}
           </div>
         )}
 
-        <div className="sticky top-0 z-10">
+        <div
+          className="sticky top-0"
+          id="table-header"
+        >
           <Table className="w-full table-fixed">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -87,7 +107,10 @@ const ScrollableTable = <TData,>({
           </Table>
         </div>
 
-        <ScrollArea className="max-h-[65vh] flex-1 overflow-auto scrollbar-thin">
+        <ScrollArea
+          className="max-h-[65vh] flex-1 overflow-auto scrollbar-thin"
+          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+        >
           <Table className="w-full table-fixed">
             <TableBody>
               {table.getRowModel().rows.length > 0 ? (

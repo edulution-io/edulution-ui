@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import { MenuBarEntryProps } from '@/datatypes/types';
-import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
+import { PlusIcon, SurveysSidebarIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
 
 const useSurveysPageMenu = () => {
   const [, setSearchParams] = useSearchParams();
@@ -10,6 +10,7 @@ const useSurveysPageMenu = () => {
     title: 'surveys.title',
     icon: SurveysSidebarIcon,
     color: 'hover:bg-ciGreenToBlue',
+    appName: 'surveys',
     menuItems: [
       {
         id: 'overview-open-surveys',

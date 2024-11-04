@@ -62,10 +62,11 @@ const useFileSharingMenuConfig = () => {
   }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams]);
 
   return {
-    menuItems,
     title: 'filesharing.title',
     icon: FileSharingIcon,
     color: 'hover:bg-ciGreenToBlue',
+    appName: 'filesharing',
+    menuItems,
   };
 };
 

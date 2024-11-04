@@ -125,7 +125,7 @@
     "privacyStatus": "Access",
     "public": "Public",
     "private": "Private",
-    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "rowsSelected": "{{selected}} of {{total}} conferences selected",
     "cancel": "Cancel",
     "password_required": "No Password entered",
     "error": "Error",
@@ -155,6 +155,7 @@
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
+    "rowsSelected": "{{selected}} of {{total}} file(s) selected",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",

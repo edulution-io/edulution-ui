@@ -10,6 +10,7 @@ const useUserSettingsMenu = () => {
   const navigate = useNavigate();
 
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntryProps = {
+    appName: 'usersettings',
     title: 'usersettings.title',
     icon: UserIcon,
     color: 'hover:bg-ciGreenToBlue',

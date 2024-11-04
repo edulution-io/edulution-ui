@@ -10,6 +10,7 @@ const useAppConfigPageMenu = () => {
   const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen } = useAppConfigsStore();
 
   const settingsMenuBarEntry: MenuBarEntryProps = {
+    appName: 'settings',
     title: 'settings.title',
     icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',

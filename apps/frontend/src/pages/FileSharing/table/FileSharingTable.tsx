@@ -4,6 +4,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 
 const FileSharingTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -21,6 +22,8 @@ const FileSharingTable = () => {
     setSelectedItems(selectedItemData);
   };
 
+  const { appName } = useFileSharingMenuConfig();
+
   return (
     <ScrollableTable
       columns={FileSharingTableColumns}
@@ -31,6 +34,7 @@ const FileSharingTable = () => {
       setSorting={setSorting}
       selectedRows={selectedRows}
       getRowId={(row) => row.filename}
+      applicationName={appName}
     />
   );
 };

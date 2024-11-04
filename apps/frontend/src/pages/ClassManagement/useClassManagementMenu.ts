@@ -18,6 +18,7 @@ const useClassManagementMenu = () => {
   const navigate = useNavigate();
   const menuBar = (): MenuBarEntryProps => ({
     title: 'classmanagement.title',
+    appName: 'classmanagement',
     icon: ClassManagementIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [

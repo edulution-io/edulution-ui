@@ -125,7 +125,7 @@
     "privacyStatus": "Zutritt",
     "public": "Öffentlich",
     "private": "Privat",
-    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -154,6 +154,7 @@
     "saveFile": "Datei speichern",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
+    "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -661,7 +662,7 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {

@@ -12,4 +12,5 @@ export interface MenuBarEntryProps {
   disabled?: boolean;
   icon: string;
   color: string;
+  appName: string;
 }

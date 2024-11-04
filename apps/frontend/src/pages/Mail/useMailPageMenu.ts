@@ -8,6 +8,7 @@ const useMailPageMenu = () => {
     icon: MailIcon,
     color: '',
     menuItems: [],
+    appName: 'mail',
   });
 
   return menuBar();
