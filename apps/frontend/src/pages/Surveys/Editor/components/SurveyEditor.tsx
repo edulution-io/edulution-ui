@@ -66,7 +66,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   creator.saveNo = saveNumber;
   if (formula) {
-    creator.JSON = formula as unknown as JSON;
+    creator.JSON = formula;
   }
 
   // TOOLBAR (HEADER)
@@ -110,7 +110,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
+    form.setValue('formula', convertJSONToSurveyFormula(creator.toJSON() as JSON));
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };

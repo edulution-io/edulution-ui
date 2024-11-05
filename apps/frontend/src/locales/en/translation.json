@@ -347,17 +347,17 @@
       "open": {
         "menu": "Open Surveys",
         "title": "Open Surveys",
-        "description": "Here, you find the surveys you were invited to participate."
+        "description": "Here you find the surveys you were invited to participate."
       },
       "created": {
         "menu": "Own Surveys",
         "title": "Own Surveys",
-        "description": "Here, you find the surveys that you have created by yourself."
+        "description": "Here you find the surveys that you have created by yourself."
       },
       "answered": {
         "menu": "Answered Surveys",
         "title": "Answered Surveys",
-        "description": "Here, you find the surveys that you have participated, already."
+        "description": "Here you find the surveys that you have participated, already."
       },
       "editor": {
         "menu": "Create new"
