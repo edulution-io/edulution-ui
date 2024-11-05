@@ -7,7 +7,6 @@ import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import useLogout from '@/hooks/useLogout';
-import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications';
 
 const AppRouter: React.FC = () => {
   const auth = useAuth();
@@ -15,8 +14,6 @@ const AppRouter: React.FC = () => {
   const { isAuthenticated, setEduApiToken } = useUserStore();
   const { t } = useTranslation();
   const handleLogout = useLogout();
-
-  useNotifications();
 
   const handleTokenExpired = useRef(() => {
     if (auth.user?.expired) {
