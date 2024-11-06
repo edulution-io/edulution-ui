@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import Feed from '@/pages/Dashboard/Feed/Feed';
 import useUserStore from '@/store/UserStore/UserStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
@@ -45,6 +46,9 @@ const Home: React.FC = () => {
                 <Quota />
               </div>
             </div>
+          </div>
+          <div className="flex-1">
+            <Feed />
           </div>
         </div>
       </div>
