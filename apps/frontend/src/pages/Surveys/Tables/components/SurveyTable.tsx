@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import Checkbox from '@/components/ui/Checkbox';
 import useElementHeight from '@/hooks/useElementHeight';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
-import SURVEYS_PAGE_TABLE_HEADER from '@libs/survey/constants/pageElementIds';
+import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
 
 interface SurveyTableProps {
   title: string;
@@ -84,7 +84,7 @@ const SurveyTable = (props: SurveyTableProps) => {
     [surveys, selectedSurvey],
   );
 
-  const pageBarsHeight = useElementHeight([SURVEYS_PAGE_TABLE_HEADER, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) - 10;
+  const pageBarsHeight = useElementHeight([SURVEYS_PAGE_TABLE_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) - 10;
 
   return (
     <div
@@ -94,7 +94,7 @@ const SurveyTable = (props: SurveyTableProps) => {
       <h4>{title}</h4>
       <Table>
         <TableHeader
-          id={SURVEYS_PAGE_TABLE_HEADER}
+          id={SURVEYS_PAGE_TABLE_HEADER_ID}
           className="text-white"
         >
           <TableRow>
