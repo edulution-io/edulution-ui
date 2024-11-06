@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -9,14 +9,14 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import useElementHeight from '@/hooks/useElementHeight';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
   data: TData[];
-  noDataMessage?: string;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   selectedRows?: RowSelectionState;
   isLoading?: boolean;
@@ -24,12 +24,19 @@ interface DataTableProps<TData> {
   getRowId?: (originalRow: TData) => string;
   setSorting: (sorting: SetStateAction<SortingState>) => void;
   applicationName: string;
+  offset?: number;
+  pageElementIds?: {
+    headerId?: string;
+    loadingIndicatorId?: string;
+    selectedRowsMessageId?: string;
+    tableHeaderId?: string;
+    others?: string[];
+  };
 }
 
 const ScrollableTable = <TData,>({
   columns,
   data,
-  noDataMessage = 'No data available',
   onRowSelectionChange,
   isLoading,
   sorting,
@@ -37,25 +44,28 @@ const ScrollableTable = <TData,>({
   selectedRows,
   getRowId,
   applicationName,
+  offset,
+  pageElementIds = {
+    headerId: 'default-header-id',
+    loadingIndicatorId: 'default-loading-indicator-id',
+    selectedRowsMessageId: 'default-selected-rows-message-id',
+    tableHeaderId: 'default-table-header-id',
+    others: [],
+  },
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
-  const [columnWidths] = useState(() =>
-    columns.reduce(
-      (acc, column) => {
-        acc[column.id as string] = 150;
-        return acc;
-      },
-      {} as { [key: string]: number },
-    ),
-  );
+  const allElementIds = [
+    pageElementIds.headerId,
+    pageElementIds.loadingIndicatorId,
+    pageElementIds.selectedRowsMessageId,
+    pageElementIds.tableHeaderId,
+    ...(pageElementIds.others || []),
+  ].filter(Boolean) as string[];
 
-  // const handleResize = (columnId: string, width: number) => {
-  //   setColumnWidths((prevWidths) => ({
-  //     ...prevWidths,
-  //     [columnId]: width,
-  //   }));
-  // };
+  const pageBarsHeight = useElementHeight(allElementIds) + (offset || 0);
+
+  const { loadingIndicatorId, selectedRowsMessageId, tableHeaderId } = pageElementIds;
 
   const table = useReactTable({
     data,
@@ -75,75 +85,75 @@ const ScrollableTable = <TData,>({
 
   return (
     <>
-      {isLoading && data?.length === 0 && <LoadingIndicator isOpen={isLoading} />}
-      <div className="flex h-full w-full flex-col">
-        {selectedRowsCount > 0 ? (
-          <div id="selected-rows-message">
-            {t(`${applicationName}.rowsSelected`, {
-              selected: selectedRowsCount,
-              total: table.getFilteredRowModel().rows.length,
-            })}
-          </div>
-        ) : (
-          <div
-            id="placeholder"
-            className="invisible"
-          >
-            {t('table.rowsSelected', {
-              selected: 0,
-              total: table.getFilteredRowModel().rows.length,
-            })}
-          </div>
-        )}
+      {isLoading && data?.length === 0 ? (
+        <LoadingIndicator
+          isOpen={isLoading}
+          id={loadingIndicatorId || 'loading-indicator'}
+        />
+      ) : null}
 
-        {/* Header Container */}
+      {selectedRowsCount > 0 ? (
         <div
-          className="sticky top-0 flex rounded-md bg-gray-800 p-2 shadow-md"
-          id="table-header"
+          id={selectedRowsMessageId || 'selected-rows-message'}
+          className="flex-1 text-sm text-muted-foreground text-white"
         >
-          {table.getHeaderGroups().map((headerGroup) => (
-            <div
-              key={headerGroup.id}
-              className="flex w-full"
-            >
-              {headerGroup.headers.map((header) => (
-                <div
-                  key={header.id}
-                  style={{ width: columnWidths[header.id] || 150 }}
-                  className="px-2 font-semibold text-white"
-                >
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </div>
-              ))}
-            </div>
-          ))}
+          {t(`${applicationName}.rowsSelected`, {
+            selected: selectedRowsCount,
+            total: table.getFilteredRowModel().rows.length,
+          })}
         </div>
+      ) : (
+        <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
+      )}
 
-        {/* Data Rows */}
-        <ScrollArea className="max-h-[65vh] flex-1 overflow-auto scrollbar-thin">
-          <div className="w-full">
-            {table.getRowModel().rows.length > 0 ? (
+      <div
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        <Table>
+          <TableHeader
+            className="text-foreground"
+            id={tableHeaderId || 'table-header'}
+          >
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody className="container">
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <div
+                <TableRow
                   key={row.id}
-                  className="flex border-b border-gray-700"
+                  data-state={row.getIsSelected() ? 'selected' : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <div
-                      key={cell.id}
-                      style={{ width: columnWidths[cell.column.id] || 150 }}
-                      className="px-2 py-2 text-white"
+                    <TableCell
+                      key={`${row.id}-${cell.column.id}`} // Composite key for uniqueness
+                      className="text-white"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </div>
+                    </TableCell>
                   ))}
-                </div>
+                </TableRow>
               ))
             ) : (
-              <div className="flex h-24 items-center justify-center text-center text-white">{noDataMessage}</div>
+              <TableRow>
+                <TableCell
+                  colSpan={data?.length}
+                  className="h-24 text-center text-white"
+                >
+                  {t('table.noDataAvailable')}
+                </TableCell>
+              </TableRow>
             )}
-          </div>
-        </ScrollArea>
+          </TableBody>
+        </Table>
       </div>
     </>
   );

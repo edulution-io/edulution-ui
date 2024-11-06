@@ -4,6 +4,8 @@ import { OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-tab
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import CONFERENCES_PAGE_TABLE_HEADER from '@libs/conferences/constants/pageElementIds';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -31,6 +33,11 @@ const ConferencesTable = () => {
       selectedRows={selectedRows}
       getRowId={(originalRow) => originalRow.meetingID}
       applicationName={appName}
+      offset={20}
+      pageElementIds={{
+        tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
+        others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
+      }}
     />
   );
 };
