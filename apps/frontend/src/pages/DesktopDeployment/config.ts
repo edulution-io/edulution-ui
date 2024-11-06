@@ -5,6 +5,7 @@ const DESKTOP_DEPLOYMENT_MENUBAR_CONFIG: MenuBarEntryProps = {
   title: 'desktopdeployment.title',
   icon: DesktopDeploymentIcon,
   disabled: true,
+  appName: 'desktopdeployment',
   color: 'hover:bg-ciLightBlue',
   menuItems: [],
 };

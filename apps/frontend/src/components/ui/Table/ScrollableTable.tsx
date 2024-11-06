@@ -1,4 +1,4 @@
-import React, { SetStateAction } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -9,11 +9,9 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import useElementHeight from '@/hooks/useElementHeight'; // Import the hook
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
@@ -42,9 +40,22 @@ const ScrollableTable = <TData,>({
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
-  // IDs of the elements whose heights you want to consider
-  const ELEMENT_IDS = ['table-header', 'selected-rows-message'];
-  const pageBarsHeight = useElementHeight(ELEMENT_IDS);
+  const [columnWidths] = useState(() =>
+    columns.reduce(
+      (acc, column) => {
+        acc[column.id as string] = 150;
+        return acc;
+      },
+      {} as { [key: string]: number },
+    ),
+  );
+
+  // const handleResize = (columnId: string, width: number) => {
+  //   setColumnWidths((prevWidths) => ({
+  //     ...prevWidths,
+  //     [columnId]: width,
+  //   }));
+  // };
 
   const table = useReactTable({
     data,
@@ -85,62 +96,53 @@ const ScrollableTable = <TData,>({
           </div>
         )}
 
+        {/* Header Container */}
         <div
-          className="sticky top-0"
+          className="sticky top-0 flex rounded-md bg-gray-800 p-2 shadow-md"
           id="table-header"
         >
-          <Table className="w-full table-fixed">
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="text-background"
+          {table.getHeaderGroups().map((headerGroup) => (
+            <div
+              key={headerGroup.id}
+              className="flex w-full"
+            >
+              {headerGroup.headers.map((header) => (
+                <div
+                  key={header.id}
+                  style={{ width: columnWidths[header.id] || 150 }}
+                  className="px-2 font-semibold text-white"
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </div>
               ))}
-            </TableHeader>
-          </Table>
+            </div>
+          ))}
         </div>
 
-        <ScrollArea
-          className="max-h-[65vh] flex-1 overflow-auto scrollbar-thin"
-          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-        >
-          <Table className="w-full table-fixed">
-            <TableBody>
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-background"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-white"
-                  >
-                    {noDataMessage}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+        {/* Data Rows */}
+        <ScrollArea className="max-h-[65vh] flex-1 overflow-auto scrollbar-thin">
+          <div className="w-full">
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <div
+                  key={row.id}
+                  className="flex border-b border-gray-700"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <div
+                      key={cell.id}
+                      style={{ width: columnWidths[cell.column.id] || 150 }}
+                      className="px-2 py-2 text-white"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
+                  ))}
+                </div>
+              ))
+            ) : (
+              <div className="flex h-24 items-center justify-center text-center text-white">{noDataMessage}</div>
+            )}
+          </div>
         </ScrollArea>
       </div>
     </>

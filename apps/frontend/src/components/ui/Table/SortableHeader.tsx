@@ -1,5 +1,4 @@
 import React from 'react';
-import { ButtonSH } from '@/components/ui/ButtonSH';
 import { ArrowUpDown } from 'lucide-react';
 import { Column, Table } from '@tanstack/react-table';
 import { translateKey } from '@/utils/common';
@@ -27,12 +26,15 @@ const SortableHeader = <TData, TValue>({
         aria-label="Select all"
       />
     ) : null}
-    <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+    <button
+      type="button"
+      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+    >
       <div className="flex items-center">
         {translateKey(titleTranslationId)}
         {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
       </div>
-    </ButtonSH>
+    </button>
   </div>
 );
 
