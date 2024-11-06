@@ -25,7 +25,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         tabIndex={0}
         role="button"
         className={cn(
-          'flex items-center justify-start space-x-2 py-0',
+          'flex items-center justify-start  py-0',
           onClick ? 'cursor-pointer' : 'cursor-default',
           className,
         )}
@@ -40,7 +40,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
             aria-label="Select row"
           />
         ) : (
-          <div className="mx-2 my-5" />
+          <div className="my-5" />
         )}
         {icon ? <Icon className="mb-3 ml-2 mr-2 mt-3">{icon}</Icon> : null}
         <span className="text-md truncate font-medium">{text}</span>
