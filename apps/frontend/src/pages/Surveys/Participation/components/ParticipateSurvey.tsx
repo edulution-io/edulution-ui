@@ -2,17 +2,18 @@ import React from 'react';
 import mongoose from 'mongoose';
 import i18next from 'i18next';
 import { Survey } from 'survey-react-ui';
-import { CompleteEvent, Model } from 'survey-core';
+import { Model } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import CommitAnswerDto from '@libs/survey/types/api/commit-answer.dto';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
+import surveyTheme from '@/pages/Surveys/theme/theme';
 
-interface ParticipateDialogBodyProps {
+interface ParticipateSurveyProps {
   surveyId: mongoose.Types.ObjectId;
   saveNo: number;
   formula: JSON;
@@ -20,19 +21,14 @@ interface ParticipateDialogBodyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  commitAnswer: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  updateOpenSurveys: () => void;
-  updateAnsweredSurveys: () => void;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
+  commitAnswer: (answer: CommitAnswerDto) => Promise<boolean>;
   className?: string;
+  updateOpenSurveys?: () => void;
+  updateAnsweredSurveys?: () => void;
+  isPublic?: boolean;
 }
 
-const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
+const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   const {
     surveyId,
     saveNo,
@@ -42,17 +38,18 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     pageNo,
     setPageNo,
     commitAnswer,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
-    setIsOpenParticipateSurveyDialog,
     className,
+    updateOpenSurveys = () => {},
+    updateAnsweredSurveys = () => {},
+    isPublic = false,
   } = props;
+
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
   surveyModel.locale = i18next.options.lng || 'en';
 
-  if (surveyModel.pages.length > 1) {
+  if (surveyModel.pages.length > 3) {
     surveyModel.showProgressBar = 'top';
   }
 
@@ -70,15 +67,23 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    await commitAnswer(surveyId, saveNo, answer /* , _options */);
-    updateOpenSurveys();
-    updateAnsweredSurveys();
-    setIsOpenParticipateSurveyDialog(false);
+    _options.showSaveInProgress();
+    const success = await commitAnswer({ surveyId, saveNo, answer, surveyEditorCallbackOnSave: _options, isPublic });
+    if (!isPublic) {
+      updateOpenSurveys();
+      updateAnsweredSurveys();
+    }
+    if (success) {
+      _options.showSaveSuccess();
+    } else {
+      _options.showSaveError();
+    }
   });
+
   return (
     <div className={className}>
       <Survey model={surveyModel} />
     </div>
   );
 };
-export default ParticipateDialogBody;
+export default ParticipateSurvey;

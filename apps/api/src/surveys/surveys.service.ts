@@ -21,6 +21,29 @@ class SurveysService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  async findSurvey(surveyId: mongoose.Types.ObjectId, username: string): Promise<Survey | null> {
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [
+          {
+            $or: [
+              { isPublic: true },
+              { 'creator.username': username },
+              { invitedAttendees: { $elemMatch: { username } } },
+            ],
+          },
+          { _id: surveyId },
+        ],
+      })
+      .lean();
+
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    return survey;
+  }
+
   async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
     try {
       return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
@@ -48,7 +71,7 @@ class SurveysService {
           survey._id,
           { ...survey },
         )
-        .exec();
+        .lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {

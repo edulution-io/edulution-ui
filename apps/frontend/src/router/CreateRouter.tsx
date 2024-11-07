@@ -16,6 +16,8 @@ import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import TApps from '@libs/appconfig/types/appsType';
+import getPublicRoutes from '@/router/routes/PublicRoutes';
+import getSurveyRoutes from '@/pages/Surveys/SurveyRoutes';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -26,6 +28,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <>
+        {getPublicRoutes()}
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>
@@ -89,6 +92,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 ) : null,
               )}
               {getClassManagementRoutes()}
+              {getSurveyRoutes()}
               {getSettingsRoutes(appConfigs)}
             </Route>
           </>

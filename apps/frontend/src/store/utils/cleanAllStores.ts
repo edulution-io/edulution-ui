@@ -17,12 +17,11 @@ import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
-import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticpateDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
-import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -30,12 +29,10 @@ const cleanAllStores = () => {
   UserStore.getState().resetUserSlice();
   useAppConfigsStore.getState().reset();
   useClassManagementStore.getState().reset();
-  useCommitedAnswersDialogStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useConferenceStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
-  useDeleteSurveyStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
@@ -45,13 +42,14 @@ const cleanAllStores = () => {
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();
   useMailsStore.getState().reset();
-  useParticipateDialogStore.getState().reset();
-  useParticipatePublicSurveyStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
-  useResultDialogStore.getState().reset();
   useSidebarStore.getState().reset();
-  useSurveyEditorFormStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
+  useSurveyEditorPageStore.getState().reset();
+  useParticipateSurveyStore.getState().reset();
+  useResultDialogStore.getState().reset();
+  useCommitedAnswersDialogStore.getState().reset();
+  useDeleteSurveyStore.getState().reset();
 };
 
 export default cleanAllStores;

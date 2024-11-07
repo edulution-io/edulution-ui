@@ -1,6 +1,9 @@
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
-interface SurveyEditorFormStore {
+interface SurveyEditorPageStore {
+  survey: SurveyDto | undefined;
+  setSurvey: (survey: SurveyDto | undefined) => void;
+
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
@@ -13,4 +16,4 @@ interface SurveyEditorFormStore {
   reset: () => void;
 }
 
-export default SurveyEditorFormStore;
+export default SurveyEditorPageStore;

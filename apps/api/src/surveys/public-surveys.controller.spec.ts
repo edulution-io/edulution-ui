@@ -80,7 +80,7 @@ describe(PublicSurveysController.name, () => {
       });
       surveysService.findPublicSurvey = jest.fn().mockReturnValue(publicSurvey01);
 
-      const result = await controller.find(idOfPublicSurvey01);
+      const result = await controller.find({ surveyId: idOfPublicSurvey01 });
       expect(result).toEqual(publicSurvey01);
 
       expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(idOfPublicSurvey01);
@@ -90,7 +90,7 @@ describe(PublicSurveysController.name, () => {
       surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
 
       try {
-        await controller.find(unknownSurveyId);
+        await controller.find({ surveyId: unknownSurveyId });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
