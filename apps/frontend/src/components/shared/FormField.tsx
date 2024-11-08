@@ -53,7 +53,7 @@ const FormField = <T extends FieldValues>({
       name={name as Path<T>}
       defaultValue={defaultValue as PathValue<T, Path<T>>}
       render={({ field }) => (
-        <FormItem className="items-center space-y-2">
+        <FormItem>
           <FormLabel className={cn(variants({ variant }))}>
             <p className="font-bold">{t(labelTranslationId)}</p>
           </FormLabel>

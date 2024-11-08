@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { t } from 'i18next';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import Label from '@/components/ui/Label';
 import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSettingsPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
@@ -37,12 +38,12 @@ const PasswordChangeForm: FC = () => {
         className="space-y-4 py-4"
       >
         <div className="md:max-w-[75%]">
-          <label
+          <Label
             htmlFor="currentPassword"
-            className="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="block text-sm font-medium"
           >
             <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.currentPassword')}</p>
-          </label>
+          </Label>
           <Input
             id="currentPassword"
             type="password"
