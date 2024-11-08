@@ -12,7 +12,6 @@ import Toaster from '@/components/ui/Sonner';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import UserLanguage from '@libs/user/constants/userLanguage';
 import i18n from 'i18next';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
@@ -26,7 +25,7 @@ const App = () => {
   eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
-    if (user?.language && user.language !== UserLanguage.SYSTEM_LANGUAGE) {
+    if (user?.language) {
       i18n.changeLanguage(user.language).catch((e) => console.error('Change Language Error', e));
     } else {
       i18n.changeLanguage(undefined).catch((e) => console.error('Reset to System Language Error', e));

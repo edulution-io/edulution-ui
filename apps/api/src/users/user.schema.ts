@@ -35,7 +35,7 @@ export class User {
   @Prop({ type: String, default: '' })
   totpSecret?: string;
 
-  @Prop({ type: String, default: UserLanguage.SYSTEM_LANGUAGE })
+  @Prop({ type: String, default: UserLanguage.GERMAN })
   language: UserLanguageType;
 }
 
