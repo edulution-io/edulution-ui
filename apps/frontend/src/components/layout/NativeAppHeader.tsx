@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 
 interface NativeAppHeaderProps {
   title: string;
@@ -10,7 +11,10 @@ interface NativeAppHeaderProps {
 const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
   return (
-    <div className="mr-2 flex min-h-[100px]">
+    <div
+      className="mr-2 flex min-h-[100px]"
+      id={NATIVE_APP_HEADER_ID}
+    >
       <img
         src={iconSrc}
         alt={`${title} ${t('common.icon')}`}

@@ -16,6 +16,8 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
 import FormField from '@/components/shared/FormField';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
@@ -96,8 +98,13 @@ const UserSettingsMailsPage: React.FC = () => {
     />
   );
 
+  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
+
   return (
-    <div className="bottom-[32px] left-[16px] right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
+    <div
+      className="bottom-8 left-4 right-0 top-3 h-screen overflow-auto scrollbar-thin md:left-64 md:right-[--sidebar-width]"
+      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+    >
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}

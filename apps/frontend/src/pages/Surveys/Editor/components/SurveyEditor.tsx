@@ -13,6 +13,8 @@ import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -113,12 +115,17 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     callback(saveNo, true);
   };
 
+  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
+
   return (
-    <div className="survey-editor">
+    <div
+      className="survey-editor w-full overflow-y-auto overflow-x-hidden scrollbar-thin md:w-auto md:max-w-7xl xl:max-w-full"
+      style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
+    >
       <SurveyCreatorComponent
         creator={creator}
         style={{
-          height: '85vh',
+          height: '100%',
           width: '100%',
         }}
       />
