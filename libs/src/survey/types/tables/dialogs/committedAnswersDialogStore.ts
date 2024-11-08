@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
-interface CommitedAnswersDialogStore {
+interface CommittedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
@@ -18,4 +18,4 @@ interface CommitedAnswersDialogStore {
   reset: () => void;
 }
 
-export default CommitedAnswersDialogStore;
+export default CommittedAnswersDialogStore;

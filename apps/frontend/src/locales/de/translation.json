@@ -325,6 +325,7 @@
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "surveyFormulaStructuralError": "Das Formular der Umfrage weist Struktureller Fehler auf.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",

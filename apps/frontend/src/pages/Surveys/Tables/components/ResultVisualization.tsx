@@ -3,6 +3,7 @@ import i18next from 'i18next';
 import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,
@@ -13,7 +14,7 @@ const visuPanelOptions = {
 };
 
 interface ResultVisualizationDialogBodyProps {
-  formula?: JSON;
+  formula?: TSurveyFormula;
   result?: JSON[];
 }
 

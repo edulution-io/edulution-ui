@@ -324,6 +324,7 @@
       "noFormulaError": "The formula of the survey is not readable",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
       "notFoundError": "Survey not found",
+      "surveyFormulaStructuralError": "The formula of the survey has structural issues.",
       "participationErrorUserNotAssigned": "User is no participant of the survey",
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
       "participationErrorSurveyExpired": "Survey has already expired",

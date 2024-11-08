@@ -48,7 +48,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     setIsOpenParticipateSurveyDialog,
     className,
   } = props;
-  const surveyModel = new Model(formula as unknown as JSON);
+  const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
   surveyModel.locale = i18next.options.lng || 'en';

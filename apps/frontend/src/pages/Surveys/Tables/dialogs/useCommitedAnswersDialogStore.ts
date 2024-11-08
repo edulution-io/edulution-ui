@@ -3,14 +3,14 @@ import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
-import CommitedAnswersDialogStoreInitialState from '@libs/survey/types/tables/dialogs/commitedAnswersDialogStoreInitialState';
-import CommitedAnswersDialogStore from '@libs/survey/types/tables/dialogs/commitedAnswersDialogStore';
+import CommittedAnswersDialogStoreInitialState from '@libs/survey/types/tables/dialogs/committedAnswersDialogStoreInitialState';
+import CommittedAnswersDialogStore from '@libs/survey/types/tables/dialogs/committedAnswersDialogStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
-const useCommitedAnswersDialogStore = create<CommitedAnswersDialogStore>((set) => ({
-  ...(CommitedAnswersDialogStoreInitialState as CommitedAnswersDialogStore),
-  reset: () => set(CommitedAnswersDialogStoreInitialState),
+const useCommitedAnswersDialogStore = create<CommittedAnswersDialogStore>((set) => ({
+  ...(CommittedAnswersDialogStoreInitialState as CommittedAnswersDialogStore),
+  reset: () => set(CommittedAnswersDialogStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 

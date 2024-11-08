@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import CommitedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialogBody';
+import CommittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 
-const CommitedAnswersDialog = () => {
+const CommittedAnswersDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
   const { isOpenCommitedAnswersDialog, setIsOpenCommitedAnswersDialog, getCommittedSurveyAnswers, answer, isLoading } =
@@ -27,9 +27,9 @@ const CommitedAnswersDialog = () => {
   const getDialogBody = () => (
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
     <ScrollArea>
-      <CommitedAnswersDialogBody
-        formula={surveyJSON!}
-        answer={answer!}
+      <CommittedAnswersDialogBody
+        formula={surveyJSON}
+        answer={answer}
       />
     </ScrollArea>
   );
@@ -48,4 +48,4 @@ const CommitedAnswersDialog = () => {
   );
 };
 
-export default CommitedAnswersDialog;
+export default CommittedAnswersDialog;

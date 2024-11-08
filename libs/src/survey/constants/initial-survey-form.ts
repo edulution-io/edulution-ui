@@ -36,7 +36,7 @@ class InitialSurveyForm implements SurveyDto {
 
   constructor(creator: AttendeeDto, selectedSurvey?: SurveyDto) {
     this.id = selectedSurvey?.id || getNewSurveyId();
-    this.formula = selectedSurvey?.formula || ({ title: '' } as TSurveyFormula);
+    this.formula = selectedSurvey?.formula || { title: '' };
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.creator = creator;
     this.invitedAttendees = selectedSurvey?.invitedAttendees || [];

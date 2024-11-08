@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -47,10 +46,9 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     value: user.username,
     label: `${user.firstName} ${user.lastName}`,
   };
-  const emptyFormValues: SurveyDto = new EmptySurveyForm(surveyCreator);
 
   const initialFormValues: SurveyDto = useMemo(
-    () => (editMode && selectedSurvey ? new InitialSurveyForm(surveyCreator, selectedSurvey) : emptyFormValues),
+    () => new InitialSurveyForm(surveyCreator, editMode && selectedSurvey ? selectedSurvey : undefined),
     [selectedSurvey],
   );
 

@@ -4,13 +4,9 @@ import isSurveyElement from '@libs/survey/utils/isSurveyElement';
 const isSurveyPage = (surveyFormula: TSurveyPage): boolean => {
   const { name, elements } = surveyFormula;
 
-  if (!name) return false;
+  if (!name || !elements) return false;
 
-  if (!elements) return false;
-
-  const areAllTheElementsStructured = elements.map((element) => isSurveyElement(element));
-  const unstructuredElement = areAllTheElementsStructured.find((state) => !state);
-  return !unstructuredElement;
+  return elements.every(isSurveyElement);
 };
 
 export default isSurveyPage;

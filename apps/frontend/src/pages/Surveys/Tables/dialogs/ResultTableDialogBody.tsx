@@ -36,7 +36,7 @@ const ResultTableDialogBody = () => {
   return (
     <ScrollArea className="overflow-x-auto overflow-y-auto">
       <ResultTable
-        formula={selectedSurvey.formula as unknown as JSON}
+        formula={selectedSurvey.formula}
         result={result}
       />
     </ScrollArea>
