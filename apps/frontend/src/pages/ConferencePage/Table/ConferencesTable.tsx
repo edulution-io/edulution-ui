@@ -11,10 +11,12 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import CONFERENCES_PAGE_TABLE_HEADER from '@libs/conferences/constants/pageElementIds';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -46,6 +48,9 @@ const ConferencesTable = () => {
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 
+  const pageBarsHeight =
+    useElementHeight([NATIVE_APP_HEADER_ID, CONFERENCES_PAGE_TABLE_HEADER, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) - 20;
+
   return (
     <>
       {isLoading && conferences?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
@@ -60,53 +65,54 @@ const ConferencesTable = () => {
         <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
       )}
 
-      <div className="w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[80vh] overflow-auto">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
+      <div
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        <Table>
+          <TableHeader
+            className="text-white"
+            id={CONFERENCES_PAGE_TABLE_HEADER}
+          >
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody className="container">
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={headerGroup.id}
-                  className="text-white"
+                  key={row.id}
+                  data-state={row.getIsSelected() ? 'selected' : undefined}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="text-white"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-white"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={conferences?.length}
-                    className="h-24 text-center text-white"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={conferences?.length}
+                  className="h-24 text-center text-white"
+                >
+                  {t('table.noDataAvailable')}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </>
   );
