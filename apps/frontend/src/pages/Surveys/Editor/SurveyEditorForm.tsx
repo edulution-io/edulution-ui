@@ -6,7 +6,6 @@ import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
@@ -197,9 +196,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
-      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">{getSurveyEditor}</ScrollArea>
-      </div>
+      {getSurveyEditor}
       <FloatingButtonsBar config={config} />
       <SaveSurveyDialog
         form={form}
