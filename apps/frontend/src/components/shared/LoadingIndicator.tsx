@@ -10,7 +10,7 @@ interface LoadingIndicatorProps {
 const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen, id }) => (
   <Dialog open={isOpen}>
     <DialogContent
-      id={id} // Assign the id here
+      id={id}
       showCloseButton={false}
       variant="loadingSpinner"
     >
