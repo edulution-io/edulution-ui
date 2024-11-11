@@ -17,10 +17,12 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import useElementHeight from '@/hooks/useElementHeight';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import CONFERENCES_PAGE_TABLE_HEADER from '@libs/conferences/constants/pageElementIds';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const { t } = useTranslation();
+  const { user } = useUserStore();
   const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -36,6 +38,7 @@ const ConferencesTable = () => {
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: handleRowSelectionChange,
     getRowId: (originalRow: ConferenceDto) => originalRow.meetingID,
+    enableRowSelection: (row) => row.original.creator.username === user?.username,
     state: {
       sorting,
       rowSelection: selectedRows,
