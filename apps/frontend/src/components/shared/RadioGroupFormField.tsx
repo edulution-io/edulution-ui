@@ -31,7 +31,6 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
 }: RadioGroupProps) => {
   const { t } = useTranslation();
 
-  // Define pixel width based on the `imageWidth` prop
   const imagePixelWidth = imageWidth === 'small' ? '100px' : '150px';
 
   return (
