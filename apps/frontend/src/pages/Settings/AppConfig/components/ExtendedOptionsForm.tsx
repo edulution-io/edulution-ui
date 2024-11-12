@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
+import AppConfigOptions from '@libs/appconfig/types/appConfigOptions';
 import AppConfigExtendedOption from '@libs/appconfig/types/appConfigExtendedOption';
 import FormField from '@/components/shared/FormField';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
@@ -10,8 +10,8 @@ interface ExtendedOptionsFormProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<{ [x: string]: any }, any, undefined>;
   settingLocation: string;
-  extendedOptions: AppConfigExtendedOptions[];
-  onExtendedOptionsChange: (extendedOptions: AppConfigExtendedOptions[]) => void;
+  extendedOptions: AppConfigOptions[];
+  onExtendedOptionsChange: (extendedOptions: AppConfigOptions[]) => void;
 }
 
 const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
@@ -32,8 +32,8 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
     );
 
   const updateExtendedOptions = (appExtension: string, appExtensionOption: string, value: string | number | boolean) =>
-    extendedOptions.map((extension: AppConfigExtendedOptions) =>
-      extension.name === appExtension
+    extendedOptions.map((extension: AppConfigOptions) =>
+      extension.sectionName === appExtension
         ? { ...extension, options: updateExtendedOption(extension.options, appExtensionOption, value) }
         : extension,
     );
@@ -60,29 +60,29 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps> = ({
   if (extendedOptions.length === 0) return null;
   return extendedOptions.map((option) => (
     <AccordionItem
-      key={`app-extension-${settingLocation}.${option.name}`}
+      key={`app-extension-${settingLocation}.${option.sectionName}`}
       value={`app-extension-${settingLocation}`}
     >
       <AccordionTrigger className="flex text-xl font-bold">
-        <h4>{t(`appExtendedOptions.${settingLocation}.${option.name}.title`)}</h4>
+        <h4>{t(`appExtendedOptions.${settingLocation}.${option.sectionName}.title`)}</h4>
       </AccordionTrigger>
       <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p text-foreground">
         {option.options?.map((extension) => (
           <div
-            key={`${settingLocation}${option.name}${extension.name}`}
+            key={`${settingLocation}${option.sectionName}${extension.name}`}
             className={extension.width === 'full' ? 'w-full' : 'w-[calc(50%-12px)]'}
           >
             <FormField
               form={form}
               onChange={(e: string | number | boolean | React.ChangeEvent<HTMLInputElement>) =>
-                handleFormFieldChange(option.name, extension.name, e)
+                handleFormFieldChange(option.sectionName, extension.name, e)
               }
               value={extension.value}
               defaultValue={extension.defaultValue}
               type={extension.type}
-              key={`${settingLocation}${option.name}${extension.name}FormField`}
-              name={`${settingLocation}${option.name}${extension.name}FormField`}
-              labelTranslationId={`appExtendedOptions.${settingLocation}.${option.name}.${extension.name}`}
+              key={`${settingLocation}${option.sectionName}${extension.name}FormField`}
+              name={`${settingLocation}${option.sectionName}${extension.name}FormField`}
+              labelTranslationId={`appExtendedOptions.${settingLocation}.${option.sectionName}.${extension.name}`}
               variant="lightGray"
               className="text-p text-white"
             />

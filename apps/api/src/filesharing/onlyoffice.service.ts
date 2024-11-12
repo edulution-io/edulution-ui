@@ -7,8 +7,8 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
-import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
-import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
+import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
+import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from './filesystem.service';
 
@@ -21,9 +21,9 @@ class OnlyofficeService {
 
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
-    const appExtension = appConfig?.extendedOptions.find((extension) => extension.name === appExtensionOnlyOffice.name);
+    const appExtension = appConfig?.extendedOptions.find((extension) => extension.name === APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName);
     const jwtSecret = appExtension?.options.find(
-      (option) => option.name === FileSharingAppExtensions.ONLY_OFFICE_JWT_SECRET,
+      (option) => option.name === APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
     );
     if (!jwtSecret) {
       throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);

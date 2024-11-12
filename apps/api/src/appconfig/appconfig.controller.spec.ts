@@ -2,8 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
-import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
+import APP_CONFIG_SECTION_OPTIONS_GENERAL from '@libs/appconfig/constants/appConfigSectionOptionsGeneral';
+import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
+import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
@@ -53,22 +55,41 @@ describe('AppConfigController', () => {
           name: 'TestConfig',
           icon: 'test-icon',
           appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: [
+          options: [
             {
-              name: appExtensionOnlyOffice.name,
+              sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL.sectionName,
               options: [
                 {
-                  name: FileSharingAppExtensions.ONLY_OFFICE_URL,
+                  name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
+                  width: 'full',
+                  type: 'text',
+                  value: 'https://example.com/api/',
+                },
+                {
+                  name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
+                  width: 'full',
+                  type: 'text',
+                  value: 'secret-key',
+                },
+                {
+                  name: APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
+                  width: 'half',
+                  type: 'proxyConfig',
+                  value: '',
+                },
+              ],
+            },
+            {
+              sectionName: APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
+              options: [
+                {
+                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
                   value: 'https://example.com/api/',
                   type: 'text',
                   width: 'full',
                 },
                 {
-                  name: FileSharingAppExtensions.ONLY_OFFICE_JWT_SECRET,
+                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
                   value: 'secret-key',
                   type: 'text',
                   width: 'full',
@@ -92,22 +113,41 @@ describe('AppConfigController', () => {
           name: 'TestConfig',
           icon: 'test-icon',
           appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: [
+          options: [
             {
-              name: appExtensionOnlyOffice.name,
+              sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL.sectionName,
               options: [
                 {
-                  name: FileSharingAppExtensions.ONLY_OFFICE_URL,
+                  name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
+                  width: 'full',
+                  type: 'text',
+                  value: 'https://example.com/api/',
+                },
+                {
+                  name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
+                  width: 'full',
+                  type: 'text',
+                  value: 'secret-key',
+                },
+                {
+                  name: APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
+                  width: 'half',
+                  type: 'proxyConfig',
+                  value: '',
+                },
+              ],
+            },
+            {
+              name: APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
+              options: [
+                {
+                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
                   value: 'https://example.com/api/',
                   type: 'text',
                   width: 'full',
                 },
                 {
-                  name: FileSharingAppExtensions.ONLY_OFFICE_JWT_SECRET,
+                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
                   value: 'secret-key',
                   type: 'text',
                   width: 'full',

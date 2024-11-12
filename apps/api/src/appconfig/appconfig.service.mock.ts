@@ -1,4 +1,4 @@
-import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
+import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
 
 const mockAppConfigService = {
   insertConfig: jest.fn().mockResolvedValue(undefined),
@@ -16,14 +16,14 @@ const mockAppConfigService = {
         name: 'ONLY_OFFICE',
         options: [
           {
-            name: FileSharingAppExtensions.ONLY_OFFICE_URL,
+            name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
             value: 'https://example.com/api/',
             title: 'OnlyOffice URL',
             description: 'The URL for OnlyOffice',
             type: 'input',
           },
           {
-            name: FileSharingAppExtensions.ONLY_OFFICE_JWT_SECRET,
+            name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
             value: 'secret-key',
             title: 'OnlyOffice Secret',
             description: 'The secret key for OnlyOffice',

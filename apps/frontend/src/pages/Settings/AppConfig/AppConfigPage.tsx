@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
+import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigSectionOptionsGeneral';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
+import { AppConfigOptions } from '@libs/appconfig/types';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AppConfigExtendedOptions from '@libs/appconfig/types/appConfigExtendedOptions';
+import AppConfigOptions from '@libs/appconfig/types/appConfigOptions';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { findAppConfigByName } from '@/utils/common';
 import { SettingsIcon } from '@/assets/icons';
@@ -83,7 +83,7 @@ const AppConfigPage: React.FC = () => {
           const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
           setValue(`${settingLocation}.${key}`, proxyConfig);
         } else {
-          setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
+          setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptions]);
         }
       });
     }
@@ -147,7 +147,7 @@ const AppConfigPage: React.FC = () => {
           return acc;
         }, {} as AppConfigOptions) || {},
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
-      extendedOptions: getValues(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[],
+      extendedOptions: getValues(`${settingLocation}.extendedOptions`) as AppConfigOptions[],
     };
 
     const updatedConfig = appConfigs.map((entry) => {
@@ -250,9 +250,9 @@ const AppConfigPage: React.FC = () => {
                             form={form}
                             settingLocation={settingLocation}
                             extendedOptions={
-                              form.watch(`${settingLocation}.extendedOptions`) as AppConfigExtendedOptions[]
+                              form.watch(`${settingLocation}.extendedOptions`) as AppConfigOptions[]
                             }
-                            onExtendedOptionsChange={(extensionValues: AppConfigExtendedOptions[]) =>
+                            onExtendedOptionsChange={(extensionValues: AppConfigOptions[]) =>
                               form.setValue(`${item.id}.extendedOptions`, extensionValues)
                             }
                           />

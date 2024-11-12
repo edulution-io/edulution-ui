@@ -27,8 +27,8 @@ import {
 } from '@/assets/icons';
 import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
-import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
-import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';
+import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
+import APP_CONFIG_SECTION_OPTIONS_IMAP from '@libs/appconfig/constants/appConfigSectionOptionsIMAP';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -44,7 +44,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-    extendedOptions: [appExtensionIMAP],
+    extendedOptions: [APP_CONFIG_SECTION_OPTIONS_IMAP],
   },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {
@@ -73,7 +73,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-    extendedOptions: [appExtensionOnlyOffice],
+    extendedOptions: [APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE],
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {

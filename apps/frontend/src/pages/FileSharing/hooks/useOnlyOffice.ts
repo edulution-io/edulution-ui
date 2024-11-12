@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import APPS from '@libs/appconfig/constants/apps';
-import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
-import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
+import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
+import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
@@ -32,8 +32,8 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const documentServerURL = getExtendedOptionValue(
     appConfigs,
     APPS.FILE_SHARING,
-    appExtensionOnlyOffice.name,
-    FileSharingAppExtensions.ONLY_OFFICE_URL,
+    APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
+    APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
   );
 
   const callbackUrl = callbackBaseUrl({

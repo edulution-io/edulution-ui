@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import APPS from '@libs/appconfig/constants/apps';
-import appExtensionOnlyOffice from '@libs/appconfig/constants/appExtensionOnlyOffice';
-import FileSharingAppExtensions from '@libs/appconfig/constants/file-sharing-app-extension';
+import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
+import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
@@ -29,8 +29,8 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
       getExtendedOptionValue(
         appConfigs,
         APPS.FILE_SHARING,
-        appExtensionOnlyOffice.name,
-        FileSharingAppExtensions.ONLY_OFFICE_URL,
+        APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
+        APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
       ),
     [appConfigs],
   );

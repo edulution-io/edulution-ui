@@ -1,6 +1,6 @@
-const FileSharingAppExtensions = {
+const APP_CONFIG_SECTION_KEYS_ONLY_OFFICE = {
   ONLY_OFFICE_URL: 'ONLY_OFFICE_URL',
   ONLY_OFFICE_JWT_SECRET: 'ONLY_OFFICE_JWT_SECRET',
 } as const;
 
-export default FileSharingAppExtensions;
+export default APP_CONFIG_SECTION_KEYS_ONLY_OFFICE;

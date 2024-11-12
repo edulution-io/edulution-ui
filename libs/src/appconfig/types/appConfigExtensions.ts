@@ -1,6 +1,6 @@
-import TFileSharingAppExtensions from '@libs/appconfig/types/tFileSharingAppExtension';
-import TMailAppExtensions from '@libs/appconfig/types/tMailAppExtension';
+import TAppConfigSectionOnlyOffice from '@libs/appconfig/types/tAppConfigSectionOnlyOffice';
+import TAppConfigSectionIMAP from '@libs/appconfig/types/tAppConfigSectionIMAP';
 
-type AppConfigExtensions = TFileSharingAppExtensions | TMailAppExtensions;
+type AppConfigExtensions = TAppConfigSectionOnlyOffice | TAppConfigSectionIMAP;
 
 export default AppConfigExtensions;

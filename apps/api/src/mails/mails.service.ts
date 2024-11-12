@@ -8,7 +8,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import APPS from '@libs/appconfig/constants/apps';
 import MAIL_IMAP_CACHE from '@libs/mail/constants/mail-chache';
 import MailImapOptions from '@libs/mail/types/mail-imap-options';
-import appExtensionIMAP from '@libs/appconfig/constants/appExtensionIMAP';
+import APP_CONFIG_SECTION_OPTIONS_IMAP from '@libs/appconfig/constants/appConfigSectionOptionsIMAP';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
@@ -55,7 +55,7 @@ class MailsService {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
     if (!appConfig) return undefined;
 
-    const imapExtension = appConfig?.extendedOptions.find((option) => option.name === appExtensionIMAP.name);
+    const imapExtension = appConfig?.extendedOptions.find((option) => option.sectionName === APP_CONFIG_SECTION_OPTIONS_IMAP.sectionName);
     if (!imapExtension) return undefined;
 
     const imapOptions = imapExtension.options.reduce(

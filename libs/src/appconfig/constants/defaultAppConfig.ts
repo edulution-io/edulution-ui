@@ -10,33 +10,31 @@ const defaultAppConfig = [
     name: FILE_SHARING,
     icon: FilesharingIcon,
     appType: NATIVE,
-    options: {},
+    options: [
+
+    ],
     accessGroups: [],
-    extendedOptions: [],
   },
   {
     name: SURVEYS,
     icon: SurveysIcon,
     appType: NATIVE,
-    options: {},
+    options: [],
     accessGroups: [],
-    extendedOptions: [],
   },
   {
     name: CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
     appType: NATIVE,
-    options: {},
+    options: [],
     accessGroups: [],
-    extendedOptions: [],
   },
   {
     name: WHITEBOARD,
     icon: WhiteboardIcon,
     appType: NATIVE,
-    options: {},
+    options: [],
     accessGroups: [],
-    extendedOptions: [],
   },
 ];
 
