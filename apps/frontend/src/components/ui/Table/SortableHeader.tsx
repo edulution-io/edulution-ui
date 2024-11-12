@@ -18,11 +18,11 @@ const SortableHeader = <TData, TValue>({
   column,
   className,
 }: SortableHeaderProps<TData, TValue>) => (
-  <div className={cn('flex items-center', className)}>
+  <div className={cn('flex items-center space-x-2', className)}>
     {table ? (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
         aria-label="Select all"
       />
     ) : null}

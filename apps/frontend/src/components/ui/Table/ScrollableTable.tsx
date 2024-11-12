@@ -112,7 +112,7 @@ const ScrollableTable = <TData,>({
       >
         <Table>
           <TableHeader
-            className="text-foreground"
+            className="text-foreground scrollbar-thin"
             id={tableHeaderId || 'table-header'}
           >
             {table.getHeaderGroups().map((headerGroup) => (
@@ -134,7 +134,7 @@ const ScrollableTable = <TData,>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
-                      key={`${row.id}-${cell.column.id}`} // Composite key for uniqueness
+                      key={`${row.id}-${cell.column.id}`}
                       className="text-white"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
