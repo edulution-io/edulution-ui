@@ -13,7 +13,7 @@ const LanguageSettingsPage = () => {
   const methods = useForm({
     defaultValues: {
       usersettings: {
-        userLanguage: user?.language || UserLanguage.GERMAN,
+        userLanguage: user?.language || UserLanguage.SYSTEM,
       },
     },
   });

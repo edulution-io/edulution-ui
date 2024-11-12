@@ -25,7 +25,7 @@ const App = () => {
   eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
-    if (user?.language) {
+    if (user?.language && user.language !== 'system') {
       i18n.changeLanguage(user.language).catch((e) => console.error('Change Language Error', e));
     } else {
       i18n.changeLanguage(undefined).catch((e) => console.error('Reset to System Language Error', e));

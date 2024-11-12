@@ -5,7 +5,7 @@ import UserLanguage from '@libs/user/constants/userLanguage';
 import useUserStore from '@/store/UserStore/UserStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import UserLanguageType from '@libs/user/types/userLanguageType';
-import { EnglishIcon, GermanIcon } from '@/assets/icons';
+import { EnglishIcon, GermanIcon, SettingsIcon } from '@/assets/icons';
 
 interface SelectLanguageProps {
   settingLocation: string;
@@ -13,6 +13,12 @@ interface SelectLanguageProps {
 
 const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) => {
   const languageOptions = [
+    {
+      value: UserLanguage.SYSTEM,
+      translationId: `${settingLocation}.language.system`,
+      disabled: false,
+      icon: SettingsIcon,
+    },
     {
       value: UserLanguage.GERMAN,
       translationId: `${settingLocation}.language.german`,
@@ -51,6 +57,7 @@ const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) =>
       defaultValue={selectedLanguage}
       items={languageOptions}
       imageSize={isMobileView ? 'small' : 'large'}
+      autoImageSize
     />
   );
 };
