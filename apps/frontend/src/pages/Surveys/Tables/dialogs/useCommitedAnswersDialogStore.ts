@@ -24,7 +24,7 @@ const useCommitedAnswersDialogStore = create<CommittedAnswersDialogStore>((set) 
       const { answer } = surveyAnswer;
       set({ answer });
     } catch (error) {
-      set({ answer: undefined });
+      set({ answer: {} as JSON });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });

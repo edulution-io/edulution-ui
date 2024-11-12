@@ -4,7 +4,7 @@ const CommittedAnswersDialogStoreInitialState: Partial<CommittedAnswersDialogSto
   selectedSurvey: undefined,
   isOpenCommitedAnswersDialog: false,
   user: undefined,
-  answer: undefined,
+  answer: {} as JSON,
   isLoading: false,
 };
 

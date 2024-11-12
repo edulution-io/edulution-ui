@@ -12,7 +12,7 @@ interface CommittedAnswersDialogStore {
   getCommittedSurveyAnswers: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<void>;
   user: string | undefined;
   selectUser: (user: string) => void;
-  answer: JSON | undefined;
+  answer: JSON;
   isLoading: boolean;
 
   reset: () => void;
