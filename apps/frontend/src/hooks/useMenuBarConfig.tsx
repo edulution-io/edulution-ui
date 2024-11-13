@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import { getFromPathName } from '@libs/common/utils';
-import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
@@ -14,6 +13,9 @@ import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import type TApps from '@libs/appconfig/types/appsType';
+import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import MenuItem from '@libs/menubar/menuItem';
+import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 
 const useMenuBarConfig = (): MenuBarEntryProps => {
   const { pathname } = useLocation();
@@ -57,7 +59,17 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
       }
       default: {
-        return { menuItems: [], title: '', icon: '', color: '', disabled: false };
+        if (!rootPathName) {
+          return {
+            menuItems: [],
+            title: '',
+            icon: '',
+            color: '',
+            disabled: false,
+            appName: APPS.NONE,
+          };
+        }
+        throw new Error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
       }
     }
   };
@@ -76,6 +88,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
     disabled: configValues.disabled,
     icon: configValues.icon,
     color: configValues.color,
+    appName: configValues.appName,
   };
 };
 

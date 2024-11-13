@@ -125,7 +125,8 @@
     "privacyStatus": "Access",
     "public": "Public",
     "private": "Private",
-    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "rowsSelected": "{{selected}} of {{total}} conferences selected",
+    "rowSelected": "{{selected}} of {{total}} conference selected",
     "cancel": "Cancel",
     "password_required": "No Password entered",
     "error": "Error",
@@ -155,6 +156,8 @@
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
+    "rowsSelected": "{{selected}} of {{total}} files selected",
+    "rowSelected": "{{selected}} of {{total}} file selected",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -483,7 +486,8 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "UnsupportedAppConfiguration": "Unsupported app configuration for rootPathName: {{rootPathName}}"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
