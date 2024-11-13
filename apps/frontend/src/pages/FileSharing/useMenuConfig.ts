@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { MenuItem } from '@/datatypes/types';
 import {
   FileSharingIcon,
   IsoIcon,
@@ -14,6 +13,8 @@ import {
 import userStore from '@/store/UserStore/UserStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import MenuItem from '@libs/menubar/menuItem';
+import APPS from '@libs/appconfig/constants/apps';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -65,7 +66,7 @@ const useFileSharingMenuConfig = () => {
     title: 'filesharing.title',
     icon: FileSharingIcon,
     color: 'hover:bg-ciGreenToBlue',
-    appName: 'filesharing',
+    appName: APPS.FILE_SHARING,
     menuItems,
   };
 };

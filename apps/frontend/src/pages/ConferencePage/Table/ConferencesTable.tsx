@@ -33,8 +33,8 @@ const ConferencesTable = () => {
       selectedRows={selectedRows}
       getRowId={(originalRow) => originalRow.meetingID}
       applicationName={appName}
-      offset={20}
-      pageElementIds={{
+      additionalScrollContainerOffset={20}
+      scrollContainerOffsetElementIds={{
         tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
         others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
       }}

@@ -9,10 +9,17 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
+
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useElementHeight from '@/hooks/useElementHeight';
+import {
+  HEADER_ID,
+  LOADING_INDICATOR_ID,
+  SELECTED_ROW_MESSAGE_ID,
+  TABLE_HEADER_ID,
+} from '@libs/ui/constants/defaultIds';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
@@ -24,8 +31,8 @@ interface DataTableProps<TData> {
   getRowId?: (originalRow: TData) => string;
   setSorting: (sorting: SetStateAction<SortingState>) => void;
   applicationName: string;
-  offset?: number;
-  pageElementIds?: {
+  additionalScrollContainerOffset?: number;
+  scrollContainerOffsetElementIds?: {
     headerId?: string;
     loadingIndicatorId?: string;
     selectedRowsMessageId?: string;
@@ -44,28 +51,24 @@ const ScrollableTable = <TData,>({
   selectedRows,
   getRowId,
   applicationName,
-  offset,
-  pageElementIds = {
-    headerId: 'default-header-id',
-    loadingIndicatorId: 'default-loading-indicator-id',
-    selectedRowsMessageId: 'default-selected-rows-message-id',
-    tableHeaderId: 'default-table-header-id',
-    others: [],
-  },
+  additionalScrollContainerOffset,
+  scrollContainerOffsetElementIds = {},
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
   const allElementIds = [
-    pageElementIds.headerId,
-    pageElementIds.loadingIndicatorId,
-    pageElementIds.selectedRowsMessageId,
-    pageElementIds.tableHeaderId,
-    ...(pageElementIds.others || []),
-  ].filter(Boolean) as string[];
+    scrollContainerOffsetElementIds.headerId || HEADER_ID,
+    scrollContainerOffsetElementIds.loadingIndicatorId || LOADING_INDICATOR_ID,
+    scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID,
+    scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID,
+    ...(scrollContainerOffsetElementIds.others || []),
+  ].filter(Boolean);
 
-  const pageBarsHeight = useElementHeight(allElementIds) + (offset || 0);
+  const pageBarsHeight = useElementHeight(allElementIds) + (additionalScrollContainerOffset || 0);
 
-  const { loadingIndicatorId, selectedRowsMessageId, tableHeaderId } = pageElementIds;
+  const loadingIndicatorId = scrollContainerOffsetElementIds.loadingIndicatorId || LOADING_INDICATOR_ID;
+  const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
+  const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
 
   const table = useReactTable({
     data,
@@ -88,32 +91,37 @@ const ScrollableTable = <TData,>({
       {isLoading && data?.length === 0 ? (
         <LoadingIndicator
           isOpen={isLoading}
-          id={loadingIndicatorId || 'loading-indicator'}
+          id={loadingIndicatorId}
         />
       ) : null}
 
       {selectedRowsCount > 0 ? (
         <div
-          id={selectedRowsMessageId || 'selected-rows-message'}
+          id={selectedRowsMessageId}
           className="flex-1 text-sm text-muted-foreground text-white"
         >
-          {t(`${applicationName}.rowsSelected`, {
-            selected: selectedRowsCount,
-            total: table.getFilteredRowModel().rows.length,
-          })}
+          {selectedRowsCount === 1
+            ? t(`${applicationName}.rowSelected`, {
+                selected: selectedRowsCount,
+                total: table.getFilteredRowModel().rows.length,
+              })
+            : t(`${applicationName}.rowsSelected`, {
+                selected: selectedRowsCount,
+                total: table.getFilteredRowModel().rows.length,
+              })}
         </div>
       ) : (
         <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
       )}
 
       <div
-        className="w-full flex-1 overflow-auto pl-3 pr-3.5"
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <Table>
           <TableHeader
             className="text-foreground scrollbar-thin"
-            id={tableHeaderId || 'table-header'}
+            id={tableHeaderId}
           >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -1,5 +1,6 @@
 import { MailIcon } from '@/assets/icons';
-import { MenuBarEntryProps } from '@/datatypes/types';
+import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import APPS from '@libs/appconfig/constants/apps';
 
 const useMailPageMenu = () => {
   const menuBar = (): MenuBarEntryProps => ({
@@ -8,7 +9,7 @@ const useMailPageMenu = () => {
     icon: MailIcon,
     color: '',
     menuItems: [],
-    appName: 'mail',
+    appName: APPS.MAIL,
   });
 
   return menuBar();

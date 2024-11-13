@@ -126,6 +126,7 @@
     "public": "Öffentlich",
     "private": "Privat",
     "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Konferenz ausgewählt",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -155,6 +156,7 @@
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -481,7 +483,8 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "UnsupportedAppConfiguration": "Nicht unterstützte App-Konfiguration für rootPathName: {{rootPathName}}"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
