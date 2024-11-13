@@ -18,6 +18,8 @@ class UserDto {
   encryptKey: string;
 
   mfaEnabled?: boolean;
+
+  language?: string;
 }
 
 export default UserDto;
