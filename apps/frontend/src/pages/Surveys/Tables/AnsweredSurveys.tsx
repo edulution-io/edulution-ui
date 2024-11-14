@@ -39,9 +39,10 @@ const AnsweredSurveys = () => {
         description={t('surveys.view.answered.description')}
         selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
+        isLoading={isFetchingAnsweredSurveys}
         canShowResults
         canParticipate
-        canShowCommitedAnswers
+        canShowSubmittedAnswers
       />
     </>
   );

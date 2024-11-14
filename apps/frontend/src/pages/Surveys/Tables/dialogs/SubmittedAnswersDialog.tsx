@@ -3,15 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import CommittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/CommittedAnswersDialogBody';
+import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
+import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 
-const CommittedAnswersDialog = () => {
+const SubmittedAnswersDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
 
-  const { isOpenCommitedAnswersDialog, setIsOpenCommitedAnswersDialog, getCommittedSurveyAnswers, answer, isLoading } =
-    useCommitedAnswersDialogStore();
+  const {
+    isOpenSubmittedAnswersDialog,
+    setIsOpenSubmittedAnswersDialog,
+    getSubmittedSurveyAnswers,
+    answer,
+    isLoading,
+  } = useSubmittedAnswersDialogStore();
 
   const surveyId = survey?.id;
   const surveyJSON = survey?.formula;
@@ -19,10 +24,10 @@ const CommittedAnswersDialog = () => {
   const { t } = useTranslation();
 
   useEffect((): void => {
-    if (isOpenCommitedAnswersDialog && surveyId) {
-      void getCommittedSurveyAnswers(surveyId);
+    if (isOpenSubmittedAnswersDialog && surveyId) {
+      void getSubmittedSurveyAnswers(surveyId);
     }
-  }, [isOpenCommitedAnswersDialog, surveyId]);
+  }, [isOpenSubmittedAnswersDialog, surveyId]);
 
   const getDialogBody = () => {
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
@@ -31,7 +36,7 @@ const CommittedAnswersDialog = () => {
     }
     return (
       <ScrollArea>
-        <CommittedAnswersDialogBody
+        <SubmittedAnswersDialogBody
           formula={surveyJSON}
           answer={answer}
         />
@@ -43,9 +48,9 @@ const CommittedAnswersDialog = () => {
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
       <AdaptiveDialog
-        isOpen={isOpenCommitedAnswersDialog}
-        handleOpenChange={() => setIsOpenCommitedAnswersDialog(!isOpenCommitedAnswersDialog)}
-        title={t('surveys.commitedAnswersDialog.title')}
+        isOpen={isOpenSubmittedAnswersDialog}
+        handleOpenChange={() => setIsOpenSubmittedAnswersDialog(!isOpenSubmittedAnswersDialog)}
+        title={t('surveys.submittedAnswersDialog.title')}
         body={getDialogBody()}
         desktopContentClassName="max-w-[75%]"
       />
@@ -53,4 +58,4 @@ const CommittedAnswersDialog = () => {
   );
 };
 
-export default CommittedAnswersDialog;
+export default SubmittedAnswersDialog;

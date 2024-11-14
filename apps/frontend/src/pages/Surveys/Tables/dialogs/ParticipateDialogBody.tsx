@@ -21,7 +21,7 @@ interface ParticipateDialogBodyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  commitAnswer: (
+  submitAnswer: (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
@@ -42,7 +42,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     setAnswer,
     pageNo,
     setPageNo,
-    commitAnswer,
+    submitAnswer,
     updateOpenSurveys,
     updateAnsweredSurveys,
     setIsOpenParticipateSurveyDialog,
@@ -71,7 +71,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    await commitAnswer(surveyId, saveNo, answer /* , _options */);
+    await submitAnswer(surveyId, saveNo, answer /* , _options */);
     updateOpenSurveys();
     updateAnsweredSurveys();
     setIsOpenParticipateSurveyDialog(false);

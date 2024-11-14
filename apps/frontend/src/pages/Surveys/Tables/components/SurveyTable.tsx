@@ -1,107 +1,53 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  OnChangeFn,
-  RowSelectionState,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import mongoose from 'mongoose';
+import { ColumnDef, OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
+import APPS from '@libs/appconfig/constants/apps';
 import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
-import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import ScrollableTableTemp from '@/pages/Surveys/Tables/components/ScrollableTableTemp';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface MongoId {
+  id: mongoose.Types.ObjectId;
 }
 
-const SurveyTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
+interface DataTableProps<TData extends MongoId, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: Array<TData>;
+  isLoading?: boolean;
+}
+
+const SurveyTable = <TData extends MongoId, TValue>({
+  columns,
+  data,
+  isLoading = false,
+}: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
 
-  const { t } = useTranslation();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
   };
 
-  const table = useReactTable({
-    data,
-    columns,
-    enableRowSelection: true,
-    enableMultiRowSelection: false,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
-    state: {
-      sorting,
-      rowSelection: selectedRows,
-    },
-  });
-
-  const { getHeaderGroups, getRowModel } = table;
-
-  const pageBarsHeight = useElementHeight([SURVEYS_PAGE_TABLE_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) - 10;
-
   return (
-    <div
-      className="m-4 w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
-      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-    >
-      <Table>
-        <TableHeader>
-          {getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="text-background"
-            >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody className="container">
-          {getRowModel().rows.length ? (
-            getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() ? 'selected' : undefined}
-                className="h-[40px] cursor-pointer"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className="h-8 text-background"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-16 text-center text-background"
-              >
-                {t('table.noDataAvailable')}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    // TODO: Replace with new component after merging: 243 Make table header sticky #248 (https://github.com/edulution-io/edulution-ui/pull/248/files) was merged
+    <ScrollableTableTemp
+      columns={columns}
+      data={data}
+      onRowSelectionChange={handleRowSelectionChange}
+      selectedRows={selectedRows}
+      isLoading={isLoading}
+      sorting={sorting}
+      getRowId={(originalRow: TData) => originalRow.id.toString('hex')}
+      setSorting={setSorting}
+      applicationName={APPS.SURVEYS}
+      scrollContainerOffsetElementIds={{
+        tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
+        others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
+      }}
+    />
   );
 };
 

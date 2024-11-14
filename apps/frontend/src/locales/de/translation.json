@@ -368,9 +368,9 @@
     "actions": {
       "showResultsChart": "Schaubild",
       "showResultsTable": "Tabelle",
-      "showCommittedAnswers": "Antworten"
+      "showSubmittedAnswers": "Antworten"
     },
-    "commitedAnswersDialog": {
+    "submittedAnswersDialog": {
       "title": "Eingereichte Abgabe des Nutzers"
     },
     "saveDialog": {

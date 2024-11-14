@@ -336,7 +336,7 @@
     "errors": {
       "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
       "notAbleToFindSurveyAnswerError": "Survey answers not found",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer",
       "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
       "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
     }
@@ -358,7 +358,7 @@
       "answered": {
         "menu": "Answered Surveys",
         "title": "Answered Surveys",
-        "description": "Here you find the surveys that you have participated, already."
+        "description": "Here you find the surveys that you have already participated in."
       },
       "editor": {
         "menu": "Create new"
@@ -367,10 +367,10 @@
     "actions": {
       "showResultsChart": "Chart",
       "showResultsTable": "Table",
-      "showCommittedAnswers": "Answers"
+      "showSubmittedAnswers": "Answers"
     },
-    "commitedAnswersDialog": {
-      "title": "Commited survey answer"
+    "submittedAnswersDialog": {
+      "title": "Submitted survey answer"
     },
     "saveDialog": {
       "title": "Save and assign to participants",

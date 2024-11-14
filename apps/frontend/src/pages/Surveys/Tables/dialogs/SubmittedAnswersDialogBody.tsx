@@ -12,7 +12,7 @@ interface SurveySubmissionProps {
   answer: JSON;
 }
 
-const CommittedAnswersDialogBody = (props: SurveySubmissionProps) => {
+const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   const { formula, answer } = props;
 
   const { t } = useTranslation();
@@ -35,4 +35,4 @@ const CommittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   );
 };
 
-export default CommittedAnswersDialogBody;
+export default SubmittedAnswersDialogBody;

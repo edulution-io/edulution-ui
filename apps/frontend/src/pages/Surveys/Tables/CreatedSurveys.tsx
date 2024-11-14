@@ -44,12 +44,13 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
         description={t('surveys.view.created.description')}
         selectedSurvey={selectedSurvey}
         surveys={createdSurveys}
+        isLoading={isFetchingCreatedSurveys}
         canDelete
         canEdit
         editSurvey={edit}
         canShowResults
         canParticipate
-        canShowCommitedAnswers
+        canShowSubmittedAnswers
       />
     </>
   );

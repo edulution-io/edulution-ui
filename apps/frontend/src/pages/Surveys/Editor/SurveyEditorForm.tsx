@@ -202,8 +202,8 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
         setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        commitSurvey={saveSurvey}
-        isCommitting={isLoading}
+        submitSurvey={saveSurvey}
+        isSubmitting={isLoading}
       />
       <SharePublicSurveyDialog />
     </>

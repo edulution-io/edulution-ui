@@ -39,6 +39,7 @@ const OpenSurveys = () => {
         description={t('surveys.view.open.description')}
         surveys={openSurveys || []}
         selectedSurvey={selectedSurvey}
+        isLoading={isFetchingOpenSurveys}
         canShowResults
         canParticipate
       />

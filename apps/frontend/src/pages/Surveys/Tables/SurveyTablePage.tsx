@@ -10,11 +10,12 @@ interface SurveysTablePageProps {
   description: string;
   selectedSurvey?: SurveyDto | undefined;
   surveys?: SurveyDto[];
+  isLoading?: boolean;
 
   canEdit?: boolean;
   editSurvey?: () => void;
   canDelete?: boolean;
-  canShowCommitedAnswers?: boolean;
+  canShowSubmittedAnswers?: boolean;
   canParticipate?: boolean;
   canShowResults?: boolean;
 }
@@ -25,11 +26,12 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     description,
     selectedSurvey,
     surveys,
+    isLoading = false,
 
     canEdit = false,
     editSurvey = () => {},
     canDelete = false,
-    canShowCommitedAnswers = false,
+    canShowSubmittedAnswers = false,
     canParticipate = false,
     canShowResults = false,
   } = props;
@@ -44,6 +46,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         <SurveyTable
           columns={SurveyTableColumns}
           data={surveys || []}
+          isLoading={isLoading}
         />
       </ScrollArea>
       {selectedSurvey ? (
@@ -51,7 +54,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           canEdit={canEdit}
           editSurvey={editSurvey}
           canDelete={canDelete}
-          canShowCommitedAnswers={canShowCommitedAnswers}
+          canShowSubmittedAnswers={canShowSubmittedAnswers}
           canParticipate={canParticipate}
           canShowResults={canShowResults}
         />
