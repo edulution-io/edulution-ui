@@ -105,8 +105,9 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         });
         setCurrentPosition(position);
       }}
-      className={cn('overflow-hidden rounded-lg shadow-lg transition', {
+      className={cn('overflow-hidden rounded-lg shadow-lg', {
         'border bg-gray-800': !isMaximized && !isMinimized,
+        'transition-transform active:transition-none': isMinimized,
       })}
       bounds="window"
       disableDragging={isMaximized && !isMinimized}
