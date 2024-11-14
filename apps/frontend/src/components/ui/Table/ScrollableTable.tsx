@@ -39,6 +39,8 @@ interface DataTableProps<TData> {
     tableHeaderId?: string;
     others?: string[];
   };
+  textColorClass?: string;
+  showHeader?: boolean;
 }
 
 const ScrollableTable = <TData,>({
@@ -53,6 +55,8 @@ const ScrollableTable = <TData,>({
   applicationName,
   additionalScrollContainerOffset,
   scrollContainerOffsetElementIds = {},
+  textColorClass = 'text-white',
+  showHeader = true,
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
@@ -98,7 +102,7 @@ const ScrollableTable = <TData,>({
       {selectedRowsCount > 0 ? (
         <div
           id={selectedRowsMessageId}
-          className="flex-1 text-sm text-muted-foreground text-white"
+          className={`flex-1 text-sm ${textColorClass}`}
         >
           {selectedRowsCount === 1
             ? t(`${applicationName}.rowSelected`, {
@@ -111,7 +115,7 @@ const ScrollableTable = <TData,>({
               })}
         </div>
       ) : (
-        <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
+        <div className={`flex-1 text-sm ${textColorClass}`}>&nbsp;</div>
       )}
 
       <div
@@ -119,20 +123,22 @@ const ScrollableTable = <TData,>({
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <Table>
-          <TableHeader
-            className="text-foreground scrollbar-thin"
-            id={tableHeaderId}
-          >
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
+          {showHeader && (
+            <TableHeader
+              className={`text-foreground ${textColorClass}`}
+              id={tableHeaderId}
+            >
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+          )}
           <TableBody className="container">
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
@@ -143,7 +149,7 @@ const ScrollableTable = <TData,>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={`${row.id}-${cell.column.id}`}
-                      className="text-white"
+                      className={textColorClass}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -154,7 +160,7 @@ const ScrollableTable = <TData,>({
               <TableRow>
                 <TableCell
                   colSpan={data?.length}
-                  className="h-24 text-center text-white"
+                  className={`h-24 text-center ${textColorClass}`}
                 >
                   {t('table.noDataAvailable')}
                 </TableCell>

@@ -1,15 +1,13 @@
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import { Button } from '@/components/shared/Button';
-import { ArrowRightIcon } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
-import ContentType from '@libs/filesharing/types/contentType';
-import useLmnApiStore from '@/store/useLmnApiStore';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import APPS from '@libs/appconfig/constants/apps';
+import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
+import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 
 interface MoveContentDialogBodyProps {
   showAllFiles?: boolean;
@@ -27,8 +25,18 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
-  const { fetchDirs, fetchFiles, directorys, files } = useFileSharingStore();
-  const { user } = useLmnApiStore();
+  const { fetchDirs, fetchFiles, files } = useFileSharingStore();
+
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+    const newValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
+
+    const selectedItemData = Object.keys(newValue)
+      .filter((key) => newValue[key])
+      .map((rowId) => files.find((file) => file.filename === rowId))
+      .filter(Boolean) as DirectoryFileDTO[];
+
+    setMoveOrCopyItemToPath(selectedItemData[0]);
+  };
 
   useEffect(() => {
     if (showAllFiles && !pathToFetch) {
@@ -49,70 +57,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     setCurrentPath(path);
   };
 
-  const handleNextFolder = (nextItem: DirectoryFileDTO) => {
-    if (nextItem.type === ContentType.DIRECTORY) {
-      let newCurrentPath = currentPath;
-      if (!newCurrentPath.endsWith('/')) {
-        newCurrentPath += '/';
-      }
-      if (newCurrentPath === '/') {
-        newCurrentPath += nextItem.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
-      } else {
-        newCurrentPath += nextItem.basename;
-      }
-      setCurrentPath(newCurrentPath);
-    }
-  };
-
   const getHiddenSegments = (): string[] => {
     const segements = pathToFetch?.split('/');
     const index = segements?.findIndex((segment) => segment === segements.at(segment.length));
     return segements?.slice(0, index) || [];
   };
-
-  const renderTableRow = (row: DirectoryFileDTO) => (
-    <TableRow
-      key={row.filename}
-      onClick={(e) => {
-        e.preventDefault();
-        setMoveOrCopyItemToPath(row);
-      }}
-      onDoubleClick={(event) => {
-        event.stopPropagation();
-        handleNextFolder(row);
-      }}
-    >
-      <TableCell
-        className={`${
-          moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue' : ''
-        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-foreground`}
-      >
-        <div className="flex w-full items-center justify-between text-ellipsis">
-          <div>{row.basename}</div>
-          <Button onClick={() => handleNextFolder(row)}>
-            <ArrowRightIcon />
-          </Button>
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-
-  const renderTable = () => (
-    <ScrollArea className="h-[200px]">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
-          </TableRow>
-        </TableHeader>
-        {showAllFiles ? (
-          <TableBody>{files.map(renderTableRow)}</TableBody>
-        ) : (
-          <TableBody>{directorys.map(renderTableRow)}</TableBody>
-        )}
-      </Table>
-    </ScrollArea>
-  );
 
   return (
     <>
@@ -122,10 +71,22 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         showHome={showHome}
         hiddenSegments={getHiddenSegments()}
       />
-      <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
+      <ScrollableTable
+        columns={FileSharingTableColumns}
+        data={files}
+        sorting={[]}
+        setSorting={() => {}}
+        selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+        onRowSelectionChange={handleRowSelectionChange}
+        applicationName={APPS.FILE_SHARING}
+        getRowId={(row) => row.filename}
+        showHeader={false}
+        additionalScrollContainerOffset={20}
+        textColorClass="text-black"
+      />
       {moveOrCopyItemToPath && showSelectedFile && (
         <p className="pt-10 text-foreground">
-          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
+          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.basename)}
         </p>
       )}
     </>
