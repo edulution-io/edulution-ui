@@ -493,6 +493,7 @@
     "sidebar": "Mein Profil",
     "details": {
       "title": "Benutzerdetails",
+      "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
       "userInformation": "Benutzerbezogene Informationen",
       "dateOfBirth": "Geburtsdatum",
       "givenName": "Vorname",

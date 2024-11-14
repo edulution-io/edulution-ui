@@ -92,7 +92,6 @@ const UserSettingsMailsPage: React.FC = () => {
       labelTranslationId={label}
       type={type}
       defaultValue=""
-      data-testid={`test-id-login-page-${fieldName}-input`}
       className="mb-4 mt-2"
       variant="lightGray"
     />

@@ -31,7 +31,7 @@ const UserSettingsDetailsPage: React.FC = () => {
     <div className="bottom-[32px] left-4 right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
       <NativeAppHeader
         title={user?.displayName || t('common.not-available')}
-        description=""
+        description={t('usersettings.details.description')}
         iconSrc={UserDetailsSettingsIcon}
       />
       <div className="p-4">

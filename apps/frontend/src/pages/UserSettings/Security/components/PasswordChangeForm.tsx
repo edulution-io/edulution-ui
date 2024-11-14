@@ -54,12 +54,12 @@ const PasswordChangeForm: FC = () => {
             }`}
           />
           {errors.currentPassword && <p className="mt-2 text-sm text-red-600">{errors.currentPassword.message}</p>}
-          <label
+          <Label
             htmlFor="newPassword"
-            className="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="block text-sm font-medium"
           >
             <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.newPassword')}</p>
-          </label>
+          </Label>
           <Input
             id="newPassword"
             type="password"
@@ -73,12 +73,12 @@ const PasswordChangeForm: FC = () => {
             }`}
           />
           {errors.newPassword && <p className="mt-2 text-sm text-red-600">{errors.newPassword.message}</p>}
-          <label
+          <Label
             htmlFor="confirmPassword"
-            className="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="block text-sm font-medium"
           >
             <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.confirmPassword')}</p>
-          </label>
+          </Label>
           <Input
             id="confirmPassword"
             type="password"

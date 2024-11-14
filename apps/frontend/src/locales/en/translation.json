@@ -492,6 +492,7 @@
     "sidebar": "My Profile",
     "details": {
       "title": "User details",
+      "description": "Here you see and edit some of your personal information.",
       "userInformation": "User related information",
       "dateOfBirth": "Date of birth",
       "givenName": "Given name",

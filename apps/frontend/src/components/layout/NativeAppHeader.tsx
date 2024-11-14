@@ -12,7 +12,7 @@ const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) 
   const { t } = useTranslation();
   return (
     <div
-      className="mr-2 flex min-h-[100px]"
+      className="mr-2 flex md:min-h-[100px]"
       id={NATIVE_APP_HEADER_ID}
     >
       <img

@@ -31,28 +31,28 @@ const BadgeFormField = <T extends FieldValues>({
   const [newLabel, setNewLabel] = React.useState<string>('');
 
   const handleRemoveBadge = (
-    currentValue: string[],
-    removeLabel: string,
-    handleChange?: (updatedValue: string[]) => void,
+    currentBadges: string[],
+    badgeStrToRemove: string,
+    updateBadges?: (badges: string[]) => void,
   ) => {
-    if (!currentValue || !removeLabel || !handleChange) return;
-    const newList = currentValue.filter((mp) => mp !== removeLabel);
-    handleChange(newList);
+    if (currentBadges.length === 0 || !badgeStrToRemove || !updateBadges) return;
+    const newList = currentBadges.filter((mp) => mp !== badgeStrToRemove);
+    updateBadges(newList);
   };
 
   const handleAddBadge = (
-    currentValue: string[],
-    addLabel: string,
-    handleChange?: (updatedValue: string[]) => void,
+    currentBadges: string[],
+    badgeStrToAdd: string,
+    updateBadges?: (badges: string[]) => void,
   ) => {
-    if (!currentValue || !addLabel || !handleChange) return;
-    const alreadyExists = currentValue.findIndex((mp) => mp === addLabel);
-    if (alreadyExists !== -1) {
+    if (currentBadges.length === 0 || !badgeStrToAdd || !updateBadges) return;
+    const alreadyExists = currentBadges.includes(badgeStrToAdd);
+    if (alreadyExists) {
       toast.error(t('usersettings.details.badgeAlreadyExists'));
       return;
     }
-    const updatedBadges = [...currentValue, addLabel];
-    handleChange(updatedBadges);
+    const updatedBadges = [...currentBadges, badgeStrToAdd];
+    updateBadges(updatedBadges);
     setNewLabel('');
   };
 
@@ -72,16 +72,16 @@ const BadgeFormField = <T extends FieldValues>({
           )}
           <FormControl>
             <div className="flex flex-row flex-wrap gap-2">
-              {badges?.map((listItem) => (
+              {badges?.map((badge) => (
                 <BadgeSH
-                  key={`badge-${listItem}`}
+                  key={`badge-${badge}`}
                   className="color-white h-[36px] text-white"
                 >
-                  {listItem}
+                  {badge}
                   <button
                     type="button"
                     className="ml-2"
-                    onClick={() => handleRemoveBadge(badges, listItem, field.onChange)}
+                    onClick={() => handleRemoveBadge(badges, badge, field.onChange)}
                   >
                     <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
                   </button>
