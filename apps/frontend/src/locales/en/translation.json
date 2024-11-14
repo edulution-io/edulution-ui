@@ -530,6 +530,13 @@
       "disabled": "disabled",
       "disable": "Disable"
     },
+    "language": {
+      "title": "Language",
+      "description": "Please select the language for the user interface.",
+      "german": "German",
+      "english": "English",
+      "system": "System language"
+    },
     "addTotp": {
       "title": "QR-Code",
       "description": "Please scan the QR-Code and enter the TOTP:"
