@@ -152,6 +152,7 @@
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
+    "fileEditor": "File editor",
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",

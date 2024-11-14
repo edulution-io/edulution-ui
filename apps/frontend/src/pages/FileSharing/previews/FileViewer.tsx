@@ -1,45 +1,42 @@
 import React, { FC } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
+import ResizableWindow from '@/components/framing/ResizableWindow';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 interface FileViewerProps {
-  mode: 'view' | 'edit';
-  editWindow: boolean;
+  editMode: boolean;
 }
 
-const FileViewer: FC<FileViewerProps> = ({ mode, editWindow = false }) => {
-  const { currentlyEditingFile } = useFileSharingStore();
-  const { downloadLinkURL, publicDownloadLink, isEditorLoading, isError } = useFileSharingStore();
-  const { showEditor } = useFileEditorStore();
-  const isMobile = useIsMobileView();
+const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
+  const { t } = useTranslation();
+  const { currentlyEditingFile, isFullScreenEditingEnabled, setIsFullScreenEditingEnabled } = useFileSharingStore();
+  const { isEditorLoading } = useFileSharingStore();
+  const [searchParams] = useSearchParams();
   useDownloadLinks(currentlyEditingFile);
-  if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile?.filename);
+
+  const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
   return (
     <FileViewerLayout
       isLoading={isEditorLoading}
-      editMode={mode === 'edit'}
-      renderComponent={() => (
-        <FileRenderer
-          isLoading={isEditorLoading}
-          editWindow={editWindow}
-          isError={isError}
-          fileUrl={downloadLinkURL}
-          fileExtension={fileExtension}
-          publicDownloadLink={publicDownloadLink}
-          showEditor={showEditor}
-          mode={mode}
-          isMobile={isMobile}
-          currentlyEditingFile={currentlyEditingFile}
-        />
+      editMode={isOpenedInNewTab}
+    >
+      {isFullScreenEditingEnabled && !isOpenedInNewTab ? (
+        <ResizableWindow
+          disableWindowControls
+          titleTranslationId={t('filesharing.fileEditor')}
+          handleClose={() => setIsFullScreenEditingEnabled(false)}
+        >
+          <FileRenderer editMode={editMode} />
+        </ResizableWindow>
+      ) : (
+        <FileRenderer editMode={editMode} />
       )}
-    />
+    </FileViewerLayout>
   );
 };
 

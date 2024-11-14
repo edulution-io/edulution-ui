@@ -1,26 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import Guacamole from 'guacamole-common-js';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { SIDEBAR_WIDTH } from '@libs/ui/constants';
-import APPS from '@libs/appconfig/constants/apps';
-import ControlPanel from '@/components/shared/ControlPanel';
+import ResizableWindow from '@/components/framing/ResizableWindow';
+import { useTranslation } from 'react-i18next';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
+  const { t } = useTranslation();
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
-  const {
-    error,
-    guacToken,
-    dataSource,
-    isVdiConnectionMinimized,
-    guacId,
-    isVdiConnectionOpen,
-    setIsVdiConnectionMinimized,
-    setIsVdiConnectionOpen,
-  } = useDesktopDeploymentStore();
+  const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
+    useDesktopDeploymentStore();
   const [clientState, setClientState] = useState(0);
 
   const handleDisconnect = () => {
@@ -31,7 +23,7 @@ const VDIFrame = () => {
   };
 
   useEffect(() => {
-    if (guacToken === '' || !displayRef.current) return () => {};
+    if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen) return () => {};
 
     const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
@@ -128,32 +120,22 @@ const VDIFrame = () => {
     };
   }, [guacRef.current]);
 
-  if (!isVdiConnectionOpen) {
+  if (!isVdiConnectionOpen || error) {
     return null;
   }
 
-  const style = isVdiConnectionMinimized ? { width: 0 } : {};
-
-  return createPortal(
-    !error ? (
-      <>
-        {clientState < 3 && <LoadingIndicator isOpen />}
-        <ControlPanel
-          isMinimized={isVdiConnectionMinimized}
-          toggleMinimized={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
-          onClose={handleDisconnect}
-          label={APPS.DESKTOP_DEPLOYMENT}
-        />
-        <div
-          id="display"
-          ref={displayRef}
-          className="z-1 absolute inset-y-0 left-0 ml-0 w-screen overflow-hidden md:w-[calc(100%-var(--sidebar-width))]"
-          style={style}
-        />
-      </>
-    ) : null,
-
-    document.body,
+  return (
+    <ResizableWindow
+      titleTranslationId={t('desktopdeployment.topic')}
+      handleClose={handleDisconnect}
+    >
+      <div
+        id="display"
+        ref={displayRef}
+        className="h-full w-full border-none"
+      />
+      {clientState < 3 && <LoadingIndicator isOpen />}
+    </ResizableWindow>
   );
 };
 

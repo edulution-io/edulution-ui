@@ -21,6 +21,7 @@ import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import TApps from '@libs/appconfig/types/appsType';
+import ONLY_OFFICE_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
@@ -37,13 +38,8 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
           <>
             <Route element={<EmptyLayout />}>
               <Route
-                path="/onlyoffice"
-                element={
-                  <FileViewer
-                    mode="edit"
-                    editWindow
-                  />
-                }
+                path={ONLY_OFFICE_ROUTE}
+                element={<FileViewer editMode />}
               />
             </Route>
             {getForwardedRoutes(appConfigs)}

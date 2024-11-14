@@ -17,9 +17,9 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout } = useUserStore();
-  const { loadedFrames, activeFrame } = useFrameStore();
+  const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
-  const getStyle = () => (activeFrame === appName ? { display: 'block' } : { display: 'none' });
+  const getStyle = () => (activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' });
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
@@ -67,7 +67,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
-      src={loadedFrames.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
+      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
       style={getStyle()}
     />
   );
