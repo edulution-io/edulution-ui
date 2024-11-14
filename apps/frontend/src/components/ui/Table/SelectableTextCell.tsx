@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import Checkbox from '@/components/ui/Checkbox';
 import { Icon } from '@radix-ui/react-select';
 import { Row } from '@tanstack/react-table';
@@ -8,13 +8,15 @@ interface SelectableTextCellProps<TData> {
   icon?: React.ReactElement;
   row?: Row<TData>;
   text: string;
+  textOnHover?: string;
   onClick?: () => void;
   className?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<any>>(
-  ({ icon, row, text, onClick, className }, ref) => {
+  ({ icon, row, text, textOnHover, onClick, className }, ref) => {
+    const [isHovered, setIsHovered] = useState(false);
     const isChecked = row?.getIsSelected();
 
     return (
@@ -29,6 +31,8 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
           onClick ? 'cursor-pointer' : 'cursor-default',
           className,
         )}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {row ? (
           <Checkbox
@@ -43,7 +47,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
           <div className="mx-2 my-5" />
         )}
         {icon ? <Icon className="mb-3 ml-2 mr-2 mt-3">{icon}</Icon> : null}
-        <span className="text-md truncate font-medium">{text}</span>
+        <span className="text-md truncate font-medium">{isHovered && textOnHover ? textOnHover : text}</span>
       </div>
     );
   },

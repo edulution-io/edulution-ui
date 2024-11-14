@@ -49,6 +49,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
       >
         <FormField
           name="name"
+          value={form.getValues('name') as string}
           form={form}
           labelTranslationId={t('conferences.name')}
           disabled={searchGroupsIsLoading}
@@ -65,6 +66,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
         />
         <FormField
           name="password"
+          value={form.getValues('password') as string}
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"

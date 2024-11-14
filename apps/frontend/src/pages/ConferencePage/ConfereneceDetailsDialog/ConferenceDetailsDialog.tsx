@@ -52,7 +52,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading || !selectedConference) return <LoadingIndicator isOpen={isLoading} />;
     return <CreateConferenceDialogBody form={form} />;
   };
 
