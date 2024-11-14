@@ -14,12 +14,7 @@ import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useElementHeight from '@/hooks/useElementHeight';
-import {
-  HEADER_ID,
-  LOADING_INDICATOR_ID,
-  SELECTED_ROW_MESSAGE_ID,
-  TABLE_HEADER_ID,
-} from '@libs/ui/constants/defaultIds';
+import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
@@ -53,26 +48,24 @@ const ScrollableTable = <TData,>({
   selectedRows,
   getRowId,
   applicationName,
-  additionalScrollContainerOffset,
+  additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   textColorClass = 'text-white',
   showHeader = true,
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
-  const allElementIds = [
+  const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
+  const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
+
+  const allScrollContainerOffsetElementIds = [
     scrollContainerOffsetElementIds.headerId || HEADER_ID,
-    scrollContainerOffsetElementIds.loadingIndicatorId || LOADING_INDICATOR_ID,
-    scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID,
-    scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID,
+    selectedRowsMessageId,
+    tableHeaderId,
     ...(scrollContainerOffsetElementIds.others || []),
   ].filter(Boolean);
 
-  const pageBarsHeight = useElementHeight(allElementIds) + (additionalScrollContainerOffset || 0);
-
-  const loadingIndicatorId = scrollContainerOffsetElementIds.loadingIndicatorId || LOADING_INDICATOR_ID;
-  const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
-  const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
+  const pageBarsHeight = useElementHeight(allScrollContainerOffsetElementIds) + additionalScrollContainerOffset;
 
   const table = useReactTable({
     data,
@@ -80,7 +73,7 @@ const ScrollableTable = <TData,>({
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    getRowId: getRowId || ((originalRow: TData) => (originalRow as unknown as { id: string }).id),
+    getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     state: {
       sorting,
@@ -92,27 +85,21 @@ const ScrollableTable = <TData,>({
 
   return (
     <>
-      {isLoading && data?.length === 0 ? (
-        <LoadingIndicator
-          isOpen={isLoading}
-          id={loadingIndicatorId}
-        />
-      ) : null}
+      {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
 
       {selectedRowsCount > 0 ? (
         <div
           id={selectedRowsMessageId}
-          className={`flex-1 text-sm ${textColorClass}`}
+          className="flex-1 text-sm text-muted-foreground text-white"
         >
-          {selectedRowsCount === 1
-            ? t(`${applicationName}.rowSelected`, {
-                selected: selectedRowsCount,
-                total: table.getFilteredRowModel().rows.length,
-              })
-            : t(`${applicationName}.rowsSelected`, {
-                selected: selectedRowsCount,
-                total: table.getFilteredRowModel().rows.length,
-              })}
+          {selectedRowsCount > 0 ? (
+            t(`${applicationName}.${selectedRowsCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+              selected: selectedRowsCount,
+              total: table.getFilteredRowModel().rows.length,
+            })
+          ) : (
+            <>&nbsp;</>
+          )}
         </div>
       ) : (
         <div className={`flex-1 text-sm ${textColorClass}`}>&nbsp;</div>

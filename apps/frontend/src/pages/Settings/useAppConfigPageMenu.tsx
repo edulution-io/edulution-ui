@@ -4,13 +4,13 @@ import { findAppConfigByName } from '@/utils/common';
 import { useNavigate } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import APPS from '@libs/appconfig/constants/apps';
-import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
   const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen } = useAppConfigsStore();
 
-  const settingsMenuBarEntry: MenuBarEntryProps = {
+  const settingsMenuBarEntry: MenuBarEntry = {
     appName: APPS.SETTINGS,
     title: 'settings.title',
     icon: SettingsIcon,
@@ -25,7 +25,7 @@ const useAppConfigPageMenu = () => {
     ],
   };
 
-  const appConfigPageMenu = (): MenuBarEntryProps => ({
+  const appConfigPageMenu = (): MenuBarEntry => ({
     ...settingsMenuBarEntry,
     menuItems: [
       ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(

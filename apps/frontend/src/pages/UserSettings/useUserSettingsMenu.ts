@@ -5,13 +5,13 @@ import {
   USER_SETTINGS_MAILS_PATH,
   USER_SETTINGS_SECURITY_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
-import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 
 const useUserSettingsMenu = () => {
   const navigate = useNavigate();
 
-  const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntryProps = {
+  const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = {
     appName: APPS.USER_SETTINGS,
     title: 'usersettings.title',
     icon: UserIcon,

@@ -17,7 +17,7 @@ interface SelectableTextCellProps<TData> {
 const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<any>>(
   ({ icon, row, text, onClick, className, isFirstColumn = false }, ref) => {
     const isChecked = row?.getIsSelected();
-    const checkboxRef = useRef<HTMLDivElement>(null);
+    const checkboxRef = useRef<HTMLButtonElement>(null);
     const [checkboxWidth, setCheckboxWidth] = useState(0);
 
     useEffect(() => {
@@ -41,16 +41,15 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         )}
       >
         {row ? (
-          <div ref={checkboxRef}>
-            <Checkbox
-              checked={isChecked}
-              onClick={(e) => e.stopPropagation()}
-              onCheckedChange={(checked) => {
-                row.toggleSelected(!!checked);
-              }}
-              aria-label="Select row"
-            />
-          </div>
+          <Checkbox
+            ref={checkboxRef}
+            checked={isChecked}
+            onClick={(e) => e.stopPropagation()}
+            onCheckedChange={(checked) => {
+              row.toggleSelected(!!checked);
+            }}
+            aria-label="Select row"
+          />
         ) : (
           <div className="my-5" />
         )}

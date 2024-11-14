@@ -1,8 +1,8 @@
 import { DesktopDeploymentIcon } from '@/assets/icons';
-import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 
-const DESKTOP_DEPLOYMENT_MENUBAR_CONFIG: MenuBarEntryProps = {
+const DESKTOP_DEPLOYMENT_MENUBAR_CONFIG: MenuBarEntry = {
   title: 'desktopdeployment.title',
   icon: DesktopDeploymentIcon,
   disabled: true,

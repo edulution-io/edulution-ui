@@ -13,11 +13,12 @@ import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import type TApps from '@libs/appconfig/types/appsType';
-import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import { toast } from 'sonner';
 
-const useMenuBarConfig = (): MenuBarEntryProps => {
+const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
@@ -30,11 +31,20 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
 
-  const menuBarConfigSwitch = (): MenuBarEntryProps => {
+  const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
     if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
+
+    const defaultReturnMenuBarEntry = {
+      menuItems: [],
+      title: '',
+      icon: '',
+      color: '',
+      disabled: false,
+      appName: APPS.NONE,
+    };
 
     switch (rootPathName as TApps) {
       case APPS.FILE_SHARING: {
@@ -60,16 +70,11 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
       }
       default: {
         if (!rootPathName) {
-          return {
-            menuItems: [],
-            title: '',
-            icon: '',
-            color: '',
-            disabled: false,
-            appName: APPS.NONE,
-          };
+          return defaultReturnMenuBarEntry;
         }
-        throw new Error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        console.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        toast.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        return defaultReturnMenuBarEntry;
       }
     }
   };
