@@ -1,23 +1,25 @@
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
 import { AppConfigDto } from '@libs/appconfig/types';
-import TApps from '@libs/appconfig/types/appsType';
+import type TApps from '@libs/appconfig/types/appsType';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import {
-  MAILS_PATH,
+  LANGUAGE_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
+  MAILS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
-import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
+import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import { HomePage } from '@/pages/Home';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
-import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
@@ -72,6 +74,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 <Route
                   path={MAILS_PATH}
                   element={<UserSettingsMailsPage />}
+                />
+                <Route
+                  path={LANGUAGE_PATH}
+                  element={<LanguageSettingsPage />}
                 />
               </Route>
               {isSuperAdmin ? (
