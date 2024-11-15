@@ -9,11 +9,13 @@ import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 interface RadioGroupProps {
   control: Control<FieldValues>;
   name: string;
-  titleTranslationId: string;
+  titleTranslationId?: string;
   defaultValue?: string;
   items: RadioGroupItem[];
   formClassname?: string;
   labelClassname?: string;
+  imageWidth?: 'small' | 'large';
+  fixedImageSize?: boolean;
 }
 
 const RadioGroupFormField: React.FC<RadioGroupProps> = ({
@@ -24,8 +26,12 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
   items,
   formClassname,
   labelClassname,
+  imageWidth = 'large',
+  fixedImageSize = false,
 }: RadioGroupProps) => {
   const { t } = useTranslation();
+
+  const imagePixelWidth = imageWidth === 'small' ? '100px' : '150px';
 
   return (
     <FormFieldSH
@@ -33,7 +39,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
       name={name}
       render={({ field }) => (
         <FormItem className={cn('space-y-3', formClassname)}>
-          <h4 className={labelClassname}>{t(titleTranslationId)}</h4>
+          <h4 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h4>
           <FormControl>
             <RadioGroupSH
               onValueChange={field.onChange}
@@ -54,16 +60,18 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                         {item.icon ? (
                           <div
                             className={cn(
-                              'opacity-60',
+                              'pb-6 opacity-60',
                               item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
                               { 'opacity-100': field.value === item.value },
                             )}
                           >
                             <img
                               src={item.icon}
-                              width="200px"
+                              width={imagePixelWidth}
+                              className={fixedImageSize ? 'h-24 w-24 object-contain' : ''}
                               aria-label={item.value}
                               onClickCapture={() => (item.disabled ? {} : field.onChange(item.value))}
+                              alt={item.value}
                             />
                           </div>
                         ) : null}
@@ -71,6 +79,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                           className={cn('cursor-default opacity-60', {
                             'font-bold opacity-100': field.value === item.value,
                           })}
+                          style={{ textRendering: 'optimizeLegibility' }}
                         >
                           {t(item.translationId)}
                         </p>

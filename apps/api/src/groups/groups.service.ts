@@ -5,7 +5,7 @@ import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
-import { GROUPS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import { GROUPS_CACHE_TTL_MS, KEYCLOACK_SYNC_MS } from '@libs/common/constants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -145,7 +145,7 @@ class GroupsService {
     }));
   }
 
-  @Interval(GROUPS_CACHE_TTL_MS * 0.5)
+  @Interval(KEYCLOACK_SYNC_MS)
   async updateGroupsAndMembersInCache() {
     try {
       const groups = await GroupsService.fetchAllGroups(this.keycloakAccessToken);

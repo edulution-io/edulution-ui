@@ -40,13 +40,15 @@ const MailList = ({ items, className }: MailListProps) => {
             className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             <div className="flex w-full">
-              <span className="text-sm font-semibold">{item.from?.value[0].name || item.from?.value[0].address}</span>
+              <span className="break-all text-sm font-semibold">
+                {item.from?.value[0].name || item.from?.value[0].address}
+              </span>
               <div className="relative mx-2">
                 <p className="absolute h-2 w-2 rounded-full bg-ciLightGreen" />
               </div>
             </div>
-            <p className="text-sm">{item.subject}</p>
-            <p className="line-clamp-2 text-xs text-muted-foreground">{item.text?.substring(0, 300)}</p>
+            <p className="break-all text-sm">{item.subject}</p>
+            <p className="line-clamp-2 break-all text-xs text-muted-foreground">{item.text?.substring(0, 300)}</p>
             {renderLabelBadges(item)}
           </NavLink>
         ))}

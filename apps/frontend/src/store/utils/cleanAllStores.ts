@@ -52,6 +52,7 @@ const cleanAllStores = () => {
   useSidebarStore.getState().reset();
   useSurveyEditorFormStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
+  localStorage.removeItem('i18nextLng');
 };
 
 export default cleanAllStores;
