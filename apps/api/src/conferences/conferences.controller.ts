@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Sse, MessageEvent, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Put, Res, Sse } from '@nestjs/common';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
@@ -7,9 +7,10 @@ import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEnd
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()

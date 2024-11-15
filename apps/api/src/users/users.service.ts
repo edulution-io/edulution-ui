@@ -8,7 +8,6 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -53,21 +52,37 @@ class UsersService {
     return result.deletedCount > 0;
   }
 
-  async findAllCachedUsers(token: string): Promise<LDAPUser[]> {
-    const cachedUsers = await this.cacheManager.get<LDAPUser[]>('allUsers');
-    if (cachedUsers) {
-      return cachedUsers;
+  async findAllCachedUsers(token: string, school: string): Promise<Record<string, LDAPUser[]>> {
+    const cachedUsers = await this.cacheManager.get<Record<string, LDAPUser[]>>('allUsersBySchool');
+
+    if (cachedUsers && cachedUsers[school]) {
+      return { [school]: cachedUsers[school] };
     }
 
     const fetchedUsers = await GroupsService.fetchAllUsers(token);
 
-    await this.cacheManager.set('allUsers', fetchedUsers, DEFAULT_CACHE_TTL_MS);
-    return fetchedUsers;
+    const usersBySchool = fetchedUsers.reduce(
+      (acc, user) => {
+        const userSchool = user.attributes.school?.[0];
+        if (userSchool) {
+          if (!acc[userSchool]) {
+            acc[userSchool] = [];
+          }
+          acc[userSchool].push(user);
+        }
+        return acc;
+      },
+      {} as Record<string, LDAPUser[]>,
+    );
+
+    await this.cacheManager.set('allUsersBySchool', usersBySchool);
+    return { [school]: usersBySchool[school] || [] };
   }
 
-  async searchUsersByName(token: string, name: string): Promise<Partial<User>[]> {
+  async searchUsersByName(token: string, school: string, name: string): Promise<Partial<User>[]> {
     const searchString = name.toLowerCase();
-    const users = await this.findAllCachedUsers(token);
+    const usersBySchool = await this.findAllCachedUsers(token, school);
+    const users = usersBySchool[school] || [];
 
     return users
       .filter(
