@@ -87,7 +87,7 @@ const DesktopDeploymentPage: React.FC = () => {
 
   return (
     <>
-      <div className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen overflow-y-auto p-5 lg:pr-20">
+      <div className="bottom-8 left-4 right-0 top-3 h-screen md:left-64 md:right-[--sidebar-width]">
         <NativeAppHeader
           title={t('desktopdeployment.topic')}
           description={t('desktopdeployment.description')}

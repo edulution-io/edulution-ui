@@ -21,8 +21,6 @@ interface ConferenceDetailsDialogStore {
   joinConference: (meetingID: string) => Promise<void>;
   joinConferenceUrl: string;
   setJoinConferenceUrl: (url: string) => void;
-  isJoinedConferenceMinimized: boolean;
-  toggleIsJoinedConferenceMinimized: () => void;
   updateConference: (conference: Partial<ConferenceDto>) => Promise<void>;
 }
 
@@ -31,7 +29,6 @@ const initialState = {
   isLoading: false,
   error: null,
   joinConferenceUrl: '',
-  isJoinedConferenceMinimized: false,
 };
 
 const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set, get) => ({
@@ -57,9 +54,9 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
       set({ isLoading: false });
     }
   },
-  setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url, isJoinedConferenceMinimized: false }),
-  toggleIsJoinedConferenceMinimized: () =>
-    set((state) => ({ isJoinedConferenceMinimized: !state.isJoinedConferenceMinimized })),
+
+  setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url }),
+
   updateConference: async (conference) => {
     set({ isLoading: true });
     try {

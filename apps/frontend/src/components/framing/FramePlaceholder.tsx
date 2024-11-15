@@ -12,19 +12,19 @@ const FramePlaceholder: React.FC = () => {
   const rootPathName = getFromPathName(pathname, 1);
   const { appConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
-  const { setFrameLoaded, setActiveFrame } = useFrameStore();
+  const { setEmbeddedFrameLoaded, setActiveEmbeddedFrame } = useFrameStore();
 
   useEffect(() => {
     if (isAuthenticated) {
       const appName = findAppConfigByName(appConfigs, rootPathName)?.name;
       if (appName) {
-        setFrameLoaded(appName);
-        setActiveFrame(appName);
+        setEmbeddedFrameLoaded(appName);
+        setActiveEmbeddedFrame(appName);
       }
     }
 
     return () => {
-      setActiveFrame(null);
+      setActiveEmbeddedFrame(null);
     };
   }, [isAuthenticated, pathname]);
 
