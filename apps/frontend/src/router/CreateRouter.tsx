@@ -7,7 +7,12 @@ import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import { MAILS_PATH, SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import {
+  LANGUAGE_PATH,
+  MAILS_PATH,
+  SECURITY_PATH,
+  USER_SETTINGS_PATH,
+} from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
@@ -16,6 +21,7 @@ import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import TApps from '@libs/appconfig/types/appsType';
+import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -63,6 +69,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 <Route
                   path={MAILS_PATH}
                   element={<UserSettingsMailsPage />}
+                />
+                <Route
+                  path={LANGUAGE_PATH}
+                  element={<LanguageSettingsPage />}
                 />
               </Route>
               {isSuperAdmin ? (

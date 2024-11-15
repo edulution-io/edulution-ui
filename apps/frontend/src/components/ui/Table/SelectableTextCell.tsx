@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import Checkbox from '@/components/ui/Checkbox';
 import { Icon } from '@radix-ui/react-select';
 import { Row } from '@tanstack/react-table';
@@ -10,12 +10,22 @@ interface SelectableTextCellProps<TData> {
   text: string;
   onClick?: () => void;
   className?: string;
+  isFirstColumn?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<any>>(
-  ({ icon, row, text, onClick, className }, ref) => {
+  ({ icon, row, text, onClick, className, isFirstColumn = false }, ref) => {
     const isChecked = row?.getIsSelected();
+    const checkboxRef = useRef<HTMLButtonElement>(null);
+    const [checkboxWidth, setCheckboxWidth] = useState(0);
+
+    useEffect(() => {
+      if (checkboxRef.current) {
+        const width = checkboxRef.current.offsetWidth;
+        setCheckboxWidth(width);
+      }
+    }, []);
 
     return (
       <div
@@ -25,13 +35,14 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         tabIndex={0}
         role="button"
         className={cn(
-          'flex items-center justify-start space-x-2 py-0',
+          `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} py-0`,
           onClick ? 'cursor-pointer' : 'cursor-default',
           className,
         )}
       >
         {row ? (
           <Checkbox
+            ref={checkboxRef}
             checked={isChecked}
             onClick={(e) => e.stopPropagation()}
             onCheckedChange={(checked) => {
@@ -40,10 +51,17 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
             aria-label="Select row"
           />
         ) : (
-          <div className="mx-2 my-5" />
+          <div className="my-5" />
         )}
         {icon ? <Icon className="mb-3 ml-2 mr-2 mt-3">{icon}</Icon> : null}
-        <span className="text-md truncate font-medium">{text}</span>
+        <span
+          className="text-md truncate font-medium"
+          style={{
+            marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
+          }}
+        >
+          {text}
+        </span>
       </div>
     );
   },

@@ -6,6 +6,9 @@ import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
 
 interface SurveyTableProps {
   title: string;
@@ -81,12 +84,20 @@ const SurveyTable = (props: SurveyTableProps) => {
     [surveys, selectedSurvey],
   );
 
+  const pageBarsHeight = useElementHeight([SURVEYS_PAGE_TABLE_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) - 10;
+
   return (
-    <div className="w-50 m-4 flex-1 pl-3 pr-3.5">
+    <div
+      className="m-4 w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
+      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+    >
       <h4>{title}</h4>
       <Table>
-        <TableHeader>
-          <TableRow className="text-background">
+        <TableHeader
+          id={SURVEYS_PAGE_TABLE_HEADER_ID}
+          className="text-white"
+        >
+          <TableRow>
             <TableHead
               key="tableHead-checkbox"
               className="w-20px"

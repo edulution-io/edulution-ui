@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.0.37",
+  "version": "1.0.43",
   "scripts": {
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -91,6 +91,7 @@
     "he": "^1.2.0",
     "helmet": "^7.1.0",
     "i18next": "^23.8.2",
+    "i18next-browser-languagedetector": "^8.0.0",
     "imapflow": "^1.0.164",
     "input-otp": "^1.2.4",
     "jszip": "^3.10.1",
@@ -115,7 +116,7 @@
     "react-icons": "^5.0.1",
     "react-oidc-context": "^3.1.0",
     "react-player": "^2.15.0",
-    "react-resizable-panels": "^2.0.12",
+    "react-resizable-panels": "^2.1.6",
     "react-router-dom": "^6.22.0",
     "redis": "^4.6.15",
     "reflect-metadata": "^0.1.14",
