@@ -17,7 +17,7 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
 import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
@@ -36,6 +36,8 @@ const UserSettingsMailsPage: React.FC = () => {
   const { user } = useUserStore();
   const [option, setOption] = useState('');
   const form = useForm();
+
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
 
   useEffect(() => {
     void getExternalMailProviderConfig();
@@ -108,13 +110,8 @@ const UserSettingsMailsPage: React.FC = () => {
     />
   );
 
-  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
-
   return (
-    <div
-      className="bottom-8 left-4 right-0 top-3 h-screen overflow-auto scrollbar-thin md:left-64 md:right-[--sidebar-width]"
-      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-    >
+    <div className="bottom-8 left-4 right-0 top-3 h-screen md:left-64 md:right-[--sidebar-width]">
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}
@@ -123,7 +120,10 @@ const UserSettingsMailsPage: React.FC = () => {
         />
         <StateLoader isLoading={isEditSyncJobLoading} />
       </div>
-      <div className="space-y-4 p-4 ">
+      <div
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
         <h3>{t('mail.importer.title')}</h3>
         <DropdownMenu
           options={externalMailProviderConfig}
@@ -140,10 +140,11 @@ const UserSettingsMailsPage: React.FC = () => {
             {renderFormField('password', t('common.password'), 'password')}
           </form>
         </Form>
-      </div>
-      <div className="px-4">
-        <h3 className="pt-5">{t('mail.importer.syncJobsTable')}</h3>
-        <MailImporterTable />
+
+        <div className="px-4">
+          <h3 className="pt-5">{t('mail.importer.syncJobsTable')}</h3>
+          <MailImporterTable />
+        </div>
       </div>
       <FloatingButtonsBar config={config} />
     </div>

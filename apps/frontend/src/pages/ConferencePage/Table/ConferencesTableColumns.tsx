@@ -73,6 +73,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           icon={row.original.isRunning ? <MdLogin /> : undefined}
           text={row.original.name}
           row={user?.username === row.original.creator?.username ? row : undefined}
+          isFirstColumn
         />
       );
     },
