@@ -10,7 +10,6 @@ import useUserStore from '@/store/UserStore/UserStore';
 
 const ConferencesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { t } = useTranslation();
   const { user } = useUserStore();
   const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
 
@@ -37,6 +36,7 @@ const ConferencesTable = () => {
       getRowId={(originalRow) => originalRow.meetingID}
       applicationName={appName}
       additionalScrollContainerOffset={20}
+      enableRowSelection={(row) => row.original.creator.username === user?.username}
       scrollContainerOffsetElementIds={{
         tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
         others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
