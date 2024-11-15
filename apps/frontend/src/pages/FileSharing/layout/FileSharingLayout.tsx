@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
-import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
@@ -16,7 +15,7 @@ interface FileSharingLayoutProps {
   files: DirectoryFileDTO[];
 }
 
-const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
+const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
   const isMobileView = useIsMobileView();
   const { setShowEditor, showEditor } = useFileEditorStore();
   const { currentlyEditingFile } = useFileSharingStore();
@@ -43,10 +42,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   return (
     <div className="flex flex-row">
       <div className={shouldShowEditor ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
-        <FileSharingTable
-          columns={FileSharingTableColumns}
-          data={files}
-        />
+        <FileSharingTable />
       </div>
       {shouldShowEditor && (
         <div
