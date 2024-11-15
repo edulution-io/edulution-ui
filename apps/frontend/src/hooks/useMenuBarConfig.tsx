@@ -16,6 +16,7 @@ import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import { toast } from 'sonner';
 
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
@@ -35,6 +36,15 @@ const useMenuBarConfig = (): MenuBarEntry => {
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
     if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
+
+    const defaultReturnMenuBarEntry = {
+      menuItems: [],
+      title: '',
+      icon: '',
+      color: '',
+      disabled: false,
+      appName: APPS.NONE,
+    };
 
     switch (rootPathName as TApps) {
       case APPS.FILE_SHARING: {
@@ -60,16 +70,11 @@ const useMenuBarConfig = (): MenuBarEntry => {
       }
       default: {
         if (!rootPathName) {
-          return {
-            menuItems: [],
-            title: '',
-            icon: '',
-            color: '',
-            disabled: false,
-            appName: APPS.NONE,
-          };
+          return defaultReturnMenuBarEntry;
         }
-        throw new Error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        console.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        toast.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        return defaultReturnMenuBarEntry;
       }
     }
   };
