@@ -82,7 +82,7 @@
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "rowsSelected": "{{selected}} of {{total}} jobs selected",
       "mailAddress": "E-Mail Address"
     }
   },
@@ -671,7 +671,6 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} of {{total}} row(s) selected",
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {

@@ -13,11 +13,11 @@ import {
   CLASS_MANAGEMENT_PROJECTS_PATH,
 } from '@libs/classManagement/constants/classManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
-import MenuBarEntryProps from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 
 const useClassManagementMenu = () => {
   const navigate = useNavigate();
-  const menuBar = (): MenuBarEntryProps => ({
+  const menuBar = (): MenuBarEntry => ({
     title: 'classmanagement.title',
     appName: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,

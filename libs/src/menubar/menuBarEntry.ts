@@ -1,7 +1,7 @@
 import TApps from '@libs/appconfig/types/appsType';
 import MenuItem from '@libs/menubar/menuItem';
 
-interface MenuBarEntryProps {
+interface MenuBarEntry {
   menuItems: MenuItem[];
   title: string;
   disabled?: boolean;
@@ -10,4 +10,4 @@ interface MenuBarEntryProps {
   appName: TApps;
 }
 
-export default MenuBarEntryProps;
+export default MenuBarEntry;
