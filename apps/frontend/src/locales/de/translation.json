@@ -83,6 +83,7 @@
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "rowSelected": "{{selected}} Job von {{total}} Jobs ausgewählt",
       "mailAddress": "E-Mail-Adresse"
     }
   },
@@ -126,7 +127,7 @@
     "public": "Öffentlich",
     "private": "Privat",
     "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
-    "rowSelected": "{{selected}} von {{total}} Konferenz ausgewählt",
+    "rowSelected": "{{selected}} Konferenz von {{total}} Konferenzen ausgewählt",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -156,7 +157,7 @@
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
-    "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
+    "rowSelected": "{{selected}} Datei von {{total}} Dateien ausgewählt",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",

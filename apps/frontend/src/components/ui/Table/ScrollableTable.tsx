@@ -29,7 +29,6 @@ interface DataTableProps<TData> {
   additionalScrollContainerOffset?: number;
   scrollContainerOffsetElementIds?: {
     headerId?: string;
-    loadingIndicatorId?: string;
     selectedRowsMessageId?: string;
     tableHeaderId?: string;
     others?: string[];
