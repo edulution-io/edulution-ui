@@ -1,118 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  OnChangeFn,
-  RowSelectionState,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import React, { useState } from 'react';
+import { OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { useTranslation } from 'react-i18next';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
-
-const FileSharingTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
+const FileSharingTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const setSelectedItems = useFileSharingStore((state) => state.setSelectedItems);
-  const { t } = useTranslation();
+  const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
         ? updaterOrValue(useFileSharingStore.getState().selectedRows)
         : updaterOrValue;
-    useFileSharingStore.getState().setSelectedRows(newValue);
+    setSelectedRows(newValue);
+    const selectedItemData = Object.keys(newValue)
+      .filter((key) => newValue[key])
+      .map((rowId) => files.find((file) => file.filename === rowId))
+      .filter(Boolean) as DirectoryFileDTO[];
+    setSelectedItems(selectedItemData);
   };
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
-    state: {
-      sorting,
-      rowSelection: useFileSharingStore((state) => state.selectedRows),
-    },
-  });
-
-  useEffect(() => {
-    const selectedItemFilenames = table
-      .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original as DirectoryFileDTO);
-    setSelectedItems(selectedItemFilenames);
-  }, [table.getFilteredSelectedRowModel().rows]);
+  const { appName } = useFileSharingMenuConfig();
 
   return (
-    <>
-      {table.getFilteredSelectedRowModel().rows.length > 0 && (
-        <div className="flex-1 text-sm text-background">
-          {t('table.rowsSelected', {
-            selected: table.getFilteredSelectedRowModel().rows.length,
-            total: table.getFilteredRowModel().rows.length,
-          })}
-        </div>
-      )}
-
-      <div className=" w-full flex-1 ">
-        <ScrollArea className="max-h-[75vh] overflow-auto scrollbar-thin">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="text-background"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    className="cursor-pointer"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-background"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-16 text-center"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </div>
-    </>
+    <ScrollableTable
+      columns={FileSharingTableColumns}
+      data={files}
+      onRowSelectionChange={handleRowSelectionChange}
+      isLoading={isLoading}
+      sorting={sorting}
+      setSorting={setSorting}
+      selectedRows={selectedRows}
+      getRowId={(row) => row.filename}
+      applicationName={appName}
+    />
   );
 };
 
