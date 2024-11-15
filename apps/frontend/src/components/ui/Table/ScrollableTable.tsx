@@ -77,9 +77,7 @@ const ScrollableTable = <TData,>({
   });
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
-
-  const filteredRows = table.getFilteredRowModel().rows;
-  const filteredRowCount = filteredRows.length;
+  const filteredRowCount = table.getFilteredRowModel().rows.length;
 
   return (
     <>
