@@ -78,6 +78,9 @@ const ScrollableTable = <TData,>({
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 
+  const filteredRows = table.getFilteredRowModel().rows;
+  const filteredRowCount = filteredRows.length;
+
   return (
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
@@ -88,9 +91,9 @@ const ScrollableTable = <TData,>({
           className="flex-1 text-sm text-muted-foreground text-white"
         >
           {selectedRowsCount > 0 ? (
-            t(`${applicationName}.${selectedRowsCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
               selected: selectedRowsCount,
-              total: table.getFilteredRowModel().rows.length,
+              total: filteredRowCount,
             })
           ) : (
             <>&nbsp;</>
