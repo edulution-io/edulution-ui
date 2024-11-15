@@ -83,6 +83,7 @@
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} of {{total}} jobs selected",
+      "rowSelected": "{{selected}} of {{total}} job selected",
       "mailAddress": "E-Mail Address"
     }
   },

@@ -29,7 +29,6 @@ interface DataTableProps<TData> {
   additionalScrollContainerOffset?: number;
   scrollContainerOffsetElementIds?: {
     headerId?: string;
-    loadingIndicatorId?: string;
     selectedRowsMessageId?: string;
     tableHeaderId?: string;
     others?: string[];
@@ -82,6 +81,7 @@ const ScrollableTable = <TData,>({
   });
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
+  const filteredRowCount = table.getFilteredRowModel().rows.length;
 
   return (
     <>
@@ -93,9 +93,9 @@ const ScrollableTable = <TData,>({
           className="flex-1 text-sm text-muted-foreground text-white"
         >
           {selectedRowsCount > 0 ? (
-            t(`${applicationName}.${selectedRowsCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
               selected: selectedRowsCount,
-              total: table.getFilteredRowModel().rows.length,
+              total: filteredRowCount,
             })
           ) : (
             <>&nbsp;</>
