@@ -8,13 +8,8 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
-
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-}
+import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
+import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -25,14 +20,14 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
-  const { fetchDirs, fetchFiles, files } = useFileSharingStore();
+  const { fetchDialogDirs, fetchDialogFiles, dialogShownFiles } = useFileSharingStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => files.find((file) => file.filename === rowId))
+      .map((rowId) => dialogShownFiles.find((file) => file.filename === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
 
     setMoveOrCopyItemToPath(selectedItemData[0]);
@@ -40,16 +35,16 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   useEffect(() => {
     if (showAllFiles && !pathToFetch) {
-      void fetchFiles(currentPath);
+      void fetchDialogFiles(currentPath);
     }
     if (pathToFetch && showAllFiles) {
       if (currentPath.includes(pathToFetch)) {
-        void fetchFiles(currentPath);
+        void fetchDialogFiles(currentPath);
       } else {
-        void fetchFiles(pathToFetch);
+        void fetchDialogFiles(pathToFetch);
       }
     } else {
-      void fetchDirs(currentPath);
+      void fetchDialogDirs(currentPath);
     }
   }, [currentPath]);
 
@@ -63,6 +58,14 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     return segements?.slice(0, index) || [];
   };
 
+  const onFilenameClick = (filenamePath: string) => {
+    setCurrentPath(filenamePath);
+  };
+
+  const selectedFileBoxId = 'selectedFileBoxId';
+
+  const columns = FileSharingTableColumns(onFilenameClick, [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME]);
+
   return (
     <>
       <DirectoryBreadcrumb
@@ -71,24 +74,34 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         showHome={showHome}
         hiddenSegments={getHiddenSegments()}
       />
-      <ScrollableTable
-        columns={FileSharingTableColumns}
-        data={files}
-        sorting={[]}
-        setSorting={() => {}}
-        selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
-        onRowSelectionChange={handleRowSelectionChange}
-        applicationName={APPS.FILE_SHARING}
-        getRowId={(row) => row.filename}
-        showHeader={false}
-        additionalScrollContainerOffset={20}
-        textColorClass="text-black"
-      />
-      {moveOrCopyItemToPath && showSelectedFile && (
-        <p className="pt-10 text-foreground">
-          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.basename)}
-        </p>
-      )}
+      <div className="h-[60vh]">
+        <ScrollableTable
+          columns={columns}
+          data={dialogShownFiles}
+          sorting={[]}
+          setSorting={() => {}}
+          selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+          onRowSelectionChange={handleRowSelectionChange}
+          applicationName={APPS.FILE_SHARING}
+          getRowId={(row) => row.filename}
+          showHeader={false}
+          textColorClass="text-black"
+          scrollContainerOffsetElementIds={{ others: [selectedFileBoxId] }}
+          additionalScrollContainerOffset={350}
+        />
+      </div>
+      <div
+        className="sticky bottom-0 text-sm text-foreground"
+        id={selectedFileBoxId}
+      >
+        {moveOrCopyItemToPath?.basename && showSelectedFile ? (
+          <p className="bg-gray-100 p-4">
+            {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
+          </p>
+        ) : (
+          <p className="p-4">&nbsp;</p>
+        )}
+      </div>
     </>
   );
 };

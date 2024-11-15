@@ -26,7 +26,7 @@ const FileSharingTable = () => {
 
   return (
     <ScrollableTable
-      columns={FileSharingTableColumns}
+      columns={FileSharingTableColumns()}
       data={files}
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}

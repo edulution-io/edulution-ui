@@ -1,4 +1,3 @@
-/* eslint-disable react/require-default-props */
 import React, { FC } from 'react';
 import {
   Sheet,
@@ -18,7 +17,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/Dialog';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import useElementHeight from '@/hooks/useElementHeight';
 import { LAYOUT_OPTIONS, LayoutOption } from '@libs/ui/constants/layout';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ interface AdaptiveDialogProps {
   layout?: LayoutOption;
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  additionalScrollContainerOffset?: number;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -44,8 +46,16 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   layout = LAYOUT_OPTIONS.ONE_COLUMN,
   mobileContentClassName,
   desktopContentClassName,
+  additionalScrollContainerOffset = 0,
 }) => {
   const isMobileView = useIsMobileView();
+
+  const headerId = 'dialog-header';
+  const footerId = 'dialog-footer';
+
+  const pageBarsHeight = useElementHeight([headerId, footerId]) + additionalScrollContainerOffset;
+
+  const bodyContent = <div style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}>{body}</div>;
 
   return isMobileView ? (
     <Sheet
@@ -58,11 +68,17 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         variant={variant}
         className={mobileContentClassName}
       >
-        <SheetHeader variant={variant}>
+        <SheetHeader
+          variant={variant}
+          id={headerId}
+        >
           <SheetTitle>{title}</SheetTitle>
+          <VisuallyHidden>
+            <SheetTitle>{title}</SheetTitle>
+          </VisuallyHidden>
         </SheetHeader>
-        {body}
-        <SheetFooter>{footer}</SheetFooter>
+        {bodyContent}
+        <SheetFooter id={footerId}>{footer}</SheetFooter>
         <SheetDescription aria-disabled />
       </SheetContent>
     </Sheet>
@@ -77,8 +93,16 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         className={desktopContentClassName}
       >
         <DialogTitle>{title}</DialogTitle>
-        {body}
-        <DialogFooter layout={layout}>{footer}</DialogFooter>
+        <VisuallyHidden>
+          <DialogTitle>{title}</DialogTitle>
+        </VisuallyHidden>
+        {bodyContent}
+        <DialogFooter
+          layout={layout}
+          id={footerId}
+        >
+          {footer}
+        </DialogFooter>
         <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>

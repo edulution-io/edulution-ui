@@ -15,6 +15,8 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
+  dialogShownFiles: DirectoryFileDTO[];
+  dialogShownDirs: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
   currentlyEditingFile: DirectoryFileDTO | null;
@@ -28,8 +30,10 @@ type UseFileSharingStore = {
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (path?: string) => Promise<void>;
+  fetchDialogFiles: (path?: string) => Promise<void>;
   fetchMountPoints: () => Promise<void>;
   fetchDirs: (path: string) => Promise<void>;
+  fetchDialogDirs: (path: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
@@ -37,6 +41,7 @@ type UseFileSharingStore = {
   downloadLinkURL: string;
   publicDownloadLink: string | null;
   isError: boolean;
+  setDialogShownFiles: (files: DirectoryFileDTO[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
@@ -47,6 +52,8 @@ type UseFileSharingStore = {
 
 const initialState = {
   files: [],
+  dialogShownFiles: [],
+  dialogShownDirs: [],
   selectedItems: [],
   currentPath: `/`,
   pathToRestoreSession: `/`,
@@ -114,6 +121,10 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ files });
       },
 
+      setDialogShownFiles: (files: DirectoryFileDTO[]) => {
+        set({ dialogShownFiles: files });
+      },
+
       setMountPoints: (mountPoints: DirectoryFileDTO[]) => {
         set({ mountPoints });
       },
@@ -135,6 +146,35 @@ const useFileSharingStore = create<UseFileSharingStore>(
           set({
             currentPath: path,
             files: directoryFiles.data,
+            selectedItems: [],
+            selectedRows: {},
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      fetchDialogDirs: async (path: string) => {
+        try {
+          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
+            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
+          );
+          set({ dialogShownDirs: directoryFiles.data });
+        } catch (error) {
+          handleApiError(error, set);
+        }
+      },
+
+      fetchDialogFiles: async (path: string = '/') => {
+        try {
+          set({ isLoading: true });
+          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
+            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
+          );
+          set({
+            dialogShownFiles: directoryFiles.data,
             selectedItems: [],
             selectedRows: {},
           });
