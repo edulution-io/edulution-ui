@@ -1,10 +1,12 @@
 import { DesktopDeploymentIcon } from '@/assets/icons';
-import { MenuBarEntryProps } from '@/datatypes/types';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import APPS from '@libs/appconfig/constants/apps';
 
-const DESKTOP_DEPLOYMENT_MENUBAR_CONFIG: MenuBarEntryProps = {
+const DESKTOP_DEPLOYMENT_MENUBAR_CONFIG: MenuBarEntry = {
   title: 'desktopdeployment.title',
   icon: DesktopDeploymentIcon,
   disabled: true,
+  appName: APPS.DESKTOP_DEPLOYMENT,
   color: 'hover:bg-ciLightBlue',
   menuItems: [],
 };

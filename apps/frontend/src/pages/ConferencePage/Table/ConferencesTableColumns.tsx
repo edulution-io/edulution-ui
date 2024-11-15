@@ -71,6 +71,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       return (
         <SelectableTextCell
           onClick={onClick}
+          isFirstColumn
           icon={isRunning ? <MdLogin /> : undefined}
           text={name}
           textOnHover={isRunning ? t('common.join') : ''}
