@@ -9,25 +9,41 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/joinButton';
+import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/startButton';
+import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
 
 const ConferencesFloatingButtons: React.FC = () => {
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
-  const { joinConference, setSelectedConference } = useConferenceDetailsDialogStore();
-  const { selectedRows, getConferences, setIsDeleteConferencesDialogOpen, conferences } = useConferenceStore();
+  const { joinConference, setSelectedConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+  const { selectedRows, toggleConferenceRunningState, getConferences, setIsDeleteConferencesDialogOpen, conferences } =
+    useConferenceStore();
   const selectedConferenceIds = Object.keys(selectedRows);
 
   const firstSelectedConference = conferences.find((c) => c.meetingID === selectedConferenceIds[0]) || null;
+  const isOnlyOneConferenceSelected = selectedConferenceIds.length === 1;
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      EditButton(() => setSelectedConference(firstSelectedConference), selectedConferenceIds.length === 1),
-      JoinButton(
-        () => {
-          void joinConference(selectedConferenceIds[0]);
-        },
-        !!(firstSelectedConference?.isRunning && selectedConferenceIds.length === 1),
-      ),
-      DeleteButton(() => setIsDeleteConferencesDialogOpen(true), selectedConferenceIds.length > 0),
+      EditButton(() => setSelectedConference(firstSelectedConference), isOnlyOneConferenceSelected),
+      StartButton(() => {
+        if (firstSelectedConference) {
+          void toggleConferenceRunningState(firstSelectedConference.meetingID);
+          void joinConference(firstSelectedConference.meetingID);
+        }
+      }, isOnlyOneConferenceSelected && !firstSelectedConference?.isRunning),
+      StopButton(() => {
+        if (firstSelectedConference) {
+          void toggleConferenceRunningState(firstSelectedConference.meetingID);
+          setJoinConferenceUrl('');
+        }
+      }, isOnlyOneConferenceSelected && firstSelectedConference?.isRunning),
+      JoinButton(() => {
+        void joinConference(selectedConferenceIds[0]);
+      }, isOnlyOneConferenceSelected && firstSelectedConference?.isRunning),
+      DeleteButton(() => {
+        setIsDeleteConferencesDialogOpen(true);
+        setJoinConferenceUrl('');
+      }, selectedConferenceIds.length > 0),
       CreateButton(openCreateConferenceDialog),
       ReloadButton(() => {
         void getConferences().catch((e) => console.error(e));
