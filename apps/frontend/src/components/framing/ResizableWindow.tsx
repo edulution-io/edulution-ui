@@ -31,10 +31,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   const [prevPosition, setPrevPosition] = useState(currentPosition);
 
   const isMinimized = minimizedWindowedFrames.includes(titleTranslationId);
+  const defaultMinimizedHeight = 29;
 
   const calculateMaximizedWidth = () => {
     if (isMobileView) return `${window.innerWidth}px`;
-
     const sidebarWidth = parseFloat(
       getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width') || '0',
     );
@@ -49,14 +49,32 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     if (isMaximized && !isMinimized) {
       setCurrentSize({ width: calculateMaximizedWidth(), height: `${windowSize.height}px` });
     }
-  }, [windowSize, isMaximized, isMinimized]);
+  }, [windowSize, isMaximized, isMinimized, isMobileView]);
+
+  function adjustPositionAndSizeForMinimizedState() {
+    const minimizedWidth = Math.min(300, window.innerWidth * 0.333);
+    const maxVisibleY = window.innerHeight - defaultMinimizedHeight;
+    const maxVisibleX = window.innerWidth - minimizedWidth;
+
+    const adjustedX = Math.min(currentPosition.x, maxVisibleX);
+    const adjustedY = Math.min(currentPosition.y, maxVisibleY);
+
+    setCurrentSize({ width: `${minimizedWidth}px`, height: `${defaultMinimizedHeight}px` });
+    setCurrentPosition({ x: adjustedX, y: adjustedY });
+  }
+
+  useEffect(() => {
+    if (isMinimized) {
+      adjustPositionAndSizeForMinimizedState();
+    }
+  }, [isMinimized, windowSize, currentPosition.x, currentPosition.y]);
 
   useEffect(() => {
     if (isMinimized) {
       const minimizedPositionIndex = minimizedWindowedFrames.indexOf(titleTranslationId);
       const calculatedPosition = minimizedPositionIndex * 300;
 
-      setCurrentPosition({ x: calculatedPosition, y: window.innerHeight - 29 });
+      setCurrentPosition({ x: calculatedPosition, y: window.innerHeight - defaultMinimizedHeight });
     }
   }, [minimizedWindowedFrames, isMinimized, titleTranslationId]);
 
@@ -66,9 +84,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   };
 
   const minimizeWindow = () => {
+    const minimizedWidth = Math.min(300, window.innerWidth * 0.3);
     setWindowedFrameMinimized(titleTranslationId, true);
     savePreviousValues();
-    setCurrentSize({ width: '300px', height: '29px' });
+    setCurrentSize({ width: `${minimizedWidth}px`, height: `${defaultMinimizedHeight}px` });
     setWindowedFrameOpen(titleTranslationId, false);
   };
 
@@ -95,6 +114,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   return createPortal(
     <Rnd
+      minHeight={isMinimized ? defaultMinimizedHeight : 300}
+      minWidth={isMinimized ? '33%' : 300}
       size={{ width: currentSize.width, height: currentSize.height }}
       position={{ x: currentPosition.x, y: currentPosition.y }}
       onDragStop={(_e, d) => setCurrentPosition({ x: d.x, y: d.y })}
@@ -110,7 +131,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         'transition-transform active:transition-none': isMinimized,
       })}
       bounds="window"
-      disableDragging={isMaximized && !isMinimized}
+      disableDragging={(isMaximized && !isMinimized) || (isMobileView && isMinimized)}
       enableResizing={!isMaximized}
       style={{ zIndex: 999 + openWindowedFrames.indexOf(titleTranslationId) }}
     >
@@ -118,7 +139,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         role="button"
         tabIndex={0}
         className={cn('flex items-center justify-between bg-gray-900 p-2 text-white', {
-          'cursor-move p-1 hover:bg-gray-800': isMinimized,
+          'cursor-default p-1': isMinimized,
+          'cursor-move hover:bg-gray-800': isMinimized && !isMobileView,
         })}
         onClick={() => setWindowedFrameOpen(titleTranslationId, true)}
         onKeyDown={(e) => {
@@ -135,7 +157,12 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
             <button
               type="button"
               onClick={minimizeWindow}
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-sm hover:bg-gray-600"
+              className={cn(
+                'flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-sm hover:bg-gray-600',
+                {
+                  'w-16': isMobileView,
+                },
+              )}
             >
               <div className="mt-[-8px]">_</div>
             </button>
@@ -147,7 +174,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
               className={cn(
                 'flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-sm hover:bg-gray-600',
                 {
-                  'h-5 w-5': isMinimized,
+                  'w-16': isMobileView,
+                  'h-5 w-8': isMinimized,
                 },
               )}
             >
@@ -156,9 +184,14 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
           )}
           <button
             type="button"
-            onClick={handleClose}
+            onClick={() => {
+              handleClose();
+              setWindowedFrameMinimized(titleTranslationId, false);
+              setWindowedFrameOpen(titleTranslationId, false);
+            }}
             className={cn('flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-lg hover:bg-red-500', {
-              'h-5 w-5 text-sm': isMinimized,
+              'w-16': isMobileView,
+              'h-5 w-8 text-sm': isMinimized,
             })}
           >
             <div>×</div>
