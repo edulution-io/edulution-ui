@@ -1,4 +1,3 @@
-import { MenuBarEntryProps } from '@/datatypes/types';
 import {
   ClassManagementIcon,
   CreateProjectIcon,
@@ -13,11 +12,14 @@ import {
   CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH,
   CLASS_MANAGEMENT_PROJECTS_PATH,
 } from '@libs/classManagement/constants/classManagementPaths';
+import APPS from '@libs/appconfig/constants/apps';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 
 const useClassManagementMenu = () => {
   const navigate = useNavigate();
-  const menuBar = (): MenuBarEntryProps => ({
+  const menuBar = (): MenuBarEntry => ({
     title: 'classmanagement.title',
+    appName: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
