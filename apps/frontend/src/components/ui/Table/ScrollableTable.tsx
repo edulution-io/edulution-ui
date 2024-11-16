@@ -16,8 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 
-interface DataTableProps<TData> {
-  columns: ColumnDef<TData, unknown>[];
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   selectedRows?: RowSelectionState;
@@ -35,7 +35,7 @@ interface DataTableProps<TData> {
   };
 }
 
-const ScrollableTable = <TData,>({
+const ScrollableTable = <TData, TValue>({
   columns,
   data,
   onRowSelectionChange,
@@ -47,7 +47,7 @@ const ScrollableTable = <TData,>({
   applicationName,
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
-}: DataTableProps<TData>) => {
+}: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;

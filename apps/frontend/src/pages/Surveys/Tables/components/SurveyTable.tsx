@@ -5,7 +5,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import ScrollableTableTemp from '@/pages/Surveys/Tables/components/ScrollableTableTemp';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
 interface MongoId {
   id: mongoose.Types.ObjectId;
@@ -33,7 +33,7 @@ const SurveyTable = <TData extends MongoId, TValue>({
 
   return (
     // TODO: Replace with new component after merging: 243 Make table header sticky #248 (https://github.com/edulution-io/edulution-ui/pull/248/files) was merged
-    <ScrollableTableTemp
+    <ScrollableTable
       columns={columns}
       data={data}
       onRowSelectionChange={handleRowSelectionChange}
