@@ -32,7 +32,6 @@ const SurveyTable = <TData extends MongoId, TValue>({
   };
 
   return (
-    // TODO: Replace with new component after merging: 243 Make table header sticky #248 (https://github.com/edulution-io/edulution-ui/pull/248/files) was merged
     <ScrollableTable
       columns={columns}
       data={data}
