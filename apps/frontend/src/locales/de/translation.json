@@ -84,6 +84,7 @@
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse"
     }
   },
@@ -126,7 +127,8 @@
     "privacyStatus": "Zutritt",
     "public": "Öffentlich",
     "private": "Privat",
-    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Konferenz ausgewählt",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -155,6 +157,8 @@
     "saveFile": "Datei speichern",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
+    "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -481,7 +485,8 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "UnsupportedAppConfiguration": "Nicht unterstützte App-Konfiguration für rootPathName: {{rootPathName}}"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -690,7 +695,6 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
