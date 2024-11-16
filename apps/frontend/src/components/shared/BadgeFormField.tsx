@@ -31,28 +31,28 @@ const BadgeFormField = <T extends FieldValues>({
   const [newLabel, setNewLabel] = React.useState<string>('');
 
   const handleRemoveBadge = (
-    currentBadges: string[],
-    badgeStrToRemove: string,
-    updateBadges?: (badges: string[]) => void,
+    currentBadgeLabels: string[],
+    badgeLabelToRemove: string,
+    updateBadgeLabels?: (badges: string[]) => void,
   ) => {
-    if (currentBadges.length === 0 || !badgeStrToRemove || !updateBadges) return;
-    const newList = currentBadges.filter((mp) => mp !== badgeStrToRemove);
-    updateBadges(newList);
+    if (currentBadgeLabels.length === 0 || !badgeLabelToRemove || !updateBadgeLabels) return;
+    const newList = currentBadgeLabels.filter((mp) => mp !== badgeLabelToRemove);
+    updateBadgeLabels(newList);
   };
 
   const handleAddBadge = (
-    currentBadges: string[],
-    badgeStrToAdd: string,
-    updateBadges?: (badges: string[]) => void,
+    currentBadgeLabels: string[],
+    badgeLabelToAdd: string,
+    updateBadgeLabels?: (badges: string[]) => void,
   ) => {
-    if (currentBadges.length === 0 || !badgeStrToAdd || !updateBadges) return;
-    const alreadyExists = currentBadges.includes(badgeStrToAdd);
-    if (alreadyExists) {
+    if (currentBadgeLabels.length === 0 || !badgeLabelToAdd || !updateBadgeLabels) return;
+    const badgeAlreadyExists = currentBadgeLabels.includes(badgeLabelToAdd);
+    if (badgeAlreadyExists) {
       toast.error(t('usersettings.details.badgeAlreadyExists'));
       return;
     }
-    const updatedBadges = [...currentBadges, badgeStrToAdd];
-    updateBadges(updatedBadges);
+    const updatedBadges = [...currentBadgeLabels, badgeLabelToAdd];
+    updateBadgeLabels(updatedBadges);
     setNewLabel('');
   };
 
