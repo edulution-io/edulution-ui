@@ -99,6 +99,8 @@
     "errors": {
       "MeetingNotFound": "A meeting with this ID was not found",
       "BbbServerNotReachable": "The external BBB is not reachable",
+      "CouldNotStartConference": "The conference could not be started",
+      "CouldNotStopConference": "The conference could not be stopped",
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
       "YouAreNotTheCreator": "You are not the creator of the conference",
