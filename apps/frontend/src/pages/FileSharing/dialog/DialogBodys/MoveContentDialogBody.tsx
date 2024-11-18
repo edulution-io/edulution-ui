@@ -62,47 +62,48 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     setCurrentPath(filenamePath);
   };
 
-  const selectedFileBoxId = 'selectedFileBoxId';
+  const footer = (
+    <div className="bottom-0 bg-gray-100 p-4 text-sm text-foreground">
+      {moveOrCopyItemToPath?.basename && showSelectedFile ? (
+        <p className="bg-gray-100">
+          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
+        </p>
+      ) : (
+        <p className="bg-gray-100">
+          <p>Select a File </p>
+        </p>
+      )}
+    </div>
+  );
 
   const columns = FileSharingTableColumns(onFilenameClick, [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME]);
 
   return (
-    <>
-      <DirectoryBreadcrumb
-        path={currentPath}
-        onNavigate={handleBreadcrumbNavigate}
-        showHome={showHome}
-        hiddenSegments={getHiddenSegments()}
-      />
-      <div className="h-[60vh]">
-        <ScrollableTable
-          columns={columns}
-          data={dialogShownFiles}
-          sorting={[]}
-          setSorting={() => {}}
-          selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
-          onRowSelectionChange={handleRowSelectionChange}
-          applicationName={APPS.FILE_SHARING}
-          getRowId={(row) => row.filename}
-          showHeader={false}
-          textColorClass="text-black"
-          scrollContainerOffsetElementIds={{ others: [selectedFileBoxId] }}
-          additionalScrollContainerOffset={350}
+    <div className="flex h-[60vh] flex-col text-black">
+      <div className="pb-2">
+        <DirectoryBreadcrumb
+          path={currentPath}
+          onNavigate={handleBreadcrumbNavigate}
+          showHome={showHome}
+          hiddenSegments={getHiddenSegments()}
+          showTitle={false}
         />
       </div>
-      <div
-        className="sticky bottom-0 text-sm text-foreground"
-        id={selectedFileBoxId}
-      >
-        {moveOrCopyItemToPath?.basename && showSelectedFile ? (
-          <p className="bg-gray-100 p-4">
-            {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
-          </p>
-        ) : (
-          <p className="p-4">&nbsp;</p>
-        )}
-      </div>
-    </>
+      <ScrollableTable
+        columns={columns}
+        data={dialogShownFiles}
+        sorting={[]}
+        setSorting={() => {}}
+        selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+        onRowSelectionChange={handleRowSelectionChange}
+        applicationName={APPS.FILE_SHARING}
+        getRowId={(row) => row.filename}
+        showHeader={false}
+        textColorClass="text-black"
+        showSelectedCount={false}
+        footer={footer}
+      />
+    </div>
   );
 };
 

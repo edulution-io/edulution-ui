@@ -35,6 +35,8 @@ interface DataTableProps<TData> {
   };
   textColorClass?: string;
   showHeader?: boolean;
+  showSelectedCount?: boolean;
+  footer?: React.ReactNode;
 }
 
 const ScrollableTable = <TData,>({
@@ -51,6 +53,8 @@ const ScrollableTable = <TData,>({
   scrollContainerOffsetElementIds = {},
   textColorClass = 'text-white',
   showHeader = true,
+  showSelectedCount = true,
+  footer,
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
@@ -87,24 +91,13 @@ const ScrollableTable = <TData,>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
 
-      {selectedRowsCount > 0 ? (
-        <div
-          id={selectedRowsMessageId}
-          className="flex-1 text-sm text-muted-foreground text-white"
-        >
-          {selectedRowsCount > 0 ? (
-            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+      {showSelectedCount &&
+        (selectedRowsCount > 0
+          ? t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
               selected: selectedRowsCount,
               total: filteredRowCount,
             })
-          ) : (
-            <>&nbsp;</>
-          )}
-        </div>
-      ) : (
-        <div className={`flex-1 text-sm ${textColorClass}`}>&nbsp;</div>
-      )}
-
+          : !footer && <div className={`flex-1 text-sm ${textColorClass}`}>&nbsp;</div>)}
       <div
         className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
@@ -156,6 +149,7 @@ const ScrollableTable = <TData,>({
           </TableBody>
         </Table>
       </div>
+      {footer && <div className="max-w-[42vh] overflow-hidden text-ellipsis whitespace-nowrap">{footer}</div>}
     </>
   );
 };
