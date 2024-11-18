@@ -90,14 +90,14 @@ describe('GroupsService', () => {
       const mockGroups = [{ id: '1', name: 'Group 1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockGroups });
 
-      const result = await GroupsService['fetchAllGroups']('mockToken');
+      const result = await GroupsService.fetchAllGroups('mockToken');
       expect(result).toEqual(mockGroups);
     });
 
     it('should throw an error on failure', async () => {
       (axios.request as jest.Mock).mockRejectedValue(new Error('API error'));
 
-      await expect(GroupsService['fetchAllGroups']('mockToken')).rejects.toThrow(CustomHttpException);
+      await expect(GroupsService.fetchAllGroups('mockToken')).rejects.toThrow(CustomHttpException);
     });
   });
 
@@ -136,14 +136,14 @@ describe('GroupsService', () => {
   describe('fetchGroupMembers', () => {
     it('should throw an error if unable to fetch group members', async () => {
       (axios.request as jest.Mock).mockRejectedValue(new Error('API error'));
-      await expect(GroupsService['fetchGroupMembers']('mockToken', 'groupId')).rejects.toThrow(CustomHttpException);
+      await expect(GroupsService.fetchGroupMembers('mockToken', 'groupId')).rejects.toThrow(CustomHttpException);
     });
 
     it('should fetch members of a group successfully', async () => {
       const mockMembers = [{ id: 'user1', username: 'member1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockMembers });
 
-      const result = await GroupsService['fetchGroupMembers']('mockToken', 'groupId');
+      const result = await GroupsService.fetchGroupMembers('mockToken', 'groupId');
       expect(result).toEqual(mockMembers);
     });
   });
@@ -204,7 +204,7 @@ describe('GroupsService', () => {
       const mockMembers = [{ id: 'user1', username: 'member1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockMembers });
 
-      const result = await GroupsService['fetchGroupMembers']('mockToken', 'groupId');
+      const result = await GroupsService.fetchGroupMembers('mockToken', 'groupId');
       expect(result).toEqual(mockMembers);
     });
   });

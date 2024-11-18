@@ -22,7 +22,6 @@ describe(GroupsController.name, () => {
     controller = module.get<GroupsController>(GroupsController);
     service = module.get<GroupsService>(GroupsService);
 
-    // Mock the static method
     jest.spyOn(GroupsService, 'fetchCurrentUser').mockResolvedValue({ preferred_username: 'mockedUser' } as JwtUser);
   });
 
