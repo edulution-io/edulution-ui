@@ -34,7 +34,7 @@ interface DataTableProps<TData> {
     tableHeaderId?: string;
     others?: string[];
   };
-  enableRowSelection: boolean | ((row: Row<TData>) => boolean) | undefined;
+  enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
 }
 
 const ScrollableTable = <TData,>({
