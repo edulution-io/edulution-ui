@@ -32,3 +32,83 @@ const OLD_APP_CONFIG = {
 };
 
 export default OLD_APP_CONFIG;
+
+/*
+*
+* MONGO DB INSERTION:
+* {
+  "_id": {
+    "$oid": "673b8d7d5f4e86becdb7defa"
+  },
+  "name": "TestConfig",
+  "icon": "test-icon",
+  "appType": "native",
+  "accessGroups": [
+    {
+      "id": 1,
+      "value": "group1",
+      "name": "group1",
+      "path": "group1",
+      "label": "group1"
+    },
+    {
+      "id": 2,
+      "value": "group2",
+      "name": "group2",
+      "path": "group2",
+      "label": "group2"
+    }
+  ],
+  "options": {
+    "url": "https://example.com/api/",
+    "apiKey": "secret-key"
+  },
+  "extendedOptions": [
+    {
+      "name": "ONLY_OFFICE_URL",
+      "value": "test/path",
+      "title": "OnlyOffice URL",
+      "description": "The URL for OnlyOffice",
+      "type": "input"
+    },
+    {
+      "name": "ONLY_OFFICE_JWT_SECRET",
+      "value": 123456789,
+      "title": "OnlyOffice Secret",
+      "description": "The secret key for OnlyOffice",
+      "type": "input"
+    },
+    {
+      "name": "MAIL_IMAP_URL",
+      "value": "url/test",
+      "title": "",
+      "description": "",
+      "type": "input"
+    },
+    {
+      "name": "MAIL_IMAP_PORT",
+      "value": 123,
+      "title": "",
+      "description": "",
+      "type": "number"
+    },
+    {
+      "name": "MAIL_IMAP_SECURE",
+      "value": true,
+      "title": "",
+      "description": "",
+      "type": "boolean"
+    },
+    {
+      "name": "MAIL_IMAP_TLS_REJECT_UNAUTHORIZED",
+      "value": false,
+      "title": "",
+      "description": "",
+      "type": "boolean"
+    }
+  ]
+}
+*
+*
+*
+* */
