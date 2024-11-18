@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
-import { MenuBarEntryProps } from '@/datatypes/types';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
+import APPS from '@libs/appconfig/constants/apps';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
   const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen } = useAppConfigsStore();
 
-  const settingsMenuBarEntry: MenuBarEntryProps = {
+  const settingsMenuBarEntry: MenuBarEntry = {
+    appName: APPS.SETTINGS,
     title: 'settings.title',
     icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
@@ -23,7 +25,7 @@ const useAppConfigPageMenu = () => {
     ],
   };
 
-  const appConfigPageMenu = (): MenuBarEntryProps => ({
+  const appConfigPageMenu = (): MenuBarEntry => ({
     ...settingsMenuBarEntry,
     menuItems: [
       ...APP_CONFIG_OPTIONS.filter((appConfig) => findAppConfigByName(appConfigs, appConfig.name) !== undefined).map(

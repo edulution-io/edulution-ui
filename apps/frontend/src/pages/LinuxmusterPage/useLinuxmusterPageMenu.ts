@@ -1,9 +1,11 @@
 import { LinuxmusterIcon } from '@/assets/icons';
-import { MenuBarEntryProps } from '@/datatypes/types';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import APPS from '@libs/appconfig/constants/apps';
 
 const useLinuxmusterPageMenu = () => {
-  const menuBar = (): MenuBarEntryProps => ({
+  const menuBar = (): MenuBarEntry => ({
     title: 'linuxmuster.title',
+    appName: APPS.LINUXMUSTER,
     disabled: true,
     icon: LinuxmusterIcon,
     color: '',
