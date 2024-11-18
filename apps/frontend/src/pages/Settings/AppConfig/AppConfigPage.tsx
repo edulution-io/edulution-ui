@@ -223,7 +223,7 @@ const AppConfigPage = () => {
                           <AppConfigOptionsForm
                             form={form}
                             settingLocation={settingLocation}
-                            options={form.watch(`${settingLocation}.options`) as AppConfigSection[]}
+                            sections={form.watch(`${settingLocation}.options`) as AppConfigSection[]}
                             onChange={(extensionValues: AppConfigSection[]) =>
                               form.setValue(`${item.name}.options`, extensionValues)
                             }

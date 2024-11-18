@@ -1,7 +1,7 @@
-import { AppIntegrationType } from '@libs/appconfig/types';
+import { AppIntegrationType, TAppFieldName } from '@libs/appconfig/types';
 
 export type TOldExtendedOption = {
-  name: string;
+  name: TAppFieldName;
   value: string;
   title: string;
   description: string;

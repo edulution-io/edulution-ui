@@ -4,6 +4,7 @@ import {
   AppConfigField,
   TAppConfigSectionIMAP,
   TAppConfigSectionOnlyOffice,
+  TAppField,
 } from '@libs/appconfig/types';
 import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
 import APP_CONFIG_SECTIONS_NAME_GENERAL from '@libs/appconfig/constants/sectionsNameAppConfigGeneral';
@@ -12,75 +13,91 @@ import APP_CONFIG_SECTION_KEYS_IMAP from '@libs/appconfig/constants/appConfigSec
 import APP_CONFIG_SECTION_OPTIONS_IMAP from '@libs/appconfig/constants/appConfigSectionOptionsIMAP';
 import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
 import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
+import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
+import TAppFieldType from '@libs/appconfig/types/tAppFieldType';
 import TOldAppConfig, { TOldExtendedOption } from './tOldAppConfig';
 
-function reconstructOptionsAndExtendedOptions(appConfigWithOldStructure: TOldAppConfig): AppConfigSection[] {
-  const options: AppConfigSection[] = [];
-  const generalSectionOptions: AppConfigField[] = [];
+const createField = (
+  name: TAppFieldName,
+  type: TAppField = 'text',
+  width: TAppFieldWidth = 'full',
+  value: TAppFieldType = '',
+): AppConfigField => ({ type, name, width, value });
 
-  if (Object.keys(appConfigWithOldStructure.options).includes(APP_CONFIG_SECTION_KEYS_GENERAL.URL)) {
-    generalSectionOptions.push({
-      type: 'text',
+function getGeneralSectionFromOptions(appConfigWithOldStructure: TOldAppConfig): AppConfigSection | undefined {
+  const defaultGeneralSectionOptions = [
+    {
       name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
-      width: 'full',
-      value: appConfigWithOldStructure.options[APP_CONFIG_SECTION_KEYS_GENERAL.URL] || 'test/path',
-    });
-  }
-  if (Object.keys(appConfigWithOldStructure.options).includes(APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY)) {
-    generalSectionOptions.push({
-      type: 'text',
+      type: 'text' as TAppField,
+      width: 'full' as TAppFieldWidth,
+      defaultValue: 'test/path',
+    },
+    {
       name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
-      width: 'full',
-      value: appConfigWithOldStructure.options[APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY] || '123456789',
-    });
-  }
-  if (Object.keys(appConfigWithOldStructure.options).includes(APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG)) {
-    generalSectionOptions.push({
-      type: TYPE_NAME_APP_CONFIG_FIELDS_PROXY_CONFIG,
+      type: 'text' as TAppField,
+      width: 'full' as TAppFieldWidth,
+      defaultValue: '123456789',
+    },
+    {
       name: APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
-      width: 'full',
-      value: appConfigWithOldStructure.options[APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG],
-    });
-  }
+      type: TYPE_NAME_APP_CONFIG_FIELDS_PROXY_CONFIG,
+      width: 'full' as TAppFieldWidth,
+      defaultValue: undefined,
+    },
+  ];
+
+  const generalSectionOptions = defaultGeneralSectionOptions
+    .filter(({ name }) => name in appConfigWithOldStructure.options)
+    .map(({ name, type, width, defaultValue }) =>
+      createField(name, type, width, appConfigWithOldStructure.options[name] || defaultValue),
+    );
   if (generalSectionOptions.length > 0) {
-    options.push({
+    return {
       sectionName: APP_CONFIG_SECTIONS_NAME_GENERAL,
       options: generalSectionOptions,
-    });
+    };
   }
+  return undefined;
+}
 
-  const onlyOfficeSectionOptions: AppConfigField[] = [];
-  const imapSectionOptions: AppConfigField[] = [];
-  if (appConfigWithOldStructure.extendedOptions) {
-    appConfigWithOldStructure.extendedOptions.forEach((option: TOldExtendedOption) => {
-      const newField: AppConfigField = {
-        type: option.type === 'input' ? 'text' : option.type,
-        name: option.name as TAppFieldName,
-        width: 'full',
-        value: option.value,
-      };
-      if (Object.values(APP_CONFIG_SECTION_KEYS_ONLY_OFFICE).includes(option.name as TAppConfigSectionOnlyOffice)) {
-        onlyOfficeSectionOptions.push(newField);
-      }
-      if (Object.values(APP_CONFIG_SECTION_KEYS_IMAP).includes(option.name as TAppConfigSectionIMAP)) {
-        imapSectionOptions.push(newField);
-      }
-    });
-  }
-  if (onlyOfficeSectionOptions.length > 0) {
-    options.push({
-      sectionName: APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
-      options: onlyOfficeSectionOptions,
-    });
-  }
-  if (imapSectionOptions.length > 0) {
-    options.push({
-      sectionName: APP_CONFIG_SECTION_OPTIONS_IMAP.sectionName,
-      options: imapSectionOptions,
-    });
-  }
+function getSectionsFromOldExtendedOptions(appConfigWithOldStructure: TOldAppConfig): AppConfigSection[] {
+  const sectionMap = {
+    [APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName]: {
+      keys: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE,
+      options: [] as AppConfigField[],
+    },
+    [APP_CONFIG_SECTION_OPTIONS_IMAP.sectionName]: {
+      keys: APP_CONFIG_SECTION_KEYS_IMAP,
+      options: [] as AppConfigField[],
+    },
+  };
 
-  return options;
+  appConfigWithOldStructure.extendedOptions?.forEach((option: TOldExtendedOption) => {
+    const field = createField(option.name, option.type === 'input' ? 'text' : option.type, 'full', option.value);
+
+    Object.keys(sectionMap).forEach((sectionName) => {
+      if (
+        Object.values(sectionMap[sectionName].keys).includes(
+          option.name as TAppConfigSectionIMAP | TAppConfigSectionOnlyOffice,
+        )
+      ) {
+        sectionMap[sectionName].options.push(field);
+      }
+    });
+  });
+
+  return Object.entries(sectionMap)
+    .filter(([, section]) => section.options.length > 0)
+    .map(([sectionName, section]) => ({
+      sectionName,
+      options: section.options,
+    }));
+}
+function reconstructOptionsAndExtendedOptions(appConfigWithOldStructure: TOldAppConfig): AppConfigSection[] {
+  const generalSection = getGeneralSectionFromOptions(appConfigWithOldStructure);
+  const otherSections = getSectionsFromOldExtendedOptions(appConfigWithOldStructure);
+
+  return generalSection ? [generalSection, ...otherSections] : otherSections;
 }
 
 export default reconstructOptionsAndExtendedOptions;
