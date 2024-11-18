@@ -10,41 +10,48 @@ import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableC
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
+import ContentType from '@libs/filesharing/types/contentType';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
   pathToFetch,
   showSelectedFile = true,
   showHome = true,
+  fileType,
 }) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
-  const { fetchDialogDirs, fetchDialogFiles, dialogShownFiles } = useFileSharingStore();
+  const { fetchDialogDirs, fetchDialogFiles, dialogShownDirs, dialogShownFiles, isLoading } = useFileSharingStore();
+
+  const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => dialogShownFiles.find((file) => file.filename === rowId))
+      .map((rowId) => files.find((file) => file.filename === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
 
     setMoveOrCopyItemToPath(selectedItemData[0]);
   };
 
+  const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
+
   useEffect(() => {
     if (showAllFiles && !pathToFetch) {
-      void fetchDialogFiles(currentPath);
+      void fetchMechanism(currentPath);
     }
     if (pathToFetch && showAllFiles) {
       if (currentPath.includes(pathToFetch)) {
-        void fetchDialogFiles(currentPath);
+        void fetchMechanism(currentPath);
       } else {
-        void fetchDialogFiles(pathToFetch);
+        void fetchMechanism(pathToFetch);
       }
     } else {
-      void fetchDialogDirs(currentPath);
+      void fetchMechanism(currentPath);
     }
   }, [currentPath]);
 
@@ -58,8 +65,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     return segements?.slice(0, index) || [];
   };
 
-  const onFilenameClick = (filenamePath: string) => {
-    setCurrentPath(filenamePath);
+  const onFilenameClick = (row: DirectoryFileDTO) => {
+    if (row.type === ContentType.DIRECTORY) {
+      setCurrentPath(row.filename);
+    }
   };
 
   const footer = (
@@ -80,6 +89,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   return (
     <div className="flex h-[60vh] flex-col text-black">
+      <LoadingIndicator isOpen={isLoading} />
       <div className="pb-2">
         <DirectoryBreadcrumb
           path={currentPath}
@@ -89,20 +99,22 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           showTitle={false}
         />
       </div>
-      <ScrollableTable
-        columns={columns}
-        data={dialogShownFiles}
-        sorting={[]}
-        setSorting={() => {}}
-        selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
-        onRowSelectionChange={handleRowSelectionChange}
-        applicationName={APPS.FILE_SHARING}
-        getRowId={(row) => row.filename}
-        showHeader={false}
-        textColorClass="text-black"
-        showSelectedCount={false}
-        footer={footer}
-      />
+      {!isLoading && (
+        <ScrollableTable
+          columns={columns}
+          data={files}
+          sorting={[]}
+          setSorting={() => {}}
+          selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+          onRowSelectionChange={handleRowSelectionChange}
+          applicationName={APPS.FILE_SHARING}
+          getRowId={(row) => row.filename}
+          showHeader={false}
+          textColorClass="text-black"
+          showSelectedCount={false}
+          footer={footer}
+        />
+      )}
     </div>
   );
 };

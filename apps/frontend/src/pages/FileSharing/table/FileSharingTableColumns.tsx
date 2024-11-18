@@ -26,7 +26,7 @@ const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 const hideOnMobileClassName = 'hidden lg:flex';
 
 const FileSharingTableColumns = (
-  onFilenameClick?: (filenamePath: string, row: DirectoryFileDTO) => void,
+  onFilenameClick?: (row: DirectoryFileDTO) => void,
   visibleColumns?: string[],
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
@@ -61,7 +61,7 @@ const FileSharingTableColumns = (
 
         const handleCellClick = (filenamePath: string) => {
           if (onFilenameClick) {
-            onFilenameClick(filenamePath, row.original);
+            onFilenameClick(row.original);
           } else {
             defaultHandleFilenameClick(filenamePath);
           }

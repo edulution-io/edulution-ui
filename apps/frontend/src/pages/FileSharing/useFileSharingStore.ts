@@ -158,12 +158,15 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       fetchDialogDirs: async (path: string) => {
         try {
+          set({ isLoading: true });
           const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
             `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
           );
           set({ dialogShownDirs: directoryFiles.data });
         } catch (error) {
           handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
