@@ -136,7 +136,7 @@ class MailsService {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        '1:*', // { or: [{ new: true }, { seen: false }, { recent: true }] },
+        { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
           envelope: true,

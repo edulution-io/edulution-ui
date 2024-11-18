@@ -1,4 +1,4 @@
-// TODO: Remove this migration file after applying the migration plus some additional time because of the field testing
+// TODO: Remove this migration file after applying plus some additional time (field testing)(Delete on 04.04.2025)
 
 /**
  * Affected Schema: appconfigs
