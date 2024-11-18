@@ -14,6 +14,7 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { AppConfigField } from '@libs/appconfig/types';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -55,11 +56,14 @@ class MailsService {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
     if (!appConfig) return undefined;
 
-    const imapExtension = appConfig?.extendedOptions.find((option) => option.sectionName === APP_CONFIG_SECTION_OPTIONS_IMAP.sectionName);
-    if (!imapExtension) return undefined;
+    const imapSection = appConfig?.options.find(
+      (section) => section.sectionName === APP_CONFIG_SECTION_OPTIONS_IMAP.sectionName,
+    );
+    if (!imapSection) return undefined;
 
-    const imapOptions = imapExtension.options.reduce(
-      (acc, item) => {
+    const imapOptions = imapSection.options.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (acc: Record<string, any>, item: AppConfigField) => {
         acc[item.name] = item.value !== undefined ? item.value : item.defaultValue;
         return acc;
       },

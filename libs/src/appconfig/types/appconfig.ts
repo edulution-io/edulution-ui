@@ -1,11 +1,12 @@
-import AppConfigOptions from '@libs/appconfig/types/appConfigOptions';
+import { AppConfigSection } from '@libs/appconfig/types/appConfigSection';
+import { AppIntegrationType } from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AppIntegrationType from './appIntegrationType';
 
 export type AppConfigDto = {
   name: string;
   icon: string;
   appType: AppIntegrationType;
-  options: AppConfigOptions[];
   accessGroups: MultipleSelectorGroup[];
+  options?: AppConfigSection[];
+  color?: string;
 };

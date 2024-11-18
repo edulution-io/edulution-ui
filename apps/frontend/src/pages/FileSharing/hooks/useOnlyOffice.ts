@@ -3,7 +3,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
 import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import getAppConfigSectionFieldValue from '@libs/appconfig/utils/getAppConfigSectionFieldValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useUserStore from '@/store/UserStore/UserStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
@@ -29,7 +29,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionValue(
+  const documentServerURL = getAppConfigSectionFieldValue(
     appConfigs,
     APPS.FILE_SHARING,
     APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,

@@ -21,8 +21,10 @@ class OnlyofficeService {
 
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
-    const appExtension = appConfig?.extendedOptions.find((extension) => extension.name === APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName);
-    const jwtSecret = appExtension?.options.find(
+    const appSection = appConfig?.options.find(
+      (section) => section.sectionName === APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
+    );
+    const jwtSecret = appSection?.options.find(
       (option) => option.name === APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
     );
     if (!jwtSecret) {

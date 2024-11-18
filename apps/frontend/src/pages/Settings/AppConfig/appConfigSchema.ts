@@ -4,19 +4,14 @@ import { APP_CONFIG_OPTIONS } from './appConfigOptions';
 const formSchemaObject: { [key: string]: z.Schema } = {};
 
 APP_CONFIG_OPTIONS.forEach((item) => {
-  formSchemaObject[`${item.id}.appType`] = z.string().optional();
+  formSchemaObject[`${item.name}.appType`] = z.string().optional();
   if (item.options) {
-    item.options.forEach((itemOption) => {
-      formSchemaObject[`${item.id}.${itemOption}`] = z.string().optional();
-    });
-  }
-  if (item.extendedOptions) {
-    item.extendedOptions.forEach((appExtension) => {
-      if (appExtension.options) {
-        formSchemaObject[`${item.id}.extendedOptions`] = z
+    item.options.forEach((appSection) => {
+      if (appSection.options) {
+        formSchemaObject[`${item.name}.options`] = z
           .array(
             z.object({
-              name: z.string(),
+              sectionName: z.string(),
               options: z.array(
                 z.object({
                   name: z.string(),

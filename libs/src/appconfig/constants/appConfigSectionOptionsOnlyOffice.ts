@@ -1,7 +1,7 @@
 import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
-import AppConfigOptions from '@libs/appconfig/types/appConfigOptions';
+import { AppConfigSection } from '@libs/appconfig/types/appConfigSection';
 
-const APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE: AppConfigOptions = {
+const APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE: AppConfigSection = {
   sectionName: 'ONLY_OFFICE',
   options: [
     {

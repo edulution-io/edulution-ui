@@ -10,6 +10,7 @@ import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath'
 
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
+import migrationReconstructOptionsAndExtendedOptions from './appconfig/db-migrations/migration_reconstruct_options_and_extended_options';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -44,6 +45,9 @@ async function bootstrap() {
 
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+
+  // TODO: Remove this migration file after applying the migration plus some additional time because of the field testing
+  await migrationReconstructOptionsAndExtendedOptions();
 }
 
 bootstrap().catch((e) => Logger.log(e));

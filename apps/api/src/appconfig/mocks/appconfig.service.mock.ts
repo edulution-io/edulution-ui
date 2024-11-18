@@ -1,4 +1,6 @@
 import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
+import APP_CONFIG_SECTION_OPTIONS_GENERAL from '@libs/appconfig/constants/appConfigSectionOptionsGeneral';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
 
 const mockAppConfigService = {
   insertConfig: jest.fn().mockResolvedValue(undefined),
@@ -7,11 +9,24 @@ const mockAppConfigService = {
   deleteConfig: jest.fn().mockResolvedValue(undefined),
   getFileAsBase64: jest.fn(),
   getAppConfigByName: jest.fn().mockResolvedValue({
-    options: {
-      url: 'https://example.com/api/',
-      apiKey: 'secret-key',
-    },
-    extendedOptions: [
+    options: [
+      {
+        sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL.sectionName,
+        options: [
+          {
+            name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
+            width: 'full',
+            type: 'text',
+            value: 'https://example.com/api/',
+          },
+          {
+            name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
+            width: 'full',
+            type: 'text',
+            value: 'secret-key',
+          },
+        ],
+      },
       {
         name: 'ONLY_OFFICE',
         options: [

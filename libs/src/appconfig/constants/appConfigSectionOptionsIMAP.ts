@@ -1,7 +1,7 @@
 import APP_CONFIG_SECTION_KEYS_IMAP from '@libs/appconfig/constants/appConfigSectionKeysIMAP';
-import AppConfigOptions from '@libs/appconfig/types/appConfigOptions';
+import { AppConfigSection } from '@libs/appconfig/types/appConfigSection';
 
-const APP_CONFIG_SECTION_OPTIONS_IMAP: AppConfigOptions = {
+const APP_CONFIG_SECTION_OPTIONS_IMAP: AppConfigSection = {
   sectionName: 'IMAP',
   options: [
     {

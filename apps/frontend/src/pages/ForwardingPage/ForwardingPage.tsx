@@ -7,6 +7,8 @@ import { findAppConfigByName } from '@/utils/common';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { toast } from 'sonner';
 import { getFromPathName } from '@libs/common/utils';
+import APP_CONFIG_SECTIONS_NAME_GENERAL from '@libs/appconfig/constants/sectionsNameAppConfigGeneral';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -23,10 +25,12 @@ const ForwardingPage: React.FC = () => {
     if (isForwarding) {
       setIsForwarding(false);
       const navigateToExternalPage = () => {
-        const externalLink = findAppConfigByName(appConfigs, rootPathName)?.options.url;
+        const externalLink = findAppConfigByName(appConfigs, rootPathName)
+          ?.options?.find((section) => section.sectionName === APP_CONFIG_SECTIONS_NAME_GENERAL)
+          ?.options.find((field) => field.name === APP_CONFIG_SECTION_KEYS_GENERAL.URL);
         if (externalLink) {
           setShowIsForwarding(true);
-          return window.open(externalLink, '_blank');
+          return window.open((externalLink.value as string) || (externalLink.defaultValue as string), '_blank');
         }
         setShowIsForwarding(false);
         console.error(t('forwardingpage.missing_link'));

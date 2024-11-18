@@ -1,15 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { AppConfigDto } from '@libs/appconfig/types';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
-import APP_CONFIG_SECTION_OPTIONS_GENERAL from '@libs/appconfig/constants/appConfigSectionOptionsGeneral';
-import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
-import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
-import mockAppConfigService from './appconfig.service.mock';
+import mockAppConfigService from './mocks/appconfig.service.mock';
+import testingAppConfigWithOnlyOffice from './mocks/app-config-with-only-office';
 
 jest.mock('./appconfig.service');
 
@@ -50,119 +45,13 @@ describe('AppConfigController', () => {
 
   describe('createConfig', () => {
     it('should call insertConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: [
-            {
-              sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL.sectionName,
-              options: [
-                {
-                  name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
-                  width: 'full',
-                  type: 'text',
-                  value: 'https://example.com/api/',
-                },
-                {
-                  name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
-                  width: 'full',
-                  type: 'text',
-                  value: 'secret-key',
-                },
-                {
-                  name: APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
-                  width: 'half',
-                  type: 'proxyConfig',
-                  value: '',
-                },
-              ],
-            },
-            {
-              sectionName: APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
-              options: [
-                {
-                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
-                  value: 'https://example.com/api/',
-                  type: 'text',
-                  width: 'full',
-                },
-                {
-                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
-                  value: 'secret-key',
-                  type: 'text',
-                  width: 'full',
-                },
-              ],
-            },
-          ],
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      controller.createConfig(appConfigDto);
-      expect(service.insertConfig).toHaveBeenCalledWith(appConfigDto);
+      controller.createConfig(testingAppConfigWithOnlyOffice);
+      expect(service.insertConfig).toHaveBeenCalledWith(testingAppConfigWithOnlyOffice);
     });
 
     it('should call updateConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: [
-            {
-              sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL.sectionName,
-              options: [
-                {
-                  name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
-                  width: 'full',
-                  type: 'text',
-                  value: 'https://example.com/api/',
-                },
-                {
-                  name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
-                  width: 'full',
-                  type: 'text',
-                  value: 'secret-key',
-                },
-                {
-                  name: APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
-                  width: 'half',
-                  type: 'proxyConfig',
-                  value: '',
-                },
-              ],
-            },
-            {
-              name: APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
-              options: [
-                {
-                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
-                  value: 'https://example.com/api/',
-                  type: 'text',
-                  width: 'full',
-                },
-                {
-                  name: APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_JWT_SECRET,
-                  value: 'secret-key',
-                  type: 'text',
-                  width: 'full',
-                },
-              ],
-            },
-          ],
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      controller.updateConfig(appConfigDto);
-      expect(service.updateConfig).toHaveBeenCalledWith(appConfigDto);
+      controller.updateConfig(testingAppConfigWithOnlyOffice);
+      expect(service.updateConfig).toHaveBeenCalledWith(testingAppConfigWithOnlyOffice);
     });
   });
 

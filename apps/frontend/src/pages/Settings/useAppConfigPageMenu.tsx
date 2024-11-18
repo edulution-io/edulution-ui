@@ -1,8 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
 import { MenuBarEntryProps } from '@/datatypes/types';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
-import { useNavigate } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 
 const useAppConfigPageMenu = () => {
@@ -26,12 +26,12 @@ const useAppConfigPageMenu = () => {
   const appConfigPageMenu = (): MenuBarEntryProps => ({
     ...settingsMenuBarEntry,
     menuItems: [
-      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
+      ...APP_CONFIG_OPTIONS.filter((appConfig) => findAppConfigByName(appConfigs, appConfig.name) !== undefined).map(
         (item) => ({
-          id: item.id,
-          label: `${item.id}.sidebar`,
+          id: item.name,
+          label: `${item.name}.sidebar`,
           icon: item.icon,
-          action: () => navigate(`/settings/${item.id}`),
+          action: () => navigate(`/settings/${item.name}`),
         }),
       ),
       ...settingsMenuBarEntry.menuItems.map((item) => ({

@@ -34,12 +34,12 @@ const Sidebar: React.FC = () => {
   };
 
   const sidebarItems = [
-    ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => ({
-      title: t(`${item.id}.sidebar`),
-      link: `/${item.id}`,
+    ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.name)).map((item) => ({
+      title: t(`${item.name}.sidebar`),
+      link: `/${item.name}`,
       icon: item.icon,
       color: 'bg-ciGreenToBlue',
-      notificationCounter: getNotificationCounter(item.id as TApps),
+      notificationCounter: getNotificationCounter(item.name as TApps),
     })),
     ...(isSuperAdmin
       ? [

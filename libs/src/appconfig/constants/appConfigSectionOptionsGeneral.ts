@@ -1,26 +1,16 @@
-import AppConfigOptions from '@libs/appconfig/types/appConfigOptions';
+import { AppConfigSection } from '@libs/appconfig/types/appConfigSection';
+import APP_CONFIG_SECTION_OPTIONS_GENERAL_WITHOUT_PROXY_CONFIG from '@libs/appconfig/constants/appConfigSectionOptionsGeneralWithoutProxyConfig';
+import TYPE_NAME_APP_CONFIG_FIELDS_PROXY_CONFIG from '@libs/appconfig/constants/typeNameAppConfigFieldsProxyConfig';
 import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
-import APP_CONFIG_SECTIONS_NAME_GENERAL from '@libs/appconfig/constants/appConfigSectionsNameGeneral';
 
-const APP_CONFIG_SECTION_OPTIONS_GENERAL: AppConfigOptions = {
-  sectionName: APP_CONFIG_SECTIONS_NAME_GENERAL,
+const APP_CONFIG_SECTION_OPTIONS_GENERAL: AppConfigSection = {
+  sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL_WITHOUT_PROXY_CONFIG.sectionName,
   options: [
-    {
-      name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
-      width: 'full',
-      type: 'text',
-      value: '',
-    },
-    {
-      name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
-      width: 'full',
-      type: 'text',
-      value: '',
-    },
+    ...APP_CONFIG_SECTION_OPTIONS_GENERAL_WITHOUT_PROXY_CONFIG.options,
     {
       name: APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
       width: 'half',
-      type: 'proxyConfig',
+      type: TYPE_NAME_APP_CONFIG_FIELDS_PROXY_CONFIG,
       value: true,
     },
   ],
