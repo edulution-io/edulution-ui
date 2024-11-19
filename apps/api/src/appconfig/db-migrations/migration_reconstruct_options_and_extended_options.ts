@@ -20,7 +20,7 @@ import reconstructOldAppConfig from './reconstruct_old_app_config';
 import TOldAppConfig from './tOldAppConfig';
 
 async function upgrade() {
-  Logger.log('Applying upgrade', 'APP-CONFIG-MIGRATION-000');
+  Logger.log('Applying upgrade 000-AppConfig-Merge-options-and-extendedOptions', 'Migration-000-AppConfig');
 
   const connection = mongoose.createConnection(process.env.MONGODB_SERVER_URL as string, {
     dbName: process.env.MONGODB_DATABASE_NAME,
@@ -40,21 +40,20 @@ async function upgrade() {
   }
 
   const collection = connection.collection('appconfigs');
-  try {
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const appConfig of appConfigModel.find({})) {
-      const currentConfig = appConfig.toObject();
-      const updatedConfig = reconstructOldAppConfig(currentConfig as unknown as TOldAppConfig);
-      // appConfig.overwrite(updatedConfig);
-      // await appConfig.save();
 
-      // eslint-disable-next-line no-underscore-dangle
-      await collection.replaceOne({ _id: appConfig._id as ObjectId }, updatedConfig);
-    }
-    Logger.log('Migration completed successfully', 'APP-CONFIG-MIGRATION-000');
-  } catch (error) {
-    Logger.error(`Error during migration: ${error}`, 'APP-CONFIG-MIGRATION-000');
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const appConfig of appConfigModel.find({})) {
+    const currentConfig = appConfig.toObject();
+    const updatedConfig = reconstructOldAppConfig(currentConfig as unknown as TOldAppConfig);
+    // eslint-disable-next-line no-underscore-dangle
+    await collection.replaceOne({ _id: appConfig._id as ObjectId }, updatedConfig);
   }
+
+  Logger.log(
+    'Successfully completed upgrade 000-AppConfig-Merge-options-and-extendedOptions',
+    'Migration-000-AppConfig',
+  );
+
   await connection.close();
 }
 

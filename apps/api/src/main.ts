@@ -7,10 +7,9 @@ import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
-
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
-import migrationReconstructOptionsAndExtendedOptions from './appconfig/db-migrations/migration_reconstruct_options_and_extended_options';
+import runMigrationScripts from './run-migration-scripts';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -46,8 +45,7 @@ async function bootstrap() {
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
 
-  // TODO: Remove this migration file after applying plus some additional time (field testing)(Delete on 04.04.2025)
-  await migrationReconstructOptionsAndExtendedOptions();
+  void runMigrationScripts();
 }
 
 bootstrap().catch((e) => Logger.log(e));

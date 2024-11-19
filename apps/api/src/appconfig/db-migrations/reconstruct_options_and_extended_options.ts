@@ -15,7 +15,7 @@ import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appCo
 import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
 import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 import TAppFieldType from '@libs/appconfig/types/tAppFieldType';
-import TOldAppConfig, { TOldExtendedOption } from './tOldAppConfig';
+import TOldAppConfig, { TOldExtendedOption, TOldExtendedOptions } from './tOldAppConfig';
 
 const createField = (
   name: TAppFieldName,
@@ -72,18 +72,33 @@ function getSectionsFromOldExtendedOptions(appConfigWithOldStructure: TOldAppCon
     },
   };
 
-  appConfigWithOldStructure.extendedOptions?.forEach((option: TOldExtendedOption) => {
-    const field = createField(option.name, option.type === 'input' ? 'text' : option.type, 'full', option.value);
+  appConfigWithOldStructure.extendedOptions?.forEach((option: TOldExtendedOption | TOldExtendedOptions) => {
+    if (
+      option.name === APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName ||
+      option.name === APP_CONFIG_SECTION_OPTIONS_IMAP.sectionName
+    ) {
+      const typedOptions = option as TOldExtendedOptions;
+      sectionMap[typedOptions.name].options = typedOptions.options;
+    } else {
+      const typedOption = option as TOldExtendedOption;
 
-    Object.keys(sectionMap).forEach((sectionName) => {
-      if (
-        Object.values(sectionMap[sectionName].keys).includes(
-          option.name as TAppConfigSectionIMAP | TAppConfigSectionOnlyOffice,
-        )
-      ) {
-        sectionMap[sectionName].options.push(field);
-      }
-    });
+      const field = createField(
+        typedOption.name,
+        typedOption.type === 'input' ? 'text' : typedOption.type,
+        'full',
+        typedOption.value,
+      );
+
+      Object.keys(sectionMap).forEach((sectionName) => {
+        if (
+          Object.values(sectionMap[sectionName].keys).includes(
+            option.name as TAppConfigSectionIMAP | TAppConfigSectionOnlyOffice,
+          )
+        ) {
+          sectionMap[sectionName].options.push(field);
+        }
+      });
+    }
   });
 
   return Object.entries(sectionMap)

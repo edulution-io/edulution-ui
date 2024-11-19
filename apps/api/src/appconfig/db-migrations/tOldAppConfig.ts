@@ -1,4 +1,4 @@
-import { AppIntegrationType, TAppFieldName } from '@libs/appconfig/types';
+import { AppConfigField, AppIntegrationType, TAppFieldName } from '@libs/appconfig/types';
 
 export type TOldExtendedOption = {
   name: TAppFieldName;
@@ -8,13 +8,18 @@ export type TOldExtendedOption = {
   type: string;
 };
 
+export type TOldExtendedOptions = {
+  name: string;
+  options: AppConfigField[];
+};
+
 type TOldAppConfig = {
   name: string;
   icon: string;
   appType: AppIntegrationType;
   accessGroups: { id: string; value: string; name: string; path: string; label: string }[];
   options: Record<string, string>;
-  extendedOptions: TOldExtendedOption[];
+  extendedOptions: TOldExtendedOption[] | TOldExtendedOptions[];
 };
 
 export default TOldAppConfig;
