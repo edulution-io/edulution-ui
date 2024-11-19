@@ -9,7 +9,6 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';

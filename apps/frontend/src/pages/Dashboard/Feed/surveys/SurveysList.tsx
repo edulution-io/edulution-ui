@@ -11,6 +11,7 @@ import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import FallbackText from '@/components/shared/FallbackText';
 
 interface SurveysListProps {
   items: SurveyDto[];
@@ -34,10 +35,10 @@ const SurveysList = (props: SurveysListProps) => {
 
   const getSurveyInfo = (survey: SurveyDto) => (
     <div className="flex w-full flex-col gap-1">
-      <span className="text-sm font-semibold">{survey.formula.title || t('common.not-available')}</span>
+      <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
       <p className="line-clamp-2 text-sm text-muted-foreground">
         {`${t('survey.created')}:  `}
-        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : t('common.not-available')}
+        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : FallbackText}
       </p>
       {survey.expires ? (
         <p className="text-muted-background line-clamp-2 text-sm">
