@@ -40,39 +40,37 @@ export default defineConfig({
     fs: { strict: false },
     proxy: {
       '/webdav': {
-        target: 'https://server.schulung.multi.schule',
+        target: process.env.VITE_LMN_URL,
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.schulung.multi.schule',
+          Origin: process.env.VITE_LMN_URL as string,
         },
       },
       '/api': {
         rewrite: (path) => path.replace(/^\/api/, ''),
-        target: 'https://server.schulung.multi.schule:8001',
+        target: process.env.VITE_LMN_API_URL,
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://server.schulung.multi.schule:8001',
+          Origin: process.env.VITE_LMN_URL as string,
         },
       },
       '/edu-api': {
-        rewrite: (path) => path.replace(/^\/edu-api/, ''),
-        target: 'http://localhost:3001/edu-api',
-        changeOrigin: false,
+        target: process.env.VITE_EDU_API_URL,
+        changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'https://ui.schulung.multi.schule',
+          Origin: process.env.VITE_EDU_API_URL as string,
         },
       },
       '/guacamole': {
         rewrite: (path) => path.replace(/^\/guacamole/, ''),
-        target: 'http://localhost:8081/guacamole',
+        target: `${process.env.VITE_GUACAMOLE_URL}/guacamole`,
         changeOrigin: true,
         secure: false,
         ws: true,
         headers: {
-          Origin: 'https://ui.schulung.multi.schule',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
