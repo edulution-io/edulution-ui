@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -23,8 +23,8 @@ type FormFieldProps<T extends FieldValues> = {
   name: Path<T> | string;
   isLoading?: boolean;
   labelTranslationId: string;
-  type?: React.HTMLInputTypeAttribute;
-  defaultValue?: PathValue<T, Path<T>> | string;
+  type?: HTMLInputTypeAttribute;
+  defaultValue?: PathValue<T, Path<T>> | string | number | boolean;
   value?: string | number | boolean;
   className?: string;
   onChange?: (e: string | number | boolean | React.ChangeEvent<HTMLInputElement>) => void;
@@ -104,7 +104,7 @@ const FormField = <T extends FieldValues>({
             <p className={className}>{t(labelTranslationId)}</p>
           </FormLabel>
           <FormControl>{getInputComponent(field)}</FormControl>
-          <FormMessage className={cn(variants({ variant }), className)} />
+          <FormMessage className={cn('text-p', variants({ variant }), className)} />
         </FormItem>
       )}
     />
