@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Interval, SchedulerRegistry } from '@nestjs/schedule';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -23,16 +23,27 @@ const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOA
   };
 
 @Injectable()
-class GroupsService {
+class GroupsService implements OnModuleInit {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private schedulerRegistry: SchedulerRegistry,
-  ) {
-    this.scheduleTokenRefresh();
-  }
+  ) {}
+
+  private keycloakAccessToken: string;
 
   private accessTokenRefreshInterval: number = 5000;
+
+  async onModuleInit() {
+    this.scheduleTokenRefresh();
+    await this.initializeService();
+  }
+
+  private async initializeService() {
+    await this.obtainAccessToken();
+
+    await this.updateGroupsAndMembersInCache();
+  }
 
   scheduleTokenRefresh() {
     const callback = () => {
@@ -42,8 +53,6 @@ class GroupsService {
     const interval = setInterval(callback, this.accessTokenRefreshInterval);
     this.schedulerRegistry.addInterval('accessTokenRefresh', interval);
   }
-
-  private keycloakAccessToken: string;
 
   async obtainAccessToken() {
     const tokenEndpoint = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;

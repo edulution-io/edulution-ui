@@ -1,11 +1,10 @@
-import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
-import React from 'react';
-import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { cva, type VariantProps } from 'class-variance-authority';
-
 import cn from '@libs/common/utils/className';
+import Input from '@/components/shared/Input';
+import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
 const variants = cva([], {
   variants: {
@@ -23,11 +22,12 @@ type FormFieldProps<T extends FieldValues> = {
   name: Path<T> | string;
   isLoading?: boolean;
   labelTranslationId: string;
-  type?: 'password';
-  defaultValue?: PathValue<T, Path<T>> | string;
+  type?: HTMLInputTypeAttribute;
+  defaultValue?: string | number | boolean;
   readonly?: boolean;
-  value?: string;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
@@ -42,6 +42,7 @@ const FormField = <T extends FieldValues>({
   readonly = false,
   value,
   onChange,
+  className,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -69,6 +70,7 @@ const FormField = <T extends FieldValues>({
                 field.onChange(e);
                 if (onChange) onChange(e);
               }}
+              className={className}
             />
           </FormControl>
           <FormMessage className={cn('text-p', variants({ variant }))} />
