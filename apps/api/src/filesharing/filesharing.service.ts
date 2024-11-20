@@ -15,7 +15,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import getCurrentTimestamp from '@libs/filesharing/utils/getCurrentTimestamp';
-import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperation } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -371,7 +371,7 @@ class FilesharingService {
     username: string,
     collectFileRequestDTO: CollectFileRequestDTO[],
     userRole: string,
-    type: LmnApiCollectOperation,
+    type: LmnApiCollectOperations,
   ) {
     const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
     try {

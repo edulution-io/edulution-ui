@@ -14,7 +14,7 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperation } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -42,7 +42,7 @@ const useLessonStore = create<LessonStore>(
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),
       setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
-      setCollectionType: (collectionType: LmnApiCollectOperation) => set({ collectionType }),
+      setCollectionType: (collectionType: LmnApiCollectOperations) => set({ collectionType }),
 
       addManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });
@@ -84,7 +84,7 @@ const useLessonStore = create<LessonStore>(
       collectFiles: async (
         collectFileRequestDTO: CollectFileRequestDTO[],
         userRole: string,
-        type: LmnApiCollectOperation,
+        type: LmnApiCollectOperations,
       ) => {
         set({ error: null, isLoading: true });
         const queryParamString = `?type=${type}&userRole=${userRole}`;

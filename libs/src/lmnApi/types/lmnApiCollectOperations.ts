@@ -3,4 +3,4 @@ export const LMN_API_COLLECT_OPERATIONS = {
   COPY: 'copy',
 } as const;
 
-export type LmnApiCollectOperation = (typeof LMN_API_COLLECT_OPERATIONS)[keyof typeof LMN_API_COLLECT_OPERATIONS];
+export type LmnApiCollectOperations = (typeof LMN_API_COLLECT_OPERATIONS)[keyof typeof LMN_API_COLLECT_OPERATIONS];
