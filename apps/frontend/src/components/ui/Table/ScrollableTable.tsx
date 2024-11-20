@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   OnChangeFn,
+  Row,
   RowSelectionState,
   SortingState,
   useReactTable,
@@ -33,6 +34,7 @@ interface DataTableProps<TData> {
     tableHeaderId?: string;
     others?: string[];
   };
+  enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   textColorClass?: string;
   showHeader?: boolean;
   showSelectedCount?: boolean;
@@ -51,6 +53,7 @@ const ScrollableTable = <TData,>({
   applicationName,
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
+  enableRowSelection,
   textColorClass = 'text-white',
   showHeader = true,
   showSelectedCount = true,
@@ -78,6 +81,7 @@ const ScrollableTable = <TData,>({
     getSortedRowModel: getSortedRowModel(),
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
+    enableRowSelection,
     state: {
       sorting,
       rowSelection: selectedRows,
