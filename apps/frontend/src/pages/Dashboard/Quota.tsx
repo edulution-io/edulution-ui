@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { CardContent, Card } from '@/components/shared/Card';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useTranslation } from 'react-i18next';
@@ -33,34 +32,28 @@ const Quota: React.FC = () => {
   };
 
   return (
-    <Card variant="security">
-      <CardContent>
-        <div className="flex flex-col gap-1">
-          <h4 className="text-md font-bold">{t('dashboard.quota.title')}</h4>
-
-          <p>{lmnUser?.school}</p>
-          <div className="relative my-1 h-1 w-full bg-gray-300">
-            <div
-              className={`absolute left-0 top-0 h-1 ${getSeparatorColor()}`}
-              style={{ width: `${percentageUsed}%` }}
-            />
-          </div>
-          <div color="white">
-            <p>
-              {quotaUsed} / {quotaHardLimit} {t('dashboard.quota.mibibyte')}
-            </p>
-          </div>
-          <div color="white">
-            <p className="font-bold">
-              {t('dashboard.quota.globalQuota')}: {quotaHardLimit} {t('dashboard.quota.mibibyte')}
-            </p>
-            <p className="font-bold">
-              {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <p>{lmnUser?.school}</p>
+      <div className="relative my-1 h-1 w-full bg-gray-300">
+        <div
+          className={`absolute left-0 top-0 h-1 ${getSeparatorColor()}`}
+          style={{ width: `${percentageUsed}%` }}
+        />
+      </div>
+      <div color="white">
+        <p>
+          {quotaUsed} / {quotaHardLimit} {t('dashboard.quota.mibibyte')}
+        </p>
+      </div>
+      <div color="white">
+        <p className="font-bold">
+          {t('dashboard.quota.globalQuota')}: {quotaHardLimit} {t('dashboard.quota.mibibyte')}
+        </p>
+        <p className="font-bold">
+          {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
+        </p>
+      </div>
+    </>
   );
 };
 
