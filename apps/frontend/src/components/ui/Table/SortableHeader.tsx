@@ -2,9 +2,9 @@ import React from 'react';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { ArrowUpDown } from 'lucide-react';
 import { Column, Table } from '@tanstack/react-table';
-import { translateKey } from '@/utils/common';
 import Checkbox from '@/components/ui/Checkbox';
 import cn from '@libs/common/utils/className';
+import i18n from '@/i18n';
 
 interface SortableHeaderProps<TData, TValue> {
   titleTranslationId: string;
@@ -23,13 +23,13 @@ const SortableHeader = <TData, TValue>({
     {table ? (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
         aria-label="Select all"
       />
     ) : null}
     <ButtonSH onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
       <div className="flex items-center">
-        {translateKey(titleTranslationId)}
+        {i18n.t(titleTranslationId)}
         {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
       </div>
     </ButtonSH>

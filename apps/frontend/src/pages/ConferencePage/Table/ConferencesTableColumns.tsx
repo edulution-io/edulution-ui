@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { LockClosedIcon, LockOpen1Icon } from '@radix-ui/react-icons';
+import { LockClosedIcon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
@@ -10,6 +10,9 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import { TFunction } from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
+import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
+import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import copyToClipboard from '@/utils/copyToClipboard';
 
 function getRowAction(
   isRunning: boolean,
@@ -113,6 +116,50 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
   },
   {
+    id: 'conference-isPublic',
+    header: ({ column }) => (
+      <SortableHeader<ConferenceDto, unknown>
+        className={hideOnMobileClassName}
+        titleTranslationId="conferences.isPublic"
+        column={column}
+      />
+    ),
+    accessorFn: (row) => row.isPublic,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const iconSize = 16;
+      const { isPublic } = row.original;
+      const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
+      return (
+        <SelectableTextCell
+          className={hideOnMobileClassName}
+          onClick={
+            isPublic
+              ? () => {
+                  copyToClipboard(url);
+                }
+              : undefined
+          }
+          text={t(`conferences.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
+          textOnHover={isPublic ? t('common.copy.link') : ''}
+          icon={
+            isPublic ? (
+              <PiEyeLight
+                width={iconSize}
+                height={iconSize}
+              />
+            ) : (
+              <PiEyeSlash
+                width={iconSize}
+                height={iconSize}
+              />
+            )
+          }
+        />
+      );
+    },
+  },
+  {
     id: 'conference-password',
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
@@ -121,7 +168,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         column={column}
       />
     ),
-    accessorFn: (row) => row.creator,
+    accessorFn: (row) => !!row.password,
     cell: ({ row }) => {
       const { t } = useTranslation();
       const iconSize = 16;
@@ -147,12 +194,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
                 width={iconSize}
                 height={iconSize}
               />
-            ) : (
-              <LockOpen1Icon
-                width={iconSize}
-                height={iconSize}
-              />
-            )
+            ) : undefined
           }
         />
       );

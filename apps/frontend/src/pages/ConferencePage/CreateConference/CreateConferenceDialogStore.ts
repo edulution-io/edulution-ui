@@ -5,6 +5,8 @@ import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 interface CreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
@@ -39,6 +41,7 @@ const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set)
     try {
       const response = await eduApi.post<ConferenceDto>(CONFERENCES_EDU_API_ENDPOINT, conference);
       set({ createdConference: response.data, isCreateConferenceDialogOpen: false });
+      toast.success(i18n.t('conferences.conferenceCreatedSuccessfully'));
     } catch (error) {
       handleApiError(error, set);
     } finally {

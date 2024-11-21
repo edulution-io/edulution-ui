@@ -22,6 +22,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import TApps from '@libs/appconfig/types/appsType';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
+import getPublicRoutes from '@/router/routes/PublicRoutes';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -32,6 +33,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <>
+        {getPublicRoutes()}
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>

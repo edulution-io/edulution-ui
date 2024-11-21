@@ -9,6 +9,8 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/joinButton';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 const ConferencesFloatingButtons: React.FC = () => {
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
@@ -30,7 +32,9 @@ const ConferencesFloatingButtons: React.FC = () => {
       DeleteButton(() => setIsDeleteConferencesDialogOpen(true), selectedConferenceIds.length > 0),
       CreateButton(openCreateConferenceDialog),
       ReloadButton(() => {
-        void getConferences().catch((e) => console.error(e));
+        getConferences()
+          .then(() => toast.success(i18n.t('conferences.conferenceFetchedSuccessfully')))
+          .catch((e) => console.error(e));
       }),
     ],
     keyPrefix: 'conference-page-floating-button_',

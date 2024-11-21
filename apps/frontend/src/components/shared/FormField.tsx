@@ -1,7 +1,7 @@
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import React from 'react';
-import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, PathValue, RegisterOptions, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -22,12 +22,14 @@ type FormFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   name: Path<T> | string;
   isLoading?: boolean;
-  labelTranslationId: string;
+  labelTranslationId?: string;
   type?: 'password';
   defaultValue?: PathValue<T, Path<T>> | string;
   readonly?: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  rules?: Omit<RegisterOptions<T, Path<T>>, 'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
@@ -42,6 +44,8 @@ const FormField = <T extends FieldValues>({
   readonly = false,
   value,
   onChange,
+  placeholder,
+  rules,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -51,20 +55,24 @@ const FormField = <T extends FieldValues>({
       disabled={disabled}
       name={name as Path<T>}
       defaultValue={defaultValue as PathValue<T, Path<T>>}
+      rules={rules}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn(variants({ variant }))}>
-            <p className="font-bold">{t(labelTranslationId)}</p>
-          </FormLabel>
+          {labelTranslationId && (
+            <FormLabel className={cn(variants({ variant }))}>
+              <p className="font-bold">{t(labelTranslationId)}</p>
+            </FormLabel>
+          )}
           <FormControl>
             <Input
               {...field}
               type={type}
               disabled={disabled || isLoading}
               variant={variant}
+              placeholder={placeholder}
               readOnly={readonly}
               value={value}
-              defaultValue={defaultValue as string}
+              defaultValue={defaultValue}
               onChange={(e) => {
                 field.onChange(e);
                 if (onChange) onChange(e);

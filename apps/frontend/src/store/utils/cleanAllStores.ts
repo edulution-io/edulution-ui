@@ -23,6 +23,7 @@ import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialog
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -48,6 +49,7 @@ const cleanAllStores = () => {
   useParticipateDialogStore.getState().reset();
   useParticipatePublicSurveyStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
+  usePublicConferenceStore.getState().reset();
   useResultDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSurveyEditorFormStore.getState().reset();
