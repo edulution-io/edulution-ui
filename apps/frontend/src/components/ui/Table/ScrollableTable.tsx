@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   OnChangeFn,
+  Row,
   RowSelectionState,
   SortingState,
   useReactTable,
@@ -32,6 +33,7 @@ interface DataTableProps<TData, TValue> {
     tableHeaderId?: string;
     others?: string[];
   };
+  enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -46,6 +48,7 @@ const ScrollableTable = <TData, TValue>({
   applicationName,
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
+  enableRowSelection,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -69,6 +72,7 @@ const ScrollableTable = <TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
+    enableRowSelection,
     state: {
       sorting,
       rowSelection: selectedRows,
