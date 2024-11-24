@@ -179,7 +179,8 @@
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
-      "SharingFailed": "Sharing files failed"
+      "SharingFailed": "Sharing files failed",
+      "CopyFailed": "Copy failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -302,7 +303,9 @@
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
     "collectAndCut": "Cut",
     "collectAndCopy": "Copy",
-    "copyOrCut": "Would you like to cut or copy the files?"
+    "copyOrCut": "Would you like to cut or copy the files?",
+    "filesShared": "Files shared",
+    "filesCollected": "Files collected"
   },
   "select": "Select",
   "selectAll": "Select all",

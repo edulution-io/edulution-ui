@@ -319,20 +319,25 @@ class FilesharingService {
     }
   };
 
-  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+  duplicateFile = async (username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
-    const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
-    });
+    Logger.log('destinationFilePaths', duplicateFile.destinationFilePaths);
+    const duplicationResults = await Promise.allSettled(
+      duplicateFile.destinationFilePaths.map(async (destinationPath) =>
+        FilesharingService.copyFile(client, fullOriginPath, destinationPath),
+      ),
+    );
 
-    try {
-      await Promise.all(duplicationPromises);
-    } catch (error) {
+    const failedTasks = duplicationResults.filter((result) => result.status === 'rejected');
+
+    if (failedTasks.length > 0) {
+      console.error('Duplication failed for some tasks:', failedTasks);
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
+    return { success: true, status: HttpStatus.OK };
+  };
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
@@ -373,40 +378,34 @@ class FilesharingService {
     userRole: string,
     type: LmnApiCollectOperations,
   ) {
-    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
-    try {
-      await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.FolderCreationFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    if (!collectFileRequestDTO || collectFileRequestDTO.length === 0) {
+      throw new Error('collectFileRequestDTO is empty or undefined');
     }
+    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
 
+    await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     const operations = collectFileRequestDTO.map(async (item) => {
       try {
         await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
-      } catch (error) {
-        throw new CustomHttpException(
-          FileSharingErrorMessage.CreateCollectFolderForStudentFailed,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
 
-      try {
         if (type === LMN_API_COLLECT_OPERATIONS.CUT) {
           await this.cutCollectedItems(username, item.originPath, item.destinationPath);
         } else {
           await this.copyCollectedItems(username, {
             originFilePath: item.originPath,
-            destinationFilePaths: [`${item.destinationPath}/${getCurrentTimestamp()}`],
+            destinationFilePaths: [`${item.destinationPath}${getCurrentTimestamp()}`],
           });
         }
       } catch (error) {
-        Logger.log(error); // TODO #217
+        throw new Error(`Operation failed for user ${item.userName}`);
       }
     });
 
-    try {
-      await Promise.all(operations);
-    } catch (error) {
+    const results = await Promise.allSettled(operations);
+
+    const failedTasks = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+
+    if (failedTasks.length > 0) {
       throw new CustomHttpException(FileSharingErrorMessage.CollectingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

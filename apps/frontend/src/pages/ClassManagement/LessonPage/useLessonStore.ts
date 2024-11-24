@@ -15,6 +15,8 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { toast } from 'sonner';
+import { t } from 'i18next';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -77,6 +79,7 @@ const useLessonStore = create<LessonStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
+          toast.success(t('classmanagement.filesShared'));
           set({ isLoading: false });
         }
       },
@@ -95,6 +98,7 @@ const useLessonStore = create<LessonStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
+          toast.success(t('classmanagement.filesCollected'));
           set({ isLoading: false });
         }
       },

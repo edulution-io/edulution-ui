@@ -178,7 +178,8 @@
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
-      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
+      "CopyFailed": "Kopieren fehlgeschlagen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -302,7 +303,9 @@
     "enrolPageDescription": "Wähle die Klassen und Projekte aus, für die du dich einschreiben möchtest, indem du die Checkboxen aktivierst.",
     "collectAndCut": "Ausschneiden",
     "collectAndCopy": "Kopieren",
-    "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?"
+    "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
+    "filesShared": "Dateien geteilt",
+    "filesCollected": "Dateien eingesammelt"
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
