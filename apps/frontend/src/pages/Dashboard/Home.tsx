@@ -1,12 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import Feed from '@/pages/Dashboard/Feed/Feed';
 import useUserStore from '@/store/UserStore/UserStore';
-import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
-import AccountInformation from './AccountInformation';
-import QuotaCard from './QuotaCard';
-import Groups from './Groups';
+import BullitinBoard from '@/pages/BullitinBoard/BullitinBoard';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -14,42 +10,19 @@ const Home: React.FC = () => {
   const { user } = useUserStore();
 
   return (
-    <div className="md:ml-4">
-      <div>
-        {isMobileView ? (
-          <h2>
-            {t('heading', {
-              givenName: user?.firstName || '-',
-              familyName: user?.lastName || '-',
-            })}
-          </h2>
-        ) : null}
-        <p className="mt-4">{t('content')}</p>
-      </div>
-
-      <div className="md:my-17 my-10">
-        <div className="flex flex-col-reverse justify-between gap-8 md:flex-row">
-          <div className="flex-1">
-            <AccountInformation />
-          </div>
-          <div className="flex-2">
-            <div className="flex flex-col gap-8">
-              <div className="flex flex-col justify-between gap-4 md:flex-row">
-                <div className="flex-1">
-                  <Groups />
-                </div>
-                <div className="flex-1">
-                  <MobileFileAccessCard />
-                </div>
-              </div>
-              <div>
-                <QuotaCard />
-              </div>
-            </div>
-          </div>
-          <div className="flex-1">
-            <Feed />
-          </div>
+    <div className="flex w-full flex-col items-center justify-center md:pl-8">
+      {isMobileView ? (
+        <h2 className="mb-4 text-center">
+          {t('heading', {
+            givenName: user?.firstName || '-',
+            familyName: user?.lastName || '-',
+          })}
+        </h2>
+      ) : null}
+      <h1 className="pb-6 text-center text-4xl font-bold text-white">Aktuelles</h1>
+      <div className="flex h-[80vh] w-full rounded-xl bg-ciDarkGrey shadow-md">
+        <div className="flex w-full max-w-full justify-center">
+          <BullitinBoard />
         </div>
       </div>
     </div>
