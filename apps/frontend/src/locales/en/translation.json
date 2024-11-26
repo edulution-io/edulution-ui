@@ -54,6 +54,7 @@
       "GetUserSchoolClassFailed": "Get user school class failed",
       "GetUserProjectsFailed": "Get user projects failed",
       "GetUserFailed": "Fetching failed",
+      "UpdateUserFailed": "Update failed",
       "GetCurrentUserRoomFailed": "Get current user room failed",
       "CreateProjectFailed": "Create project failed",
       "RemoveProjectFailed": "Remove project failed",
@@ -73,9 +74,9 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
-      "title": "E-Mail Importer",
-      "provider": "E-Mail Provider",
-      "configName": "Name der Konfiguration",
+      "title": "Email Importer",
+      "provider": "Email Provider",
+      "configName": "Configuration name",
       "hostname": "Hostname",
       "port": "Port",
       "encryption": "Encryption",
@@ -84,7 +85,7 @@
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} of {{total}} jobs selected",
       "rowSelected": "{{selected}} of {{total}} job selected",
-      "mailAddress": "E-Mail Address"
+      "mailAddress": "Email address"
     }
   },
   "chat": {
@@ -498,6 +499,26 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "details": {
+      "title": "User details",
+      "description": "Here you see and edit some of your personal information.",
+      "userInformation": "User related information",
+      "dateOfBirth": "Date of birth",
+      "givenName": "Given name",
+      "displayName": "Display name",
+      "name": "Username",
+      "role": "Role",
+      "schoolName": "School name",
+      "schoolSubjects": "School subjects",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "proxyAddresses": "Mail Proxies",
+      "addNew": "Type to add",
+      "badgeAlreadyExists": "This entry exists already",
+      "sophomorixCustom1_teacher": "Schoolsubject 1",
+      "sophomorixCustom2_teacher": "Schoolsubject 2",
+      "sophomorixCustomMulti1_teacher": "Coffee-brands"
+    },
     "security": {
       "title": "Security",
       "sidebar": "Security",
@@ -512,7 +533,7 @@
       }
     },
     "mails": {
-      "title": "E-Mail"
+      "title": "Email"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -620,14 +641,15 @@
     "connect": "Connect",
     "custom": "Custom",
     "select": "Select...",
+    "none": "None",
     "edit": "Edit",
     "copy": "Copy",
     "participate": "Participate",
     "participated": "Participated",
-    "not-available": "'Not available'",
+    "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Zurücksetzen"
+    "revert": "Revert"
   },
   "form": {
     "path": "Path",
@@ -791,8 +813,8 @@
   "accountData": {
     "account_info": "Account Information",
     "name": "Name",
-    "email": "E-Mail",
-    "school": "Schule",
+    "email": "Email",
+    "school": "School",
     "role": "Role",
     "classes": "Classes",
     "change_password": "Change Password",
@@ -834,7 +856,7 @@
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number",
-      "MailProviderNotFound": "E-Mail provider not found",
+      "MailProviderNotFound": "Email provider not found",
       "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
       "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
       "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"
