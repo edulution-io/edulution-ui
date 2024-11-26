@@ -122,7 +122,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         column={column}
       />
     ),
-    accessorFn: (row) => row.creator,
+    accessorFn: (row) => !!row.password,
     cell: ({ row }) => {
       const { t } = useTranslation();
       const iconSize = 16;

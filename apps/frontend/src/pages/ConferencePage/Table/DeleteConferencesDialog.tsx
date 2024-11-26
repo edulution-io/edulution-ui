@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Button } from '@/components/shared/Button';
+import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
 
 interface DeleteConferencesDialogProps {
   trigger?: React.ReactNode;
@@ -41,17 +42,12 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
             {t('conferences.error')}: {error.message}
           </>
         ) : (
-          <>
-            {t(isMultiDelete ? 'conferences.confirmMultiDelete' : 'conferences.confirmSingleDelete')}
-            {selectedConferences.map((c) => (
-              <div
-                className="mt-2"
-                key={c.meetingID}
-              >
-                - {c.name}
-              </div>
-            ))}
-          </>
+          <DeleteItemDialogList
+            deleteWarningTranslationId={
+              isMultiDelete ? 'conferences.confirmMultiDelete' : 'conferences.confirmSingleDelete'
+            }
+            items={selectedConferences.map((c) => ({ name: c.name, id: c.meetingID }))}
+          />
         )}
       </div>
     );
