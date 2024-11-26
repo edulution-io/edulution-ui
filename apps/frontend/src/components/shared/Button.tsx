@@ -39,9 +39,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <SHButton
+        {...props}
         className={cn(originButtonVariants({ variant, className }))}
         ref={ref}
-        {...props}
       >
         {variant === 'btn-hexagon' ? (
           <div className="relative flex items-center justify-center">
