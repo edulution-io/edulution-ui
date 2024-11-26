@@ -21,6 +21,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
+import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
@@ -189,14 +190,14 @@ class ConferencesService {
     }
   }
 
-  async toggleConferenceIsRunning(meetingID: string, username: string) {
+  async toggleConferenceIsRunning(meetingID: string, isRunning: boolean, username: string) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
       throw new CustomHttpException(ConferencesErrorMessage.YouAreNotTheCreator, HttpStatus.UNAUTHORIZED);
     }
     const isConferenceRunningInBBB = await this.checkConferenceIsRunningWithBBB(conference.meetingID);
 
-    if (conference.isRunning) {
+    if (isRunning) {
       await this.stopConference(conference, isConferenceRunningInBBB, this.conferencesSseConnections);
     } else {
       await this.startConference(conference, isConferenceRunningInBBB, this.conferencesSseConnections);
@@ -205,11 +206,11 @@ class ConferencesService {
 
   async startConference(
     conference: Conference,
-    isConferenceRunningInBBB: boolean,
+    shouldUpdateInBBB: boolean,
     conferencesSseConnections: UserConnections,
   ) {
     try {
-      if (!isConferenceRunningInBBB) {
+      if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
         const checksum = await this.createChecksum('create', query);
         const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
@@ -233,13 +234,9 @@ class ConferencesService {
     }
   }
 
-  async stopConference(
-    conference: Conference,
-    isConferenceRunningInBBB: boolean,
-    conferencesSseConnections: UserConnections,
-  ) {
+  async stopConference(conference: Conference, shouldUpdateInBBB: boolean, conferencesSseConnections: UserConnections) {
     try {
-      if (isConferenceRunningInBBB) {
+      if (shouldUpdateInBBB) {
         const query = `meetingID=${conference.meetingID}`;
         const checksum = await this.createChecksum('end', query);
         const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
@@ -375,8 +372,10 @@ class ConferencesService {
         const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
         ConferencesService.handleBBBApiError(result);
 
-        await this.update({ ...conferenceObject, isRunning: true });
-        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
+        const isRunning = stringToBoolean(result.response.running);
+
+        await this.update({ ...conferenceObject, isRunning });
+        return { ...conferenceObject, isRunning, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
       } catch (_) {
         const updatedConference = { ...conferenceObject, isRunning: false };
         await this.update(updatedConference);

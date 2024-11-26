@@ -8,37 +8,33 @@ import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import { TFunction } from 'i18next';
+import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
+import { toast } from 'sonner';
 
-function getRowAction(
-  isRunning: boolean,
-  isLoading: boolean,
-  isUserTheCreator: boolean,
-  t: TFunction<'translation', undefined>,
-) {
+function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
     return {
       icon: <MdPending />,
-      text: t('common.loading'),
+      text: i18next.t('common.loading'),
     };
   }
   if (isUserTheCreator) {
     if (isRunning) {
       return {
         icon: <MdStop />,
-        text: t('conferences.stop'),
+        text: i18next.t('conferences.stop'),
       };
     }
     return {
       icon: <MdPlayArrow />,
-      text: t('conferences.start'),
+      text: i18next.t('conferences.start'),
     };
   }
   if (isRunning) {
     return {
       icon: <MdLogin />,
-      text: t('conferences.join'),
+      text: i18next.t('conferences.join'),
     };
   }
   return { icon: undefined, text: '' };
@@ -209,24 +205,32 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
-      const { t } = useTranslation();
       const { user } = useUserStore();
       const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
-      const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
+      const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
+
       const isUserTheCreator = user?.username === creator?.username;
-      const { icon, text } = getRowAction(isRunning, isLoading, isUserTheCreator, t);
-      const onClick = async () => {
-        if (isUserTheCreator) {
-          await toggleConferenceRunningState(meetingID);
-          if (!isRunning) {
-            await joinConference(meetingID);
-          } else {
-            setJoinConferenceUrl('');
-          }
-        } else if (isRunning) {
-          await joinConference(meetingID);
-        }
-      };
+      const isRowLoading = row.original.meetingID === loadingMeetingId;
+
+      const { icon, text } = getRowAction(isRunning, isRowLoading, isUserTheCreator);
+
+      const onClick =
+        isRowLoading || !isUserTheCreator
+          ? undefined
+          : async () => {
+              if (isUserTheCreator) {
+                await toggleConferenceRunningState(meetingID, isRunning);
+                if (!isRunning) {
+                  await joinConference(meetingID);
+                } else {
+                  setJoinConferenceUrl('');
+                }
+              } else if (isRunning) {
+                await joinConference(meetingID);
+              }
+              await getConferences();
+              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+            };
       return (
         <SelectableTextCell
           onClick={onClick}

@@ -107,6 +107,8 @@
       "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
       "DBAccessFailed": "Database access failed"
     },
+    "started": "Conference started",
+    "stopped": "Conference stopped",
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",

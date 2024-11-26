@@ -38,9 +38,15 @@ class ConferencesController {
   }
 
   @Put()
-  async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.toggleConferenceIsRunning(conference.meetingID, user.preferred_username);
-    return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
+  async toggleIsRunning(
+    @Body() conference: Pick<Conference, 'meetingID' | 'isRunning'>,
+    @GetCurrentUser() user: JWTUser,
+  ) {
+    return this.conferencesService.toggleConferenceIsRunning(
+      conference.meetingID,
+      conference.isRunning,
+      user.preferred_username,
+    );
   }
 
   @Delete()
