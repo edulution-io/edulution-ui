@@ -1,0 +1,9 @@
+{
+  "lastRun": "1732619590704-add-db-version-number.js",
+  "migrations": [
+    {
+      "title": "1732619590704-add-db-version-number.js",
+      "timestamp": 1732634415513
+    }
+  ]
+}

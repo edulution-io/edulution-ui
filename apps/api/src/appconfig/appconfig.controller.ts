@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import AppConfigService from './appconfig.service';
+import AppConfigDbMigrationService from './app-config-db-migration.service';
 import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
 
@@ -11,7 +12,10 @@ import AppConfigGuard from './appconfig.guard';
 @ApiBearerAuth()
 @Controller(EDU_API_CONFIG_ENDPOINTS.ROOT)
 class AppConfigController {
-  constructor(private readonly appConfigService: AppConfigService) {}
+  constructor(private readonly appConfigService: AppConfigService) {
+    const appConfigDbMigrationService = new AppConfigDbMigrationService();
+    appConfigDbMigrationService.onModuleInit();
+  }
 
   @Post()
   @UseGuards(AppConfigGuard)

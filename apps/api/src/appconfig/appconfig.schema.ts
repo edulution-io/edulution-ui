@@ -5,6 +5,8 @@ import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtendedType';
 
+export const INITIAL_DB_VERSION_NUMBER = 0;
+
 @Schema({ timestamps: true, strict: true })
 export class AppConfig extends Document {
   @Prop({ required: true })
@@ -24,6 +26,9 @@ export class AppConfig extends Document {
 
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
+
+  @Prop({ type: Number, default: INITIAL_DB_VERSION_NUMBER })
+  schemaVersion: number;
 }
 
 export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
