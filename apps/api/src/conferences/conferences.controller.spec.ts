@@ -132,10 +132,14 @@ describe(ConferencesController.name, () => {
 
   describe('toggleIsRunning', () => {
     it('should call toggleConferenceIsRunning method of conferencesService with correct arguments', async () => {
-      const conference: Pick<Conference, 'meetingID'> = { meetingID: '123' };
+      const conference: Pick<Conference, 'meetingID' | 'isRunning'> = { meetingID: '123', isRunning: false };
       const username = 'testuser';
       await controller.toggleIsRunning(conference, jwtUser);
-      expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(conference.meetingID, username);
+      expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(
+        conference.meetingID,
+        conference.isRunning,
+        username,
+      );
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
   });

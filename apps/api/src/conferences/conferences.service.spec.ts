@@ -186,7 +186,7 @@ describe(ConferencesService.name, () => {
 
       mockConferenceDocument.isRunning = false;
 
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username);
+      await service.toggleConferenceIsRunning('mockMeetingId', false, mockCreator.username);
 
       expect(service.startConference).toHaveBeenCalledWith(mockConferenceDocument, false, mockSseConnections);
       expect(service.stopConference).not.toHaveBeenCalled();
@@ -201,7 +201,7 @@ describe(ConferencesService.name, () => {
 
       mockConferenceDocument.isRunning = true;
 
-      await service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, mockCreator.username);
+      await service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, true, mockCreator.username);
 
       expect(service.stopConference).toHaveBeenCalledWith(mockConferenceDocument, true, mockSseConnections);
       expect(service.startConference).not.toHaveBeenCalled();
@@ -213,9 +213,9 @@ describe(ConferencesService.name, () => {
         isCreator: false,
       });
 
-      await expect(service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, 'mockUsername')).rejects.toThrow(
-        ConferencesErrorMessage.YouAreNotTheCreator,
-      );
+      await expect(
+        service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, true, 'mockUsername'),
+      ).rejects.toThrow(ConferencesErrorMessage.YouAreNotTheCreator);
 
       expect(service.stopConference).not.toHaveBeenCalled();
       expect(service.startConference).not.toHaveBeenCalled();
