@@ -45,16 +45,15 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
     if (!selectedOption) {
       return;
     }
-    const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
+    const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.name.includes(selectedOption));
 
     if (optionsConfig) {
       const newConfig: AppConfigDto = {
         name: selectedOption,
         icon: optionsConfig.icon,
         appType: APP_INTEGRATION_VARIANT.FORWARDED,
-        options: {},
+        options: [],
         accessGroups: [],
-        extendedOptions: [],
       };
       const updatedConfig = [...appConfigs, newConfig];
 

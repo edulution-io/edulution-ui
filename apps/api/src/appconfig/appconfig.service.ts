@@ -8,6 +8,8 @@ import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
+import APP_CONFIG_SECTIONS_NAME_GENERAL from '@libs/appconfig/constants/sectionsNameAppConfigGeneral';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
@@ -46,12 +48,17 @@ class AppConfigService implements OnModuleInit {
   async updateConfig(appConfigDto: AppConfigDto[]) {
     try {
       const bulkOperations = appConfigDto.map((appConfig) => {
-        if (appConfig?.options?.proxyConfig) {
-          const { proxyConfig } = appConfig.options;
-          if (proxyConfig !== '' && proxyConfig !== '""') {
+        const appConfigSections = appConfig.options?.find(
+          (section) => section.sectionName === APP_CONFIG_SECTIONS_NAME_GENERAL,
+        );
+        const proxyConfigField = appConfigSections?.options.find(
+          (field) => field.name === APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
+        );
+        if (proxyConfigField) {
+          if (proxyConfigField.value !== '' && proxyConfigField.value !== '""') {
             writeFileSync(
               `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
-              JSON.parse(appConfig?.options?.proxyConfig) as string,
+              JSON.parse(proxyConfigField.value as string) as string,
             );
           } else {
             const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`;
@@ -72,7 +79,6 @@ class AppConfigService implements OnModuleInit {
                 appType: appConfig.appType,
                 options: appConfig.options,
                 accessGroups: appConfig.accessGroups,
-                extendedOptions: appConfig.extendedOptions,
               },
             },
             upsert: true,
@@ -103,13 +109,13 @@ class AppConfigService implements OnModuleInit {
           'name icon appType options extendedOptions',
         );
 
-        appConfigDto = appConfigObjects.map((config) => ({
+        appConfigDto = appConfigObjects.map((config: AppConfigDto) => ({
+          appType: config.appType,
           name: config.name,
           icon: config.icon,
-          appType: config.appType,
-          options: { url: config.options.url ?? '' },
-          accessGroups: [],
-          extendedOptions: config.extendedOptions ?? [],
+          options: config.options,
+          color: config.color,
+          accessGroups: config.accessGroups,
         }));
       }
 

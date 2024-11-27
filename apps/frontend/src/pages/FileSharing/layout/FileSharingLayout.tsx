@@ -1,15 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionOptionsOnlyOffice';
+import APP_CONFIG_SECTION_KEYS_ONLY_OFFICE from '@libs/appconfig/constants/appConfigSectionKeysOnlyOffice';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import getAppConfigSectionFieldValue from '@libs/appconfig/utils/getAppConfigSectionFieldValue';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import isValidFile from '@libs/filesharing/utils/isValidFile';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import { appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 
 interface FileSharingLayoutProps {
   files: DirectoryFileDTO[];
@@ -22,7 +24,13 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const documentServerURL = useMemo(
-    () => getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_URL),
+    () =>
+      getAppConfigSectionFieldValue(
+        appConfigs,
+        APPS.FILE_SHARING,
+        APP_CONFIG_SECTION_OPTIONS_ONLY_OFFICE.sectionName,
+        APP_CONFIG_SECTION_KEYS_ONLY_OFFICE.ONLY_OFFICE_URL,
+      ),
     [appConfigs],
   );
 

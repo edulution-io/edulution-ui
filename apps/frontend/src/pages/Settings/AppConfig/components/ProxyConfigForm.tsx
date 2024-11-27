@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AppConfigOption } from '@libs/appconfig/types';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
 import YamlEditor from '@/components/shared/YamlEditor';
@@ -10,28 +9,28 @@ import Input from '@/components/shared/Input';
 import { parse, stringify } from 'yaml';
 import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
-import AppConfigForm from '@libs/appconfig/types/appConfigForm';
+import { AppConfigForm, AppConfigField } from '@libs/appconfig/types';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 
 type ProxyConfigFormProps = {
   settingLocation: string;
-  item: AppConfigOption;
+  item: AppConfigField;
   form: UseFormReturn<AppConfigForm>;
 };
 
 const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item, form }) => {
   const { t } = useTranslation();
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
-  const isYamlConfigured = form.watch(`${item.id}.proxyConfig`) !== '';
+  const isYamlConfigured = form.watch(`${item.name}.proxyConfig`) !== '';
 
   const defaultYaml = useMemo(() => getDefaultYaml(settingLocation), [settingLocation]);
 
   const updateYaml = () => {
-    const proxyPath = form.getValues(`${item.id}.proxyPath`);
-    const proxyDestination = form.getValues(`${item.id}.proxyDestination`);
-    const stripPrefix = form.getValues(`${item.id}.stripPrefix`) as boolean;
+    const proxyPath = form.getValues(`${item.name}.proxyPath`);
+    const proxyDestination = form.getValues(`${item.name}.proxyDestination`);
+    const stripPrefix = form.getValues(`${item.name}.stripPrefix`) as boolean;
 
-    const jsonData = parse(form.getValues(`${item.id}.proxyConfig`) || defaultYaml) as YamlDokument;
+    const jsonData = parse(form.getValues(`${item.name}.proxyConfig`) || defaultYaml) as YamlDokument;
     if (proxyPath) {
       jsonData.http.routers[settingLocation].rule = `PathPrefix(\`/${proxyPath}\`)`;
       if (stripPrefix) {
@@ -52,7 +51,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
     }
 
     const updatedYaml = stringify(jsonData);
-    form.setValue(`${item.id}.proxyConfig`, updatedYaml);
+    form.setValue(`${item.name}.proxyConfig`, updatedYaml);
   };
 
   useEffect(() => {
@@ -60,27 +59,27 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
       updateYaml();
     }
   }, [
-    form.watch(`${item.id}.proxyPath`),
-    form.watch(`${item.id}.proxyDestination`),
-    form.watch(`${item.id}.stripPrefix`),
+    form.watch(`${item.name}.proxyPath`),
+    form.watch(`${item.name}.proxyDestination`),
+    form.watch(`${item.name}.stripPrefix`),
   ]);
 
   const handleClearProxyConfig = () => {
-    form.setValue(`${item.id}.proxyConfig`, '');
+    form.setValue(`${item.name}.proxyConfig`, '');
   };
 
   return (
     <AccordionSH type="multiple">
-      <AccordionItem value={item.id}>
+      <AccordionItem value={item.name}>
         <AccordionTrigger className="flex text-h4">
           <h4>{t(`form.proxyConfig`)}</h4>
         </AccordionTrigger>
         <AccordionContent className="space-y-10 px-1 pt-4">
           <div className="flex flex-row items-center space-x-6">
             <FormFieldSH
-              key={`${item.id}.proxyPath`}
+              key={`${item.name}.proxyPath`}
               control={form.control}
-              name={`${item.id}.proxyPath`}
+              name={`${item.name}.proxyPath`}
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
@@ -100,9 +99,9 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               )}
             />
             <FormFieldSH
-              key={`${item.id}.proxyDestination`}
+              key={`${item.name}.proxyDestination`}
               control={form.control}
-              name={`${item.id}.proxyDestination`}
+              name={`${item.name}.proxyDestination`}
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
@@ -122,9 +121,9 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               )}
             />
             <FormFieldSH
-              key={`${item.id}.stripPrefix`}
+              key={`${item.name}.stripPrefix`}
               control={form.control}
-              name={`${item.id}.stripPrefix`}
+              name={`${item.name}.stripPrefix`}
               defaultValue={false}
               render={({ field }) => (
                 <FormItem>
@@ -163,9 +162,9 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
           </div>
 
           <FormFieldSH
-            key={`${item.id}.proxyConfig`}
+            key={`${item.name}.proxyConfig`}
             control={form.control}
-            name={`${item.id}.proxyConfig`}
+            name={`${item.name}.proxyConfig`}
             defaultValue={defaultYaml}
             render={({ field }) => (
               <FormItem>

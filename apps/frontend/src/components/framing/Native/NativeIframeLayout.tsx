@@ -5,6 +5,8 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
+import APP_CONFIG_SECTIONS_NAME_GENERAL from '@libs/appconfig/constants/sectionsNameAppConfigGeneral';
 
 interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
@@ -61,13 +63,24 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const currentAppConfig = findAppConfigByName(appConfigs, appName);
   if (!currentAppConfig) return null;
 
+  const appConfigGENERALSection = currentAppConfig.options?.find(
+    (section) => section.sectionName === APP_CONFIG_SECTIONS_NAME_GENERAL,
+  );
+  const appConfigURLField = appConfigGENERALSection?.options.find(
+    (field) => field.name === APP_CONFIG_SECTION_KEYS_GENERAL.URL,
+  );
+
   return (
     <iframe
       ref={iframeRef}
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
-      src={loadedFrames.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
+      src={
+        loadedFrames.includes(currentAppConfig.name)
+          ? (appConfigURLField?.value as string) || (appConfigURLField?.defaultValue as string)
+          : undefined
+      }
       style={getStyle()}
     />
   );

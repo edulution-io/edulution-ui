@@ -17,6 +17,8 @@ import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import APP_CONFIG_SECTIONS_NAME_GENERAL from '@libs/appconfig/constants/sectionsNameAppConfigGeneral';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
@@ -81,12 +83,22 @@ class ConferencesService {
     }
 
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
-    if (!appConfig?.options.url || !appConfig.options.apiKey) {
+    const generalOptionSection = appConfig?.options.find(
+      (section) => section.sectionName === APP_CONFIG_SECTIONS_NAME_GENERAL,
+    );
+    const generalSectionURLField = generalOptionSection?.options.find(
+      (field) => field.name === APP_CONFIG_SECTION_KEYS_GENERAL.URL,
+    );
+    const generalSectionAPIKEYField = generalOptionSection?.options.find(
+      (field) => field.name === APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
+    );
+
+    if (!generalSectionURLField || !generalSectionAPIKEYField) {
       throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    this.BBB_API_URL = appConfig.options.url;
-    this.BBB_SECRET = appConfig.options.apiKey;
+    this.BBB_API_URL = (generalSectionURLField.value as string) || (generalSectionURLField.defaultValue as string);
+    this.BBB_SECRET = (generalSectionAPIKEYField.value as string) || (generalSectionAPIKEYField.defaultValue as string);
   }
 
   async getInvitedMembers(createConferenceDto: CreateConferenceDto | Conference): Promise<string[]> {
@@ -248,6 +260,7 @@ class ConferencesService {
         $or: [{ 'invitedAttendees.username': user.preferred_username }, ...groupPathConditions],
       })
       .exec();
+
     return this.syncConferencesWithBBB(conferencesToBeSynced);
   }
 

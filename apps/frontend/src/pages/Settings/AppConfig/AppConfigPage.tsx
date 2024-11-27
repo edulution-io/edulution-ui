@@ -4,36 +4,33 @@ import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Input from '@/components/shared/Input';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
+import { AppConfigDto, AppConfigSection, AppIntegrationType } from '@libs/appconfig/types';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import { findAppConfigByName } from '@/utils/common';
+import { SettingsIcon } from '@/assets/icons';
+import useGroupStore from '@/store/GroupStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
-import useGroupStore from '@/store/GroupStore';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import AppConfigOptionsForm from '@/pages/Settings/AppConfig/components/AppConfigOptionsForm';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import { SettingsIcon } from '@/assets/icons';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOnlyOfficeOptionsForm';
-
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
-import useMailsStore from '@/pages/Mail/useMailsStore';
-import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
-import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
+import { AccordionSH } from '@/components/ui/AccordionSH';
+import TYPE_NAME_APP_CONFIG_FIELDS_PROXY_CONFIG from '@libs/appconfig/constants/typeNameAppConfigFieldsProxyConfig';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
-import ProxyConfigForm from './components/ProxyConfigForm';
 
-const AppConfigPage: React.FC = () => {
+const AppConfigPage = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -63,7 +60,7 @@ const AppConfigPage: React.FC = () => {
   const areSettingsVisible = settingLocation !== '';
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
+    if (!currentConfig || !currentConfig.accessGroups) {
       return;
     }
 
@@ -75,27 +72,41 @@ const AppConfigPage: React.FC = () => {
       label: item.label,
     }));
 
-    const newExtendedOptions = currentConfig.extendedOptions?.map((item) => ({
-      name: item.name,
-      value: item.value,
-      description: item.description,
-      type: item.type,
-    }));
-
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
-    setValue(`${settingLocation}.extensions`, newExtendedOptions);
 
-    if (currentConfig.options) {
-      Object.keys(currentConfig.options).forEach((key) => {
-        if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
-          const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
-          setValue(`${settingLocation}.${key}`, proxyConfig);
-        } else {
-          setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
-        }
-      });
-    }
+    const defaultAppConfigOptions = APP_CONFIG_OPTIONS.find((config) => config.name === settingLocation)?.options;
+    defaultAppConfigOptions?.map((currentSection) => {
+      const existingSection = currentConfig.options?.find(
+        (section) => section.sectionName === currentSection.sectionName,
+      );
+      return {
+        sectionName: currentSection.sectionName,
+        options: currentSection.options?.map((currentField) => {
+          if (currentField.name === APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG) {
+            const proxyConfig = JSON.parse(currentField.value as string) as string;
+            const updatedField = {
+              type: currentField.type || TYPE_NAME_APP_CONFIG_FIELDS_PROXY_CONFIG,
+              name: currentField.name || APP_CONFIG_SECTION_KEYS_GENERAL.PROXYCONFIG,
+              value: proxyConfig,
+              width: currentField.width || 'full',
+            };
+            setValue(`${settingLocation}.options.${currentSection.sectionName}.${currentField.name}`, updatedField);
+            return updatedField;
+          }
+
+          const currentOption = existingSection?.options?.find((field) => field.name === currentField.name);
+          const updatedField = {
+            type: currentOption?.type || currentField.type || 'text',
+            name: currentOption?.name || currentField.name,
+            value: currentOption?.value || currentField.value,
+            width: currentOption?.width || currentField.width || 'full',
+          };
+          setValue(`${settingLocation}.options.${currentSection.sectionName}.${currentField.name}`, updatedField);
+          return updatedField;
+        }),
+      };
+    });
   };
 
   useEffect(() => {
@@ -120,34 +131,25 @@ const AppConfigPage: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
-    const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
+    const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.name.includes(settingLocation));
     if (!selectedOption) {
       return;
     }
 
-    const extendedOptions =
-      settingLocation === 'filesharing'
-        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
-            name: e.name,
-            description: e.description,
-            type: e.type,
-            value: getValues(`${settingLocation}.${e.name}`) as string,
-          })) as AppConfigExtendedOption[])
-        : [];
-
-    const newConfig = {
+    const newConfig: AppConfigDto = {
       name: settingLocation,
       icon: selectedOption.icon,
       appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
-      options:
-        selectedOption.options?.reduce((acc, o) => {
-          acc[o] =
-            o === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
-              ? JSON.stringify(getValues(`${settingLocation}.${o}`) as string)
-              : (getValues(`${settingLocation}.${o}`) as string);
-          return acc;
-        }, {} as AppConfigOptions) || {},
-      extendedOptions,
+      options: (selectedOption.options || []).map((section) => ({
+        sectionName: section.sectionName,
+        options: section.options?.map((field) => ({
+          name: field.name,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          value: getValues(`${settingLocation}.${field.name}`),
+          type: field.type,
+          width: field.width,
+        })),
+      })),
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
     };
 
@@ -183,30 +185,30 @@ const AppConfigPage: React.FC = () => {
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
-                key={item.id}
+                key={item.name}
                 className="m-5"
               >
-                {settingLocation === item.id ? (
+                {settingLocation === item.name ? (
                   <div className="space-y-10">
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
                       appConfig={appConfigs}
-                      isNativeApp={item.isNativeApp}
+                      isNativeApp={item.appType === APP_INTEGRATION_VARIANT.NATIVE}
                     />
                     <FormFieldSH
-                      key={`${item.id}.accessGroups`}
+                      key={`${item.name}.accessGroups`}
                       control={control}
-                      name={`${item.id}.accessGroups`}
+                      name={`${item.name}.accessGroups`}
                       defaultValue=""
                       render={() => (
                         <FormItem>
                           <h4>{t(`permission.groups`)}</h4>
                           <FormControl>
                             <AsyncMultiSelect<MultipleSelectorGroup>
-                              value={getValues(`${item.id}.accessGroups`) as MultipleSelectorGroup[]}
+                              value={getValues(`${item.name}.accessGroups`) as MultipleSelectorGroup[]}
                               onSearch={searchGroups}
-                              onChange={(groups) => handleGroupsChange(groups, `${item.id}.accessGroups`)}
+                              onChange={(groups) => handleGroupsChange(groups, `${item.name}.accessGroups`)}
                               placeholder={t('search.type-to-search')}
                             />
                           </FormControl>
@@ -215,50 +217,17 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {item.options?.map((itemOption) =>
-                      itemOption !== 'proxyConfig' ? (
-                        <FormFieldSH
-                          key={`${item.id}.${itemOption}`}
-                          control={control}
-                          name={`${item.id}.${itemOption}`}
-                          defaultValue=""
-                          render={({ field }) => (
-                            <FormItem>
-                              <h4>{t(`form.${itemOption}`)}</h4>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  variant="lightGray"
-                                />
-                              </FormControl>
-                              <FormMessage className="text-p" />
-                            </FormItem>
-                          )}
-                        />
-                      ) : (
-                        <ProxyConfigForm
-                          key={`${item.id}.${itemOption}`}
-                          settingLocation={settingLocation}
-                          item={item}
-                          form={form}
-                        />
-                      ),
-                    )}
-                    {item.extendedOptions && (
+                    {item.options && (
                       <div className="space-y-10">
                         <AccordionSH type="multiple">
-                          <AccordionItem value="onlyOffice">
-                            <AccordionTrigger className="flex text-xl font-bold">
-                              <h4>{t('appExtendedOptions.title')}</h4>
-                            </AccordionTrigger>
-                            <AccordionContent className="space-y-10 px-1 pt-4">
-                              <ExtendedOnlyOfficeOptionsForm
-                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
-                                baseName={settingLocation}
-                                form={form}
-                              />
-                            </AccordionContent>
-                          </AccordionItem>
+                          <AppConfigOptionsForm
+                            form={form}
+                            settingLocation={settingLocation}
+                            sections={form.watch(`${settingLocation}.options`) as AppConfigSection[]}
+                            onChange={(extensionValues: AppConfigSection[]) =>
+                              form.setValue(`${item.name}.options`, extensionValues)
+                            }
+                          />
                         </AccordionSH>
                       </div>
                     )}
@@ -276,9 +245,9 @@ const AppConfigPage: React.FC = () => {
 
   const filteredAppOptions = () => {
     const existingOptions = appConfigs.map((item) => item.name);
-    const filteredOptions = APP_CONFIG_OPTIONS.filter((item) => !existingOptions.includes(item.id));
+    const filteredOptions = APP_CONFIG_OPTIONS.filter((item) => !existingOptions.includes(item.name));
 
-    return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
+    return filteredOptions.map((item) => ({ id: item.name, name: `${item.name}.sidebar` }));
   };
 
   const handleDeleteSettingsItem = async () => {
@@ -296,7 +265,7 @@ const AppConfigPage: React.FC = () => {
         <NativeAppHeader
           title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}
-          iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
+          iconSrc={APP_CONFIG_OPTIONS.find((item) => item.name === settingLocation)?.icon || SettingsIcon}
         />
         {settingsForm()}
       </div>

@@ -4,6 +4,7 @@ import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import Input from '@/components/shared/Input';
+import Switch from '@/components/ui/Switch';
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
 const variants = cva([], {
@@ -23,11 +24,11 @@ type FormFieldProps<T extends FieldValues> = {
   isLoading?: boolean;
   labelTranslationId: string;
   type?: HTMLInputTypeAttribute;
-  defaultValue?: string | number | boolean;
-  readonly?: boolean;
-  value?: string | number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  defaultValue?: PathValue<T, Path<T>> | string | number | boolean;
+  value?: string | number | boolean;
   className?: string;
+  onChange?: (e: string | number | boolean | React.ChangeEvent<HTMLInputElement>) => void;
+  readOnly?: boolean;
 } & VariantProps<typeof variants>;
 
 const FormField = <T extends FieldValues>({
@@ -37,14 +38,59 @@ const FormField = <T extends FieldValues>({
   isLoading,
   labelTranslationId,
   type,
-  variant,
   defaultValue,
-  readonly = false,
   value,
   onChange,
   className,
+  variant = 'lightGray',
+  readOnly = false,
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getInputComponent = (field: any) => {
+    switch (type) {
+      case 'boolean': {
+        return (
+          <Switch
+            checked={value as boolean}
+            onCheckedChange={onChange}
+            disabled={readOnly || disabled || isLoading}
+          />
+        );
+      }
+      case 'number': {
+        return (
+          <Input
+            {...field}
+            type="number"
+            defaultValue={defaultValue as string}
+            value={value as number}
+            onChange={onChange}
+            disabled={disabled || isLoading}
+            readOnly={readOnly}
+            variant={variant}
+          />
+        );
+      }
+      // TODO: extend type with dropdown to enable the selection of choices
+      case 'text':
+      default: {
+        return (
+          <Input
+            {...field}
+            type={type}
+            defaultValue={defaultValue as string}
+            value={value as string}
+            onChange={onChange}
+            disabled={disabled || isLoading}
+            readOnly={readOnly}
+            variant={variant}
+          />
+        );
+      }
+    }
+  };
 
   return (
     <FormFieldSH
@@ -54,26 +100,11 @@ const FormField = <T extends FieldValues>({
       defaultValue={defaultValue as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn(variants({ variant }))}>
-            <p className="font-bold">{t(labelTranslationId)}</p>
+          <FormLabel className={cn(variants({ variant }), className)}>
+            <p className={className}>{t(labelTranslationId)}</p>
           </FormLabel>
-          <FormControl>
-            <Input
-              {...field}
-              type={type}
-              disabled={disabled || isLoading}
-              variant={variant}
-              readOnly={readonly}
-              value={value}
-              defaultValue={defaultValue as string}
-              onChange={(e) => {
-                field.onChange(e);
-                if (onChange) onChange(e);
-              }}
-              className={className}
-            />
-          </FormControl>
-          <FormMessage className={cn('text-p', variants({ variant }))} />
+          <FormControl>{getInputComponent(field)}</FormControl>
+          <FormMessage className={cn('text-p', variants({ variant }), className)} />
         </FormItem>
       )}
     />

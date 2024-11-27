@@ -2,8 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken, getConnectionToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_CONFIG_SECTION_OPTIONS_GENERAL from '@libs/appconfig/constants/appConfigSectionOptionsGeneral';
+import APP_CONFIG_SECTION_KEYS_GENERAL from '@libs/appconfig/constants/appConfigSectionKeysGeneral';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
+import testingAppConfig from './mocks/app-config';
 
 jest.mock('fs');
 
@@ -47,77 +50,53 @@ describe('AppConfigService', () => {
 
   describe('insertConfig', () => {
     it('should successfully insert configs', async () => {
-      const appConfigs = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {
-            url: 'test/path',
-            apiKey: '123456789',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      await service.insertConfig(appConfigs);
-      expect(mockAppConfigModel.insertMany).toHaveBeenCalledWith(appConfigs);
+      await service.insertConfig(testingAppConfig);
+      expect(mockAppConfigModel.insertMany).toHaveBeenCalledWith(testingAppConfig);
     });
   });
 
   describe('updateConfig', () => {
     it('should successfully update configs', async () => {
-      const appConfigs = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {
-            url: 'test/path',
-            apiKey: '123456789',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-
-      await service.updateConfig(appConfigs);
-      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(expect.any(Array)); // Oder detailliertere Prüfung
+      await service.updateConfig(testingAppConfig);
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(expect.any(Array));
     });
   });
 
   describe('getAppConfigs', () => {
     it('should return app configs', async () => {
-      const appConfigObjects = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: { url: 'test/path' },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: [],
-        },
-      ];
-
-      const expectedConfigs = appConfigObjects.map((config) => ({
+      const expectedConfigs = testingAppConfig.map((config) => ({
         name: config.name,
         icon: config.icon,
         appType: config.appType,
-        options: { url: config.options.url ?? '' },
-        accessGroups: [],
-        extendedOptions: config.extendedOptions ?? [],
+        options: config.options ?? [
+          {
+            sectionName: APP_CONFIG_SECTION_OPTIONS_GENERAL.sectionName,
+            options: [
+              {
+                name: APP_CONFIG_SECTION_KEYS_GENERAL.URL,
+                width: 'full',
+                type: 'text',
+                value: 'test/path',
+              },
+              {
+                name: APP_CONFIG_SECTION_KEYS_GENERAL.APIKEY,
+                width: 'full',
+                type: 'text',
+                value: '123456789',
+              },
+            ],
+          },
+        ],
+        accessGroups: [
+          { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+          { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+        ],
+        color: undefined,
       }));
 
       const ldapGroups = ['group1', 'group2'];
 
-      mockAppConfigModel.find.mockResolvedValue(appConfigObjects);
+      mockAppConfigModel.find.mockResolvedValue(testingAppConfig);
 
       const configs = await service.getAppConfigs(ldapGroups);
 

@@ -10,7 +10,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
-import mockAppConfigService from '../appconfig/appconfig.service.mock';
+import mockAppConfigService from '../appconfig/mocks/appconfig.service.mock';
 import Attendee from './attendee.schema';
 import type UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
@@ -122,6 +122,7 @@ describe(ConferencesService.name, () => {
   describe('findAll', () => {
     it('should return an array of conferences', async () => {
       const result = await service.findAllConferencesTheUserHasAccessTo(mockJWTUser);
+
       expect(result[0].creator).toEqual(mockCreator);
       expect(model.find).toHaveBeenCalled();
     });

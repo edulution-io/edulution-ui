@@ -8,7 +8,7 @@ import ConferencesService from './conferences.service';
 import ConferencesController from './conferences.controller';
 import { Conference } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
-import mockAppConfigService from '../appconfig/appconfig.service.mock';
+import mockAppConfigService from '../appconfig/mocks/appconfig.service.mock';
 import type UserConnections from '../types/userConnections';
 
 const mockConferencesModel = {
