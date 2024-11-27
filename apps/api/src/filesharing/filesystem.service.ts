@@ -26,8 +26,7 @@ class FilesystemService {
 
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async fetchFileStream(
+  static async fetchFileStream(
     url: string,
     client: AxiosInstance,
     streamFetching = false,
@@ -113,7 +112,7 @@ class FilesystemService {
       if (!user) {
         return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusReplay;
       }
-      const responseStream = await this.fetchFileStream(url, client);
+      const responseStream = await FilesystemService.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
       const outputFilePath = FilesystemService.getOutputFilePath(outputFolder, hashedFilename);
 

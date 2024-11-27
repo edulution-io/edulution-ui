@@ -295,7 +295,7 @@ class FilesharingService {
     try {
       const client = await this.getClient(username);
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const resp = await this.fileSystemService.fetchFileStream(url, client);
+      const resp = await FilesystemService.fetchFileStream(url, client);
       if (resp instanceof Readable) {
         return resp;
       }
