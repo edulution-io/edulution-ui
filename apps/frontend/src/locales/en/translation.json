@@ -173,12 +173,14 @@
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
+      "CreateCollectFolderForStudentFailed": "Create collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
-      "SharingFailed": "Sharing files failed"
+      "SharingFailed": "Sharing files failed",
+      "CopyFailed": "Copy failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -298,7 +300,12 @@
     "saveSession": "Save session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "collectAndCut": "Cut",
+    "collectAndCopy": "Copy",
+    "copyOrCut": "Would you like to cut or copy the files?",
+    "filesShared": "Files shared",
+    "filesCollected": "Files collected"
   },
   "select": "Select",
   "selectAll": "Select all",

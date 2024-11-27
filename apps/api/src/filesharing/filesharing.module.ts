@@ -10,5 +10,6 @@ import OnlyofficeService from './onlyoffice.service';
   imports: [HttpModule, AppConfigModule],
   controllers: [FilesharingController],
   providers: [FilesharingService, FilesystemService, OnlyofficeService],
+  exports: [FilesharingService],
 })
 export default class FilesharingModule {}

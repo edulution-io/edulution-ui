@@ -14,6 +14,9 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { toast } from 'sonner';
+import { t } from 'i18next';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -25,6 +28,7 @@ const initialState = {
   member: [],
   currentGroupType: undefined,
   currentGroupName: undefined,
+  collectionType: LMN_API_COLLECT_OPERATIONS.COPY,
 };
 
 type PersistentLessonStore = (
@@ -40,6 +44,7 @@ const useLessonStore = create<LessonStore>(
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),
       setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
+      setCollectionType: (collectionType: LmnApiCollectOperations) => set({ collectionType }),
 
       addManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });
@@ -74,13 +79,18 @@ const useLessonStore = create<LessonStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
+          toast.success(t('classmanagement.filesShared'));
           set({ isLoading: false });
         }
       },
 
-      collectFiles: async (collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) => {
+      collectFiles: async (
+        collectFileRequestDTO: CollectFileRequestDTO[],
+        userRole: string,
+        type: LmnApiCollectOperations,
+      ) => {
         set({ error: null, isLoading: true });
-        const queryParamString = `?userRole=${encodeURIComponent(userRole)}`;
+        const queryParamString = `?type=${type}&userRole=${userRole}`;
         try {
           await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
             collectFileRequestDTO,
@@ -88,6 +98,7 @@ const useLessonStore = create<LessonStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
+          toast.success(t('classmanagement.filesCollected'));
           set({ isLoading: false });
         }
       },

@@ -225,14 +225,14 @@ describe('LmnApiService', () => {
       const mockResponse = { data: { className: 'SchoolClass' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
 
-      const result = await service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join');
+      const result = await service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join', 'username');
       expect(result).toEqual(mockResponse.data);
     });
 
     it('should throw CustomHttpException on failure', async () => {
       mockedAxios.post.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join')).rejects.toThrow(
+      await expect(service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join', 'username')).rejects.toThrow(
         CustomHttpException,
       );
     });

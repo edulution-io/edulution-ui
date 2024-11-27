@@ -35,6 +35,10 @@ interface DataTableProps<TData> {
     others?: string[];
   };
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
+  textColorClass?: string;
+  showHeader?: boolean;
+  showSelectedCount?: boolean;
+  footer?: React.ReactNode;
 }
 
 const ScrollableTable = <TData,>({
@@ -50,6 +54,10 @@ const ScrollableTable = <TData,>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
+  textColorClass = 'text-white',
+  showHeader = true,
+  showSelectedCount = true,
+  footer,
 }: DataTableProps<TData>) => {
   const { t } = useTranslation();
 
@@ -87,43 +95,34 @@ const ScrollableTable = <TData,>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
 
-      {selectedRowsCount > 0 ? (
-        <div
-          id={selectedRowsMessageId}
-          className="flex-1 text-sm text-muted-foreground text-white"
-        >
-          {selectedRowsCount > 0 ? (
-            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+      {showSelectedCount &&
+        (selectedRowsCount > 0
+          ? t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
               selected: selectedRowsCount,
               total: filteredRowCount,
             })
-          ) : (
-            <>&nbsp;</>
-          )}
-        </div>
-      ) : (
-        <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
-      )}
-
+          : !footer && <div className={`flex-1 text-sm ${textColorClass}`}>&nbsp;</div>)}
       <div
         className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <Table>
-          <TableHeader
-            className="text-foreground scrollbar-thin"
-            id={tableHeaderId}
-          >
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
+          {showHeader && (
+            <TableHeader
+              className={`text-foreground ${textColorClass}`}
+              id={tableHeaderId}
+            >
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+          )}
           <TableBody className="container">
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
@@ -134,7 +133,7 @@ const ScrollableTable = <TData,>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={`${row.id}-${cell.column.id}`}
-                      className="text-white"
+                      className={textColorClass}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -145,7 +144,7 @@ const ScrollableTable = <TData,>({
               <TableRow>
                 <TableCell
                   colSpan={data?.length}
-                  className="h-24 text-center text-white"
+                  className={`h-24 text-center ${textColorClass}`}
                 >
                   {t('table.noDataAvailable')}
                 </TableCell>
@@ -154,6 +153,7 @@ const ScrollableTable = <TData,>({
           </TableBody>
         </Table>
       </div>
+      {footer && <div className="max-w-[42vh] overflow-hidden text-ellipsis whitespace-nowrap">{footer}</div>}
     </>
   );
 };
