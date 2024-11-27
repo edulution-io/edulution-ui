@@ -10,6 +10,7 @@
     "coverage": "vitest run --coverage",
     "dev": "nx serve frontend",
     "api": "nx serve api",
+    "demo": "nx run frontend:serve:demo",
     "serveFrontendAndApi": "nx run-many --target=serve --projects=frontend,api",
     "build": "nx build frontend --emptyOutDir",
     "build:api": "nx build api",
