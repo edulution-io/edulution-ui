@@ -79,6 +79,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           textOnHover={isRunning ? t('common.join') : ''}
           row={user?.username === creator?.username ? row : undefined}
           className="min-w-32"
+          isFirstColumn
         />
       );
     },
@@ -266,7 +267,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const { creator, isRunning, meetingID } = row.original;
       const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+      const { joinConference, setJoinConferenceUrl, joinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
       const isUserTheCreator = user?.username === creator?.username;
       const { icon, text } = getRowAction(isRunning, isLoading, isUserTheCreator, t);

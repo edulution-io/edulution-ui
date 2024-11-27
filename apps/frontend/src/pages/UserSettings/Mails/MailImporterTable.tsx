@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  OnChangeFn,
-  RowSelectionState,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import { OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { SyncJobDto } from '@libs/mail/types';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import APPS from '@libs/appconfig/constants/apps';
 import MailImporterTableColumns from './MailImporterTableColumns';
 
 const MailImporterTable: React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { t } = useTranslation();
   const { syncJobs, selectedSyncJob, setSelectedSyncJob, getSyncJob } = useMailsStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedSyncJob) : updaterOrValue;
@@ -27,81 +17,17 @@ const MailImporterTable: React.FC = () => {
     void getSyncJob();
   }, []);
 
-  const table = useReactTable({
-    data: syncJobs,
-    columns: MailImporterTableColumns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
-    getRowId: (originalRow: SyncJobDto) => `${originalRow.id}`,
-    state: {
-      sorting,
-      rowSelection: selectedSyncJob,
-    },
-  });
-
   return (
-    <>
-      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <div className="flex-1 text-sm text-background">
-          {t('mail.importer.rowsSelected', {
-            selected: table.getFilteredSelectedRowModel().rows.length,
-            total: table.getFilteredRowModel().rows.length,
-          })}
-        </div>
-      ) : (
-        <div className="flex-1 text-sm">&nbsp;</div>
-      )}
-      <div className="min-h-64 flex-1 pr-3.5">
-        <ScrollArea className="max-h-[80vh] overflow-auto scrollbar-thin">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="text-background"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-background"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={syncJobs.length}
-                    className="h-24 text-center text-background"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </div>
-    </>
+    <ScrollableTable
+      columns={MailImporterTableColumns}
+      data={syncJobs}
+      sorting={sorting}
+      setSorting={setSorting}
+      applicationName={APPS.MAIL}
+      onRowSelectionChange={handleRowSelectionChange}
+      selectedRows={selectedSyncJob}
+      getRowId={(originalRow: SyncJobDto) => `${originalRow.id}`}
+    />
   );
 };
 

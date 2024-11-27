@@ -1,9 +1,11 @@
 import { ConferencesIcon, VideoConferenceIcon } from '@/assets/icons';
-import { MenuBarEntryProps } from '@/datatypes/types';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import APPS from '@libs/appconfig/constants/apps';
 
 const useConferencesPageMenu = () => {
-  const menuBar = (): MenuBarEntryProps => ({
+  const menuBar = (): MenuBarEntry => ({
     title: 'conferences.title',
+    appName: APPS.CONFERENCES,
     disabled: true,
     icon: ConferencesIcon,
     color: 'hover:bg-ciDarkBlue',

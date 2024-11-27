@@ -90,12 +90,12 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     header: function Header({ column }) {
       return (
         <SortableHeader<DirectoryFileDTO, unknown>
-          className={hideOnMobileClassName}
           titleTranslationId="fileSharingTable.lastModified"
           column={column}
         />
       );
     },
+    accessorFn: (row) => row.lastmod,
     cell: ({ row }) => {
       const directoryFile = row.original;
       let formattedDate: string;

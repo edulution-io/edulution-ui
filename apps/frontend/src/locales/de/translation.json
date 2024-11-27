@@ -54,6 +54,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
       "RemoveProjectFailed": "Entfernen des Projekts fehlgeschlagen",
@@ -83,6 +84,7 @@
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse"
     }
   },
@@ -147,7 +149,8 @@
     "privacyStatus": "Zutritt",
     "public": "Öffentlich",
     "private": "Privat",
-    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Konferenz ausgewählt",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -176,6 +179,8 @@
     "saveFile": "Datei speichern",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
+    "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -502,7 +507,8 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "UnsupportedAppConfiguration": "Nicht unterstützte App-Konfiguration für rootPathName: {{rootPathName}}"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -512,6 +518,26 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "details": {
+      "title": "Benutzerdetails",
+      "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
+      "userInformation": "Benutzerbezogene Informationen",
+      "dateOfBirth": "Geburtsdatum",
+      "givenName": "Vorname",
+      "displayName": "Anzeigename",
+      "name": "Benutzername",
+      "role": "Rolle",
+      "schoolName": "Schulname",
+      "schoolSubjects": "Klassen",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "proxyAddresses": "E-Mail Proxy-Addressen",
+      "addNew": "Tippen um hinzuzufügen",
+      "badgeAlreadyExists": "Der Eintrag existiert bereits",
+      "sophomorixCustom1_teacher": "Schulfach 1",
+      "sophomorixCustom2_teacher": "Schulfach 2",
+      "sophomorixCustomMulti1_teacher": "Kaffeesorten"
+    },
     "security": {
       "title": "Sicherheit",
       "sidebar": "Sicherheit",
@@ -645,10 +671,11 @@
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
+    "none": "Keine",
     "edit": "Bearbeiten",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
-    "not-available": "'Nicht verfügbar'",
+    "not-available": "Nicht verfügbar",
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen"
@@ -701,7 +728,6 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {

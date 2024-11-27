@@ -6,6 +6,7 @@ import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
+import FallbackText from '@/components/shared/FallbackText';
 import useElementHeight from '@/hooks/useElementHeight';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
@@ -63,12 +64,12 @@ const SurveyTable = (props: SurveyTableProps) => {
               />
             </TableCell>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            <TableCell className="text-background">{surveyObj?.title || t('common.not-available')}</TableCell>
+            <TableCell className="text-background">{surveyObj?.title || FallbackText}</TableCell>
             <TableCell className="text-background">
-              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : FallbackText}
             </TableCell>
             <TableCell className="text-background">
-              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : t('common.not-available')}
+              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : FallbackText}
             </TableCell>
             <TableCell className="text-background">
               {survey?.invitedAttendees && survey?.participatedAttendees && survey.isPublic !== true

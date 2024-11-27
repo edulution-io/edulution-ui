@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import { getFromPathName } from '@libs/common/utils';
-import { MenuBarEntryProps, MenuItem } from '@/datatypes/types';
 import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
@@ -14,8 +13,12 @@ import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
 import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import type TApps from '@libs/appconfig/types/appsType';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import MenuItem from '@libs/menubar/menuItem';
+import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import { toast } from 'sonner';
 
-const useMenuBarConfig = (): MenuBarEntryProps => {
+const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
@@ -28,11 +31,20 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
 
-  const menuBarConfigSwitch = (): MenuBarEntryProps => {
+  const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
 
     if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
     if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
+
+    const defaultReturnMenuBarEntry = {
+      menuItems: [],
+      title: '',
+      icon: '',
+      color: '',
+      disabled: false,
+      appName: APPS.NONE,
+    };
 
     switch (rootPathName as TApps) {
       case APPS.FILE_SHARING: {
@@ -57,7 +69,12 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
       }
       default: {
-        return { menuItems: [], title: '', icon: '', color: '', disabled: false };
+        if (!rootPathName) {
+          return defaultReturnMenuBarEntry;
+        }
+        console.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        toast.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
+        return defaultReturnMenuBarEntry;
       }
     }
   };
@@ -76,6 +93,7 @@ const useMenuBarConfig = (): MenuBarEntryProps => {
     disabled: configValues.disabled,
     icon: configValues.icon,
     color: configValues.color,
+    appName: configValues.appName,
   };
 };
 

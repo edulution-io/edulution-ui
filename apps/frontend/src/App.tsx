@@ -28,7 +28,7 @@ const App = () => {
     if (user?.language && user.language !== 'system') {
       i18n.changeLanguage(user.language).catch((e) => console.error('Change Language Error', e));
     } else {
-      i18n.changeLanguage(undefined).catch((e) => console.error('Reset to System Language Error', e));
+      i18n.changeLanguage(navigator.language).catch((e) => console.error('Reset to System Language Error', e));
     }
   }, [user?.language]);
 
