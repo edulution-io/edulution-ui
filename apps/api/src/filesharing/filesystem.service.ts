@@ -5,11 +5,9 @@ import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
 import { promisify } from 'util';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
-import { HttpService } from '@nestjs/axios';
-import axios, { AxiosResponse } from 'axios';
-import getProtocol from '@libs/common/utils/getProtocol';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { ResponseType } from '@libs/common/types/http-methods';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, from } from 'rxjs';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
@@ -24,28 +22,18 @@ const pipelineAsync = promisify(pipeline);
 
 @Injectable()
 class FilesystemService {
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly userService: UsersService) {}
 
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async fetchFileStream(
-    username: string,
     url: string,
+    client: AxiosInstance,
     streamFetching = false,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const password = await this.userService.getPassword(username);
-      const authContents = `${username}:${password}`;
-      const protocol = getProtocol(url);
-      const authenticatedUrl = url.replace(/^https?:\/\//, `${protocol}://${authContents}@`);
-
-      const fileStream = this.httpService.get<Readable>(authenticatedUrl, {
-        responseType: ResponseType.STREAM,
-      });
-
+      const fileStream = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
       return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
@@ -111,7 +99,12 @@ class FilesystemService {
     }
   }
 
-  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+  async fileLocation(
+    username: string,
+    filePath: string,
+    filename: string,
+    client: AxiosInstance,
+  ): Promise<WebdavStatusReplay> {
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
     FilesystemService.ensureDirectoryExists(outputFolder);
 
@@ -120,7 +113,7 @@ class FilesystemService {
       if (!user) {
         return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusReplay;
       }
-      const responseStream = await this.fetchFileStream(user?.username, `${url}`);
+      const responseStream = await this.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
       const outputFilePath = FilesystemService.getOutputFilePath(outputFolder, hashedFilename);
 

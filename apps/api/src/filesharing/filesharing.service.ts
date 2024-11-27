@@ -293,8 +293,9 @@ class FilesharingService {
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
+      const client = await this.getClient(username);
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const resp = await this.fileSystemService.fetchFileStream(username, url);
+      const resp = await this.fileSystemService.fetchFileStream(url, client);
       if (resp instanceof Readable) {
         return resp;
       }
@@ -305,7 +306,8 @@ class FilesharingService {
   }
 
   async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
-    return this.fileSystemService.fileLocation(username, filePath, filename);
+    const client = await this.getClient(username);
+    return this.fileSystemService.fileLocation(username, filePath, filename, client);
   }
 
   async getOnlyOfficeToken(payload: string) {
