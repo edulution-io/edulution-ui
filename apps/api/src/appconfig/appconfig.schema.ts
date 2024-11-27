@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { AppConfigOptions } from '@libs/appconfig/types';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtendedType';
+import { AppConfigExtendedOption } from '@libs/appconfig/constants/appConfigExtendedOption';
 
 @Schema({ timestamps: true, strict: true })
 export class AppConfig extends Document {

@@ -10,22 +10,20 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
+import { AppConfigDto, AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import ExtendedOnlyOfficeOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOnlyOfficeOptionsForm';
-
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import { AppConfigExtendedOption, appExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -75,12 +73,16 @@ const AppConfigPage: React.FC = () => {
       label: item.label,
     }));
 
-    const newExtendedOptions = currentConfig.extendedOptions?.map((item) => ({
-      name: item.name,
-      value: item.value,
-      description: item.description,
-      type: item.type,
-    }));
+    const newExtendedOptions = Array.isArray(currentConfig.extendedOptions)
+      ? currentConfig.extendedOptions
+          .filter((item) => item && item.name)
+          .map((item) => ({
+            name: item.name,
+            value: item.value || '',
+            description: item.description || '',
+            type: item.type || '',
+          }))
+      : [];
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, newAccessGroups);
@@ -125,15 +127,7 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const extendedOptions =
-      settingLocation === 'filesharing'
-        ? (appExtendedOptions.ONLY_OFFICE.map((e) => ({
-            name: e.name,
-            description: e.description,
-            type: e.type,
-            value: getValues(`${settingLocation}.${e.name}`) as string,
-          })) as AppConfigExtendedOption[])
-        : [];
+    const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) as AppConfigOptions[];
 
     const newConfig = {
       name: settingLocation,
@@ -147,11 +141,11 @@ const AppConfigPage: React.FC = () => {
               : (getValues(`${settingLocation}.${o}`) as string);
           return acc;
         }, {} as AppConfigOptions) || {},
-      extendedOptions,
+      extendedOptions: extendedOptions as AppConfigOptions,
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
-    };
+    } as AppConfigDto;
 
-    const updatedConfig = appConfigs.map((entry) => {
+    const updatedConfig = appConfigs.map((entry): AppConfigDto => {
       if (entry.name === settingLocation) {
         return newConfig;
       }
@@ -244,24 +238,22 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    {item.extendedOptions && (
-                      <div className="space-y-10">
-                        <AccordionSH type="multiple">
-                          <AccordionItem value="onlyOffice">
-                            <AccordionTrigger className="flex text-xl font-bold">
-                              <h4>{t('appExtendedOptions.title')}</h4>
-                            </AccordionTrigger>
-                            <AccordionContent className="space-y-10 px-1 pt-4">
-                              <ExtendedOnlyOfficeOptionsForm
-                                extendedOptions={appExtendedOptions.ONLY_OFFICE}
-                                baseName={settingLocation}
-                                form={form}
-                              />
-                            </AccordionContent>
-                          </AccordionItem>
-                        </AccordionSH>
-                      </div>
-                    )}
+                    <div className="space-y-10">
+                      <AccordionSH type="multiple">
+                        <AccordionItem value="onlyOffice">
+                          <AccordionTrigger className="flex text-xl font-bold">
+                            <h4>{t('appExtendedOptions.title')}</h4>
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-10 px-1 pt-4">
+                            <ExtendedOptionsForm
+                              extendedOptions={item.extendedOptions}
+                              form={form}
+                              baseName={settingLocation}
+                            />
+                          </AccordionContent>
+                        </AccordionItem>
+                      </AccordionSH>
+                    </div>
                     <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
                   </div>
                 ) : null}

@@ -12,7 +12,7 @@ APP_CONFIG_OPTIONS.forEach((item) => {
   }
   if (item.extendedOptions) {
     item.extendedOptions.forEach((extension) => {
-      formSchemaObject[`${item.id}.${extension}`] = z.string().optional();
+      formSchemaObject[`${item.id}.${extension.value}`] = z.string().optional();
     });
   }
 });
