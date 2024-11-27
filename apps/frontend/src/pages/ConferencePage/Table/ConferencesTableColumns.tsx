@@ -211,7 +211,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const { creator, isRunning, meetingID } = row.original;
       const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+      const { joinConference, setJoinConferenceUrl, joinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
       const isUserTheCreator = user?.username === creator?.username;
       const { icon, text } = getRowAction(isRunning, isLoading, isUserTheCreator, t);
@@ -220,7 +220,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           await toggleConferenceRunningState(meetingID);
           if (!isRunning) {
             await joinConference(meetingID);
-          } else {
+          } else if (joinConferenceUrl.includes(meetingID)) {
             setJoinConferenceUrl('');
           }
         } else if (isRunning) {
