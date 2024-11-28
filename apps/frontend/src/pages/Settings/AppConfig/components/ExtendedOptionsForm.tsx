@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import Input from '@/components/shared/Input';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/constants/appConfigExtendedOption';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import getExtendedOptions from '@libs/appconfig/utils/getExtendedOptionValue';
+import getExtendedOptionValueFromAppConfig from '@libs/appconfig/utils/getExtendedOptionValue';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOption[] | undefined;
@@ -25,13 +25,15 @@ const ExtendedOptionsForm = <T extends FieldValues>({
   useEffect(() => {
     extendedOptions?.forEach((option) => {
       const fieldName = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
-      const initialValue = getExtendedOptions(appConfigs, baseName || '', option.name) as PathValue<T, Path<T>>;
+      const initialValue = getExtendedOptionValueFromAppConfig(appConfigs, baseName || '', option.name) as PathValue<
+        T,
+        Path<T>
+      >;
       setValue(fieldName, initialValue);
     });
   }, [extendedOptions, setValue, baseName]);
 
-  const getComponent = ({ description, name, type }: AppConfigExtendedOption) => {
-    const fieldName = (baseName ? `${baseName}.extendedOptions.${name}` : name) as Path<T>;
+  const getComponent = ({ description, type }: AppConfigExtendedOption, fieldName: Path<T>) => {
     switch (type) {
       case ExtendedOptionField.input:
         return (
@@ -63,24 +65,21 @@ const ExtendedOptionsForm = <T extends FieldValues>({
   };
 
   return (
-    <form
-      className="space-y-4"
-      autoComplete="off"
-    >
+    <div className="space-y-4">
       {extendedOptions?.map((option) => {
-        const fieldName = baseName ? `${baseName}.${option.name}` : option.name;
+        const fieldName = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
 
         return (
           <div
             key={option.name}
             className="form-group"
           >
-            {getComponent(option)}
+            {getComponent(option, fieldName)}
             <label htmlFor={fieldName}>{t(option.title)}</label>
           </div>
         );
       })}
-    </form>
+    </div>
   );
 };
 

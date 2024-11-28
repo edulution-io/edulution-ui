@@ -10,8 +10,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigDto, AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
@@ -24,6 +23,9 @@ import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
+import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -43,12 +45,8 @@ const AppConfigPage: React.FC = () => {
   const { postExternalMailProviderConfig } = useMailsStore();
 
   useEffect(() => {
-    const secondPartFromPath =
-      pathname
-        .split('/')
-        .filter((part) => part !== '')
-        .at(1) || '';
-    setSettingLocation(pathname !== '/settings' ? secondPartFromPath : '');
+    const selectedAppConfig = pathname.split('/').filter((p) => p)[1] || '';
+    setSettingLocation(pathname === '/settings' ? '' : selectedAppConfig);
   }, [pathname]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,40 +56,22 @@ const AppConfigPage: React.FC = () => {
 
   const { control, handleSubmit, setValue, getValues } = form;
 
-  const areSettingsVisible = settingLocation !== '';
+  const isAnAppConfigSelected = settingLocation !== '';
+
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
     if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
       return;
     }
 
-    const newAccessGroups = currentConfig.accessGroups?.map((item) => ({
-      id: item.id,
-      name: item.name,
-      path: item.path,
-      value: item.value,
-      label: item.label,
-    }));
-
-    const newExtendedOptions = Array.isArray(currentConfig.extendedOptions)
-      ? currentConfig.extendedOptions
-          .filter((item) => item && item.name)
-          .map((item) => ({
-            name: item.name,
-            value: item.value || '',
-            description: item.description || '',
-            type: item.type || '',
-          }))
-      : [];
-
     setValue(`${settingLocation}.appType`, currentConfig.appType);
-    setValue(`${settingLocation}.accessGroups`, newAccessGroups);
-    setValue(`${settingLocation}.extensions`, newExtendedOptions);
+    setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
+    setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || []);
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
-          const proxyConfig = JSON.parse(currentConfig?.options[key] as string) as string;
+          const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
           setValue(`${settingLocation}.${key}`, proxyConfig);
         } else {
           setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
@@ -101,10 +81,10 @@ const AppConfigPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (areSettingsVisible) {
+    if (isAnAppConfigSelected) {
       updateSettings();
     }
-  }, [areSettingsVisible, settingLocation, appConfigs]);
+  }, [isAnAppConfigSelected, settingLocation, appConfigs]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorOptionSH[], fieldName: string) => {
     const currentGroups = (getValues(fieldName) as MultipleSelectorOptionSH[]) || [];
@@ -127,7 +107,7 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) as AppConfigOptions[];
+    const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) as ExtendedOptionKeysDto;
 
     const newConfig = {
       name: settingLocation,
@@ -141,9 +121,9 @@ const AppConfigPage: React.FC = () => {
               : (getValues(`${settingLocation}.${o}`) as string);
           return acc;
         }, {} as AppConfigOptions) || {},
-      extendedOptions: extendedOptions as AppConfigOptions,
+      extendedOptions,
       accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
-    } as AppConfigDto;
+    };
 
     const updatedConfig = appConfigs.map((entry): AppConfigDto => {
       if (entry.name === settingLocation) {
@@ -168,7 +148,7 @@ const AppConfigPage: React.FC = () => {
   };
 
   const settingsForm = () => {
-    if (areSettingsVisible) {
+    if (isAnAppConfigSelected) {
       return (
         <Form {...form}>
           <form
@@ -286,13 +266,13 @@ const AppConfigPage: React.FC = () => {
     <>
       <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
         <NativeAppHeader
-          title={t(areSettingsVisible ? `${settingLocation}.sidebar` : 'settings.sidebar')}
+          title={t(isAnAppConfigSelected ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView ? t('settings.description') : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
         {settingsForm()}
       </div>
-      {areSettingsVisible ? (
+      {isAnAppConfigSelected ? (
         <AppConfigFloatingButtons
           handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
           handleSaveSettingsItem={handleSubmit(onSubmit)}

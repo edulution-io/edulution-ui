@@ -20,14 +20,11 @@ class OnlyofficeService {
 
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
-    const jwtSecret = appConfig?.extendedOptions.find(
-      (option) => String(option.name) === String(ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET),
-    );
+    const jwtSecret = appConfig?.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET];
     if (!jwtSecret) {
       throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const secret = jwtSecret.value;
-    return this.jwtService.sign(payload, { secret });
+    return this.jwtService.sign(payload, { secret: jwtSecret });
   }
 
   static async handleCallback(

@@ -9,6 +9,7 @@ import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useUserStore from '@/store/UserStore/UserStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -27,7 +28,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionValue(appConfigs, ExtendedOptionKeys.ONLY_OFFICE_URL);
+  const documentServerURL = getExtendedOptionValue(appConfigs, APPS.TICKET_SYSTEM, ExtendedOptionKeys.ONLY_OFFICE_URL);
 
   const callbackUrl = callbackBaseUrl({
     fileName,
