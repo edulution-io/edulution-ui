@@ -44,7 +44,7 @@ const ScrollableTable = <TData,>({
   isLoading,
   sorting,
   setSorting,
-  selectedRows,
+  selectedRows = {},
   getRowId,
   applicationName,
   additionalScrollContainerOffset = 0,

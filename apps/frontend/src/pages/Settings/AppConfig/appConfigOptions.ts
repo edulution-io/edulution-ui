@@ -30,6 +30,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
+import AppConfigBulletinTableColumn from '@/pages/Settings/AppConfig/components/AppConfigBulletinTableColum';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -169,6 +170,23 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: WhiteBoardIcon,
     color: 'bg-ciDarkBlue',
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.bulletinBoard]: [
+        {
+          name: ExtendedOptionKeys.BULLETIN_BOARD_URL,
+          description: 'appExtendedOptions.bulletinBoardUrl',
+          title: 'appExtendedOptions.bulletinBoardUrlTitle',
+          type: ExtendedOptionField.table,
+          value: '',
+          tableConfig: {
+            columns: AppConfigBulletinTableColumn,
+            data: [],
+            sorting: [],
+            setSorting: () => {},
+          },
+        },
+      ],
+    },
   },
 ];
 

@@ -7,7 +7,11 @@
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
     "title": "Schwarzes Brett",
-    "sidebar": "Schwarzes Brett"
+    "sidebar": "Schwarzes Brett",
+    "newCategorie": "Neue Kategorie",
+    "name": "Name",
+    "visibleFor": "Sichtbar für",
+    "editCategorie": "Kategorie bearbeiten"
   },
   "dashboard": {
     "mobileAccess": {
@@ -473,6 +477,7 @@
     "appconfig": {
       "sections": {
         "onlyOffice": "Only Office Integration",
+        "bulletinBoard": "Schwarzes Brett Kategorien",
         "general": "Allgemein"
       },
       "update": {

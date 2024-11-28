@@ -7,7 +7,11 @@
   "closeEditingWindow": "Close editing window",
   "bulletinboard": {
     "title": "Bulletin Board",
-    "sidebar": "Bulletin Board"
+    "sidebar": "Bulletin Board",
+    "newCategorie": "New category",
+    "name": "Name",
+    "visibleFor": "Visible for",
+    "editCategorie": "Edit category"
   },
   "dashboard": {
     "mobileAccess": {
@@ -472,6 +476,7 @@
     "appconfig": {
       "sections": {
         "onlyOffice": "Only Office Integration",
+        "bulletinBoard": "Bulletin Board Categories",
         "general": "General"
       },
       "update": {
