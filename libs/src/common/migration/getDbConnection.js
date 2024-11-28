@@ -9,8 +9,8 @@ const { MONGODB_SERVER_URL, MONGODB_DATABASE_NAME, MONGODB_USERNAME, MONGODB_PAS
 const connection = mongoose.createConnection(MONGODB_SERVER_URL || 'mongodb://localhost:27017/', {
   dbName: MONGODB_DATABASE_NAME || 'edulution',
   auth: {
-    username: MONGODB_USERNAME || 'root',
-    password: MONGODB_PASSWORD || 'example',
+    username: MONGODB_USERNAME || 'user',
+    password: MONGODB_PASSWORD || 'password',
   },
 });
 

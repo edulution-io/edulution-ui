@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const moment = require('moment');
 const connection = require('../../../common/migration/getDbConnection');
+const APP_CONFIG_COLLECTION_NAME = require('../appconfig-collectionName');
 
-module.exports.up = async function (next) {
-  const collection = connection.collection('appconfigs');
+async function runMigration(next) {
+  const collection = connection.collection(APP_CONFIG_COLLECTION_NAME);
   try {
     // eslint-disable-next-line no-underscore-dangle
     await collection.updateMany({}, { $set: { schemaVersion: 0, updatedAt: moment()._d } });
@@ -14,10 +15,10 @@ module.exports.up = async function (next) {
   console.log('Migration 20241121120816-add-db-version-number completed');
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   next();
-};
+}
 
-module.exports.down = async function (next) {
-  const collection = connection.collection('appconfigs');
+async function revertMigration(next) {
+  const collection = connection.collection(APP_CONFIG_COLLECTION_NAME);
   try {
     await collection.updateMany({}, { $unset: { schemaVersion: null } });
   } catch (e) {
@@ -27,4 +28,8 @@ module.exports.down = async function (next) {
   console.log('Migration 20241121120816-add-db-version-number reverted');
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   next();
-};
+}
+
+module.exports.up = runMigration;
+
+module.exports.down = revertMigration;

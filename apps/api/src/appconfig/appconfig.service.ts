@@ -8,6 +8,7 @@ import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
+import APP_CONFIG_COLLECTION_NAME from '@libs/appconfig/migration/appconfig-collectionName';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
@@ -18,10 +19,12 @@ class AppConfigService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const collections = await this.connection.db?.listCollections({ name: 'appconfigs' }).toArray();
+    const collections = await this.connection.db
+      ?.listCollections({ name: APP_CONFIG_COLLECTION_NAME as string })
+      .toArray();
 
     if (collections?.length === 0) {
-      await this.connection.db?.createCollection('appconfigs');
+      await this.connection.db?.createCollection(APP_CONFIG_COLLECTION_NAME as string);
     }
 
     const count = await this.appConfigModel.countDocuments();

@@ -14,7 +14,7 @@ import AppConfigGuard from './appconfig.guard';
 class AppConfigController {
   constructor(private readonly appConfigService: AppConfigService) {
     const appConfigDbMigrationService = new AppConfigDbMigrationService();
-    appConfigDbMigrationService.onModuleInit();
+    void appConfigDbMigrationService.onModuleInit();
   }
 
   @Post()
