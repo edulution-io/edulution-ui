@@ -6,30 +6,34 @@ import runMigration from '@libs/common/migration/runMigrations';
 const migrateModule = async (
   connection: Connection,
   collectionName: string,
-  backupName: string,
   migrationPath: string,
   moduleName: string,
   serviceName: string,
 ) => {
   Logger.log(`⬆ ️⬆️ Migrating ${moduleName}`, serviceName);
+
+  const backupCollectionName = `migration-backup-${collectionName}`;
+
   try {
     Logger.log(`      ... creating a backup Before executing Migrations`, serviceName);
-    await createDbBackup(connection, collectionName, backupName);
+    await createDbBackup(connection, collectionName, backupCollectionName);
   } catch (e) {
     Logger.error(`      Error on creating Backup: ${e}`, serviceName);
     Logger.error('⬆ ️⛔ Stop migrating without any backup', serviceName);
     return;
   }
+
   try {
     Logger.log('      ... executing Migrations for AppConfigs', serviceName);
     runMigration(`${migrationPath}.migrate`, `${migrationPath}migrations`);
   } catch (e) {
     Logger.log(`      Error on executing Migrations: ${e}`, serviceName);
     Logger.log('      ... reverting replace with backup', serviceName);
-    await createDbBackup(connection, backupName, collectionName);
+    await createDbBackup(connection, backupCollectionName, collectionName);
     Logger.error('⬆ ️⛔️ Failure while running the migrations', serviceName);
     return;
   }
+
   Logger.log('⬆ ️✅️ Successfully executed the migrations', serviceName);
 };
 

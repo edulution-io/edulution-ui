@@ -10,7 +10,6 @@ class AppConfigDbMigrationService implements OnModuleInit {
     await migrateModule(
       connection,
       APP_CONFIG_COLLECTION_NAME,
-      'migration-backup-appconfigs',
       'libs/src/appconfig/migration/',
       'AppConfigs',
       AppConfigDbMigrationService.name,
