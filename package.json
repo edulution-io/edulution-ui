@@ -4,10 +4,6 @@
   "version": "1.0.51",
   "scripts": {
     "migrate": "bash ./scripts/runMigration.sh",
-    "backup": "bash ./scripts/mongodump.sh",
-    "rollback": "bash ./scripts/mongorestore.sh",
-    "import": "bash ./scripts/mongoimport.sh",
-    "export": "bash ./scripts/mongoexport.sh",
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test --detectOpenHandles",
     "test:frontend": "nx run frontend:test",
