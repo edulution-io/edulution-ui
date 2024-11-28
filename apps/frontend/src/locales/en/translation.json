@@ -466,6 +466,10 @@
     "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
+      "sections": {
+        "onlyOffice": "Only Office Integration",
+        "general": "General"
+      },
       "update": {
         "success": "App saved successfully",
         "failed": "Update failed"

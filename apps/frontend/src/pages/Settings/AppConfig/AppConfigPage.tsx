@@ -18,7 +18,6 @@ import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
@@ -66,7 +65,7 @@ const AppConfigPage: React.FC = () => {
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
-    setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || []);
+    setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || {});
 
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
@@ -219,20 +218,11 @@ const AppConfigPage: React.FC = () => {
                       ),
                     )}
                     <div className="space-y-10">
-                      <AccordionSH type="multiple">
-                        <AccordionItem value="onlyOffice">
-                          <AccordionTrigger className="flex text-xl font-bold">
-                            <h4>{t('appExtendedOptions.title')}</h4>
-                          </AccordionTrigger>
-                          <AccordionContent className="space-y-10 px-1 pt-4">
-                            <ExtendedOptionsForm
-                              extendedOptions={item.extendedOptions}
-                              form={form}
-                              baseName={settingLocation}
-                            />
-                          </AccordionContent>
-                        </AccordionItem>
-                      </AccordionSH>
+                      <ExtendedOptionsForm
+                        extendedOptions={item.extendedOptions}
+                        form={form}
+                        baseName={settingLocation}
+                      />
                     </div>
                     <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
                   </div>

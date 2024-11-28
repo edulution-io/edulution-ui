@@ -29,6 +29,7 @@ import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -68,6 +69,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
     extendedOptions: [
       {
+        section: AppConfigSectionsKeys.onlyOffice,
         name: ExtendedOptionKeys.ONLY_OFFICE_URL,
         description: 'appExtendedOptions.onlyOfficeUrl',
         title: 'appExtendedOptions.onlyOfficeUrlTitle',
@@ -75,6 +77,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
         value: '',
       },
       {
+        section: AppConfigSectionsKeys.onlyOffice,
         name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
         title: 'appExtendedOptions.onlyOfficeJwtSecretTitle',
         description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',

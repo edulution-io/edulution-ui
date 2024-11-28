@@ -467,6 +467,10 @@
     "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
+      "sections": {
+        "onlyOffice": "Only Office Integration",
+        "general": "Allgemein"
+      },
       "update": {
         "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"

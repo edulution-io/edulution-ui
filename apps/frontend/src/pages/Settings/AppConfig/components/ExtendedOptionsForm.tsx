@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Input from '@/components/shared/Input';
-import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import getExtendedOptionValueFromAppConfig from '@libs/appconfig/utils/getExtendedOptionValue';
+import { AppConfigSectionsType } from '@libs/appconfig/types/appConfigSectionsType';
+import FormField from '@/components/shared/FormField';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOption[] | undefined;
@@ -18,45 +18,43 @@ const ExtendedOptionsForm = <T extends FieldValues>({
   form,
   baseName,
 }: ExtendedOptionsFormProps<T>) => {
-  const { register, setValue } = form;
-  const { appConfigs } = useAppConfigsStore();
+  const { register } = form;
   const { t } = useTranslation();
 
-  useEffect(() => {
-    extendedOptions?.forEach((option) => {
-      const fieldName = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
-      const initialValue = getExtendedOptionValueFromAppConfig(appConfigs, baseName || '', option.name) as PathValue<
-        T,
-        Path<T>
-      >;
-      setValue(fieldName, initialValue);
-    });
-  }, [extendedOptions, setValue, baseName]);
+  const groupedComponentsBySections = extendedOptions?.reduce(
+    (acc, option) => {
+      const { section } = option;
+      if (!acc[section]) acc[section] = [];
+      acc[section].push(option);
+      return acc;
+    },
+    {} as Record<AppConfigSectionsType, AppConfigExtendedOption[]>,
+  );
 
-  const getComponent = ({ description, type }: AppConfigExtendedOption, fieldName: Path<T>) => {
-    switch (type) {
+  const renderComponent = (option: AppConfigExtendedOption) => {
+    const fieldPath = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
+
+    switch (option.type) {
       case ExtendedOptionField.input:
         return (
-          <Input
-            id={fieldName}
-            {...register(fieldName)}
+          <FormField
+            defaultValue={form.getValues(fieldPath) as string}
+            {...register(fieldPath)}
+            form={form}
+            labelTranslationId={t(option.title)}
             type="text"
-            placeholder={t(description)}
-            className="input-class"
-            defaultValue="fewfewefwfew"
-            autoComplete="off"
+            variant="light"
           />
         );
       case ExtendedOptionField.password:
         return (
-          <Input
-            id={fieldName}
-            {...register(fieldName)}
+          <FormField
+            defaultValue={form.getValues(fieldPath) as string}
+            {...register(fieldPath)}
+            form={form}
+            labelTranslationId={t(option.title)}
             type="password"
-            placeholder={t(description)}
-            defaultValue="fewfewefwfew"
-            className="input-class"
-            autoComplete="new-password"
+            variant="light"
           />
         );
       default:
@@ -65,20 +63,23 @@ const ExtendedOptionsForm = <T extends FieldValues>({
   };
 
   return (
-    <div className="space-y-4">
-      {extendedOptions?.map((option) => {
-        const fieldName = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
-
-        return (
-          <div
-            key={option.name}
-            className="form-group"
+    <div className="space-y-6">
+      {groupedComponentsBySections &&
+        Object.entries(groupedComponentsBySections).map(([section, options]) => (
+          <AccordionSH
+            type="multiple"
+            key={section}
           >
-            {getComponent(option, fieldName)}
-            <label htmlFor={fieldName}>{t(option.title)}</label>
-          </div>
-        );
-      })}
+            <AccordionItem value="onlyOffice">
+              <AccordionTrigger className="flex text-xl font-bold">
+                <h4>{t(`settings.appconfig.sections.${section}`)}</h4>
+              </AccordionTrigger>
+              <AccordionContent className="space-y-10 px-1 pt-4">
+                <div className="space-y-4">{options.map((option) => renderComponent(option))}</div>
+              </AccordionContent>
+            </AccordionItem>
+          </AccordionSH>
+        ))}
     </div>
   );
 };
