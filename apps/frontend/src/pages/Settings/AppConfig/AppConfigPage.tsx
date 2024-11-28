@@ -220,7 +220,7 @@ const AppConfigPage: React.FC = () => {
                     <div className="space-y-10">
                       <ExtendedOptionsForm
                         extendedOptions={item.extendedOptions}
-                        form={form}
+                        control={control}
                         baseName={settingLocation}
                       />
                     </div>

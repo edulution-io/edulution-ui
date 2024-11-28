@@ -1,24 +1,25 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
+import { Control, FieldValues, Path } from 'react-hook-form';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import { AppConfigSectionsType } from '@libs/appconfig/types/appConfigSectionsType';
-import FormField from '@/components/shared/FormField';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import AppConfigFormField from '@/pages/Settings/AppConfig/components/AppConfigFormField';
+import { z } from 'zod';
+import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOption[] | undefined;
-  form: UseFormReturn<T>;
+  control: Control<z.infer<typeof formSchema>, T>;
   baseName?: string;
 };
 
 const ExtendedOptionsForm = <T extends FieldValues>({
   extendedOptions,
-  form,
+  control,
   baseName,
 }: ExtendedOptionsFormProps<T>) => {
-  const { register } = form;
   const { t } = useTranslation();
 
   const groupedComponentsBySections = extendedOptions?.reduce(
@@ -37,24 +38,19 @@ const ExtendedOptionsForm = <T extends FieldValues>({
     switch (option.type) {
       case ExtendedOptionField.input:
         return (
-          <FormField
-            defaultValue={form.getValues(fieldPath) as string}
-            {...register(fieldPath)}
-            form={form}
-            labelTranslationId={t(option.title)}
-            type="text"
-            variant="light"
+          <AppConfigFormField
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
           />
         );
       case ExtendedOptionField.password:
         return (
-          <FormField
-            defaultValue={form.getValues(fieldPath) as string}
-            {...register(fieldPath)}
-            form={form}
-            labelTranslationId={t(option.title)}
+          <AppConfigFormField
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
             type="password"
-            variant="light"
           />
         );
       default:
