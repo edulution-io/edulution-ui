@@ -6,13 +6,13 @@ import runMigration from '@libs/common/migration/runMigrations';
 const migrateModule = async (
   connection: Connection,
   collectionName: string,
-  migrationPath: string,
   moduleName: string,
-  serviceName: string,
+  serviceName: string = 'DatabaseMigration',
 ) => {
-  Logger.log(`⬆ ️⬆️ Migrating ${moduleName}`, serviceName);
+  Logger.log(`⬆ ️⬆️ Migrating ${moduleName.toUpperCase()}`, serviceName);
 
   const backupCollectionName = `migration-backup-${collectionName}`;
+  const migrationPath = `libs/src/${moduleName}/migration/`; // matches path in runMigration.sh
 
   try {
     Logger.log(`      ... creating a backup Before executing Migrations`, serviceName);
