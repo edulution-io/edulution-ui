@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
+
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
 
