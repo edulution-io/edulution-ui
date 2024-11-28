@@ -5,6 +5,10 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "bulletinboard": {
+    "title": "Schwarzes Brett",
+    "sidebar": "Schwarzes Brett"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",

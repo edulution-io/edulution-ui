@@ -17,6 +17,7 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import { toast } from 'sonner';
+import useBulletinBoardPageMenu from '@/pages/BulletinBoard/useBulletinBoardPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
@@ -30,6 +31,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
+  const BULLETIN_BOARD_MENUBAR_CONFIG = useBulletinBoardPageMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -68,6 +70,10 @@ const useMenuBarConfig = (): MenuBarEntry => {
       case APPS.DESKTOP_DEPLOYMENT: {
         return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
       }
+      case APPS.BULLETIN_BOARD: {
+        return BULLETIN_BOARD_MENUBAR_CONFIG;
+      }
+
       default: {
         if (!rootPathName) {
           return defaultReturnMenuBarEntry;

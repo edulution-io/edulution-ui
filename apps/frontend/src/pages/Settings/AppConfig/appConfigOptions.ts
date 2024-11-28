@@ -164,6 +164,12 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
   },
   { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', isNativeApp: true },
+  {
+    id: APPS.BULLETIN_BOARD,
+    icon: WhiteBoardIcon,
+    color: 'bg-ciDarkBlue',
+    isNativeApp: true,
+  },
 ];
 
 export default APP_CONFIG_OPTIONS;
