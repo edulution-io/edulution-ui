@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import { AppConfigSectionsType } from '@libs/appconfig/types/appConfigSectionsType';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/AppConfigFormField';
 import { z } from 'zod';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
+import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
-  extendedOptions: AppConfigExtendedOption[] | undefined;
+  extendedOptions: AppConfigExtendedOptionsBySections | undefined;
   control: Control<z.infer<typeof formSchema>, T>;
   baseName?: string;
 };
@@ -22,16 +22,6 @@ const ExtendedOptionsForm = <T extends FieldValues>({
 }: ExtendedOptionsFormProps<T>) => {
   const { t } = useTranslation();
 
-  const groupedComponentsBySections = extendedOptions?.reduce(
-    (acc, option) => {
-      const { section } = option;
-      if (!acc[section]) acc[section] = [];
-      acc[section].push(option);
-      return acc;
-    },
-    {} as Record<AppConfigSectionsType, AppConfigExtendedOption[]>,
-  );
-
   const renderComponent = (option: AppConfigExtendedOption) => {
     const fieldPath = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
 
@@ -39,6 +29,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
       case ExtendedOptionField.input:
         return (
           <AppConfigFormField
+            key={fieldPath}
             fieldPath={fieldPath}
             control={control}
             option={option}
@@ -47,6 +38,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
       case ExtendedOptionField.password:
         return (
           <AppConfigFormField
+            key={fieldPath}
             fieldPath={fieldPath}
             control={control}
             option={option}
@@ -60,8 +52,8 @@ const ExtendedOptionsForm = <T extends FieldValues>({
 
   return (
     <div className="space-y-6">
-      {groupedComponentsBySections &&
-        Object.entries(groupedComponentsBySections).map(([section, options]) => (
+      {extendedOptions &&
+        Object.entries(extendedOptions).map(([section, options]) => (
           <AccordionSH
             type="multiple"
             key={section}
@@ -71,7 +63,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
                 <h4>{t(`settings.appconfig.sections.${section}`)}</h4>
               </AccordionTrigger>
               <AccordionContent className="space-y-10 px-1 pt-4">
-                <div className="space-y-4">{options.map((option) => renderComponent(option))}</div>
+                <div className="space-y-4">{options?.map((option) => renderComponent(option))}</div>
               </AccordionContent>
             </AccordionItem>
           </AccordionSH>

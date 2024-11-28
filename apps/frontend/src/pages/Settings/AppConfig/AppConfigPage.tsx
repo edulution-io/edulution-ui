@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -16,15 +15,14 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
+import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -48,7 +46,7 @@ const AppConfigPage: React.FC = () => {
     setSettingLocation(pathname === '/settings' ? '' : selectedAppConfig);
   }, [pathname]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
     mode: 'onChange',
     resolver: zodResolver(formSchema),
   });
@@ -71,9 +69,12 @@ const AppConfigPage: React.FC = () => {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
           const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
-          setValue(`${settingLocation}.${key}`, proxyConfig);
+          setValue(`${settingLocation}.options.proxyConfig`, proxyConfig);
         } else {
-          setValue(`${settingLocation}.${key}`, currentConfig.options[key as AppConfigOptionsType]);
+          setValue(
+            `${settingLocation}.options.${key as AppConfigOptionsType}`,
+            currentConfig.options[key as AppConfigOptionsType],
+          );
         }
       });
     }
@@ -85,8 +86,8 @@ const AppConfigPage: React.FC = () => {
     }
   }, [isAnAppConfigSelected, settingLocation, appConfigs]);
 
-  const handleGroupsChange = (newGroups: MultipleSelectorOptionSH[], fieldName: string) => {
-    const currentGroups = (getValues(fieldName) as MultipleSelectorOptionSH[]) || [];
+  const handleGroupsChange = (newGroups: MultipleSelectorGroup[], fieldName: string) => {
+    const currentGroups = getValues(`${fieldName}.accessGroups`) || [];
 
     const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
       newGroups.some((newGroup) => newGroup.value === currentGroup.value),
@@ -97,10 +98,10 @@ const AppConfigPage: React.FC = () => {
         (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
       ),
     ];
-    setValue(fieldName, combinedGroups, { shouldValidate: true });
+    setValue(`${fieldName}.accessGroups`, combinedGroups, { shouldValidate: true });
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
+  const onSubmit = async () => {
     const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
     if (!selectedOption) {
       return;
@@ -111,17 +112,17 @@ const AppConfigPage: React.FC = () => {
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
-      appType: getValues(`${settingLocation}.appType`) as AppIntegrationType,
+      appType: getValues(`${settingLocation}.appType`),
       options:
         selectedOption.options?.reduce((acc, o) => {
           acc[o] =
             o === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
-              ? JSON.stringify(getValues(`${settingLocation}.${o}`) as string)
-              : (getValues(`${settingLocation}.${o}`) as string);
+              ? JSON.stringify(getValues(`${settingLocation}.${o}`))
+              : getValues(`${settingLocation}.${o}`);
           return acc;
         }, {} as AppConfigOptions) || {},
       extendedOptions,
-      accessGroups: (getValues(`${settingLocation}.accessGroups`) as MultipleSelectorGroup[]) || [],
+      accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
     };
 
     const updatedConfig = appConfigs.map((entry): AppConfigDto => {
@@ -171,15 +172,14 @@ const AppConfigPage: React.FC = () => {
                       key={`${item.id}.accessGroups`}
                       control={control}
                       name={`${item.id}.accessGroups`}
-                      defaultValue=""
                       render={() => (
                         <FormItem>
                           <h4>{t(`permission.groups`)}</h4>
                           <FormControl>
                             <AsyncMultiSelect<MultipleSelectorGroup>
-                              value={getValues(`${item.id}.accessGroups`) as MultipleSelectorGroup[]}
+                              value={getValues(`${item.id}.accessGroups`)}
                               onSearch={searchGroups}
-                              onChange={(groups) => handleGroupsChange(groups, `${item.id}.accessGroups`)}
+                              onChange={(groups) => handleGroupsChange(groups, `${item.id}`)}
                               placeholder={t('search.type-to-search')}
                             />
                           </FormControl>
@@ -194,7 +194,6 @@ const AppConfigPage: React.FC = () => {
                           key={`${item.id}.${itemOption}`}
                           control={control}
                           name={`${item.id}.${itemOption}`}
-                          defaultValue=""
                           render={({ field }) => (
                             <FormItem>
                               <h4>{t(`form.${itemOption}`)}</h4>
@@ -213,7 +212,7 @@ const AppConfigPage: React.FC = () => {
                           key={`${item.id}.${itemOption}`}
                           settingLocation={settingLocation}
                           item={item}
-                          form={form}
+                          form={form as UseFormReturn<ProxyConfigFormType>}
                         />
                       ),
                     )}

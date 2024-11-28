@@ -67,24 +67,24 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-    extendedOptions: [
-      {
-        section: AppConfigSectionsKeys.onlyOffice,
-        name: ExtendedOptionKeys.ONLY_OFFICE_URL,
-        description: 'appExtendedOptions.onlyOfficeUrl',
-        title: 'appExtendedOptions.onlyOfficeUrlTitle',
-        type: ExtendedOptionField.input,
-        value: '',
-      },
-      {
-        section: AppConfigSectionsKeys.onlyOffice,
-        name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
-        title: 'appExtendedOptions.onlyOfficeJwtSecretTitle',
-        description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',
-        type: ExtendedOptionField.password,
-        value: '',
-      },
-    ],
+    extendedOptions: {
+      [AppConfigSectionsKeys.onlyOffice]: [
+        {
+          name: ExtendedOptionKeys.ONLY_OFFICE_URL,
+          description: 'appExtendedOptions.onlyOfficeUrl',
+          title: 'appExtendedOptions.onlyOfficeUrlTitle',
+          type: ExtendedOptionField.input,
+          value: '',
+        },
+        {
+          name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
+          title: 'appExtendedOptions.onlyOfficeJwtSecretTitle',
+          description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',
+          type: ExtendedOptionField.password,
+          value: '',
+        },
+      ],
+    },
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {

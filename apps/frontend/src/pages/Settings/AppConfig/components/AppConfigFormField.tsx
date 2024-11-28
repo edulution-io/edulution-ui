@@ -24,7 +24,6 @@ const AppConfigFormField = <T extends FieldValues>({
 
   return (
     <FormFieldSH
-      key={fieldPath}
       control={control}
       name={fieldPath}
       render={({ field }) => (
