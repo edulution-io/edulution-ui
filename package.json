@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.0.46",
+  "version": "1.0.51",
   "scripts": {
     "migrate": "bash ./scripts/runMigration.sh",
     "backup": "bash ./scripts/mongodump.sh",
@@ -15,6 +15,7 @@
     "coverage": "vitest run --coverage",
     "dev": "nx serve frontend",
     "api": "nx serve api",
+    "demo": "nx run frontend:serve:demo",
     "serveFrontendAndApi": "nx run-many --target=serve --projects=frontend,api",
     "build": "nx build frontend --emptyOutDir",
     "build:api": "nx build api",
