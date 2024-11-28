@@ -56,22 +56,10 @@ describe('AppConfigController', () => {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
           },
-          extendedOptions: [
-            {
-              name: ExtendedOptionKeys.ONLY_OFFICE_URL,
-              value: 'https://example.com/api/',
-              title: 'OnlyOffice URL',
-              description: 'The URL for OnlyOffice',
-              type: 'input',
-            },
-            {
-              name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
-              value: 'secret-key',
-              title: 'OnlyOffice Secret',
-              description: 'The secret key for OnlyOffice',
-              type: 'input',
-            },
-          ],
+          extendedOptions: {
+            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
+            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+          },
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
             { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
@@ -92,22 +80,10 @@ describe('AppConfigController', () => {
             url: 'https://example.com/api/',
             apiKey: 'secret-key',
           },
-          extendedOptions: [
-            {
-              name: ExtendedOptionKeys.ONLY_OFFICE_URL,
-              value: 'https://example.com/api/',
-              title: 'OnlyOffice URL',
-              description: 'The URL for OnlyOffice',
-              type: 'input',
-            },
-            {
-              name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
-              value: 'secret-key',
-              title: 'OnlyOffice Secret',
-              description: 'The secret key for OnlyOffice',
-              type: 'input',
-            },
-          ],
+          extendedOptions: {
+            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
+            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+          },
           accessGroups: [
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
             { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },

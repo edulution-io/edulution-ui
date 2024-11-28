@@ -11,22 +11,10 @@ const mockAppConfigService = {
       url: 'https://example.com/api/',
       apiKey: 'secret-key',
     },
-    extendedOptions: [
-      {
-        name: ExtendedOptionKeys.ONLY_OFFICE_URL,
-        value: 'https://example.com/api/',
-        title: 'OnlyOffice URL',
-        description: 'The URL for OnlyOffice',
-        type: 'input',
-      },
-      {
-        name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
-        value: 'secret-key',
-        title: 'OnlyOffice Secret',
-        description: 'The secret key for OnlyOffice',
-        type: 'input',
-      },
-    ],
+    extendedOptions: {
+      [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
+      [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+    },
   }),
 };
 
