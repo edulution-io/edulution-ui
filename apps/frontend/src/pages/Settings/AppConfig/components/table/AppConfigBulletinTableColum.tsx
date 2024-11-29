@@ -2,13 +2,13 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { BulletinBoardConfigurationDTO } from '@libs/bulletinBoard/type/BulletinBoardConfigurationDTO';
+import { BulletinBoardConfigurationDto } from '@libs/bulletinBoard/type/BulletinBoardConfigurationDto';
 
-const AppConfigBulletinTableColumn: ColumnDef<BulletinBoardConfigurationDTO>[] = [
+const AppConfigBulletinTableColumn: ColumnDef<BulletinBoardConfigurationDto>[] = [
   {
     id: 'name',
     header: ({ column, table }) => (
-      <SortableHeader<BulletinBoardConfigurationDTO, unknown>
+      <SortableHeader<BulletinBoardConfigurationDto, unknown>
         titleTranslationId="bulletinboard.name"
         column={column}
         table={table}
@@ -25,18 +25,23 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinBoardConfigurationDTO>[] =
   {
     id: 'visibleFor',
     header: ({ column }) => (
-      <SortableHeader<BulletinBoardConfigurationDTO, unknown>
+      <SortableHeader<BulletinBoardConfigurationDto, unknown>
         titleTranslationId="bulletinboard.visibleFor"
         column={column}
       />
     ),
     accessorFn: (row) => row.visibleFor,
     cell: ({ row }) => <SelectableTextCell text={row.original.visibleFor} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.original.visibleFor || '';
+      const b = rowB.original.visibleFor || '';
+      return a.localeCompare(b);
+    },
   },
   {
     id: 'editorialAccess',
     header: ({ column }) => (
-      <SortableHeader<BulletinBoardConfigurationDTO, unknown>
+      <SortableHeader<BulletinBoardConfigurationDto, unknown>
         titleTranslationId="bulletinboard.editorialAccess"
         column={column}
       />

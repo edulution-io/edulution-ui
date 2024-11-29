@@ -1,4 +1,4 @@
-export interface BulletinBoardConfigurationDTO {
+export interface BulletinBoardConfigurationDto {
   name: string;
   visibleFor: string;
   editorialAccess: string;

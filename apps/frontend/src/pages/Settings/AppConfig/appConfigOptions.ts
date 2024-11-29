@@ -30,7 +30,8 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
-import AppConfigBulletinTableColumn from '@/pages/Settings/AppConfig/components/AppConfigBulletinTableColum';
+import AppConfigBulletinTableColumn from '@/pages/Settings/AppConfig/components/table/AppConfigBulletinTableColum';
+import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -180,9 +181,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
           value: '',
           tableConfig: {
             columns: AppConfigBulletinTableColumn,
-            data: [],
-            sorting: [],
-            setSorting: () => {},
+            store: useAppConfigBulletinTable,
           },
         },
       ],

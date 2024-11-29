@@ -1,4 +1,4 @@
-import React, { SetStateAction } from 'react';
+import React from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -7,7 +7,6 @@ import {
   OnChangeFn,
   Row,
   RowSelectionState,
-  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 
@@ -23,9 +22,7 @@ interface DataTableProps<TData> {
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   selectedRows?: RowSelectionState;
   isLoading?: boolean;
-  sorting: SortingState;
   getRowId?: (originalRow: TData) => string;
-  setSorting: (sorting: SetStateAction<SortingState>) => void;
   applicationName: string;
   additionalScrollContainerOffset?: number;
   scrollContainerOffsetElementIds?: {
@@ -42,8 +39,6 @@ const ScrollableTable = <TData,>({
   data,
   onRowSelectionChange,
   isLoading,
-  sorting,
-  setSorting,
   selectedRows = {},
   getRowId,
   applicationName,
@@ -69,13 +64,11 @@ const ScrollableTable = <TData,>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     enableRowSelection,
     state: {
-      sorting,
       rowSelection: selectedRows,
     },
   });
