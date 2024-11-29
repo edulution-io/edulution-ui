@@ -4,10 +4,11 @@ import { SurveyModel } from 'survey-core';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import '../dialogs/resultTableDialog.css';
 
 interface ResultTableDialogBodyProps {
-  formula: JSON;
+  formula: TSurveyFormula;
   result: JSON[];
 }
 

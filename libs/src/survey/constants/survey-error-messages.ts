@@ -6,6 +6,7 @@ enum SurveyErrorMessages {
   NoBackendLimiters = 'survey.errors.noBackendLimitersError',
   NotFoundError = 'survey.errors.notFoundError',
   IdTypeError = 'survey.errors.idTypeError',
+  SurveyFormulaStructuralError = 'survey.errors.surveyFormulaStructuralError',
   ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',
   ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
   ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',

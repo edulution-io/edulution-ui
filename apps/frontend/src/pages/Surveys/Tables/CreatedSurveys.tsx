@@ -17,6 +17,7 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
     updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
+    setSelectedRows,
     createdSurveys,
     isFetchingCreatedSurveys,
     updateCreatedSurveys,
@@ -29,6 +30,7 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
     SurveysPageView.CREATED,
     updateSelectedPageView,
     selectSurvey,
+    setSelectedRows,
     updateCreatedSurveys,
     isFetchingCreatedSurveys,
     createdSurveys,
@@ -38,16 +40,17 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
     <>
       {isFetchingCreatedSurveys ? <LoadingIndicator isOpen={isFetchingCreatedSurveys} /> : null}
       <SurveyTablePage
-        title={t('surveys.view.created')}
+        title={t('surveys.view.created.title')}
+        description={t('surveys.view.created.description')}
         selectedSurvey={selectedSurvey}
         surveys={createdSurveys}
-        selectSurvey={selectSurvey}
+        isLoading={isFetchingCreatedSurveys}
         canDelete
         canEdit
         editSurvey={edit}
         canShowResults
         canParticipate
-        canShowCommitedAnswers
+        canShowSubmittedAnswers
       />
     </>
   );
