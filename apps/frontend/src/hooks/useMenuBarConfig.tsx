@@ -17,7 +17,7 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import { toast } from 'sonner';
-import useBulletinBoardPageMenu from '@/pages/BulletinBoard/useBulletinBoardPageMenu';
+import useBulletinBoardPageMenu from '@/pages/BulletinBoardEditor/useBulletinBoardPageMenu';
 
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();

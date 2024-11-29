@@ -6,17 +6,10 @@ const useBulletinBoardPageMenu = () => {
   const menuBar = (): MenuBarEntry => ({
     title: 'bulletinboard.title',
     appName: APPS.BULLETIN_BOARD,
-    disabled: false,
+    disabled: true,
     icon: WhiteBoardIcon,
     color: 'hover:bg-ciDarkBlue',
-    menuItems: [
-      {
-        id: 'overview',
-        label: 'common.overview',
-        icon: WhiteBoardIcon,
-        action: () => {},
-      },
-    ],
+    menuItems: [],
   });
   return menuBar();
 };
