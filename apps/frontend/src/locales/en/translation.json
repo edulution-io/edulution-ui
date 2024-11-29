@@ -74,9 +74,9 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
-      "title": "E-Mail Importer",
-      "provider": "E-Mail Provider",
-      "configName": "Name der Konfiguration",
+      "title": "Email Importer",
+      "provider": "Email Provider",
+      "configName": "Configuration name",
       "hostname": "Hostname",
       "port": "Port",
       "encryption": "Encryption",
@@ -85,7 +85,7 @@
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} of {{total}} jobs selected",
       "rowSelected": "{{selected}} of {{total}} job selected",
-      "mailAddress": "E-Mail Address"
+      "mailAddress": "Email address"
     }
   },
   "chat": {
@@ -544,7 +544,7 @@
       }
     },
     "mails": {
-      "title": "E-Mail"
+      "title": "Email"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -660,7 +660,7 @@
     "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Zurücksetzen"
+    "revert": "Revert"
   },
   "form": {
     "path": "Path",
@@ -825,8 +825,8 @@
   "accountData": {
     "account_info": "Account Information",
     "name": "Name",
-    "email": "E-Mail",
-    "school": "Schule",
+    "email": "Email",
+    "school": "School",
     "role": "Role",
     "classes": "Classes",
     "change_password": "Change Password",
@@ -868,7 +868,7 @@
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number",
-      "MailProviderNotFound": "E-Mail provider not found",
+      "MailProviderNotFound": "Email provider not found",
       "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
       "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
       "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"
