@@ -8,7 +8,6 @@ import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/
 import { z } from 'zod';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
@@ -47,14 +46,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
           />
         );
       case ExtendedOptionField.table:
-        return (
-          <AppConfigTable
-            key={fieldPath}
-            store={option.tableConfig?.store}
-            columns={option.tableConfig?.columns || []}
-            applicationName={option.name}
-          />
-        );
+        return null;
       default:
         return null;
     }

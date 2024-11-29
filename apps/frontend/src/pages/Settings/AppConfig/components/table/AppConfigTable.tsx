@@ -16,14 +16,14 @@ const AppConfigTable = <TData,>({ columns, store, applicationName }: AppConfigTa
   const { t } = useTranslation();
   if (!store) return null;
 
-  const { getData, openCreateCategoryDialog } = store();
+  const { openCreateCategoryDialog } = store();
 
   return (
     <div className="relative w-full overflow-hidden ">
       <div className="overflow-auto">
         <ScrollableTable
           columns={columns}
-          data={getData()}
+          data={[]}
           applicationName={applicationName}
         />
       </div>
