@@ -9,8 +9,8 @@ const BulletinBoardEditorPage = () => {
   return (
     <div className="p-5 lg:pr-20">
       <NativeAppHeader
-        title={t('bulletinBoard.title')}
-        description={t('bulletinBoard.description')}
+        title={t('bulletinboard.title')}
+        description={t('bulletinboard.description')}
         iconSrc={BulletinBoardIcon}
       />
 

@@ -7,6 +7,7 @@
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
     "title": "Schwarzes Brett",
+    "description": "Verwalte deine Mitteilungen",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "name": "Name",

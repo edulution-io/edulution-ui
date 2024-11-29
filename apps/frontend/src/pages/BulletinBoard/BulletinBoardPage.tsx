@@ -5,6 +5,7 @@ import cn from '@libs/common/utils/className';
 import { Button } from '@/components/shared/Button';
 import { BLANK_LAYOUT_HEADER_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import useElementHeight from '@/hooks/useElementHeight';
+import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 
 const dummyData = [
   {
@@ -149,15 +150,15 @@ const BulletinBoardPage = () => {
         >
           <Card
             variant="security"
-            className="sticky mb-4 flex items-center justify-between rounded-lg px-3 py-2 opacity-90"
+            className="sticky mb-4 flex items-center justify-between rounded-lg px-3 py-1 opacity-90"
           >
-            <h3 className="text-white">{category.category}</h3>
+            <h4 className="text-white">{category.category}</h4>
             <Button
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-blue-500 hover:bg-blue-600 hover:text-white"
-              title={t('Add Post')}
+              className="text-white-500 flex h-8 w-8 items-center justify-center rounded-full p-1 hover:bg-blue-600 hover:text-white"
+              title={t('TODO: Add logic for context menu')}
             >
-              +
+              <PiDotsThreeVerticalBold className="h-12 w-12" />
             </Button>
           </Card>
           <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
