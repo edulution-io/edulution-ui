@@ -16,7 +16,10 @@ const initialValues = {
 const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
   ...initialValues,
 
-  openCreateCategoryDialog: () => set({ isDialogOpen: true }),
+  openCreateCategoryDialog: () =>
+    set({
+      isDialogOpen: true,
+    }),
   setIsDialogOpen: (isOpen: boolean) => set({ isDialogOpen: isOpen }),
   reset: () => set(initialValues),
   getData: () => [

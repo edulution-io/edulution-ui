@@ -220,7 +220,7 @@ const AppConfigPage: React.FC = () => {
                       <ExtendedOptionsForm
                         extendedOptions={item.extendedOptions}
                         control={control}
-                        baseName={settingLocation}
+                        settingLocation={settingLocation}
                       />
                     </div>
                     <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>

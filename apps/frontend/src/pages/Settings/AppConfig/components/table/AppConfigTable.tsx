@@ -1,46 +1,54 @@
 import React from 'react';
-import { ColumnDef } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
-import { BulletinBoardTableStore } from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
-import { StoreApi, UseBoundStore } from 'zustand';
+import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
 
-interface AppConfigTableProps<TData> {
-  columns: ColumnDef<TData, unknown>[];
-  store?: UseBoundStore<StoreApi<BulletinBoardTableStore>>;
+interface AppConfigTablesProps {
   applicationName: string;
 }
 
-const AppConfigTable = <TData,>({ columns, store, applicationName }: AppConfigTableProps<TData>) => {
+const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
   const { t } = useTranslation();
-  if (!store) return null;
+  const configs = getTableConfig(applicationName);
 
-  const { getData, openCreateCategoryDialog } = store();
+  if (!configs) {
+    return <div>{t('common.error')}</div>;
+  }
 
   return (
-    <div className="relative w-full overflow-hidden ">
-      <div className="overflow-auto">
-        <ScrollableTable
-          columns={columns}
-          data={getData()}
-          applicationName={applicationName}
-        />
-      </div>
+    <div>
+      {configs.map((config) => {
+        const { columns, useStore } = config;
+        const store = typeof useStore === 'function' ? useStore() : null;
+        const { getData, openCreateCategoryDialog } = store || {};
 
-      {openCreateCategoryDialog && (
-        <div className="flex justify-end pt-8">
-          <ButtonSH
-            onClick={openCreateCategoryDialog}
-            className="h-8 justify-start rounded py-0 text-left font-normal text-foreground"
-            variant="outline"
+        return (
+          <div
+            key={columns.keys().next().value}
+            className="mb-8"
           >
-            {t('common.add')}
-          </ButtonSH>
-        </div>
-      )}
+            <ScrollableTable
+              columns={columns}
+              data={getData()}
+              applicationName={applicationName}
+            />
+            {openCreateCategoryDialog && (
+              <div className="flex justify-end pt-4">
+                <ButtonSH
+                  onClick={openCreateCategoryDialog}
+                  className="h-8 justify-start rounded py-0 text-left font-normal text-foreground"
+                  variant="outline"
+                >
+                  {t('common.add')}
+                </ButtonSH>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
 
-export default AppConfigTable;
+export default AppConfigTables;

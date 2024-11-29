@@ -13,18 +13,18 @@ import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfi
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
   control: Control<z.infer<typeof formSchema>, T>;
-  baseName?: string;
+  settingLocation?: string;
 };
 
 const ExtendedOptionsForm = <T extends FieldValues>({
   extendedOptions,
   control,
-  baseName,
+  settingLocation,
 }: ExtendedOptionsFormProps<T>) => {
   const { t } = useTranslation();
 
   const renderComponent = (option: AppConfigExtendedOption) => {
-    const fieldPath = (baseName ? `${baseName}.extendedOptions.${option.name}` : option.name) as Path<T>;
+    const fieldPath = (settingLocation ? `${settingLocation}.extendedOptions.${option.name}` : option.name) as Path<T>;
 
     switch (option.type) {
       case ExtendedOptionField.input:
@@ -50,9 +50,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
         return (
           <AppConfigTable
             key={fieldPath}
-            store={option.tableConfig?.store}
-            columns={option.tableConfig?.columns || []}
-            applicationName={option.name}
+            applicationName={settingLocation || ''}
           />
         );
       default:
