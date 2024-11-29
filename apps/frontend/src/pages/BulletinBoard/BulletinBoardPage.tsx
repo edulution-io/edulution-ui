@@ -1,12 +1,40 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/shared/Card';
+import cn from '@libs/common/utils/className';
+import { Button } from '@/components/shared/Button';
+import { BLANK_LAYOUT_HEADER_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import useElementHeight from '@/hooks/useElementHeight';
 
 const dummyData = [
   {
     id: 1,
     category: 'To Do',
     posts: [
+      {
+        id: 101,
+        title: 'Plan new feature',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+      },
+      {
+        id: 102,
+        title: 'Design wireframes',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.</p>',
+      },
+      {
+        id: 103,
+        title: 'Plan new feature',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+      },
+      {
+        id: 104,
+        title: 'Design wireframes',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.</p>',
+      },
       {
         id: 101,
         title: 'Plan new feature',
@@ -45,48 +73,109 @@ const dummyData = [
       },
     ],
   },
+  {
+    id: 4,
+    category: 'To Do',
+    posts: [
+      {
+        id: 101,
+        title: 'Plan new feature',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+      },
+      {
+        id: 102,
+        title: 'Design wireframes',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.</p>',
+      },
+    ],
+  },
+  {
+    id: 5,
+    category: 'In Progress',
+    posts: [
+      {
+        id: 201,
+        title: 'Develop API',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.</p><p><img width="500" src="http://localhost:5173/src/assets/logos/edulution.io_USER%20INTERFACE.svg" /></p>',
+      },
+      {
+        id: 101,
+        title: 'Plan new feature',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+      },
+      {
+        id: 102,
+        title: 'Design wireframes',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.</p>',
+      },
+    ],
+  },
+  {
+    id: 6,
+    category: 'Done',
+    posts: [
+      {
+        id: 301,
+        title: 'Deploy to staging',
+        content:
+          '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet..</p>',
+      },
+    ],
+  },
 ];
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
 
+  const pageBarsHeight = useElementHeight([BLANK_LAYOUT_HEADER_ID, FOOTER_ID]);
+
   return (
-    <div className="flex h-screen flex-col p-4">
-      <div className="flex flex-1 gap-4 overflow-x-auto">
-        {dummyData.map((category) => (
-          <div
-            key={category.id}
-            className="flex min-w-[300px] flex-1 flex-col rounded-lg p-4 shadow-lg"
+    <div
+      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin md:w-[calc(100%-var(--sidebar-width))] lg:w-full lg:overflow-x-auto"
+    >
+      {dummyData.map((category) => (
+        <div
+          key={category.id}
+          className={cn('flex h-full w-1/2 flex-shrink-0 flex-col rounded-lg p-4', {
+            'w-1/3': dummyData.length === 3,
+            'w-[300px]': dummyData.length >= 4,
+          })}
+        >
+          <Card
+            variant="security"
+            className="sticky mb-4 flex items-center justify-between rounded-lg px-3 py-2 opacity-90"
           >
-            <Card
-              variant="security"
-              className="mb-4 flex items-center justify-between rounded-lg py-1 pl-3 pr-2 opacity-90"
+            <h3 className="text-white">{category.category}</h3>
+            <Button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-blue-500 hover:bg-blue-600 hover:text-white"
+              title={t('Add Post')}
             >
-              <h2 className="text-xl font-semibold text-foreground">{category.category}</h2>
-              <button
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-foreground hover:bg-blue-600"
-                title={t('Add Post')}
+              +
+            </Button>
+          </Card>
+          <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
+            {category.posts.map((post) => (
+              <div
+                key={post.id}
+                className="rounded-lg bg-white bg-opacity-5 p-4"
               >
-                +
-              </button>
-            </Card>
-            <div className="flex flex-col gap-4">
-              {category.posts.map((post) => (
+                <h4>{post.title}</h4>
                 <div
-                  key={post.id}
-                  className="rounded-lg bg-white bg-opacity-5 p-4 text-white shadow-sm"
-                >
-                  <h3 className="text-lg font-bold ">{post.title}</h3>
-                  <div
-                    className="mt-2 text-sm text-gray-100"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                  />
-                </div>
-              ))}
-            </div>
+                  className="mt-3 text-gray-100"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };

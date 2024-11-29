@@ -1,13 +1,13 @@
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
-import { WhiteBoardIcon } from '@/assets/icons';
+import { BulletinBoardIcon } from '@/assets/icons';
 
 const useBulletinBoardPageMenu = () => {
   const menuBar = (): MenuBarEntry => ({
     title: 'bulletinboard.title',
     appName: APPS.BULLETIN_BOARD,
     disabled: true,
-    icon: WhiteBoardIcon,
+    icon: BulletinBoardIcon,
     color: 'hover:bg-ciDarkBlue',
     menuItems: [],
   });
