@@ -6,20 +6,18 @@ export interface BulletinBoardTableStore {
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
   getData: () => BulletinBoardConfigurationDto[];
-  // openCreateCategoryDialog: () => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 const initialValues = {
   isDialogOpen: false,
+  isLoading: true,
 };
 
 const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
   ...initialValues,
-
-  openCreateCategoryDialog: () =>
-    set({
-      isDialogOpen: true,
-    }),
+  setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setIsDialogOpen: (isOpen: boolean) => set({ isDialogOpen: isOpen }),
   reset: () => set(initialValues),
   getData: () => [
