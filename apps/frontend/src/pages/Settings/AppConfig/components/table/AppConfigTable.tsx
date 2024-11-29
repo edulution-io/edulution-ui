@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
 import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 interface AppConfigTablesProps {
   applicationName: string;
@@ -16,12 +17,27 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
     return <div>{t('common.error')}</div>;
   }
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <div>
       {configs.map((config) => {
-        const { columns, useStore } = config;
+        const { columns, useStore, showAddButton, dialogBody } = config;
         const store = typeof useStore === 'function' ? useStore() : null;
-        const { getData, openCreateCategoryDialog } = store || {};
+
+        if (!store) {
+          return null;
+        }
+
+        const { getData } = store;
+
+        const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+          e.preventDefault();
+          if (showAddButton) {
+            console.log('store.openCreateCategoryDialog()');
+            setDialogOpen(true);
+          }
+        };
 
         return (
           <div
@@ -33,10 +49,10 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
               data={getData()}
               applicationName={applicationName}
             />
-            {openCreateCategoryDialog && (
+            {showAddButton && (
               <div className="flex justify-end pt-4">
                 <ButtonSH
-                  onClick={openCreateCategoryDialog}
+                  onClick={handleButtonClick}
                   className="h-8 justify-start rounded py-0 text-left font-normal text-foreground"
                   variant="outline"
                 >
@@ -44,6 +60,14 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
                 </ButtonSH>
               </div>
             )}
+            <AdaptiveDialog
+              isOpen={dialogOpen}
+              variant="primary"
+              handleOpenChange={() => setDialogOpen(!dialogOpen)}
+              title=""
+              body={dialogBody()}
+              mobileContentClassName="bg-black h-fit h-max-1/2"
+            />
           </div>
         );
       })}
