@@ -6,7 +6,7 @@ export interface BulletinBoardTableStore {
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
   getData: () => BulletinBoardConfigurationDto[];
-  openCreateCategoryDialog: () => void;
+  // openCreateCategoryDialog: () => void;
 }
 
 const initialValues = {
