@@ -7,16 +7,6 @@ const TABLE_CONFIG_MAP = {
       columns: AppConfigBulletinTableColumn,
       useStore: useAppConfigBulletinTable,
     },
-    {
-      columns: [
-        { accessorKey: 'id', header: 'ID' },
-        { accessorKey: 'description', header: 'Description' },
-      ],
-      useStore: () => ({
-        getData: () => [{ id: 2, description: 'Second Bulletin' }],
-        openCreateCategoryDialog: () => console.log('Open create category dialog'),
-      }),
-    },
   ],
 };
 
