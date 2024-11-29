@@ -11,7 +11,8 @@
     "newCategorie": "Neue Kategorie",
     "name": "Name",
     "visibleFor": "Sichtbar für",
-    "editCategorie": "Kategorie bearbeiten"
+    "editCategorie": "Kategorie bearbeiten",
+    "editorialAccess": "Redaktioneller Zugriff"
   },
   "dashboard": {
     "mobileAccess": {
