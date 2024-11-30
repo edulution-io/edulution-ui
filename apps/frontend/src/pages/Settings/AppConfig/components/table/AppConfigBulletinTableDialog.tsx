@@ -8,71 +8,102 @@ import { Button } from '@/components/shared/Button';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
+import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 const AppConfigBulletinTableDialog = () => {
   const { t } = useTranslation();
 
-  // Form initialization
   const form = useForm<NewCategorieForm>({
     mode: 'onChange',
     resolver: zodResolver(getCreateNewCategorieSchema(t)),
     defaultValues: {
       name: '',
+      isActive: true,
+      visibleByUsers: [],
+      visibleByGroups: [],
     },
   });
 
   const { setValue, watch } = form;
-  const { user, searchAttendees } = useUserStore();
-  const { searchGroups, searchGroupsIsLoading } = useGroupStore();
+  const { searchAttendees } = useUserStore();
+  const { searchGroups } = useGroupStore();
 
-  // Handle attendees changes
-  const handleAttendeesChange = (attendees: any[]) => {
-    setValue('invitedAttendees', attendees, { shouldValidate: true });
+  const handleVisibleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+    setValue('visibleByUsers', attendees, { shouldValidate: true });
   };
 
-  // Fetch attendees on search
-  const onAttendeesSearch = async (value: string) => {
-    const result = await searchAttendees(value);
-    return result.filter((r) => r.username !== user?.username);
+  const handleEditableAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+    setValue('editableByUsers', attendees, { shouldValidate: true });
   };
 
-  // Handle groups changes
-  const handleGroupsChange = (groups: any[]) => {
-    setValue('invitedGroups', groups, { shouldValidate: true });
-  };
-
-  // Handle form submission
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(form.getValues(), 'Form Data Submitted');
     e.preventDefault();
-    console.log(form.getValues(), 'lala');
   };
 
   return (
     <form
-      onSubmit={handleFormSubmit}
+      onSubmit={(event) => {
+        handleFormSubmit(event);
+      }}
       className="space-y-4"
     >
-      {/* Input for category name */}
       <div>
         <input
           {...form.register('name')}
           placeholder={t('bulletinBoard.categoryNamePlaceholder')}
-          className="input-class" // Replace with your input styles
+          className="input-class"
         />
       </div>
-
-      {/* SearchUsersOrGroups integration */}
+      {/* Search Users or Groups */}
       <SearchUsersOrGroups
-        users={watch('invitedAttendees') || []}
-        onSearch={onAttendeesSearch}
-        onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups') || []}
+        users={watch('visibleByUsers') as AttendeeDto[]}
+        onSearch={searchAttendees}
+        onUserChange={handleVisibleAttendeesChange}
+        groups={watch('visibleByGroups') as MultipleSelectorGroup[]}
         onGroupSearch={searchGroups}
-        onGroupsChange={handleGroupsChange}
+        onGroupsChange={(groups) => setValue('visibleByGroups', groups, { shouldValidate: true })}
         variant="light"
       />
 
-      {/* Submit button */}
+      <SearchUsersOrGroups
+        users={watch('editableByUsers') as AttendeeDto[]}
+        onSearch={searchAttendees}
+        onUserChange={handleEditableAttendeesChange}
+        groups={watch('editableByGroups') as MultipleSelectorGroup[]}
+        onGroupSearch={searchGroups}
+        onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
+        variant="light"
+      />
+
+      {/* Radio Group for isActive */}
+      <div>
+        <span className="text-sm font-medium">{t('bulletinBoard.isActive')}</span>
+        <RadioGroupSH
+          value={watch('isActive') ? 'true' : 'false'}
+          onValueChange={(value) => setValue('isActive', value === 'true', { shouldValidate: true })}
+          className="flex gap-4"
+        >
+          <span className="flex items-center gap-2">
+            <RadioGroupItemSH
+              value="true"
+              id="isActive-yes"
+            />
+            <span>{t('common.yes')}</span>
+          </span>
+          <span className="flex items-center gap-2">
+            <RadioGroupItemSH
+              value="false"
+              id="isActive-no"
+            />
+            <span>{t('common.no')}</span>
+          </span>
+        </RadioGroupSH>
+      </div>
+      {/* Submit Button */}
       <Button
         variant="btn-collaboration"
         size="lg"

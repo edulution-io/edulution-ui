@@ -15,5 +15,9 @@ export class BulletinCategoryDto {
 
   @IsArray()
   @IsOptional()
+  visibleByGroups?: MultipleSelectorGroup[] = [];
+
+  @IsArray()
+  @IsOptional()
   editableByUsers?: MultipleSelectorGroup[] = [];
 }

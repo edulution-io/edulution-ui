@@ -8,28 +8,24 @@ import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.
 export class BulletinCategoryService {
   constructor(@InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>) {}
 
-  async findAll(username: string) {
-    const bulletinCategories = await this.bulletinCategoryModel.find({ isActive: true }).exec();
-
-    return bulletinCategories;
+  async findAll(_username: string) {
+    return this.bulletinCategoryModel.find({ isActive: true }).exec();
   }
 
-  async create(username: string, dto: BulletinCategoryDto) {
-    const newBulletinCategory = await this.bulletinCategoryModel.create({
+  async create(_username: string, dto: BulletinCategoryDto) {
+    return this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive,
       visibleByUsers: dto.visibleByUsers,
       editableByUsers: dto.editableByUsers,
     });
-
-    return newBulletinCategory;
   }
 
-  async update(username: string, id: string, dto: BulletinCategoryDto) {
+  async update(_username: string, _id: string, _dto: BulletinCategoryDto) {
     // Logic to update a specific bulletin board entry
   }
 
-  async remove(username: string, id: string) {
+  async remove(_username: string, _id: string) {
     // Logic to delete a specific bulletin board entry
   }
 }
