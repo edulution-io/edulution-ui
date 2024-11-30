@@ -58,7 +58,6 @@ const AppConfigBulletinTableDialog = () => {
           className="input-class"
         />
       </div>
-      {/* Search Users or Groups */}
       <SearchUsersOrGroups
         users={watch('visibleByUsers') as AttendeeDto[]}
         onSearch={searchAttendees}
@@ -79,7 +78,6 @@ const AppConfigBulletinTableDialog = () => {
         variant="light"
       />
 
-      {/* Radio Group for isActive */}
       <div>
         <span className="text-sm font-medium">{t('bulletinBoard.isActive')}</span>
         <RadioGroupSH
@@ -103,7 +101,6 @@ const AppConfigBulletinTableDialog = () => {
           </span>
         </RadioGroupSH>
       </div>
-      {/* Submit Button */}
       <Button
         variant="btn-collaboration"
         size="lg"
