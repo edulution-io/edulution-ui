@@ -22,6 +22,7 @@ import FilesharingModule from '../filesharing/filesharing.module';
 import LicenseModule from '../license/license.module';
 import SurveysModule from '../surveys/surveys.module';
 import AuthModule from '../auth/auth.module';
+import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import AuthModule from '../auth/auth.module';
     VdiModule,
     LicenseModule,
     SurveysModule,
+    BulletinCategoryModule,
     JwtModule.register({
       global: true,
     }),

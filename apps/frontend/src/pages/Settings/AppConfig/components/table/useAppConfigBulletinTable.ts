@@ -1,18 +1,23 @@
 import { create } from 'zustand';
-import { BulletinBoardConfigurationDto } from '@libs/bulletinBoard/type/BulletinBoardConfigurationDto';
+import eduApi from '@/api/eduApi';
+import { BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
+import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
 
 export interface BulletinBoardTableStore {
   isDialogOpen: boolean;
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
-  getData: () => BulletinBoardConfigurationDto[];
+  getData: () => BulletinCategoryDto[];
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
+  addNewCategory: (category: BulletinCategoryDto) => Promise<void>;
+  categories: BulletinCategoryDto[];
 }
 
 const initialValues = {
   isDialogOpen: false,
   isLoading: true,
+  categories: [],
 };
 
 const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
@@ -20,14 +25,18 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setIsDialogOpen: (isOpen: boolean) => set({ isDialogOpen: isOpen }),
   reset: () => set(initialValues),
-  getData: () => [
-    {
-      id: '1',
-      name: 'Test',
-      visibleFor: 'Test',
-      editorialAccess: 'Test',
-    },
-  ],
+  addNewCategory: async (category: BulletinCategoryDto) => {
+    set({ isLoading: true });
+    try {
+      await eduApi.post<BulletinCategoryDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT, category);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getData: () => [] as BulletinCategoryDto[],
 }));
 
 export default useAppConfigBulletinTable;

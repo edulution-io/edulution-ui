@@ -15,9 +15,13 @@ export class BulletinCategoryService {
   async create(_username: string, dto: BulletinCategoryDto) {
     return this.bulletinCategoryModel.create({
       name: dto.name,
-      isActive: dto.isActive,
-      visibleByUsers: dto.visibleByUsers,
-      editableByUsers: dto.editableByUsers,
+      isActive: dto.isActive ?? true,
+      visibleForUsers: dto.visibleForUsers ?? [],
+      visibleForGroups: dto.visibleForGroups ?? [],
+      editableByUsers: dto.editableByUsers ?? [],
+      editableByGroups: dto.editableByGroups ?? [],
+      createdBy: dto.createdBy,
+      creationDate: new Date(),
     });
   }
 

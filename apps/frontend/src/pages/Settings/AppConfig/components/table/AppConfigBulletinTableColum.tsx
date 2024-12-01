@@ -2,13 +2,13 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { BulletinBoardConfigurationDto } from '@libs/bulletinBoard/type/BulletinBoardConfigurationDto';
+import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
 
-const AppConfigBulletinTableColumn: ColumnDef<BulletinBoardConfigurationDto>[] = [
+const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
   {
     id: 'name',
     header: ({ column, table }) => (
-      <SortableHeader<BulletinBoardConfigurationDto, unknown>
+      <SortableHeader<BulletinCategoryDto, unknown>
         titleTranslationId="bulletinboard.name"
         column={column}
         table={table}
@@ -25,29 +25,29 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinBoardConfigurationDto>[] =
   {
     id: 'visibleFor',
     header: ({ column }) => (
-      <SortableHeader<BulletinBoardConfigurationDto, unknown>
+      <SortableHeader<BulletinCategoryDto, unknown>
         titleTranslationId="bulletinboard.visibleFor"
         column={column}
       />
     ),
-    accessorFn: (row) => row.visibleFor,
-    cell: ({ row }) => <SelectableTextCell text={row.original.visibleFor} />,
+    accessorFn: (row) => row.visibleForGroups,
+    cell: ({ row }) => <SelectableTextCell text={row.original.name} />,
     sortingFn: (rowA, rowB) => {
-      const a = rowA.original.visibleFor || '';
-      const b = rowB.original.visibleFor || '';
+      const a = rowA.original.name || '';
+      const b = rowB.original.name || '';
       return a.localeCompare(b);
     },
   },
   {
     id: 'editorialAccess',
     header: ({ column }) => (
-      <SortableHeader<BulletinBoardConfigurationDto, unknown>
+      <SortableHeader<BulletinCategoryDto, unknown>
         titleTranslationId="bulletinboard.editorialAccess"
         column={column}
       />
     ),
-    accessorFn: (row) => row.editorialAccess,
-    cell: ({ row }) => <SelectableTextCell text={row.original.editorialAccess} />,
+    accessorFn: (row) => row.editableByGroups,
+    cell: ({ row }) => <SelectableTextCell text={row.original.name} />,
   },
 ];
 

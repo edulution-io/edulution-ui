@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import NewCategorieForm from '@libs/bulletinBoard/constants/NewCategorieForm';
-import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -11,10 +10,21 @@ import useGroupStore from '@/store/GroupStore';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import { useTranslation } from 'react-i18next';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 
 const AppConfigBulletinTableDialog = () => {
   const { t } = useTranslation();
+  const { addNewCategory } = useAppConfigBulletinTable();
+  const { user, getOwnUser } = useLmnApiStore();
+  useEffect(() => {
+    if (!user) {
+      void getOwnUser();
+    }
+  }, [user]);
 
   const form = useForm<NewCategorieForm>({
     mode: 'onChange',
@@ -24,6 +34,8 @@ const AppConfigBulletinTableDialog = () => {
       isActive: true,
       visibleByUsers: [],
       visibleByGroups: [],
+      editableByUsers: [],
+      editableByGroups: [],
     },
   });
 
@@ -39,15 +51,31 @@ const AppConfigBulletinTableDialog = () => {
     setValue('editableByUsers', attendees, { shouldValidate: true });
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(form.getValues(), 'Form Data Submitted');
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const name = form.getValues('name');
+    const isActive = form.getValues('isActive');
+    const visibleForUsers = form.getValues('visibleByUsers');
+    const visibleForGroups = form.getValues('visibleByGroups');
+    const editableByUsers = form.getValues('editableByUsers');
+    const editableByGroups = form.getValues('editableByGroups');
+
+    await addNewCategory({
+      name,
+      isActive,
+      visibleForUsers,
+      visibleForGroups,
+      editableByUsers,
+      editableByGroups,
+      createdBy: user || ({} as UserLmnInfo),
+      creationDate: new Date(),
+    });
     e.preventDefault();
   };
 
   return (
     <form
-      onSubmit={(event) => {
-        handleFormSubmit(event);
+      onSubmit={async (event) => {
+        await handleFormSubmit(event);
       }}
       className="space-y-4"
     >
