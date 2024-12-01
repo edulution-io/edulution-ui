@@ -32,6 +32,18 @@ export class BulletinCategoryService {
   async remove(_username: string, _id: string) {
     // Logic to delete a specific bulletin board entry
   }
+
+  async getConfigByName(name: string) {
+    return this.bulletinCategoryModel.findOne({ name }).exec();
+  }
+
+  async checkNameExists(name: string, patternMatch: boolean = false): Promise<boolean> {
+    if (patternMatch) {
+      const regex = new RegExp(name, 'i');
+      return !!(await this.bulletinCategoryModel.exists({ name: { $regex: regex } }));
+    }
+    return !!(await this.bulletinCategoryModel.exists({ name }));
+  }
 }
 
 export default BulletinCategoryService;

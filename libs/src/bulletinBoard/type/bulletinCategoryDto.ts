@@ -1,6 +1,5 @@
 import { IsArray, IsBoolean, IsDate, IsString } from 'class-validator';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 
 export class BulletinCategoryDto {
   @IsString()
@@ -22,7 +21,7 @@ export class BulletinCategoryDto {
   editableByGroups: MultipleSelectorOptionSH[] = [];
 
   @IsString()
-  createdBy: UserLmnInfo;
+  createdBy: MultipleSelectorOptionSH;
 
   @IsDate()
   creationDate: Date;

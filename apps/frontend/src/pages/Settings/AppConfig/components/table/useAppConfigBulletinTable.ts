@@ -7,7 +7,7 @@ export interface BulletinBoardTableStore {
   isDialogOpen: boolean;
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
-  getData: () => BulletinCategoryDto[];
+  getData: () => Promise<BulletinCategoryDto[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   addNewCategory: (category: BulletinCategoryDto) => Promise<void>;
@@ -36,7 +36,19 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
     }
   },
 
-  getData: () => [] as BulletinCategoryDto[],
+  getData: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await eduApi.get<BulletinCategoryDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);
+      set({ categories: response.data });
+      return response.data || [];
+    } catch (error) {
+      console.error(error);
+      return [];
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
 
 export default useAppConfigBulletinTable;

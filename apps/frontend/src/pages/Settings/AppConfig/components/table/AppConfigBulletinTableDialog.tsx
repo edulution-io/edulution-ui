@@ -14,9 +14,8 @@ import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/tab
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 
-const AppConfigBulletinTableDialog = () => {
+const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
   const { addNewCategory } = useAppConfigBulletinTable();
   const { user, getOwnUser } = useLmnApiStore();
@@ -59,17 +58,33 @@ const AppConfigBulletinTableDialog = () => {
     const editableByUsers = form.getValues('editableByUsers');
     const editableByGroups = form.getValues('editableByGroups');
 
-    await addNewCategory({
-      name,
-      isActive,
-      visibleForUsers,
-      visibleForGroups,
-      editableByUsers,
-      editableByGroups,
-      createdBy: user || ({} as UserLmnInfo),
-      creationDate: new Date(),
-    });
-    e.preventDefault();
+    if (!user) return;
+    const { givenName, sophomorixSurnameASCII, name: username, displayName } = user;
+
+    const createdBy = {
+      firstName: sophomorixSurnameASCII,
+      lastName: givenName,
+      username,
+      value: username,
+      label: `${displayName} (${username})`,
+    } as MultipleSelectorOptionSH;
+
+    try {
+      await addNewCategory({
+        name,
+        isActive,
+        visibleForUsers,
+        visibleForGroups,
+        editableByUsers,
+        editableByGroups,
+        createdBy,
+        creationDate: new Date(),
+      });
+      console.log('Category added successfully');
+      closeDialog();
+    } catch (error) {
+      console.error('Failed to add category:', error);
+    }
   };
 
   return (

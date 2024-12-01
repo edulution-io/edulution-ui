@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
@@ -19,34 +19,44 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  // Extract all store hooks at the top level
+  const stores = configs.map((config) => ({
+    ...config,
+    store: config.useStore ? config.useStore() : null,
+  }));
+
+  useEffect(() => {
+    stores.forEach((config) => {
+      if (config.store) {
+        void config.store.getData();
+      }
+    });
+  }, [dialogOpen]);
+
   return (
     <div>
-      {configs.map((config) => {
-        const { columns, useStore, showAddButton, dialogBody } = config;
-        const store = typeof useStore === 'function' ? useStore() : null;
+      {stores.map((config, index) => {
+        const { columns, store, showAddButton, dialogBody } = config;
 
         if (!store) {
           return null;
         }
 
-        const { getData } = store;
+        const { categories } = store;
 
         const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
-          if (showAddButton) {
-            console.log('store.openCreateCategoryDialog()');
-            setDialogOpen(true);
-          }
+          setDialogOpen((prevState) => !prevState);
         };
 
         return (
           <div
-            key={columns.keys().next().value}
+            key={config.key || index.toString()}
             className="mb-8"
           >
             <ScrollableTable
               columns={columns}
-              data={getData()}
+              data={categories}
               applicationName={applicationName}
             />
             {showAddButton && (
@@ -65,7 +75,7 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
               variant="primary"
               handleOpenChange={() => setDialogOpen(!dialogOpen)}
               title=""
-              body={dialogBody()}
+              body={dialogBody({ closeDialog: () => setDialogOpen(false) })}
               mobileContentClassName="bg-black h-fit h-max-1/2"
             />
           </div>

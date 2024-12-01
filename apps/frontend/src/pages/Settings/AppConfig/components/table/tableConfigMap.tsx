@@ -5,6 +5,7 @@ import AppConfigBulletinTableDialog from '@/pages/Settings/AppConfig/components/
 const TABLE_CONFIG_MAP = {
   bulletinboard: [
     {
+      key: 'bulletinboard',
       columns: AppConfigBulletinTableColumn,
       useStore: useAppConfigBulletinTable,
       dialogBody: AppConfigBulletinTableDialog,

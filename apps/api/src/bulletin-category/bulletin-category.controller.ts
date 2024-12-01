@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { BulletinCategoryService } from './bulletin-category.service';
+import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()
@@ -18,6 +19,21 @@ export class BulletinCategoryController {
   @Post()
   create(@GetCurrentUsername() currentUsername: string, @Body() bulletinCategory: BulletinCategoryDto) {
     return this.bulletinBoardService.create(currentUsername, bulletinCategory);
+  }
+
+  @Get(':name')
+  @UseGuards(AppConfigGuard)
+  getConfigByName(@Param('name') name: string) {
+    return this.bulletinBoardService.getConfigByName(name);
+  }
+
+  @Get('check-name')
+  async checkName(
+    @Query('name') name: string,
+    @Query('patternMatch') patternMatch: string = 'false',
+  ): Promise<{ exists: boolean }> {
+    const exists = await this.bulletinBoardService.checkNameExists(name, patternMatch === 'true');
+    return { exists };
   }
 
   @Patch(':id')
