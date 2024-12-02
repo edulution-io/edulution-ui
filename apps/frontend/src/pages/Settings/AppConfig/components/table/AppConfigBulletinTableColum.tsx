@@ -8,8 +8,17 @@ import { FaEyeSlash } from 'react-icons/fa';
 import formatDate from '@libs/common/utils/formatDate';
 import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
+import { MdDriveFileRenameOutline, MdOutlineDeleteOutline } from 'react-icons/md';
 
-const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
+interface AppConfigBulletinTableColumnProps {
+  onDelete: (category: BulletinCategoryDto) => void;
+  onModify: (category: BulletinCategoryDto) => void;
+}
+
+const AppConfigBulletinTableColumn = ({
+  onDelete,
+  onModify,
+}: AppConfigBulletinTableColumnProps): ColumnDef<BulletinCategoryDto>[] => [
   {
     id: 'name',
     header: ({ column, table }) => (
@@ -123,19 +132,21 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
       return (
         <div className="flex gap-2">
           <ButtonSH
-            onClick={() => setSelectedCategory(row.original)}
-            className="rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
-          >
-            Edit
-          </ButtonSH>
-          <button
             onClick={() => {
+              onDelete(row.original);
+              console.log('Rename clicked for:', row.original);
+            }}
+          >
+            <MdDriveFileRenameOutline />
+          </ButtonSH>
+          <ButtonSH
+            onClick={() => {
+              onModify(row.original);
               console.log('Delete clicked for:', row.original);
             }}
-            className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600"
           >
-            Delete
-          </button>
+            <MdOutlineDeleteOutline />
+          </ButtonSH>
         </div>
       );
     },

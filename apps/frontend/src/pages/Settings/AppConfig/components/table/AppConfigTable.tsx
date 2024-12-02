@@ -55,7 +55,10 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
             className="mb-8"
           >
             <ScrollableTable
-              columns={columns}
+              columns={columns({
+                onDelete: (dto: any) => console.log(`Delete action triggered${  dto}`),
+                onModify: (dto: any) => console.log(`Modify action triggered${  dto}`),
+              })}
               data={categories}
               applicationName={applicationName}
             />

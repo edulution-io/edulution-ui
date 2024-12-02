@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { debounce } from 'lodash';
 
-const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
+const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
   const { addNewCategory, checkIfNameExists } = useAppConfigBulletinTable();
   const { user, getOwnUser } = useLmnApiStore();
@@ -204,4 +204,4 @@ const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void
   );
 };
 
-export default AppConfigBulletinTableDialog;
+export default CreateBulletinCategorieTableDialog;

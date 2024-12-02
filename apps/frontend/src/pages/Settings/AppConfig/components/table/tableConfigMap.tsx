@@ -1,6 +1,6 @@
 import AppConfigBulletinTableColumn from '@/pages/Settings/AppConfig/components/table/AppConfigBulletinTableColum';
 import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
-import AppConfigBulletinTableDialog from '@/pages/Settings/AppConfig/components/table/AppConfigBulletinTableDialog';
+import CreateBulletinCategorieTableDialog from '@/pages/Settings/AppConfig/components/table/CreateBulletinCategorieTableDialog';
 
 const TABLE_CONFIG_MAP = {
   bulletinboard: [
@@ -8,7 +8,9 @@ const TABLE_CONFIG_MAP = {
       key: 'bulletinboard',
       columns: AppConfigBulletinTableColumn,
       useStore: useAppConfigBulletinTable,
-      dialogBody: AppConfigBulletinTableDialog,
+      dialogBody: CreateBulletinCategorieTableDialog,
+      modifyBody: CreateBulletinCategorieTableDialog,
+      deleteBody: CreateBulletinCategorieTableDialog,
       showAddButton: true,
     },
   ],
