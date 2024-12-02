@@ -2,6 +2,7 @@ import {
   AiChatIcon,
   AntiMalwareIcon,
   BackupIcon,
+  BulletinBoardIcon,
   ChatIcon,
   ClassManagementIcon,
   ConferencesIcon,
@@ -166,7 +167,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', isNativeApp: true },
   {
     id: APPS.BULLETIN_BOARD,
-    icon: WhiteBoardIcon,
+    icon: BulletinBoardIcon,
     color: 'bg-ciDarkBlue',
     isNativeApp: true,
     extendedOptions: {

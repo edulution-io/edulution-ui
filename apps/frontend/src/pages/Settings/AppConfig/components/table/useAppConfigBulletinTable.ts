@@ -12,12 +12,16 @@ export interface BulletinBoardTableStore {
   setIsLoading: (isLoading: boolean) => void;
   addNewCategory: (category: BulletinCategoryDto) => Promise<void>;
   categories: BulletinCategoryDto[];
+  setSelectedCategory: (category: BulletinCategoryDto | null) => void;
+  selectedCategorys: BulletinCategoryDto | null;
+  checkIfNameExists: (name: string) => Promise<boolean>;
 }
 
 const initialValues = {
   isDialogOpen: false,
   isLoading: true,
   categories: [],
+  selectedCategorys: null,
 };
 
 const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
@@ -36,11 +40,12 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
     }
   },
 
+  setSelectedCategory: (category) => set({ selectedCategorys: category }),
+
   getData: async () => {
     set({ isLoading: true });
     try {
       const response = await eduApi.get<BulletinCategoryDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);
-      console.log('response', response.data);
       set({ categories: response.data });
       return response.data || [];
     } catch (error) {
@@ -48,6 +53,17 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
       return [];
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  checkIfNameExists: async (name: string): Promise<boolean> => {
+    try {
+      const response = await eduApi.get<{
+        exists: boolean;
+      }>(`${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/exists/${name}`);
+      return response.data.exists;
+    } catch (error) {
+      return false;
     }
   },
 }));

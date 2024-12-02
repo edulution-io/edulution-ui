@@ -6,6 +6,8 @@ import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDt
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
 import formatDate from '@libs/common/utils/formatDate';
+import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 
 const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
   {
@@ -18,12 +20,16 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
       />
     ),
     accessorFn: (row) => row.name,
-    cell: ({ row }) => (
-      <SelectableTextCell
-        text={row.original.name}
-        isFirstColumn
-      />
-    ),
+    cell: ({ row }) => {
+      const { setSelectedCategory } = useAppConfigBulletinTable();
+      return (
+        <SelectableTextCell
+          onClick={() => setSelectedCategory(row.original)}
+          text={row.original.name}
+          isFirstColumn
+        />
+      );
+    },
   },
   {
     id: 'isActive',
@@ -101,6 +107,38 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
     ),
     accessorFn: (row) => row.editableByGroups,
     cell: ({ row }) => <SelectableTextCell text={row.original.editableByGroups.length.toString()} />,
+  },
+  {
+    id: 'bulletinboard-action-button',
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryDto, unknown>
+        titleTranslationId="bulletinboard.action"
+        column={column}
+      />
+    ),
+    accessorFn: (row) => row,
+    cell: ({ row }) => {
+      const { setSelectedCategory } = useAppConfigBulletinTable();
+
+      return (
+        <div className="flex gap-2">
+          <ButtonSH
+            onClick={() => setSelectedCategory(row.original)}
+            className="rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+          >
+            Edit
+          </ButtonSH>
+          <button
+            onClick={() => {
+              console.log('Delete clicked for:', row.original);
+            }}
+            className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      );
+    },
   },
 ];
 

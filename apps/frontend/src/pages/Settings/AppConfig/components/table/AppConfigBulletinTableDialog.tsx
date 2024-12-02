@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import NewCategorieForm from '@libs/bulletinBoard/constants/NewCategorieForm';
-import { Button } from '@/components/shared/Button';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
@@ -14,11 +13,14 @@ import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/tab
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
 
 const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
-  const { addNewCategory } = useAppConfigBulletinTable();
+  const { addNewCategory, checkIfNameExists } = useAppConfigBulletinTable();
   const { user, getOwnUser } = useLmnApiStore();
+  const [nameAvailability, setNameAvailability] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
   useEffect(() => {
     if (!user) {
       void getOwnUser();
@@ -41,6 +43,50 @@ const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void
   const { setValue, watch } = form;
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
+
+  const debouncedCheckName = useMemo(
+    () =>
+      debounce(async (name: string) => {
+        if (!name) {
+          setNameAvailability('');
+          return;
+        }
+
+        setIsChecking(true);
+        try {
+          const exists = await checkIfNameExists(name);
+          console.log('exists', exists);
+          setNameAvailability(exists ? t('bulletinBoard.nameExists') : t('bulletinBoard.nameAvailable'));
+        } catch (error) {
+          setNameAvailability(t('bulletinBoard.checkFailed'));
+        } finally {
+          setIsChecking(false);
+        }
+      }, 300),
+    [checkIfNameExists, t],
+  );
+
+  useEffect(() => {
+    const subscription = watch(({ name }) => {
+      if (name !== undefined) {
+        void debouncedCheckName(name);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      debouncedCheckName.cancel();
+    };
+  }, [watch, debouncedCheckName]);
+
+  const nameValue = useWatch({
+    control: form.control,
+    name: 'name',
+  });
+
+  useEffect(() => {
+    void debouncedCheckName(nameValue || '');
+  }, [nameValue, debouncedCheckName]);
 
   const handleVisibleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('visibleByUsers', attendees, { shouldValidate: true });
@@ -100,6 +146,7 @@ const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void
           placeholder={t('bulletinBoard.categoryNamePlaceholder')}
           className="input-class"
         />
+        <div className="mt-1 text-sm">{isChecking ? t('bulletinBoard.checkingName') : nameAvailability}</div>
       </div>
       <SearchUsersOrGroups
         users={watch('visibleByUsers') as AttendeeDto[]}
@@ -148,6 +195,7 @@ const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void
         variant="btn-collaboration"
         size="lg"
         type="submit"
+        disabled={nameAvailability === t('bulletinBoard.nameExists') || isChecking}
       >
         {t('common.create')}
       </Button>

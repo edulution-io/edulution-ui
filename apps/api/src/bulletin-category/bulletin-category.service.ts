@@ -37,12 +37,10 @@ export class BulletinCategoryService {
     return this.bulletinCategoryModel.findOne({ name }).exec();
   }
 
-  async checkNameExists(name: string, patternMatch: boolean = false): Promise<boolean> {
-    if (patternMatch) {
-      const regex = new RegExp(name, 'i');
-      return !!(await this.bulletinCategoryModel.exists({ name: { $regex: regex } }));
-    }
-    return !!(await this.bulletinCategoryModel.exists({ name }));
+  async checkIfNameExists(name: string): Promise<{ exists: boolean }> {
+    const result = await this.bulletinCategoryModel.exists({ name: new RegExp(`^${name}$`, 'i') }).exec();
+    const exists = !!result;
+    return { exists };
   }
 }
 
