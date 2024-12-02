@@ -6,8 +6,8 @@ interface GroupForm {
   name: string;
   displayName: string;
   description: string;
-  quota: string;
-  mailquota: string;
+  quota: string[];
+  mailquota: number;
   maillist: boolean;
   mailalias: boolean;
   join: boolean;
@@ -18,6 +18,7 @@ interface GroupForm {
   membergroups: MultipleSelectorGroup[];
   school: string;
   creationDate?: string;
+  proxyAddresses: string[];
 }
 
 export default GroupForm;

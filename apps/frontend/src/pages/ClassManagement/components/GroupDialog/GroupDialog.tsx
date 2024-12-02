@@ -21,6 +21,7 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -29,6 +30,7 @@ interface GroupDialogProps {
 
 const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
+  const { user } = useLmnApiStore();
   const [isFetching, setIsFetching] = useState(false);
   const { t } = useTranslation();
 
@@ -49,8 +51,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     name: '',
     displayName: '',
     description: '',
-    quota: '',
-    mailquota: '',
+    quota: [],
+    mailquota: 0,
     mailalias: false,
     maillist: false,
     join: true,
@@ -59,7 +61,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     admingroups: [],
     members: [],
     membergroups: [],
-    school: 'default-school',
+    school: user?.school || '',
+    proxyAddresses: [],
   };
 
   const form = useForm<GroupForm>({
@@ -70,13 +73,13 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
 
   const getSelectOptionsFromLmnUsers = (users: UserLmnInfo[]) =>
     users.map(
-      (user) =>
+      (lmnUser) =>
         ({
-          ...user,
-          id: user.dn,
-          path: user.dn,
-          value: user.cn,
-          label: `${user.displayName} (${user.sophomorixAdminClass})`,
+          ...lmnUser,
+          id: lmnUser.dn,
+          path: lmnUser.dn,
+          value: lmnUser.cn,
+          label: `${lmnUser.displayName} (${lmnUser.sophomorixAdminClass})`,
         }) as unknown as MultipleSelectorOptionSH,
     );
 
@@ -101,6 +104,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     form.setValue('creationDate', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixCreationDate || '');
     form.setValue('maillist', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailList || false);
     form.setValue('description', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).description || '');
+    form.setValue('proxyAddresses', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses || []);
     form.setValue('members', getSelectOptionsFromLmnUsers(fetchedGroup.members));
     if ((fetchedGroup as LmnApiProjectWithMembers | LmnApiSchoolClassWithMembers).admins) {
       form.setValue(
