@@ -7,7 +7,6 @@ import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
-import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';
 import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
@@ -34,25 +33,21 @@ const SurveysList = (props: SurveysListProps) => {
 
   const locale = getLocaleDateFormat();
 
-  const getSurveyInfo = (survey: SurveyDto) => {
-    const surveyFormula = JSON.parse(JSON.stringify(survey.formula || {})) as SurveyFormulaDto;
-
-    return (
-      <div className="flex w-full flex-col gap-1">
-        <span className="text-sm font-semibold">{surveyFormula?.title || survey.id.toString('hex')}</span>
-        <p className="line-clamp-2 text-sm text-muted-foreground">
-          {`${t('survey.created')}:  `}
-          {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : FallbackText}
+  const getSurveyInfo = (survey: SurveyDto) => (
+    <div className="flex w-full flex-col gap-1">
+      <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
+      <p className="line-clamp-2 text-sm text-muted-foreground">
+        {`${t('survey.created')}:  `}
+        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : FallbackText}
+      </p>
+      {survey.expires ? (
+        <p className="text-muted-background line-clamp-2 text-sm">
+          {`${t('survey.expires')}:  `}
+          {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
         </p>
-        {survey.expires ? (
-          <p className="text-muted-background line-clamp-2 text-sm">
-            {`${t('survey.expires')}:  `}
-            {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
-          </p>
-        ) : null}
-      </div>
-    );
-  };
+      ) : null}
+    </div>
+  );
 
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto scrollbar-thin', className)}>

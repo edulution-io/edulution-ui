@@ -330,6 +330,7 @@
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "surveyFormulaStructuralError": "Das Formular der Umfrage weist Struktureller Fehler auf.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
@@ -350,17 +351,31 @@
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
-      "open": "Offene Umfragen",
-      "created": "Eigene Umfragen",
-      "answered": "Schon beantwortet",
-      "editor": "Neue erstellen"
+      "open": {
+        "menu": "Offene Umfragen",
+        "title": "Offene Umfragen",
+        "description": "Hier findest du die Umfragen, zu denen du eingeladen wurdest."
+      },
+      "created": {
+        "menu": "Eigene Umfragen",
+        "title": "Eigens erstellte Umfragen",
+        "description": "Hier findest du die Umfragen, die du selbst erstellt hast."
+      },
+      "answered": {
+        "menu": "Schon beantwortet",
+        "title": "Schon beantwortete Umfragen",
+        "description": "Hier findest du die Umfragen, an denen du bereits teilgenommen hast."
+      },
+      "editor": {
+        "menu": "Neue erstellen"
+      }
     },
     "actions": {
       "showResultsChart": "Schaubild",
       "showResultsTable": "Tabelle",
-      "showCommittedAnswers": "Antworten"
+      "showSubmittedAnswers": "Antworten"
     },
-    "commitedAnswersDialog": {
+    "submittedAnswersDialog": {
       "title": "Eingereichte Abgabe des Nutzers"
     },
     "saveDialog": {
@@ -674,7 +689,8 @@
     "filename": "Dateiname",
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
-    "type": "Typ"
+    "type": "Typ",
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
