@@ -11,6 +11,7 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
+import delay from '@libs/common/utils/delay';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -227,8 +228,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else if (isRunning) {
                 await joinConference(meetingID);
               }
-              await getConferences();
               toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+              await delay(5000);
+              await getConferences();
             };
       return (
         <SelectableTextCell

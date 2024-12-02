@@ -4,6 +4,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import delay from '@libs/common/utils/delay';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
@@ -77,7 +78,8 @@ const useConferenceStore = create<ConferencesStore>((set, get) => ({
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');
     } finally {
-      setTimeout(() => set({ loadingMeetingId: null }), 1000);
+      await delay(5000);
+      set({ loadingMeetingId: null });
     }
   },
   reset: () => set(initialValues),
