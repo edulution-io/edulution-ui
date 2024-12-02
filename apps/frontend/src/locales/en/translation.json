@@ -26,7 +26,13 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution-io app here:",
+      "isActive": "Active",
+      "creationDate": "Creation date",
+      "visibleForUsers": "Visible for users",
+      "visibleForGroups": "Visible for groups",
+      "editableByUsers": "Editable by users",
+      "editableByGroups": "Editable by groups"
     },
     "quota": {
       "title": "Quotas",

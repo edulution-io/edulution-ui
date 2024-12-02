@@ -11,9 +11,13 @@
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "name": "Name",
-    "visibleFor": "Sichtbar für",
     "editCategorie": "Kategorie bearbeiten",
-    "editorialAccess": "Redaktioneller Zugriff"
+    "isActive": "Aktiv",
+    "creationDate": "Erstellungsdatum",
+    "visibleForUsers": "Sichtbar für Nutzer",
+    "visibleForGroups": "Sichtbar für Gruppen",
+    "editableByUsers": "Redaktionierbar von Nutzern",
+    "editableByGroups": "Redaktionierbar von Gruppen"
   },
   "dashboard": {
     "mobileAccess": {

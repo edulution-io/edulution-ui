@@ -3,6 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
+import { IoEyeSharp } from 'react-icons/io5';
+import { FaEyeSlash } from 'react-icons/fa';
+import formatDate from '@libs/common/utils/formatDate';
 
 const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
   {
@@ -23,15 +26,43 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
     ),
   },
   {
-    id: 'visibleFor',
+    id: 'isActive',
     header: ({ column }) => (
       <SortableHeader<BulletinCategoryDto, unknown>
-        titleTranslationId="bulletinboard.visibleFor"
+        titleTranslationId="bulletinboard.isActive"
         column={column}
       />
     ),
-    accessorFn: (row) => row.visibleForGroups,
-    cell: ({ row }) => <SelectableTextCell text={row.original.name} />,
+    accessorFn: (row) => row.isActive,
+    cell: ({ row }) => (
+      <SelectableTextCell
+        icon={
+          row.original.isActive ? <IoEyeSharp className="text-green-500" /> : <FaEyeSlash className="text-red-500" />
+        }
+      />
+    ),
+  },
+  {
+    id: 'creationDate',
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryDto, unknown>
+        titleTranslationId="bulletinboard.creationDate"
+        column={column}
+      />
+    ),
+    accessorFn: (row) => row.creationDate,
+    cell: ({ row }) => <SelectableTextCell text={formatDate(row.original.creationDate.toString())} />,
+  },
+  {
+    id: 'visibleForUsers',
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryDto, unknown>
+        titleTranslationId="bulletinboard.visibleForUsers"
+        column={column}
+      />
+    ),
+    accessorFn: (row) => row.visibleForUsers,
+    cell: ({ row }) => <SelectableTextCell text={row.original.visibleForUsers.length.toString()} />,
     sortingFn: (rowA, rowB) => {
       const a = rowA.original.name || '';
       const b = rowB.original.name || '';
@@ -39,15 +70,37 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryDto>[] = [
     },
   },
   {
-    id: 'editorialAccess',
+    id: 'visibleForGroups',
     header: ({ column }) => (
       <SortableHeader<BulletinCategoryDto, unknown>
-        titleTranslationId="bulletinboard.editorialAccess"
+        titleTranslationId="bulletinboard.visibleForGroups"
+        column={column}
+      />
+    ),
+    accessorFn: (row) => row.visibleForGroups,
+    cell: ({ row }) => <SelectableTextCell text={row.original.visibleForGroups.length.toString()} />,
+  },
+  {
+    id: 'editableByUsers',
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryDto, unknown>
+        titleTranslationId="bulletinboard.editableByUsers"
+        column={column}
+      />
+    ),
+    accessorFn: (row) => row.editableByUsers,
+    cell: ({ row }) => <SelectableTextCell text={row.original.editableByUsers.length.toString()} />,
+  },
+  {
+    id: 'editableByGroups',
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryDto, unknown>
+        titleTranslationId="bulletinboard.editableByGroups"
         column={column}
       />
     ),
     accessorFn: (row) => row.editableByGroups,
-    cell: ({ row }) => <SelectableTextCell text={row.original.name} />,
+    cell: ({ row }) => <SelectableTextCell text={row.original.editableByGroups.length.toString()} />,
   },
 ];
 

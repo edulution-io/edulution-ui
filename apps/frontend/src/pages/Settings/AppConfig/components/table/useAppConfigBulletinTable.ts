@@ -40,6 +40,7 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
     set({ isLoading: true });
     try {
       const response = await eduApi.get<BulletinCategoryDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);
+      console.log('response', response.data);
       set({ categories: response.data });
       return response.data || [];
     } catch (error) {
