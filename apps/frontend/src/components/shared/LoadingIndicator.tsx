@@ -4,13 +4,11 @@ import CircleLoader from '@/components/ui/CircleLoader';
 
 interface LoadingIndicatorProps {
   isOpen: boolean;
-  id?: string;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen, id }) => (
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ isOpen }) => (
   <Dialog open={isOpen}>
     <DialogContent
-      id={id}
       showCloseButton={false}
       variant="loadingSpinner"
     >
