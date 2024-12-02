@@ -14,6 +14,7 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
+import { debounce } from 'lodash';
 
 const AppConfigBulletinTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
