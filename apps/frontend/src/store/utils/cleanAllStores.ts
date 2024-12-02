@@ -21,7 +21,7 @@ import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorForm
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
+import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
 
@@ -31,7 +31,7 @@ const cleanAllStores = () => {
   UserStore.getState().resetUserSlice();
   useAppConfigsStore.getState().reset();
   useClassManagementStore.getState().reset();
-  useCommitedAnswersDialogStore.getState().reset();
+  useSubmittedAnswersDialogStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useConferenceStore.getState().reset();

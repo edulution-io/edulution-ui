@@ -38,7 +38,6 @@ export const answeredSurvey01: Survey = {
   id: idOfAnsweredSurvey01,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Answered Survey 01',
     description: 'This is a test survey',
     pages: [
@@ -65,8 +64,7 @@ export const answeredSurvey01: Survey = {
   answers: [],
   saveNo: saveNoAnsweredSurvey01,
   created: new Date('2021-06-26T00:00:00.000Z'),
-  expirationDate: new Date('2021-06-26'),
-  expirationTime: '12:00',
+  expires: new Date('2021-06-26T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
@@ -96,7 +94,6 @@ export const answeredSurvey02: Survey = {
   id: idOfAnsweredSurvey02,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Answered Survey 02',
     description: 'This is a page-less test survey',
     elements: [
@@ -118,8 +115,7 @@ export const answeredSurvey02: Survey = {
   answers: [idOfTheSurveyAnswerForTheAnsweredSurvey02],
   saveNo: saveNoAnsweredSurvey02,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('9999-12-28'),
-  expirationTime: '14:30',
+  expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
@@ -169,7 +165,6 @@ export const answeredSurvey03: Survey = {
   id: idOfAnsweredSurvey03,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Answered Survey 03',
     description: 'This is a page-less test survey',
     elements: [
@@ -192,8 +187,7 @@ export const answeredSurvey03: Survey = {
   answers: [idOfTheSurveyAnswerForTheAnsweredSurvey03],
   saveNo: saveNoAnsweredSurvey03,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('9999-12-28'),
-  expirationTime: '14:30',
+  expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: true,
@@ -223,7 +217,6 @@ export const answeredSurvey04: Survey = {
   id: idOfAnsweredSurvey04,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Answered Survey 04',
     description: 'This is a page-less test survey',
     elements: [
@@ -245,8 +238,7 @@ export const answeredSurvey04: Survey = {
   answers: [],
   saveNo: saveNoAnsweredSurvey04,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('9999-12-28'),
-  expirationTime: '14:30',
+  expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
@@ -288,7 +280,6 @@ export const answeredSurvey05: Survey = {
   id: idOfAnsweredSurvey05,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Answered Survey 04',
     description: 'This is a page-less test survey',
     elements: [
@@ -310,8 +301,7 @@ export const answeredSurvey05: Survey = {
   answers: [idOfTheSurveyAnswerForTheAnsweredSurvey05],
   saveNo: saveNoAnsweredSurvey05,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('9999-12-28'),
-  expirationTime: '14:30',
+  expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: true,
   canUpdateFormerAnswer: false,

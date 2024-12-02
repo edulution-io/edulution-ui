@@ -8,6 +8,7 @@ import 'survey-core/i18n/german';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
@@ -15,12 +16,12 @@ import '@/pages/Surveys/theme/custom.participation.css';
 interface ParticipateDialogBodyProps {
   surveyId: mongoose.Types.ObjectId;
   saveNo: number;
-  formula: JSON;
+  formula: TSurveyFormula;
   answer: JSON;
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  commitAnswer: (
+  submitAnswer: (
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
@@ -41,7 +42,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     setAnswer,
     pageNo,
     setPageNo,
-    commitAnswer,
+    submitAnswer,
     updateOpenSurveys,
     updateAnsweredSurveys,
     setIsOpenParticipateSurveyDialog,
@@ -70,7 +71,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    await commitAnswer(surveyId, saveNo, answer /* , _options */);
+    await submitAnswer(surveyId, saveNo, answer /* , _options */);
     updateOpenSurveys();
     updateAnsweredSurveys();
     setIsOpenParticipateSurveyDialog(false);
