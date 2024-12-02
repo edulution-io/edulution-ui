@@ -12,7 +12,7 @@ import Toaster from '@/components/ui/Sonner';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import i18n from 'i18next';
+import i18n from '@/i18n';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 

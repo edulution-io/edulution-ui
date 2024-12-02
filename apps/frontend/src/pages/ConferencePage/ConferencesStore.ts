@@ -17,7 +17,7 @@ interface ConferencesStore {
   deleteConferences: (conferences: ConferenceDto[]) => Promise<void>;
   isDeleteConferencesDialogOpen: boolean;
   setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
-  toggleConferenceRunningState: (conferenceID: string) => Promise<void>;
+  toggleConferenceRunningState: (meetingId: string) => Promise<void>;
   toggleConferenceRunningStateIsLoading: boolean;
   toggleConferenceRunningStateError: Error | null;
   reset: () => void;
@@ -47,6 +47,7 @@ const useConferenceStore = create<ConferencesStore>((set, get) => ({
     set({ isLoading, error: null });
     try {
       const { data } = await eduApi.get<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT);
+
       get().setConferences(data);
     } catch (error) {
       handleApiError(error, set);

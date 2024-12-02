@@ -8,6 +8,7 @@ interface SelectableTextCellProps<TData> {
   icon?: React.ReactElement;
   row?: Row<TData>;
   text: string;
+  textOnHover?: string;
   onClick?: () => void;
   className?: string;
   isFirstColumn?: boolean;
@@ -15,7 +16,8 @@ interface SelectableTextCellProps<TData> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<any>>(
-  ({ icon, row, text, onClick, className, isFirstColumn = false }, ref) => {
+  ({ icon, row, text, textOnHover, onClick, className, isFirstColumn = false }, ref) => {
+    const [isHovered, setIsHovered] = useState(false);
     const isChecked = row?.getIsSelected();
     const checkboxRef = useRef<HTMLButtonElement>(null);
     const [checkboxWidth, setCheckboxWidth] = useState(0);
@@ -39,6 +41,8 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
           onClick ? 'cursor-pointer' : 'cursor-default',
           className,
         )}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {row ? (
           <Checkbox
@@ -60,7 +64,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
             marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
           }}
         >
-          {text}
+          {isHovered && textOnHover ? textOnHover : text}
         </span>
       </div>
     );

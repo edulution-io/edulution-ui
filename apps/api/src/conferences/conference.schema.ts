@@ -33,6 +33,9 @@ export class Conference {
   @Prop({ default: false })
   isRunning: boolean;
 
+  @Prop({ default: false })
+  isPublic: boolean;
+
   @Prop({ required: true })
   invitedAttendees: Attendee[];
 

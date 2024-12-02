@@ -88,6 +88,7 @@ describe(ConferencesController.name, () => {
       const createConferenceDto: CreateConferenceDto = {
         name: 'Test Conference',
         password: 'testpassword',
+        isPublic: false,
         invitedAttendees: [],
         invitedGroups: [],
       };
@@ -99,8 +100,8 @@ describe(ConferencesController.name, () => {
   describe('join', () => {
     it('should call join method of conferencesService with correct arguments', async () => {
       const meetingID = '123';
-      await controller.join(meetingID, jwtUser);
-      expect(service.join).toHaveBeenCalledWith(meetingID, jwtUser);
+      await controller.join(meetingID, 'password', jwtUser);
+      expect(service.join).toHaveBeenCalledWith(meetingID, jwtUser, 'password');
     });
   });
 
@@ -116,6 +117,7 @@ describe(ConferencesController.name, () => {
       const conference: Conference = {
         name: 'Test Conference',
         meetingID: '123',
+        isPublic: false,
         creator: { firstName: 'John', lastName: 'Doe', username: 'johndoe' },
         password: 'testpassword',
         isRunning: false,

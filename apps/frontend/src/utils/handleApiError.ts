@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { toast } from 'sonner';
-import i18n from 'i18next';
+import i18n from '@/i18n';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
 
 /*

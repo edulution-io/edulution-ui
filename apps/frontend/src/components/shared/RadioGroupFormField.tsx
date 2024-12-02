@@ -16,6 +16,7 @@ interface RadioGroupProps {
   labelClassname?: string;
   imageWidth?: 'small' | 'large';
   fixedImageSize?: boolean;
+  disabled?: boolean;
 }
 
 const RadioGroupFormField: React.FC<RadioGroupProps> = ({
@@ -28,6 +29,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
   labelClassname,
   imageWidth = 'large',
   fixedImageSize = false,
+  disabled = false,
 }: RadioGroupProps) => {
   const { t } = useTranslation();
 
@@ -42,18 +44,25 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
           <h4 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h4>
           <FormControl>
             <RadioGroupSH
-              onValueChange={field.onChange}
+              onValueChange={disabled ? undefined : field.onChange}
               defaultValue={defaultValue}
               className="flex flex-row flex-wrap"
             >
               {items.map((item) => (
                 <FormItem key={`${item.value}`}>
-                  <FormLabel className="flex cursor-pointer flex-col items-center space-x-3 space-y-0 text-base">
+                  <FormLabel
+                    htmlFor={`${name}-${titleTranslationId}-${item.value}`}
+                    className={cn(
+                      'flex flex-col items-center space-x-3 space-y-0 text-base',
+                      disabled || item.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+                    )}
+                  >
                     <FormControl>
                       <>
                         <RadioGroupItemSH
+                          id={`${name}-${titleTranslationId}-${item.value}`}
                           value={item.value}
-                          disabled={item.disabled}
+                          disabled={disabled || item.disabled}
                           checked={field.value === item.value}
                           className={item.icon ? 'hidden' : ''}
                         />
@@ -61,7 +70,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                           <div
                             className={cn(
                               'pb-6 opacity-60',
-                              item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
+                              disabled || item.disabled ? 'cursor-not-allowed opacity-20' : 'hover:opacity-100',
                               { 'opacity-100': field.value === item.value },
                             )}
                           >
@@ -70,14 +79,14 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                               width={imagePixelWidth}
                               className={fixedImageSize ? 'h-24 w-24 object-contain' : ''}
                               aria-label={item.value}
-                              onClickCapture={() => (item.disabled ? {} : field.onChange(item.value))}
                               alt={item.value}
                             />
                           </div>
                         ) : null}
                         <p
-                          className={cn('cursor-default opacity-60', {
+                          className={cn('opacity-60', {
                             'font-bold opacity-100': field.value === item.value,
+                            'cursor-default': disabled,
                           })}
                           style={{ textRendering: 'optimizeLegibility' }}
                         >

@@ -12,6 +12,8 @@ class ConferenceDto {
 
   isRunning: boolean;
 
+  isPublic: boolean;
+
   invitedAttendees: AttendeeDto[];
 
   invitedGroups: MultipleSelectorGroup[];
