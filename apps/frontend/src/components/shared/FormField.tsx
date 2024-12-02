@@ -60,7 +60,7 @@ const FormField = <T extends FieldValues>({
           <FormControl>
             <Input
               {...field}
-              autoComplete="off"
+              autoComplete="new-password"
               type={type}
               disabled={disabled || isLoading}
               variant={variant}
