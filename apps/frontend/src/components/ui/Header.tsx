@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
   return (
     <div
       id={BLANK_LAYOUT_HEADER_ID}
-      className="mb-3 flex items-center pb-1"
+      className="mb-3 ml-7 flex items-center pb-1"
     >
       <div className={`rounded-b-[8px] ${isMobileView ? 'mt-3 w-[150px]' : 'mt-0 w-[250px] bg-white'}`}>
         <Link to="/">

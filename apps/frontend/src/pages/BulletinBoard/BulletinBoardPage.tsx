@@ -138,7 +138,7 @@ const BulletinBoardPage = () => {
   return (
     <div
       style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin md:w-[calc(100%-var(--sidebar-width))] lg:w-full lg:overflow-x-auto"
+      className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin"
     >
       {dummyData.map((category) => (
         <div
