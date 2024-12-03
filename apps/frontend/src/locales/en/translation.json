@@ -100,12 +100,16 @@
     "errors": {
       "MeetingNotFound": "A meeting with this ID was not found",
       "BbbServerNotReachable": "The external BBB is not reachable",
+      "CouldNotStartConference": "The conference could not be started",
+      "CouldNotStopConference": "The conference could not be stopped",
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
       "YouAreNotTheCreator": "You are not the creator of the conference",
       "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
       "DBAccessFailed": "Database access failed"
     },
+    "started": "Conference started",
+    "stopped": "Conference stopped",
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
@@ -329,6 +333,7 @@
       "noFormulaError": "The formula of the survey is not readable",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
       "notFoundError": "Survey not found",
+      "surveyFormulaStructuralError": "The formula of the survey has structural issues.",
       "participationErrorUserNotAssigned": "User is no participant of the survey",
       "participationErrorAlreadyParticipated": "User has already participated in the survey",
       "participationErrorSurveyExpired": "Survey has already expired",
@@ -340,7 +345,7 @@
     "errors": {
       "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
       "notAbleToFindSurveyAnswerError": "Survey answers not found",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer",
       "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
       "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
     }
@@ -349,18 +354,32 @@
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
-      "open": "Open Surveys",
-      "created": "Owned Surveys",
-      "answered": "Answered Surveys",
-      "editor": "Create new"
+      "open": {
+        "menu": "Open Surveys",
+        "title": "Open Surveys",
+        "description": "Here you find the surveys you were invited to participate."
+      },
+      "created": {
+        "menu": "Own Surveys",
+        "title": "Own Surveys",
+        "description": "Here you find the surveys that you have created by yourself."
+      },
+      "answered": {
+        "menu": "Answered Surveys",
+        "title": "Answered Surveys",
+        "description": "Here you find the surveys that you have already participated in."
+      },
+      "editor": {
+        "menu": "Create new"
+      }
     },
     "actions": {
       "showResultsChart": "Chart",
       "showResultsTable": "Table",
-      "showCommittedAnswers": "Answers"
+      "showSubmittedAnswers": "Answers"
     },
-    "commitedAnswersDialog": {
-      "title": "Commited survey answer"
+    "submittedAnswersDialog": {
+      "title": "Submitted survey answer"
     },
     "saveDialog": {
       "title": "Save and assign to participants",
@@ -676,7 +695,8 @@
     "filename": "Filename",
     "size": "Size",
     "lastModified": "Last Modified",
-    "type": "Type"
+    "type": "Type",
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
   },
   "filesharingUpload": {
     "title": "Upload Files",
