@@ -1,0 +1,3 @@
+const CONFERENCES_SYNC_INTERVAL_MS = Number(process.env['BBB_POLL_INTERVAL']) || 60000;
+
+export default CONFERENCES_SYNC_INTERVAL_MS;

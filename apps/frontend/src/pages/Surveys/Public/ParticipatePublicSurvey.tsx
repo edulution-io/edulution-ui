@@ -35,7 +35,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
           setAnswer={setAnswer}
           pageNo={pageNo}
           setPageNo={setPageNo}
-          commitAnswer={answerPublicSurvey}
+          submitAnswer={answerPublicSurvey}
           updateOpenSurveys={() => {}}
           updateAnsweredSurveys={() => {}}
           setIsOpenParticipateSurveyDialog={() => {}}

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import EmptySurveyForm from '@libs/survey/constants/empty-survey-form';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -46,16 +45,45 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     value: user.username,
     label: `${user.firstName} ${user.lastName}`,
   };
-  const emptyFormValues: SurveyDto = new EmptySurveyForm(surveyCreator);
 
   const initialFormValues: SurveyDto = useMemo(
-    () => (editMode && selectedSurvey ? new InitialSurveyForm(surveyCreator, selectedSurvey) : emptyFormValues),
+    () => new InitialSurveyForm(surveyCreator, editMode && selectedSurvey ? selectedSurvey : undefined),
     [selectedSurvey],
   );
 
   const formSchema = z.object({
     id: z.number(),
-    formula: z.any(),
+    formula: z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      pages: z.array(
+        z.object({
+          name: z.string(),
+          description: z.string().optional(),
+          elements: z.array(
+            z.object({
+              type: z.string(),
+              name: z.string(),
+              description: z.string().optional(),
+              isRequired: z.boolean().optional(),
+              choices: z
+                .array(
+                  z.object({
+                    value: z.string(),
+                    label: z.string(),
+                  }),
+                )
+                .optional(),
+              choicesByUrl: z
+                .object({
+                  url: z.string(),
+                })
+                .optional(),
+            }),
+          ),
+        }),
+      ),
+    }),
     saveNo: z.number().optional(),
     creator: z.intersection(
       z.object({
@@ -174,8 +202,8 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
         setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        commitSurvey={saveSurvey}
-        isCommitting={isLoading}
+        submitSurvey={saveSurvey}
+        isSubmitting={isLoading}
       />
       <SharePublicSurveyDialog />
     </>

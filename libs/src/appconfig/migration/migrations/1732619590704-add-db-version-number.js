@@ -6,7 +6,7 @@ const APP_CONFIG_COLLECTION_NAME = require('../appconfig-collectionName');
 async function runMigration(next) {
   const collection = connection.collection(APP_CONFIG_COLLECTION_NAME);
   try {
-    // eslint-disable-next-line no-underscore-dangle
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-underscore-dangle
     await collection.updateMany({}, { $set: { schemaVersion: 0, updatedAt: moment()._d } });
   } catch (e) {
     console.error(`Error running migrations: On updating Document:  ${e}`);

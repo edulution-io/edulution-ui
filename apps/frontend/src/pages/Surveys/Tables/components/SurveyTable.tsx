@@ -1,129 +1,52 @@
-import React, { useMemo } from 'react';
-import i18n from 'i18next';
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import Checkbox from '@/components/ui/Checkbox';
-import FallbackText from '@/components/shared/FallbackText';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import React, { useState } from 'react';
+import mongoose from 'mongoose';
+import { ColumnDef, OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
+import APPS from '@libs/appconfig/constants/apps';
 import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
-interface SurveyTableProps {
-  title: string;
-  surveys: SurveyDto[];
-  selectSurvey: (survey?: SurveyDto) => void;
-  selectedSurvey?: SurveyDto;
+interface MongoId {
+  id: mongoose.Types.ObjectId;
 }
 
-const SURVEY_TABLE_HEADERS: string[] = [
-  'common.title',
-  'survey.creationDate',
-  'survey.expirationDate',
-  'common.participated',
-  'survey.canSubmitMultiple',
-];
+interface DataTableProps<TData extends MongoId, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: Array<TData>;
+  isLoading?: boolean;
+}
 
-const SurveyTable = (props: SurveyTableProps) => {
-  const { title, surveys, selectedSurvey, selectSurvey } = props;
+const SurveyTable = <TData extends MongoId, TValue>({
+  columns,
+  data,
+  isLoading = false,
+}: DataTableProps<TData, TValue>) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
 
-  const { t } = useTranslation('translation', { lng: i18n.options.lng || 'en' });
+  const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
 
-  const localDateFormat = getLocaleDateFormat();
-
-  const surveyRows = useMemo(
-    () =>
-      surveys.map((survey: SurveyDto) => {
-        const isSelectedSurvey = selectedSurvey?.id === survey.id;
-        if (!survey.formula) {
-          return null;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        let surveyObj = JSON.parse(JSON.stringify(survey.formula));
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (!surveyObj.elements && !surveyObj.pages[0].elements) {
-          surveyObj = undefined;
-        }
-
-        return (
-          <TableRow
-            key={`survey_row_-_${survey.id.toString('base64')}`}
-            className="cursor-pointer"
-            onClick={() => {
-              selectSurvey(survey);
-            }}
-          >
-            <TableCell>
-              <Checkbox
-                checked={isSelectedSurvey}
-                aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-              />
-            </TableCell>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            <TableCell className="text-background">{surveyObj?.title || FallbackText}</TableCell>
-            <TableCell className="text-background">
-              {survey?.created ? format(survey.created, 'PPP', { locale: localDateFormat }) : FallbackText}
-            </TableCell>
-            <TableCell className="text-background">
-              {survey?.expires ? format(survey.expires, 'PPP', { locale: localDateFormat }) : FallbackText}
-            </TableCell>
-            <TableCell className="text-background">
-              {survey?.invitedAttendees && survey?.participatedAttendees && survey.isPublic !== true
-                ? `${survey?.participatedAttendees.length || 0}/${survey?.invitedAttendees.length || 0}`
-                : survey.answers.length}
-            </TableCell>
-            <TableCell className="text-background">
-              {survey?.canSubmitMultipleAnswers ? t('common.yes') : t('common.no')}
-            </TableCell>
-          </TableRow>
-        );
-      }),
-    [surveys, selectedSurvey],
-  );
-
-  const pageBarsHeight = useElementHeight([SURVEYS_PAGE_TABLE_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) - 10;
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+    const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
+    setSelectedRows(newValue);
+  };
 
   return (
-    <div
-      className="m-4 w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
-      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-    >
-      <h4>{title}</h4>
-      <Table>
-        <TableHeader
-          id={SURVEYS_PAGE_TABLE_HEADER_ID}
-          className="text-white"
-        >
-          <TableRow>
-            <TableHead
-              key="tableHead-checkbox"
-              className="w-20px"
-            />
-            {SURVEY_TABLE_HEADERS.map((header) => (
-              <TableHead key={`tableHead-createdSurveys_${header}`}>{t(header)}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody className="container">
-          {surveys.length && surveys.length > 0 ? (
-            surveyRows
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={SURVEY_TABLE_HEADERS.length + 1} // +1 for the checkbox column
-                className="h-24 text-center text-background"
-              >
-                {t('table.noDataAvailable')}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <ScrollableTable
+      columns={columns}
+      data={data}
+      onRowSelectionChange={handleRowSelectionChange}
+      selectedRows={selectedRows}
+      isLoading={isLoading}
+      sorting={sorting}
+      getRowId={(originalRow: TData) => originalRow.id.toString('hex')}
+      setSorting={setSorting}
+      applicationName={APPS.SURVEYS}
+      scrollContainerOffsetElementIds={{
+        tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
+        others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
+      }}
+    />
   );
 };
 
