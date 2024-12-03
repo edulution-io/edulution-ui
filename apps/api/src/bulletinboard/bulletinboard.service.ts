@@ -2,11 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model } from 'mongoose';
-import { BulletinDto } from '@libs/bulletinBoard/type/bulletinDto';
+import { CreateBulletinDto } from '@libs/bulletinBoard/type/createBulletinDto';
 import { join } from 'path';
 import { createReadStream, existsSync, mkdirSync } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
-import { Bulletin, BulletinDocument } from './bulletinboard.schema';
+import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
 // import {BulletinCategory, BulletinCategoryDocument} from "../bulletin-category/bulletin-category.schema";
@@ -24,7 +24,7 @@ class BulletinBoardService {
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
-  uploadFile(file: Express.Multer.File): { filename: string; path: string } {
+  uploadBulletinAttachment(file: Express.Multer.File): { filename: string; path: string } {
     if (!file) {
       throw new Error('No file provided.');
     }
@@ -39,7 +39,7 @@ class BulletinBoardService {
     };
   }
 
-  serveFile(filename: string, res: Response) {
+  serveBulletinAttachment(filename: string, res: Response) {
     const filePath = join(this.attachmentsPath, filename);
 
     if (!existsSync(filePath)) {
@@ -52,11 +52,11 @@ class BulletinBoardService {
     return res;
   }
 
-  async findAll(_username: string) {
+  async findAllBulletins(_username: string) {
     return this.bulletinModel.find({ isActive: true }).populate('category').exec();
   }
 
-  async create(_username: string, dto: BulletinDto) {
+  async createBulletin(_username: string, dto: CreateBulletinDto) {
     return this.bulletinModel.create({
       creator: dto.creator,
       heading: dto.heading,
@@ -67,11 +67,11 @@ class BulletinBoardService {
     });
   }
 
-  async update(_username: string, _id: string, _dto: BulletinDto) {
+  async updateBulletin(_username: string, _id: string, _dto: CreateBulletinDto) {
     // Logic to update a specific bulletin board entry
   }
 
-  async remove(_username: string, _id: string) {
+  async removeBulletin(_username: string, _id: string) {
     // Logic to delete a specific bulletin board entry
   }
 }

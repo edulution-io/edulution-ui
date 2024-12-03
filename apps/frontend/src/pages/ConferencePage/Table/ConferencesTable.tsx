@@ -24,21 +24,23 @@ const ConferencesTable = () => {
   const { appName } = useConferencesPageMenu();
 
   return (
-    <ScrollableTable
-      columns={ConferencesTableColumns}
-      data={conferences}
-      onRowSelectionChange={handleRowSelectionChange}
-      isLoading={isLoading}
-      selectedRows={selectedRows}
-      getRowId={(originalRow) => originalRow.meetingID}
-      applicationName={appName}
-      additionalScrollContainerOffset={20}
-      enableRowSelection={(row) => row.original.creator.username === user?.username}
-      scrollContainerOffsetElementIds={{
-        tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
-        others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
-      }}
-    />
+    <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+      <ScrollableTable
+        columns={ConferencesTableColumns}
+        data={conferences}
+        onRowSelectionChange={handleRowSelectionChange}
+        isLoading={isLoading}
+        selectedRows={selectedRows}
+        getRowId={(originalRow) => originalRow.meetingID}
+        applicationName={appName}
+        additionalScrollContainerOffset={20}
+        enableRowSelection={(row) => row.original.creator.username === user?.username}
+        scrollContainerOffsetElementIds={{
+          tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
+          others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
+        }}
+      />
+    </div>
   );
 };
 

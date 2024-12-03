@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { BulletinDto } from '@libs/bulletinBoard/type/bulletinDto';
+import { CreateBulletinDto } from '@libs/bulletinBoard/type/createBulletinDto';
 import { Response } from 'express';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import BulletinBoardService from './bulletinboard.service';
@@ -17,28 +17,32 @@ class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
   @Get()
-  findAll(@GetCurrentUsername() currentUsername: string) {
-    return this.bulletinBoardService.findAll(currentUsername);
+  findAllBulletins(@GetCurrentUsername() currentUsername: string) {
+    return this.bulletinBoardService.findAllBulletins(currentUsername);
   }
 
   @Post()
-  create(@GetCurrentUsername() currentUsername: string, @Body() bulletin: BulletinDto) {
-    return this.bulletinBoardService.create(currentUsername, bulletin);
+  createBulletin(@GetCurrentUsername() currentUsername: string, @Body() bulletin: CreateBulletinDto) {
+    return this.bulletinBoardService.createBulletin(currentUsername, bulletin);
   }
 
   @Patch(':id')
-  update(@GetCurrentUsername() currentUsername: string, @Param('id') id: string, @Body() bulletin: BulletinDto) {
-    return this.bulletinBoardService.update(currentUsername, id, bulletin);
+  updateBulletin(
+    @GetCurrentUsername() currentUsername: string,
+    @Param('id') id: string,
+    @Body() bulletin: CreateBulletinDto,
+  ) {
+    return this.bulletinBoardService.updateBulletin(currentUsername, id, bulletin);
   }
 
   @Delete(':id')
-  remove(@GetCurrentUsername() currentUsername: string, @Param('id') id: string) {
-    return this.bulletinBoardService.remove(currentUsername, id);
+  removeBulletin(@GetCurrentUsername() currentUsername: string, @Param('id') id: string) {
+    return this.bulletinBoardService.removeBulletin(currentUsername, id);
   }
 
   @Get('attachments/:filename')
-  serveFile(@Param('filename') filename: string, @Res() res: Response) {
-    return this.bulletinBoardService.serveFile(filename, res);
+  serveBulletinAttachment(@Param('filename') filename: string, @Res() res: Response) {
+    return this.bulletinBoardService.serveBulletinAttachment(filename, res);
   }
 
   @Post('upload')
@@ -61,8 +65,8 @@ class BulletinBoardController {
       },
     }),
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const result = this.bulletinBoardService.uploadFile(file);
+  uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    const result = this.bulletinBoardService.uploadBulletinAttachment(file);
     return res.status(200).json({
       message: 'File uploaded successfully.',
       filename: result.filename,

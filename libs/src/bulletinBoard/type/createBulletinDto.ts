@@ -1,7 +1,11 @@
 import { IsBoolean, IsDate, IsMongoId, IsOptional, IsString, ValidateNested } from 'class-validator';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 
-export class BulletinDto {
+export class CreateBulletinDto {
+  @IsOptional()
+  @IsMongoId()
+  id?: string;
+
   @ValidateNested()
   creator: AttendeeDto;
 
@@ -29,4 +33,12 @@ export class BulletinDto {
   @IsDate()
   @IsOptional()
   isVisibleEndDate?: Date;
+
+  @IsDate()
+  @IsOptional()
+  createdAt?: Date;
+
+  @IsDate()
+  @IsOptional()
+  updatedAt?: Date;
 }

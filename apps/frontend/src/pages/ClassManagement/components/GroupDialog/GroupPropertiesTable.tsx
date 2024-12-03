@@ -11,7 +11,7 @@ dayjs.extend(customParseFormat);
 
 type GroupProperty = {
   labelTranslationId: string;
-  name: keyof GroupForm;
+  name: keyof Omit<GroupForm, 'admins' | 'admingroups' | 'members' | 'membergroups'>;
   disabled?: boolean;
   component: 'checkbox' | 'text' | 'date';
 };

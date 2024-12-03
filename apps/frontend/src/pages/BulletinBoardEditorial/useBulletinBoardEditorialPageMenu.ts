@@ -2,7 +2,7 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import { BulletinBoardIcon } from '@/assets/icons';
 
-const useBulletinBoardPageMenu = () => {
+const useBulletinBoardEditorialPageMenu = () => {
   const menuBar = (): MenuBarEntry => ({
     title: 'bulletinboard.title',
     appName: APPS.BULLETIN_BOARD,
@@ -14,4 +14,4 @@ const useBulletinBoardPageMenu = () => {
   return menuBar();
 };
 
-export default useBulletinBoardPageMenu;
+export default useBulletinBoardEditorialPageMenu;

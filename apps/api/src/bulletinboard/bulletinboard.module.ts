@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Bulletin, BulletinSchema } from './bulletinboard.schema';
+import { Bulletin, BulletinSchema } from './bulletin.schema';
 import BulletinBoardController from './bulletinboard.controller';
 import BulletinBoardService from './bulletinboard.service';
 
