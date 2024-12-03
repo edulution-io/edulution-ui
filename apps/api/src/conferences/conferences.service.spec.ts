@@ -7,6 +7,8 @@ import axios from 'axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -59,6 +61,11 @@ const mockConferenceDocument: ConferenceDocument = {
   toObject: jest.fn().mockImplementation(() => mockConferenceDocument),
 } as unknown as ConferenceDocument;
 
+const schedulerRegistryMock = {
+  addInterval: jest.fn().mockImplementation((_, interval: NodeJS.Timeout) => interval.unref()),
+  deleteInterval: jest.fn(),
+};
+
 const mockSseConnections: UserConnections = new Map();
 
 const conferencesModelMock = {
@@ -99,6 +106,10 @@ describe(ConferencesService.name, () => {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
         },
+        {
+          provide: SchedulerRegistry,
+          useValue: schedulerRegistryMock,
+        },
       ],
     }).compile();
 
@@ -113,7 +124,7 @@ describe(ConferencesService.name, () => {
   describe('create', () => {
     it('should create and save a conference', async () => {
       const createDto: CreateConferenceDto = { ...mockConference };
-      const result = await service.create(createDto, mockJWTUser, mockSseConnections);
+      const result = await service.create(createDto, mockJWTUser);
       expect(model.create).toHaveBeenCalled();
       expect(result?.creator).toEqual(mockCreator);
     });
@@ -146,11 +157,7 @@ describe(ConferencesService.name, () => {
 
   describe('remove', () => {
     it('should remove a conference', async () => {
-      const result = await service.remove(
-        [mockConferenceDocument.meetingID],
-        mockJWTUser.preferred_username,
-        mockSseConnections,
-      );
+      const result = await service.remove([mockConferenceDocument.meetingID], mockJWTUser.preferred_username);
 
       expect(result).toBeTruthy();
       expect(conferencesModelMock.find).toHaveBeenCalledWith(
@@ -165,21 +172,53 @@ describe(ConferencesService.name, () => {
   });
 
   describe('toggleConferenceIsRunning', () => {
-    it('should toggle the conference running status', async () => {
+    beforeEach(() => {
+      jest.spyOn(service, 'startConference').mockResolvedValue(undefined);
+      jest.spyOn(service, 'stopConference').mockResolvedValue(undefined);
+    });
+
+    it('should start the conference if it is not running', async () => {
       jest.spyOn(service, 'isCurrentUserTheCreator').mockResolvedValue({
         conference: mockConferenceDocument,
         isCreator: true,
       });
-      jest.spyOn(service, 'stopConference').mockResolvedValue(undefined);
-      jest.spyOn(service, 'startConference').mockResolvedValue(undefined);
+      jest.spyOn(service, 'checkConferenceIsRunningWithBBB').mockResolvedValue(false);
 
       mockConferenceDocument.isRunning = false;
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username, mockSseConnections);
-      expect(service.startConference).toHaveBeenCalled();
+
+      await service.toggleConferenceIsRunning('mockMeetingId', false, mockCreator.username);
+
+      expect(service.startConference).toHaveBeenCalledWith(mockConferenceDocument, false, mockSseConnections);
+      expect(service.stopConference).not.toHaveBeenCalled();
+    });
+
+    it('should stop the conference if it is running', async () => {
+      jest.spyOn(service, 'isCurrentUserTheCreator').mockResolvedValue({
+        conference: mockConferenceDocument,
+        isCreator: true,
+      });
+      jest.spyOn(service, 'checkConferenceIsRunningWithBBB').mockResolvedValue(true);
 
       mockConferenceDocument.isRunning = true;
-      await service.toggleConferenceIsRunning('mockMeetingId', mockCreator.username, mockSseConnections);
-      expect(service.stopConference).toHaveBeenCalled();
+
+      await service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, true, mockCreator.username);
+
+      expect(service.stopConference).toHaveBeenCalledWith(mockConferenceDocument, true, mockSseConnections);
+      expect(service.startConference).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the user is not the creator', async () => {
+      jest.spyOn(service, 'isCurrentUserTheCreator').mockResolvedValue({
+        conference: mockConferenceDocument,
+        isCreator: false,
+      });
+
+      await expect(
+        service.toggleConferenceIsRunning(mockConferenceDocument.meetingID, true, 'mockUsername'),
+      ).rejects.toThrow(ConferencesErrorMessage.YouAreNotTheCreator);
+
+      expect(service.stopConference).not.toHaveBeenCalled();
+      expect(service.startConference).not.toHaveBeenCalled();
     });
   });
 
@@ -212,7 +251,7 @@ describe(ConferencesService.name, () => {
       });
       jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
 
-      await service.startConference(mockConferenceDocument, mockSseConnections);
+      await service.startConference(mockConferenceDocument, false, mockSseConnections);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
     });
@@ -228,9 +267,14 @@ describe(ConferencesService.name, () => {
       });
       jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
 
-      await service.stopConference(mockConferenceDocument, mockSseConnections);
+      await service.stopConference(mockConferenceDocument, true, mockSseConnections);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
     });
+  });
+
+  afterAll(() => {
+    schedulerRegistryMock.deleteInterval.mockClear();
+    schedulerRegistryMock.addInterval.mockClear();
   });
 });
