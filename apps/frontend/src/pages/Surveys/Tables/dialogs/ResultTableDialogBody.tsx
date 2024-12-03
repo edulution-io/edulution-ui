@@ -7,10 +7,13 @@ import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import './resultTableDialog.css';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const ResultTableDialogBody = () => {
   const { selectedSurvey } = useSurveyTablesPageStore();
   const { setIsOpenPublicResultsTableDialog, getSurveyResult, result } = useResultDialogStore();
+
+  const { user } = useUserStore();
 
   const { t } = useTranslation();
 
@@ -38,6 +41,7 @@ const ResultTableDialogBody = () => {
       <ResultTable
         formula={selectedSurvey.formula}
         result={result}
+        language={user?.language}
       />
     </ScrollArea>
   );

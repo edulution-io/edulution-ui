@@ -183,6 +183,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
         form={form}
         formula={formulaWatcher}
         saveNumber={saveNoWatcher}
+        language={user.language}
       />
     ),
     [formulaWatcher, saveNoWatcher],

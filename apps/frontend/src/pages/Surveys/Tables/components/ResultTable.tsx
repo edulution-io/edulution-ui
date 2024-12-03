@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import i18next from 'i18next';
 import { SurveyModel } from 'survey-core';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
@@ -10,10 +9,11 @@ import '../dialogs/resultTableDialog.css';
 interface ResultTableDialogBodyProps {
   formula: TSurveyFormula;
   result: JSON[];
+  language?: string;
 }
 
 const ResultTable = (props: ResultTableDialogBodyProps) => {
-  const { formula, result } = props;
+  const { formula, result, language = 'de' } = props;
 
   const [survey, setSurvey] = useState<SurveyModel | null>(null);
   const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
@@ -26,7 +26,7 @@ const ResultTable = (props: ResultTableDialogBodyProps) => {
   if (visuTable == null && survey != null) {
     const answers = result || [];
     const surveyVisuTable = new Tabulator(survey, answers);
-    surveyVisuTable.locale = i18next.options.lng || 'en';
+    surveyVisuTable.locale = language;
     setVisuTable(surveyVisuTable);
   }
 

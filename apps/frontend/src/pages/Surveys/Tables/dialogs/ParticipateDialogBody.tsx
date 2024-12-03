@@ -1,6 +1,5 @@
 import React from 'react';
 import mongoose from 'mongoose';
-import i18next from 'i18next';
 import { Survey } from 'survey-react-ui';
 import { CompleteEvent, Model } from 'survey-core';
 import 'survey-core/i18n/english';
@@ -31,6 +30,7 @@ interface ParticipateDialogBodyProps {
   updateAnsweredSurveys: () => void;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   className?: string;
+  language?: string;
 }
 
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
@@ -47,11 +47,12 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     updateAnsweredSurveys,
     setIsOpenParticipateSurveyDialog,
     className,
+    language = 'de',
   } = props;
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
-  surveyModel.locale = i18next.options.lng || 'en';
+  surveyModel.locale = language || 'en';
 
   if (surveyModel.pages.length > 1) {
     surveyModel.showProgressBar = 'top';

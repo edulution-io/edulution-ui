@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import i18next from 'i18next';
 import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
@@ -16,10 +15,11 @@ const visuPanelOptions = {
 interface ResultVisualizationDialogBodyProps {
   formula?: TSurveyFormula;
   result?: JSON[];
+  language?: string;
 }
 
 const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
-  const { formula, result } = props;
+  const { formula, result, language = 'de' } = props;
 
   const [survey, setSurvey] = useState<SurveyModel | null>(null);
   const [visuPanel, setVisuPanel] = useState<VisualizationPanel | null>(null);
@@ -33,7 +33,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
     const questions = survey.getAllQuestions() || [];
     const answers = result || [];
     const visualizationPanel = new VisualizationPanel(questions, answers, visuPanelOptions);
-    visualizationPanel.locale = i18next.options.lng || 'en';
+    visualizationPanel.locale = language;
     visualizationPanel.showToolbar = false;
     setVisuPanel(visualizationPanel);
   }
