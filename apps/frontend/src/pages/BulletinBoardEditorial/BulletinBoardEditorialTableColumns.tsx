@@ -44,10 +44,10 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     ),
   },
   {
-    id: 'creationDate',
+    id: 'createdAt',
     header: ({ column }) => (
       <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.creationDate"
+        titleTranslationId="common.createdAt"
         column={column}
       />
     ),

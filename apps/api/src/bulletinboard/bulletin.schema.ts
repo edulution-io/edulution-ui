@@ -18,19 +18,21 @@ export class Bulletin {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ type: Boolean, default: true })
+  @Prop({ type: Boolean, default: true, required: true })
   isActive: boolean;
 
-  @Prop({ type: Types.ObjectId, ref: 'BulletinBoardCategory', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'BulletinCategory', required: true })
   category: Types.ObjectId;
 
-  @Prop()
-  isVisibleStartDate?: Date;
+  @Prop({ required: true })
+  isVisibleStartDate: Date | null;
 
-  @Prop()
-  isVisibleEndDate?: Date;
+  @Prop({ required: true })
+  isVisibleEndDate: Date | null;
 }
 
 export const BulletinSchema = SchemaFactory.createForClass(Bulletin);
 
-export default BulletinSchema;
+BulletinSchema.set('toJSON', {
+  virtuals: true,
+});

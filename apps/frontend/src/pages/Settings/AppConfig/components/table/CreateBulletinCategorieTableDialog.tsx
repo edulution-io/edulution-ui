@@ -97,7 +97,7 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
     setValue('editableByUsers', attendees, { shouldValidate: true });
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async () => {
     const name = form.getValues('name');
     const isActive = form.getValues('isActive');
     const visibleForUsers = form.getValues('visibleByUsers');
@@ -125,7 +125,6 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
         editableByUsers,
         editableByGroups,
         createdBy,
-        creationDate: new Date(),
       });
       console.log('Category added successfully');
       closeDialog();
@@ -136,8 +135,8 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
 
   return (
     <form
-      onSubmit={async (event) => {
-        await handleFormSubmit(event);
+      onSubmit={async () => {
+        await handleFormSubmit();
       }}
       className="space-y-4"
     >

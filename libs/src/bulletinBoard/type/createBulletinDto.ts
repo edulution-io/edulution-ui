@@ -1,17 +1,10 @@
-import { IsBoolean, IsDate, IsMongoId, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsDate, IsString, ValidateNested } from 'class-validator';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/type/bulletinCategoryResponseDto';
 
-export class CreateBulletinDto {
-  @IsOptional()
-  @IsMongoId()
-  id?: string;
-
+class CreateBulletinDto {
   @ValidateNested()
   creator: AttendeeDto;
-
-  @ValidateNested()
-  @IsOptional()
-  updatedBy?: AttendeeDto;
 
   @IsString()
   heading: string;
@@ -20,25 +13,15 @@ export class CreateBulletinDto {
   content: string;
 
   @IsBoolean()
-  @IsOptional()
-  isActive?: boolean = true;
+  isActive: boolean;
 
-  @IsMongoId()
-  category: string;
+  category: BulletinCategoryResponseDto;
 
   @IsDate()
-  @IsOptional()
-  isVisibleStartDate?: Date;
+  isVisibleStartDate: Date | null;
 
   @IsDate()
-  @IsOptional()
-  isVisibleEndDate?: Date;
-
-  @IsDate()
-  @IsOptional()
-  createdAt?: Date;
-
-  @IsDate()
-  @IsOptional()
-  updatedAt?: Date;
+  isVisibleEndDate: Date | null;
 }
+
+export default CreateBulletinDto;

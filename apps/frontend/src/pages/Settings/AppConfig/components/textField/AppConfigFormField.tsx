@@ -10,7 +10,7 @@ import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
   control: Control<z.infer<typeof formSchema>, T>;
-  option: AppConfigExtendedOption<T>;
+  option: AppConfigExtendedOption;
   type?: 'password' | 'text';
 };
 

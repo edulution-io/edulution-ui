@@ -2,27 +2,27 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
 import formatDate from '@libs/common/utils/formatDate';
 import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { MdDriveFileRenameOutline, MdOutlineDeleteOutline } from 'react-icons/md';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/type/bulletinCategoryResponseDto';
 
-interface AppConfigBulletinTableColumnProps {
-  onDelete: (category: BulletinCategoryDto) => void;
-  onModify: (category: BulletinCategoryDto) => void;
+export interface AppConfigBulletinTableColumnProps {
+  onDelete: (category: BulletinCategoryResponseDto) => void;
+  onModify: (category: BulletinCategoryResponseDto) => void;
 }
 
 const AppConfigBulletinTableColumn = ({
   onDelete,
   onModify,
-}: AppConfigBulletinTableColumnProps): ColumnDef<BulletinCategoryDto>[] => [
+}: AppConfigBulletinTableColumnProps): ColumnDef<BulletinCategoryResponseDto>[] => [
   {
     id: 'name',
     header: ({ column, table }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.name"
         column={column}
         table={table}
@@ -43,7 +43,7 @@ const AppConfigBulletinTableColumn = ({
   {
     id: 'isActive',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.isActive"
         column={column}
       />
@@ -60,18 +60,18 @@ const AppConfigBulletinTableColumn = ({
   {
     id: 'creationDate',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.creationDate"
         column={column}
       />
     ),
-    accessorFn: (row) => row.creationDate,
-    cell: ({ row }) => <SelectableTextCell text={formatDate(row.original.creationDate.toString())} />,
+    accessorFn: (row) => row.createdAt,
+    cell: ({ row }) => <SelectableTextCell text={formatDate(row.original.createdAt.toString())} />,
   },
   {
     id: 'visibleForUsers',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.visibleForUsers"
         column={column}
       />
@@ -87,7 +87,7 @@ const AppConfigBulletinTableColumn = ({
   {
     id: 'visibleForGroups',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.visibleForGroups"
         column={column}
       />
@@ -98,7 +98,7 @@ const AppConfigBulletinTableColumn = ({
   {
     id: 'editableByUsers',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.editableByUsers"
         column={column}
       />
@@ -109,7 +109,7 @@ const AppConfigBulletinTableColumn = ({
   {
     id: 'editableByGroups',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.editableByGroups"
         column={column}
       />
@@ -120,7 +120,7 @@ const AppConfigBulletinTableColumn = ({
   {
     id: 'bulletinboard-action-button',
     header: ({ column }) => (
-      <SortableHeader<BulletinCategoryDto, unknown>
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.action"
         column={column}
       />
@@ -135,6 +135,7 @@ const AppConfigBulletinTableColumn = ({
             onClick={() => {
               onDelete(row.original);
               console.log('Rename clicked for:', row.original);
+              setSelectedCategory(row.original);
             }}
           >
             <MdDriveFileRenameOutline />
@@ -143,6 +144,7 @@ const AppConfigBulletinTableColumn = ({
             onClick={() => {
               onModify(row.original);
               console.log('Delete clicked for:', row.original);
+              setSelectedCategory(row.original);
             }}
           >
             <MdOutlineDeleteOutline />

@@ -33,3 +33,7 @@ export class BulletinCategory {
 }
 
 export const BulletinCategorySchema = SchemaFactory.createForClass(BulletinCategory);
+
+BulletinCategorySchema.set('toJSON', {
+  virtuals: true,
+});

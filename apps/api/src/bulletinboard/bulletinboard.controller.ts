@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { CreateBulletinDto } from '@libs/bulletinBoard/type/createBulletinDto';
+import CreateBulletinDto from '@libs/bulletinBoard/type/createBulletinDto';
 import { Response } from 'express';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import BulletinBoardService from './bulletinboard.service';

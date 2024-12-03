@@ -1,12 +1,12 @@
-import { IsArray, IsBoolean, IsDate, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsString } from 'class-validator';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
-export class BulletinCategoryDto {
+class CreateBulletinCategoryDto {
   @IsString()
   name: string;
 
   @IsBoolean()
-  isActive?: boolean = true;
+  isActive: boolean;
 
   @IsArray()
   visibleForUsers: MultipleSelectorOptionSH[] = [];
@@ -22,7 +22,6 @@ export class BulletinCategoryDto {
 
   @IsString()
   createdBy: MultipleSelectorOptionSH;
-
-  @IsDate()
-  creationDate: Date;
 }
+
+export default CreateBulletinCategoryDto;

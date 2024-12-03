@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
+import CreateBulletinCategoryDto from '@libs/bulletinBoard/type/createBulletinCategoryDto';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
@@ -12,7 +12,7 @@ class BulletinCategoryService {
     return this.bulletinCategoryModel.find({ isActive: true }).exec();
   }
 
-  async create(_username: string, dto: BulletinCategoryDto) {
+  async create(_username: string, dto: CreateBulletinCategoryDto) {
     return this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
@@ -25,7 +25,7 @@ class BulletinCategoryService {
     });
   }
 
-  async update(_username: string, _id: string, _dto: BulletinCategoryDto) {
+  async update(_username: string, _id: string, _dto: CreateBulletinCategoryDto) {
     // Logic to update a specific bulletin board entry
   }
 

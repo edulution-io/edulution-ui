@@ -2,20 +2,20 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model } from 'mongoose';
-import { CreateBulletinDto } from '@libs/bulletinBoard/type/createBulletinDto';
+import CreateBulletinDto from '@libs/bulletinBoard/type/createBulletinDto';
 import { join } from 'path';
 import { createReadStream, existsSync, mkdirSync } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
-// import {BulletinCategory, BulletinCategoryDocument} from "../bulletin-category/bulletin-category.schema";
+import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 
 @Injectable()
 class BulletinBoardService {
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
-    // @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
+    @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
   ) {
     if (!existsSync(this.attachmentsPath)) {
       mkdirSync(this.attachmentsPath, { recursive: true });
@@ -52,16 +52,21 @@ class BulletinBoardService {
     return res;
   }
 
-  async findAllBulletins(_username: string) {
-    return this.bulletinModel.find({ isActive: true }).populate('category').exec();
+  async findAllBulletins(username: string) {
+    return this.bulletinModel.find({ 'creator.username': username, isActive: true }).populate('category').exec();
   }
 
   async createBulletin(_username: string, dto: CreateBulletinDto) {
+    const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
+    if (!category) {
+      throw new Error('Invalid category');
+    }
+
     return this.bulletinModel.create({
       creator: dto.creator,
       heading: dto.heading,
       content: dto.content,
-      category: dto.category,
+      category: dto.category.id,
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
     });
