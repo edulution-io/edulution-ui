@@ -2,13 +2,13 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDto';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import { BulletinCategoryService } from './bulletin-category.service';
+import BulletinCategoryService from './bulletin-category.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()
 @Controller('bulletin-category')
-export class BulletinCategoryController {
+class BulletinCategoryController {
   constructor(private readonly bulletinBoardService: BulletinCategoryService) {}
 
   @Get()

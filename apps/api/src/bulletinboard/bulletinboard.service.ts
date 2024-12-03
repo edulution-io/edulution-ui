@@ -7,20 +7,18 @@ import { Bulletin, BulletinDocument } from './bulletinboard.schema';
 // import {BulletinCategory, BulletinCategoryDocument} from "../bulletin-category/bulletin-category.schema";
 
 @Injectable()
-export class BulletinBoardService {
+class BulletinBoardService {
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     // @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
   ) {}
 
   async findAll(_username: string) {
-    const bulletins = await this.bulletinModel.find({ isActive: true }).populate('category').exec();
-
-    return bulletins;
+    return this.bulletinModel.find({ isActive: true }).populate('category').exec();
   }
 
   async create(_username: string, dto: BulletinDto) {
-    const newBulletin = await this.bulletinModel.create({
+    return this.bulletinModel.create({
       creator: dto.creator,
       heading: dto.heading,
       content: dto.content,
@@ -28,8 +26,6 @@ export class BulletinBoardService {
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
     });
-
-    return newBulletin;
   }
 
   async update(_username: string, _id: string, _dto: BulletinDto) {

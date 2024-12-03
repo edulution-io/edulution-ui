@@ -5,7 +5,7 @@ import { BulletinCategoryDto } from '@libs/bulletinBoard/type/bulletinCategoryDt
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
-export class BulletinCategoryService {
+class BulletinCategoryService {
   constructor(@InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>) {}
 
   async findAll(_username: string) {

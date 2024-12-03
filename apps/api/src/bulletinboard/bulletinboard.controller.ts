@@ -7,7 +7,7 @@ import BulletinBoardService from './bulletinboard.service';
 @ApiTags('bulletinboard')
 @ApiBearerAuth()
 @Controller('bulletinboard')
-export class BulletinBoardController {
+class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
   @Get()

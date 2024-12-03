@@ -23,6 +23,7 @@ import LicenseModule from '../license/license.module';
 import SurveysModule from '../surveys/surveys.module';
 import AuthModule from '../auth/auth.module';
 import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
+import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
     LicenseModule,
     SurveysModule,
     BulletinCategoryModule,
+    BulletinBoardModule,
     JwtModule.register({
       global: true,
     }),
