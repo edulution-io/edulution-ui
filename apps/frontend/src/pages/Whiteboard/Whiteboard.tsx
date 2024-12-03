@@ -4,7 +4,7 @@ import cn from '@libs/common/utils/className';
 import useFrameStore from '@/components/framing/FrameStore';
 import APPS from '@libs/appconfig/constants/apps';
 
-const Whiteboard = () => {
+const Whiteboard: React.FC = () => {
   const { activeFrame } = useFrameStore();
 
   const getStyle = () => (activeFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
