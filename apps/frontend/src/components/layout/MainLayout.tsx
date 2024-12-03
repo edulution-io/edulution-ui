@@ -15,7 +15,7 @@ const MainLayout: React.FC<PropsWithChildren> = () => {
     <div className="flex">
       {!menuBar.disabled && !isMainPage && <MenuBar />}
       <div
-        className={`flex h-[100vh] flex-col overflow-hidden md:w-[calc(100%-var(--sidebar-width))] ${!menuBar.disabled ? 'pl-2' : ''}`}
+        className={`flex h-[100vh] w-full flex-col overflow-hidden pr-2 md:w-[calc(100%-var(--sidebar-width))] ${!menuBar.disabled ? 'pl-2' : ''}`}
       >
         {!menuBar.disabled && isMainPage && <Header />}
         <main className="ml-4 mt-4 flex-1">

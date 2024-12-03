@@ -27,9 +27,6 @@ export class BulletinCategory {
 
   @Prop({ type: Object, required: true, default: {} })
   createdBy: UserLmnInfo;
-
-  @Prop({ type: Date, default: Date.now })
-  creationDate: Date;
 }
 
 export const BulletinCategorySchema = SchemaFactory.createForClass(BulletinCategory);

@@ -24,10 +24,10 @@ export class Bulletin {
   @Prop({ type: Types.ObjectId, ref: 'BulletinCategory', required: true })
   category: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ type: [Date, null], required: false })
   isVisibleStartDate: Date | null;
 
-  @Prop({ required: true })
+  @Prop({ type: [Date, null], required: false })
   isVisibleEndDate: Date | null;
 }
 

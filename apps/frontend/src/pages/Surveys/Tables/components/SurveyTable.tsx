@@ -89,7 +89,7 @@ const SurveyTable = (props: SurveyTableProps) => {
 
   return (
     <div
-      className="m-4 w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
+      className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
       style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
     >
       <h4>{title}</h4>

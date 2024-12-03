@@ -7,8 +7,8 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import bulletinBoardEditorialTableColumns from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialTableColumns';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
-import useBulletinBoardEditorialPageMenu from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageMenu';
 import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/constants/pageElementIds';
+import APPS from '@libs/appconfig/constants/apps';
 
 const BulletinBoardEditorialPage = () => {
   const { t } = useTranslation();
@@ -24,8 +24,6 @@ const BulletinBoardEditorialPage = () => {
     void getBulletins();
   }, []);
 
-  const { appName } = useBulletinBoardEditorialPageMenu();
-
   return (
     <div>
       <NativeAppHeader
@@ -40,7 +38,7 @@ const BulletinBoardEditorialPage = () => {
         isLoading={isLoading}
         selectedRows={selectedRows}
         getRowId={(originalRow) => originalRow.id}
-        applicationName={appName}
+        applicationName={APPS.BULLETIN_BOARD}
         additionalScrollContainerOffset={20}
         scrollContainerOffsetElementIds={{
           tableHeaderId: BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER,
