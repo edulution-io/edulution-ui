@@ -9,6 +9,8 @@ import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -27,14 +29,21 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user, t],
   );
 
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
+
   return (
-    <div className="bottom-[32px] left-4 right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
-      <NativeAppHeader
-        title={user?.displayName || t('common.not-available')}
-        description={t('usersettings.details.description')}
-        iconSrc={UserDetailsSettingsIcon}
-      />
-      <div className="p-4">
+    <div className="bottom-8 left-4 right-0 top-3 h-screen overflow-y-hidden md:left-64 md:right-[--sidebar-width]">
+      <div className="flex flex-row justify-between">
+        <NativeAppHeader
+          title={user?.displayName || t('common.not-available')}
+          description={t('usersettings.details.description')}
+          iconSrc={UserDetailsSettingsIcon}
+        />
+      </div>
+      <div
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
         <div className="md:max-w-[75%]">
           <h3>{t('usersettings.details.userInformation')}</h3>
           <div className="py-4 text-ciGrey">
