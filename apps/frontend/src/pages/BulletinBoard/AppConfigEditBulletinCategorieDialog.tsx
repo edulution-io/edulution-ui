@@ -16,6 +16,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import { useTranslation } from 'react-i18next';
 import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
+import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 
 const AppConfigEditBulletinCategorieDialog = () => {
   const { selectedCategory, setSelectedCategory, updateCategory, deleteCategory } = useAppConfigBulletinTableStore();
@@ -35,25 +36,30 @@ const AppConfigEditBulletinCategorieDialog = () => {
     },
   });
 
+  const { checkIfNameExists, nameExists, isNameChecking } = useAppConfigBulletinTableStore();
+
   const { isUpdateDeleteEntityDialogOpen, setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
 
   const getFooter = () => (
     <div className="flex items-center justify-between p-4">
-      <ButtonSH
-        variant="danger"
-        className="flex items-center gap-2 bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-        onClick={async () => {
-          await deleteCategory(selectedCategory?.id || '');
-          setUpdateDeleteEntityDialogOpen(false);
-        }}
-      >
-        <MdDelete size={20} />
-        Delete
-      </ButtonSH>
+      {form.getValues('name').trim() === selectedCategory?.name && (
+        <ButtonSH
+          variant="danger"
+          className="flex items-center gap-2 bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          onClick={async () => {
+            await deleteCategory(selectedCategory?.id || '');
+            setUpdateDeleteEntityDialogOpen(false);
+          }}
+        >
+          <MdDelete size={20} />
+          Delete
+        </ButtonSH>
+      )}
 
       <ButtonSH
         variant="outline"
         className="flex items-center gap-2 bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+        disabled={nameExists || isNameChecking}
         onClick={async () => {
           const { name, isActive, visibleByUsers, visibleByGroups, editableByUsers, editableByGroups } =
             form.getValues();
@@ -103,11 +109,12 @@ const AppConfigEditBulletinCategorieDialog = () => {
         onSubmit={() => {}}
         className="space-y-4"
       >
-        <div>
-          <input
-            {...form.register('name')}
-            placeholder={selectedCategory?.name}
-            className="input-class"
+        <div className="flex items-center space-x-2">
+          <p>{t('bulletinboard.categoryName')}:</p>
+          <NameInputWithAvailability
+            register={form.register}
+            checkIfNameExists={checkIfNameExists}
+            placeholder="Enter category name"
           />
         </div>
         <SearchUsersOrGroups

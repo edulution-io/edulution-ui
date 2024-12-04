@@ -20,6 +20,10 @@ export interface BulletinBoardTableStore {
   isBulletinCategoryDialogOpen: boolean;
   updateCategory: (id: string, category: CreateBulletinCategoryDto) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
+  nameExists: boolean | null;
+  setNameExists: (isNameAvailable: boolean | null) => void;
+  isNameChecking: boolean;
+  setIsNameChecking: (isNameChecking: boolean) => void;
 }
 
 const initialValues = {
@@ -28,10 +32,15 @@ const initialValues = {
   categories: [],
   selectedCategory: null,
   isBulletinCategoryDialogOpen: false,
+  isNameAvailable: false,
+  isNameChecking: false,
+  nameExists: null,
 };
 
 const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => ({
   ...initialValues,
+  setIsNameChecking: (isNameChecking: boolean) => set({ isNameChecking }),
+  setNameExists: (nameExists: boolean | null) => set({ nameExists }),
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setIsDialogOpen: (isOpen: boolean) => set({ isDialogOpen: isOpen }),
   setEditBulletinCategoryDialogOpen: (isOpen) => set({ isBulletinCategoryDialogOpen: isOpen }),

@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import NewCategorieForm from '@libs/bulletinBoard/constants/NewCategorieForm';
@@ -13,13 +13,11 @@ import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBu
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import { debounce } from 'lodash';
+import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 
 const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
-  const { addNewCategory, checkIfNameExists } = useAppConfigBulletinTableStore();
-  const [nameAvailability, setNameAvailability] = useState<string | null>(null);
-  const [isChecking, setIsChecking] = useState(false);
+  const { addNewCategory, checkIfNameExists, nameExists, isNameChecking } = useAppConfigBulletinTableStore();
 
   const form = useForm<NewCategorieForm>({
     mode: 'onChange',
@@ -37,50 +35,6 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
   const { setValue, watch } = form;
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
-
-  const debouncedCheckName = useMemo(
-    () =>
-      debounce(async (name: string) => {
-        if (!name) {
-          setNameAvailability('');
-          return;
-        }
-
-        setIsChecking(true);
-        try {
-          const exists = await checkIfNameExists(name);
-          console.log('exists', exists);
-          setNameAvailability(exists ? t('bulletinBoard.nameExists') : t('bulletinBoard.nameAvailable'));
-        } catch (error) {
-          setNameAvailability(t('bulletinBoard.checkFailed'));
-        } finally {
-          setIsChecking(false);
-        }
-      }, 300),
-    [checkIfNameExists, t],
-  );
-
-  useEffect(() => {
-    const subscription = watch(({ name }) => {
-      if (name !== undefined) {
-        void debouncedCheckName(name);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-      debouncedCheckName.cancel();
-    };
-  }, [watch, debouncedCheckName]);
-
-  const nameValue = useWatch({
-    control: form.control,
-    name: 'name',
-  });
-
-  useEffect(() => {
-    void debouncedCheckName(nameValue || '');
-  }, [nameValue, debouncedCheckName]);
 
   const handleVisibleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('visibleByUsers', attendees, { shouldValidate: true });
@@ -107,7 +61,6 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
         editableByUsers,
         editableByGroups,
       });
-      console.log('Category added successfully');
       closeDialog();
     } catch (error) {
       console.error('Failed to add category:', error);
@@ -121,13 +74,13 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
       }}
       className="space-y-4"
     >
-      <div>
-        <input
-          {...form.register('name')}
-          placeholder={t('bulletinBoard.categoryNamePlaceholder')}
-          className="input-class"
+      <div className="flex items-center space-x-2">
+        <p>{t('bulletinboard.categoryName')}:</p>
+        <NameInputWithAvailability
+          register={form.register}
+          checkIfNameExists={checkIfNameExists}
+          placeholder="Enter category name"
         />
-        <div className="mt-1 text-sm">{isChecking ? t('bulletinBoard.checkingName') : nameAvailability}</div>
       </div>
       <SearchUsersOrGroups
         users={watch('visibleByUsers') as AttendeeDto[]}
@@ -150,7 +103,7 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
       />
 
       <div>
-        <span className="text-sm font-medium">{t('bulletinBoard.isActive')}</span>
+        <span className="text-sm font-medium">{t('bulletinboard.isActive')}</span>
         <RadioGroupSH
           value={watch('isActive') ? 'true' : 'false'}
           onValueChange={(value) => setValue('isActive', value === 'true', { shouldValidate: true })}
@@ -176,7 +129,7 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
         variant="btn-collaboration"
         size="lg"
         type="submit"
-        disabled={nameAvailability === t('bulletinBoard.nameExists') || isChecking}
+        disabled={nameExists || isNameChecking}
       >
         {t('common.create')}
       </Button>

@@ -23,10 +23,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
 
       return (
@@ -49,10 +49,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.isActive,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -75,10 +75,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -99,10 +99,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.visibleForUsers,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -128,10 +128,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.visibleForGroups,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -152,10 +152,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.editableByUsers,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -176,10 +176,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.editableByGroups,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdatingEntityDialogOpen } = useAppConfigDialogStore();
+      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdatingEntityDialogOpen(true);
+        setUpdateDeleteEntityDialogOpen(true);
       };
       return (
         <SelectableTextCell
