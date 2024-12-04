@@ -9,7 +9,7 @@ import useGroupStore from '@/store/GroupStore';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
@@ -17,7 +17,7 @@ import { debounce } from 'lodash';
 
 const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
-  const { addNewCategory, checkIfNameExists } = useAppConfigBulletinTable();
+  const { addNewCategory, checkIfNameExists } = useAppConfigBulletinTableStore();
   const [nameAvailability, setNameAvailability] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(false);
 

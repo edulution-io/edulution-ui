@@ -5,7 +5,7 @@ import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import { DropdownMenu } from '@/components';
-import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
@@ -14,7 +14,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const { categories, isLoading } = useAppConfigBulletinTable();
+  const { categories, isLoading } = useAppConfigBulletinTableStore();
 
   const handleCategoryChange = (categoryName: string) => {
     form.setValue('category', categories.find((c) => c.name === categoryName) || categories[0]);

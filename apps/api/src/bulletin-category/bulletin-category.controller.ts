@@ -34,17 +34,13 @@ class BulletinCategoryController {
   }
 
   @Patch(':id')
-  update(
-    @GetCurrentUsername() currentUsername: string,
-    @Param('id') id: string,
-    @Body() bulletinCategory: CreateBulletinCategoryDto,
-  ) {
-    return this.bulletinBoardService.update(currentUsername, id, bulletinCategory);
+  update(@Param('id') id: string, @Body() bulletinCategory: CreateBulletinCategoryDto) {
+    return this.bulletinBoardService.update(id, bulletinCategory);
   }
 
   @Delete(':id')
-  remove(@GetCurrentUsername() currentUsername: string, @Param('id') id: string) {
-    return this.bulletinBoardService.remove(currentUsername, id);
+  remove(@Param('id') id: string) {
+    return this.bulletinBoardService.remove(id);
   }
 }
 
