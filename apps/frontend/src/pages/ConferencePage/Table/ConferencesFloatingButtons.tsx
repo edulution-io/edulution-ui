@@ -27,13 +27,13 @@ const ConferencesFloatingButtons: React.FC = () => {
       EditButton(() => setSelectedConference(firstSelectedConference), isOnlyOneConferenceSelected),
       StartButton(() => {
         if (firstSelectedConference) {
-          void toggleConferenceRunningState(firstSelectedConference.meetingID);
+          void toggleConferenceRunningState(firstSelectedConference.meetingID, firstSelectedConference.isRunning);
           void joinConference(firstSelectedConference.meetingID);
         }
       }, isOnlyOneConferenceSelected && !firstSelectedConference?.isRunning),
       StopButton(() => {
         if (firstSelectedConference) {
-          void toggleConferenceRunningState(firstSelectedConference.meetingID);
+          void toggleConferenceRunningState(firstSelectedConference.meetingID, firstSelectedConference.isRunning);
           setJoinConferenceUrl('');
         }
       }, isOnlyOneConferenceSelected && firstSelectedConference?.isRunning),
