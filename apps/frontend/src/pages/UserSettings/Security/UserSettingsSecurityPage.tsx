@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import useElementHeight from '@/hooks/useElementHeight';
 import { SecurityIcon } from '@/assets/icons';
+import PasswordChangeForm from '@/pages/UserSettings/Security/components/PasswordChangeForm';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
-import PasswordChangeForm from '@/pages/UserSettings/Security/components/PasswordChangeForm';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import AddMfaForm from './components/AddMfaForm';
 
 const UserSettingsSecurityPage: React.FC = () => {

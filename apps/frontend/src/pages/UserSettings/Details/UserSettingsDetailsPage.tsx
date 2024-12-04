@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserDetailsSettingsIcon } from '@/assets/icons';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import useElementHeight from '@/hooks/useElementHeight';
+import { UserDetailsSettingsIcon } from '@/assets/icons';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import Quota from '@/pages/Dashboard/Quota';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
