@@ -508,8 +508,7 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
-      "UnsupportedAppConfiguration": "Nicht unterstützte App-Konfiguration für rootPathName: {{rootPathName}}"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
