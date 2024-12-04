@@ -26,7 +26,7 @@ export class AppConfig extends Document {
   accessGroups: MultipleSelectorGroup[];
 
   @Prop()
-  schemaVersion: number;
+  migrationNumber: number;
 }
 
 export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
