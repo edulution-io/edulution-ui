@@ -1,5 +1,5 @@
-### index digest for node:18-alpine node:18.20.4 alpine:3.20 arch:amd64
-FROM node@sha256:02376a266c84acbf45bd19440e08e48b1c8b98037417334046029ab585de03e2
+### manifest digest for node:18.20.5-alpine3.20 node:18.20.5 alpine:3.20 arch:amd64
+FROM node@sha256:7000d2e73f938c4f62fdda6d398d7dffd50e6c129409ae2b1a36ccebf9289ffe
 
 RUN mkdir -p /opt/edulution/public/downloads
 

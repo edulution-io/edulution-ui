@@ -11,7 +11,6 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { debounce } from 'lodash';
@@ -19,14 +18,8 @@ import { debounce } from 'lodash';
 const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () => void }) => {
   const { t } = useTranslation();
   const { addNewCategory, checkIfNameExists } = useAppConfigBulletinTable();
-  const { user, getOwnUser } = useLmnApiStore();
   const [nameAvailability, setNameAvailability] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(false);
-  useEffect(() => {
-    if (!user) {
-      void getOwnUser();
-    }
-  }, [user]);
 
   const form = useForm<NewCategorieForm>({
     mode: 'onChange',
@@ -105,17 +98,6 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
     const editableByUsers = form.getValues('editableByUsers');
     const editableByGroups = form.getValues('editableByGroups');
 
-    if (!user) return;
-    const { givenName, sophomorixSurnameASCII, name: username, displayName } = user;
-
-    const createdBy = {
-      firstName: sophomorixSurnameASCII,
-      lastName: givenName,
-      username,
-      value: username,
-      label: `${displayName} (${username})`,
-    } as MultipleSelectorOptionSH;
-
     try {
       await addNewCategory({
         name,
@@ -124,7 +106,6 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
         visibleForGroups,
         editableByUsers,
         editableByGroups,
-        creator: createdBy,
       });
       console.log('Category added successfully');
       closeDialog();

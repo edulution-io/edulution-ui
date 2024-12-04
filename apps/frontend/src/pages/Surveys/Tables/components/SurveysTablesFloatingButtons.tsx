@@ -5,7 +5,7 @@ import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'rea
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
+import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
@@ -18,12 +18,12 @@ interface SurveysTablesFloatingButtonsProps {
   editSurvey?: () => void;
   canDelete: boolean;
   canParticipate: boolean;
-  canShowCommitedAnswers: boolean;
+  canShowSubmittedAnswers: boolean;
   canShowResults: boolean;
 }
 
 const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
-  const { canEdit, editSurvey, canDelete, canShowCommitedAnswers, canParticipate, canShowResults } = props;
+  const { canEdit, editSurvey, canDelete, canShowSubmittedAnswers, canParticipate, canShowResults } = props;
 
   const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
 
@@ -34,7 +34,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
 
-  const { setIsOpenCommitedAnswersDialog } = useCommitedAnswersDialogStore();
+  const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
   const { deleteSurvey } = useDeleteSurveyStore();
 
@@ -57,9 +57,9 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
       DeleteButton(handleDeleteSurvey, canDelete),
       {
         icon: HiOutlineArrowDownOnSquare,
-        text: t('surveys.actions.showCommittedAnswers'),
-        onClick: () => setIsOpenCommitedAnswersDialog(true),
-        isVisible: canShowCommitedAnswers,
+        text: t('surveys.actions.showSubmittedAnswers'),
+        onClick: () => setIsOpenSubmittedAnswersDialog(true),
+        isVisible: canShowSubmittedAnswers,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
@@ -85,7 +85,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   return (
     <TooltipProvider>
-      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-ciDarkGrey bg-opacity-90">
         <FloatingButtonsBar config={config} />
       </div>
     </TooltipProvider>

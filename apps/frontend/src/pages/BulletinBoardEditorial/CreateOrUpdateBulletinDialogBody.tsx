@@ -26,17 +26,18 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           event.preventDefault();
         }}
       >
+        <div>{t('bulletinboard.category')}</div>
+        <DropdownMenu
+          options={categories}
+          selectedVal={isLoading ? t('common.loading') : form.getValues('category')?.name}
+          handleChange={handleCategoryChange}
+          variant="light"
+        />
         <FormField
           name="heading"
           form={form}
           labelTranslationId={t('bulletinboard.heading')}
           variant="default"
-        />
-        <DropdownMenu
-          options={categories}
-          selectedVal={isLoading ? t('common.loading') : form.getValues('category').name}
-          handleChange={handleCategoryChange}
-          classname="md:w-1/3"
         />
         <FormField
           name="content"

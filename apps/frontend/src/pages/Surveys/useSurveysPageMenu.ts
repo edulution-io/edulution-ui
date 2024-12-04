@@ -15,7 +15,7 @@ const useSurveysPageMenu = () => {
     menuItems: [
       {
         id: 'overview-open-surveys',
-        label: 'surveys.view.open',
+        label: 'surveys.view.open.menu',
         icon: SurveysViewOpenIcon,
         action: () => {
           setSearchParams({ page: SurveysPageView.OPEN });
@@ -23,7 +23,7 @@ const useSurveysPageMenu = () => {
       },
       {
         id: 'overview-answered-surveys',
-        label: 'surveys.view.answered',
+        label: 'surveys.view.answered.menu',
         icon: SurveysViewAnsweredIcon,
         action: () => {
           setSearchParams({ page: SurveysPageView.ANSWERED });
@@ -31,7 +31,7 @@ const useSurveysPageMenu = () => {
       },
       {
         id: 'overview-created-surveys',
-        label: 'surveys.view.created',
+        label: 'surveys.view.created.menu',
         icon: UserIcon,
         action: () => {
           setSearchParams({ page: SurveysPageView.CREATED });
@@ -39,7 +39,7 @@ const useSurveysPageMenu = () => {
       },
       {
         id: 'survey-editor-view',
-        label: 'surveys.view.editor',
+        label: 'surveys.view.editor.menu',
         icon: PlusIcon,
         action: () => {
           setSearchParams({ page: SurveysPageView.CREATOR });

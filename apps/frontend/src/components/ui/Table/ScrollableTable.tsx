@@ -9,15 +9,14 @@ import {
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
-
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 
-interface DataTableProps<TData> {
-  columns: ColumnDef<TData, unknown>[];
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   selectedRows?: RowSelectionState;
@@ -34,7 +33,7 @@ interface DataTableProps<TData> {
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
 }
 
-const ScrollableTable = <TData,>({
+const ScrollableTable = <TData, TValue>({
   columns,
   data,
   onRowSelectionChange,
@@ -45,7 +44,7 @@ const ScrollableTable = <TData,>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
-}: DataTableProps<TData>) => {
+}: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;

@@ -1,11 +1,14 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, MessageEvent } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
+import { Response } from 'express';
+import { Observable } from 'rxjs';
 import { createHash } from 'crypto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Interval } from '@nestjs/schedule';
 import { Cache } from 'cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
@@ -17,6 +20,8 @@ import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
+import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
@@ -29,11 +34,52 @@ class ConferencesService {
 
   private BBB_SECRET: string;
 
+  private conferencesSseConnections: UserConnections = new Map();
+
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly appConfigService: AppConfigService,
   ) {}
+
+  subscribe(username: string, res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.conferencesSseConnections, res);
+  }
+
+  @Interval(CONFERENCES_SYNC_INTERVAL_MS)
+  async syncRunningConferencesStatus() {
+    const runningConferences = await this.conferenceModel.find({ isRunning: true }).exec();
+    await Promise.all(
+      runningConferences.map(async (conference) => {
+        const isRunning = await this.checkConferenceIsRunningWithBBB(conference.meetingID);
+        if (!isRunning) {
+          await this.update({ ...conference.toObject(), isRunning: false });
+          const attendees = await this.getInvitedMembers(conference);
+          SseService.sendEventToUsers(
+            attendees,
+            this.conferencesSseConnections,
+            conference.meetingID,
+            SSE_MESSAGE_TYPE.STOPPED,
+          );
+        }
+      }),
+    );
+  }
+
+  async checkConferenceIsRunningWithBBB(meetingID: string): Promise<boolean> {
+    const query = `meetingID=${meetingID}`;
+    const checksum = await this.createChecksum('isMeetingRunning', query);
+    const url = `${this.BBB_API_URL}isMeetingRunning?${query}&checksum=${checksum}`;
+
+    try {
+      const response = await axios.get<string>(url);
+      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+      ConferencesService.handleBBBApiError(result);
+      return result.response.running === 'true';
+    } catch (e) {
+      return false;
+    }
+  }
 
   static handleBBBApiError(result: { response: { returncode: string } }) {
     if (result.response.returncode !== 'SUCCESS') {
@@ -107,11 +153,7 @@ class ConferencesService {
     return invitedMembersList;
   }
 
-  async create(
-    createConferenceDto: CreateConferenceDto,
-    currentUser: JWTUser,
-    conferencesSseConnections: UserConnections,
-  ): Promise<Conference | undefined> {
+  async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -140,7 +182,7 @@ class ConferencesService {
       if (conference) {
         SseService.sendEventToUsers(
           invitedMembersList,
-          conferencesSseConnections,
+          this.conferencesSseConnections,
           conference,
           SSE_MESSAGE_TYPE.CREATED,
         );
@@ -148,32 +190,39 @@ class ConferencesService {
     }
   }
 
-  async toggleConferenceIsRunning(meetingID: string, username: string, conferencesSseConnections: UserConnections) {
+  async toggleConferenceIsRunning(meetingID: string, isRunning: boolean, username: string) {
     const { conference, isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
     if (!isCreator) {
       throw new CustomHttpException(ConferencesErrorMessage.YouAreNotTheCreator, HttpStatus.UNAUTHORIZED);
     }
+    const isConferenceRunningInBBB = await this.checkConferenceIsRunningWithBBB(conference.meetingID);
 
-    if (conference.isRunning) {
-      await this.stopConference(conference, conferencesSseConnections);
+    if (isRunning) {
+      await this.stopConference(conference, isConferenceRunningInBBB, this.conferencesSseConnections);
     } else {
-      await this.startConference(conference, conferencesSseConnections);
+      await this.startConference(conference, isConferenceRunningInBBB, this.conferencesSseConnections);
     }
   }
 
-  async startConference(conference: Conference, conferencesSseConnections: UserConnections) {
+  async startConference(
+    conference: Conference,
+    shouldUpdateInBBB: boolean,
+    conferencesSseConnections: UserConnections,
+  ) {
     try {
-      const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
-      const checksum = await this.createChecksum('create', query);
-      const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
+      if (!shouldUpdateInBBB) {
+        const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
+        const checksum = await this.createChecksum('create', query);
+        const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
 
-      const response = await axios.get<string>(url);
-      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-      ConferencesService.handleBBBApiError(result);
+        const response = await axios.get<string>(url);
+        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+        ConferencesService.handleBBBApiError(result);
+      }
 
       await this.update({ ...conference, isRunning: true });
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(ConferencesErrorMessage.CouldNotStartConference, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
       SseService.sendEventToUsers(
@@ -185,19 +234,21 @@ class ConferencesService {
     }
   }
 
-  async stopConference(conference: Conference, conferencesSseConnections: UserConnections) {
+  async stopConference(conference: Conference, shouldUpdateInBBB: boolean, conferencesSseConnections: UserConnections) {
     try {
-      const query = `meetingID=${conference.meetingID}`;
-      const checksum = await this.createChecksum('end', query);
-      const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
+      if (shouldUpdateInBBB) {
+        const query = `meetingID=${conference.meetingID}`;
+        const checksum = await this.createChecksum('end', query);
+        const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
 
-      const response = await axios.get<string>(url);
-      const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
-      ConferencesService.handleBBBApiError(result);
+        const response = await axios.get<string>(url);
+        const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
+        ConferencesService.handleBBBApiError(result);
+      }
 
       await this.update({ ...conference, isRunning: false });
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(ConferencesErrorMessage.CouldNotStopConference, HttpStatus.BAD_GATEWAY, e);
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
       SseService.sendEventToUsers(
@@ -248,7 +299,8 @@ class ConferencesService {
         $or: [{ 'invitedAttendees.username': user.preferred_username }, ...groupPathConditions],
       })
       .exec();
-    return this.syncConferencesWithBBB(conferencesToBeSynced);
+
+    return this.syncConferencesInfoWithBBB(conferencesToBeSynced);
   }
 
   async findOne(meetingID: string): Promise<Conference | null> {
@@ -269,7 +321,7 @@ class ConferencesService {
       .exec();
   }
 
-  async remove(meetingIDs: string[], username: string, conferencesSseConnections: UserConnections): Promise<boolean> {
+  async remove(meetingIDs: string[], username: string): Promise<boolean> {
     const conferences = await this.conferenceModel.find({ meetingID: { $in: meetingIDs } }, { _id: 0, __v: 0 }).lean();
 
     if (conferences.length === 0) {
@@ -291,7 +343,12 @@ class ConferencesService {
       await Promise.all(conferences.map((conference) => this.getInvitedMembers(conference)))
     ).flat();
 
-    SseService.sendEventToUsers(invitedMembersList, conferencesSseConnections, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
+    SseService.sendEventToUsers(
+      invitedMembersList,
+      this.conferencesSseConnections,
+      meetingIDs,
+      SSE_MESSAGE_TYPE.DELETED,
+    );
 
     return true;
   }
@@ -303,7 +360,7 @@ class ConferencesService {
     return createHash('sha1').update(string).digest('hex');
   }
 
-  private async syncConferencesWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
+  private async syncConferencesInfoWithBBB(conferencesToBeSynced: ConferenceDocument[]): Promise<Conference[]> {
     const promises = conferencesToBeSynced.map(async (conference) => {
       const conferenceObject = conference.toObject() as ConferenceDocument;
       const query = `meetingID=${conference.meetingID}`;
@@ -315,8 +372,10 @@ class ConferencesService {
         const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
         ConferencesService.handleBBBApiError(result);
 
-        await this.update({ ...conferenceObject, isRunning: true });
-        return { ...conferenceObject, isRunning: true, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
+        const isRunning = stringToBoolean(result.response.running);
+
+        await this.update({ ...conferenceObject, isRunning });
+        return { ...conferenceObject, isRunning, joinedAttendees: ConferencesService.getJoinedAttendees(result) };
       } catch (_) {
         const updatedConference = { ...conferenceObject, isRunning: false };
         await this.update(updatedConference);
