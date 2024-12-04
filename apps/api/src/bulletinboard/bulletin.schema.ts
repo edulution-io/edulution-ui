@@ -24,6 +24,9 @@ export class Bulletin {
   @Prop({ type: Types.ObjectId, ref: 'BulletinCategory', required: true })
   category: Types.ObjectId;
 
+  @Prop({ type: [String], default: [] })
+  attachmentFileNames: string[];
+
   @Prop({ type: [Date, null], required: false })
   isVisibleStartDate: Date | null;
 

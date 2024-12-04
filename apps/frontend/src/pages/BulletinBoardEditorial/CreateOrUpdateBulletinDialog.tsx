@@ -17,11 +17,11 @@ interface BulletinCreateDialogProps {
 
 const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) => {
   const { t } = useTranslation();
-  const { getBulletins } = useBulletinBoardEditorialStore();
   const {
     isDialogLoading,
     isCreateBulletinDialogOpen,
     updateBulletin,
+    getBulletins,
     createBulletin,
     selectedBulletinToEdit,
     setSelectedBulletinToEdit,
@@ -36,6 +36,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
   const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
     heading: '',
     category: categories[0],
+    attachmentFileNames: [],
     content: '',
     isActive: true,
     isVisibleEndDate: null,
@@ -88,6 +89,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
         setIsCreateBulletinDialogOpen(false);
         setSelectedBulletinToEdit(null);
       }}
+      desktopContentClassName="max-w-4xl"
       title={t(`bulletinboard.${selectedBulletinToEdit ? 'editBulletin' : 'createBulletin'}`)}
       body={getDialogBody()}
       footer={getFooter()}

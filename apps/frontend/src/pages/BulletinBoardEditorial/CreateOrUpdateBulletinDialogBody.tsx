@@ -6,6 +6,7 @@ import FormField from '@/components/shared/FormField';
 import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import { DropdownMenu } from '@/components';
 import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import WysiwygEditor from '@/components/shared/WysiwygEditor';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<BulletinDialogForm>;
@@ -15,8 +16,9 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const { t } = useTranslation();
   const { categories, isLoading } = useAppConfigBulletinTable();
 
-  const handleCategoryChange = (categoryName: string) =>
+  const handleCategoryChange = (categoryName: string) => {
     form.setValue('category', categories.find((c) => c.name === categoryName) || categories[0]);
+  };
 
   return (
     <Form {...form}>
@@ -29,7 +31,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         <div>{t('bulletinboard.category')}</div>
         <DropdownMenu
           options={categories}
-          selectedVal={isLoading ? t('common.loading') : form.getValues('category')?.name}
+          selectedVal={isLoading ? t('common.loading') : form.watch('category')?.name}
           handleChange={handleCategoryChange}
           variant="light"
         />
@@ -39,12 +41,10 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           labelTranslationId={t('bulletinboard.heading')}
           variant="default"
         />
-        <FormField
-          name="content"
-          form={form}
-          labelTranslationId={t('bulletinboard.content')}
-          type="textarea"
-          variant="default"
+        <div>{t('bulletinboard.content')}</div>
+        <WysiwygEditor
+          value={form.watch('content')}
+          onChange={(value) => form.setValue('content', value)}
         />
       </form>
     </Form>

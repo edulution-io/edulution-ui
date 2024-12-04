@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsString, ValidateNested } from 'class-validator';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 
 class CreateBulletinDto {
@@ -8,9 +8,14 @@ class CreateBulletinDto {
   @IsString()
   content: string;
 
+  @IsArray()
+  @IsString({ each: true })
+  attachmentFileNames: string[];
+
   @IsBoolean()
   isActive: boolean;
 
+  @ValidateNested()
   category: BulletinCategoryResponseDto;
 
   @IsDate()
