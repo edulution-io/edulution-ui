@@ -52,7 +52,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
-  surveyModel.locale = language || 'en';
+  surveyModel.locale = language;
 
   if (surveyModel.pages.length > 1) {
     surveyModel.showProgressBar = 'top';

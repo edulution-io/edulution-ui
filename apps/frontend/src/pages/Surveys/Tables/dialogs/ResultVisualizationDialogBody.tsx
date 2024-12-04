@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
+import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
 
 const ResultVisualizationDialogBody = () => {
   const { selectedSurvey } = useSurveyTablesPageStore();

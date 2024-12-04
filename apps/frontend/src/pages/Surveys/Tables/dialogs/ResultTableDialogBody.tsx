@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
+import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import './resultTableDialog.css';
-import useUserStore from '@/store/UserStore/UserStore';
 
 const ResultTableDialogBody = () => {
   const { selectedSurvey } = useSurveyTablesPageStore();

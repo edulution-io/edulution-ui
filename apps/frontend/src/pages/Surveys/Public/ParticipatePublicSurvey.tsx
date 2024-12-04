@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
-import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
@@ -11,11 +11,11 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
   const surveyId = searchParams.get('surveyId');
 
+  const { user } = useUserStore();
+  const { t } = useTranslation();
+
   const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey, isFetching } =
     useParticipatePublicSurveyStore();
-  const { user } = useUserStore();
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (surveyId) {
