@@ -3,11 +3,12 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import CreateBulletinDto from '@libs/bulletinBoard/type/createBulletinDto';
+import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import BulletinBoardService from './bulletinboard.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
 @ApiTags('bulletinboard')
@@ -22,8 +23,8 @@ class BulletinBoardController {
   }
 
   @Post()
-  createBulletin(@GetCurrentUsername() currentUsername: string, @Body() bulletin: CreateBulletinDto) {
-    return this.bulletinBoardService.createBulletin(currentUsername, bulletin);
+  createBulletin(@GetCurrentUser() currentUser: JWTUser, @Body() bulletin: CreateBulletinDto) {
+    return this.bulletinBoardService.createBulletin(currentUser, bulletin);
   }
 
   @Patch(':id')

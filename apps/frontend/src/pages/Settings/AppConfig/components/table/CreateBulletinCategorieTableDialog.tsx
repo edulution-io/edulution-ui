@@ -124,7 +124,7 @@ const CreateBulletinCategorieTableDialog = ({ closeDialog }: { closeDialog: () =
         visibleForGroups,
         editableByUsers,
         editableByGroups,
-        createdBy,
+        creator: createdBy,
       });
       console.log('Category added successfully');
       closeDialog();

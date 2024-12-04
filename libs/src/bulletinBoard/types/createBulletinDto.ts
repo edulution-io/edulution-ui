@@ -1,11 +1,7 @@
-import { IsBoolean, IsDate, IsString, ValidateNested } from 'class-validator';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import BulletinCategoryResponseDto from '@libs/bulletinBoard/type/bulletinCategoryResponseDto';
+import { IsBoolean, IsDate, IsString } from 'class-validator';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 
 class CreateBulletinDto {
-  @ValidateNested()
-  creator: AttendeeDto;
-
   @IsString()
   heading: string;
 

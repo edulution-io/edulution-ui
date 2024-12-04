@@ -2,10 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model } from 'mongoose';
-import CreateBulletinDto from '@libs/bulletinBoard/type/createBulletinDto';
+import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
 import { createReadStream, existsSync, mkdirSync } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
@@ -56,14 +57,20 @@ class BulletinBoardService {
     return this.bulletinModel.find({ 'creator.username': username, isActive: true }).populate('category').exec();
   }
 
-  async createBulletin(_username: string, dto: CreateBulletinDto) {
+  async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
       throw new Error('Invalid category');
     }
 
+    const creator = {
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+      username: currentUser.preferred_username,
+    };
+
     return this.bulletinModel.create({
-      creator: dto.creator,
+      creator,
       heading: dto.heading,
       content: dto.content,
       category: dto.category.id,

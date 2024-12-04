@@ -17,7 +17,20 @@
     "visibleForUsers": "Sichtbar für Nutzer",
     "visibleForGroups": "Sichtbar für Gruppen",
     "editableByUsers": "Redaktionierbar von Nutzern",
-    "editableByGroups": "Redaktionierbar von Gruppen"
+    "editableByGroups": "Redaktionierbar von Gruppen",
+    "error": "Fehler",
+    "delete": "Löschen",
+    "deleteBulletin": "Mitteilung löschen",
+    "deleteBulletins": "{{count}} Mitteilungen löschen",
+    "editBulletin": "Mitteilung bearbeiten",
+    "createBulletin": "Mitteilung erstellen",
+    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
+    "cancel": "Abbrechen",
+    "heading": "Überschrift",
+    "content": "Inhalt"
   },
   "dashboard": {
     "mobileAccess": {

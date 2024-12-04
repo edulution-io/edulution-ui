@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import { BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
-import CreateBulletinCategoryDto from '@libs/bulletinBoard/type/createBulletinCategoryDto';
-import BulletinCategoryResponseDto from '@libs/bulletinBoard/type/bulletinCategoryResponseDto';
+import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 
 export interface BulletinBoardTableStore {
   isDialogOpen: boolean;
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
-  getData: () => Promise<BulletinCategoryResponseDto[]>;
+  getCategories: () => Promise<BulletinCategoryResponseDto[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   addNewCategory: (category: CreateBulletinCategoryDto) => Promise<void>;
@@ -43,7 +43,7 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
 
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
-  getData: async () => {
+  getCategories: async () => {
     set({ isLoading: true });
     try {
       const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);

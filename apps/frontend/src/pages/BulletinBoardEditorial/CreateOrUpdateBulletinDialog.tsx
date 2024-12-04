@@ -1,0 +1,98 @@
+import React, { useEffect } from 'react';
+import { Button } from '@/components/shared/Button';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
+import CircleLoader from '@/components/ui/CircleLoader';
+import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
+import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
+import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
+
+interface BulletinCreateDialogProps {
+  trigger?: React.ReactNode;
+}
+
+const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) => {
+  const { t } = useTranslation();
+  const { getBulletins } = useBulletinBoardEditorialStore();
+  const {
+    isDialogLoading,
+    isCreateBulletinDialogOpen,
+    updateBulletin,
+    createBulletin,
+    selectedBulletinToEdit,
+    setSelectedBulletinToEdit,
+    setIsCreateBulletinDialogOpen,
+  } = useBulletinBoardEditorialStore();
+  const { categories, getCategories } = useAppConfigBulletinTable();
+
+  useEffect(() => {
+    void getCategories();
+  }, []);
+
+  const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
+    heading: '',
+    category: categories[0],
+    content: '',
+    isActive: true,
+    isVisibleEndDate: null,
+    isVisibleStartDate: null,
+  };
+
+  const form = useForm<BulletinDialogForm>({
+    mode: 'onChange',
+    resolver: zodResolver(getBulletinFormSchema(t)),
+    defaultValues: initialFormValues,
+  });
+
+  const onSubmit = async () => {
+    if (selectedBulletinToEdit) {
+      await updateBulletin(selectedBulletinToEdit.id, form.getValues());
+    } else {
+      await createBulletin(form.getValues());
+    }
+    await getBulletins();
+    form.reset();
+  };
+
+  const handleFormSubmit = form.handleSubmit(onSubmit);
+
+  const getDialogBody = () => {
+    if (isDialogLoading) return <CircleLoader />;
+    return <CreateOrUpdateBulletinDialogBody form={form} />;
+  };
+
+  const getFooter = () => (
+    <div className="mt-4 flex justify-end">
+      <form onSubmit={handleFormSubmit}>
+        <Button
+          variant="btn-collaboration"
+          disabled={isDialogLoading}
+          size="lg"
+          type="submit"
+        >
+          {t('common.save')}
+        </Button>
+      </form>
+    </div>
+  );
+
+  return (
+    <AdaptiveDialog
+      isOpen={isCreateBulletinDialogOpen}
+      trigger={trigger}
+      handleOpenChange={() => {
+        setIsCreateBulletinDialogOpen(false);
+        setSelectedBulletinToEdit(null);
+      }}
+      title={t(`bulletinboard.${selectedBulletinToEdit ? 'editBulletin' : 'createBulletin'}`)}
+      body={getDialogBody()}
+      footer={getFooter()}
+    />
+  );
+};
+
+export default CreateOrUpdateBulletinDialog;

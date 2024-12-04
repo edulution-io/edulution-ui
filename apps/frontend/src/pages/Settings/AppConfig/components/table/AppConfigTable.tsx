@@ -28,7 +28,7 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
   useEffect(() => {
     stores.forEach((config) => {
       if (config.store) {
-        void config.store.getData();
+        void config.store.getCategories();
       }
     });
   }, [dialogOpen]);
@@ -56,8 +56,8 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
           >
             <ScrollableTable
               columns={columns({
-                onDelete: (dto: any) => console.log(`Delete action triggered${  dto}`),
-                onModify: (dto: any) => console.log(`Modify action triggered${  dto}`),
+                onDelete: (dto: any) => console.log(`Delete action triggered${dto}`),
+                onModify: (dto: any) => console.log(`Modify action triggered${dto}`),
               })}
               data={categories}
               applicationName={applicationName}

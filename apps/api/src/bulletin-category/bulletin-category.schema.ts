@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import Attendee from '../conferences/attendee.schema';
 
 export type BulletinCategoryDocument = BulletinCategory & Document;
 
@@ -25,8 +25,8 @@ export class BulletinCategory {
   @Prop({ type: Array, default: [] })
   editableByGroups: MultipleSelectorGroup[];
 
-  @Prop({ type: Object, required: true, default: {} })
-  createdBy: UserLmnInfo;
+  @Prop({ type: Object, required: true })
+  creator: Attendee;
 }
 
 export const BulletinCategorySchema = SchemaFactory.createForClass(BulletinCategory);

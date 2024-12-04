@@ -9,19 +9,29 @@ import bulletinBoardEditorialTableColumns from '@/pages/BulletinBoardEditorial/B
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
 import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/constants/pageElementIds';
 import APPS from '@libs/appconfig/constants/apps';
+import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
+import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
+import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 
 const BulletinBoardEditorialPage = () => {
   const { t } = useTranslation();
 
   const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
+  const { getCategories } = useAppConfigBulletinTable();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
   };
 
+  const fetchData = async () => {
+    await getCategories();
+    await getBulletins();
+  };
+
   useEffect(() => {
-    void getBulletins();
+    void fetchData();
   }, []);
 
   return (
@@ -45,6 +55,10 @@ const BulletinBoardEditorialPage = () => {
           others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
         }}
       />
+
+      <BulletinBoardEditorialFloatingButtonsBar />
+      <CreateOrUpdateBulletinDialog />
+      <DeleteBulletinsDialog />
     </div>
   );
 };

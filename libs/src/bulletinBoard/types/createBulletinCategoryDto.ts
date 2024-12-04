@@ -19,9 +19,6 @@ class CreateBulletinCategoryDto {
 
   @IsArray()
   editableByGroups: MultipleSelectorOptionSH[] = [];
-
-  @IsString()
-  createdBy: MultipleSelectorOptionSH;
 }
 
 export default CreateBulletinCategoryDto;

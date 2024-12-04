@@ -8,7 +8,7 @@ import formatDate from '@libs/common/utils/formatDate';
 import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { MdDriveFileRenameOutline, MdOutlineDeleteOutline } from 'react-icons/md';
-import BulletinCategoryResponseDto from '@libs/bulletinBoard/type/bulletinCategoryResponseDto';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 
 export interface AppConfigBulletinTableColumnProps {
   onDelete: (category: BulletinCategoryResponseDto) => void;

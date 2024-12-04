@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import CreateBulletinCategoryDto from '@libs/bulletinBoard/type/createBulletinCategoryDto';
+import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
@@ -12,7 +13,13 @@ class BulletinCategoryService {
     return this.bulletinCategoryModel.find({ isActive: true }).exec();
   }
 
-  async create(_username: string, dto: CreateBulletinCategoryDto) {
+  async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
+    const creator = {
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+      username: currentUser.preferred_username,
+    };
+
     return this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
@@ -20,8 +27,7 @@ class BulletinCategoryService {
       visibleForGroups: dto.visibleForGroups ?? [],
       editableByUsers: dto.editableByUsers ?? [],
       editableByGroups: dto.editableByGroups ?? [],
-      createdBy: dto.createdBy,
-      creationDate: new Date(),
+      creator,
     });
   }
 

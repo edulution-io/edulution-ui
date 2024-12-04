@@ -5,7 +5,7 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
 import formatDate from '@libs/common/utils/formatDate';
-import BulletinResponseDto from '@libs/bulletinBoard/type/bulletinResponseDto';
+import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 
 const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   {
