@@ -1,11 +1,7 @@
 import { Model, Connection } from 'mongoose';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import createCollectionBackup from '@libs/common/utils/createCollectionBackup';
-import APP_CONFIG_COLLECTION_NAME from '@libs/appconfig/constants/appConfig-collectionName';
 import initializeCollection from './initializeCollection';
-import runMigration from './migrate/runMigration';
-import revertMigration from './migrate/revertMigration';
 import { AppConfig } from './appconfig.schema';
 
 @Injectable()
@@ -20,60 +16,45 @@ class AppConfigMigrationService implements OnModuleInit {
 
     Logger.log(`⬆ ️⬆️ Migrating`, AppConfigMigrationService.name);
 
-    try {
-      Logger.log(`⬆     ... creating a backup Before executing Migrations`, AppConfigMigrationService.name);
-      await createCollectionBackup(
-        this.connection,
-        APP_CONFIG_COLLECTION_NAME,
-        `migration-backup-${APP_CONFIG_COLLECTION_NAME}`,
-      );
-    } catch (e) {
-      Logger.error(`⬆     Error on creating Backup: ${e}`, AppConfigMigrationService.name);
-      Logger.error('⬆ ️⛔ Stop migrating without any backup', AppConfigMigrationService.name);
-      throw e;
-    }
+    Logger.log('⬆ ... executing Migrations', AppConfigMigrationService.name);
 
-    let shouldDowngrade: undefined | boolean;
     try {
-      Logger.log('⬆     ... executing Migrations', AppConfigMigrationService.name);
-      await runMigration(this.appConfigModel, AppConfigMigrationService.name);
-      Logger.log('⬆ ️✅️ Successfully executed the migrations', AppConfigMigrationService.name);
-      return;
+      await this.migrate000();
     } catch (e) {
-      shouldDowngrade = true;
       Logger.error('⬆ ️⛔️ Failure while running the migrations', AppConfigMigrationService.name);
     }
 
-    let shouldOverwriteWithBackup: undefined | boolean;
-    if (shouldDowngrade) {
-      try {
-        Logger.log('      ... reverting Migrations', AppConfigMigrationService.name);
-        await revertMigration(this.appConfigModel, AppConfigMigrationService.name);
-        Logger.error('⬆ ️⛔️ Reverted the migrations after an Error was received', AppConfigMigrationService.name);
-        return;
-      } catch (e) {
-        shouldOverwriteWithBackup = true;
-        Logger.error('⬆ ️⛔️ Failure while reverting the migrations', AppConfigMigrationService.name);
-      }
+    Logger.log('⬆ ️✅️ Successfully executed the migrations', AppConfigMigrationService.name);
+  }
+
+  async migrate000() {
+    const migrationName = '000-add-db-version-number';
+    const previousMigrationNumber = undefined;
+    const newMigrationNumber = 0;
+
+    const unprocessedDocuments = await this.appConfigModel.find({ migrationNumber: previousMigrationNumber });
+    if (unprocessedDocuments.length === 0) {
+      Logger.log(`⬆ Skipped ${migrationName} (no document needs to be updated)`, AppConfigMigrationService.name);
+      return;
     }
 
-    if (shouldOverwriteWithBackup) {
-      try {
-        Logger.log(
-          `      ... restore data from the backup Before executing Migrations`,
-          AppConfigMigrationService.name,
-        );
-        await createCollectionBackup(
-          this.connection,
-          `migration-backup-${APP_CONFIG_COLLECTION_NAME}`,
-          APP_CONFIG_COLLECTION_NAME,
-        );
-      } catch (e) {
-        Logger.error(
-          '⬆ ️⛔️ Failure while resetting the database, it could be corrupted! ⛔',
-          AppConfigMigrationService.name,
-        );
-      }
+    // eslint-disable-next-line no-underscore-dangle
+    const ids = unprocessedDocuments.map((d) => d._id);
+
+    try {
+      await this.appConfigModel.updateMany(
+        { _id: { $in: ids } },
+        {
+          $set: {
+            migrationNumber: newMigrationNumber,
+            updatedAt: new Date().toDateString(),
+          },
+        },
+      );
+      Logger.log(`⬆ Migration "${migrationName}" was successfully completed.`, AppConfigMigrationService.name);
+    } catch (e) {
+      Logger.error(`⬆     Error while running Migration "${migrationName}": ${e}`, AppConfigMigrationService.name);
+      throw e;
     }
   }
 }
