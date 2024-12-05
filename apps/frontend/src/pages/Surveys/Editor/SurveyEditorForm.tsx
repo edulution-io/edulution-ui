@@ -8,7 +8,7 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import surveyEditorFormSchema from '@/pages/Surveys/Editor/components/surveyEditorForm.schema';
+import surveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
