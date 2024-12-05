@@ -46,6 +46,7 @@ const SurveyTable = <TData extends MongoId, TValue>({
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
         others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
       }}
+      enableMultiRowSelection={false}
     />
   );
 };

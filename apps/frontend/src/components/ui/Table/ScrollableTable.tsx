@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
     others?: string[];
   };
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
+  enableMultiRowSelection?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -49,6 +50,7 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
+  enableMultiRowSelection,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -73,6 +75,7 @@ const ScrollableTable = <TData, TValue>({
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     enableRowSelection,
+    enableMultiRowSelection,
     state: {
       sorting,
       rowSelection: selectedRows,
