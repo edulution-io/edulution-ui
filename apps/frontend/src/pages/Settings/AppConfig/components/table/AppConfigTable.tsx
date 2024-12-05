@@ -57,6 +57,7 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
           columns={columns}
           data={categories}
           applicationName={applicationName}
+          enableRowSelection={false}
         />
         {showAddButton && (
           <div className="flex justify-end pt-4">

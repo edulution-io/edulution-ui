@@ -4,7 +4,6 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
-import formatDate from '@libs/common/utils/formatDate';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import useAppConfigDialogStore from '../Settings/AppConfig/components/table/appConfigDialogStore';
@@ -12,11 +11,10 @@ import useAppConfigDialogStore from '../Settings/AppConfig/components/table/appC
 const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
     id: 'name',
-    header: ({ column, table }) => (
+    header: ({ column }) => (
       <SortableHeader<BulletinCategoryResponseDto, unknown>
         titleTranslationId="bulletinboard.name"
         column={column}
-        table={table}
       />
     ),
 
@@ -65,10 +63,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     },
   },
   {
-    id: 'creationDate',
+    id: 'createdAt',
     header: ({ column }) => (
       <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.creationDate"
+        titleTranslationId="common.createdAt"
         column={column}
       />
     ),
@@ -83,7 +81,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
       return (
         <SelectableTextCell
           onClick={handleRowClick}
-          text={formatDate(row.original.createdAt.toString())}
+          text={new Date(row.original.createdAt).toLocaleDateString()}
         />
       );
     },

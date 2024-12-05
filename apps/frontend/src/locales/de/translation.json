@@ -14,7 +14,6 @@
     "name": "Name",
     "editCategorie": "Kategorie bearbeiten",
     "isActive": "Aktiv",
-    "creationDate": "Erstellungsdatum",
     "visibleForUsers": "Sichtbar für Nutzer",
     "visibleForGroups": "Sichtbar für Gruppen",
     "editableByUsers": "Redaktionierbar von Nutzern",
@@ -33,7 +32,7 @@
     "title": "Titel",
     "content": "Inhalt",
     "placeholderCategoryName": "Name",
-    "categoryName": "Kategoriename"
+    "categoryName": "Name der Kategorie"
   },
   "dashboard": {
     "mobileAccess": {

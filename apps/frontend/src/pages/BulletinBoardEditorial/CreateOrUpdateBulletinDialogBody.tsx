@@ -9,6 +9,7 @@ import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBu
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
+import DialogSwitch from '@/components/shared/DialogSwitch';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<BulletinDialogForm>;
@@ -46,6 +47,15 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           handleChange={handleCategoryChange}
           variant="light"
         />
+
+        <DialogSwitch
+          translationId="bulletinboard.isActive"
+          checked={form.watch('isActive')}
+          onCheckedChange={(isChecked) => {
+            form.setValue('isActive', isChecked);
+          }}
+        />
+
         <FormField
           name="title"
           form={form}
