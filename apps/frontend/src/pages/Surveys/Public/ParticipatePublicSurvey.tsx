@@ -10,10 +10,10 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
   const surveyId = searchParams.get('surveyId');
 
-  const { t } = useTranslation();
-
   const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey, isFetching } =
     useParticipatePublicSurveyStore();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (surveyId) {
