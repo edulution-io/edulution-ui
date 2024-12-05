@@ -5,6 +5,49 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "bulletinboard": {
+    "appTitle": "Schwarzes Brett",
+    "description": "Verwalte deine Mitteilungen",
+    "sidebar": "Schwarzes Brett",
+    "newCategorie": "Neue Kategorie",
+    "category": "Kategorie",
+    "name": "Name",
+    "editCategorie": "Kategorie bearbeiten",
+    "isActive": "Aktiv",
+    "visibleForUsers": "Sichtbar für Nutzer",
+    "visibleForGroups": "Sichtbar für Gruppen",
+    "editableByUsers": "Redaktionierbar von Nutzern",
+    "editableByGroups": "Redaktionierbar von Gruppen",
+    "error": "Fehler",
+    "delete": "Löschen",
+    "deleteBulletin": "Mitteilung löschen",
+    "deleteBulletins": "{{count}} Mitteilungen löschen",
+    "editBulletin": "Mitteilung bearbeiten",
+    "createBulletin": "Mitteilung erstellen",
+    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
+    "cancel": "Abbrechen",
+    "title": "Titel",
+    "content": "Inhalt",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Name der Kategorie",
+    "categories": {
+      "visibleByUsersAndGroups": "Wähle aus, welche Nutzer und Gruppen diese Kategorie sehen dürfen",
+      "editableByUsersAndGroups": "Wähle aus, welche Nutzer und Gruppen diese Kategorie bearbeiten dürfen"
+    },
+    "errors": {
+      "categoryNotFound": "Kategorie nicht gefunden",
+      "categoryDeleteFailed": "Kategorie konnte nicht gelöscht werden",
+      "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
+      "fileNotProvided": "Datei wurde nicht bereitgestellt",
+      "invalidCategory": "Ungültige Kategorie",
+      "bulletinNotFound": "Bulletin nicht gefunden",
+      "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
+      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen"
+    }
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -94,7 +137,8 @@
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
-    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
   },
   "conferences": {
     "errors": {
@@ -488,6 +532,7 @@
     "appconfig": {
       "sections": {
         "onlyOffice": "Only Office Integration",
+        "bulletinBoard": "Schwarzes Brett Kategorien",
         "general": "Allgemein"
       },
       "update": {
@@ -609,6 +654,8 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "createdAt": "Erstellt am",
+    "updatedAt": "Bearbeitet am",
     "actions": "Aktionen",
     "forward": "Weiterleiten",
     "showOptions": "Optionen zeigen",

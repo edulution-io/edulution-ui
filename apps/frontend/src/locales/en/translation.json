@@ -5,6 +5,36 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "bulletinboard": {
+    "title": "Bulletin Board",
+    "description": "Manage your bulletins",
+    "sidebar": "Bulletin Board",
+    "newCategorie": "New category",
+    "name": "Name",
+    "visibleFor": "Visible for",
+    "editCategorie": "Edit category",
+    "editorialAccess": "Editorial access",
+    "isActive": "Active",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Category name",
+    "categoryDeletedSuccessfully": "Category deleted successfully",
+    "categoryCreatedSuccessfully": "Category created successfully",
+    "categoryUpdatedSuccessfully": "Category updated successfully",
+    "categories": {
+      "visibleByUsersAndGroups": "Choose which users and groups can view this category",
+      "editableByUsersAndGroups": "Choose which users and groups can edit this category"
+    },
+    "errors": {
+      "categoryNotFound": "Category not found",
+      "categoryDeleteFailed": "Failed to delete category",
+      "attachmentUploadFailed": "Failed to upload attachment",
+      "fileNotProvided": "File not provided",
+      "invalidCategory": "Invalid category",
+      "bulletinNotFound": "Bulletin not found",
+      "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
+      "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin"
+    }
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -16,7 +46,13 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution-io app here:",
+      "isActive": "Active",
+      "creationDate": "Creation date",
+      "visibleForUsers": "Visible for users",
+      "visibleForGroups": "Visible for groups",
+      "editableByUsers": "Editable by users",
+      "editableByGroups": "Editable by groups"
     },
     "quota": {
       "title": "Quotas",
@@ -487,6 +523,7 @@
     "appconfig": {
       "sections": {
         "onlyOffice": "Only Office Integration",
+        "bulletinBoard": "Bulletin Board Categories",
         "general": "General"
       },
       "update": {

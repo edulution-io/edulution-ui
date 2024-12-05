@@ -153,7 +153,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column space-y-6 md:w-[80%]"
+            className="column space-y-6 2xl:w-[1200px]"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
@@ -220,7 +220,7 @@ const AppConfigPage: React.FC = () => {
                       <ExtendedOptionsForm
                         extendedOptions={item.extendedOptions}
                         control={control}
-                        baseName={settingLocation}
+                        settingLocation={settingLocation}
                       />
                     </div>
                     <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>

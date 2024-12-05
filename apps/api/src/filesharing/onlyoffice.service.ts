@@ -9,7 +9,7 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import AppConfigService from '../appconfig/appconfig.service';
-import FilesystemService from './filesystem.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class OnlyofficeService {

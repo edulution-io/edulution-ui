@@ -26,6 +26,7 @@ const APPS = {
   WHITEBOARD: 'whiteboard',
   SETTINGS: 'settings',
   USER_SETTINGS: 'usersettings',
+  BULLETIN_BOARD: 'bulletinboard',
   NONE: 'none',
 } as const;
 
