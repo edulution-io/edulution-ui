@@ -17,6 +17,7 @@ import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInpu
 import { Button } from '@/components/shared/Button';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
+import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
 
 const AppConfigEditBulletinCategoryDialog = () => {
   const {
@@ -55,7 +56,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
 
-  const { isUpdateDeleteEntityDialogOpen, setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+  const { isDialogOpen, setDialogOpen } = useAppConfigDialogStore();
 
   const handleFormSubmit = async () => {
     if (selectedCategory) {
@@ -72,7 +73,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
     } else {
       await addNewCategory(form.getValues());
     }
-    setUpdateDeleteEntityDialogOpen(false);
+    setDialogOpen(false);
     setSelectedCategory(null);
   };
 
@@ -88,7 +89,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
             size="lg"
             onClick={async () => {
               await deleteCategory(selectedCategory?.id || '');
-              setUpdateDeleteEntityDialogOpen(false);
+              setDialogOpen(false);
               setSelectedCategory(null);
             }}
           >
@@ -141,35 +142,48 @@ const AppConfigEditBulletinCategoryDialog = () => {
           }}
         />
 
-        <SearchUsersOrGroups
-          users={watch('visibleForUsers') as AttendeeDto[]}
-          onSearch={searchAttendees}
-          onUserChange={handleVisibleAttendeesChange}
-          groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
-          onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-          variant="light"
-        />
-
-        <SearchUsersOrGroups
-          users={watch('editableByUsers') as AttendeeDto[]}
-          onSearch={searchAttendees}
-          onUserChange={handleEditableAttendeesChange}
-          groups={watch('editableByGroups') as MultipleSelectorGroup[]}
-          onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-          variant="light"
-        />
+        <AccordionItem value="visibleForGroupsUsers">
+          <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
+            {t('bulletinboard.categories.visibleByUsersAndGroups')}
+          </AccordionTrigger>
+          <AccordionContent className="overflow-auto">
+            <SearchUsersOrGroups
+              users={watch('visibleForUsers') as AttendeeDto[]}
+              onSearch={searchAttendees}
+              onUserChange={handleVisibleAttendeesChange}
+              groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
+              onGroupSearch={searchGroups}
+              onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
+              variant="light"
+            />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="editbleForGroupsUsers">
+          <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
+            {t('bulletinboard.categories.editableByUsersAndGroups')}
+          </AccordionTrigger>
+          <AccordionContent className="overflow-auto">
+            <SearchUsersOrGroups
+              users={watch('editableByUsers') as AttendeeDto[]}
+              onSearch={searchAttendees}
+              onUserChange={handleEditableAttendeesChange}
+              groups={watch('editableByGroups') as MultipleSelectorGroup[]}
+              onGroupSearch={searchGroups}
+              onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
+              variant="light"
+            />
+          </AccordionContent>
+        </AccordionItem>
       </form>
     );
   };
 
   return (
     <AdaptiveDialog
-      isOpen={isUpdateDeleteEntityDialogOpen}
+      isOpen={isDialogOpen}
       variant="primary"
       handleOpenChange={() => {
-        setUpdateDeleteEntityDialogOpen(!isUpdateDeleteEntityDialogOpen);
+        setDialogOpen(!isDialogOpen);
         setSelectedCategory(null);
       }}
       title=""

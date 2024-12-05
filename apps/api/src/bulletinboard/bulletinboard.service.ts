@@ -9,6 +9,8 @@ import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/all
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategoryNames from '@libs/bulletinBoard/types/bulletinsByCategoryNames';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
@@ -32,11 +34,19 @@ class BulletinBoardService {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(file: Express.Multer.File): string {
     if (!file) {
-      throw new Error('No file provided.');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.FILE_NOT_PROVIDED,
+        HttpStatus.BAD_REQUEST,
+        'No file provided.',
+      );
     }
 
     if (!BULLETIN_BOARD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new Error('Invalid file type. Only images, audio, video, and office files are allowed.');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.ATTACHMENT_UPLOAD_FAILED,
+        HttpStatus.BAD_REQUEST,
+        'Invalid file type. Only images, audio, video, and office files are allowed.',
+      );
     }
 
     return file.filename;
@@ -93,7 +103,11 @@ class BulletinBoardService {
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new Error('Invalid category');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Invalid category',
+      );
     }
 
     const creator = {
@@ -119,16 +133,28 @@ class BulletinBoardService {
   async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
     const bulletin = await this.bulletinModel.findById(id).exec();
     if (!bulletin) {
-      throw new Error('Bulletin not found');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Bulletin not found',
+      );
     }
 
     if (bulletin.creator.username !== currentUser.preferred_username) {
-      throw new Error('Unauthorized to update this bulletin');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        HttpStatus.UNAUTHORIZED,
+        'Unauthorized to update this bulletin',
+      );
     }
 
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new Error('Invalid category');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Invalid category',
+      );
     }
 
     const updatedBy = {
@@ -150,11 +176,19 @@ class BulletinBoardService {
   async removeBulletin(username: string, id: string) {
     const bulletin = await this.bulletinModel.findById(id).exec();
     if (!bulletin) {
-      throw new Error('Bulletin not found');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Bulletin not found',
+      );
     }
 
     if (bulletin.creator.username !== username) {
-      throw new Error('Unauthorized to delete this bulletin');
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN,
+        HttpStatus.UNAUTHORIZED,
+        'Bulletin not found',
+      );
     }
 
     await this.bulletinModel.findByIdAndDelete(id).exec();

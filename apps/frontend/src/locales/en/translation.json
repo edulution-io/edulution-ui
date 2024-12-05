@@ -16,7 +16,24 @@
     "editorialAccess": "Editorial access",
     "isActive": "Active",
     "placeholderCategoryName": "Name",
-    "categoryName": "Category name"
+    "categoryName": "Category name",
+    "categoryDeletedSuccessfully": "Category deleted successfully",
+    "categoryCreatedSuccessfully": "Category created successfully",
+    "categoryUpdatedSuccessfully": "Category updated successfully",
+    "categories": {
+      "visibleByUsersAndGroups": "Choose which users and groups can view this category",
+      "editableByUsersAndGroups": "Choose which users and groups can edit this category"
+    },
+    "errors": {
+      "categoryNotFound": "Category not found",
+      "categoryDeleteFailed": "Failed to delete category",
+      "attachmentUploadFailed": "Failed to upload attachment",
+      "fileNotProvided": "File not provided",
+      "invalidCategory": "Invalid category",
+      "bulletinNotFound": "Bulletin not found",
+      "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
+      "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin"
+    }
   },
   "dashboard": {
     "mobileAccess": {

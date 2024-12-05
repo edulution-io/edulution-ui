@@ -3,11 +3,13 @@ import eduApi from '@/api/eduApi';
 import { BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import handleApiError from '@/utils/handleApiError';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 export interface BulletinBoardTableStore {
   isDialogOpen: boolean;
   setIsDialogOpen: (isOpen: boolean) => void;
-  reset: () => void;
   fetchData: () => Promise<BulletinCategoryResponseDto[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
@@ -24,6 +26,7 @@ export interface BulletinBoardTableStore {
   setNameExists: (isNameAvailable: boolean | null) => void;
   isNameChecking: boolean;
   setIsNameChecking: (isNameChecking: boolean) => void;
+  reset: () => void;
 }
 
 const initialValues = {
@@ -44,13 +47,13 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setIsDialogOpen: (isOpen: boolean) => set({ isDialogOpen: isOpen }),
   setEditBulletinCategoryDialogOpen: (isOpen) => set({ isBulletinCategoryDialogOpen: isOpen }),
-  reset: () => set(initialValues),
   addNewCategory: async (category: CreateBulletinCategoryDto) => {
     set({ isLoading: true });
     try {
       await eduApi.post<BulletinCategoryResponseDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT, category);
+      toast.success(i18n.t('bulletinboard.categoryCreatedSuccessfully'));
     } catch (error) {
-      console.error(error);
+      handleApiError(error, set);
     } finally {
       set({ isLoading: false });
     }
@@ -65,7 +68,7 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
       set({ data: response.data });
       return response.data || [];
     } catch (error) {
-      console.error(error);
+      handleApiError(error, set);
       return [];
     } finally {
       set({ isLoading: false });
@@ -87,8 +90,9 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
     set({ isLoading: true });
     try {
       await eduApi.patch(`${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/${id}`, category);
+      toast.success(i18n.t('bulletinboard.categoryUpdatedSuccessfully'));
     } catch (error) {
-      console.error(error);
+      handleApiError(error, set);
     } finally {
       set({ isLoading: false });
     }
@@ -98,12 +102,15 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
     set({ isLoading: true });
     try {
       await eduApi.delete(`${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/${id}`);
+      toast.success(i18n.t('bulletinboard.categoryDeletedSuccessfully'));
     } catch (error) {
-      console.error(error);
+      handleApiError(error, set);
     } finally {
       set({ isLoading: false });
     }
   },
+
+  reset: () => set(initialValues),
 }));
 
 export default useAppConfigBulletinTableStore;

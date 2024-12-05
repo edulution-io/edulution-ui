@@ -32,7 +32,21 @@
     "title": "Titel",
     "content": "Inhalt",
     "placeholderCategoryName": "Name",
-    "categoryName": "Name der Kategorie"
+    "categoryName": "Name der Kategorie",
+    "categories": {
+      "visibleByUsersAndGroups": "Wähle aus, welche Nutzer und Gruppen diese Kategorie sehen dürfen",
+      "editableByUsersAndGroups": "Wähle aus, welche Nutzer und Gruppen diese Kategorie bearbeiten dürfen"
+    },
+    "errors": {
+      "categoryNotFound": "Kategorie nicht gefunden",
+      "categoryDeleteFailed": "Kategorie konnte nicht gelöscht werden",
+      "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
+      "fileNotProvided": "Datei wurde nicht bereitgestellt",
+      "invalidCategory": "Ungültige Kategorie",
+      "bulletinNotFound": "Bulletin nicht gefunden",
+      "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
+      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen"
+    }
   },
   "dashboard": {
     "mobileAccess": {

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
 import { AppConfigTableEntryUnion } from '@/pages/Settings/AppConfig/components/table/appConfigTableComponent';
 import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
 import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
+import { Button } from '@/components/shared/Button';
 
 const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
   const renderConfig = (config: AppConfigTableEntryUnion, index: number) => {
     const { columns, useStore, showAddButton, dialogBody } = config;
     const { data, fetchData } = useStore();
-    const { setUpdateDeleteEntityDialogOpen, isUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+    const { setDialogOpen, isDialogOpen } = useAppConfigDialogStore();
 
     useEffect(() => {
       const fetchDataAsync = async () => {
@@ -28,10 +28,10 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
       };
 
       void fetchDataAsync();
-    }, [fetchData, isUpdateDeleteEntityDialogOpen]);
+    }, [fetchData, isDialogOpen]);
 
     const handleAddClick = () => {
-      setUpdateDeleteEntityDialogOpen(true);
+      setDialogOpen(true);
     };
 
     return (
@@ -47,13 +47,13 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
         />
         {showAddButton && (
           <div className="flex justify-end pt-4">
-            <ButtonSH
+            <Button
               className="h-8"
-              variant="outline"
+              variant="btn-outline"
               onClick={handleAddClick}
             >
               {t('common.add')}
-            </ButtonSH>
+            </Button>
           </div>
         )}
         {dialogBody}

@@ -21,10 +21,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
 
       return (
@@ -47,10 +47,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.isActive,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -73,10 +73,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -97,10 +97,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.visibleForUsers,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -126,10 +126,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.visibleForGroups,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -150,10 +150,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.editableByUsers,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
       return (
         <SelectableTextCell
@@ -174,10 +174,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.editableByGroups,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setUpdateDeleteEntityDialogOpen(true);
+        setDialogOpen(true);
       };
       return (
         <SelectableTextCell

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
@@ -9,6 +9,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import CustomHttpException from '@libs/error/CustomHttpException';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
@@ -25,7 +27,11 @@ class BulletinCategoryService {
     if (!users) {
       const bulletinCategory = await this.bulletinCategoryModel.findById(bulletinCategoryId).exec();
       if (!bulletinCategory) {
-        throw new Error(`Category with ID "${bulletinCategoryId}" not found`);
+        throw new CustomHttpException(
+          BulletinBoardErrorMessage.CATEGORY_NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+          'Invalid ID format',
+        );
       }
 
       const groupsToCheck =
@@ -101,7 +107,11 @@ class BulletinCategoryService {
   async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
     const category = await this.bulletinCategoryModel.findById(id).exec();
     if (!category) {
-      throw new Error(`Category with ID "${id}" not found`);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.CATEGORY_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        'Invalid ID format',
+      );
     }
 
     Object.assign(category, dto);
@@ -113,18 +123,15 @@ class BulletinCategoryService {
 
   async remove(id: string): Promise<void> {
     try {
-      if (!Types.ObjectId.isValid(id)) {
-        throw new Error(`Invalid ID format: "${id}"`);
-      }
       const objectId = new Types.ObjectId(id);
-      const existingCategory = await this.bulletinCategoryModel.findById(objectId);
-      if (!existingCategory) {
-        throw new Error(`Category with ID "${id}" not found`);
-      }
+      await this.bulletinCategoryModel.findById(objectId);
       await this.bulletinCategoryModel.deleteOne({ _id: objectId }).exec();
     } catch (error) {
-      console.error(`Error deleting category with ID "${id}":`, error.message);
-      throw new Error(`Failed to delete category: ${error.message}`);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Invalid ID format',
+      );
     }
   }
 

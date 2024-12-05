@@ -2,6 +2,7 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { MdCheckCircle, MdError } from 'react-icons/md';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
+import Input from '@/components/shared/Input';
 import useAppConfigBulletinTableStore from '../useAppConfigBulletinTableStore';
 
 const NameInputWithAvailability = ({
@@ -63,11 +64,12 @@ const NameInputWithAvailability = ({
 
   return (
     <div className="flex items-center space-x-2">
-      <input
+      <Input
         {...register('name')}
         placeholder={placeholder}
         className="input-class"
         onChange={handleChange}
+        variant="light"
       />
       {renderAvailabilityStatus()}
     </div>
