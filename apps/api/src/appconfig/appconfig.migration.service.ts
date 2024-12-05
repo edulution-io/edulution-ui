@@ -14,9 +14,7 @@ class AppConfigMigrationService implements OnModuleInit {
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
 
-    Logger.log(`⬆ ️⬆️ Migrating`, AppConfigMigrationService.name);
-
-    Logger.log('⬆ ... executing Migrations', AppConfigMigrationService.name);
+    Logger.log(`⬆ ️⬆️ Executing migrations`, AppConfigMigrationService.name);
 
     try {
       await this.migrate000();
@@ -29,10 +27,10 @@ class AppConfigMigrationService implements OnModuleInit {
 
   async migrate000() {
     const migrationName = '000-add-db-version-number';
-    const previousMigrationNumber = undefined;
-    const newMigrationNumber = 0;
+    const previousSchemaVersion = 0;
+    const newSchemaVersion = 1;
 
-    const unprocessedDocuments = await this.appConfigModel.find({ migrationNumber: previousMigrationNumber });
+    const unprocessedDocuments = await this.appConfigModel.find({ SchemaVersion: previousSchemaVersion });
     if (unprocessedDocuments.length === 0) {
       Logger.log(`⬆ Skipped ${migrationName} (no document needs to be updated)`, AppConfigMigrationService.name);
       return;
@@ -46,14 +44,13 @@ class AppConfigMigrationService implements OnModuleInit {
         { _id: { $in: ids } },
         {
           $set: {
-            migrationNumber: newMigrationNumber,
-            updatedAt: new Date().toDateString(),
+            schemaVersion: newSchemaVersion,
           },
         },
       );
       Logger.log(`⬆ Migration "${migrationName}" was successfully completed.`, AppConfigMigrationService.name);
     } catch (e) {
-      Logger.error(`⬆     Error while running Migration "${migrationName}": ${e}`, AppConfigMigrationService.name);
+      Logger.error(`⬆ Error while running Migration "${migrationName}": ${e}`, AppConfigMigrationService.name);
       throw e;
     }
   }
