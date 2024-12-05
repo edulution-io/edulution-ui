@@ -32,18 +32,24 @@ const AppConfigEditBulletinCategoryDialog = ({ closeDialog }: { closeDialog: () 
 
   const { t } = useTranslation();
 
+  const initialFormValues = selectedCategory || {
+    name: '',
+    isActive: true,
+    visibleForUsers: [],
+    visibleForGroups: [],
+    editableByUsers: [],
+    editableByGroups: [],
+  };
+
   const form = useForm<CreateBulletinCategoryDto>({
     mode: 'onChange',
     resolver: zodResolver(getCreateNewCategorieSchema(t)),
-    defaultValues: selectedCategory || {
-      name: '',
-      isActive: true,
-      visibleForUsers: [],
-      visibleForGroups: [],
-      editableByUsers: [],
-      editableByGroups: [],
-    },
+    defaultValues: initialFormValues,
   });
+
+  useEffect(() => {
+    form.reset(initialFormValues);
+  }, [selectedCategory, form]);
 
   const { setValue, watch } = form;
   const { searchAttendees } = useUserStore();
