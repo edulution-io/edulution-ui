@@ -1,53 +1,110 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
 class BulletinCategoryService {
-  constructor(@InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>) {}
+  constructor(
+    @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
-  async findAll(_username: string) {
-    return this.bulletinCategoryModel.find().exec();
+  async getUsersWithPermissionCached(bulletinCategoryId: string, permission: 'view' | 'edit'): Promise<string[]> {
+    const cacheKey = `bulletinCategory:${bulletinCategoryId}:${permission}`;
+    let users = await this.cacheManager.get<string[]>(cacheKey);
+
+    if (!users) {
+      const bulletinCategory = await this.bulletinCategoryModel.findById(bulletinCategoryId).exec();
+      if (!bulletinCategory) {
+        throw new Error(`Category with ID "${bulletinCategoryId}" not found`);
+      }
+
+      const groupsToCheck =
+        permission === 'edit'
+          ? [...bulletinCategory.editableByGroups, ...bulletinCategory.visibleForGroups]
+          : bulletinCategory.visibleForGroups;
+
+      const usersToCheck =
+        permission === 'edit'
+          ? [...bulletinCategory.editableByUsers, ...bulletinCategory.visibleForUsers]
+          : bulletinCategory.visibleForUsers;
+
+      const usersInGroups = await Promise.all(
+        groupsToCheck.map(async (group) => {
+          const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+            `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+          );
+
+          return groupWithMembers?.members?.map((member) => member.username) || [];
+        }),
+      );
+
+      users = Array.from(new Set([...usersToCheck.map((user) => user.value), ...usersInGroups.flat()]));
+
+      await this.cacheManager.set(cacheKey, users, DEFAULT_CACHE_TTL_MS);
+    }
+
+    return users;
+  }
+
+  async findAll(currentUser: JWTUser): Promise<BulletinCategoryDocument[]> {
+    const bulletinCategories = await this.bulletinCategoryModel.find().exec();
+
+    if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      return bulletinCategories;
+    }
+
+    const accessibleCategories = await Promise.all(
+      bulletinCategories.map(async (category) => {
+        const usersWithViewPermission = await this.getUsersWithPermissionCached(category.id, 'view');
+        return usersWithViewPermission.includes(currentUser.preferred_username) ? category : null;
+      }),
+    );
+
+    return accessibleCategories.filter((category) => category !== null);
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
-    const creator = {
-      firstName: currentUser.given_name,
-      lastName: currentUser.family_name,
-      username: currentUser.preferred_username,
-    };
-
-    return this.bulletinCategoryModel.create({
+    const category = await this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
       visibleForUsers: dto.visibleForUsers ?? [],
       visibleForGroups: dto.visibleForGroups ?? [],
       editableByUsers: dto.editableByUsers ?? [],
       editableByGroups: dto.editableByGroups ?? [],
-      creator,
+      creator: {
+        firstName: currentUser.given_name,
+        lastName: currentUser.family_name,
+        username: currentUser.preferred_username,
+      },
     });
+
+    await this.getUsersWithPermissionCached(category.id, 'view');
+    await this.getUsersWithPermissionCached(category.id, 'edit');
+
+    return category;
   }
 
   async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
-    try {
-      if (!Types.ObjectId.isValid(id)) {
-        throw new Error(`Invalid ID format: "${id}"`);
-      }
-      const objectId = new Types.ObjectId(id);
-      const existingCategory = await this.bulletinCategoryModel.findById(objectId);
-      if (!existingCategory) {
-        throw new Error(`Category with ID "${id}" not found`);
-      }
-      Object.assign(existingCategory, dto);
-
-      await existingCategory.save();
-    } catch (error) {
-      console.error(`Error updating category with ID "${id}":`, error.message);
-      throw new Error(`Failed to update category: ${error.message}`);
+    const category = await this.bulletinCategoryModel.findById(id).exec();
+    if (!category) {
+      throw new Error(`Category with ID "${id}" not found`);
     }
+
+    Object.assign(category, dto);
+    await category.save();
+
+    await this.getUsersWithPermissionCached(category.id, 'view');
+    await this.getUsersWithPermissionCached(category.id, 'edit');
   }
 
   async remove(id: string): Promise<void> {

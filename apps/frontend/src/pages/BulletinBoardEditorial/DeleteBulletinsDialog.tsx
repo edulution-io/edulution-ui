@@ -2,7 +2,7 @@ import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 
 interface DeleteBulletinsDialogProps {
@@ -48,7 +48,7 @@ const DeleteBulletinsDialog = ({ trigger }: DeleteBulletinsDialogProps) => {
                 className="mt-2"
                 key={b.id}
               >
-                - {b.heading}
+                - {b.title}
               </div>
             ))}
           </>

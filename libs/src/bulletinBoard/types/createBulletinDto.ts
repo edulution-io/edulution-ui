@@ -3,7 +3,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 
 class CreateBulletinDto {
   @IsString()
-  heading: string;
+  title: string;
 
   @IsString()
   content: string;

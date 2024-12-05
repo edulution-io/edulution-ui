@@ -4,6 +4,8 @@ import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface WysiwygEditorProps {
   value: string;
@@ -13,8 +15,35 @@ interface WysiwygEditorProps {
 
 const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload }) => {
   const { eduApiToken } = useUserStore();
+  const { t } = useTranslation();
 
   const quillRef = useRef<ReactQuill | null>(null);
+
+  const handleImage = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        try {
+          const uploadedFilename = await onUpload(file);
+          const fetchImageUrl = `${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
+
+          const quillInstance = quillRef.current?.getEditor();
+          if (quillInstance) {
+            const range = quillInstance.getSelection();
+            quillInstance.insertEmbed(range?.index || 0, 'image', fetchImageUrl);
+          }
+        } catch (error) {
+          console.error('Failed to upload or fetch attachment:', error);
+          toast.error(t('errors.uploadOrFetchAttachmentFailed'));
+        }
+      }
+    };
+  };
 
   const modules = React.useMemo(
     () => ({
@@ -27,35 +56,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
           ['clean'],
         ],
         handlers: {
-          image: () => {
-            const input = document.createElement('input');
-            input.setAttribute('type', 'file');
-            input.setAttribute('accept', 'image/*');
-            input.click();
-
-            input.onchange = async () => {
-              const file = input.files?.[0];
-              console.log(`file ${JSON.stringify(file, null, 2)}`);
-              if (file) {
-                try {
-                  const uploadedFilename = await onUpload(file);
-                  console.log(`uploadedFilename ${JSON.stringify('uploadedFilename', null, 2)}`);
-                  const fetchImageUrl = `${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
-
-                  console.log(`secureUrl ${JSON.stringify(fetchImageUrl, null, 2)}`);
-                  const quillInstance = quillRef.current?.getEditor();
-                  if (quillInstance) {
-                    const range = quillInstance.getSelection();
-                    quillInstance.insertEmbed(range?.index || 0, 'image', fetchImageUrl);
-                  } else {
-                    console.error('Quill instance is unavailable');
-                  }
-                } catch (error) {
-                  console.error('Failed to upload or fetch attachment:', error);
-                }
-              }
-            };
-          },
+          image: handleImage,
         },
       },
     }),

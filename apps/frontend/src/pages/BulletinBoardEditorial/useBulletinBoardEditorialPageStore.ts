@@ -3,6 +3,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import {
+  BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT,
   BULLETIN_BOARD_EDU_API_ENDPOINT,
   BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT,
 } from '@libs/bulletinBoard/constants/apiEndpoints';
@@ -53,7 +54,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   getBulletins: async (isLoading = true) => {
     set({ isLoading, error: null });
     try {
-      const { data } = await eduApi.get<BulletinResponseDto[]>(BULLETIN_BOARD_EDU_API_ENDPOINT);
+      const { data } = await eduApi.get<BulletinResponseDto[]>(BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT);
       set({ bulletins: data });
     } catch (error) {
       handleApiError(error, set);
@@ -68,7 +69,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
     set({ isDialogLoading: true });
     try {
       const { data } = await eduApi.delete<BulletinResponseDto[]>(BULLETIN_BOARD_EDU_API_ENDPOINT, {
-        data: bulletins.map((c) => c.heading),
+        data: bulletins.map((c) => c.title),
       });
 
       set({ bulletins: data, selectedRows: {} });

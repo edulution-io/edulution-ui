@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
@@ -13,8 +13,8 @@ class BulletinCategoryController {
   constructor(private readonly bulletinBoardService: BulletinCategoryService) {}
 
   @Get()
-  findAll(@GetCurrentUsername() currentUsername: string) {
-    return this.bulletinBoardService.findAll(currentUsername);
+  findAll(@GetCurrentUser() currentUser: JWTUser) {
+    return this.bulletinBoardService.findAll(currentUser);
   }
 
   @Post()

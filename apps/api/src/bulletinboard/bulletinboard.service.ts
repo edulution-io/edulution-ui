@@ -1,22 +1,26 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
 import { createReadStream, existsSync, mkdirSync } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import BulletinsByCategoryNames from '@libs/bulletinBoard/types/bulletinsByCategoryNames';
+import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
+import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 
 @Injectable()
 class BulletinBoardService {
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
+    private readonly bulletinCategoryService: BulletinCategoryService,
   ) {
     if (!existsSync(this.attachmentsPath)) {
       mkdirSync(this.attachmentsPath, { recursive: true });
@@ -51,8 +55,37 @@ class BulletinBoardService {
     return res;
   }
 
-  async findAllBulletins(username: string) {
-    return this.bulletinModel.find({ 'creator.username': username, isActive: true }).populate('category').exec();
+  async getBulletinsByCategoryNames(currentUser: JwtUser, token: string): Promise<BulletinsByCategoryNames> {
+    const bulletinCategories = await this.bulletinCategoryService.findAll(currentUser);
+
+    const bulletins = await this.findAllBulletins(currentUser.preferred_username, token);
+
+    const bulletinsByCategory: BulletinsByCategoryNames = {};
+
+    bulletinCategories.forEach((category) => {
+      bulletinsByCategory[category.name] = bulletins.filter((bulletin) => bulletin.category.id === category.id);
+    });
+
+    return bulletinsByCategory;
+  }
+
+  async findAllBulletins(username: string, token: string): Promise<BulletinResponseDto[]> {
+    const bulletins = await this.bulletinModel
+      .find({ 'creator.username': username, isActive: true })
+      .populate('category')
+      .exec();
+
+    return bulletins.map(
+      (bulletin) =>
+        ({
+          ...bulletin.toObject({ virtuals: true }),
+          content: BulletinBoardService.replaceTokenPlaceholderInContent(bulletin.content, token),
+        }) as unknown as BulletinResponseDto,
+    );
+  }
+
+  private static replaceTokenPlaceholderInContent(content: string, token: string): string {
+    return content?.replace(/token=\{\{token}}/g, `token=${token}`);
   }
 
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
@@ -69,20 +102,62 @@ class BulletinBoardService {
 
     return this.bulletinModel.create({
       creator,
-      heading: dto.heading,
-      content: dto.content,
-      category: dto.category.id,
+      title: dto.title,
+      content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
+      category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
     });
   }
 
-  async updateBulletin(_username: string, _id: string, _dto: CreateBulletinDto) {
-    // Logic to update a specific bulletin board entry
+  private static replaceContentTokenWithPlaceholder(content: string): string {
+    return content.replace(/token=[^&"]+/g, 'token={{token}}');
   }
 
-  async removeBulletin(_username: string, _id: string) {
-    // Logic to delete a specific bulletin board entry
+  async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
+    const bulletin = await this.bulletinModel.findById(id).exec();
+    if (!bulletin) {
+      throw new Error('Bulletin not found');
+    }
+
+    if (bulletin.creator.username !== currentUser.preferred_username) {
+      throw new Error('Unauthorized to update this bulletin');
+    }
+
+    const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
+    if (!category) {
+      throw new Error('Invalid category');
+    }
+
+    const updatedBy = {
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+      username: currentUser.preferred_username,
+    };
+
+    bulletin.title = dto.title;
+    bulletin.content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    bulletin.category = new Types.ObjectId(dto.category.id);
+    bulletin.isVisibleStartDate = dto.isVisibleStartDate;
+    bulletin.isVisibleEndDate = dto.isVisibleEndDate;
+    bulletin.updatedBy = updatedBy;
+
+    return bulletin.save();
+  }
+
+  async removeBulletin(username: string, id: string) {
+    const bulletin = await this.bulletinModel.findById(id).exec();
+    if (!bulletin) {
+      throw new Error('Bulletin not found');
+    }
+
+    if (bulletin.creator.username !== username) {
+      throw new Error('Unauthorized to delete this bulletin');
+    }
+
+    await this.bulletinModel.findByIdAndDelete(id).exec();
+
+    return { message: 'Bulletin deleted successfully' };
   }
 }
 

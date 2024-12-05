@@ -10,6 +10,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
+import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags('bulletinboard')
 @ApiBearerAuth()
@@ -17,9 +18,14 @@ import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
-  @Get()
-  findAllBulletins(@GetCurrentUsername() currentUsername: string) {
-    return this.bulletinBoardService.findAllBulletins(currentUsername);
+  @Get('')
+  getBulletinsByCategoryNames(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
+    return this.bulletinBoardService.getBulletinsByCategoryNames(currentUser, token);
+  }
+
+  @Get('bulletins')
+  findAllBulletins(@GetCurrentUsername() currentUsername: string, @GetToken() token: string) {
+    return this.bulletinBoardService.findAllBulletins(currentUsername, token);
   }
 
   @Post()
@@ -28,12 +34,8 @@ class BulletinBoardController {
   }
 
   @Patch(':id')
-  updateBulletin(
-    @GetCurrentUsername() currentUsername: string,
-    @Param('id') id: string,
-    @Body() bulletin: CreateBulletinDto,
-  ) {
-    return this.bulletinBoardService.updateBulletin(currentUsername, id, bulletin);
+  updateBulletin(@GetCurrentUser() currentUser: JWTUser, @Param('id') id: string, @Body() bulletin: CreateBulletinDto) {
+    return this.bulletinBoardService.updateBulletin(currentUser, id, bulletin);
   }
 
   @Delete(':id')

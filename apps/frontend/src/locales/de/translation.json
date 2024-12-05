@@ -6,7 +6,7 @@
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
-    "title": "Schwarzes Brett",
+    "appTitle": "Schwarzes Brett",
     "description": "Verwalte deine Mitteilungen",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
@@ -30,7 +30,7 @@
     "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
     "cancel": "Abbrechen",
-    "heading": "Überschrift",
+    "title": "Titel",
     "content": "Inhalt",
     "placeholderCategoryName": "Name",
     "categoryName": "Kategoriename"
@@ -124,7 +124,8 @@
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
-    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
   },
   "conferences": {
     "errors": {
@@ -641,6 +642,7 @@
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
     "createdAt": "Erstellt am",
+    "updatedAt": "Bearbeitet am",
     "actions": "Aktionen",
     "forward": "Weiterleiten",
     "showOptions": "Optionen zeigen",

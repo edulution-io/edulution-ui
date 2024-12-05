@@ -6,7 +6,7 @@ import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import bulletinBoardEditorialTableColumns from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialTableColumns';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/constants/pageElementIds';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
@@ -37,7 +37,7 @@ const BulletinBoardEditorialPage = () => {
   return (
     <div>
       <NativeAppHeader
-        title={t('bulletinboard.title')}
+        title={t('bulletinboard.appTitle')}
         description={t('bulletinboard.description')}
         iconSrc={BulletinBoardIcon}
       />

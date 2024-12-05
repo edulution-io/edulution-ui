@@ -5,7 +5,7 @@ import Attendee from '../conferences/attendee.schema';
 
 export type BulletinCategoryDocument = BulletinCategory & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, strict: true })
 export class BulletinCategory {
   @Prop({ required: true })
   name: string;

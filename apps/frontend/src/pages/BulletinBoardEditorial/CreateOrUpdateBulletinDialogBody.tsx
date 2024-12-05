@@ -7,7 +7,7 @@ import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import { DropdownMenu } from '@/components';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
@@ -17,7 +17,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   console.log(`form.getValues() ${JSON.stringify(form.getValues(), null, 2)}`);
   const { t } = useTranslation();
-  const { uploadAttachment, fetchAttachment } = useBulletinBoardEditorialStore();
+  const { uploadAttachment } = useBulletinBoardEditorialStore();
   const { categories, isLoading } = useAppConfigBulletinTableStore();
 
   const handleCategoryChange = (categoryName: string) => {
@@ -47,9 +47,9 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           variant="light"
         />
         <FormField
-          name="heading"
+          name="title"
           form={form}
-          labelTranslationId={t('bulletinboard.heading')}
+          labelTranslationId={t('bulletinboard.title')}
           variant="default"
         />
         <div>{t('bulletinboard.content')}</div>
@@ -57,7 +57,6 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           value={form.watch('content')}
           onChange={(value) => form.setValue('content', value)}
           onUpload={handleUpload}
-          fetchAttachment={fetchAttachment}
         />
       </form>
     </Form>

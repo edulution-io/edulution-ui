@@ -4,7 +4,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
@@ -34,7 +34,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
   }, []);
 
   const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
-    heading: '',
+    title: '',
     category: categories[0],
     attachmentFileNames: [],
     content: '',
@@ -50,7 +50,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
   });
 
   useEffect(() => {
-    if (selectedBulletinToEdit) form.reset(initialFormValues);
+    form.reset(initialFormValues);
   }, [selectedBulletinToEdit, categories, form]);
 
   const onSubmit = async () => {
@@ -62,7 +62,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     setIsCreateBulletinDialogOpen(false);
     setSelectedBulletinToEdit(null);
     await getBulletins();
-    form.reset();
+    form.reset(initialFormValues);
   };
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
@@ -95,7 +95,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
         setIsCreateBulletinDialogOpen(false);
         setSelectedBulletinToEdit(null);
       }}
-      desktopContentClassName="max-w-4xl"
+      desktopContentClassName="max-w-2xl"
       title={t(`bulletinboard.${selectedBulletinToEdit ? 'editBulletin' : 'createBulletin'}`)}
       body={getDialogBody()}
       footer={getFooter()}

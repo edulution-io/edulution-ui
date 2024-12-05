@@ -4,7 +4,7 @@ import Attendee from '../conferences/attendee.schema';
 
 export type BulletinDocument = Bulletin & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, strict: true })
 export class Bulletin {
   @Prop({ type: Object, required: true })
   creator: Attendee;
@@ -13,7 +13,7 @@ export class Bulletin {
   updatedBy?: Attendee;
 
   @Prop({ required: true })
-  heading: string;
+  title: string;
 
   @Prop({ required: true })
   content: string;
