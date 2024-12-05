@@ -56,9 +56,9 @@ class BulletinBoardService {
   }
 
   async getBulletinsByCategoryNames(currentUser: JwtUser, token: string): Promise<BulletinsByCategoryNames> {
-    const bulletinCategories = await this.bulletinCategoryService.findAll(currentUser);
+    const bulletinCategories = await this.bulletinCategoryService.findAll(currentUser, true);
 
-    const bulletins = await this.findAllBulletins(currentUser.preferred_username, token);
+    const bulletins = await this.findAllBulletins(currentUser.preferred_username, token, true);
 
     const bulletinsByCategory: BulletinsByCategoryNames = {};
 
@@ -69,11 +69,13 @@ class BulletinBoardService {
     return bulletinsByCategory;
   }
 
-  async findAllBulletins(username: string, token: string): Promise<BulletinResponseDto[]> {
-    const bulletins = await this.bulletinModel
-      .find({ 'creator.username': username, isActive: true })
-      .populate('category')
-      .exec();
+  async findAllBulletins(username: string, token: string, isActive?: boolean): Promise<BulletinResponseDto[]> {
+    const filter: Record<string, unknown> = { 'creator.username': username };
+    if (isActive !== undefined) {
+      filter.isActive = isActive;
+    }
+
+    const bulletins = await this.bulletinModel.find(filter).populate('category').exec();
 
     return bulletins.map(
       (bulletin) =>

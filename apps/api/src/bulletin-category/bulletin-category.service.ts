@@ -56,8 +56,12 @@ class BulletinCategoryService {
     return users;
   }
 
-  async findAll(currentUser: JWTUser): Promise<BulletinCategoryDocument[]> {
-    const bulletinCategories = await this.bulletinCategoryModel.find().exec();
+  async findAll(currentUser: JWTUser, isActive?: boolean): Promise<BulletinCategoryDocument[]> {
+    const filter: Record<string, unknown> = {};
+    if (isActive !== undefined) {
+      filter.isActive = isActive;
+    }
+    const bulletinCategories = await this.bulletinCategoryModel.find(filter).exec();
 
     if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return bulletinCategories;
