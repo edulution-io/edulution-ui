@@ -7,29 +7,32 @@ import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
 import 'survey-creator-core/i18n/spanish';
 import 'survey-creator-core/i18n/italian';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
+import useUserStore from '@/store/UserStore/UserStore';
+import useElementHeight from '@/hooks/useElementHeight';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
   saveNumber: number;
   formula?: TSurveyFormula;
-  language?: string;
 }
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form, saveNumber, formula, language = 'de' } = props;
+  const { form, saveNumber, formula } = props;
 
-  editorLocalization.defaultLocale = language;
-  localization.currentLocale = language;
+  const { user } = useUserStore();
+
+  editorLocalization.defaultLocale = user?.language ?? 'de';
+  localization.currentLocale = user?.language ?? 'de';
 
   const creatorOptions = {
     generateValidJSON: true,

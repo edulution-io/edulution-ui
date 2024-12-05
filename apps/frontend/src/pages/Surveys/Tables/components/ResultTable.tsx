@@ -4,16 +4,18 @@ import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import useUserStore from '@/store/UserStore/UserStore';
 import '../dialogs/resultTableDialog.css';
 
 interface ResultTableDialogBodyProps {
   formula: TSurveyFormula;
   result: JSON[];
-  language?: string;
 }
 
 const ResultTable = (props: ResultTableDialogBodyProps) => {
-  const { formula, result, language = 'de' } = props;
+  const { formula, result } = props;
+
+  const { user } = useUserStore();
 
   const [survey, setSurvey] = useState<SurveyModel | null>(null);
   const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
@@ -26,7 +28,7 @@ const ResultTable = (props: ResultTableDialogBodyProps) => {
   if (visuTable == null && survey != null) {
     const answers = result || [];
     const surveyVisuTable = new Tabulator(survey, answers);
-    surveyVisuTable.locale = language;
+    surveyVisuTable.locale = user?.language ?? 'de';
     setVisuTable(surveyVisuTable);
   }
 

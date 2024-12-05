@@ -6,7 +6,6 @@ import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDia
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import useUserStore from '@/store/UserStore/UserStore';
 
 const ParticipateDialog = () => {
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
@@ -21,8 +20,6 @@ const ParticipateDialog = () => {
     answerSurvey,
     isLoading,
   } = useParticipateDialogStore();
-
-  const { user } = useUserStore();
 
   const { t } = useTranslation();
 
@@ -45,7 +42,6 @@ const ParticipateDialog = () => {
           updateAnsweredSurveys={updateAnsweredSurveys}
           setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
           className="max-h-[75vh] overflow-y-auto rounded bg-gray-600 p-4"
-          language={user?.language}
         />
       </ScrollArea>
     );

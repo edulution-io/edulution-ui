@@ -8,6 +8,7 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import useUserStore from '@/store/UserStore/UserStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
@@ -30,7 +31,6 @@ interface ParticipateDialogBodyProps {
   updateAnsweredSurveys: () => void;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   className?: string;
-  language?: string;
 }
 
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
@@ -47,12 +47,14 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     updateAnsweredSurveys,
     setIsOpenParticipateSurveyDialog,
     className,
-    language = 'de',
   } = props;
+
+  const { user } = useUserStore();
+
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
-  surveyModel.locale = language;
+  surveyModel.locale = user?.language ?? 'de';
 
   if (surveyModel.pages.length > 1) {
     surveyModel.showProgressBar = 'top';

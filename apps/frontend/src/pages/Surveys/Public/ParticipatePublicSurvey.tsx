@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/UserStore';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -11,7 +10,6 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
   const surveyId = searchParams.get('surveyId');
 
-  const { user } = useUserStore();
   const { t } = useTranslation();
 
   const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey, isFetching } =
@@ -42,11 +40,10 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
           updateAnsweredSurveys={() => {}}
           setIsOpenParticipateSurveyDialog={() => {}}
           className="survey-participation"
-          language={user?.language}
         />
       </ScrollArea>
     );
-  }, [surveyId, survey, answer, pageNo, user?.language]);
+  }, [surveyId, survey, answer, pageNo]);
 
   return (
     <>
