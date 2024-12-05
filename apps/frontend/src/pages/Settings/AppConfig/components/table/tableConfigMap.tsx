@@ -1,6 +1,6 @@
 import AppConfigBulletinTableColumn from '@/pages/BulletinBoard/AppConfigBulletinTableColum';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
-import CreateBulletinCategorieTableDialog from '@/pages/BulletinBoard/CreateBulletinCategorieTableDialog';
+import AppConfigEditBulletinCategoryDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategoryDialog';
 
 const TABLE_CONFIG_MAP = {
   bulletinboard: [
@@ -8,9 +8,9 @@ const TABLE_CONFIG_MAP = {
       key: 'bulletinboard',
       columns: AppConfigBulletinTableColumn,
       useStore: useAppConfigBulletinTableStore,
-      dialogBody: CreateBulletinCategorieTableDialog,
-      modifyBody: CreateBulletinCategorieTableDialog,
-      deleteBody: CreateBulletinCategorieTableDialog,
+      dialogBody: AppConfigEditBulletinCategoryDialog,
+      modifyBody: AppConfigEditBulletinCategoryDialog,
+      deleteBody: AppConfigEditBulletinCategoryDialog,
       showAddButton: true,
     },
   ],

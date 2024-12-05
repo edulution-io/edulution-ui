@@ -3,7 +3,6 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import { MdDelete, MdUpdate } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
-import NewCategorieForm from '@libs/bulletinBoard/constants/NewCategorieForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -17,28 +16,61 @@ import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table
 import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 import { Button } from '@/components/shared/Button';
 import DialogSwitch from '@/components/shared/DialogSwitch';
+import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 
-const AppConfigEditBulletinCategorieDialog = () => {
-  const { selectedCategory, setSelectedCategory, updateCategory, deleteCategory } = useAppConfigBulletinTableStore();
+const AppConfigEditBulletinCategoryDialog = ({ closeDialog }: { closeDialog: () => void }) => {
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    updateCategory,
+    deleteCategory,
+    addNewCategory,
+    checkIfNameExists,
+    nameExists,
+    isNameChecking,
+  } = useAppConfigBulletinTableStore();
 
   const { t } = useTranslation();
 
-  const form = useForm<NewCategorieForm>({
+  const form = useForm<CreateBulletinCategoryDto>({
     mode: 'onChange',
     resolver: zodResolver(getCreateNewCategorieSchema(t)),
-    defaultValues: {
-      name: selectedCategory?.name || '',
-      isActive: selectedCategory?.isActive ?? true,
-      visibleByUsers: selectedCategory?.visibleForUsers || [],
-      visibleByGroups: selectedCategory?.visibleForGroups || [],
-      editableByUsers: selectedCategory?.editableByUsers || [],
-      editableByGroups: selectedCategory?.editableByGroups || [],
+    defaultValues: selectedCategory || {
+      name: '',
+      isActive: true,
+      visibleForUsers: [],
+      visibleForGroups: [],
+      editableByUsers: [],
+      editableByGroups: [],
     },
   });
 
-  const { checkIfNameExists, nameExists, isNameChecking } = useAppConfigBulletinTableStore();
+  const { setValue, watch } = form;
+  const { searchAttendees } = useUserStore();
+  const { searchGroups } = useGroupStore();
 
   const { isUpdateDeleteEntityDialogOpen, setUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
+
+  const handleFormSubmit = async () => {
+    if (selectedCategory) {
+      const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = form.getValues();
+
+      await updateCategory(selectedCategory?.id || '', {
+        name: name && name.trim() !== '' ? name : selectedCategory.name,
+        isActive,
+        visibleForUsers,
+        visibleForGroups,
+        editableByUsers,
+        editableByGroups,
+      });
+
+      setUpdateDeleteEntityDialogOpen(false);
+      setSelectedCategory(null);
+    } else {
+      await addNewCategory(form.getValues());
+      closeDialog();
+    }
+  };
 
   const getFooter = () => (
     <div className="mt-4 flex justify-end space-x-2">
@@ -53,7 +85,7 @@ const AppConfigEditBulletinCategorieDialog = () => {
           }}
         >
           <MdDelete size={20} />
-          Delete
+          {t('common.delete')}
         </Button>
       )}
 
@@ -61,36 +93,17 @@ const AppConfigEditBulletinCategorieDialog = () => {
         variant="btn-collaboration"
         size="lg"
         disabled={nameExists || isNameChecking}
-        onClick={async () => {
-          const { name, isActive, visibleByUsers, visibleByGroups, editableByUsers, editableByGroups } =
-            form.getValues();
-
-          await updateCategory(selectedCategory?.id || '', {
-            name: name && name.trim() !== '' ? name : selectedCategory!.name,
-            isActive,
-            visibleForUsers: visibleByUsers,
-            visibleForGroups: visibleByGroups,
-            editableByUsers,
-            editableByGroups,
-          });
-
-          setUpdateDeleteEntityDialogOpen(false);
-          setSelectedCategory(null);
-        }}
+        type="submit"
       >
         <MdUpdate size={20} />
-        Update
+        {t('common.save')}
       </Button>
     </div>
   );
 
   const getDialogBody = () => {
-    const { setValue, watch } = form;
-    const { searchAttendees } = useUserStore();
-    const { searchGroups } = useGroupStore();
-
     const handleVisibleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
-      setValue('visibleByUsers', attendees, { shouldValidate: true });
+      setValue('visibleForUsers', attendees, { shouldValidate: true });
     };
 
     const handleEditableAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
@@ -99,8 +112,8 @@ const AppConfigEditBulletinCategorieDialog = () => {
 
     useEffect(() => {
       if (selectedCategory) {
-        setValue('visibleByUsers', selectedCategory.visibleForUsers || []);
-        setValue('visibleByGroups', selectedCategory.visibleForGroups || []);
+        setValue('visibleForUsers', selectedCategory.visibleForUsers || []);
+        setValue('visibleForGroups', selectedCategory.visibleForGroups || []);
         setValue('editableByUsers', selectedCategory.editableByUsers || []);
         setValue('editableByGroups', selectedCategory.editableByGroups || []);
       }
@@ -108,7 +121,7 @@ const AppConfigEditBulletinCategorieDialog = () => {
 
     return (
       <form
-        onSubmit={() => {}}
+        onSubmit={handleFormSubmit}
         className="space-y-4"
       >
         <div className="flex items-center space-x-2">
@@ -129,12 +142,12 @@ const AppConfigEditBulletinCategorieDialog = () => {
         />
 
         <SearchUsersOrGroups
-          users={watch('visibleByUsers') as AttendeeDto[]}
+          users={watch('visibleForUsers') as AttendeeDto[]}
           onSearch={searchAttendees}
           onUserChange={handleVisibleAttendeesChange}
-          groups={watch('visibleByGroups') as MultipleSelectorGroup[]}
+          groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('visibleByGroups', groups, { shouldValidate: true })}
+          onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
           variant="light"
         />
 
@@ -167,4 +180,4 @@ const AppConfigEditBulletinCategorieDialog = () => {
   );
 };
 
-export default AppConfigEditBulletinCategorieDialog;
+export default AppConfigEditBulletinCategoryDialog;

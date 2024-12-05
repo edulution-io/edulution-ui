@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { MdCheckCircle, MdError } from 'react-icons/md';
-import NewCategorieForm from '@libs/bulletinBoard/constants/NewCategorieForm';
+import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import useAppConfigBulletinTableStore from '../useAppConfigBulletinTableStore';
 
 const NameInputWithAvailability = ({
@@ -9,7 +9,7 @@ const NameInputWithAvailability = ({
   checkIfNameExists,
   placeholder,
 }: {
-  register: UseFormReturn<NewCategorieForm>['register'];
+  register: UseFormReturn<CreateBulletinCategoryDto>['register'];
   checkIfNameExists: (name: string) => Promise<boolean>;
   placeholder: string;
 }) => {

@@ -4,7 +4,7 @@ import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
 import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import AppConfigEditBulletinCategorieDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategorieDialog';
+import AppConfigEditBulletinCategoryDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategoryDialog';
 import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
 
 interface AppConfigTablesProps {
@@ -78,7 +78,7 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
           body={dialogBody({ closeDialog: () => setAddEntityDialogOpen(false) })}
           mobileContentClassName="bg-black h-fit h-max-1/2"
         />
-        <AppConfigEditBulletinCategorieDialog />
+        <AppConfigEditBulletinCategoryDialog />
       </div>
     );
   };
