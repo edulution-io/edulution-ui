@@ -100,7 +100,7 @@ const UserSettingsMailsPage: React.FC = () => {
   );
 
   return (
-    <div className="bottom-8 left-4 right-0 top-3 h-screen md:left-64 md:right-[--sidebar-width]">
+    <div className="bottom-8 left-4 right-0 top-3 h-screen overflow-y-hidden md:left-64 md:right-[--sidebar-width]">
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}
@@ -110,7 +110,7 @@ const UserSettingsMailsPage: React.FC = () => {
         <StateLoader isLoading={isEditSyncJobLoading} />
       </div>
       <div
-        className="w-full flex-1 overflow-auto pl-3 pr-3.5"
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <h3>{t('mail.importer.title')}</h3>
