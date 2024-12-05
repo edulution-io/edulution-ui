@@ -143,7 +143,7 @@ const ScrollableTable = <TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={data?.length}
+                  colSpan={columns?.length}
                   className="h-24 text-center text-white"
                 >
                   {t('table.noDataAvailable')}
