@@ -31,7 +31,9 @@
     "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
     "cancel": "Abbrechen",
     "heading": "Überschrift",
-    "content": "Inhalt"
+    "content": "Inhalt",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Kategoriename"
   },
   "dashboard": {
     "mobileAccess": {

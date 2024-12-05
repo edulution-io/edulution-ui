@@ -8,7 +8,7 @@ export interface BulletinBoardTableStore {
   isDialogOpen: boolean;
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
-  getCategories: () => Promise<BulletinCategoryResponseDto[]>;
+  fetchCategories: () => Promise<BulletinCategoryResponseDto[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   addNewCategory: (category: CreateBulletinCategoryDto) => Promise<void>;
@@ -16,6 +16,14 @@ export interface BulletinBoardTableStore {
   setSelectedCategory: (category: BulletinCategoryResponseDto | null) => void;
   selectedCategory: BulletinCategoryResponseDto | null;
   checkIfNameExists: (name: string) => Promise<boolean>;
+  setEditBulletinCategoryDialogOpen: (isOpen: boolean) => void;
+  isBulletinCategoryDialogOpen: boolean;
+  updateCategory: (id: string, category: CreateBulletinCategoryDto) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
+  nameExists: boolean | null;
+  setNameExists: (isNameAvailable: boolean | null) => void;
+  isNameChecking: boolean;
+  setIsNameChecking: (isNameChecking: boolean) => void;
 }
 
 const initialValues = {
@@ -23,12 +31,19 @@ const initialValues = {
   isLoading: true,
   categories: [],
   selectedCategory: null,
+  isBulletinCategoryDialogOpen: false,
+  isNameAvailable: false,
+  isNameChecking: false,
+  nameExists: null,
 };
 
-const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
+const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => ({
   ...initialValues,
+  setIsNameChecking: (isNameChecking: boolean) => set({ isNameChecking }),
+  setNameExists: (nameExists: boolean | null) => set({ nameExists }),
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setIsDialogOpen: (isOpen: boolean) => set({ isDialogOpen: isOpen }),
+  setEditBulletinCategoryDialogOpen: (isOpen) => set({ isBulletinCategoryDialogOpen: isOpen }),
   reset: () => set(initialValues),
   addNewCategory: async (category: CreateBulletinCategoryDto) => {
     set({ isLoading: true });
@@ -43,7 +58,7 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
 
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
-  getCategories: async () => {
+  fetchCategories: async () => {
     set({ isLoading: true });
     try {
       const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);
@@ -67,6 +82,28 @@ const useAppConfigBulletinTable = create<BulletinBoardTableStore>((set) => ({
       return false;
     }
   },
+
+  updateCategory: async (id: string, category: CreateBulletinCategoryDto) => {
+    set({ isLoading: true });
+    try {
+      await eduApi.patch(`${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/${id}`, category);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteCategory: async (id: string) => {
+    set({ isLoading: true });
+    try {
+      await eduApi.delete(`${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/${id}`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
 
-export default useAppConfigBulletinTable;
+export default useAppConfigBulletinTableStore;

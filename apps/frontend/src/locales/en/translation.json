@@ -13,7 +13,10 @@
     "name": "Name",
     "visibleFor": "Visible for",
     "editCategorie": "Edit category",
-    "editorialAccess": "Editorial access"
+    "editorialAccess": "Editorial access",
+    "isActive": "Active",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Category name"
   },
   "dashboard": {
     "mobileAccess": {

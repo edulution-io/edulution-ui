@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
@@ -10,7 +10,7 @@ class BulletinCategoryService {
   constructor(@InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>) {}
 
   async findAll(_username: string) {
-    return this.bulletinCategoryModel.find({ isActive: true }).exec();
+    return this.bulletinCategoryModel.find().exec();
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
@@ -31,12 +31,40 @@ class BulletinCategoryService {
     });
   }
 
-  async update(_username: string, _id: string, _dto: CreateBulletinCategoryDto) {
-    // Logic to update a specific bulletin board entry
+  async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new Error(`Invalid ID format: "${id}"`);
+      }
+      const objectId = new Types.ObjectId(id);
+      const existingCategory = await this.bulletinCategoryModel.findById(objectId);
+      if (!existingCategory) {
+        throw new Error(`Category with ID "${id}" not found`);
+      }
+      Object.assign(existingCategory, dto);
+
+      await existingCategory.save();
+    } catch (error) {
+      console.error(`Error updating category with ID "${id}":`, error.message);
+      throw new Error(`Failed to update category: ${error.message}`);
+    }
   }
 
-  async remove(_username: string, _id: string) {
-    // Logic to delete a specific bulletin board entry
+  async remove(id: string): Promise<void> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new Error(`Invalid ID format: "${id}"`);
+      }
+      const objectId = new Types.ObjectId(id);
+      const existingCategory = await this.bulletinCategoryModel.findById(objectId);
+      if (!existingCategory) {
+        throw new Error(`Category with ID "${id}" not found`);
+      }
+      await this.bulletinCategoryModel.deleteOne({ _id: objectId }).exec();
+    } catch (error) {
+      console.error(`Error deleting category with ID "${id}":`, error.message);
+      throw new Error(`Failed to delete category: ${error.message}`);
+    }
   }
 
   async getConfigByName(name: string) {

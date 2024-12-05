@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
 import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import AppConfigEditBulletinCategorieDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategorieDialog';
+import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
 
 interface AppConfigTablesProps {
   applicationName: string;
@@ -17,9 +19,8 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
     return <div>{t('common.error')}</div>;
   }
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { isUpdateDeleteEntityDialogOpen, isAddEntityDialogOpen, setAddEntityDialogOpen } = useAppConfigDialogStore();
 
-  // Extract all store hooks at the top level
   const stores = configs.map((config) => ({
     ...config,
     store: config.useStore ? config.useStore() : null,
@@ -28,64 +29,60 @@ const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
   useEffect(() => {
     stores.forEach((config) => {
       if (config.store) {
-        void config.store.getCategories();
+        void config.store.fetchCategories();
       }
     });
-  }, [dialogOpen]);
+  }, [isUpdateDeleteEntityDialogOpen, isAddEntityDialogOpen]);
 
-  return (
-    <div>
-      {stores.map((config, index) => {
-        const { columns, store, showAddButton, dialogBody } = config;
+  const renderConfig = (config: any, index: number) => {
+    const { columns, store, showAddButton, dialogBody } = config;
 
-        if (!store) {
-          return null;
-        }
+    if (!store) {
+      return null;
+    }
 
-        const { categories } = store;
+    const { categories } = store;
 
-        const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-          e.preventDefault();
-          setDialogOpen((prevState) => !prevState);
-        };
+    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setAddEntityDialogOpen((prevState) => !prevState);
+    };
 
-        return (
-          <div
-            key={config.key || index.toString()}
-            className="mb-8"
-          >
-            <ScrollableTable
-              columns={columns({
-                onDelete: (dto: any) => console.log(`Delete action triggered${dto}`),
-                onModify: (dto: any) => console.log(`Modify action triggered${dto}`),
-              })}
-              data={categories}
-              applicationName={applicationName}
-            />
-            {showAddButton && (
-              <div className="flex justify-end pt-4">
-                <ButtonSH
-                  onClick={handleButtonClick}
-                  className="h-8 justify-start rounded py-0 text-left font-normal text-foreground"
-                  variant="outline"
-                >
-                  {t('common.add')}
-                </ButtonSH>
-              </div>
-            )}
-            <AdaptiveDialog
-              isOpen={dialogOpen}
-              variant="primary"
-              handleOpenChange={() => setDialogOpen(!dialogOpen)}
-              title=""
-              body={dialogBody({ closeDialog: () => setDialogOpen(false) })}
-              mobileContentClassName="bg-black h-fit h-max-1/2"
-            />
+    return (
+      <div
+        key={config.key || index.toString()}
+        className="mb-8"
+      >
+        <ScrollableTable
+          columns={columns}
+          data={categories}
+          applicationName={applicationName}
+        />
+        {showAddButton && (
+          <div className="flex justify-end pt-4">
+            <ButtonSH
+              onClick={handleButtonClick}
+              className="h-8 justify-start rounded py-0 text-left font-normal text-foreground"
+              variant="outline"
+            >
+              {t('common.add')}
+            </ButtonSH>
           </div>
-        );
-      })}
-    </div>
-  );
+        )}
+        <AdaptiveDialog
+          isOpen={isAddEntityDialogOpen}
+          variant="primary"
+          handleOpenChange={() => setAddEntityDialogOpen(!isAddEntityDialogOpen)}
+          title=""
+          body={dialogBody({ closeDialog: () => setAddEntityDialogOpen(false) })}
+          mobileContentClassName="bg-black h-fit h-max-1/2"
+        />
+        <AppConfigEditBulletinCategorieDialog />
+      </div>
+    );
+  };
+
+  return <div>{stores.map(renderConfig)}</div>;
 };
 
 export default AppConfigTables;

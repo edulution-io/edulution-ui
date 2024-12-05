@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
-import useAppConfigBulletinTable from '@/pages/Settings/AppConfig/components/table/useAppConfigBulletinTable';
+import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 
@@ -27,10 +27,10 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     setSelectedBulletinToEdit,
     setIsCreateBulletinDialogOpen,
   } = useBulletinBoardEditorialStore();
-  const { categories, getCategories } = useAppConfigBulletinTable();
+  const { categories, fetchCategories } = useAppConfigBulletinTableStore();
 
   useEffect(() => {
-    void getCategories();
+    void fetchCategories();
   }, []);
 
   const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
