@@ -25,7 +25,8 @@ class BulletinBoardService {
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
-  uploadBulletinAttachment(file: Express.Multer.File): { filename: string; path: string } {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  uploadBulletinAttachment(file: Express.Multer.File): string {
     if (!file) {
       throw new Error('No file provided.');
     }
@@ -34,10 +35,7 @@ class BulletinBoardService {
       throw new Error('Invalid file type. Only images, audio, video, and office files are allowed.');
     }
 
-    return {
-      filename: file.filename,
-      path: `${this.attachmentsPath}/${file.filename}`,
-    };
+    return file.filename;
   }
 
   serveBulletinAttachment(filename: string, res: Response) {

@@ -67,12 +67,8 @@ class BulletinBoardController {
     }),
   )
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const result = this.bulletinBoardService.uploadBulletinAttachment(file);
-    return res.status(200).json({
-      message: 'File uploaded successfully.',
-      filename: result.filename,
-      path: result.path,
-    });
+    const fileName = this.bulletinBoardService.uploadBulletinAttachment(file);
+    return res.status(200).json(fileName);
   }
 }
 

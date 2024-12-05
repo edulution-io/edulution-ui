@@ -23,6 +23,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
         onClick={() => {}}
         text={row.original.heading}
         isFirstColumn
+        row={row}
       />
     ),
   },

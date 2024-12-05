@@ -49,12 +49,18 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     defaultValues: initialFormValues,
   });
 
+  useEffect(() => {
+    if (selectedBulletinToEdit) form.reset(initialFormValues);
+  }, [selectedBulletinToEdit, categories, form]);
+
   const onSubmit = async () => {
     if (selectedBulletinToEdit) {
       await updateBulletin(selectedBulletinToEdit.id, form.getValues());
     } else {
       await createBulletin(form.getValues());
     }
+    setIsCreateBulletinDialogOpen(false);
+    setSelectedBulletinToEdit(null);
     await getBulletins();
     form.reset();
   };

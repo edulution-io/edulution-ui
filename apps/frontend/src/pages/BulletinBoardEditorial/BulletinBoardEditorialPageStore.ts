@@ -2,7 +2,10 @@ import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
+import {
+  BULLETIN_BOARD_EDU_API_ENDPOINT,
+  BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT,
+} from '@libs/bulletinBoard/constants/apiEndpoints';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 
@@ -23,6 +26,8 @@ interface BulletinBoardEditorialStore {
   isCreateBulletinDialogOpen: boolean;
   setIsCreateBulletinDialogOpen: (isOpen: boolean) => void;
   isDialogLoading: boolean;
+  uploadAttachment: (attachment: File) => Promise<string>;
+  isAttachmentUploadLoading: boolean;
   reset: () => void;
 }
 
@@ -35,6 +40,7 @@ const initialValues = {
   isDeleteBulletinDialogOpen: false,
   isCreateBulletinDialogOpen: false,
   isDialogLoading: false,
+  isAttachmentUploadLoading: false,
 };
 
 const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set, get) => ({
@@ -97,6 +103,25 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       handleApiError(error, set);
     } finally {
       set({ isDialogLoading: false });
+    }
+  },
+
+  uploadAttachment: async (file): Promise<string> => {
+    set({ isAttachmentUploadLoading: true });
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      return response.data;
+    } catch (error) {
+      handleApiError(error, set);
+      return '';
+    } finally {
+      set({ isAttachmentUploadLoading: false });
     }
   },
 
