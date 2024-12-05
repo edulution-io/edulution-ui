@@ -19,10 +19,10 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   console.log(`form.getValues() ${JSON.stringify(form.getValues(), null, 2)}`);
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { categories, isLoading } = useAppConfigBulletinTableStore();
+  const { data, isLoading } = useAppConfigBulletinTableStore();
 
   const handleCategoryChange = (categoryName: string) => {
-    form.setValue('category', categories.find((c) => c.name === categoryName) || categories[0]);
+    form.setValue('category', data.find((c) => c.name === categoryName) || data[0]);
   };
 
   const handleUpload = async (file: File): Promise<string> => {
@@ -42,7 +42,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
       >
         <div>{t('bulletinboard.category')}</div>
         <DropdownMenu
-          options={categories}
+          options={data}
           selectedVal={isLoading ? t('common.loading') : form.watch('category')?.name}
           handleChange={handleCategoryChange}
           variant="light"

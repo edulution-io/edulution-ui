@@ -2,88 +2,66 @@ import React, { useEffect } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
+import { AppConfigTableEntryUnion } from '@/pages/Settings/AppConfig/components/table/appConfigTableComponent';
 import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import AppConfigEditBulletinCategoryDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategoryDialog';
 import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
 
-interface AppConfigTablesProps {
-  applicationName: string;
-}
-
-const AppConfigTables = ({ applicationName }: AppConfigTablesProps) => {
+const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
   const { t } = useTranslation();
+
   const configs = getTableConfig(applicationName);
 
   if (!configs) {
     return <div>{t('common.error')}</div>;
   }
 
-  const { isUpdateDeleteEntityDialogOpen, isAddEntityDialogOpen, setAddEntityDialogOpen } = useAppConfigDialogStore();
+  const renderConfig = (config: AppConfigTableEntryUnion, index: number) => {
+    const { columns, useStore, showAddButton, dialogBody } = config;
+    const { data, fetchData } = useStore();
+    const { setUpdateDeleteEntityDialogOpen, isUpdateDeleteEntityDialogOpen } = useAppConfigDialogStore();
 
-  const stores = configs.map((config) => ({
-    ...config,
-    store: config.useStore ? config.useStore() : null,
-  }));
+    useEffect(() => {
+      const fetchDataAsync = async () => {
+        if (fetchData) {
+          await fetchData();
+        }
+      };
 
-  useEffect(() => {
-    stores.forEach((config) => {
-      if (config.store) {
-        void config.store.fetchCategories();
-      }
-    });
-  }, [isUpdateDeleteEntityDialogOpen, isAddEntityDialogOpen]);
+      void fetchDataAsync();
+    }, [fetchData, isUpdateDeleteEntityDialogOpen]);
 
-  const renderConfig = (config: any, index: number) => {
-    const { columns, store, showAddButton, dialogBody } = config;
-
-    if (!store) {
-      return null;
-    }
-
-    const { categories } = store;
-
-    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      setAddEntityDialogOpen((prevState) => !prevState);
+    const handleAddClick = () => {
+      setUpdateDeleteEntityDialogOpen(true);
     };
 
     return (
       <div
-        key={config.key || index.toString()}
+        key={config.key || index}
         className="mb-8"
       >
         <ScrollableTable
           columns={columns}
-          data={categories}
+          data={data}
           applicationName={applicationName}
           enableRowSelection={false}
         />
         {showAddButton && (
           <div className="flex justify-end pt-4">
             <ButtonSH
-              onClick={handleButtonClick}
-              className="h-8 justify-start rounded py-0 text-left font-normal text-foreground"
+              className="h-8"
               variant="outline"
+              onClick={handleAddClick}
             >
               {t('common.add')}
             </ButtonSH>
           </div>
         )}
-        <AdaptiveDialog
-          isOpen={isAddEntityDialogOpen}
-          variant="primary"
-          handleOpenChange={() => setAddEntityDialogOpen(!isAddEntityDialogOpen)}
-          title=""
-          body={dialogBody({ closeDialog: () => setAddEntityDialogOpen(false) })}
-          mobileContentClassName="bg-black h-fit h-max-1/2"
-        />
-        <AppConfigEditBulletinCategoryDialog />
+        {dialogBody}
       </div>
     );
   };
 
-  return <div>{stores.map(renderConfig)}</div>;
+  return <div>{configs.map((config, index) => renderConfig(config, index))}</div>;
 };
 
 export default AppConfigTables;

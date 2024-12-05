@@ -18,7 +18,7 @@ import { Button } from '@/components/shared/Button';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 
-const AppConfigEditBulletinCategoryDialog = ({ closeDialog }: { closeDialog: () => void }) => {
+const AppConfigEditBulletinCategoryDialog = () => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -69,42 +69,45 @@ const AppConfigEditBulletinCategoryDialog = ({ closeDialog }: { closeDialog: () 
         editableByUsers,
         editableByGroups,
       });
-
-      setUpdateDeleteEntityDialogOpen(false);
-      setSelectedCategory(null);
     } else {
       await addNewCategory(form.getValues());
-      closeDialog();
     }
+    setUpdateDeleteEntityDialogOpen(false);
+    setSelectedCategory(null);
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-end space-x-2">
-      {form.getValues('name').trim() === selectedCategory?.name && (
-        <Button
-          variant="btn-attention"
-          size="lg"
-          onClick={async () => {
-            await deleteCategory(selectedCategory?.id || '');
-            setUpdateDeleteEntityDialogOpen(false);
-            setSelectedCategory(null);
-          }}
-        >
-          <MdDelete size={20} />
-          {t('common.delete')}
-        </Button>
-      )}
+    <form
+      onSubmit={handleFormSubmit}
+      className="space-y-4"
+    >
+      <div className="mt-4 flex justify-end space-x-2">
+        {form.getValues('name').trim() === selectedCategory?.name && (
+          <Button
+            variant="btn-attention"
+            size="lg"
+            onClick={async () => {
+              await deleteCategory(selectedCategory?.id || '');
+              setUpdateDeleteEntityDialogOpen(false);
+              setSelectedCategory(null);
+            }}
+          >
+            <MdDelete size={20} />
+            {t('common.delete')}
+          </Button>
+        )}
 
-      <Button
-        variant="btn-collaboration"
-        size="lg"
-        disabled={nameExists || isNameChecking}
-        type="submit"
-      >
-        <MdUpdate size={20} />
-        {t('common.save')}
-      </Button>
-    </div>
+        <Button
+          variant="btn-collaboration"
+          size="lg"
+          disabled={nameExists || isNameChecking}
+          type="submit"
+        >
+          <MdUpdate size={20} />
+          {t('common.save')}
+        </Button>
+      </div>
+    </form>
   );
 
   const getDialogBody = () => {
@@ -115,15 +118,6 @@ const AppConfigEditBulletinCategoryDialog = ({ closeDialog }: { closeDialog: () 
     const handleEditableAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
       setValue('editableByUsers', attendees, { shouldValidate: true });
     };
-
-    useEffect(() => {
-      if (selectedCategory) {
-        setValue('visibleForUsers', selectedCategory.visibleForUsers || []);
-        setValue('visibleForGroups', selectedCategory.visibleForGroups || []);
-        setValue('editableByUsers', selectedCategory.editableByUsers || []);
-        setValue('editableByGroups', selectedCategory.editableByGroups || []);
-      }
-    }, [selectedCategory, setValue]);
 
     return (
       <form

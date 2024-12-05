@@ -8,11 +8,11 @@ export interface BulletinBoardTableStore {
   isDialogOpen: boolean;
   setIsDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
-  fetchCategories: () => Promise<BulletinCategoryResponseDto[]>;
+  fetchData: () => Promise<BulletinCategoryResponseDto[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   addNewCategory: (category: CreateBulletinCategoryDto) => Promise<void>;
-  categories: BulletinCategoryResponseDto[];
+  data: BulletinCategoryResponseDto[];
   setSelectedCategory: (category: BulletinCategoryResponseDto | null) => void;
   selectedCategory: BulletinCategoryResponseDto | null;
   checkIfNameExists: (name: string) => Promise<boolean>;
@@ -29,7 +29,7 @@ export interface BulletinBoardTableStore {
 const initialValues = {
   isDialogOpen: false,
   isLoading: true,
-  categories: [],
+  data: [],
   selectedCategory: null,
   isBulletinCategoryDialogOpen: false,
   isNameAvailable: false,
@@ -58,11 +58,11 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
 
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
-  fetchCategories: async () => {
+  fetchData: async () => {
     set({ isLoading: true });
     try {
       const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);
-      set({ categories: response.data });
+      set({ data: response.data });
       return response.data || [];
     } catch (error) {
       console.error(error);

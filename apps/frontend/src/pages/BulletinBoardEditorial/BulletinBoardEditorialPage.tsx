@@ -18,20 +18,20 @@ const BulletinBoardEditorialPage = () => {
   const { t } = useTranslation();
 
   const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
-  const { fetchCategories } = useAppConfigBulletinTableStore();
+  const { fetchData } = useAppConfigBulletinTableStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
   };
 
-  const fetchData = async () => {
-    await fetchCategories();
+  const fetchBulletinData = async () => {
+    await fetchData();
     await getBulletins();
   };
 
   useEffect(() => {
-    void fetchData();
+    void fetchBulletinData();
   }, []);
 
   return (
