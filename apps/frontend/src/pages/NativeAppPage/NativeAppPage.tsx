@@ -5,8 +5,9 @@ import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
-import SurveysPage from '@/pages/Surveys/SurveysPage';
 import type TApps from '@libs/appconfig/types/appsType';
+
+const SurveysPage = React.lazy(() => import('@/pages/Surveys/SurveysPage'));
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
