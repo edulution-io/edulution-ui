@@ -353,6 +353,8 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
+    "rowsSelected": "{{selected}} of {{total}} surveys selected",
+    "rowSelected": "{{selected}} of {{total}} surveys selected",
     "view": {
       "open": {
         "menu": "Open Surveys",

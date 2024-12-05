@@ -39,13 +39,14 @@ const SurveyTable = <TData extends MongoId, TValue>({
       selectedRows={selectedRows}
       isLoading={isLoading}
       sorting={sorting}
-      getRowId={(originalRow: TData) => originalRow.id.toString('hex')}
+      getRowId={(originalRow: TData) => originalRow.id.toString()}
       setSorting={setSorting}
       applicationName={APPS.SURVEYS}
       scrollContainerOffsetElementIds={{
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
         others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
       }}
+      enableMultiRowSelection={false}
     />
   );
 };
