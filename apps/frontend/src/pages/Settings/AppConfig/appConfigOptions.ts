@@ -27,6 +27,9 @@ import {
 } from '@/assets/icons';
 import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -64,7 +67,24 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-    extendedOptions: ['name', 'type', 'description', 'value'],
+    extendedOptions: {
+      [AppConfigSectionsKeys.onlyOffice]: [
+        {
+          name: ExtendedOptionKeys.ONLY_OFFICE_URL,
+          description: 'appExtendedOptions.onlyOfficeUrl',
+          title: 'appExtendedOptions.onlyOfficeUrlTitle',
+          type: ExtendedOptionField.input,
+          value: '',
+        },
+        {
+          name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
+          title: 'appExtendedOptions.onlyOfficeJwtSecretTitle',
+          description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',
+          type: ExtendedOptionField.password,
+          value: '',
+        },
+      ],
+    },
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {

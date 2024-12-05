@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { AppConfigOptions } from '@libs/appconfig/types';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AppConfigExtendedOption } from '@libs/appconfig/constants/appExtendedType';
+import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 
 @Schema({ timestamps: true, strict: true })
 export class AppConfig extends Document {
@@ -13,8 +13,8 @@ export class AppConfig extends Document {
   @Prop({ required: true })
   icon: string;
 
-  @Prop({ type: Array, default: [] })
-  extendedOptions: AppConfigExtendedOption[];
+  @Prop({ type: Object, default: {} })
+  extendedOptions: ExtendedOptionKeysDto;
 
   @Prop({ required: true, type: String })
   appType: AppIntegrationType;

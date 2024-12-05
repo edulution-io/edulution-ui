@@ -1,4 +1,4 @@
-type AppConfigForm = {
+type ProxyConfigFormType = {
   [key: string]: {
     proxyPath: string;
     proxyDestination: string;
@@ -8,4 +8,4 @@ type AppConfigForm = {
   };
 };
 
-export default AppConfigForm;
+export default ProxyConfigFormType;

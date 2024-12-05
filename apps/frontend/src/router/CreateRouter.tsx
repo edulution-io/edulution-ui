@@ -5,10 +5,10 @@ import type TApps from '@libs/appconfig/types/appsType';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import {
   LANGUAGE_PATH,
+  MAILS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
-  MAILS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
