@@ -503,8 +503,7 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed",
-      "UnsupportedAppConfiguration": "Unsupported app configuration for rootPathName: {{rootPathName}}"
+      "ReadTraefikConfigFailed": "Read traefik config failed"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
