@@ -21,7 +21,6 @@ import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
-import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
@@ -107,7 +106,7 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
-    const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) as ExtendedOptionKeysDto;
+    const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) || {};
 
     const newConfig = {
       name: settingLocation,
