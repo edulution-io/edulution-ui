@@ -5,6 +5,57 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "bulletinboard": {
+    "activeFrom": "Aktiv von",
+    "activeUntil": "Aktiv bis",
+    "appTitle": "Schwarzes Brett",
+    "description": "Verwalte deine Mitteilungen",
+    "filterPlaceHolderText": "Suche nach Kategories",
+    "sidebar": "Schwarzes Brett",
+    "newCategorie": "Neue Kategorie",
+    "category": "Kategorie",
+    "name": "Name",
+    "editCategorie": "Kategorie bearbeiten",
+    "isActive": "Aktiv",
+    "visibleFor": "Sichtbar für",
+    "visibleForUsers": "Sichtbar für Nutzer",
+    "visibleForGroups": "Sichtbar für Gruppen",
+    "editableByUsers": "Redaktionierbar von Nutzern",
+    "editableByGroups": "Redaktionierbar von Gruppen",
+    "editorialAccess": "Redaktioneller Zugriff",
+    "error": "Fehler",
+    "delete": "Löschen",
+    "deleteBulletin": "Mitteilung löschen",
+    "deleteBulletins": "{{count}} Mitteilungen löschen",
+    "editBulletin": "Mitteilung bearbeiten",
+    "createBulletin": "Mitteilung erstellen",
+    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
+    "cancel": "Abbrechen",
+    "title": "Titel",
+    "content": "Inhalt",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Name der Kategorie",
+    "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
+    "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
+    "categoryDeletedSuccessfully": "Kategorie erfolgreich gelöscht",
+    "categories": {
+      "visibleByUsersAndGroups": "Diese Kategorie ist sichtbar für Nutzer und Gruppen",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen"
+    },
+    "errors": {
+      "categoryNotFound": "Kategorie nicht gefunden",
+      "categoryDeleteFailed": "Kategorie konnte nicht gelöscht werden",
+      "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
+      "fileNotProvided": "Datei wurde nicht bereitgestellt",
+      "invalidCategory": "Ungültige Kategorie",
+      "bulletinNotFound": "Bulletin nicht gefunden",
+      "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
+      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen"
+    }
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -74,6 +125,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
+      "filterPlaceHolderText": "Suche nach E-Mail-Importern",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "configName": "Name der Konfiguration",
@@ -94,7 +146,8 @@
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
-    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
   },
   "conferences": {
     "errors": {
@@ -108,6 +161,7 @@
       "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen"
     },
+    "filterPlaceHolderText": "Suche nach Konferenzen",
     "started": "Konferenz gestartet",
     "stopped": "Konferenz gestoppt",
     "title": "KONFERENZEN",
@@ -155,6 +209,7 @@
     "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
+    "filterPlaceHolderText": "Suche nach Dateien",
     "title": "FILESHARING",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
@@ -313,6 +368,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "filterPlaceHolderText": "Suche nach Umfragen",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
@@ -488,6 +544,7 @@
     "appconfig": {
       "sections": {
         "onlyOffice": "Only Office Integration",
+        "bulletinBoard": "Schwarzes Brett Kategorien",
         "general": "Allgemein"
       },
       "update": {
@@ -611,6 +668,8 @@
     },
     "join": "Teilnehmen",
     "details": "Details",
+    "createdAt": "Erstellt am",
+    "updatedAt": "Bearbeitet am",
     "actions": "Aktionen",
     "forward": "Weiterleiten",
     "showOptions": "Optionen zeigen",

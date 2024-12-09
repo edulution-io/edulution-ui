@@ -1,13 +1,12 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import Checkbox from '@/components/ui/Checkbox';
-import { Icon } from '@radix-ui/react-select';
 import { Row } from '@tanstack/react-table';
 import cn from '@libs/common/utils/className';
 
 interface SelectableTextCellProps<TData> {
   icon?: React.ReactElement;
   row?: Row<TData>;
-  text: string;
+  text?: string;
   textOnHover?: string;
   onClick?: () => void;
   className?: string;
@@ -57,7 +56,7 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         ) : (
           <div className="my-5" />
         )}
-        {icon ? <Icon className="mb-3 ml-2 mr-2 mt-3">{icon}</Icon> : null}
+        {icon ? <div className="mb-3 ml-2 mr-2 mt-3 flex items-center justify-center">{icon}</div> : null}
         <span
           className="text-md truncate font-medium"
           style={{

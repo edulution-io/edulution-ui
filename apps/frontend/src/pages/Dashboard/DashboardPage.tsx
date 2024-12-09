@@ -8,13 +8,13 @@ import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
 import Groups from './Groups';
 
-const Home: React.FC = () => {
+const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const { user } = useUserStore();
 
   return (
-    <div className="md:ml-4">
+    <div className="h-full overflow-y-scroll scrollbar-thin md:mx-4">
       <div>
         {isMobileView ? (
           <h2>
@@ -56,4 +56,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default DashboardPage;

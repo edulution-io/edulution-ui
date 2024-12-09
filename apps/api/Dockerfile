@@ -3,6 +3,8 @@ FROM node@sha256:7000d2e73f938c4f62fdda6d398d7dffd50e6c129409ae2b1a36ccebf9289ff
 
 RUN mkdir -p /opt/edulution/public/downloads
 
+RUN mkdir -p /opt/edulution/apps/bulletinboard/attachments
+
 RUN mkdir -p /opt/edulution/api/traefik
 
 WORKDIR /opt/edulution/api
@@ -18,6 +20,8 @@ RUN npm ci
 RUN chown -R node:node /opt/edulution/api/
 
 RUN chown -R node:node /opt/edulution/public/
+
+RUN chown -R node:node /opt/edulution/apps/bulletinboard/attachments
 
 RUN chown -R node:node /opt/edulution/api/traefik
 

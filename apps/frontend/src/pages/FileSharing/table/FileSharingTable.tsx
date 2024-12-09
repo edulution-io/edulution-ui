@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
+import React from 'react';
+import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
@@ -7,7 +7,6 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 
 const FileSharingTable = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -28,10 +27,10 @@ const FileSharingTable = () => {
     <ScrollableTable
       columns={FileSharingTableColumns}
       data={files}
+      filterKey="select-filename"
+      filterPlaceHolderText="filesharing.filterPlaceHolderText"
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
-      sorting={sorting}
-      setSorting={setSorting}
       selectedRows={selectedRows}
       getRowId={(row) => row.filename}
       applicationName={appName}
