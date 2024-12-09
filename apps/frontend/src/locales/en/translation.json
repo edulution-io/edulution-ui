@@ -6,20 +6,40 @@
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
   "bulletinboard": {
-    "title": "Bulletin Board",
+    "activeFrom": "Active from",
+    "activeUntil": "Active until",
+    "appTitle": "Bulletin Board",
     "description": "Manage your bulletins",
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
+    "category": "Category",
     "name": "Name",
     "visibleFor": "Visible for",
+    "visibleForUsers": "Visible for users",
+    "visibleForGroups": "Visible for groups",
+    "editableByUsers": "Editable for users",
+    "editableByGroups": "Editable for groups",
     "editCategorie": "Edit category",
     "editorialAccess": "Editorial access",
     "isActive": "Active",
+    "error": "Error",
     "placeholderCategoryName": "Name",
     "categoryName": "Category name",
-    "categoryDeletedSuccessfully": "Category deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
+    "categoryDeletedSuccessfully": "Category deleted successfully",
+    "delete": "Delete",
+    "deleteBulletin": "Delete bulletin",
+    "deleteBulletins": "Delete {{count}} bulletins",
+    "editBulletin": "Edit bulletin",
+    "createBulletin": "Create bulletin",
+    "confirmSingleDelete": "Do you really want to delete this bulletin?",
+    "confirmMultiDelete": "Do you really want to delete these bulletins?",
+    "rowsSelected": "{{selected}} out of {{total}} bulletins selected",
+    "rowSelected": "{{selected}} out of {{total}} bulletin selected",
+    "cancel": "Cancel",
+    "title": "Title",
+    "content": "Content",
     "categories": {
       "visibleByUsersAndGroups": "Visible by users and groups",
       "editableByUsersAndGroups": "Editable by users and groups"
@@ -46,13 +66,7 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:",
-      "isActive": "Active",
-      "creationDate": "Creation date",
-      "visibleForUsers": "Visible for users",
-      "visibleForGroups": "Visible for groups",
-      "editableByUsers": "Editable by users",
-      "editableByGroups": "Editable by groups"
+      "downloadApp": "Download the edulution-io app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -130,7 +144,8 @@
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
-    "unexpectedError": "An unexpected error occurred"
+    "unexpectedError": "An unexpected error occurred",
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
   },
   "conferences": {
     "errors": {
@@ -646,6 +661,8 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
     "actions": "Actions",
     "forward": "Forward",
     "showOptions": "Show options",

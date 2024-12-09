@@ -18,7 +18,7 @@ const NameInputWithAvailability = ({
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value.trim();
-    console.log(name.length);
+
     if (!name) {
       setNameExists(null);
       return;

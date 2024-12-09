@@ -11,6 +11,7 @@ import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import CustomHttpException from '@libs/error/CustomHttpException';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
@@ -67,7 +68,7 @@ class BulletinCategoryService {
     if (isActive !== undefined) {
       filter.isActive = isActive;
     }
-    const bulletinCategories = await this.bulletinCategoryModel.find(filter).exec();
+    const bulletinCategories: BulletinCategoryDocument[] = await this.bulletinCategoryModel.find(filter).exec();
 
     if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return bulletinCategories;
@@ -75,6 +76,7 @@ class BulletinCategoryService {
 
     const accessibleCategories = await Promise.all(
       bulletinCategories.map(async (category) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const usersWithViewPermission = await this.getUsersWithPermissionCached(category.id, 'view');
         return usersWithViewPermission.includes(currentUser.preferred_username) ? category : null;
       }),
@@ -84,7 +86,7 @@ class BulletinCategoryService {
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
-    const category = await this.bulletinCategoryModel.create({
+    const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
       visibleForUsers: dto.visibleForUsers ?? [],
@@ -96,7 +98,7 @@ class BulletinCategoryService {
         lastName: currentUser.family_name,
         username: currentUser.preferred_username,
       },
-    });
+    })) as unknown as BulletinCategoryResponseDto;
 
     await this.getUsersWithPermissionCached(category.id, 'view');
     await this.getUsersWithPermissionCached(category.id, 'edit');
@@ -105,7 +107,7 @@ class BulletinCategoryService {
   }
 
   async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
-    const category = await this.bulletinCategoryModel.findById(id).exec();
+    const category: BulletinCategoryDocument | null = await this.bulletinCategoryModel.findById(id).exec();
     if (!category) {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.CATEGORY_NOT_FOUND,
@@ -117,8 +119,8 @@ class BulletinCategoryService {
     Object.assign(category, dto);
     await category.save();
 
-    await this.getUsersWithPermissionCached(category.id, 'view');
-    await this.getUsersWithPermissionCached(category.id, 'edit');
+    await this.getUsersWithPermissionCached(id, 'view');
+    await this.getUsersWithPermissionCached(id, 'edit');
   }
 
   async remove(id: string): Promise<void> {

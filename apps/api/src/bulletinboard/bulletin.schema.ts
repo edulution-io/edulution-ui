@@ -27,10 +27,10 @@ export class Bulletin {
   @Prop({ type: [String], default: [] })
   attachmentFileNames: string[];
 
-  @Prop({ type: [Date, null], required: false })
+  @Prop({ type: Date, required: false })
   isVisibleStartDate: Date | null;
 
-  @Prop({ type: [Date, null], required: false })
+  @Prop({ type: Date, required: false })
   isVisibleEndDate: Date | null;
 }
 

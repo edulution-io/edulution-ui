@@ -10,16 +10,18 @@ import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
+import DatePicker from '@/components/shared/DatePicker';
+import TimeInput from '@/components/shared/TimeInput';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<BulletinDialogForm>;
 }
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
-  console.log(`form.getValues() ${JSON.stringify(form.getValues(), null, 2)}`);
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
   const { data, isLoading } = useAppConfigBulletinTableStore();
+  const { setValue, watch } = form;
 
   const handleCategoryChange = (categoryName: string) => {
     form.setValue('category', data.find((c) => c.name === categoryName) || data[0]);
@@ -30,6 +32,14 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
     const filenames = form.getValues('attachmentFileNames') || [];
     form.setValue('attachmentFileNames', [...filenames, filePath]);
     return `${BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT}/${filePath}`;
+  };
+
+  const handleIsVisibleStartDateChange = (value: Date | undefined) => {
+    setValue('isVisibleStartDate', value || null, { shouldValidate: true });
+  };
+
+  const handleIsVisibleEndDateChange = (value: Date | undefined) => {
+    setValue('isVisibleEndDate', value || null, { shouldValidate: true });
   };
 
   return (
@@ -43,18 +53,50 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         <div>{t('bulletinboard.category')}</div>
         <DropdownMenu
           options={data}
-          selectedVal={isLoading ? t('common.loading') : form.watch('category')?.name}
+          selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
           handleChange={handleCategoryChange}
           variant="light"
         />
 
         <DialogSwitch
           translationId="bulletinboard.isActive"
-          checked={form.watch('isActive')}
+          checked={watch('isActive')}
           onCheckedChange={(isChecked) => {
-            form.setValue('isActive', isChecked);
+            setValue('isActive', isChecked);
           }}
         />
+
+        <div className="flex items-center text-foreground">
+          {t('bulletinboard.activeFrom')}
+          <div className="ml-2">
+            <DatePicker
+              selected={watch('isVisibleStartDate') || undefined}
+              onSelect={handleIsVisibleStartDateChange}
+            />
+          </div>
+          <div className="flex items-center text-foreground">
+            <TimeInput
+              form={form}
+              fieldName="isVisibleStartDate"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center text-foreground">
+          {t('bulletinboard.activeUntil')}
+          <div className="ml-2">
+            <DatePicker
+              selected={watch('isVisibleEndDate') || undefined}
+              onSelect={handleIsVisibleEndDateChange}
+            />
+          </div>
+          <div className="flex items-center text-foreground">
+            <TimeInput
+              form={form}
+              fieldName="isVisibleEndDate"
+            />
+          </div>
+        </div>
 
         <FormField
           name="title"
@@ -64,8 +106,8 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         />
         <div>{t('bulletinboard.content')}</div>
         <WysiwygEditor
-          value={form.watch('content')}
-          onChange={(value) => form.setValue('content', value)}
+          value={watch('content')}
+          onChange={(value) => setValue('content', value)}
           onUpload={handleUpload}
         />
       </form>
