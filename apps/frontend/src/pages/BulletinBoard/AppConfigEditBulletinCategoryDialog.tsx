@@ -141,12 +141,11 @@ const AppConfigEditBulletinCategoryDialog = () => {
             form.setValue('isActive', isChecked);
           }}
         />
-
         <AccordionItem value="visibleForGroupsUsers">
           <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
             {t('bulletinboard.categories.visibleByUsersAndGroups')}
           </AccordionTrigger>
-          <AccordionContent className="overflow-auto">
+          <AccordionContent className="z-1000 overflow-auto">
             <SearchUsersOrGroups
               users={watch('visibleForUsers') as AttendeeDto[]}
               onSearch={searchAttendees}
@@ -162,7 +161,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
           <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
             {t('bulletinboard.categories.editableByUsersAndGroups')}
           </AccordionTrigger>
-          <AccordionContent className="overflow-auto">
+          <AccordionContent className="z-1000 overflow-auto">
             <SearchUsersOrGroups
               users={watch('editableByUsers') as AttendeeDto[]}
               onSearch={searchAttendees}

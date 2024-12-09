@@ -31,7 +31,6 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
         <SelectableTextCell
           onClick={handleRowClick}
           text={row.original.name}
-          isFirstColumn
         />
       );
     },
@@ -82,107 +81,6 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
         <SelectableTextCell
           onClick={handleRowClick}
           text={new Date(row.original.createdAt).toLocaleDateString()}
-        />
-      );
-    },
-  },
-  {
-    id: 'visibleForUsers',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.visibleForUsers"
-        column={column}
-      />
-    ),
-    accessorFn: (row) => row.visibleForUsers,
-    cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
-      const handleRowClick = () => {
-        setSelectedCategory(row.original);
-        setDialogOpen(true);
-      };
-      return (
-        <SelectableTextCell
-          onClick={handleRowClick}
-          text={row.original.visibleForUsers.length.toString()}
-        />
-      );
-    },
-    sortingFn: (rowA, rowB) => {
-      const a = rowA.original.name || '';
-      const b = rowB.original.name || '';
-      return a.localeCompare(b);
-    },
-  },
-  {
-    id: 'visibleForGroups',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.visibleForGroups"
-        column={column}
-      />
-    ),
-    accessorFn: (row) => row.visibleForGroups,
-    cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
-      const handleRowClick = () => {
-        setSelectedCategory(row.original);
-        setDialogOpen(true);
-      };
-      return (
-        <SelectableTextCell
-          onClick={handleRowClick}
-          text={row.original.visibleForGroups.length.toString()}
-        />
-      );
-    },
-  },
-  {
-    id: 'editableByUsers',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.editableByUsers"
-        column={column}
-      />
-    ),
-    accessorFn: (row) => row.editableByUsers,
-    cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
-      const handleRowClick = () => {
-        setSelectedCategory(row.original);
-        setDialogOpen(true);
-      };
-      return (
-        <SelectableTextCell
-          onClick={handleRowClick}
-          text={row.original.editableByUsers.length.toString()}
-        />
-      );
-    },
-  },
-  {
-    id: 'editableByGroups',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.editableByGroups"
-        column={column}
-      />
-    ),
-    accessorFn: (row) => row.editableByGroups,
-    cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
-      const handleRowClick = () => {
-        setSelectedCategory(row.original);
-        setDialogOpen(true);
-      };
-      return (
-        <SelectableTextCell
-          onClick={handleRowClick}
-          text={row.original.editableByGroups.length.toString()}
         />
       );
     },

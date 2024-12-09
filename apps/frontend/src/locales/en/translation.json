@@ -21,8 +21,8 @@
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
     "categories": {
-      "visibleByUsersAndGroups": "Choose which users and groups can view this category",
-      "editableByUsersAndGroups": "Choose which users and groups can edit this category"
+      "visibleByUsersAndGroups": "Visible by users and groups",
+      "editableByUsersAndGroups": "Editable by users and groups"
     },
     "errors": {
       "categoryNotFound": "Category not found",

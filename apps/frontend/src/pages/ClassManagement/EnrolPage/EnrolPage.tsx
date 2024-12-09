@@ -49,19 +49,19 @@ const EnrolPage: React.FC = () => {
       name: UserGroups.Classes,
       translationId: 'myClasses',
       icon: <MdGroups className="h-7 w-7" />,
-      groups: userSchoolClasses.filter(filterGroups),
+      groups: userSchoolClasses?.filter(filterGroups),
     },
     {
       name: UserGroups.Printers,
       translationId: 'printers',
       icon: <FaPrint className="h-5 w-7" />,
-      groups: printers.filter(filterGroups),
+      groups: Array.isArray(printers) ? printers.filter(filterGroups) : [],
     },
     {
       name: UserGroups.Projects,
       translationId: 'myProjects',
       icon: <FaUsersGear className="h-5 w-7" />,
-      groups: userProjects.filter(filterGroups),
+      groups: userProjects?.filter(filterGroups),
     },
   ];
 

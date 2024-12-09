@@ -79,6 +79,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
       title={t('conferences.editConference')}
       body={getDialogBody()}
       footer={getFooter()}
+      variant="tertiary"
     />
   );
 };

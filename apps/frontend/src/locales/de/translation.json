@@ -33,9 +33,12 @@
     "content": "Inhalt",
     "placeholderCategoryName": "Name",
     "categoryName": "Name der Kategorie",
+    "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
+    "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
+    "categoryDeletedSuccessfully": "Kategorie erfolgreich gelöscht",
     "categories": {
-      "visibleByUsersAndGroups": "Wähle aus, welche Nutzer und Gruppen diese Kategorie sehen dürfen",
-      "editableByUsersAndGroups": "Wähle aus, welche Nutzer und Gruppen diese Kategorie bearbeiten dürfen"
+      "visibleByUsersAndGroups": "Diese Kategorie ist sichtbar für Nutzer und Gruppen",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen"
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",
