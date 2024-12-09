@@ -605,6 +605,8 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "join": "Join",
+    "details": "Details",
     "actions": "Actions",
     "forward": "Forward",
     "showOptions": "Show options",

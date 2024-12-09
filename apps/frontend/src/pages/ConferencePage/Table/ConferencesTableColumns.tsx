@@ -41,13 +41,14 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
   return { icon: undefined, text: '' };
 }
 
-const hideOnMobileClassName = 'hidden lg:flex';
+const hideOnMobileClassName = 'hidden lg:flex min-w-24';
 
 const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   {
     id: 'conference-name',
     header: ({ table, column }) => (
       <SortableHeader<ConferenceDto, unknown>
+        className="min-w-32"
         titleTranslationId="conferences.conference"
         table={table}
         column={column}
@@ -55,22 +56,24 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     ),
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
-      const onClick = async () => {
-        if (row.original.isRunning) {
-          await joinConference(row.original.meetingID);
-        } else {
-          setJoinConferenceUrl('');
-        }
-      };
+      const { joinConference } = useConferenceDetailsDialogStore();
+      const { isRunning, creator, name, meetingID } = row.original;
+      const onClick = isRunning
+        ? async () => {
+            await joinConference(meetingID);
+          }
+        : undefined;
       return (
         <SelectableTextCell
           onClick={onClick}
-          icon={row.original.isRunning ? <MdLogin /> : undefined}
-          text={row.original.name}
-          row={user?.username === row.original.creator?.username ? row : undefined}
           isFirstColumn
+          icon={isRunning ? <MdLogin /> : undefined}
+          text={name}
+          textOnHover={isRunning ? t('common.join') : ''}
+          row={user?.username === creator?.username ? row : undefined}
+          className="min-w-32"
         />
       );
     },
@@ -86,19 +89,23 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     ),
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const { user } = useUserStore();
+      const { firstName, username, lastName } = row.original.creator;
+      const isUserTheCreator = user?.username === username;
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            user?.username === row.original.creator?.username
+            isUserTheCreator
               ? () => {
                   setSelectedConference(row.original);
                 }
               : undefined
           }
-          text={`${row.original.creator.firstName} ${row.original.creator.lastName}`}
+          text={`${firstName} ${lastName}`}
+          textOnHover={isUserTheCreator ? t('common.details') : ''}
         />
       );
     },
@@ -112,22 +119,26 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         column={column}
       />
     ),
-    accessorFn: (row) => row.creator,
+    accessorFn: (row) => !!row.password,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const iconSize = 16;
       const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
+      const { username } = row.original.creator;
+      const isUserTheCreator = user?.username === username;
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            user?.username === row.original.creator?.username
+            isUserTheCreator
               ? () => {
                   setSelectedConference(row.original);
                 }
               : undefined
           }
           text={'*'.repeat(row.original.password?.length || 0)}
+          textOnHover={isUserTheCreator ? t('common.details') : ''}
           icon={
             row.original.password ? (
               <LockClosedIcon
@@ -159,7 +170,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const { t } = useTranslation();
       const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
-      const attendeeCount = row.original.invitedAttendees.length;
+      const isUserTheCreator = user?.username === row.original.creator.username;
+      const { length } = row.original.invitedAttendees;
+      const attendeeCount = length;
       const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'conferences.attendee' : 'conferences.attendees')}`;
       const groupsCount = row.original.invitedGroups?.length;
       const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
@@ -167,13 +180,14 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            user?.username === row.original.creator?.username
+            isUserTheCreator
               ? () => {
                   setSelectedConference(row.original);
                 }
               : undefined
           }
           text={`${attendeeText} ${groupsText}`}
+          textOnHover={isUserTheCreator ? t('common.details') : ''}
         />
       );
     },
@@ -207,7 +221,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
       const { user } = useUserStore();
-      const { joinConference, setJoinConferenceUrl, joinConferenceUrl } = useConferenceDetailsDialogStore();
+      const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
       const isUserTheCreator = user?.username === creator?.username;
       const isRowLoading = row.original.meetingID === loadingMeetingId;
@@ -234,7 +248,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
             };
       return (
         <SelectableTextCell
-          onClick={onClick}
+          onClick={isUserTheCreator || isRunning ? onClick : undefined}
           icon={icon}
           text={text}
         />
