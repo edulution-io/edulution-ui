@@ -17,7 +17,7 @@ import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInpu
 import { Button } from '@/components/shared/Button';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
-import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { Form } from '@/components/ui/Form';
 
 const AppConfigEditBulletinCategoryDialog = () => {
   const {
@@ -75,6 +75,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
     }
     setDialogOpen(false);
     setSelectedCategory(null);
+    form.reset();
   };
 
   const getFooter = () => (
@@ -121,59 +122,52 @@ const AppConfigEditBulletinCategoryDialog = () => {
     };
 
     return (
-      <form
-        onSubmit={handleFormSubmit}
-        className="space-y-4"
-      >
-        <div className="flex items-center space-x-2">
-          <p>{t('bulletinboard.categoryName')}:</p>
-          <NameInputWithAvailability
-            register={form.register}
-            checkIfNameExists={checkIfNameExists}
-            placeholder={t('bulletinboard.categoryName')}
-          />
-        </div>
-
-        <DialogSwitch
-          translationId="bulletinboard.isActive"
-          checked={form.watch('isActive')}
-          onCheckedChange={(isChecked) => {
-            form.setValue('isActive', isChecked);
+      <Form {...form}>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleFormSubmit();
           }}
-        />
-        <AccordionItem value="visibleForGroupsUsers">
-          <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
-            {t('bulletinboard.categories.visibleByUsersAndGroups')}
-          </AccordionTrigger>
-          <AccordionContent className="z-1000 overflow-auto">
-            <SearchUsersOrGroups
-              users={watch('visibleForUsers') as AttendeeDto[]}
-              onSearch={searchAttendees}
-              onUserChange={handleVisibleAttendeesChange}
-              groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
-              onGroupSearch={searchGroups}
-              onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-              variant="light"
+          className="space-y-4"
+        >
+          <div className="flex items-center space-x-2">
+            <p>{t('bulletinboard.categoryName')}:</p>
+            <NameInputWithAvailability
+              register={form.register}
+              checkIfNameExists={checkIfNameExists}
+              placeholder={t('bulletinboard.categoryName')}
             />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="editbleForGroupsUsers">
-          <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
-            {t('bulletinboard.categories.editableByUsersAndGroups')}
-          </AccordionTrigger>
-          <AccordionContent className="z-1000 overflow-auto">
-            <SearchUsersOrGroups
-              users={watch('editableByUsers') as AttendeeDto[]}
-              onSearch={searchAttendees}
-              onUserChange={handleEditableAttendeesChange}
-              groups={watch('editableByGroups') as MultipleSelectorGroup[]}
-              onGroupSearch={searchGroups}
-              onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-              variant="light"
-            />
-          </AccordionContent>
-        </AccordionItem>
-      </form>
+          </div>
+
+          <DialogSwitch
+            translationId="bulletinboard.isActive"
+            checked={form.watch('isActive')}
+            onCheckedChange={(isChecked) => {
+              form.setValue('isActive', isChecked);
+            }}
+          />
+          <p className="pt-4">{t('bulletinboard.categories.visibleByUsersAndGroups')}</p>
+          <SearchUsersOrGroups
+            users={watch('visibleForUsers') as AttendeeDto[]}
+            onSearch={searchAttendees}
+            onUserChange={handleVisibleAttendeesChange}
+            groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
+            onGroupSearch={searchGroups}
+            onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
+            variant="light"
+          />
+          <p className="pt-4">{t('bulletinboard.categories.editableByUsersAndGroups')}</p>
+          <SearchUsersOrGroups
+            users={watch('editableByUsers') as AttendeeDto[]}
+            onSearch={searchAttendees}
+            onUserChange={handleEditableAttendeesChange}
+            groups={watch('editableByGroups') as MultipleSelectorGroup[]}
+            onGroupSearch={searchGroups}
+            onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
+            variant="light"
+          />
+        </form>
+      </Form>
     );
   };
 
