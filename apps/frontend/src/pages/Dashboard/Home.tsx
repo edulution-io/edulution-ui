@@ -14,10 +14,10 @@ const Home: React.FC = () => {
   const { user } = useUserStore();
 
   return (
-    <div className="h-full overflow-y-scroll md:mx-4">
+    <div className="h-full overflow-y-scroll scrollbar-thin md:mx-4">
       <div>
         {isMobileView ? (
-          <h2 className="text-2xl">
+          <h2>
             {t('heading', {
               givenName: user?.firstName || '-',
               familyName: user?.lastName || '-',
