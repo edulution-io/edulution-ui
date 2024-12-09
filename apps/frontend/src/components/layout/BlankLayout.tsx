@@ -8,13 +8,14 @@ import { Sidebar } from '@/components';
 const BlankLayout: React.FC<PropsWithChildren> = () => {
   const auth = useAuth();
   const { pathname } = useLocation();
-  const hideHeadingText = pathname === '/' || pathname === '/login';
+  const isHeaderVisible = pathname !== '/' && pathname !== '/login';
 
   return (
     <div className="flex">
-      <div className="flex min-h-[100vh] w-full flex-col px-5 lg:px-20">
-        {hideHeadingText ? null : <Header hideHeadingText />}
-        <main className="flex-1">
+      <div className="flex h-[100vh] w-full flex-col">
+        {isHeaderVisible && <Header hideHeadingText />}
+
+        <main className="flex-1 overflow-hidden p-4 md:w-[calc(100%-var(--sidebar-width))] md:pl-4">
           <Outlet />
         </main>
       </div>
