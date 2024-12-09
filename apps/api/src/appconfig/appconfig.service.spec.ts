@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken, getConnectionToken } from '@nestjs/mongoose';
+import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { AppConfigDto } from '@libs/appconfig/types';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 
@@ -47,7 +49,7 @@ describe('AppConfigService', () => {
 
   describe('insertConfig', () => {
     it('should successfully insert configs', async () => {
-      const appConfigs = [
+      const appConfigs: AppConfigDto[] = [
         {
           name: 'Test',
           icon: 'icon-path',
@@ -60,6 +62,10 @@ describe('AppConfigService', () => {
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
             { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
           ],
+          extendedOptions: {
+            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
+            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+          },
         },
       ];
       await service.insertConfig(appConfigs);
@@ -69,7 +75,7 @@ describe('AppConfigService', () => {
 
   describe('updateConfig', () => {
     it('should successfully update configs', async () => {
-      const appConfigs = [
+      const appConfigs: AppConfigDto[] = [
         {
           name: 'Test',
           icon: 'icon-path',
@@ -82,6 +88,10 @@ describe('AppConfigService', () => {
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
             { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
           ],
+          extendedOptions: {
+            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
+            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+          },
         },
       ];
 
@@ -92,7 +102,7 @@ describe('AppConfigService', () => {
 
   describe('getAppConfigs', () => {
     it('should return app configs', async () => {
-      const appConfigObjects = [
+      const appConfigs: AppConfigDto[] = [
         {
           name: 'Test',
           icon: 'icon-path',
@@ -102,22 +112,25 @@ describe('AppConfigService', () => {
             { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
             { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
           ],
-          extendedOptions: [],
+          extendedOptions: {
+            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
+            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+          },
         },
       ];
 
-      const expectedConfigs = appConfigObjects.map((config) => ({
+      const expectedConfigs = appConfigs.map((config) => ({
         name: config.name,
         icon: config.icon,
         appType: config.appType,
-        options: { url: config.options.url ?? '' },
+        options: { url: config.options.url },
         accessGroups: [],
-        extendedOptions: config.extendedOptions ?? [],
+        extendedOptions: config.extendedOptions,
       }));
 
       const ldapGroups = ['group1', 'group2'];
 
-      mockAppConfigModel.find.mockResolvedValue(appConfigObjects);
+      mockAppConfigModel.find.mockResolvedValue(appConfigs);
 
       const configs = await service.getAppConfigs(ldapGroups);
 
@@ -137,6 +150,10 @@ describe('AppConfigService', () => {
           { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
           { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
         ],
+        extendedOptions: {
+          [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
+          [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+        },
       };
 
       mockAppConfigModel.findOne.mockResolvedValue(expectedConfig);

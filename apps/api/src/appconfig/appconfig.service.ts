@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Model, Connection } from 'mongoose';
+import { Connection, Model } from 'mongoose';
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -99,7 +99,7 @@ class AppConfigService implements OnModuleInit {
           appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
-          extendedOptions: config.extendedOptions ?? [],
+          extendedOptions: config.extendedOptions,
         }));
       }
 
@@ -114,19 +114,11 @@ class AppConfigService implements OnModuleInit {
   }
 
   async getAppConfigByName(name: string): Promise<AppConfig | null> {
-    try {
-      const appConfig = await this.appConfigModel.findOne({ name });
-      if (!appConfig) {
-        throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
-      }
-      return appConfig;
-    } catch (e) {
-      throw new CustomHttpException(
-        AppConfigErrorMessages.ReadAppConfigFailed,
-        HttpStatus.SERVICE_UNAVAILABLE,
-        AppConfigService.name,
-      );
+    const appConfig = await this.appConfigModel.findOne({ name });
+    if (!appConfig) {
+      throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
     }
+    return appConfig;
   }
 
   async deleteConfig(configName: string) {
