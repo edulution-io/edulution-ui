@@ -32,7 +32,7 @@ const UserSettingsDetailsPage: React.FC = () => {
   const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
 
   return (
-    <div className="bottom-8 left-4 right-0 top-3 h-screen overflow-y-hidden md:left-64 md:right-[--sidebar-width]">
+    <div className="h-screen overflow-y-hidden">
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={user?.displayName || t('common.not-available')}

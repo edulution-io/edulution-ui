@@ -21,9 +21,7 @@ const ConferencePage: React.FC = () => {
         iconSrc={ConferencesIcon}
       />
 
-      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ConferencesTable />
-      </div>
+      <ConferencesTable />
 
       <ConferencesFloatingButtons />
       <CreateConferenceDialog />
