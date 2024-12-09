@@ -3,11 +3,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig, AppConfigSchema } from './appconfig.schema';
+import AppConfigMigrationService from './appconfig.migration.service';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
   controllers: [AppConfigController],
-  providers: [AppConfigService],
+  providers: [AppConfigService, AppConfigMigrationService],
   exports: [AppConfigService],
 })
 export default class AppConfigModule {}
