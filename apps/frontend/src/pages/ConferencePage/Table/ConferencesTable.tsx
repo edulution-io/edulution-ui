@@ -26,6 +26,8 @@ const ConferencesTable = () => {
       <ScrollableTable
         columns={ConferencesTableColumns}
         data={conferences}
+        filterKey="conference-name"
+        filterPlaceHolderText="conferences.filterPlaceHolderText"
         onRowSelectionChange={handleRowSelectionChange}
         isLoading={isLoading}
         selectedRows={selectedRows}

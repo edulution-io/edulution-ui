@@ -20,6 +20,8 @@ const MailImporterTable: React.FC = () => {
     <ScrollableTable
       columns={MailImporterTableColumns}
       data={syncJobs}
+      filterKey="hostname"
+      filterPlaceHolderText="mail.importer.filterPlaceHolderText"
       applicationName={APPS.MAIL}
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedSyncJob}

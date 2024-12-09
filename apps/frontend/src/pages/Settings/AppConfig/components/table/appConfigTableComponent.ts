@@ -10,6 +10,8 @@ export interface AppConfigTableEntry<TState, TConfig> {
   useStore: UseBoundStore<StoreApi<TState>>;
   dialogBody: React.JSX.Element;
   showAddButton: boolean;
+  filterKey: string;
+  filterPlaceHolderText: string;
 }
 
 export type AppConfigTableEntryUnion = AppConfigTableEntry<BulletinBoardTableStore, BulletinCategoryResponseDto>;

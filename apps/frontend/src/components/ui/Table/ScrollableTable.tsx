@@ -3,6 +3,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   OnChangeFn,
   Row,
@@ -14,10 +15,22 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
+import Input from '@/components/shared/Input';
+import {
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent as Content,
+  DropdownMenuSH as DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenuSH';
+
+import { Button } from '@/components/shared/Button';
+import { ChevronDown } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterKey: string;
+  filterPlaceHolderText: string;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   selectedRows?: RowSelectionState;
   isLoading?: boolean;
@@ -36,6 +49,8 @@ interface DataTableProps<TData, TValue> {
 const ScrollableTable = <TData, TValue>({
   columns,
   data,
+  filterKey,
+  filterPlaceHolderText,
   onRowSelectionChange,
   isLoading,
   selectedRows = {},
@@ -64,6 +79,7 @@ const ScrollableTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     enableRowSelection,
@@ -101,50 +117,86 @@ const ScrollableTable = <TData, TValue>({
         className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
-        <Table>
-          <TableHeader
-            className="text-foreground scrollbar-thin"
-            id={tableHeaderId}
-          >
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody className="container">
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() ? 'selected' : undefined}
+        <div className="w-full">
+          <div className="flex items-center py-4">
+            <Input
+              placeholder={t(filterPlaceHolderText)}
+              value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ''}
+              onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
+              className="max-w-sm"
+              variant="lightGray"
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="btn-outline"
+                  className="ml-auto h-8"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={`${row.id}-${cell.column.id}`}
-                      className="text-white"
+                  Columns <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <Content align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+              </Content>
+            </DropdownMenu>
+          </div>
+          <Table>
+            <TableHeader
+              className="text-foreground scrollbar-thin"
+              id={tableHeaderId}
+            >
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
                   ))}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={data?.length}
-                  className="h-24 text-center text-white"
-                >
-                  {t('table.noDataAvailable')}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody className="container">
+              {table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() ? 'selected' : undefined}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={`${row.id}-${cell.column.id}`}
+                        className="text-white"
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={data?.length}
+                    className="h-24 text-center text-white"
+                  >
+                    {t('table.noDataAvailable')}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </>
   );

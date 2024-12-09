@@ -44,6 +44,8 @@ const BulletinBoardEditorialPage = () => {
       <ScrollableTable
         columns={bulletinBoardEditorialTableColumns}
         data={bulletins}
+        filterKey="name"
+        filterPlaceHolderText="bulletinboard.filterPlaceHolderText"
         onRowSelectionChange={handleRowSelectionChange}
         isLoading={isLoading}
         selectedRows={selectedRows}

@@ -16,7 +16,7 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
   }
 
   const renderConfig = (config: AppConfigTableEntryUnion, index: number) => {
-    const { columns, useStore, showAddButton, dialogBody } = config;
+    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey } = config;
     const { data, fetchData } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigDialogStore();
 
@@ -41,6 +41,8 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
       >
         <ScrollableTable
           columns={columns}
+          filterKey={filterKey}
+          filterPlaceHolderText={filterPlaceHolderText}
           data={data}
           applicationName={applicationName}
           enableRowSelection={false}

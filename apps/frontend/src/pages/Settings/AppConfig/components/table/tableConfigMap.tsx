@@ -12,6 +12,8 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigMap = {
       useStore: useAppConfigBulletinTableStore,
       dialogBody: <AppConfigEditBulletinCategoryDialog />,
       showAddButton: true,
+      filterKey: 'name',
+      filterPlaceHolderText: 'bulletinboard.filterPlaceHolderText',
     },
   ],
 };

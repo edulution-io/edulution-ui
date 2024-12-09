@@ -10,6 +10,7 @@
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
     "description": "Verwalte deine Mitteilungen",
+    "filterPlaceHolderText": "Suche nach Kategories",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
@@ -124,6 +125,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
+      "filterPlaceHolderText": "Suche nach E-Mail-Importern",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "configName": "Name der Konfiguration",
@@ -159,6 +161,7 @@
       "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen"
     },
+    "filterPlaceHolderText": "Suche nach Konferenzen",
     "started": "Konferenz gestartet",
     "stopped": "Konferenz gestoppt",
     "title": "KONFERENZEN",
@@ -206,6 +209,7 @@
     "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
+    "filterPlaceHolderText": "Suche nach Dateien",
     "title": "FILESHARING",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
@@ -364,6 +368,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "filterPlaceHolderText": "Suche nach Umfragen",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",

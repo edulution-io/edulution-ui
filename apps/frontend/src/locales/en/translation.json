@@ -23,6 +23,7 @@
     "editorialAccess": "Editorial access",
     "isActive": "Active",
     "error": "Error",
+    "filterPlaceHolderText": "Search for categories",
     "placeholderCategoryName": "Name",
     "categoryName": "Category name",
     "categoryCreatedSuccessfully": "Category created successfully",
@@ -124,6 +125,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
+      "filterPlaceHolderText": "Search for importers",
       "title": "Email Importer",
       "provider": "Email Provider",
       "configName": "Configuration name",
@@ -159,6 +161,7 @@
       "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
       "DBAccessFailed": "Database access failed"
     },
+    "filterPlaceHolderText": "Search for conferences",
     "started": "Conference started",
     "stopped": "Conference stopped",
     "title": "CONFERENCES",
@@ -207,6 +210,7 @@
     "noSurveys": "No open survey"
   },
   "filesharing": {
+    "filterPlaceHolderText": "Search for files",
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
@@ -363,6 +367,7 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "filterPlaceHolderText": "Search for surveys",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",

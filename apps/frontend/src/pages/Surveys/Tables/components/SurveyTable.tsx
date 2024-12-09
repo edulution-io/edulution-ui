@@ -33,6 +33,8 @@ const SurveyTable = <TData extends MongoId, TValue>({
     <ScrollableTable
       columns={columns}
       data={data}
+      filterKey="select-survey"
+      filterPlaceHolderText="survey.filterPlaceHolderText"
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedRows}
       isLoading={isLoading}

@@ -27,6 +27,8 @@ const FileSharingTable = () => {
     <ScrollableTable
       columns={FileSharingTableColumns}
       data={files}
+      filterKey="select-filename"
+      filterPlaceHolderText="filesharing.filterPlaceHolderText"
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
       selectedRows={selectedRows}
