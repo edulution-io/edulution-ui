@@ -1,5 +1,4 @@
 import React from 'react';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -12,6 +11,7 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -52,7 +52,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading || !selectedConference) return <CircleLoader className="mx-auto mt-5" />;
     return <CreateConferenceDialogBody form={form} />;
   };
 

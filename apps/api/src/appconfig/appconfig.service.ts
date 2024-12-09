@@ -7,8 +7,8 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
-import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
 import { AppConfig } from './appconfig.schema';
+import initializeCollection from './initializeCollection';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -18,17 +18,7 @@ class AppConfigService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const collections = await this.connection.db?.listCollections({ name: 'appconfigs' }).toArray();
-
-    if (collections?.length === 0) {
-      await this.connection.db?.createCollection('appconfigs');
-    }
-
-    const count = await this.appConfigModel.countDocuments();
-
-    if (count === 0) {
-      await this.appConfigModel.insertMany(defaultAppConfig);
-    }
+    await initializeCollection(this.connection, this.appConfigModel);
   }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {

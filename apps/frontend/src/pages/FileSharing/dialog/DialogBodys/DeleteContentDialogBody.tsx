@@ -1,26 +1,16 @@
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import React from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { useTranslation } from 'react-i18next';
-import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
+import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
 
-const DeleteContentDialogBody: React.FC<EmptyDialogProps> = () => {
-  const { t } = useTranslation();
+const DeleteContentDialogBody: React.FC = () => {
   const { selectedItems } = useFileSharingStore();
+  const deleteWarningTranslationId = 'deleteDialog.actionCannotBeUndone';
+
   return (
-    <div className="text-foreground">
-      <p>{t('deleteDialog.actionCannotBeUndone')}</p>
-      <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
-        {selectedItems.map((item) => (
-          <div
-            key={item.etag}
-            className="truncate"
-          >
-            {item.basename}
-          </div>
-        ))}
-      </ScrollArea>
-    </div>
+    <DeleteItemDialogList
+      deleteWarningTranslationId={deleteWarningTranslationId}
+      items={selectedItems.map((i) => ({ name: i.basename, id: i.etag }))}
+    />
   );
 };
 export default DeleteContentDialogBody;

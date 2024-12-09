@@ -661,6 +661,8 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "join": "Teilnehmen",
+    "details": "Details",
     "createdAt": "Erstellt am",
     "updatedAt": "Bearbeitet am",
     "actions": "Aktionen",
