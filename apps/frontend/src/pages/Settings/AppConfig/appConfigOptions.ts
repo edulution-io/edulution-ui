@@ -28,9 +28,9 @@ import {
 } from '@/assets/icons';
 import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
+import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
+import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/bulletinBoard';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -69,22 +69,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
     extendedOptions: {
-      [AppConfigSectionsKeys.onlyOffice]: [
-        {
-          name: ExtendedOptionKeys.ONLY_OFFICE_URL,
-          description: 'appExtendedOptions.onlyOfficeUrl',
-          title: 'appExtendedOptions.onlyOfficeUrlTitle',
-          type: ExtendedOptionField.input,
-          value: '',
-        },
-        {
-          name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
-          title: 'appExtendedOptions.onlyOfficeJwtSecretTitle',
-          description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',
-          type: ExtendedOptionField.password,
-          value: '',
-        },
-      ],
+      [AppConfigSectionsKeys.onlyOffice]: ONLY_OFFICE_EXTENDED_OPTIONS,
     },
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
@@ -171,15 +156,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     isNativeApp: true,
     extendedOptions: {
-      [AppConfigSectionsKeys.bulletinBoard]: [
-        {
-          name: ExtendedOptionKeys.BULLETIN_BOARD_URL,
-          description: 'appExtendedOptions.bulletinBoardUrl',
-          title: 'appExtendedOptions.bulletinBoardUrlTitle',
-          type: ExtendedOptionField.table,
-          value: '',
-        },
-      ],
+      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
     },
   },
 ];

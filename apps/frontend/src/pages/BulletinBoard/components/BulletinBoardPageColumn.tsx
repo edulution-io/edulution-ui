@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import cn from '@libs/common/utils/className';

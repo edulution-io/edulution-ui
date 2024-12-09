@@ -1,7 +1,11 @@
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
-const getExtendedOptions = (appConfigs: AppConfigDto[], settingLocation: string, key: ExtendedOptionKeys): string => {
+const getExtendedOptions = (
+  appConfigs: AppConfigDto[],
+  settingLocation: string,
+  key: ExtendedOptionKeysType,
+): string => {
   const appConfig = appConfigs.find((config) => config.name === settingLocation);
 
   if (!appConfig || typeof appConfig.extendedOptions !== 'object') {

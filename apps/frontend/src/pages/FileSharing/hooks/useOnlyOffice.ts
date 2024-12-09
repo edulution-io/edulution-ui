@@ -28,7 +28,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionValue(appConfigs, APPS.TICKET_SYSTEM, ExtendedOptionKeys.ONLY_OFFICE_URL);
+  const documentServerURL = getExtendedOptionValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL);
 
   const callbackUrl = callbackBaseUrl({
     fileName,

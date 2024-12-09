@@ -1,7 +1,7 @@
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
 type ExtendedOptionKeysDto = {
-  [key in ExtendedOptionKeys]?: string;
+  [key in ExtendedOptionKeysType]?: string;
 };
 
 export default ExtendedOptionKeysDto;

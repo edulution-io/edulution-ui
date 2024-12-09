@@ -31,6 +31,7 @@ const AppConfigFormField = <T extends FieldValues>({
           <div>{t(option.title)}</div>
           <FormControl>
             <Input
+              autoComplete="new-password"
               {...field}
               type={type}
               variant="lightGray"
