@@ -100,7 +100,7 @@ const UserSettingsMailsPage: React.FC = () => {
   );
 
   return (
-    <div className="bottom-8 left-4 right-0 top-3 h-screen overflow-y-hidden md:left-64 md:right-[--sidebar-width]">
+    <div className="h-screen overflow-y-hidden">
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}
