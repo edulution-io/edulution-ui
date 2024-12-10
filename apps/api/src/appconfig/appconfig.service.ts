@@ -22,15 +22,7 @@ class AppConfigService implements OnModuleInit {
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
 
-    try {
-      await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
-    } catch (error) {
-      throw new CustomHttpException(
-        AppConfigErrorMessages.ReadAppConfigFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        AppConfigService.name,
-      );
-    }
+    await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
   }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
