@@ -13,11 +13,15 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     id: 'name',
     header: ({ column, table }) => (
       <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.name"
         column={column}
         table={table}
       />
     ),
+
+    meta: {
+      translationId: 'bulletinboard.name',
+    },
+
     accessorFn: (row) => row.title,
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
@@ -36,18 +40,17 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: 'category',
-    header: ({ column }) => (
-      <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.category"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'bulletinboard.category',
+    },
+
     accessorFn: (row) => row.category,
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
         <SelectableTextCell
-          text={row.original.category.name}
+          text={row.original.category?.name}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
             setSelectedBulletinToEdit(row.original);
@@ -58,12 +61,11 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: 'isActive',
-    header: ({ column }) => (
-      <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.isActiveOrExpired"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
+
+    meta: {
+      translationId: 'bulletinboard.isActiveOrExpired',
+    },
     accessorFn: (row) => row.isActive,
     cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
@@ -92,12 +94,10 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: 'isVisibleStartDate',
-    header: ({ column }) => (
-      <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.isVisibleStartDate"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.createdAt',
+    },
     accessorFn: (row) => row.isVisibleStartDate,
     cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
@@ -114,12 +114,10 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: 'isVisibleEndDate',
-    header: ({ column }) => (
-      <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.isVisibleEndDate"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'bulletinboard.isVisibleEndDate',
+    },
     accessorFn: (row) => row.isVisibleEndDate,
     cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();

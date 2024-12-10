@@ -146,7 +146,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
               form.setValue('isActive', isChecked);
             }}
           />
-          <p className="pt-4">{t('bulletinboard.categories.visibleByUsersAndGroups')}</p>
+          <p className="pt-4 text-white">{t('bulletinboard.categories.visibleByUsersAndGroups')}</p>
           <SearchUsersOrGroups
             users={watch('visibleForUsers') as AttendeeDto[]}
             onSearch={searchAttendees}
@@ -154,9 +154,9 @@ const AppConfigEditBulletinCategoryDialog = () => {
             groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
             onGroupSearch={searchGroups}
             onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-            variant="light"
+            variant="dark"
           />
-          <p className="pt-4">{t('bulletinboard.categories.editableByUsersAndGroups')}</p>
+          <p className="pt-4 text-white">{t('bulletinboard.categories.editableByUsersAndGroups')}</p>
           <SearchUsersOrGroups
             users={watch('editableByUsers') as AttendeeDto[]}
             onSearch={searchAttendees}
@@ -164,7 +164,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
             groups={watch('editableByGroups') as MultipleSelectorGroup[]}
             onGroupSearch={searchGroups}
             onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-            variant="light"
+            variant="dark"
           />
         </form>
       </Form>
@@ -174,7 +174,6 @@ const AppConfigEditBulletinCategoryDialog = () => {
   return (
     <AdaptiveDialog
       isOpen={isDialogOpen}
-      variant="primary"
       handleOpenChange={() => {
         setDialogOpen(!isDialogOpen);
         setSelectedCategory(null);

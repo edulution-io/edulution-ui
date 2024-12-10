@@ -43,6 +43,7 @@ interface DataTableProps<TData, TValue> {
     tableHeaderId?: string;
     others?: string[];
   };
+  usedInAppConfig?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
 }
 
@@ -59,6 +60,7 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
+  usedInAppConfig = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -110,11 +112,14 @@ const ScrollableTable = <TData, TValue>({
           )}
         </div>
       ) : (
-        <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
+        <>
+          {!usedInAppConfig && <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>}
+          <p />
+        </>
       )}
 
       <div
-        className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
+        className={`w-full flex-1 overflow-auto scrollbar-thin ${!usedInAppConfig ? 'pl-3 pr-3.5' : ''}`}
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <div className="w-full">
@@ -123,16 +128,15 @@ const ScrollableTable = <TData, TValue>({
               placeholder={t(filterPlaceHolderText)}
               value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ''}
               onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-              className="max-w-sm"
-              variant="lightGray"
+              className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant="btn-outline"
-                  className="ml-auto h-8"
+                  variant="btn-small"
+                  className="ml-auto h-8 bg-ciDarkGrey text-ciLightGrey"
                 >
-                  Columns <ChevronDown />
+                  {t('common.columns')} <ChevronDown />
                 </Button>
               </DropdownMenuTrigger>
               <Content align="end">
@@ -142,11 +146,10 @@ const ScrollableTable = <TData, TValue>({
                   .map((column) => (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="capitalize"
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {column.id}
+                      {t((column.columnDef.meta?.translationId as string) ?? column.id)}
                     </DropdownMenuCheckboxItem>
                   ))}
               </Content>

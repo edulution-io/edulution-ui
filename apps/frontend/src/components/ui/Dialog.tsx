@@ -43,10 +43,10 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl border p-6 shadow-lg duration-200',
-        { 'color-black bg-white text-foreground': variant === 'primary' },
+        { 'color-black bg-white text-foreground': variant === 'tertiary' },
         { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
         { 'bg-ciGray': variant === 'secondary' },
-        { 'bg-black': variant === 'tertiary' },
+        { 'bg-black': variant === 'primary' },
         { 'w-40 bg-black': variant === 'loadingSpinner' },
         className,
       )}

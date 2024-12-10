@@ -11,13 +11,11 @@ import useAppConfigDialogStore from '../Settings/AppConfig/components/table/appC
 const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
     id: 'name',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.name"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
 
+    meta: {
+      translationId: 'bulletinboard.name',
+    },
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
@@ -37,12 +35,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   },
   {
     id: 'isActive',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="bulletinboard.isActive"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'bulletinboard.isActive',
+    },
     accessorFn: (row) => row.isActive,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
@@ -63,12 +59,10 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   },
   {
     id: 'createdAt',
-    header: ({ column }) => (
-      <SortableHeader<BulletinCategoryResponseDto, unknown>
-        titleTranslationId="common.createdAt"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.createdAt',
+    },
     accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();

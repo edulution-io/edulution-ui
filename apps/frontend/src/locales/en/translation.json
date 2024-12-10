@@ -27,7 +27,7 @@
     "isActive": "Active",
     "isPermanentlyActive": "Permanently active",
     "error": "Error",
-    "filterPlaceHolderText": "Search for categories",
+    "filterPlaceHolderText": "Search for categoriename",
     "placeholderCategoryName": "Name",
     "categoryName": "Category name",
     "categoryCreatedSuccessfully": "Category created successfully",
@@ -129,7 +129,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
-      "filterPlaceHolderText": "Search for importers",
+      "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
       "configName": "Configuration name",
@@ -165,7 +165,7 @@
       "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
       "DBAccessFailed": "Database access failed"
     },
-    "filterPlaceHolderText": "Search for conferences",
+    "filterPlaceHolderText": "Search for conferencename",
     "started": "Conference started",
     "stopped": "Conference stopped",
     "title": "CONFERENCES",
@@ -214,7 +214,7 @@
     "noSurveys": "No open survey"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Search for files",
+    "filterPlaceHolderText": "Search for filename",
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
@@ -371,7 +371,7 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
-    "filterPlaceHolderText": "Search for surveys",
+    "filterPlaceHolderText": "Search for surveyname",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
@@ -671,6 +671,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "columns": "Columns",
     "join": "Join",
     "details": "Details",
     "createdAt": "Created at",

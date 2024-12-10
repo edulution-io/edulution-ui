@@ -13,7 +13,7 @@
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
     "description": "Verwalte deine Mitteilungen",
-    "filterPlaceHolderText": "Suche nach Kategories",
+    "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
@@ -129,7 +129,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
-      "filterPlaceHolderText": "Suche nach E-Mail-Importern",
+      "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "configName": "Name der Konfiguration",
@@ -165,7 +165,7 @@
       "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen"
     },
-    "filterPlaceHolderText": "Suche nach Konferenzen",
+    "filterPlaceHolderText": "Suche nach Konferenzname",
     "started": "Konferenz gestartet",
     "stopped": "Konferenz gestoppt",
     "title": "KONFERENZEN",
@@ -213,7 +213,7 @@
     "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Suche nach Dateien",
+    "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
@@ -372,7 +372,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
-    "filterPlaceHolderText": "Suche nach Umfragen",
+    "filterPlaceHolderText": "Suche nach Umfragename",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
@@ -671,6 +671,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "columns": "Spalten",
     "join": "Teilnehmen",
     "details": "Details",
     "createdAt": "Erstellt am",

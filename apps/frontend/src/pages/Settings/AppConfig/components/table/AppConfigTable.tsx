@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppConfigTableEntryUnion } from '@/pages/Settings/AppConfig/components/table/appConfigTableComponent';
 import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
 import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
+import { IoAdd } from 'react-icons/io5';
 import { Button } from '@/components/shared/Button';
 
 const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
@@ -46,15 +47,15 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
           data={data}
           applicationName={applicationName}
           enableRowSelection={false}
+          usedInAppConfig
         />
         {showAddButton && (
-          <div className="flex justify-end pt-4">
+          <div className="flex w-full">
             <Button
-              className="h-8"
-              variant="btn-outline"
+              className="flex h-2 w-full items-center justify-center rounded-none border border-gray-400 hover:bg-ciDarkGrey"
               onClick={handleAddClick}
             >
-              {t('common.add')}
+              <IoAdd className="text-xl text-white" />
             </Button>
           </div>
         )}

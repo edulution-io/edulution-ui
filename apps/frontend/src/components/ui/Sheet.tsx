@@ -43,9 +43,9 @@ const sheetVariants = cva(
           'inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
       },
       variant: {
-        primary: 'bg-white',
+        primary: 'bg-black',
         secondary: 'bg-ciGray',
-        tertiary: 'bg-black',
+        tertiary: 'bg-white',
       },
     },
     defaultVariants: {
@@ -92,6 +92,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
 interface SheetHeaderProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof sheetVariants> {}
+
 const SheetHeader = ({ className, variant, ...props }: SheetHeaderProps) => (
   <div
     className={cn(

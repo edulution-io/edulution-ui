@@ -69,7 +69,7 @@ const NameInputWithAvailability = ({
         placeholder={placeholder}
         className="input-class"
         onChange={handleChange}
-        variant="light"
+        variant="darkgray"
       />
       {renderAvailabilityStatus()}
     </div>

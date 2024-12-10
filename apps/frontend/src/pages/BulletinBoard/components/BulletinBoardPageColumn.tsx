@@ -45,10 +45,7 @@ const BulletinBoardPageColumn = ({
             className="rounded-lg bg-white bg-opacity-5 p-4"
           >
             <h4>{bulletin.title}</h4>
-            <div
-              className="mt-3 text-gray-100"
-              dangerouslySetInnerHTML={{ __html: bulletin.content }}
-            />
+            <div className="mt-3 text-gray-100" />
           </div>
         ))}
       </div>
