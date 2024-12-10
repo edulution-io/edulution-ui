@@ -5,6 +5,63 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "bulletinboard": {
+    "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
+    "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
+    "isVisibleStartDate": "Active from",
+    "isVisibleEndDate": "Active until",
+    "isActiveOrExpired": "Active/Expired",
+    "activeFrom": "Active from",
+    "activeUntil": "Active until",
+    "appTitle": "Bulletin Board",
+    "description": "Manage your bulletins",
+    "sidebar": "Bulletin Board",
+    "newCategorie": "New category",
+    "category": "Category",
+    "name": "Name",
+    "visibleFor": "Visible for",
+    "visibleForUsers": "Visible for users",
+    "visibleForGroups": "Visible for groups",
+    "editableByUsers": "Editable for users",
+    "editableByGroups": "Editable for groups",
+    "editCategorie": "Edit category",
+    "editorialAccess": "Editorial access",
+    "isActive": "Active",
+    "isPermanentlyActive": "Permanently active",
+    "error": "Error",
+    "filterPlaceHolderText": "Search for categoriename",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Category name",
+    "categoryCreatedSuccessfully": "Category created successfully",
+    "categoryUpdatedSuccessfully": "Category updated successfully",
+    "categoryDeletedSuccessfully": "Category deleted successfully",
+    "delete": "Delete",
+    "deleteBulletin": "Delete bulletin",
+    "deleteBulletins": "Delete {{count}} bulletins",
+    "editBulletin": "Edit bulletin",
+    "createBulletin": "Create bulletin",
+    "confirmSingleDelete": "Do you really want to delete this bulletin?",
+    "confirmMultiDelete": "Do you really want to delete these bulletins?",
+    "rowsSelected": "{{selected}} out of {{total}} bulletins selected",
+    "rowSelected": "{{selected}} out of {{total}} bulletin selected",
+    "cancel": "Cancel",
+    "title": "Title",
+    "content": "Content",
+    "categories": {
+      "visibleByUsersAndGroups": "Visible by users and groups",
+      "editableByUsersAndGroups": "Editable by users and groups"
+    },
+    "errors": {
+      "categoryNotFound": "Category not found",
+      "categoryDeleteFailed": "Failed to delete category",
+      "attachmentUploadFailed": "Failed to upload attachment",
+      "fileNotProvided": "File not provided",
+      "invalidCategory": "Invalid category",
+      "bulletinNotFound": "Bulletin not found",
+      "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
+      "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin"
+    }
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -74,6 +131,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
+      "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
       "configName": "Configuration name",
@@ -94,7 +152,8 @@
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
-    "unexpectedError": "An unexpected error occurred"
+    "unexpectedError": "An unexpected error occurred",
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
   },
   "conferences": {
     "errors": {
@@ -108,6 +167,7 @@
       "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
       "DBAccessFailed": "Database access failed"
     },
+    "filterPlaceHolderText": "Search for conferencename",
     "started": "Conference started",
     "stopped": "Conference stopped",
     "title": "CONFERENCES",
@@ -156,6 +216,7 @@
     "noSurveys": "No open survey"
   },
   "filesharing": {
+    "filterPlaceHolderText": "Search for filename",
     "title": "FILE SHARING",
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
@@ -312,6 +373,7 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "filterPlaceHolderText": "Search for surveyname",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
@@ -487,6 +549,7 @@
     "appconfig": {
       "sections": {
         "onlyOffice": "Only Office Integration",
+        "bulletinBoard": "Bulletin Board Categories",
         "general": "General"
       },
       "update": {
@@ -606,11 +669,15 @@
   "edit": "Edit",
   "common": {
     "errors": {
+      "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "columns": "Columns",
     "join": "Join",
     "details": "Details",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
     "actions": "Actions",
     "forward": "Forward",
     "showOptions": "Show options",

@@ -1,0 +1,60 @@
+import React, { useEffect, useState } from 'react';
+import { getHours, getMinutes, setHours, setMinutes } from 'date-fns';
+import Input from '@/components/shared/Input';
+import cn from '@libs/common/utils/className';
+import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+
+interface TimeInputProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: UseFormReturn<any>;
+  fieldName: string;
+  date?: Date | null;
+  disabled?: boolean;
+}
+
+const TimeInput = ({ form, disabled, fieldName, date }: TimeInputProps) => {
+  const { t } = useTranslation();
+  const { setValue } = form;
+
+  const initialValue = date || new Date();
+
+  const [expirationTime, setExpirationTime] = useState<string>(
+    `${getHours(initialValue).toString().padStart(2, '0')}:${getMinutes(initialValue).toString().padStart(2, '0')}`,
+  );
+
+  const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const time = e.target.value.split(':');
+    if (!time[0] || !time[1]) return;
+
+    let updateExpiration = date ? new Date(date) : new Date();
+    updateExpiration = setHours(updateExpiration, Number(time[0]));
+    updateExpiration = setMinutes(updateExpiration, Number(time[1]));
+    setExpirationTime(e.target.value);
+    setValue(fieldName, updateExpiration.toISOString());
+  };
+
+  useEffect(() => {
+    if (date) {
+      setExpirationTime(
+        `${getHours(date).toString().padStart(2, '0')}:${getMinutes(date).toString().padStart(2, '0')}`,
+      );
+    }
+  }, [date]);
+
+  return (
+    <>
+      {t('common.time')}
+      <Input
+        type="time"
+        value={expirationTime}
+        onChange={handleExpirationTimeChange}
+        variant="default"
+        className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
+        disabled={disabled}
+      />
+    </>
+  );
+};
+
+export default TimeInput;

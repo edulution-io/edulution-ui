@@ -2,6 +2,7 @@ import {
   AiChatIcon,
   AntiMalwareIcon,
   BackupIcon,
+  BulletinBoardIcon,
   ChatIcon,
   ClassManagementIcon,
   ConferencesIcon,
@@ -29,6 +30,7 @@ import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
 import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
+import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/bulletinBoard';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -148,6 +150,15 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
   },
   { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', isNativeApp: true },
+  {
+    id: APPS.BULLETIN_BOARD,
+    icon: BulletinBoardIcon,
+    color: 'bg-ciDarkBlue',
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
+    },
+  },
 ];
 
 export default APP_CONFIG_OPTIONS;

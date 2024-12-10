@@ -30,13 +30,14 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
 
     header: ({ table, column }) => (
       <SortableHeader<DirectoryFileDTO, unknown>
-        titleTranslationId="fileSharingTable.filename"
         table={table}
         column={column}
       />
     ),
+    meta: {
+      translationId: 'fileSharingTable.filename',
+    },
     accessorFn: (row) => row.type + row.filename,
-
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
       const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
@@ -88,12 +89,10 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
   {
     accessorKey: 'lastmod',
     header: function Header({ column }) {
-      return (
-        <SortableHeader<DirectoryFileDTO, unknown>
-          titleTranslationId="fileSharingTable.lastModified"
-          column={column}
-        />
-      );
+      return <SortableHeader<DirectoryFileDTO, unknown> column={column} />;
+    },
+    meta: {
+      translationId: 'fileSharingTable.lastModified',
     },
     accessorFn: (row) => row.lastmod,
     cell: ({ row }) => {
@@ -126,10 +125,12 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
       return (
         <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
-          titleTranslationId="fileSharingTable.size"
           column={column}
         />
       );
+    },
+    meta: {
+      translationId: 'fileSharingTable.size',
     },
     cell: ({ row }) => {
       let fileSize = 0;
@@ -150,10 +151,12 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
       return (
         <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
-          titleTranslationId="fileSharingTable.type"
           column={column}
         />
       );
+    },
+    meta: {
+      translationId: 'fileSharingTable.type',
     },
     cell: function Cell({ row }) {
       const renderFileCategorize = (item: DirectoryFileDTO) => {

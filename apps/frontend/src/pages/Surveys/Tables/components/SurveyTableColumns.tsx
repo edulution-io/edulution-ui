@@ -18,12 +18,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     accessorKey: 'formula',
     enableHiding: false,
     enableSorting: true,
-    header: ({ column }) => (
-      <SortableHeader<SurveyDto, unknown>
-        titleTranslationId="common.title"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.title',
+    },
     cell: ({ row }) => {
       const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       return (
@@ -40,12 +38,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
     accessorKey: 'created',
     enableSorting: true,
-    header: ({ column }) => (
-      <SortableHeader<SurveyDto, unknown>
-        titleTranslationId="survey.creationDate"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
+    meta: {
+      translationId: 'survey.creationDate',
+    },
     cell: ({ row }) => {
       const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       const localDateFormat = getLocaleDateFormat();
@@ -67,12 +63,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
     accessorKey: 'expires',
     enableSorting: true,
-    header: ({ column }) => (
-      <SortableHeader<SurveyDto, unknown>
-        titleTranslationId="survey.expirationDate"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
+    meta: {
+      translationId: 'survey.expirationDate',
+    },
     cell: ({ row }) => {
       const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       const localDateFormat = getLocaleDateFormat();
@@ -95,12 +89,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     id: 'participated',
     accessorKey: 'participatedAttendees',
     enableSorting: true,
-    header: ({ column }) => (
-      <SortableHeader<SurveyDto, unknown>
-        titleTranslationId="common.participated"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.participated',
+    },
     cell: ({ row }) => {
       const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       return (
