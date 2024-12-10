@@ -107,7 +107,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', convertJSONToSurveyFormula(creator.toJSON() as JSON));
+    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };

@@ -3,10 +3,15 @@
 @tailwind utilities;
 
 .survey-editor {
-  /* fix bug with the huge icons */
+  .sd-element {
+    padding: 5px;
+  }
 
-  .sv-action svc-action-bar-item--right {
-    padding-left: 20px;
+  .svc-notifier--info {
+    position: fixed;
+    right: 210px;
+    bottom: 120px;
+    transform: translate(50%, 50%);
   }
 
   /* header-bar-icons */
@@ -33,7 +38,7 @@
   .svc-survey-element-toolbar {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 12px;
   }
   .svc-survey-element-toolbar__item,
   .svc-survey-element-toolbar__item--with-text {
@@ -59,6 +64,9 @@
     justify-content: center;
 
     max-height: 50px;
+  }
+  .svc-dropdown-action--convertTo-last {
+    margin-right: 3rem;
   }
 
   /* survey-page-action-icons / page-actions-bar */
@@ -180,7 +188,7 @@
       }
     }
 
-    @media only screen and (max-width: 640px) {
+    @media only screen and (max-width: 951px) {
       .svc-top-bar {
         display: none !important;
       }
