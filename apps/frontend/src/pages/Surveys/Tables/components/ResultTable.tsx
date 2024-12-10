@@ -5,7 +5,7 @@ import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import '../dialogs/resultTableDialog.css';
-import useLanguage from '@/store/useLanguage';
+import useLanguage from '@/hooks/useLanguage';
 
 interface ResultTableDialogBodyProps {
   formula: TSurveyFormula;

@@ -3,7 +3,7 @@ import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import useLanguage from '@/store/useLanguage';
+import useLanguage from '@/hooks/useLanguage';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,

@@ -17,9 +17,9 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageE
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
+import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
 import surveyTheme from '@/pages/Surveys/theme/theme';
-import useLanguage from '@/store/useLanguage';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

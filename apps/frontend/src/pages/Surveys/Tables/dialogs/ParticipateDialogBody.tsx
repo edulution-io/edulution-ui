@@ -8,10 +8,10 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
-import useLanguage from '@/store/useLanguage';
 
 interface ParticipateDialogBodyProps {
   surveyId: mongoose.Types.ObjectId;

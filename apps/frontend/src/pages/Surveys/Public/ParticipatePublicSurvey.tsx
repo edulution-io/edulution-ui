@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
+import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
