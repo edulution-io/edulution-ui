@@ -15,5 +15,6 @@
       "path": "./tsconfig.spec.json"
     }
   ],
+  "typeRoots": ["./src/@types"],
   "exclude": ["postcss.config.js", "tailwind.config.ts"]
 }
