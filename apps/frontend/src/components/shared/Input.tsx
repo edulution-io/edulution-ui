@@ -15,7 +15,6 @@ export const originInputVariants = cva(['rounded'], {
         'block w-full border-2 border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
       lightGray: 'bg-ciDarkGrey text-ciLightGrey placeholder:text-p focus:outline-none',
       lightGrayDisabled: 'bg-ciDarkGreyDisabled text-ciLGrey placeholder:text-p focus:outline-none',
-      darkgray: 'bg-ciDarkGrey placeholder:text-p focus:outline-none',
     },
   },
 });
