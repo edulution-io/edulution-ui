@@ -39,7 +39,7 @@ const SurveyTable = <TData extends MongoId, TValue>({
       selectedRows={selectedRows}
       isLoading={isLoading}
       sorting={sorting}
-      getRowId={(originalRow: TData) => originalRow.id.toString('hex')}
+      getRowId={(originalRow: TData) => originalRow.id.toString()}
       setSorting={setSorting}
       applicationName={APPS.SURVEYS}
       scrollContainerOffsetElementIds={{

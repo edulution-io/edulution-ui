@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import i18next from 'i18next';
 import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -36,7 +37,7 @@ class InitialSurveyForm implements SurveyDto {
 
   constructor(creator: AttendeeDto, selectedSurvey?: SurveyDto) {
     this.id = selectedSurvey?.id || getNewSurveyId();
-    this.formula = selectedSurvey?.formula || { title: '' };
+    this.formula = selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() };
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.creator = creator;
     this.invitedAttendees = selectedSurvey?.invitedAttendees || [];

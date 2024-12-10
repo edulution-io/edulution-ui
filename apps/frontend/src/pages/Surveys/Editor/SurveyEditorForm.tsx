@@ -174,20 +174,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     setIsOpenSaveSurveyDialog(false);
   };
 
-  const formulaWatcher = form.watch('formula');
-  const saveNoWatcher = form.watch('saveNo');
-
-  const getSurveyEditor = useMemo(
-    () => (
-      <SurveyEditor
-        form={form}
-        formula={formulaWatcher}
-        saveNumber={saveNoWatcher}
-      />
-    ),
-    [formulaWatcher, saveNoWatcher],
-  );
-
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
     keyPrefix: 'surveys-page-floating-button_',
@@ -196,7 +182,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
-      {getSurveyEditor}
+      <SurveyEditor form={form} />
       <FloatingButtonsBar config={config} />
       <SaveSurveyDialog
         form={form}

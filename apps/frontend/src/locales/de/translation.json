@@ -313,6 +313,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "newTitle": "Neue Umfrage",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
