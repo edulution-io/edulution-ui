@@ -14,7 +14,7 @@ const DashboardPage: React.FC = () => {
   const { user } = useUserStore();
 
   return (
-    <div className="h-full overflow-y-scroll scrollbar-thin md:mx-4">
+    <div className="h-full overflow-y-auto scrollbar-thin md:mx-4">
       <div>
         {isMobileView ? (
           <h2>
