@@ -1,7 +1,8 @@
-import '@tanstack/react-table';
+import { RowData } from '@tanstack/react-table';
 
 declare module '@tanstack/react-table' {
-  interface ColumnMeta {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
     translationId: string;
   }
 }
