@@ -9,32 +9,35 @@ const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
-    <Card variant="security">
+    <Card
+      variant="security"
+      className="h-full"
+    >
       <CardContent>
-        <div className="flex flex-col gap-6">
-          <h4 className="text-md font-bold">{t('dashboard.mobileAccess.title')}</h4>
-          <p>{t('dashboard.mobileAccess.content')}</p>
-          <Button
-            variant="btn-infrastructure"
-            size="lg"
-            onClick={() => setIsDialogOpen(!isDialogOpen)}
-          >
-            <img
-              src={AppleLogo}
-              alt="AppleLogo"
-              width="20px"
-            />
-            <p>{t('dashboard.mobileAccess.manual')}</p>
-          </Button>
-          {isDialogOpen ? (
-            <MobileFileAccessSetupDialog
-              isOpen={isDialogOpen}
-              setIsOpen={setIsDialogOpen}
-            />
-          ) : null}
-        </div>
+        <h4 className="mb-6 font-bold">{t('dashboard.mobileAccess.title')}</h4>
+        <p className="mb-6">{t('dashboard.mobileAccess.content')}</p>
+        <Button
+          className="bottom-6"
+          variant="btn-infrastructure"
+          size="lg"
+          onClick={() => setIsDialogOpen(!isDialogOpen)}
+        >
+          <img
+            src={AppleLogo}
+            alt="AppleLogo"
+            width="20px"
+          />
+          <p>{t('dashboard.mobileAccess.manual')}</p>
+        </Button>
+        {isDialogOpen ? (
+          <MobileFileAccessSetupDialog
+            isOpen={isDialogOpen}
+            setIsOpen={setIsDialogOpen}
+          />
+        ) : null}
       </CardContent>
     </Card>
   );
 };
+
 export default MobileFileAccess;
