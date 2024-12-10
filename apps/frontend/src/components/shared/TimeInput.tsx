@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getHours, getMinutes, setHours, setMinutes } from 'date-fns';
 import Input from '@/components/shared/Input';
 import cn from '@libs/common/utils/className';
@@ -9,28 +9,41 @@ interface TimeInputProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
   fieldName: string;
+  date?: Date | null;
   disabled?: boolean;
 }
 
-const TimeInput = ({ form, disabled, fieldName }: TimeInputProps) => {
+const TimeInput = ({ form, disabled, fieldName, date }: TimeInputProps) => {
   const { t } = useTranslation();
-  const { setValue, getValues } = form;
+  const { setValue } = form;
+
+  const initialValue = date || new Date();
 
   const [expirationTime, setExpirationTime] = useState<string>(
-    `${getHours(getValues(fieldName)) || '00'}:${getMinutes(getValues(fieldName)) || '00'}`,
+    `${getHours(initialValue).toString().padStart(2, '0')}:${getMinutes(initialValue).toString().padStart(2, '0')}`,
   );
 
   const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setExpirationTime(e.target.value);
     const time = e.target.value.split(':');
-    let updateExpiration = getValues(fieldName) as Date;
+    if (!time[0] || !time[1]) return;
+
+    let updateExpiration = date ? new Date(date) : new Date();
     updateExpiration = setHours(updateExpiration, Number(time[0]));
     updateExpiration = setMinutes(updateExpiration, Number(time[1]));
-    setValue(fieldName, updateExpiration);
+    setExpirationTime(e.target.value);
+    setValue(fieldName, updateExpiration.toISOString());
   };
 
+  useEffect(() => {
+    if (date) {
+      setExpirationTime(
+        `${getHours(date).toString().padStart(2, '0')}:${getMinutes(date).toString().padStart(2, '0')}`,
+      );
+    }
+  }, [date]);
+
   return (
-    <div>
+    <>
       {t('common.time')}
       <Input
         type="time"
@@ -40,7 +53,7 @@ const TimeInput = ({ form, disabled, fieldName }: TimeInputProps) => {
         className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
         disabled={disabled}
       />
-    </div>
+    </>
   );
 };
 

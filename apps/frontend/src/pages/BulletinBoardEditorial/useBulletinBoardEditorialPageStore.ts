@@ -99,7 +99,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
     try {
       const { data } = await eduApi.patch<BulletinResponseDto>(`${BULLETIN_BOARD_EDU_API_ENDPOINT}/${id}`, bulletin);
 
-      set({ bulletins: [...get().bulletins, data], selectedRows: {} });
+      set({ bulletins: [...get().bulletins.filter((item) => item.id !== id), data], selectedRows: {} });
     } catch (error) {
       handleApiError(error, set);
     } finally {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
@@ -10,8 +10,7 @@ import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-import DatePicker from '@/components/shared/DatePicker';
-import TimeInput from '@/components/shared/TimeInput';
+import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<BulletinDialogForm>;
@@ -22,6 +21,20 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const { uploadAttachment } = useBulletinBoardEditorialStore();
   const { data, isLoading } = useAppConfigBulletinTableStore();
   const { setValue, watch } = form;
+
+  const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
+  const [isPermanentlyActive, setIsPermanentlyActive] = useState<boolean>(!isVisibilityDateSet);
+
+  useEffect(() => {
+    setIsPermanentlyActive(!isVisibilityDateSet);
+  }, [isVisibilityDateSet]);
+
+  useEffect(() => {
+    if (isPermanentlyActive) {
+      setValue('isVisibleStartDate', null);
+      setValue('isVisibleEndDate', null);
+    }
+  }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
     form.setValue('category', data.find((c) => c.name === categoryName) || data[0]);
@@ -34,13 +47,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
     return `${BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT}/${filePath}`;
   };
 
-  const handleIsVisibleStartDateChange = (value: Date | undefined) => {
-    setValue('isVisibleStartDate', value || null, { shouldValidate: true });
-  };
-
-  const handleIsVisibleEndDateChange = (value: Date | undefined) => {
-    setValue('isVisibleEndDate', value || null, { shouldValidate: true });
-  };
+  const isActive = watch('isActive');
 
   return (
     <Form {...form}>
@@ -60,46 +67,40 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
         <DialogSwitch
           translationId="bulletinboard.isActive"
-          checked={watch('isActive')}
+          checked={isActive}
           onCheckedChange={(isChecked) => {
             setValue('isActive', isChecked);
           }}
         />
 
-        <div className="flex items-center text-foreground">
-          {t('bulletinboard.activeFrom')}
-          <div className="ml-2">
-            <DatePicker
-              selected={watch('isVisibleStartDate') || undefined}
-              onSelect={handleIsVisibleStartDateChange}
-            />
-          </div>
-          <div className="flex items-center text-foreground">
-            <TimeInput
-              form={form}
-              fieldName="isVisibleStartDate"
-            />
-          </div>
-        </div>
+        {isActive && (
+          <DialogSwitch
+            translationId="bulletinboard.isPermanentlyActive"
+            checked={isPermanentlyActive}
+            onCheckedChange={(isChecked) => {
+              setIsPermanentlyActive(isChecked);
+            }}
+          />
+        )}
 
-        <div className="flex items-center text-foreground">
-          {t('bulletinboard.activeUntil')}
-          <div className="ml-2">
-            <DatePicker
-              selected={watch('isVisibleEndDate') || undefined}
-              onSelect={handleIsVisibleEndDateChange}
-            />
-          </div>
-          <div className="flex items-center text-foreground">
-            <TimeInput
+        {isActive && !isPermanentlyActive && (
+          <>
+            <DateAndTimeInput
               form={form}
-              fieldName="isVisibleEndDate"
+              name="isVisibleStartDate"
+              translationId="bulletinboard.activeFrom"
             />
-          </div>
-        </div>
+            <DateAndTimeInput
+              form={form}
+              name="isVisibleEndDate"
+              translationId="bulletinboard.activeUntil"
+            />
+          </>
+        )}
 
         <FormField
           name="title"
+          defaultValue={form.getValues('title')}
           form={form}
           labelTranslationId={t('bulletinboard.title')}
           variant="default"

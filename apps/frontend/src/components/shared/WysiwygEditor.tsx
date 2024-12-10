@@ -64,14 +64,16 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   );
 
   return (
-    <ReactQuill
-      ref={quillRef}
-      theme="snow"
-      value={value}
-      onChange={onChange}
-      modules={modules}
-      formats={BULLETIN_EDITOR_FORMATS}
-    />
+    <div className="quill-container">
+      <ReactQuill
+        ref={quillRef}
+        theme="snow"
+        value={value}
+        onChange={onChange}
+        modules={modules}
+        formats={BULLETIN_EDITOR_FORMATS}
+      />
+    </div>
   );
 };
 

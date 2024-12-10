@@ -6,6 +6,9 @@
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
   "bulletinboard": {
+    "isVisibleStartDate": "Active from",
+    "isVisibleEndDate": "Active until",
+    "isActiveOrExpired": "Active/Expired",
     "activeFrom": "Active from",
     "activeUntil": "Active until",
     "appTitle": "Bulletin Board",
@@ -22,6 +25,7 @@
     "editCategorie": "Edit category",
     "editorialAccess": "Editorial access",
     "isActive": "Active",
+    "isPermanentlyActive": "Permanently active",
     "error": "Error",
     "filterPlaceHolderText": "Search for categories",
     "placeholderCategoryName": "Name",
@@ -663,6 +667,7 @@
   "edit": "Edit",
   "common": {
     "errors": {
+      "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },

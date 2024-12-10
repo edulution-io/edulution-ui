@@ -6,6 +6,9 @@
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
+    "isVisibleStartDate": "Aktiv von",
+    "isVisibleEndDate": "Aktiv bis",
+    "isActiveOrExpired": "Aktiv/Abgelaufen",
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
@@ -17,6 +20,7 @@
     "name": "Name",
     "editCategorie": "Kategorie bearbeiten",
     "isActive": "Aktiv",
+    "isPermanentlyActive": "Ist permanent aktiv",
     "visibleFor": "Sichtbar für",
     "visibleForUsers": "Sichtbar für Nutzer",
     "visibleForGroups": "Sichtbar für Gruppen",
@@ -663,6 +667,7 @@
   },
   "common": {
     "errors": {
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },

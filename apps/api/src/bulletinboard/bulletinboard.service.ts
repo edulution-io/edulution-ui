@@ -79,21 +79,42 @@ class BulletinBoardService {
     return bulletinsByCategory;
   }
 
-  async findAllBulletins(username: string, token: string, isActive?: boolean): Promise<BulletinResponseDto[]> {
+  async findAllBulletins(
+    username: string,
+    token: string,
+    filterOnlyActiveBulletins?: boolean,
+  ): Promise<BulletinResponseDto[]> {
     const filter: Record<string, unknown> = { 'creator.username': username };
-    if (isActive !== undefined) {
-      filter.isActive = isActive;
+
+    if (filterOnlyActiveBulletins !== undefined) {
+      filter.isActive = filterOnlyActiveBulletins;
     }
 
     const bulletins = await this.bulletinModel.find(filter).populate('category').exec();
 
-    return bulletins.map(
-      (bulletin) =>
-        ({
-          ...bulletin.toObject({ virtuals: true }),
-          content: BulletinBoardService.replaceTokenPlaceholderInContent(bulletin.content, token),
-        }) as unknown as BulletinResponseDto,
-    );
+    const currentDate = new Date();
+
+    return bulletins
+      .filter((bulletin) => {
+        if (filterOnlyActiveBulletins === undefined) {
+          return true;
+        }
+        if (!bulletin.isActive) {
+          return false;
+        }
+
+        const startDate = bulletin.isVisibleStartDate ? new Date(bulletin.isVisibleStartDate) : null;
+        const endDate = bulletin.isVisibleEndDate ? new Date(bulletin.isVisibleEndDate) : null;
+
+        return (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
+      })
+      .map(
+        (bulletin) =>
+          ({
+            ...bulletin.toObject({ virtuals: true }),
+            content: BulletinBoardService.replaceTokenPlaceholderInContent(bulletin.content, token),
+          }) as unknown as BulletinResponseDto,
+      );
   }
 
   private static replaceTokenPlaceholderInContent(content: string, token: string): string {
@@ -164,9 +185,11 @@ class BulletinBoardService {
     };
 
     bulletin.title = dto.title;
+    bulletin.isActive = dto.isActive;
     bulletin.content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
     bulletin.category = new Types.ObjectId(dto.category.id);
     bulletin.isVisibleStartDate = dto.isVisibleStartDate;
+    bulletin.attachmentFileNames = dto.attachmentFileNames;
     bulletin.isVisibleEndDate = dto.isVisibleEndDate;
     bulletin.updatedBy = updatedBy;
 

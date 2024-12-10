@@ -6,6 +6,7 @@ import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import { FaClock } from 'react-icons/fa6';
 
 const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   {
@@ -59,65 +60,75 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     id: 'isActive',
     header: ({ column }) => (
       <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="bulletinboard.isActive"
+        titleTranslationId="bulletinboard.isActiveOrExpired"
         column={column}
       />
     ),
     accessorFn: (row) => row.isActive,
-    cell: ({ row }) => {
+    cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
+
+      const currentDate = new Date();
+      const startDate = original.isVisibleStartDate ? new Date(original.isVisibleStartDate) : null;
+      const endDate = original.isVisibleEndDate ? new Date(original.isVisibleEndDate) : null;
+      const isExpired = (startDate && currentDate < startDate) || (endDate && currentDate > endDate);
+
+      const isActiveIcon = original.isActive ? (
+        <IoEyeSharp className="text-green-500" />
+      ) : (
+        <FaEyeSlash className="text-red-500" />
+      );
+
       return (
         <SelectableTextCell
-          icon={
-            row.original.isActive ? <IoEyeSharp className="text-green-500" /> : <FaEyeSlash className="text-red-500" />
-          }
+          icon={isExpired ? <FaClock className="text-red-500" /> : isActiveIcon}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
-            setSelectedBulletinToEdit(row.original);
+            setSelectedBulletinToEdit(original);
           }}
         />
       );
     },
   },
   {
-    id: 'createdAt',
+    id: 'isVisibleStartDate',
     header: ({ column }) => (
       <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="common.createdAt"
+        titleTranslationId="bulletinboard.isVisibleStartDate"
         column={column}
       />
     ),
-    accessorFn: (row) => row.createdAt,
-    cell: ({ row }) => {
+    accessorFn: (row) => row.isVisibleStartDate,
+    cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
         <SelectableTextCell
-          text={new Date(row.original.createdAt).toLocaleString()}
+          text={original.isVisibleStartDate ? new Date(original.isVisibleStartDate).toLocaleString() : ''}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
-            setSelectedBulletinToEdit(row.original);
+            setSelectedBulletinToEdit(original);
           }}
         />
       );
     },
   },
   {
-    id: 'updatedAt',
+    id: 'isVisibleEndDate',
     header: ({ column }) => (
       <SortableHeader<BulletinResponseDto, unknown>
-        titleTranslationId="common.updatedAt"
+        titleTranslationId="bulletinboard.isVisibleEndDate"
         column={column}
       />
     ),
-    accessorFn: (row) => row.updatedAt,
-    cell: ({ row }) => {
+    accessorFn: (row) => row.isVisibleEndDate,
+    cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
         <SelectableTextCell
-          text={new Date(row.original.updatedAt).toLocaleString()}
+          text={original.isVisibleEndDate ? new Date(original.isVisibleEndDate).toLocaleString() : ''}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
-            setSelectedBulletinToEdit(row.original);
+            setSelectedBulletinToEdit(original);
           }}
         />
       );
