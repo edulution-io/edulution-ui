@@ -18,6 +18,26 @@ const BulletinBoardPageColumn = ({
 }) => {
   const { t } = useTranslation();
 
+  const getAuthorDescription = (bulletin: BulletinResponseDto) => {
+    const isCreatorLastUpdater = bulletin.creator.username === bulletin.updatedBy?.username || !bulletin.updatedBy;
+    const translationId = isCreatorLastUpdater ? 'bulletinboard.createdFrom' : 'bulletinboard.createdFromAndUpdatedBy';
+    return (
+      <div className="mt-2 text-right italic">
+        {t(translationId, {
+          createdBy: `${bulletin.creator.firstName} ${bulletin.creator.lastName}`,
+          lastUpdatedBy: `${bulletin.updatedBy?.firstName} ${bulletin.updatedBy?.lastName}`,
+          lastUpdated: new Date(bulletin.updatedAt).toLocaleString(undefined, {
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        })}
+      </div>
+    );
+  };
+
   return (
     <div
       className={cn('flex h-full w-1/2 flex-shrink-0 flex-col rounded-lg p-4', {
@@ -49,6 +69,7 @@ const BulletinBoardPageColumn = ({
               className="mt-3 text-gray-100"
               dangerouslySetInnerHTML={{ __html: bulletin.content }}
             />
+            {getAuthorDescription(bulletin)}
           </div>
         ))}
       </div>

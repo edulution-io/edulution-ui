@@ -6,6 +6,8 @@
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
+    "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
+    "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
     "isVisibleStartDate": "Aktiv von",
     "isVisibleEndDate": "Aktiv bis",
     "isActiveOrExpired": "Aktiv/Abgelaufen",
