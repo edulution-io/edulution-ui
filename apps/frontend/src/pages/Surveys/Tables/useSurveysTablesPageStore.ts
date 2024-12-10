@@ -109,19 +109,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
-  onClickSurveysTableCell: (row: Row<SurveyDto>) => {
-    set({ selectedRows: {} });
-
-    const survey = row.original;
-    const { selectedSurvey } = get();
-    if (selectedSurvey && survey.id === selectedSurvey.id) {
-      set({ selectedSurvey: undefined });
-      return;
-    }
-    set({ selectedSurvey: survey });
-
-    row.toggleSelected();
-  },
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => row.toggleSelected(),
 }));
 
 export default useSurveyTablesPageStore;

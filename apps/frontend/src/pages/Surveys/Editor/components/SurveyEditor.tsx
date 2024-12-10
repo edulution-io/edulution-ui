@@ -1,5 +1,4 @@
 import React from 'react';
-import i18next from 'i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
@@ -8,28 +7,34 @@ import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
 import 'survey-creator-core/i18n/spanish';
 import 'survey-creator-core/i18n/italian';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
+
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
+import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import surveyTheme from '@/pages/Surveys/theme/theme';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
   saveNumber: number;
   formula?: TSurveyFormula;
 }
 
-editorLocalization.defaultLocale = i18next.options.lng || 'en';
-localization.currentLocale = i18next.options.lng || 'en';
-
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula } = props;
+
+  const { language } = useLanguage();
+
+  editorLocalization.defaultLocale = language;
+  localization.currentLocale = language;
 
   const creatorOptions = {
     generateValidJSON: true,
