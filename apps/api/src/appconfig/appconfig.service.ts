@@ -9,6 +9,7 @@ import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
+import MigrationService from '../migration/migration.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -19,6 +20,16 @@ class AppConfigService implements OnModuleInit {
 
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
+
+    try {
+      await MigrationService.runMigrations(this.appConfigModel);
+    } catch (error) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadAppConfigFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        AppConfigService.name,
+      );
+    }
   }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
