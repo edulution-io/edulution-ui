@@ -3,7 +3,7 @@ import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import useUserStore from '@/store/UserStore/UserStore';
+import useLanguage from '@/store/useLanguage';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,
@@ -21,7 +21,7 @@ interface ResultVisualizationDialogBodyProps {
 const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
   const { formula, result } = props;
 
-  const { user } = useUserStore();
+  const { language } = useLanguage();
 
   const [survey, setSurvey] = useState<SurveyModel | null>(null);
   const [visuPanel, setVisuPanel] = useState<VisualizationPanel | null>(null);
@@ -35,7 +35,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
     const questions = survey.getAllQuestions() || [];
     const answers = result || [];
     const visualizationPanel = new VisualizationPanel(questions, answers, visuPanelOptions);
-    visualizationPanel.locale = user?.language ?? 'de';
+    visualizationPanel.locale = language;
     visualizationPanel.showToolbar = false;
     setVisuPanel(visualizationPanel);
   }

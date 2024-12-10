@@ -8,10 +8,10 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import useUserStore from '@/store/UserStore/UserStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
+import useLanguage from '@/store/useLanguage';
 
 interface ParticipateDialogBodyProps {
   surveyId: mongoose.Types.ObjectId;
@@ -49,12 +49,12 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     className,
   } = props;
 
-  const { user } = useUserStore();
+  const { language } = useLanguage();
 
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
-  surveyModel.locale = user?.language ?? 'de';
+  surveyModel.locale = language;
 
   if (surveyModel.pages.length > 1) {
     surveyModel.showProgressBar = 'top';

@@ -17,9 +17,9 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageE
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
-import useUserStore from '@/store/UserStore/UserStore';
 import useElementHeight from '@/hooks/useElementHeight';
 import surveyTheme from '@/pages/Surveys/theme/theme';
+import useLanguage from '@/store/useLanguage';
 
 interface SurveyEditorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,10 +31,10 @@ interface SurveyEditorProps {
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form, saveNumber, formula } = props;
 
-  const { user } = useUserStore();
+  const { language } = useLanguage();
 
-  editorLocalization.defaultLocale = user?.language ?? 'de';
-  localization.currentLocale = user?.language ?? 'de';
+  editorLocalization.defaultLocale = language;
+  localization.currentLocale = language;
 
   const creatorOptions = {
     generateValidJSON: true,
