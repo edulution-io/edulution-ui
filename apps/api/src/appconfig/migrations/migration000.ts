@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { Migration, MigrationModels } from './migration.type';
+import { Migration, MigrationModels } from '../../migration/migration.type';
 
 const migration000: Migration<MigrationModels> = {
   name: '000-add-db-version-number',

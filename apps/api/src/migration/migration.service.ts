@@ -1,13 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Model } from 'mongoose';
-import createMigrationList from './createMigrationList';
-import { MigrationModels } from './migration.type';
+import { Migration, MigrationModels } from './migration.type';
 
 @Injectable()
 class MigrationService {
-  static async runMigrations(model: Model<MigrationModels>) {
-    const migrations = createMigrationList<MigrationModels>();
-    Logger.log(`⬆ Executing ${migrations.length} migrations`);
+  static async runMigrations(model: Model<MigrationModels>, migrations: Migration<MigrationModels>[]) {
+    Logger.log(`⬆ Executing ${model.modelName}: ${migrations.length} migrations`);
 
     await migrations.reduce(async (prevPromise, migration) => {
       await prevPromise;

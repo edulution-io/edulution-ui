@@ -10,6 +10,7 @@ import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath'
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
+import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -22,7 +23,7 @@ class AppConfigService implements OnModuleInit {
     await initializeCollection(this.connection, this.appConfigModel);
 
     try {
-      await MigrationService.runMigrations(this.appConfigModel);
+      await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
