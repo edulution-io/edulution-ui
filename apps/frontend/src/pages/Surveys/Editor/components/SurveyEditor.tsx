@@ -116,7 +116,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   return (
     <div
-      // className="survey-editor w-full overflow-y-auto overflow-x-hidden scrollbar-thin md:w-auto md:max-w-7xl xl:max-w-full"
       className="survey-editor"
       style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
     >
