@@ -20,9 +20,9 @@ const migration001: Migration<MigrationModels> = {
       return;
     }
 
-    const isOldExtendedOptionsValid = (extendedOptions: ExtendedOption[]): extendedOptions is ExtendedOption[] => {
+    const isOldExtendedOptionsValid = (extendedOptions: ExtendedOption[]) => {
       if (!Array.isArray(extendedOptions)) return false;
-      return extendedOptions.every((option) => typeof option.name === 'string' && typeof option.value === 'string');
+      return true;
     };
 
     await Promise.all(
@@ -36,6 +36,7 @@ const migration001: Migration<MigrationModels> = {
         }
 
         const newExtendedOptions = oldExtendedOptions.reduce<Record<string, string>>((acc, option) => {
+          if (!option.name) return {};
           acc[option.name] = option.value;
           return acc;
         }, {});
