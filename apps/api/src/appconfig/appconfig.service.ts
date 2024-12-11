@@ -9,6 +9,8 @@ import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
+import MigrationService from '../migration/migration.service';
+import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -19,6 +21,8 @@ class AppConfigService implements OnModuleInit {
 
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
+
+    await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
   }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
