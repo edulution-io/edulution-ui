@@ -4,7 +4,7 @@ import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
@@ -58,7 +58,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         }}
       >
         <div>{t('bulletinboard.category')}</div>
-        <DropdownMenu
+        <DropdownSelect
           options={data}
           selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
           handleChange={handleCategoryChange}

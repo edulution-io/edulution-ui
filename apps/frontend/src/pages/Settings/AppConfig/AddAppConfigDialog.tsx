@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -31,7 +31,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
     return (
       <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
-        <DropdownMenu
+        <DropdownSelect
           options={filteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
