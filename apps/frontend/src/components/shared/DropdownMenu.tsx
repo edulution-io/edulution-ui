@@ -21,7 +21,7 @@ const DropdownMenu = ({
     <DropdownMenuPortal>
       <DropdownMenuContent
         className={cn(
-          'z-10 min-w-[8rem] overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-1 text-white shadow-md',
+          'z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-1 text-white shadow-md',
         )}
       >
         {items.map((item) =>
