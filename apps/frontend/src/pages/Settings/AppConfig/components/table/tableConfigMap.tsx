@@ -2,9 +2,10 @@ import React from 'react';
 import AppConfigBulletinTableColumn from '@/pages/BulletinBoard/AppConfigBulletinTableColum';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import AppConfigEditBulletinCategoryDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategoryDialog';
-import AppConfigTableConfigMap from '@/pages/Settings/AppConfig/components/table/appConfigTableComponent';
 
-const TABLE_CONFIG_MAP: AppConfigTableConfigMap = {
+import AppConfigTableConfigsByAppName from '@libs/appconfig/types/appConfigTableConfigsByAppName';
+
+const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   bulletinboard: [
     {
       key: 'bulletinboard',

@@ -92,6 +92,7 @@ const ScrollableTable = <TData, TValue>({
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
   const filteredRowCount = table.getFilteredRowModel().rows.length;
+  const filterValue = String(table.getColumn(filterKey)?.getFilterValue() || '');
 
   return (
     <>
@@ -126,7 +127,7 @@ const ScrollableTable = <TData, TValue>({
           <div className="flex items-center py-4">
             <Input
               placeholder={t(filterPlaceHolderText)}
-              value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ''}
+              value={filterValue}
               onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
               className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
             />
@@ -147,9 +148,9 @@ const ScrollableTable = <TData, TValue>({
                     <DropdownMenuCheckboxItem
                       key={column.id}
                       checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                      onCheckedChange={(value) => column.toggleVisibility(value)}
                     >
-                      {t((column.columnDef.meta?.translationId as string) ?? column.id)}
+                      {t(column.columnDef.meta?.translationId ?? column.id)}
                     </DropdownMenuCheckboxItem>
                   ))}
               </Content>

@@ -6,7 +6,7 @@ import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import useAppConfigDialogStore from '../Settings/AppConfig/components/table/appConfigDialogStore';
+import useAppConfigTableDialogStore from '../Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 
 const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
@@ -19,7 +19,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
         setDialogOpen(true);
@@ -42,7 +42,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.isActive,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
         setDialogOpen(true);
@@ -66,7 +66,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
       const { setSelectedCategory } = useAppConfigBulletinTableStore();
-      const { setDialogOpen } = useAppConfigDialogStore();
+      const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
         setDialogOpen(true);

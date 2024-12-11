@@ -7,14 +7,15 @@ import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 import GetToken from '../common/decorators/getToken.decorator';
 
-@ApiTags('bulletinboard')
+@ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
-@Controller('bulletinboard')
+@Controller(APPS.BULLETIN_BOARD)
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
@@ -48,7 +49,7 @@ class BulletinBoardController {
     return this.bulletinBoardService.serveBulletinAttachment(filename, res);
   }
 
-  @Post('upload')
+  @Post('files')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -68,8 +69,9 @@ class BulletinBoardController {
       },
     }),
   )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = this.bulletinBoardService.uploadBulletinAttachment(file);
+    const fileName = BulletinBoardService.checkAttachmentFile(file);
     return res.status(200).json(fileName);
   }
 }

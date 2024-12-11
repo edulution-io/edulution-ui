@@ -18,7 +18,7 @@ const BulletinBoardEditorialPage = () => {
   const { t } = useTranslation();
 
   const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
-  const { fetchGenericTableContent } = useAppConfigBulletinTableStore();
+  const { fetchTableContent } = useAppConfigBulletinTableStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
@@ -26,7 +26,7 @@ const BulletinBoardEditorialPage = () => {
   };
 
   const fetchBulletinData = async () => {
-    await fetchGenericTableContent();
+    await fetchTableContent();
     await getBulletins();
   };
 

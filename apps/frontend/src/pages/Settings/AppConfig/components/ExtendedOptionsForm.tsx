@@ -71,7 +71,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
                 <h4>{t(`settings.appconfig.sections.${section}`)}</h4>
               </AccordionTrigger>
               <AccordionContent>
-                <div>{options?.map((option: AppConfigExtendedOption) => renderComponent(option))}</div>
+                {options?.map((option: AppConfigExtendedOption) => renderComponent(option))}
               </AccordionContent>
             </AccordionItem>
           </AccordionSH>

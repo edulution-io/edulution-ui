@@ -58,7 +58,6 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       set({ bulletins: data });
     } catch (error) {
       handleApiError(error, set);
-      set({ bulletins: [] });
     } finally {
       set({ isLoading: false });
     }

@@ -6,11 +6,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
-import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import { MdDelete, MdUpdate } from 'react-icons/md';
+import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 
 interface BulletinCreateDialogProps {
   trigger?: React.ReactNode;
@@ -29,15 +29,15 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     setSelectedBulletinToEdit,
     setIsCreateBulletinDialogOpen,
   } = useBulletinBoardEditorialStore();
-  const { tableData, fetchGenericTableContent } = useAppConfigBulletinTableStore();
+  const { tableContentData, fetchTableContent } = useAppConfigBulletinTableStore();
 
   useEffect(() => {
-    void fetchGenericTableContent();
+    void fetchTableContent();
   }, []);
 
-  const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
+  const initialFormValues: CreateBulletinDto = selectedBulletinToEdit || {
     title: '',
-    category: tableData[0],
+    category: tableContentData[0],
     attachmentFileNames: [],
     content: '',
     isActive: true,
@@ -45,7 +45,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     isVisibleStartDate: null,
   };
 
-  const form = useForm<BulletinDialogForm>({
+  const form = useForm<CreateBulletinDto>({
     mode: 'onChange',
     resolver: zodResolver(getBulletinFormSchema(t)),
     defaultValues: initialFormValues,
@@ -53,7 +53,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
 
   useEffect(() => {
     form.reset(initialFormValues);
-  }, [selectedBulletinToEdit, tableData, form]);
+  }, [selectedBulletinToEdit, tableContentData, form]);
 
   const onSubmit = async () => {
     if (selectedBulletinToEdit) {

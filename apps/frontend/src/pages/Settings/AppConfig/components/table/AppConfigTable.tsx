@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { useTranslation } from 'react-i18next';
-import { AppConfigTableEntryUnion } from '@/pages/Settings/AppConfig/components/table/appConfigTableComponent';
-import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
-import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
+import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/appConfigTableConfig';
+import getTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
+import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import { IoAdd } from 'react-icons/io5';
 import { Button } from '@/components/shared/Button';
 
@@ -16,20 +16,20 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
     return <div>{t('common.error')}</div>;
   }
 
-  const renderConfig = (config: AppConfigTableEntryUnion, index: number) => {
+  const renderConfig = (config: AppConfigTableConfig, index: number) => {
     const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey } = config;
-    const { tableData, fetchGenericTableContent } = useStore();
-    const { setDialogOpen, isDialogOpen } = useAppConfigDialogStore();
+    const { tableContentData, fetchTableContent } = useStore();
+    const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
 
     useEffect(() => {
       const fetchDataAsync = async () => {
-        if (fetchGenericTableContent) {
-          await fetchGenericTableContent();
+        if (fetchTableContent) {
+          await fetchTableContent();
         }
       };
 
       void fetchDataAsync();
-    }, [fetchGenericTableContent, isDialogOpen]);
+    }, [fetchTableContent, isDialogOpen]);
 
     const handleAddClick = () => {
       setDialogOpen(true);
@@ -44,7 +44,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
           columns={columns}
           filterKey={filterKey}
           filterPlaceHolderText={filterPlaceHolderText}
-          data={tableData}
+          data={tableContentData}
           applicationName={applicationName}
           enableRowSelection={false}
           usedInAppConfig

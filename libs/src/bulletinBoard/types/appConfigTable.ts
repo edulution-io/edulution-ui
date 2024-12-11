@@ -1,6 +1,6 @@
 interface AppConfigTable<T> {
-  tableData: T[];
-  fetchGenericTableContent: () => Promise<T[]>;
+  tableContentData: T[];
+  fetchTableContent: () => Promise<T[]>;
 }
 
 export default AppConfigTable;
