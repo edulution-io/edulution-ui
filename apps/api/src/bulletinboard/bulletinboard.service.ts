@@ -34,19 +34,11 @@ class BulletinBoardService {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(file: Express.Multer.File): string {
     if (!file) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.FILE_NOT_PROVIDED,
-        HttpStatus.BAD_REQUEST,
-        'No file provided.',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }
 
     if (!BULLETIN_BOARD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.ATTACHMENT_UPLOAD_FAILED,
-        HttpStatus.BAD_REQUEST,
-        'Invalid file type. Only images, audio, video, and office files are allowed.',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
     }
 
     return file.filename;
@@ -56,7 +48,7 @@ class BulletinBoardService {
     const filePath = join(this.attachmentsPath, filename);
 
     if (!existsSync(filePath)) {
-      return res.status(HttpStatus.NOT_FOUND).json({ message: 'File not found' });
+      throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const fileStream = createReadStream(filePath);
@@ -124,11 +116,7 @@ class BulletinBoardService {
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.INVALID_CATEGORY,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'Invalid category',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const creator = {
@@ -154,28 +142,16 @@ class BulletinBoardService {
   async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
     const bulletin = await this.bulletinModel.findById(id).exec();
     if (!bulletin) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'Bulletin not found',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     if (bulletin.creator.username !== currentUser.preferred_username) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
-        HttpStatus.UNAUTHORIZED,
-        'Unauthorized to update this bulletin',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.INVALID_CATEGORY,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'Invalid category',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const updatedBy = {
@@ -196,27 +172,20 @@ class BulletinBoardService {
     return bulletin.save();
   }
 
-  async removeBulletin(username: string, id: string) {
-    const bulletin = await this.bulletinModel.findById(id).exec();
-    if (!bulletin) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'Bulletin not found',
-      );
+  async removeBulletins(username: string, ids: string[]) {
+    const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
+
+    if (bulletins.length !== ids.length) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    if (bulletin.creator.username !== username) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN,
-        HttpStatus.UNAUTHORIZED,
-        'Bulletin not found',
-      );
+    const unauthorizedBulletins = bulletins.filter((bulletin) => bulletin.creator.username !== username);
+
+    if (unauthorizedBulletins.length > 0) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
-    await this.bulletinModel.findByIdAndDelete(id).exec();
-
-    return { message: 'Bulletin deleted successfully' };
+    await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
   }
 }
 

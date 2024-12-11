@@ -66,13 +66,16 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
 
   setIsDeleteBulletinDialogOpen: (isOpen) => set({ isDeleteBulletinDialogOpen: isOpen }),
   deleteBulletins: async (bulletins: BulletinResponseDto[]) => {
-    set({ isDialogLoading: true });
+    set({ isDialogLoading: true, error: null });
     try {
-      const { data } = await eduApi.delete<BulletinResponseDto[]>(BULLETIN_BOARD_EDU_API_ENDPOINT, {
-        data: bulletins.map((c) => c.title),
+      await eduApi.delete<BulletinResponseDto[]>(BULLETIN_BOARD_EDU_API_ENDPOINT, {
+        data: bulletins.map((c) => c.id),
       });
 
-      set({ bulletins: data, selectedRows: {} });
+      set({
+        bulletins: get().bulletins.filter((item) => !bulletins.some((b) => b.id === item.id)),
+        selectedRows: {},
+      });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -82,7 +85,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
 
   setIsCreateBulletinDialogOpen: (isOpen) => set({ isCreateBulletinDialogOpen: isOpen }),
   createBulletin: async (bulletin) => {
-    set({ isDialogLoading: true });
+    set({ isDialogLoading: true, error: null });
     try {
       const { data } = await eduApi.post<BulletinResponseDto>(BULLETIN_BOARD_EDU_API_ENDPOINT, bulletin);
 
@@ -95,7 +98,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   },
 
   updateBulletin: async (id, bulletin) => {
-    set({ isDialogLoading: true });
+    set({ isDialogLoading: true, error: null });
     try {
       const { data } = await eduApi.patch<BulletinResponseDto>(`${BULLETIN_BOARD_EDU_API_ENDPOINT}/${id}`, bulletin);
 
@@ -108,7 +111,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   },
 
   uploadAttachment: async (file): Promise<string> => {
-    set({ isAttachmentUploadLoading: true });
+    set({ isAttachmentUploadLoading: true, error: null });
     const formData = new FormData();
     formData.append('file', file);
 

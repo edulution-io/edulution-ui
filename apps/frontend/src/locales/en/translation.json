@@ -56,6 +56,7 @@
       "categoryDeleteFailed": "Failed to delete category",
       "attachmentUploadFailed": "Failed to upload attachment",
       "fileNotProvided": "File not provided",
+      "fileNotFound": "File not found",
       "invalidCategory": "Invalid category",
       "bulletinNotFound": "Bulletin not found",
       "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",

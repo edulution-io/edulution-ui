@@ -10,6 +10,7 @@ import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
+import { MdDelete, MdUpdate } from 'react-icons/md';
 
 interface BulletinCreateDialogProps {
   trigger?: React.ReactNode;
@@ -23,6 +24,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     updateBulletin,
     getBulletins,
     createBulletin,
+    deleteBulletins,
     selectedBulletinToEdit,
     setSelectedBulletinToEdit,
     setIsCreateBulletinDialogOpen,
@@ -73,18 +75,35 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-end">
-      <form onSubmit={handleFormSubmit}>
+    <form onSubmit={handleFormSubmit}>
+      <div className="mt-4 flex justify-end space-x-2">
+        {selectedBulletinToEdit && (
+          <Button
+            variant="btn-attention"
+            size="lg"
+            type="button"
+            onClick={async () => {
+              await deleteBulletins([selectedBulletinToEdit]);
+              setIsCreateBulletinDialogOpen(false);
+              setSelectedBulletinToEdit(null);
+            }}
+          >
+            <MdDelete size={20} />
+            {t('common.delete')}
+          </Button>
+        )}
+
         <Button
           variant="btn-collaboration"
           disabled={isDialogLoading}
           size="lg"
           type="submit"
         >
+          <MdUpdate size={20} />
           {t('common.save')}
         </Button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 
   return (

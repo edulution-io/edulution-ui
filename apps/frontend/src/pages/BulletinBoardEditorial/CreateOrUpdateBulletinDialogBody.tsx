@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form } from '@/components/ui/Form';
+import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
@@ -20,7 +20,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
   const { data, isLoading } = useAppConfigBulletinTableStore();
-  const { setValue, watch } = form;
+  const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
   const [isPermanentlyActive, setIsPermanentlyActive] = useState<boolean>(!isVisibilityDateSet);
@@ -111,6 +111,11 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           onChange={(value) => setValue('content', value)}
           onUpload={handleUpload}
         />
+        <div>
+          {formState.errors.content && (
+            <FormMessage className="text-p">{formState.errors.content.message?.toString()}</FormMessage>
+          )}
+        </div>
       </form>
     </Form>
   );

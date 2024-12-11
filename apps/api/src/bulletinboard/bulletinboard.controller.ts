@@ -38,9 +38,9 @@ class BulletinBoardController {
     return this.bulletinBoardService.updateBulletin(currentUser, id, bulletin);
   }
 
-  @Delete(':id')
-  removeBulletin(@GetCurrentUsername() currentUsername: string, @Param('id') id: string) {
-    return this.bulletinBoardService.removeBulletin(currentUsername, id);
+  @Delete()
+  removeBulletins(@GetCurrentUsername() currentUsername: string, @Body() ids: string[]) {
+    return this.bulletinBoardService.removeBulletins(currentUsername, ids);
   }
 
   @Get('attachments/:filename')

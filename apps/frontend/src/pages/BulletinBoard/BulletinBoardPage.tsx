@@ -11,7 +11,7 @@ const BulletinBoardPage = () => {
     void getBulletinsByCategoryNames();
   }, []);
 
-  const pageBarsHeight = useElementHeight([BLANK_LAYOUT_HEADER_ID, FOOTER_ID]);
+  const pageBarsHeight = useElementHeight([BLANK_LAYOUT_HEADER_ID, FOOTER_ID]) + 15;
 
   if (!bulletinsByCategories) {
     return null;
