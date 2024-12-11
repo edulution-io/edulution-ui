@@ -3,6 +3,105 @@
 @tailwind utilities;
 
 .survey-editor {
+  .sd-element {
+    padding: 5px;
+  }
+
+  .svc-notifier--info {
+    position: fixed;
+    right: 210px;
+    bottom: 120px;
+    transform: translate(50%, 50%);
+  }
+
+  /* header-bar-icons */
+  .sv-action-bar-item__icon {
+    max-width: 24px;
+    max-height: 24px;
+  }
+
+  /* page-footer-icons / add-new-question-bar */
+  .svc-element__add-new-question {
+    padding-right: 20px;
+    padding-left: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    svg {
+      max-width: 30px;
+      max-height: 30px;
+    }
+  }
+
+  /* survey-element-action-icons / question-actions-bar */
+  .svc-survey-element-toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .svc-survey-element-toolbar__item,
+  .svc-survey-element-toolbar__item--with-text {
+    align-items: center;
+
+    svg {
+      max-width: 20px;
+      max-height: 20px;
+      justify-content: center;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .svc-survey-element-toolbar__item--with-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+
+    max-height: 50px;
+  }
+  .svc-dropdown-action--convertTo-last {
+    margin-right: 3rem;
+  }
+
+  /* survey-page-action-icons / page-actions-bar */
+  .svc-page-toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .svc-page-toolbar__item,
+  .svc-page-toolbar__item--with-text {
+    max-height: 50px;
+    align-items: center;
+
+    svg {
+      max-width: 24px;
+      max-height: 24px;
+      justify-content: center;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .svc-page-toolbar__item--with-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+
+    max-height: 50px;
+  }
+
   /* Sturctured */
   .svc-creator {
     .svc-top-bar {
@@ -89,7 +188,7 @@
       }
     }
 
-    @media only screen and (max-width: 640px) {
+    @media only screen and (max-width: 951px) {
       .svc-top-bar {
         display: none !important;
       }
