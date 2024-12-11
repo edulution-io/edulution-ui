@@ -16,15 +16,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 import Input from '@/components/shared/Input';
-import {
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent as Content,
-  DropdownMenuSH as DropdownMenu,
-  DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenuSH';
 
 import { Button } from '@/components/shared/Button';
 import { ChevronDown } from 'lucide-react';
+import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -124,38 +119,35 @@ const ScrollableTable = <TData, TValue>({
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <div className="w-full">
-          <div className="flex items-center py-4">
-            <Input
-              placeholder={t(filterPlaceHolderText)}
-              value={filterValue}
-              onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-              className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="btn-small"
-                  className="ml-auto h-8 bg-ciDarkGrey text-ciLightGrey"
-                >
-                  {t('common.columns')} <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <Content align="end">
-                {table
+          {!!data.length && (
+            <div className="flex items-center py-4">
+              <Input
+                placeholder={t(filterPlaceHolderText)}
+                value={filterValue}
+                onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
+                className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
+              />
+              <DropdownMenu
+                trigger={
+                  <Button
+                    variant="btn-small"
+                    className="ml-auto bg-ciDarkGrey text-ciLightGrey"
+                  >
+                    {t('common.columns')} <ChevronDown />
+                  </Button>
+                }
+                items={table
                   .getAllColumns()
                   .filter((column) => column.getCanHide())
-                  .map((column) => (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(value)}
-                    >
-                      {t(column.columnDef.meta?.translationId ?? column.id)}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-              </Content>
-            </DropdownMenu>
-          </div>
+                  .map((column) => ({
+                    label: t(column.columnDef.meta?.translationId ?? column.id),
+                    isCheckbox: true,
+                    checked: column.getIsVisible(),
+                    onCheckedChange: (value) => column.toggleVisibility(value),
+                  }))}
+              />
+            </div>
+          )}
           <Table>
             <TableHeader
               className="text-foreground scrollbar-thin"

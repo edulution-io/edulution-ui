@@ -96,7 +96,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     id: 'isVisibleStartDate',
     header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
     meta: {
-      translationId: 'common.createdAt',
+      translationId: 'bulletinboard.isVisibleStartDate',
     },
     accessorFn: (row) => row.isVisibleStartDate,
     cell: ({ row: { original } }) => {
