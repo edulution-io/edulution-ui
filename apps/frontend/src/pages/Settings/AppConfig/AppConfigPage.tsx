@@ -68,7 +68,7 @@ const AppConfigPage: React.FC = () => {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
           const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
-          setValue(`${settingLocation}.options.proxyConfig`, proxyConfig);
+          setValue(`${settingLocation}.proxyConfig`, proxyConfig);
         } else {
           setValue(
             `${settingLocation}.options.${key as AppConfigOptionsType}`,
