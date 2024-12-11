@@ -38,7 +38,7 @@ const SurveyTable = <TData extends MongoId, TValue>({
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedRows}
       isLoading={isLoading}
-      getRowId={(originalRow: TData) => originalRow.id.toString('hex')}
+      getRowId={(originalRow: TData) => originalRow.id.toString()}
       applicationName={APPS.SURVEYS}
       scrollContainerOffsetElementIds={{
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,

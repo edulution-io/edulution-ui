@@ -375,6 +375,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "newTitle": "Neue Umfrage",
     "filterPlaceHolderText": "Suche nach Umfragename",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
