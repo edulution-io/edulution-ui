@@ -3,12 +3,13 @@ import AppConfigBulletinTableColumn from '@/pages/BulletinBoard/AppConfigBulleti
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import AppConfigEditBulletinCategoryDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategoryDialog';
 
-import AppConfigTableConfigsByAppName from '@libs/appconfig/types/appConfigTableConfigsByAppName';
+import AppConfigTableConfigsByAppName from '@/pages/Settings/AppConfig/components/table/appConfigTableConfigsByAppName';
+import APPS from '@libs/appconfig/constants/apps';
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
-  bulletinboard: [
+  [APPS.BULLETIN_BOARD]: [
     {
-      key: 'bulletinboard',
+      key: APPS.BULLETIN_BOARD,
       columns: AppConfigBulletinTableColumn,
       useStore: useAppConfigBulletinTableStore,
       dialogBody: <AppConfigEditBulletinCategoryDialog />,
