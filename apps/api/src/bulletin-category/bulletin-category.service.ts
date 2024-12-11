@@ -78,8 +78,7 @@ class BulletinCategoryService {
 
     const accessibleCategories = await Promise.all(
       bulletinCategories.map(async (category) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const usersWithViewPermission = await this.getUsersWithPermissionCached(category.id, 'view');
+        const usersWithViewPermission = await this.getUsersWithPermissionCached(String(category.id), 'view');
         return usersWithViewPermission.includes(currentUser.preferred_username) ? category : null;
       }),
     );
@@ -128,8 +127,7 @@ class BulletinCategoryService {
   async remove(id: string): Promise<void> {
     try {
       const objectId = new Types.ObjectId(id);
-      await this.bulletinCategoryModel.findById(objectId);
-      await this.bulletinCategoryModel.deleteOne({ _id: objectId }).exec();
+      await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
     } catch (error) {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED,

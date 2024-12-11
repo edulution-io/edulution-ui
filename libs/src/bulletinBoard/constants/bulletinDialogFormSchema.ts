@@ -8,7 +8,7 @@ const getBulletinFormSchema = (t: TFunction<'translation', undefined>) =>
         .string()
         .min(3, { message: t('common.min_chars', { count: 3 }) })
         .max(255, { message: t('common.max_chars', { count: 100 }) }),
-      content: z.string().min(10, { message: t('common.min_chars', { count: 10 }) }),
+      content: z.string().min(17, { message: t('common.min_chars', { count: 10 }) }),
       isActive: z.boolean(),
       category: z.object({
         id: z.string(),

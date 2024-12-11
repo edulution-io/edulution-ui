@@ -12,7 +12,7 @@ import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchU
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { useTranslation } from 'react-i18next';
-import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
+import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 import { Button } from '@/components/shared/Button';
 import DialogSwitch from '@/components/shared/DialogSwitch';
@@ -48,19 +48,19 @@ const AppConfigEditBulletinCategoryDialog = () => {
     defaultValues: initialFormValues,
   });
 
-  useEffect(() => {
-    form.reset(initialFormValues);
-  }, [selectedCategory, form]);
+  const { setValue, watch, reset, getValues } = form;
 
-  const { setValue, watch } = form;
+  useEffect(() => {
+    reset(initialFormValues);
+  }, [selectedCategory, form]);
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
 
-  const { isDialogOpen, setDialogOpen } = useAppConfigDialogStore();
+  const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
 
   const handleFormSubmit = async () => {
     if (selectedCategory) {
-      const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = form.getValues();
+      const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = getValues();
 
       await updateCategory(selectedCategory?.id || '', {
         name: name && name.trim() !== '' ? name : selectedCategory.name,
@@ -71,11 +71,11 @@ const AppConfigEditBulletinCategoryDialog = () => {
         editableByGroups,
       });
     } else {
-      await addNewCategory(form.getValues());
+      await addNewCategory(getValues());
     }
     setDialogOpen(false);
     setSelectedCategory(null);
-    form.reset();
+    reset();
   };
 
   const getFooter = () => (
@@ -84,7 +84,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
       className="space-y-4"
     >
       <div className="mt-4 flex justify-end space-x-2">
-        {form.getValues('name').trim() === selectedCategory?.name && (
+        {getValues('name').trim() === selectedCategory?.name && (
           <Button
             variant="btn-attention"
             size="lg"
@@ -102,7 +102,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
         <Button
           variant="btn-collaboration"
           size="lg"
-          disabled={nameExists || isNameChecking}
+          disabled={nameExists || nameExists === null || isNameChecking}
           type="submit"
         >
           <MdUpdate size={20} />

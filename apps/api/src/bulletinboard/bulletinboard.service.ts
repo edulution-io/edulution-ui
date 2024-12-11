@@ -32,8 +32,7 @@ class BulletinBoardService {
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadBulletinAttachment(file: Express.Multer.File): string {
+  static checkAttachmentFile(file: Express.Multer.File): string {
     if (!file) {
       throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }

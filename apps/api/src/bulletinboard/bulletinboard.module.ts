@@ -14,6 +14,6 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
   ],
   controllers: [BulletinBoardController],
   providers: [BulletinBoardService],
-  exports: [BulletinBoardService],
+  exports: [],
 })
 export default class BulletinBoardModule {}

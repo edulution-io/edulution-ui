@@ -377,6 +377,7 @@
   "cancel": "Cancel",
   "survey": {
     "filterPlaceHolderText": "Search for surveyname",
+    "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",

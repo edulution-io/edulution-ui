@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { useTranslation } from 'react-i18next';
-import { AppConfigTableEntryUnion } from '@/pages/Settings/AppConfig/components/table/appConfigTableComponent';
-import getTableConfig from '@/pages/Settings/AppConfig/components/table/getTableConfig';
-import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table/appConfigDialogStore';
+import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/appConfigTableConfig';
+import getTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
+import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import { IoAdd } from 'react-icons/io5';
 import { Button } from '@/components/shared/Button';
 
-const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
+const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
   const { t } = useTranslation();
 
   const configs = getTableConfig(applicationName);
@@ -16,20 +16,20 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
     return <div>{t('common.error')}</div>;
   }
 
-  const renderConfig = (config: AppConfigTableEntryUnion, index: number) => {
+  const renderConfig = (config: AppConfigTableConfig, index: number) => {
     const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey } = config;
-    const { data, fetchData } = useStore();
-    const { setDialogOpen, isDialogOpen } = useAppConfigDialogStore();
+    const { tableContentData, fetchTableContent } = useStore();
+    const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
 
     useEffect(() => {
       const fetchDataAsync = async () => {
-        if (fetchData) {
-          await fetchData();
+        if (fetchTableContent) {
+          await fetchTableContent();
         }
       };
 
       void fetchDataAsync();
-    }, [fetchData, isDialogOpen]);
+    }, [fetchTableContent, isDialogOpen]);
 
     const handleAddClick = () => {
       setDialogOpen(true);
@@ -44,7 +44,7 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
           columns={columns}
           filterKey={filterKey}
           filterPlaceHolderText={filterPlaceHolderText}
-          data={data}
+          data={tableContentData}
           applicationName={applicationName}
           enableRowSelection={false}
           usedInAppConfig
@@ -54,6 +54,7 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
             <Button
               className="flex h-2 w-full items-center justify-center rounded-none border border-gray-400 hover:bg-ciDarkGrey"
               onClick={handleAddClick}
+              type="button"
             >
               <IoAdd className="text-xl text-white" />
             </Button>
@@ -67,4 +68,4 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
   return <div>{configs.map((config, index) => renderConfig(config, index))}</div>;
 };
 
-export default AppConfigTables;
+export default AppConfigTable;

@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
+import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
 
 interface DeleteBulletinsDialogProps {
   trigger?: React.ReactNode;
-  onSubmit: () => Promise<void>;
+  onSubmit?: () => Promise<void>;
 }
 
 const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps) => {
@@ -45,17 +46,12 @@ const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps
             {t('bulletinboard.error')}: {error.message}
           </>
         ) : (
-          <>
-            {t(isMultiDelete ? 'bulletinboard.confirmMultiDelete' : 'bulletinboard.confirmSingleDelete')}
-            {selectedBulletins.map((b) => (
-              <div
-                className="mt-2"
-                key={b.id}
-              >
-                - {b.title}
-              </div>
-            ))}
-          </>
+          <DeleteItemDialogList
+            deleteWarningTranslationId={
+              isMultiDelete ? 'bulletinboard.confirmMultiDelete' : 'bulletinboard.confirmSingleDelete'
+            }
+            items={selectedBulletins.map((b) => ({ name: b.title, id: b.id }))}
+          />
         )}
       </div>
     );

@@ -25,7 +25,7 @@ const NameInputWithAvailability = ({
     }
 
     if (name.length < 3) {
-      setNameExists(false);
+      setNameExists(true);
       return;
     }
 

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
-import BulletinDialogForm from '@libs/bulletinBoard/types/bulletinDialogForm';
 import { DropdownSelect } from '@/components';
 import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
@@ -11,15 +10,16 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBu
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
+import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
-  form: UseFormReturn<BulletinDialogForm>;
+  form: UseFormReturn<CreateBulletinDto>;
 }
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { data, isLoading } = useAppConfigBulletinTableStore();
+  const { tableContentData, isLoading } = useAppConfigBulletinTableStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -37,7 +37,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
-    form.setValue('category', data.find((c) => c.name === categoryName) || data[0]);
+    form.setValue('category', tableContentData.find((c) => c.name === categoryName) || tableContentData[0]);
   };
 
   const handleUpload = async (file: File): Promise<string> => {
@@ -59,7 +59,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
       >
         <div>{t('bulletinboard.category')}</div>
         <DropdownSelect
-          options={data}
+          options={tableContentData}
           selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
           handleChange={handleCategoryChange}
           variant="light"
