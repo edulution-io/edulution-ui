@@ -56,7 +56,7 @@ const AppConfigPage: React.FC = () => {
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-    if (!currentConfig || !currentConfig.accessGroups || !currentConfig.extendedOptions) {
+    if (!currentConfig) {
       return;
     }
 
@@ -68,7 +68,7 @@ const AppConfigPage: React.FC = () => {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
           const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
-          setValue(`${settingLocation}.options.proxyConfig`, proxyConfig);
+          setValue(`${settingLocation}.proxyConfig`, proxyConfig);
         } else {
           setValue(
             `${settingLocation}.options.${key as AppConfigOptionsType}`,
@@ -106,20 +106,22 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    const options =
+      selectedOption.options?.reduce((acc, o) => {
+        acc[o] =
+          o === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
+            ? JSON.stringify(getValues(`${settingLocation}.${o}`))
+            : getValues(`${settingLocation}.options.${o}`);
+        return acc;
+      }, {} as AppConfigOptions) || {};
+
     const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) || {};
 
     const newConfig = {
       name: settingLocation,
       icon: selectedOption.icon,
       appType: getValues(`${settingLocation}.appType`),
-      options:
-        selectedOption.options?.reduce((acc, o) => {
-          acc[o] =
-            o === APP_CONFIG_OPTION_KEYS.PROXYCONFIG
-              ? JSON.stringify(getValues(`${settingLocation}.${o}`))
-              : getValues(`${settingLocation}.${o}`);
-          return acc;
-        }, {} as AppConfigOptions) || {},
+      options,
       extendedOptions,
       accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
     };
@@ -190,9 +192,9 @@ const AppConfigPage: React.FC = () => {
                     {item.options?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
                         <FormFieldSH
-                          key={`${item.id}.${itemOption}`}
+                          key={`${item.id}.options.${itemOption}`}
                           control={control}
-                          name={`${item.id}.${itemOption}`}
+                          name={`${item.id}.options.${itemOption}`}
                           render={({ field }) => (
                             <FormItem>
                               <h4>{t(`form.${itemOption}`)}</h4>
@@ -208,7 +210,7 @@ const AppConfigPage: React.FC = () => {
                         />
                       ) : (
                         <ProxyConfigForm
-                          key={`${item.id}.${itemOption}`}
+                          key={`${item.id}.options.${itemOption}`}
                           settingLocation={settingLocation}
                           item={item}
                           form={form as UseFormReturn<ProxyConfigFormType>}
