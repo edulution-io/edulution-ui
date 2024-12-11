@@ -1,32 +1,48 @@
 import React from 'react';
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import cn from '@libs/common/utils/className';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSH,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenuSH';
 
 const DropdownMenu = ({
   trigger,
   items,
 }: {
   trigger: React.ReactNode;
-  items: { label: string; onClick: () => void }[];
+  items: { label: string; onClick?: () => void; isSeparator?: boolean }[];
 }) => (
-  <DropdownMenuPrimitive.Root>
-    <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
-    <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.Content
-        className={cn('z-10 min-w-[8rem] overflow-hidden rounded-xl border bg-white p-1 text-gray-800 shadow-md')}
+  <DropdownMenuSH>
+    <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+    <DropdownMenuPortal>
+      <DropdownMenuContent
+        className={cn(
+          'z-10 min-w-[8rem] overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-1 text-white shadow-md',
+        )}
       >
-        {items.map(({ label, onClick }) => (
-          <DropdownMenuPrimitive.Item
-            key={`${label}`}
-            onSelect={onClick}
-            className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-          >
-            {label}
-          </DropdownMenuPrimitive.Item>
-        ))}
-      </DropdownMenuPrimitive.Content>
-    </DropdownMenuPrimitive.Portal>
-  </DropdownMenuPrimitive.Root>
+        {items.map((item) =>
+          item.isSeparator ? (
+            <DropdownMenuSeparator
+              key={`separator-${item.label}`}
+              className="-mx-1 my-1 h-px bg-gray-600"
+            />
+          ) : (
+            <DropdownMenuItem
+              key={`${item.label}`}
+              onSelect={item.onClick}
+              className="cursor-pointer rounded-lg bg-gray-800 px-4 py-2 hover:bg-gray-600"
+            >
+              {item.label}
+            </DropdownMenuItem>
+          ),
+        )}
+      </DropdownMenuContent>
+    </DropdownMenuPortal>
+  </DropdownMenuSH>
 );
 
 export default DropdownMenu;

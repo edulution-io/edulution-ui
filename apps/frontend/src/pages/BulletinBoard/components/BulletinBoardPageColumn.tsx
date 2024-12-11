@@ -92,6 +92,7 @@ const BulletinBoardPageColumn = ({
           }
           items={[
             { label: t('bulletinboard.createBulletin'), onClick: () => handleCreateBulletin(category) },
+            { label: 'categorySeparator', isSeparator: true },
             {
               label: t('bulletinboard.manageCategories'),
               onClick: () => navigate(`${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
@@ -132,6 +133,7 @@ const BulletinBoardPageColumn = ({
                   label: t('bulletinboard.deleteBulletin'),
                   onClick: () => handleDeleteBulletin(bulletin),
                 },
+                { label: 'bulletinSeparator', isSeparator: true },
                 {
                   label: t('bulletinboard.manageBulletins'),
                   onClick: () => navigate(`/${APPS.BULLETIN_BOARD}`),
