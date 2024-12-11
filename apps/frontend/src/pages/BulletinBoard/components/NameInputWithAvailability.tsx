@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { MdCheckCircle, MdError } from 'react-icons/md';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
@@ -6,10 +6,12 @@ import Input from '@/components/shared/Input';
 import useAppConfigBulletinTableStore from '../useAppConfigBulletinTableStore';
 
 const NameInputWithAvailability = ({
+  value,
   register,
   checkIfNameExists,
   placeholder,
 }: {
+  value: string;
   register: UseFormReturn<CreateBulletinCategoryDto>['register'];
   checkIfNameExists: (name: string) => Promise<boolean>;
   placeholder: string;
@@ -18,7 +20,11 @@ const NameInputWithAvailability = ({
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value.trim();
-
+    if (name === value && name.length >= 3) {
+      // check if updated name is the same as the previous one -> no need to check
+      setNameExists(false);
+      return;
+    }
     if (!name) {
       setNameExists(null);
       return;
@@ -39,6 +45,14 @@ const NameInputWithAvailability = ({
       setIsNameChecking(false);
     }
   };
+
+  const triggerNameCheck = async () => {
+    await handleChange({ target: { value: value.trim() } } as React.ChangeEvent<HTMLInputElement>);
+  };
+
+  useEffect(() => {
+    void triggerNameCheck();
+  }, []);
 
   const renderAvailabilityStatus = () => {
     if (isNameChecking) {

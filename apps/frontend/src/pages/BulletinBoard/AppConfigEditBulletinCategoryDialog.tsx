@@ -133,6 +133,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
           <div className="flex items-center space-x-2">
             <p>{t('bulletinboard.categoryName')}:</p>
             <NameInputWithAvailability
+              value={form.watch('name')}
               register={form.register}
               checkIfNameExists={checkIfNameExists}
               placeholder={t('bulletinboard.categoryName')}
