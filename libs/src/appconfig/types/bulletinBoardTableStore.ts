@@ -4,8 +4,6 @@ import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinC
 
 export interface BulletinBoardTableStore extends AppConfigTable<BulletinCategoryResponseDto> {
   isDialogOpen: boolean;
-  tableContentData: BulletinCategoryResponseDto[];
-  fetchTableContent: () => Promise<BulletinCategoryResponseDto[]>;
   setIsDialogOpen: (isOpen: boolean) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
