@@ -6,15 +6,16 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import TableDataStore from '@libs/bulletinBoard/types/appConfigTable';
 
-export interface BulletinBoardTableStore {
+interface BulletinBoardTableStore extends TableDataStore<BulletinCategoryResponseDto> {
   isDialogOpen: boolean;
+  tableData: BulletinCategoryResponseDto[];
+  fetchGenericTableContent: () => Promise<BulletinCategoryResponseDto[]>;
   setIsDialogOpen: (isOpen: boolean) => void;
-  fetchData: () => Promise<BulletinCategoryResponseDto[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   addNewCategory: (category: CreateBulletinCategoryDto) => Promise<void>;
-  data: BulletinCategoryResponseDto[];
   setSelectedCategory: (category: BulletinCategoryResponseDto | null) => void;
   selectedCategory: BulletinCategoryResponseDto | null;
   checkIfNameExists: (name: string) => Promise<boolean>;
@@ -32,11 +33,11 @@ export interface BulletinBoardTableStore {
 const initialValues = {
   isDialogOpen: false,
   isLoading: true,
-  data: [],
   selectedCategory: null,
   isBulletinCategoryDialogOpen: false,
   isNameAvailable: false,
   isNameChecking: false,
+  tableData: [],
   nameExists: null,
 };
 
@@ -61,11 +62,11 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
 
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
-  fetchData: async () => {
+  fetchGenericTableContent: async () => {
     set({ isLoading: true });
     try {
       const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT);
-      set({ data: response.data });
+      set({ tableData: response.data });
       return response.data || [];
     } catch (error) {
       handleApiError(error, set);
@@ -77,9 +78,9 @@ const useAppConfigBulletinTableStore = create<BulletinBoardTableStore>((set) => 
 
   checkIfNameExists: async (name: string): Promise<boolean> => {
     try {
-      const response = await eduApi.get<{
-        exists: boolean;
-      }>(`${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/exists/${name}`);
+      const response = await eduApi.post<{ exists: boolean }>(
+        `${BULLETINBOARD_CREATE_CATEGORIE_EDU_API_ENDPOINT}/${name}`,
+      );
       return response.data.exists;
     } catch (error) {
       return false;

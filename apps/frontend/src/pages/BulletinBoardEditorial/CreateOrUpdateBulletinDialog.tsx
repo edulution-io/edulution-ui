@@ -29,15 +29,15 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     setSelectedBulletinToEdit,
     setIsCreateBulletinDialogOpen,
   } = useBulletinBoardEditorialStore();
-  const { data, fetchData } = useAppConfigBulletinTableStore();
+  const { tableData, fetchGenericTableContent } = useAppConfigBulletinTableStore();
 
   useEffect(() => {
-    void fetchData();
+    void fetchGenericTableContent();
   }, []);
 
   const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
     title: '',
-    category: data[0],
+    category: tableData[0],
     attachmentFileNames: [],
     content: '',
     isActive: true,
@@ -53,7 +53,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
 
   useEffect(() => {
     form.reset(initialFormValues);
-  }, [selectedBulletinToEdit, data, form]);
+  }, [selectedBulletinToEdit, tableData, form]);
 
   const onSubmit = async () => {
     if (selectedBulletinToEdit) {

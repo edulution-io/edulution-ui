@@ -19,7 +19,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { data, isLoading } = useAppConfigBulletinTableStore();
+  const { tableData, isLoading } = useAppConfigBulletinTableStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -37,7 +37,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
-    form.setValue('category', data.find((c) => c.name === categoryName) || data[0]);
+    form.setValue('category', tableData.find((c) => c.name === categoryName) || tableData[0]);
   };
 
   const handleUpload = async (file: File): Promise<string> => {
@@ -59,7 +59,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
       >
         <div>{t('bulletinboard.category')}</div>
         <DropdownMenu
-          options={data}
+          options={tableData}
           selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
           handleChange={handleCategoryChange}
           variant="light"

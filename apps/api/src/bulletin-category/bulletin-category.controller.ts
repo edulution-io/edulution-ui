@@ -28,7 +28,7 @@ class BulletinCategoryController {
     return this.bulletinBoardService.getConfigByName(name);
   }
 
-  @Get('exists/:name')
+  @Post(':name')
   async checkName(@Param('name') name: string): Promise<{ exists: boolean }> {
     return this.bulletinBoardService.checkIfNameExists(name);
   }

@@ -2,12 +2,13 @@ import React from 'react';
 import { StoreApi, UseBoundStore } from 'zustand';
 import { ColumnDef } from '@tanstack/react-table';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import { BulletinBoardTableStore } from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
+import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import { BulletinBoardTableStore } from '@/pages/BulletinBoard/useBulletinBoardStore';
 
-export interface AppConfigTableEntry<TState, TConfig> {
+export interface AppConfigTableEntry<T, TConfig> {
   key: string;
   columns: ColumnDef<TConfig>[];
-  useStore: UseBoundStore<StoreApi<TState>>;
+  useStore: UseBoundStore<StoreApi<AppConfigTable<T>>>;
   dialogBody: React.JSX.Element;
   showAddButton: boolean;
   filterKey: string;

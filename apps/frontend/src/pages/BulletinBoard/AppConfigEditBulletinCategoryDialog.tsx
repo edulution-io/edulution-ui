@@ -102,7 +102,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
         <Button
           variant="btn-collaboration"
           size="lg"
-          disabled={nameExists || isNameChecking}
+          disabled={nameExists || nameExists === null || isNameChecking}
           type="submit"
         >
           <MdUpdate size={20} />

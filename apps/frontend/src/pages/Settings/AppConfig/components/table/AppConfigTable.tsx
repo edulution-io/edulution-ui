@@ -7,7 +7,7 @@ import useAppConfigDialogStore from '@/pages/Settings/AppConfig/components/table
 import { IoAdd } from 'react-icons/io5';
 import { Button } from '@/components/shared/Button';
 
-const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
+const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
   const { t } = useTranslation();
 
   const configs = getTableConfig(applicationName);
@@ -18,18 +18,18 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
 
   const renderConfig = (config: AppConfigTableEntryUnion, index: number) => {
     const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey } = config;
-    const { data, fetchData } = useStore();
+    const { tableData, fetchGenericTableContent } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigDialogStore();
 
     useEffect(() => {
       const fetchDataAsync = async () => {
-        if (fetchData) {
-          await fetchData();
+        if (fetchGenericTableContent) {
+          await fetchGenericTableContent();
         }
       };
 
       void fetchDataAsync();
-    }, [fetchData, isDialogOpen]);
+    }, [fetchGenericTableContent, isDialogOpen]);
 
     const handleAddClick = () => {
       setDialogOpen(true);
@@ -44,7 +44,7 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
           columns={columns}
           filterKey={filterKey}
           filterPlaceHolderText={filterPlaceHolderText}
-          data={data}
+          data={tableData}
           applicationName={applicationName}
           enableRowSelection={false}
           usedInAppConfig
@@ -54,6 +54,7 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
             <Button
               className="flex h-2 w-full items-center justify-center rounded-none border border-gray-400 hover:bg-ciDarkGrey"
               onClick={handleAddClick}
+              type="button"
             >
               <IoAdd className="text-xl text-white" />
             </Button>
@@ -67,4 +68,4 @@ const AppConfigTables = ({ applicationName }: { applicationName: string }) => {
   return <div>{configs.map((config, index) => renderConfig(config, index))}</div>;
 };
 
-export default AppConfigTables;
+export default AppConfigTable;
