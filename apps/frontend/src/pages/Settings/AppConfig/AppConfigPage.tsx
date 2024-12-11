@@ -22,6 +22,7 @@ import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKey
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -42,7 +43,7 @@ const AppConfigPage: React.FC = () => {
 
   useEffect(() => {
     const selectedAppConfig = pathname.split('/').filter((p) => p)[1] || '';
-    setSettingLocation(pathname === '/settings' ? '' : selectedAppConfig);
+    setSettingLocation(pathname === `/${SETTINGS_PATH}` ? '' : selectedAppConfig);
   }, [pathname]);
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
@@ -245,7 +246,7 @@ const AppConfigPage: React.FC = () => {
     const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
 
     setSettingLocation('');
-    navigate(`/settings`);
+    navigate(`/${SETTINGS_PATH}`);
 
     await deleteAppConfigEntry(deleteOptionName);
   };

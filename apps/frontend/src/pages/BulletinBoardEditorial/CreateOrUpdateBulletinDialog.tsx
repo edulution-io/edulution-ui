@@ -14,9 +14,10 @@ import { MdDelete, MdUpdate } from 'react-icons/md';
 
 interface BulletinCreateDialogProps {
   trigger?: React.ReactNode;
+  onSubmit: () => Promise<void>;
 }
 
-const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) => {
+const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialogProps) => {
   const { t } = useTranslation();
   const {
     isDialogLoading,
@@ -35,14 +36,14 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     void fetchData();
   }, []);
 
-  const initialFormValues: BulletinDialogForm = selectedBulletinToEdit || {
-    title: '',
-    category: data[0],
-    attachmentFileNames: [],
-    content: '',
-    isActive: true,
-    isVisibleEndDate: null,
-    isVisibleStartDate: null,
+  const initialFormValues: BulletinDialogForm = {
+    title: selectedBulletinToEdit?.title || '',
+    category: selectedBulletinToEdit?.category || data[0],
+    attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
+    content: selectedBulletinToEdit?.content || '',
+    isActive: selectedBulletinToEdit?.isActive || true,
+    isVisibleEndDate: selectedBulletinToEdit?.isVisibleEndDate || null,
+    isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate || null,
   };
 
   const form = useForm<BulletinDialogForm>({
@@ -55,29 +56,33 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
     form.reset(initialFormValues);
   }, [selectedBulletinToEdit, data, form]);
 
-  const onSubmit = async () => {
-    if (selectedBulletinToEdit) {
+  const handleSubmit = async () => {
+    if (selectedBulletinToEdit?.id) {
       await updateBulletin(selectedBulletinToEdit.id, form.getValues());
     } else {
       await createBulletin(form.getValues());
     }
     setIsCreateBulletinDialogOpen(false);
     setSelectedBulletinToEdit(null);
-    await getBulletins();
+    if (onSubmit) {
+      await onSubmit();
+    } else {
+      await getBulletins();
+    }
     form.reset(initialFormValues);
   };
 
-  const handleFormSubmit = form.handleSubmit(onSubmit);
+  const handleFormSubmit = form.handleSubmit(handleSubmit);
 
   const getDialogBody = () => {
-    if (isDialogLoading) return <CircleLoader />;
+    if (isDialogLoading) return <CircleLoader className="mx-auto" />;
     return <CreateOrUpdateBulletinDialogBody form={form} />;
   };
 
   const getFooter = () => (
     <form onSubmit={handleFormSubmit}>
       <div className="mt-4 flex justify-end space-x-2">
-        {selectedBulletinToEdit && (
+        {!isDialogLoading && selectedBulletinToEdit?.id && (
           <Button
             variant="btn-attention"
             size="lg"
@@ -115,7 +120,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
         setSelectedBulletinToEdit(null);
       }}
       desktopContentClassName="max-w-2xl"
-      title={t(`bulletinboard.${selectedBulletinToEdit ? 'editBulletin' : 'createBulletin'}`)}
+      title={t(`bulletinboard.${selectedBulletinToEdit?.id ? 'editBulletin' : 'createBulletin'}`)}
       body={getDialogBody()}
       footer={getFooter()}
     />

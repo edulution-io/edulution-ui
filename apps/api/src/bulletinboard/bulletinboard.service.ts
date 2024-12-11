@@ -7,10 +7,11 @@ import { join } from 'path';
 import { createReadStream, existsSync, mkdirSync } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import BulletinsByCategoryNames from '@libs/bulletinBoard/types/bulletinsByCategoryNames';
+import BulletinsByCategory from '@libs/bulletinBoard/types/bulletinsByCategory';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
@@ -57,18 +58,18 @@ class BulletinBoardService {
     return res;
   }
 
-  async getBulletinsByCategoryNames(currentUser: JwtUser, token: string): Promise<BulletinsByCategoryNames> {
-    const bulletinCategories = await this.bulletinCategoryService.findAll(currentUser, true);
+  async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategory> {
+    const bulletinCategories: BulletinCategoryResponseDto[] = await this.bulletinCategoryService.findAll(
+      currentUser,
+      true,
+    );
 
     const bulletins = await this.findAllBulletins(currentUser.preferred_username, token, true);
 
-    const bulletinsByCategory: BulletinsByCategoryNames = {};
-
-    bulletinCategories.forEach((category) => {
-      bulletinsByCategory[category.name] = bulletins.filter((bulletin) => bulletin.category.id === category.id);
-    });
-
-    return bulletinsByCategory;
+    return bulletinCategories.map((category) => ({
+      category,
+      bulletins: bulletins.filter((bulletin) => bulletin.category.id === category.id),
+    }));
   }
 
   async findAllBulletins(

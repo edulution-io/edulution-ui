@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
-import styles from './dropdownmenu.module.scss';
+import styles from './dropdownselect.module.scss';
 
 export type DropdownOptions = {
   id: string;
@@ -19,7 +19,7 @@ interface DropdownProps {
   variant?: 'light' | 'dark';
 }
 
-const DropdownMenu: React.FC<DropdownProps> = ({
+const DropdownSelect: React.FC<DropdownProps> = ({
   options,
   selectedVal,
   handleChange,
@@ -112,4 +112,4 @@ const DropdownMenu: React.FC<DropdownProps> = ({
   );
 };
 
-export default DropdownMenu;
+export default DropdownSelect;

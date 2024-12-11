@@ -7,9 +7,10 @@ import CircleLoader from '@/components/ui/CircleLoader';
 
 interface DeleteBulletinsDialogProps {
   trigger?: React.ReactNode;
+  onSubmit: () => Promise<void>;
 }
 
-const DeleteBulletinsDialog = ({ trigger }: DeleteBulletinsDialogProps) => {
+const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps) => {
   const {
     selectedRows,
     isDialogLoading,
@@ -26,13 +27,16 @@ const DeleteBulletinsDialog = ({ trigger }: DeleteBulletinsDialogProps) => {
   const selectedBulletins = bulletins.filter((b) => selectedBulletinIds.includes(b.id));
   const isMultiDelete = selectedBulletins.length > 1;
 
-  const onSubmit = async () => {
+  const handleSubmit = async () => {
     await deleteBulletins(selectedBulletins);
     setIsDeleteBulletinDialogOpen(false);
+    if (onSubmit) {
+      await onSubmit();
+    }
   };
 
   const getDialogBody = () => {
-    if (isDialogLoading) return <CircleLoader />;
+    if (isDialogLoading) return <CircleLoader className="mx-auto" />;
 
     return (
       <div className="text-foreground">
@@ -64,7 +68,7 @@ const DeleteBulletinsDialog = ({ trigger }: DeleteBulletinsDialogProps) => {
           variant="btn-collaboration"
           disabled={isDialogLoading}
           size="lg"
-          onClick={onSubmit}
+          onClick={handleSubmit}
         >
           {t('bulletinboard.delete')}
         </Button>

@@ -10,6 +10,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 interface AddAppConfigDialogProps {
   option: string;
@@ -67,7 +68,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
 
   useEffect(() => {
     if (!isAddAppConfigDialogOpen) {
-      navigate(selectedOption ? `/settings/${selectedOption}` : '/settings', { replace: true });
+      navigate(selectedOption ? `/${SETTINGS_PATH}/${selectedOption}` : `/${SETTINGS_PATH}`, { replace: true });
     }
   }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
 

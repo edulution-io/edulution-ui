@@ -3,6 +3,7 @@ const BULLETIN_BOARD_ALLOWED_MIME_TYPES = [
   'image/png',
   'image/svg+xml',
   'image/gif',
+  'image/webp',
   'audio/mpeg',
   'audio/wav',
   'video/mp4',

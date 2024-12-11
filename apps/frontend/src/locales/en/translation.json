@@ -30,6 +30,8 @@
     "isPermanentlyActive": "Permanently active",
     "error": "Error",
     "filterPlaceHolderText": "Search for categoriename",
+    "manageCategories": "Manage categories",
+    "manageBulletins": "Manage bulletins",
     "placeholderCategoryName": "Name",
     "categoryName": "Category name",
     "categoryCreatedSuccessfully": "Category created successfully",

@@ -63,12 +63,14 @@ class BulletinCategoryService {
     return users;
   }
 
-  async findAll(currentUser: JWTUser, isActive?: boolean): Promise<BulletinCategoryDocument[]> {
+  async findAll(currentUser: JWTUser, isActive?: boolean): Promise<BulletinCategoryResponseDto[]> {
     const filter: Record<string, unknown> = {};
     if (isActive !== undefined) {
       filter.isActive = isActive;
     }
-    const bulletinCategories: BulletinCategoryDocument[] = await this.bulletinCategoryModel.find(filter).exec();
+    const bulletinCategories: BulletinCategoryResponseDto[] = await this.bulletinCategoryModel
+      .find<BulletinCategoryResponseDto>(filter)
+      .exec();
 
     if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return bulletinCategories;
