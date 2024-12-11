@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { StoreApi, UseBoundStore } from 'zustand';
 import React from 'react';
+import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
 
 export interface AppConfigTableEntry<U, T extends AppConfigTable<U>> {
   key: string;
