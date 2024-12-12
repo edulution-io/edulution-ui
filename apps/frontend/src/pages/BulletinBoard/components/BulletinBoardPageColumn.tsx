@@ -62,7 +62,7 @@ const BulletinBoardPageColumn = ({
         {bulletins.map((bulletin) => (
           <div
             key={bulletin.id}
-            className="rounded-lg bg-white bg-opacity-5 p-4"
+            className="break-all rounded-lg bg-white bg-opacity-5 p-4"
           >
             <h4>{bulletin.title}</h4>
             <div
