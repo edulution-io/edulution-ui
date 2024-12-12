@@ -2,13 +2,13 @@ import { Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, copyFileSync } from 'fs';
 import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
 
@@ -26,15 +26,22 @@ async function bootstrap() {
   const reflector = new Reflector();
   app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
 
+  if (!existsSync(APPS_FILES_PATH)) {
+    mkdirSync(APPS_FILES_PATH, { recursive: true });
+  }
+
+  if (!existsSync(PUBLIC_DOWNLOADS_PATH)) {
+    mkdirSync(PUBLIC_DOWNLOADS_PATH, { recursive: true });
+  }
+
   if (!existsSync(TRAEFIK_CONFIG_FILES_PATH)) {
     mkdirSync(TRAEFIK_CONFIG_FILES_PATH, { recursive: true });
   }
 
-  if (process.env.NODE_ENV === 'production' && !existsSync(APPS_FILES_PATH)) {
-    mkdirSync(APPS_FILES_PATH, { recursive: true });
-  }
-
   if (process.env.NODE_ENV === 'development') {
+    if (existsSync('edulution.pem')) {
+      copyFileSync('edulution.pem', 'data/edulution.pem');
+    }
     const swaggerConfig = new DocumentBuilder()
       .setTitle('edulution-api')
       .setDescription('Test API for edulution-io')
