@@ -1,6 +1,5 @@
 import React from 'react';
 import mongoose from 'mongoose';
-import i18next from 'i18next';
 import { Survey } from 'survey-react-ui';
 import { CompleteEvent, Model } from 'survey-core';
 import 'survey-core/i18n/english';
@@ -9,6 +8,7 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
@@ -48,10 +48,13 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     setIsOpenParticipateSurveyDialog,
     className,
   } = props;
+
+  const { language } = useLanguage();
+
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
-  surveyModel.locale = i18next.options.lng || 'en';
+  surveyModel.locale = language;
 
   if (surveyModel.pages.length > 1) {
     surveyModel.showProgressBar = 'top';
