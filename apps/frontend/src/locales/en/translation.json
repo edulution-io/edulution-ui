@@ -6,6 +6,8 @@
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
   "bulletinboard": {
+    "settings": "Settings",
+    "categoryIsRequired": "Selecting a category is required",
     "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
     "deleteBulletinCategory": "Delete category",

@@ -57,46 +57,58 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           event.preventDefault();
         }}
       >
-        <div>{t('bulletinboard.category')}</div>
-        <DropdownSelect
-          options={tableContentData}
-          selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
-          handleChange={handleCategoryChange}
-          variant="light"
-        />
+        <div>
+          <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
+          <DropdownSelect
+            options={tableContentData}
+            selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
+            handleChange={handleCategoryChange}
+            variant="light"
+          />
+          <div>
+            {formState.errors.category && (
+              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                {formState.errors.category.message?.toString()}
+              </FormMessage>
+            )}
+          </div>
+        </div>
 
-        <DialogSwitch
-          translationId="bulletinboard.isActive"
-          checked={isActive}
-          onCheckedChange={(isChecked) => {
-            setValue('isActive', isChecked);
-          }}
-        />
-
-        {isActive && (
+        <div className="space-y-2">
+          <div className="font-bold">{t('bulletinboard.settings')}</div>
           <DialogSwitch
-            translationId="bulletinboard.isPermanentlyActive"
-            checked={isPermanentlyActive}
+            translationId="bulletinboard.isActive"
+            checked={isActive}
             onCheckedChange={(isChecked) => {
-              setIsPermanentlyActive(isChecked);
+              setValue('isActive', isChecked);
             }}
           />
-        )}
 
-        {isActive && !isPermanentlyActive && (
-          <>
-            <DateAndTimeInput
-              form={form}
-              name="isVisibleStartDate"
-              translationId="bulletinboard.activeFrom"
+          {isActive && (
+            <DialogSwitch
+              translationId="bulletinboard.isPermanentlyActive"
+              checked={isPermanentlyActive}
+              onCheckedChange={(isChecked) => {
+                setIsPermanentlyActive(isChecked);
+              }}
             />
-            <DateAndTimeInput
-              form={form}
-              name="isVisibleEndDate"
-              translationId="bulletinboard.activeUntil"
-            />
-          </>
-        )}
+          )}
+
+          {isActive && !isPermanentlyActive && (
+            <>
+              <DateAndTimeInput
+                form={form}
+                name="isVisibleStartDate"
+                translationId="bulletinboard.activeFrom"
+              />
+              <DateAndTimeInput
+                form={form}
+                name="isVisibleEndDate"
+                translationId="bulletinboard.activeUntil"
+              />
+            </>
+          )}
+        </div>
 
         <FormField
           name="title"
@@ -105,16 +117,20 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           labelTranslationId={t('bulletinboard.title')}
           variant="default"
         />
-        <div>{t('bulletinboard.content')}</div>
-        <WysiwygEditor
-          value={watch('content')}
-          onChange={(value) => setValue('content', value)}
-          onUpload={handleUpload}
-        />
         <div>
-          {formState.errors.content && (
-            <FormMessage className="text-p">{formState.errors.content.message?.toString()}</FormMessage>
-          )}
+          <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>
+          <WysiwygEditor
+            value={watch('content')}
+            onChange={(value) => setValue('content', value)}
+            onUpload={handleUpload}
+          />
+          <div>
+            {formState.errors.content && (
+              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                {formState.errors.content.message?.toString()}
+              </FormMessage>
+            )}
+          </div>
         </div>
       </form>
     </Form>

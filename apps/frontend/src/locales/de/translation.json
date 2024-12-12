@@ -6,6 +6,8 @@
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
+    "settings": "Einstellungen",
+    "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
     "deleteBulletinCategory": "Kategorie löschen",
