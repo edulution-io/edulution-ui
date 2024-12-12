@@ -15,6 +15,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import { useTranslation } from 'react-i18next';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -23,6 +24,7 @@ interface SurveyEditorFormProps {
 const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { editMode = false } = props;
 
+  const { t } = useTranslation();
   const { user } = useUserStore();
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -125,7 +127,12 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     ),
     answers: z.any(),
     created: z.date().optional(),
-    expires: z.date().optional(),
+    expires: z
+      .string()
+      .nullable()
+      .optional()
+      .refine((val) => !val || !Number.isNaN(Date.parse(val)), { message: t('common.invalid_date') })
+      .transform((val) => (val ? new Date(val).toISOString() : null)),
     isAnonymous: z.boolean().optional(),
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),

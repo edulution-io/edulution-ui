@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { useTranslation } from 'react-i18next';
-import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/appConfigTableConfig';
-import getTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
+import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
+import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import { IoAdd } from 'react-icons/io5';
 import { Button } from '@/components/shared/Button';
@@ -10,7 +10,7 @@ import { Button } from '@/components/shared/Button';
 const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
   const { t } = useTranslation();
 
-  const configs = getTableConfig(applicationName);
+  const configs = getAppConfigTableConfig(applicationName);
 
   if (!configs) {
     return <div>{t('common.error')}</div>;
@@ -52,7 +52,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
         {showAddButton && (
           <div className="flex w-full">
             <Button
-              className="flex h-2 w-full items-center justify-center rounded-none border border-gray-400 hover:bg-ciDarkGrey"
+              className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-ciDarkGrey"
               onClick={handleAddClick}
               type="button"
             >

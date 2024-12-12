@@ -3,7 +3,8 @@ import { UseFormReturn } from 'react-hook-form';
 import { MdCheckCircle, MdError } from 'react-icons/md';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import Input from '@/components/shared/Input';
-import useAppConfigBulletinTableStore from '../useAppConfigBulletinTableStore';
+import { useTranslation } from 'react-i18next';
+import useBulletinCategoryTableStore from '../../Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 
 const NameInputWithAvailability = ({
   value,
@@ -16,7 +17,8 @@ const NameInputWithAvailability = ({
   checkIfNameExists: (name: string) => Promise<boolean>;
   placeholder: string;
 }) => {
-  const { nameExists, setNameExists, isNameChecking, setIsNameChecking } = useAppConfigBulletinTableStore();
+  const { t } = useTranslation();
+  const { nameExistsAlready, setNameExists, isNameChecking, setIsNameChecking } = useBulletinCategoryTableStore();
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value.trim();
@@ -56,10 +58,10 @@ const NameInputWithAvailability = ({
 
   const renderAvailabilityStatus = () => {
     if (isNameChecking) {
-      return <span className="text-sm text-gray-500">Checking...</span>;
+      return <span className="text-sm text-gray-500">{t('common.checking')}...</span>;
     }
 
-    if (!nameExists) {
+    if (!nameExistsAlready) {
       return (
         <MdCheckCircle
           className="text-green-500"

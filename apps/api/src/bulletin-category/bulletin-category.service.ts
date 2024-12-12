@@ -108,17 +108,11 @@ class BulletinCategoryService {
   }
 
   async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
-    const category: BulletinCategoryDocument | null = await this.bulletinCategoryModel.findById(id).exec();
-    if (!category) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.CATEGORY_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        'Invalid ID format',
-      );
-    }
+    const updatedCategory = await this.bulletinCategoryModel.findByIdAndUpdate(id, dto, { new: true }).exec();
 
-    Object.assign(category, dto);
-    await category.save();
+    if (!updatedCategory) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
 
     await this.getUsersWithPermissionCached(id, 'view');
     await this.getUsersWithPermissionCached(id, 'edit');

@@ -60,4 +60,3 @@ export { default as NativeIcon } from '@/assets/icons/edulution/Icon_Nativ.svg';
 export { default as LanguageIcon } from '@/assets/icons/language.svg';
 export { default as GermanIcon } from '@/assets/icons/german.svg';
 export { default as EnglishIcon } from '@/assets/icons/english.svg';
-export { default as BulletinBoardMenuIcon } from '@/assets/icons/edulution/bulletinBoard.svg';

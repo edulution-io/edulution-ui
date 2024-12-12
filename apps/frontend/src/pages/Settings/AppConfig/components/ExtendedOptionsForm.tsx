@@ -59,7 +59,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       {extendedOptions &&
         Object.entries(extendedOptions).map(([section, options]) => (
           <AccordionSH

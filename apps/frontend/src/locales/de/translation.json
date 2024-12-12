@@ -416,6 +416,8 @@
     }
   },
   "surveys": {
+    "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -675,6 +677,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "checking": "Prüfen",
     "columns": "Spalten",
     "join": "Teilnehmen",
     "details": "Details",

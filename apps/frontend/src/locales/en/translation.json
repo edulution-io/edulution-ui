@@ -415,6 +415,8 @@
     }
   },
   "surveys": {
+    "rowsSelected": "{{selected}} of {{total}} surveys selected",
+    "rowSelected": "{{selected}} of {{total}} survey selected",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -675,6 +677,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "checking": "Checking",
     "columns": "Columns",
     "join": "Join",
     "details": "Details",

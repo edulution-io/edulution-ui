@@ -1,21 +1,21 @@
 import React from 'react';
-import AppConfigBulletinTableColumn from '@/pages/BulletinBoard/AppConfigBulletinTableColum';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
-import AppConfigEditBulletinCategoryDialog from '@/pages/BulletinBoard/AppConfigEditBulletinCategoryDialog';
+import BulletinTableColumn from '@/pages/Settings/AppConfig/bulletinboard/BulletinTableColumn';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import CreateAndUpdateBulletinCategoryDialog from '@/pages/Settings/AppConfig/bulletinboard/CreateAndUpdateBulletinCategoryDialog';
 
-import AppConfigTableConfigsByAppName from '@/pages/Settings/AppConfig/components/table/appConfigTableConfigsByAppName';
+import AppConfigTableConfigsByAppName from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfigsByAppName';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import { BulletinBoardTableStore } from '@libs/appconfig/types/bulletinBoardTableStore';
-import createAppConfigTableEntry from '@/pages/Settings/AppConfig/components/table/createAppConfigTableEntry';
+import { BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
+import createAppConfigTableEntry from '@/pages/Settings/AppConfig/components/table/types/createAppConfigTableEntry';
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [
-    createAppConfigTableEntry<BulletinCategoryResponseDto, BulletinBoardTableStore>({
+    createAppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>({
       key: APPS.BULLETIN_BOARD,
-      columns: AppConfigBulletinTableColumn,
-      useStore: useAppConfigBulletinTableStore,
-      dialogBody: <AppConfigEditBulletinCategoryDialog />,
+      columns: BulletinTableColumn,
+      useStore: useBulletinCategoryTableStore,
+      dialogBody: <CreateAndUpdateBulletinCategoryDialog />,
       showAddButton: true,
       filterKey: 'name',
       filterPlaceHolderText: 'bulletinboard.filterPlaceHolderText',

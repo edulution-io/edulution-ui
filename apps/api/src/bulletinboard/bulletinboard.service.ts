@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -19,18 +19,20 @@ import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 
 @Injectable()
-class BulletinBoardService {
+class BulletinBoardService implements OnModuleInit {
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
-  ) {
+  ) {}
+
+  private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
+
+  onModuleInit() {
     if (!existsSync(this.attachmentsPath)) {
       mkdirSync(this.attachmentsPath, { recursive: true });
     }
   }
-
-  private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   static checkAttachmentFile(file: Express.Multer.File): string {
     if (!file) {
@@ -147,7 +149,10 @@ class BulletinBoardService {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    if (bulletin.creator.username !== currentUser.preferred_username) {
+    if (
+      bulletin.creator.username !== currentUser.preferred_username &&
+      !currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)
+    ) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 

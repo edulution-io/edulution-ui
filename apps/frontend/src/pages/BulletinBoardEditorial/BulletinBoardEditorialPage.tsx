@@ -11,14 +11,14 @@ import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/cons
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
 import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 
 const BulletinBoardEditorialPage = () => {
   const { t } = useTranslation();
 
   const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
-  const { fetchTableContent } = useAppConfigBulletinTableStore();
+  const { fetchTableContent } = useBulletinCategoryTableStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;

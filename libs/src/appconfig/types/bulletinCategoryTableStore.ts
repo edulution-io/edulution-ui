@@ -2,7 +2,7 @@ import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 
-export interface BulletinBoardTableStore extends AppConfigTable<BulletinCategoryResponseDto> {
+export interface BulletinCategoryTableStore extends AppConfigTable<BulletinCategoryResponseDto> {
   isDialogOpen: boolean;
   fetchTableContent: () => Promise<BulletinCategoryResponseDto[]>;
   setIsDialogOpen: (isOpen: boolean) => void;
@@ -16,7 +16,7 @@ export interface BulletinBoardTableStore extends AppConfigTable<BulletinCategory
   isBulletinCategoryDialogOpen: boolean;
   updateCategory: (id: string, category: CreateBulletinCategoryDto) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
-  nameExists: boolean | null;
+  nameExistsAlready: boolean | null;
   setNameExists: (isNameAvailable: boolean | null) => void;
   isNameChecking: boolean;
   setIsNameChecking: (isNameChecking: boolean) => void;

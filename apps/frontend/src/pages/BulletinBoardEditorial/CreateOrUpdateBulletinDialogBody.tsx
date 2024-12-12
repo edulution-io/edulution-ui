@@ -4,7 +4,7 @@ import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import { DropdownMenu } from '@/components';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
@@ -19,7 +19,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { tableContentData, isLoading } = useAppConfigBulletinTableStore();
+  const { tableContentData, isLoading } = useBulletinCategoryTableStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');

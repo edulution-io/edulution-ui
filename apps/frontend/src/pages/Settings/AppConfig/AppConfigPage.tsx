@@ -217,13 +217,11 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    <div className="space-y-10">
-                      <ExtendedOptionsForm
-                        extendedOptions={item.extendedOptions}
-                        control={control}
-                        settingLocation={settingLocation}
-                      />
-                    </div>
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
+                    />
                     <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
                   </div>
                 ) : null}

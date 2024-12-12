@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import { MdDelete, MdUpdate } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,7 +19,7 @@ import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { Form } from '@/components/ui/Form';
 
-const AppConfigEditBulletinCategoryDialog = () => {
+const CreateAndUpdateBulletinCategoryDialog = () => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -27,9 +27,9 @@ const AppConfigEditBulletinCategoryDialog = () => {
     deleteCategory,
     addNewCategory,
     checkIfNameExists,
-    nameExists,
+    nameExistsAlready,
     isNameChecking,
-  } = useAppConfigBulletinTableStore();
+  } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
 
@@ -103,7 +103,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
         <Button
           variant="btn-collaboration"
           size="lg"
-          disabled={nameExists || nameExists === null || isNameChecking}
+          disabled={nameExistsAlready || nameExistsAlready === null || isNameChecking}
           type="submit"
         >
           <MdUpdate size={20} />
@@ -188,4 +188,4 @@ const AppConfigEditBulletinCategoryDialog = () => {
   );
 };
 
-export default AppConfigEditBulletinCategoryDialog;
+export default CreateAndUpdateBulletinCategoryDialog;
