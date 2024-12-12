@@ -8,6 +8,9 @@
   "bulletinboard": {
     "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
+    "deleteBulletinCategory": "Delete category",
+    "confirmSingleCategoryDelete": "Do you really want to delete this category?",
+    "confirmSingleCategoryDeleteWarning": "Warning: All bulletins in this category will also be deleted!",
     "isVisibleStartDate": "Active from",
     "isVisibleEndDate": "Active until",
     "isActiveOrExpired": "Active/Expired",

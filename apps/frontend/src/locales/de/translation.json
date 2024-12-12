@@ -8,6 +8,9 @@
   "bulletinboard": {
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
+    "deleteBulletinCategory": "Kategorie löschen",
+    "confirmSingleCategoryDelete": "Soll diese Kategorie wirklich gelöscht werden?",
+    "confirmSingleCategoryDeleteWarning": "Vorsicht, es werden alle Mitteilungen in dieser Kategorie mitgelöscht!",
     "isVisibleStartDate": "Aktiv von",
     "isVisibleEndDate": "Aktiv bis",
     "isActiveOrExpired": "Aktiv/Abgelaufen",

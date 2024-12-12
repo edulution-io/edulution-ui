@@ -18,17 +18,18 @@ import { Button } from '@/components/shared/Button';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { Form } from '@/components/ui/Form';
+import DeleteBulletinsCategoriesDialog from '@/pages/BulletinBoard/components/DeleteBulletinCategoriesDialog';
 
 const AppConfigEditBulletinCategoryDialog = () => {
   const {
     selectedCategory,
     setSelectedCategory,
     updateCategory,
-    deleteCategory,
     addNewCategory,
     checkIfNameExists,
     nameExists,
     isNameChecking,
+    setIsDeleteDialogOpen,
   } = useAppConfigBulletinTableStore();
 
   const { t } = useTranslation();
@@ -88,10 +89,9 @@ const AppConfigEditBulletinCategoryDialog = () => {
           <Button
             variant="btn-attention"
             size="lg"
-            onClick={async () => {
-              await deleteCategory(selectedCategory?.id || '');
+            onClick={() => {
               setDialogOpen(false);
-              setSelectedCategory(null);
+              setIsDeleteDialogOpen(true);
             }}
           >
             <MdDelete size={20} />
@@ -173,17 +173,20 @@ const AppConfigEditBulletinCategoryDialog = () => {
   };
 
   return (
-    <AdaptiveDialog
-      isOpen={isDialogOpen}
-      handleOpenChange={() => {
-        setDialogOpen(!isDialogOpen);
-        setSelectedCategory(null);
-      }}
-      title=""
-      body={getDialogBody()}
-      footer={getFooter()}
-      mobileContentClassName="bg-black h-fit h-max-1/2"
-    />
+    <>
+      <AdaptiveDialog
+        isOpen={isDialogOpen}
+        handleOpenChange={() => {
+          setDialogOpen(false);
+          setSelectedCategory(null);
+        }}
+        title=""
+        body={getDialogBody()}
+        footer={getFooter()}
+        mobileContentClassName="bg-black h-fit h-max-1/2"
+      />
+      <DeleteBulletinsCategoriesDialog />
+    </>
   );
 };
 

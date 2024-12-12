@@ -12,8 +12,6 @@ export interface BulletinBoardTableStore extends AppConfigTable<BulletinCategory
   setSelectedCategory: (category: BulletinCategoryResponseDto | null) => void;
   selectedCategory: BulletinCategoryResponseDto | null;
   checkIfNameExists: (name: string) => Promise<boolean>;
-  setEditBulletinCategoryDialogOpen: (isOpen: boolean) => void;
-  isBulletinCategoryDialogOpen: boolean;
   updateCategory: (id: string, category: CreateBulletinCategoryDto) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   nameExists: boolean | null;
@@ -21,4 +19,8 @@ export interface BulletinBoardTableStore extends AppConfigTable<BulletinCategory
   isNameChecking: boolean;
   setIsNameChecking: (isNameChecking: boolean) => void;
   reset: () => void;
+  isDeleteDialogOpen: boolean;
+  isDeleteDialogLoading: boolean;
+  setIsDeleteDialogOpen: (isOpen: boolean) => void;
+  error: null | Error;
 }
