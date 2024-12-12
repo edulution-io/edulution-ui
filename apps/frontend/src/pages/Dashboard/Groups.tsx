@@ -11,7 +11,7 @@ const Groups = () => {
 
   const { t } = useTranslation();
 
-  const contentHeight = useElementHeight([GROUPS_ID]) - 110;
+  const cardContentHeight = useElementHeight([GROUPS_ID]) - 110;
 
   return (
     <Card
@@ -21,7 +21,7 @@ const Groups = () => {
       <CardContent>
         <div className="flex flex-col gap-2 p-0">
           <h4 className="mb-4 font-bold">{t('groups.classes')}</h4>
-          <div style={{ height: `${contentHeight}px`, overflowY: 'auto' }}>
+          <div style={{ height: `${cardContentHeight}px`, overflowY: 'auto' }}>
             <BadgeField
               value={user?.schoolclasses || []}
               onChange={() => {}}

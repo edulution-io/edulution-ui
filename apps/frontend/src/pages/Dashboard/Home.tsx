@@ -1,14 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ACCOUNT_INFORMATION_ID,
-  DASHBOARD_HEADER_ID,
-  GROUPS_ID,
-  MOBILE_DASHBOARD_HEADER_ID,
-  MOBILE_FILE_ACCESS_ID,
-  NOTIFICATION_ID,
-  QUOTA_CARD_ID,
-} from '@libs/dashboard/constants/pageElementIds';
+import { DASHBOARD_HEADER_ID, GROUPS_ID, MOBILE_DASHBOARD_HEADER_ID } from '@libs/dashboard/constants/pageElementIds';
 import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -29,10 +21,7 @@ const Home: React.FC = () => {
   const pageBarsHeight = useElementHeight([DASHBOARD_HEADER_ID, MOBILE_DASHBOARD_HEADER_ID, FOOTER_ID]);
 
   const column1 = (
-    <div
-      id={ACCOUNT_INFORMATION_ID}
-      className="basis-1/4"
-    >
+    <div className="basis-1/4">
       <AccountInformation />
     </div>
   );
@@ -47,25 +36,17 @@ const Home: React.FC = () => {
           >
             <Groups />
           </div>
-          <div
-            id={MOBILE_FILE_ACCESS_ID}
-            className="flex-1"
-          >
+          <div className="flex-1">
             <MobileFileAccessCard />
           </div>
         </div>
-        <div id={QUOTA_CARD_ID}>
-          <QuotaCard />
-        </div>
+        <QuotaCard />
       </div>
     </div>
   );
 
   const column3 = (
-    <div
-      id={NOTIFICATION_ID}
-      className="basis-1/4"
-    >
+    <div className="basis-1/4">
       <Feed />
     </div>
   );
