@@ -13,16 +13,17 @@ export interface BulletinBoardTableStore {
 }
 
 const initialValues = {
-  isLoading: true,
+  isLoading: false,
   error: null,
   bulletinsByCategories: null,
 };
 
-const useBulletinBoardStore = create<BulletinBoardTableStore>((set) => ({
+const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
   ...initialValues,
   reset: () => set(initialValues),
 
   getBulletinsByCategories: async (isLoading = true) => {
+    if (get().isLoading) return;
     set({ isLoading, error: null });
     try {
       const { data } = await eduApi.get<BulletinsByCategory>(BULLETIN_BOARD_EDU_API_ENDPOINT);

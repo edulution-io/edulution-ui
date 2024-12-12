@@ -33,8 +33,10 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
   const { tableContentData, fetchTableContent } = useAppConfigBulletinTableStore();
 
   useEffect(() => {
-    void fetchTableContent();
-  }, []);
+    if (isCreateBulletinDialogOpen) {
+      void fetchTableContent();
+    }
+  }, [isCreateBulletinDialogOpen]);
 
   const initialFormValues: CreateBulletinDto = {
     title: selectedBulletinToEdit?.title || '',

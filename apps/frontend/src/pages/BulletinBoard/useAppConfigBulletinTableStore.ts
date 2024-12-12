@@ -10,7 +10,7 @@ import { BulletinBoardTableStore } from '@libs/appconfig/types/bulletinBoardTabl
 
 const initialValues = {
   isDialogOpen: false,
-  isLoading: true,
+  isLoading: false,
   selectedCategory: null,
   isBulletinCategoryDialogOpen: false,
   isNameAvailable: false,
@@ -20,7 +20,7 @@ const initialValues = {
 };
 
 const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableStore>> =
-  create<BulletinBoardTableStore>((set) => ({
+  create<BulletinBoardTableStore>((set, get) => ({
     ...initialValues,
     setIsNameChecking: (isNameChecking: boolean) => set({ isNameChecking }),
     setNameExists: (nameExists: boolean | null) => set({ nameExists }),
@@ -43,6 +43,10 @@ const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableS
     setSelectedCategory: (category) => set({ selectedCategory: category }),
 
     fetchTableContent: async () => {
+      if (get().isLoading) {
+        return [];
+      }
+
       set({ isLoading: true });
       try {
         const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETIN_CATEGORY_EDU_API_ENDPOINT);

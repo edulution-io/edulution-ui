@@ -25,7 +25,7 @@ class BulletinCategoryService {
     const cacheKey = `bulletinCategory:${bulletinCategoryId}:${permission}`;
     let users = await this.cacheManager.get<string[]>(cacheKey);
 
-    if (!users) {
+    if (!users || !users.length) {
       const bulletinCategory = await this.bulletinCategoryModel.findById(bulletinCategoryId).exec();
       if (!bulletinCategory) {
         throw new CustomHttpException(
