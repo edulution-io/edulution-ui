@@ -47,7 +47,7 @@ const SurveyTable = (props: SurveyTableProps) => {
 
         return (
           <TableRow
-            key={`survey_row_-_${survey.id.toString('base64')}`}
+            key={`survey_row_-_${survey.id.toString()}`}
             className="cursor-pointer"
             onClick={() => {
               selectSurvey(survey);

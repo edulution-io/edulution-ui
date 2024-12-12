@@ -7,6 +7,9 @@ interface SurveysTablesPageStore {
   updateSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
   isFetching: boolean;
 
+  canParticipateSelectedSurvey: () => Promise<void>;
+  canParticipate: boolean;
+
   updateUsersSurveys: () => Promise<void>;
 
   openSurveys: SurveyDto[];

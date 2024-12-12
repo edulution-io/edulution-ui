@@ -118,11 +118,14 @@ describe('SurveyAnswerService', () => {
 
       surveyModel.findById = jest.fn().mockReturnValue(publicSurvey02);
 
-      const result = await service.getSelectableChoices(idOfPublicSurvey02, publicSurvey02QuestionIdWithLimiters);
+      const result = await service.getSelectableChoices(
+        idOfPublicSurvey02.toString('hex'),
+        publicSurvey02QuestionIdWithLimiters,
+      );
       expect(result).toEqual(filteredChoices);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString('hex'),
         publicSurvey02QuestionIdWithLimiters,
       );
       expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
@@ -141,11 +144,14 @@ describe('SurveyAnswerService', () => {
 
       surveyModel.findById = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
-      const result = await service.getSelectableChoices(idOfPublicSurvey02, publicSurvey02QuestionIdWithLimiters);
+      const result = await service.getSelectableChoices(
+        idOfPublicSurvey02.toString('hex'),
+        publicSurvey02QuestionIdWithLimiters,
+      );
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString('hex'),
         publicSurvey02QuestionIdWithLimiters,
       );
       expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
@@ -158,14 +164,14 @@ describe('SurveyAnswerService', () => {
       surveyModel.findById = jest.fn().mockReturnValue(publicSurvey01);
 
       try {
-        await service.getSelectableChoices(idOfPublicSurvey01, publicSurvey02QuestionIdWithLimiters);
+        await service.getSelectableChoices(idOfPublicSurvey01.toString('hex'), publicSurvey02QuestionIdWithLimiters);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
       }
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey01,
+        idOfPublicSurvey01.toString('hex'),
         publicSurvey02QuestionIdWithLimiters,
       );
     });
@@ -319,7 +325,7 @@ describe('SurveyAnswerService', () => {
       surveyModel.findById = jest.fn().mockReturnValue(null);
 
       try {
-        await service.addAnswer(unknownSurveyId, 1, firstMockJWTUser, {} as JSON);
+        await service.addAnswer(unknownSurveyId, 1, {} as JSON, false, firstMockJWTUser);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
@@ -341,8 +347,9 @@ describe('SurveyAnswerService', () => {
         await service.addAnswer(
           idOfAnsweredSurvey01,
           saveNoAnsweredSurvey01,
-          firstMockJWTUser,
           firstUsersMockedAnswerForAnsweredSurveys01,
+          false,
+          firstMockJWTUser,
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
@@ -352,8 +359,9 @@ describe('SurveyAnswerService', () => {
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey01,
         saveNoAnsweredSurvey01,
-        firstMockJWTUser,
         firstUsersMockedAnswerForAnsweredSurveys01,
+        false,
+        firstMockJWTUser,
       );
     });
 
@@ -366,8 +374,9 @@ describe('SurveyAnswerService', () => {
         await service.addAnswer(
           idOfAnsweredSurvey02,
           saveNoAnsweredSurvey02,
-          firstMockJWTUser,
           mockedAnswerForAnsweredSurveys02,
+          false,
+          firstMockJWTUser,
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
@@ -377,8 +386,9 @@ describe('SurveyAnswerService', () => {
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey02,
         saveNoAnsweredSurvey02,
-        firstMockJWTUser,
         mockedAnswerForAnsweredSurveys02,
+        false,
+        firstMockJWTUser,
       );
     });
 
@@ -394,8 +404,9 @@ describe('SurveyAnswerService', () => {
           await service.addAnswer(
             idOfAnsweredSurvey02,
             saveNoAnsweredSurvey02,
-            secondMockJWTUser,
             mockedAnswerForAnsweredSurveys02,
+            false,
+            secondMockJWTUser,
           );
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
@@ -421,16 +432,18 @@ describe('SurveyAnswerService', () => {
       const result = await service.addAnswer(
         idOfAnsweredSurvey03,
         saveNoAnsweredSurvey03,
-        firstMockJWTUser,
         updatedMockedAnswerForAnsweredSurveys03,
+        false,
+        firstMockJWTUser,
       );
       expect(result).toEqual(updatedSurveyAnswerAnsweredSurvey03);
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey03,
         saveNoAnsweredSurvey03,
-        firstMockJWTUser,
         updatedMockedAnswerForAnsweredSurveys03,
+        false,
+        firstMockJWTUser,
       );
     });
 
@@ -449,16 +462,18 @@ describe('SurveyAnswerService', () => {
       const result = await service.addAnswer(
         idOfAnsweredSurvey04,
         saveNoAnsweredSurvey04,
-        firstMockJWTUser,
         mockedAnswerForAnsweredSurveys04,
+        false,
+        firstMockJWTUser,
       );
       expect(result).toEqual(surveyAnswerAnsweredSurvey04);
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey04,
         saveNoAnsweredSurvey04,
-        firstMockJWTUser,
         mockedAnswerForAnsweredSurveys04,
+        false,
+        firstMockJWTUser,
       );
     });
 
@@ -477,16 +492,18 @@ describe('SurveyAnswerService', () => {
       const result = await service.addAnswer(
         idOfAnsweredSurvey05,
         saveNoAnsweredSurvey05,
-        firstMockJWTUser,
         newMockedAnswerForAnsweredSurveys05,
+        false,
+        firstMockJWTUser,
       );
       expect(result).toEqual(newSurveyAnswerAnsweredSurvey05);
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey05,
         saveNoAnsweredSurvey05,
-        firstMockJWTUser,
         newMockedAnswerForAnsweredSurveys05,
+        false,
+        firstMockJWTUser,
       );
     });
   });
@@ -512,7 +529,7 @@ describe('SurveyAnswerService', () => {
         .fn()
         .mockReturnValue([firstUsersSurveyAnswerAnsweredSurvey01, secondUsersSurveyAnswerAnsweredSurvey01]);
 
-      const result = await service.getPublicAnswers(idOfAnsweredSurvey01);
+      const result = await service.getPublicAnswers(idOfAnsweredSurvey01.toString('hex'));
       expect(result).toEqual([
         firstUsersSurveyAnswerAnsweredSurvey01.answer,
         secondUsersSurveyAnswerAnsweredSurvey01.answer,

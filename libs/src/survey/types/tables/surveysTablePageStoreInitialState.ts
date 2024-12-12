@@ -3,6 +3,8 @@ import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageSt
 const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
   selectedSurvey: undefined,
 
+  canParticipate: false,
+
   answeredSurveys: [],
   isFetchingAnsweredSurveys: false,
 

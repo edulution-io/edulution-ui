@@ -19,7 +19,7 @@ const useResultDialogStore = create<ResultDialogStore>((set) => ({
   getSurveyResult: async (surveyId: mongoose.Types.ObjectId): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('base64')}`);
+      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('hex')}`);
       const result = response.data;
       set({ result });
     } catch (error) {

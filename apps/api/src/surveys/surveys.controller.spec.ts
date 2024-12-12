@@ -97,7 +97,7 @@ describe(SurveysController.name, () => {
         lean: jest.fn().mockReturnValue(publicSurvey01),
       });
 
-      const result = await controller.findOne(idOfPublicSurvey01, firstUsername);
+      const result = await controller.findOne(idOfPublicSurvey01.toString('hex'), firstUsername);
       expect(result).toEqual(publicSurvey01);
 
       expect(surveyModel.findOne).toHaveBeenCalledWith({
@@ -168,7 +168,7 @@ describe(SurveysController.name, () => {
         .fn()
         .mockReturnValue([firstUsersSurveyAnswerAnsweredSurvey01, secondUsersSurveyAnswerAnsweredSurvey01]);
 
-      const result = await controller.getSurveyResult(idOfAnsweredSurvey01);
+      const result = await controller.getSurveyResult(idOfAnsweredSurvey01.toString('hex'));
       expect(result).toEqual([
         firstUsersSurveyAnswerAnsweredSurvey01.answer,
         secondUsersSurveyAnswerAnsweredSurvey01.answer,
@@ -287,8 +287,9 @@ describe(SurveysController.name, () => {
       expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey01,
         saveNoAnsweredSurvey01,
-        firstMockJWTUser,
         firstUsersMockedAnswerForAnsweredSurveys01,
+        false,
+        firstMockJWTUser,
       );
     });
   });

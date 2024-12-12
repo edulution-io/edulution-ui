@@ -311,9 +311,9 @@
     "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
     "thanks": "Vielen Dank für deine Teilnahme.",
     "notFound": "Die Umfrage konnte nicht gefunden werden.",
-    "noFormula": "Das Formular ist nicht lesbar",
+    "noFormula": "Das Formular ist nicht lesbar.",
     "noAnswer": "Es sind noch keine Antworten verfügbar.",
-    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -321,7 +321,7 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
@@ -329,15 +329,15 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID",
+      "idTypeError": "Ungültige Umfrage-ID.",
       "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden.",
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
-      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
@@ -364,13 +364,13 @@
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen (Umfrage kann mehrmals beantwortet werden)."
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
       "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
-      "savedToClipboard": "In die Zwischenablage kopiert",
-      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
+      "savedToClipboard": "In die Zwischenablage kopiert.",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden."
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"

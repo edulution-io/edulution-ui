@@ -25,7 +25,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
           publicSurveyId: resultingSurvey.id.toString('hex'),
         });
       } else {
-        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: '' });
+        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
       }
     } catch (error) {
       handleApiError(error, set);

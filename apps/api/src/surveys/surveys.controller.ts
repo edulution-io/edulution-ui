@@ -1,10 +1,14 @@
-import mongoose from 'mongoose';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageEvent, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import { ANSWER_ENDPOINT, RESULT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import {
+  ANSWER_ENDPOINT,
+  RESULT_ENDPOINT,
+  SURVEY_CAN_PARTICIPATE_ENDPOINT,
+  SURVEYS,
+} from '@libs/survey/constants/surveys-endpoint';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
@@ -28,8 +32,13 @@ class SurveysController {
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
+  @Get(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}:surveyId`)
+  canParticipate(@Param('surveyId') surveyId: string, @GetCurrentUsername() username: string) {
+    return this.surveyAnswerService.canUserParticipateSurvey(surveyId, username);
+  }
+
   @Get(':surveyId')
-  async findOne(@Param('surveyId') surveyId: mongoose.Types.ObjectId, @GetCurrentUsername() username: string) {
+  async findOne(@Param('surveyId') surveyId: string, @GetCurrentUsername() username: string) {
     return this.surveyService.findSurvey(surveyId, username);
   }
 
@@ -39,7 +48,7 @@ class SurveysController {
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
-  async getSurveyResult(@Param('surveyId') surveyId: mongoose.Types.ObjectId) {
+  async getSurveyResult(@Param('surveyId') surveyId: string) {
     return this.surveyAnswerService.getPublicAnswers(surveyId);
   }
 
@@ -72,7 +81,7 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, user, answer);
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, false, user);
   }
 
   @Sse('sse')

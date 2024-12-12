@@ -80,7 +80,7 @@ describe(PublicSurveysController.name, () => {
       });
       surveysService.findPublicSurvey = jest.fn().mockReturnValue(publicSurvey01);
 
-      const result = await controller.find({ surveyId: idOfPublicSurvey01 });
+      const result = await controller.find({ surveyId: idOfPublicSurvey01.toString('hex') });
       expect(result).toEqual(publicSurvey01);
 
       expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(idOfPublicSurvey01);
@@ -90,7 +90,7 @@ describe(PublicSurveysController.name, () => {
       surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
 
       try {
-        await controller.find({ surveyId: unknownSurveyId });
+        await controller.find({ surveyId: unknownSurveyId.toString('hex') });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
@@ -102,7 +102,7 @@ describe(PublicSurveysController.name, () => {
 
   describe('answerSurvey', () => {
     it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService', async () => {
-      jest.spyOn(surveyAnswerService, 'addAnswerToPublicSurvey');
+      jest.spyOn(surveyAnswerService, 'addAnswer');
 
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
@@ -115,10 +115,11 @@ describe(PublicSurveysController.name, () => {
         answer: mockedValidAnswerForPublicSurveys02,
       });
 
-      expect(surveyAnswerService.addAnswerToPublicSurvey).toHaveBeenCalledWith(
+      expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
         idOfPublicSurvey02,
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
+        true,
       );
     });
 
@@ -159,7 +160,7 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
       const result = await controller.getChoices({
-        surveyId: idOfPublicSurvey02,
+        surveyId: idOfPublicSurvey02.toString('hex'),
         questionId: publicSurvey02QuestionIdWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
@@ -184,7 +185,7 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02AfterAddingValidAnswer);
 
       const result = await controller.getChoices({
-        surveyId: idOfPublicSurvey02,
+        surveyId: idOfPublicSurvey02.toString('hex'),
         questionId: publicSurvey02QuestionIdWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);

@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT, { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ENDPOINT, {
+  PUBLIC_SURVEYS_ENDPOINT,
+  SURVEY_CAN_PARTICIPATE_ENDPOINT,
+} from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
@@ -11,7 +14,13 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
   reset: () => set(SurveysTablesPageStoreInitialState),
 
-  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => {
+    const { canParticipateSelectedSurvey } = get();
+
+    void canParticipateSelectedSurvey();
+
+    set({ selectedSurvey: survey });
+  },
 
   updateSelectedSurvey: async (surveyId: string | undefined, isPublic: boolean): Promise<void> => {
     if (!surveyId) {
@@ -32,6 +41,22 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
       handleApiError(error, set);
     } finally {
       set({ isFetching: false });
+    }
+  },
+
+  canParticipateSelectedSurvey: async (): Promise<void> => {
+    const { selectedSurvey } = get();
+    if (!selectedSurvey) {
+      set({ canParticipate: false });
+      return;
+    }
+    const { id } = selectedSurvey;
+    try {
+      const response = await eduApi.get<boolean>(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}/${id.toString()}`);
+      set({ canParticipate: response.data });
+    } catch (error) {
+      handleApiError(error, set);
+      set({ canParticipate: false });
     }
   },
 

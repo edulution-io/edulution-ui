@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { PUBLIC_SURVEYS_ENDPOINT, RESTFUL_CHOICES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
@@ -17,7 +16,7 @@ class PublicSurveysController {
 
   @Get(`/:surveyId`)
   @Public()
-  async find(@Param() params: { surveyId: mongoose.Types.ObjectId }) {
+  async find(@Param() params: { surveyId: string }) {
     const { surveyId } = params;
     return this.surveyService.findPublicSurvey(surveyId);
   }
@@ -26,12 +25,12 @@ class PublicSurveysController {
   @Public()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswerToPublicSurvey(surveyId, saveNo, answer);
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, true);
   }
 
   @Get(`${RESTFUL_CHOICES_ENDPOINT}/:surveyId/:questionId`)
   @Public()
-  async getChoices(@Param() params: { surveyId: mongoose.Types.ObjectId; questionId: string }) {
+  async getChoices(@Param() params: { surveyId: string; questionId: string }) {
     const { surveyId, questionId } = params;
     return this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
   }

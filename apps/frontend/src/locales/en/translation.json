@@ -309,9 +309,9 @@
     "expirationDate": "Expiration date",
     "finished": "You successfully completed the survey.",
     "thanks": "Thank you for your participation.",
-    "noAnswer": "No answers available jet",
-    "notFound": "Survey could not be found",
-    "noFormula": "The formula of the survey is not readable",
+    "noAnswer": "No answers available jet.",
+    "notFound": "Survey could not be found.",
+    "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
@@ -320,25 +320,25 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "updateOrCreateError": "Neither able to update a survey nor to create a new one",
-      "deleteError": "Not able to delete the surveys",
-      "noFormulaError": "The formula of the survey is not readable",
-      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
-      "notFoundError": "Survey not found",
-      "participationErrorUserNotAssigned": "User is no participant of the survey",
-      "participationErrorAlreadyParticipated": "User has already participated in the survey",
-      "participationErrorSurveyExpired": "Survey has already expired",
-      "idTypeError": "Missing survey id",
+      "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
+      "deleteError": "Not able to delete the surveys.",
+      "noFormulaError": "The formula of the survey is not readable.",
+      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
+      "notFoundError": "Survey not found.",
+      "participationErrorUserNotAssigned": "User is no participant of the survey.",
+      "participationErrorAlreadyParticipated": "User has already participated in the survey.",
+      "participationErrorSurveyExpired": "Survey has already expired.",
+      "idTypeError": "Missing survey id.",
       "missingAnswerError": "Please provide an answer before submitting."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
-      "notAbleToFindSurveyAnswerError": "Survey answers not found",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer",
-      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
+      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database.",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found.",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer.",
+      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
     }
   },
   "surveys": {
@@ -363,13 +363,13 @@
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",
-      "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
+      "canSubmitMultipleAnswers": "Should the survey still be visible after participation (Allows the user to submit multiple answers)?"
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
       "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "savedToClipboard": "Saved to clipboard",
-      "savedToClipboardError": "Unable to save into clipboard"
+      "savedToClipboard": "Saved to clipboard.",
+      "savedToClipboardError": "Unable to save into clipboard."
     },
     "participateDialog": {
       "title": "Participate in the survey"

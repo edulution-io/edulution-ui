@@ -145,11 +145,8 @@ describe('SurveyService', () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
-      const surveyMock: Survey = {
-        ...surveyUpdateUpdatedSurvey,
-        _id: surveyUpdateUpdatedSurvey.id,
-        created: surveyUpdateUpdatedSurvey.created,
-      };
+      const surveyMock = surveyUpdateUpdatedSurvey;
+
       const result = await service.updateSurvey(surveyMock, mockSseConnections);
 
       expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);

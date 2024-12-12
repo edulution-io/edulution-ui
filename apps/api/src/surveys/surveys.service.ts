@@ -21,7 +21,7 @@ class SurveysService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async findSurvey(surveyId: mongoose.Types.ObjectId, username: string): Promise<Survey | null> {
+  async findSurvey(surveyId: string, username: string): Promise<Survey | null> {
     const survey = await this.surveyModel
       .findOne({
         $and: [
@@ -44,7 +44,7 @@ class SurveysService {
     return survey;
   }
 
-  async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
+  async findPublicSurvey(surveyId: string): Promise<Survey | null> {
     try {
       return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
     } catch (error) {
