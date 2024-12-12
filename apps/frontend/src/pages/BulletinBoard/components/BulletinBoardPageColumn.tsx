@@ -104,7 +104,7 @@ const BulletinBoardPageColumn = ({
         {bulletins.map((bulletin) => (
           <div
             key={bulletin.id}
-            className="relative flex items-center justify-between rounded-lg bg-white bg-opacity-5 p-4"
+            className="relative flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4"
           >
             <div className="flex-1">
               <h4 className="truncate text-lg font-bold text-white">{bulletin.title}</h4>

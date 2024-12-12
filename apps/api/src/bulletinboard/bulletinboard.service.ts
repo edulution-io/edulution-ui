@@ -76,10 +76,12 @@ class BulletinBoardService {
     token: string,
     filterOnlyActiveBulletins?: boolean,
   ): Promise<BulletinResponseDto[]> {
-    const filter: Record<string, unknown> = { 'creator.username': username };
+    const filter: Record<string, unknown> = {};
 
     if (filterOnlyActiveBulletins !== undefined) {
       filter.isActive = filterOnlyActiveBulletins;
+    } else {
+      filter.creator = { username };
     }
 
     const bulletins = await this.bulletinModel.find(filter).populate('category').exec();
