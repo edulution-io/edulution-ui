@@ -13,10 +13,12 @@ import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardEr
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
+import { Bulletin, BulletinDocument } from '../bulletinboard/bulletin.schema';
 
 @Injectable()
 class BulletinCategoryService {
   constructor(
+    @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -123,15 +125,19 @@ class BulletinCategoryService {
   }
 
   async remove(id: string): Promise<void> {
+    const objectId = new Types.ObjectId(id);
+
+    const category = await this.bulletinCategoryModel.findById(objectId).exec();
+    if (!category) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
     try {
-      const objectId = new Types.ObjectId(id);
+      await this.bulletinModel.deleteMany({ category: objectId }).exec();
+
       await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
     } catch (error) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'Invalid ID format',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

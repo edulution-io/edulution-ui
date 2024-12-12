@@ -11,6 +11,7 @@ import BulletinsByCategoryNames from '@libs/bulletinBoard/types/bulletinsByCateg
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
@@ -59,7 +60,7 @@ class BulletinBoardService {
   async getBulletinsByCategoryNames(currentUser: JwtUser, token: string): Promise<BulletinsByCategoryNames> {
     const bulletinCategories = await this.bulletinCategoryService.findAll(currentUser, true);
 
-    const bulletins = await this.findAllBulletins(currentUser.preferred_username, token, true);
+    const bulletins = await this.findAllBulletins(currentUser, token, true);
 
     const bulletinsByCategory: BulletinsByCategoryNames = {};
 
@@ -71,7 +72,7 @@ class BulletinBoardService {
   }
 
   async findAllBulletins(
-    username: string,
+    currentUser: JwtUser,
     token: string,
     filterOnlyActiveBulletins?: boolean,
   ): Promise<BulletinResponseDto[]> {
@@ -79,8 +80,8 @@ class BulletinBoardService {
 
     if (filterOnlyActiveBulletins !== undefined) {
       filter.isActive = filterOnlyActiveBulletins;
-    } else {
-      filter.creator = { username };
+    } else if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      filter.creator = { username: currentUser.preferred_username };
     }
 
     const bulletins = await this.bulletinModel.find(filter).populate('category').exec();

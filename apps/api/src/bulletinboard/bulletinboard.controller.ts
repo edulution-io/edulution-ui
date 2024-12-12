@@ -25,8 +25,8 @@ class BulletinBoardController {
   }
 
   @Get('bulletins')
-  findAllBulletins(@GetCurrentUsername() currentUsername: string, @GetToken() token: string) {
-    return this.bulletinBoardService.findAllBulletins(currentUsername, token);
+  findAllBulletins(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
+    return this.bulletinBoardService.findAllBulletins(currentUser, token);
   }
 
   @Post()

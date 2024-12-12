@@ -88,6 +88,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
           <Button
             variant="btn-attention"
             size="lg"
+            type="button"
             onClick={async () => {
               await deleteCategory(selectedCategory?.id || '');
               setDialogOpen(false);
