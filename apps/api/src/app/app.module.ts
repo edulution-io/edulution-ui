@@ -26,7 +26,7 @@ import AuthModule from '../auth/auth.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, '..', 'public', 'downloads'),
+      rootPath: resolve(__dirname, '.', 'public', 'downloads'),
       serveRoot: `/${EDU_API_ROOT}/downloads`,
     }),
     AuthModule,

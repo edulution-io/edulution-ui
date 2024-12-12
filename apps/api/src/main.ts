@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
@@ -27,6 +28,10 @@ async function bootstrap() {
 
   if (!existsSync(TRAEFIK_CONFIG_FILES_PATH)) {
     mkdirSync(TRAEFIK_CONFIG_FILES_PATH, { recursive: true });
+  }
+
+  if (process.env.NODE_ENV === 'production' && !existsSync(APPS_FILES_PATH)) {
+    mkdirSync(APPS_FILES_PATH, { recursive: true });
   }
 
   if (process.env.NODE_ENV === 'development') {
