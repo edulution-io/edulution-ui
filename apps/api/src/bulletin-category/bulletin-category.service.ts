@@ -12,6 +12,8 @@ import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
+import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 
 @Injectable()
@@ -21,7 +23,10 @@ class BulletinCategoryService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async getUsersWithPermissionCached(bulletinCategoryId: string, permission: 'view' | 'edit'): Promise<string[]> {
+  async getUsersWithPermissionCached(
+    bulletinCategoryId: string,
+    permission: BulletinCategoryPermissionType,
+  ): Promise<string[]> {
     const cacheKey = `bulletinCategory:${bulletinCategoryId}:${permission}`;
     let users = await this.cacheManager.get<string[]>(cacheKey);
 
@@ -36,13 +41,12 @@ class BulletinCategoryService {
       }
 
       const groupsToCheck =
-        permission === 'edit'
-          ? [...bulletinCategory.editableByGroups, ...bulletinCategory.visibleForGroups]
+        permission === BulletinCategoryPermission.EDIT
+          ? bulletinCategory.editableByGroups
           : bulletinCategory.visibleForGroups;
-
       const usersToCheck =
-        permission === 'edit'
-          ? [...bulletinCategory.editableByUsers, ...bulletinCategory.visibleForUsers]
+        permission === BulletinCategoryPermission.EDIT
+          ? bulletinCategory.editableByUsers
           : bulletinCategory.visibleForUsers;
 
       const usersInGroups = await Promise.all(
@@ -63,7 +67,20 @@ class BulletinCategoryService {
     return users;
   }
 
-  async findAll(currentUser: JWTUser, isActive?: boolean): Promise<BulletinCategoryResponseDto[]> {
+  async hasUserPermission(
+    username: string,
+    bulletinCategoryId: string,
+    permission: BulletinCategoryPermissionType,
+  ): Promise<boolean> {
+    const usersWithPermission = await this.getUsersWithPermissionCached(bulletinCategoryId, permission);
+    return usersWithPermission.includes(username);
+  }
+
+  async findAll(
+    currentUser: JWTUser,
+    permission: BulletinCategoryPermissionType = BulletinCategoryPermission.VIEW,
+    isActive?: boolean,
+  ): Promise<BulletinCategoryResponseDto[]> {
     const filter: Record<string, unknown> = {};
     if (isActive !== undefined) {
       filter.isActive = isActive;
@@ -78,8 +95,8 @@ class BulletinCategoryService {
 
     const accessibleCategories = await Promise.all(
       bulletinCategories.map(async (category) => {
-        const usersWithViewPermission = await this.getUsersWithPermissionCached(String(category.id), 'view');
-        return usersWithViewPermission.includes(currentUser.preferred_username) ? category : null;
+        const usersWithPermission = await this.getUsersWithPermissionCached(String(category.id), permission);
+        return usersWithPermission.includes(currentUser.preferred_username) ? category : null;
       }),
     );
 
@@ -87,6 +104,10 @@ class BulletinCategoryService {
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
+    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_CATEGORY, HttpStatus.FORBIDDEN);
+    }
+
     const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
@@ -101,13 +122,13 @@ class BulletinCategoryService {
       },
     })) as unknown as BulletinCategoryResponseDto;
 
-    await this.getUsersWithPermissionCached(category.id, 'view');
-    await this.getUsersWithPermissionCached(category.id, 'edit');
+    await this.getUsersWithPermissionCached(category.id, BulletinCategoryPermission.VIEW);
+    await this.getUsersWithPermissionCached(category.id, BulletinCategoryPermission.EDIT);
 
     return category;
   }
 
-  async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
+  async update(currentUser: JWTUser, id: string, dto: CreateBulletinCategoryDto): Promise<void> {
     const category: BulletinCategoryDocument | null = await this.bulletinCategoryModel.findById(id).exec();
     if (!category) {
       throw new CustomHttpException(
@@ -117,14 +138,21 @@ class BulletinCategoryService {
       );
     }
 
+    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_CATEGORY, HttpStatus.FORBIDDEN);
+    }
+
     Object.assign(category, dto);
     await category.save();
 
-    await this.getUsersWithPermissionCached(id, 'view');
-    await this.getUsersWithPermissionCached(id, 'edit');
+    await this.getUsersWithPermissionCached(String(category.id), BulletinCategoryPermission.VIEW);
+    await this.getUsersWithPermissionCached(String(category.id), BulletinCategoryPermission.EDIT);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(currentUser: JWTUser, id: string): Promise<void> {
+    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_CATEGORY, HttpStatus.FORBIDDEN);
+    }
     try {
       const objectId = new Types.ObjectId(id);
       await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
@@ -135,10 +163,6 @@ class BulletinCategoryService {
         'Invalid ID format',
       );
     }
-  }
-
-  async getConfigByName(name: string) {
-    return this.bulletinCategoryModel.findOne({ name }).exec();
   }
 
   async checkIfNameExists(name: string): Promise<{ exists: boolean }> {

@@ -66,8 +66,12 @@
       "fileNotFound": "File not found",
       "invalidCategory": "Invalid category",
       "bulletinNotFound": "Bulletin not found",
-      "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
-      "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin"
+      "unauthorizedUpdateBulletin": "No permission to update this bulletin",
+      "unauthorizedDeleteBulletin": "No permission to delete this bulletin",
+      "unauthorizedCreateBulletin": "No permission to create this bulletin",
+      "unauthorizedCreateCategory": "No permission to create this category",
+      "unauthorizedDeleteCategory": "No permission to delete this category",
+      "unauthorizedUpdateCategory": "No permission to update this category"
     }
   },
   "dashboard": {
@@ -682,6 +686,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "options": "Options",
     "columns": "Columns",
     "join": "Join",
     "details": "Details",

@@ -4,6 +4,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 type BulletinsByCategory = {
   category: BulletinCategoryResponseDto;
   bulletins: BulletinResponseDto[];
+  canEditCategory: boolean;
 }[];
 
 export default BulletinsByCategory;

@@ -6,9 +6,12 @@ import {
   BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT,
   BULLETIN_BOARD_EDU_API_ENDPOINT,
   BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT,
+  BULLETIN_CATEGORY_EDU_API_ENDPOINT,
 } from '@libs/bulletinBoard/constants/apiEndpoints';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 
 interface BulletinBoardEditorialStore {
   selectedRows: RowSelectionState;
@@ -29,11 +32,14 @@ interface BulletinBoardEditorialStore {
   isDialogLoading: boolean;
   uploadAttachment: (attachment: File) => Promise<string>;
   isAttachmentUploadLoading: boolean;
+  categories: BulletinCategoryResponseDto[];
+  getCategories: () => Promise<void>;
   reset: () => void;
 }
 
 const initialValues = {
   bulletins: [],
+  categories: [],
   selectedBulletinToEdit: null,
   isLoading: false,
   error: null,
@@ -125,6 +131,20 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       return '';
     } finally {
       set({ isAttachmentUploadLoading: false });
+    }
+  },
+
+  getCategories: async () => {
+    set({ error: null, isLoading: true });
+    try {
+      const response = await eduApi.get<BulletinCategoryResponseDto[]>(
+        `${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${BulletinCategoryPermission.EDIT}`,
+      );
+      set({ categories: response.data });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 

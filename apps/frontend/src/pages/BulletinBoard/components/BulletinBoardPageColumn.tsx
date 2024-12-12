@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useMemo } from 'react';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import cn from '@libs/common/utils/className';
 import { Card } from '@/components/shared/Card';
@@ -16,18 +16,27 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import { useNavigate } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APPS from '@libs/appconfig/constants/apps';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const BulletinBoardPageColumn = ({
   bulletins,
   categoryCount,
   category,
+  canEditCategory,
+  canManageBulletins,
 }: {
   categoryCount: number;
   category: BulletinCategoryResponseDto;
   bulletins: BulletinResponseDto[];
+  canEditCategory: boolean;
+  canManageBulletins: boolean;
 }) => {
   const { t } = useTranslation();
+  const { user } = useUserStore();
   const navigate = useNavigate();
+  const { isSuperAdmin } = useLdapGroups();
   const { setSelectedRows, setIsDeleteBulletinDialogOpen, setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } =
     useBulletinBoardEditorialStore();
   const { getBulletinsByCategories } = useBulletinBoardStore();
@@ -68,6 +77,49 @@ const BulletinBoardPageColumn = ({
     );
   };
 
+  const getCategoryDropdownItems = useMemo(() => {
+    const items: DropdownMenuItemType[] = [];
+    if (canEditCategory) {
+      items.push({ label: t('bulletinboard.createBulletin'), onClick: () => handleCreateBulletin(category) });
+    }
+    if (isSuperAdmin) {
+      items.push(
+        { label: 'categorySeparator', isSeparator: true },
+        {
+          label: t('bulletinboard.manageCategories'),
+          onClick: () => navigate(`${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
+        },
+      );
+    }
+    return items;
+  }, [isSuperAdmin, category, t, navigate]);
+
+  const getBulletinDropdownItems = (bulletin: BulletinResponseDto) => {
+    const items: DropdownMenuItemType[] = [];
+    const isUserTheCreator = user?.username === bulletin.creator.username;
+
+    if (isSuperAdmin || isUserTheCreator) {
+      items.push(
+        {
+          label: t('bulletinboard.editBulletin'),
+          onClick: () => handleEditBulletin(bulletin),
+        },
+        {
+          label: t('bulletinboard.deleteBulletin'),
+          onClick: () => handleDeleteBulletin(bulletin),
+        },
+        { label: 'bulletinSeparator', isSeparator: true },
+      );
+    }
+    if (canManageBulletins) {
+      items.push({
+        label: t('bulletinboard.manageBulletins'),
+        onClick: () => navigate(`/${APPS.BULLETIN_BOARD}`),
+      });
+    }
+    return items;
+  };
+
   return (
     <div
       className={cn('ml-[-5px] flex h-full w-1/2 flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3', {
@@ -85,19 +137,12 @@ const BulletinBoardPageColumn = ({
             <Button
               type="button"
               className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-blue-600 hover:text-white"
-              title={t('common.edit')}
+              title={t('common.options')}
             >
               <PiDotsThreeVerticalBold className="h-6 w-6" />
             </Button>
           }
-          items={[
-            { label: t('bulletinboard.createBulletin'), onClick: () => handleCreateBulletin(category) },
-            { label: 'categorySeparator', isSeparator: true },
-            {
-              label: t('bulletinboard.manageCategories'),
-              onClick: () => navigate(`${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
-            },
-          ]}
+          items={getCategoryDropdownItems}
         />
       </Card>
       <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
@@ -124,21 +169,7 @@ const BulletinBoardPageColumn = ({
                   <PiDotsThreeVerticalBold className="h-6 w-6" />
                 </Button>
               }
-              items={[
-                {
-                  label: t('bulletinboard.editBulletin'),
-                  onClick: () => handleEditBulletin(bulletin),
-                },
-                {
-                  label: t('bulletinboard.deleteBulletin'),
-                  onClick: () => handleDeleteBulletin(bulletin),
-                },
-                { label: 'bulletinSeparator', isSeparator: true },
-                {
-                  label: t('bulletinboard.manageBulletins'),
-                  onClick: () => navigate(`/${APPS.BULLETIN_BOARD}`),
-                },
-              ]}
+              items={getBulletinDropdownItems(bulletin)}
             />
           </div>
         ))}

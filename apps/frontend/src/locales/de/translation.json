@@ -67,7 +67,11 @@
       "invalidCategory": "Ungültige Kategorie",
       "bulletinNotFound": "Bulletin nicht gefunden",
       "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
-      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen"
+      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen",
+      "unauthorizedCreateBulletin": "Keine Berechtigung, um dieses Bulletin zu erstellen",
+      "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
+      "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
+      "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren"
     }
   },
   "dashboard": {
@@ -682,6 +686,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "options": "Optionen",
     "columns": "Spalten",
     "join": "Teilnehmen",
     "details": "Details",

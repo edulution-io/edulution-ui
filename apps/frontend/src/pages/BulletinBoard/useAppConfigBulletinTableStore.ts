@@ -6,6 +6,7 @@ import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { BulletinBoardTableStore } from '@libs/appconfig/types/bulletinBoardTableStore';
+import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 
 const initialValues = {
   isDialogOpen: false,
@@ -50,7 +51,9 @@ const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableS
 
       set({ error: null, isLoading: true });
       try {
-        const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETIN_CATEGORY_EDU_API_ENDPOINT);
+        const response = await eduApi.get<BulletinCategoryResponseDto[]>(
+          `${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${BulletinCategoryPermission.EDIT}`,
+        );
         set({ tableContentData: response.data });
         return response.data || [];
       } catch (error) {

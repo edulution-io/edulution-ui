@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import { MdDelete, MdUpdate } from 'react-icons/md';
@@ -24,23 +23,24 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     isCreateBulletinDialogOpen,
     updateBulletin,
     getBulletins,
+    categories,
+    getCategories,
     createBulletin,
     deleteBulletins,
     selectedBulletinToEdit,
     setSelectedBulletinToEdit,
     setIsCreateBulletinDialogOpen,
   } = useBulletinBoardEditorialStore();
-  const { tableContentData, fetchTableContent } = useAppConfigBulletinTableStore();
 
   useEffect(() => {
     if (isCreateBulletinDialogOpen) {
-      void fetchTableContent();
+      void getCategories();
     }
   }, [isCreateBulletinDialogOpen]);
 
   const initialFormValues: CreateBulletinDto = {
     title: selectedBulletinToEdit?.title || '',
-    category: selectedBulletinToEdit?.category || tableContentData[0],
+    category: selectedBulletinToEdit?.category || categories[0],
     attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
     content: selectedBulletinToEdit?.content || '',
     isActive: selectedBulletinToEdit?.isActive || true,
@@ -56,7 +56,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   useEffect(() => {
     form.reset(initialFormValues);
-  }, [selectedBulletinToEdit, tableContentData, form]);
+  }, [selectedBulletinToEdit, categories, form]);
 
   const handleSubmit = async () => {
     if (selectedBulletinToEdit?.id) {
@@ -64,13 +64,13 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     } else {
       await createBulletin(form.getValues());
     }
-    setIsCreateBulletinDialogOpen(false);
-    setSelectedBulletinToEdit(null);
     if (onSubmit) {
       await onSubmit();
     } else {
       await getBulletins();
     }
+    setIsCreateBulletinDialogOpen(false);
+    setSelectedBulletinToEdit(null);
     form.reset(initialFormValues);
   };
 
