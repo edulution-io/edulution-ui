@@ -89,6 +89,7 @@ const AppConfigEditBulletinCategoryDialog = () => {
           <Button
             variant="btn-attention"
             size="lg"
+            type="button"
             onClick={() => {
               setDialogOpen(false);
               setIsDeleteDialogOpen(true);

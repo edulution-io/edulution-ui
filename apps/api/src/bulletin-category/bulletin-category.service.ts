@@ -1,5 +1,5 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -15,10 +15,12 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
+import { Bulletin, BulletinDocument } from '../bulletinboard/bulletin.schema';
 
 @Injectable()
 class BulletinCategoryService {
   constructor(
+    @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -154,14 +156,11 @@ class BulletinCategoryService {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_CATEGORY, HttpStatus.FORBIDDEN);
     }
     try {
-      const objectId = new Types.ObjectId(id);
-      await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
+      await this.bulletinModel.deleteMany({ category: id }).exec();
+
+      await this.bulletinCategoryModel.findByIdAndDelete(id).exec();
     } catch (error) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'Invalid ID format',
-      );
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
