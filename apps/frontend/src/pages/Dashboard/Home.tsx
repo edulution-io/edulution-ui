@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DASHBOARD_HEADER_ID, GROUPS_ID, MOBILE_DASHBOARD_HEADER_ID } from '@libs/dashboard/constants/pageElementIds';
-import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import { GROUPS_ID, DASHBOARD_DESCRIPTION_ID } from '@libs/dashboard/constants/pageElementIds';
+import { BLANK_LAYOUT_HEADER_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useElementHeight from '@/hooks/useElementHeight';
@@ -18,7 +18,7 @@ const Home: React.FC = () => {
 
   const { user } = useUserStore();
 
-  const pageBarsHeight = useElementHeight([DASHBOARD_HEADER_ID, MOBILE_DASHBOARD_HEADER_ID, FOOTER_ID]);
+  const pageBarsHeight = useElementHeight([BLANK_LAYOUT_HEADER_ID, DASHBOARD_DESCRIPTION_ID, FOOTER_ID]);
 
   const column1 = (
     <div className="basis-1/4">
@@ -52,8 +52,8 @@ const Home: React.FC = () => {
   );
 
   return (
-    <div className="md:ml-4">
-      <div id={MOBILE_DASHBOARD_HEADER_ID}>
+    <div className="h-full overflow-y-auto scrollbar-thin md:mx-4">
+      <div id={DASHBOARD_DESCRIPTION_ID}>
         {isMobileView ? (
           <h2>
             {t('heading', {

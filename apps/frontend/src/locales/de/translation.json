@@ -313,6 +313,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "newTitle": "Neue Umfrage",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
@@ -486,6 +487,10 @@
     "delete": "Löschen",
     "description": "Hier können Sie alle Einstellungen vornehmen.",
     "appconfig": {
+      "sections": {
+        "onlyOffice": "Only Office Integration",
+        "general": "Allgemein"
+      },
       "update": {
         "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"
@@ -605,6 +610,8 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "join": "Teilnehmen",
+    "details": "Details",
     "actions": "Aktionen",
     "forward": "Weiterleiten",
     "showOptions": "Optionen zeigen",

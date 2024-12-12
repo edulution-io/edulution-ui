@@ -5,7 +5,7 @@ import MobileLogo from '@/assets/logos/edulution.io_USER INTERFACE-small.svg';
 import { useTranslation } from 'react-i18next';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useUserStore from '@/store/UserStore/UserStore';
-import { DASHBOARD_HEADER_ID } from '@libs/dashboard/constants/pageElementIds';
+import { BLANK_LAYOUT_HEADER_ID } from '@libs/common/constants/pageElementIds';
 
 interface HeaderProps {
   hideHeadingText?: boolean;
@@ -18,7 +18,10 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
   const getHeadingText = () => {
     if (isMobileView || hideHeadingText) return null;
     return (
-      <h2 className="ml-4 items-center text-2xl font-bold text-white">
+      <h2
+        id={BLANK_LAYOUT_HEADER_ID}
+        className="ml-4 items-center text-2xl font-bold text-white"
+      >
         {t('heading', {
           givenName: user?.firstName || '-',
           familyName: user?.lastName || '-',
@@ -29,8 +32,8 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
 
   return (
     <div
-      id={DASHBOARD_HEADER_ID}
-      className="mb-3 flex items-center pb-1"
+      id={BLANK_LAYOUT_HEADER_ID}
+      className="ml-2 flex items-center pb-1 md:mb-3 md:ml-7"
     >
       <div className={`rounded-b-[8px] ${isMobileView ? 'mt-3 w-[150px]' : 'mt-0 w-[250px] bg-white'}`}>
         <Link to="/">

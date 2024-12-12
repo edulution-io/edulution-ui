@@ -22,6 +22,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
+import splitAtLastWhitespace from '@libs/common/utils/splitStringAtLastWhitespace';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
@@ -108,8 +109,8 @@ class ConferencesService {
     if (!Array.isArray(attendees.attendee)) {
       return [
         {
-          lastName: attendees.attendee.role,
-          firstName: attendees.attendee.fullName,
+          firstName: splitAtLastWhitespace(attendees.attendee.fullName)[0],
+          lastName: splitAtLastWhitespace(attendees.attendee.fullName)[1],
           username: attendees.attendee.userID,
         },
       ];

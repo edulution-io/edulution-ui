@@ -312,6 +312,7 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
@@ -485,6 +486,10 @@
     "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
+      "sections": {
+        "onlyOffice": "Only Office Integration",
+        "general": "General"
+      },
       "update": {
         "success": "App saved successfully",
         "failed": "Update failed"
@@ -605,6 +610,8 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "join": "Join",
+    "details": "Details",
     "actions": "Actions",
     "forward": "Forward",
     "showOptions": "Show options",
