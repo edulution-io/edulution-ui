@@ -355,6 +355,8 @@
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
+    "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "view": {
       "open": {
         "menu": "Offene Umfragen",
