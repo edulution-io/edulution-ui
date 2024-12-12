@@ -15,7 +15,7 @@ const convertJSONToSurveyFormula = (formula: JSON): SurveyFormula => {
     toast.error(t(SurveyErrorMessages.SurveyFormulaStructuralError));
   }
 
-  return { title: '' };
+  return { title: t('survey.newTitle').toString() };
 };
 
 export default convertJSONToSurveyFormula;

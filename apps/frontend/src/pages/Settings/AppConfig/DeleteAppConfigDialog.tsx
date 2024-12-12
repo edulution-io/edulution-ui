@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface AddAppConfigDialogProps {
   handleDeleteSettingsItem: () => void;
@@ -14,7 +14,7 @@ const DeleteAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ handleDelete
   const { isDeleteAppConfigDialogOpen, setIsDeleteAppConfigDialogOpen, isLoading } = useAppConfigsStore();
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return <p>{t('settings.deleteApp.description')}</p>;
   };
 

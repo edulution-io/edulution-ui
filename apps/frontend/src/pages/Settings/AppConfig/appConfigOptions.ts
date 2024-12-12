@@ -27,6 +27,8 @@ import {
 } from '@/assets/icons';
 import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
+import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
+import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -64,7 +66,9 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-    extendedOptions: ['name', 'type', 'description', 'value'],
+    extendedOptions: {
+      [AppConfigSectionsKeys.onlyOffice]: ONLY_OFFICE_EXTENDED_OPTIONS,
+    },
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {

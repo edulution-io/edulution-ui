@@ -9,7 +9,8 @@ import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import isValidFile from '@libs/filesharing/utils/isValidFile';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import { appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface FileSharingLayoutProps {
   files: DirectoryFileDTO[];
@@ -22,7 +23,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const documentServerURL = useMemo(
-    () => getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_URL),
+    () => getExtendedOptionValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL),
     [appConfigs],
   );
 
