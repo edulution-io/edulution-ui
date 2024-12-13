@@ -553,12 +553,48 @@
       "description": "Möchtest du diese App sicher löschen?"
     },
     "delete": "Löschen",
-    "description": "Hier können Sie alle Einstellungen vornehmen.",
+    "description": {
+      "ticketsystem": "Hier kannst du alle Einstellungen vornehmen.",
+      "mail": "Hier kannst du alle Einstellungen vornehmen.",
+      "chat": "Hier kannst du alle Einstellungen vornehmen.",
+      "conferences": "Hier kannst du alle Einstellungen vornehmen.",
+      "surveys": "Hier kannst du alle Einstellungen vornehmen.",
+      "knowledgebase": "Hier kannst du alle Einstellungen vornehmen.",
+      "filesharing": "Hier kannst du alle Einstellungen vornehmen.",
+      "forums": "Hier kannst du alle Einstellungen vornehmen.",
+      "roombooking": "Hier kannst du alle Einstellungen vornehmen.",
+      "learningmanagement": "Hier kannst du alle Einstellungen vornehmen.",
+      "schoolinformation": "Hier kannst du alle Einstellungen vornehmen.",
+      "classmanagement": "Hier kannst du alle Einstellungen vornehmen.",
+      "printer": "Hier kannst du alle Einstellungen vornehmen.",
+      "network": "Hier kannst du alle Einstellungen vornehmen.",
+      "locationservices": "Hier kannst du alle Einstellungen vornehmen.",
+      "desktopdeployment": "Hier kannst du alle Einstellungen vornehmen.",
+      "wlan": "Hier kannst du alle Einstellungen vornehmen.",
+      "mobiledevices": "Hier kannst du alle Einstellungen vornehmen.",
+      "virtualization": "Hier kannst du alle Einstellungen vornehmen.",
+      "firewall": "Hier kannst du alle Einstellungen vornehmen.",
+      "antimalware": "Hier kannst du alle Einstellungen vornehmen.",
+      "backup": "Hier kannst du alle Einstellungen vornehmen.",
+      "aichat": "Hier kannst du alle Einstellungen vornehmen.",
+      "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
+      "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen ,die Zugriff auf die App Schwarzes Brett Editor haben. Über die Kategorieren kann gesteuert werden, bei welchen Nutzern und Gruppen das Schwarze Brett mit den Mitteilungen statt dem klassischen Dashboard angezeigt wird."
+    },
     "appconfig": {
       "sections": {
-        "onlyOffice": "Only Office Integration",
-        "bulletinBoard": "Schwarzes Brett Kategorien",
-        "general": "Allgemein"
+        "onlyOffice": {
+          "title": "Only Office Integration",
+          "description": ""
+        },
+        "bulletinBoard": {
+          "title": "Kategorien",
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
+        },
+        "general": {
+          "title": "Allgemein",
+          "description": ""
+        }
       },
       "update": {
         "success": "App erfolgreich gespeichert",

@@ -552,12 +552,48 @@
       "description": "Are you sure you want to delete this app?"
     },
     "delete": "Remove",
-    "description": "Here you can make all settings.",
+    "description": {
+      "ticketsystem": "Here you can make all the settings.",
+      "mail": "Here you can make all the settings.",
+      "chat": "Here you can make all the settings.",
+      "conferences": "Here you can make all the settings.",
+      "surveys": "Here you can make all the settings.",
+      "knowledgebase": "Here you can make all the settings.",
+      "filesharing": "Here you can make all the settings.",
+      "forums": "Here you can make all the settings.",
+      "roombooking": "Here you can make all the settings.",
+      "learningmanagement": "Here you can make all the settings.",
+      "schoolinformation": "Here you can make all the settings.",
+      "classmanagement": "Here you can make all the settings.",
+      "printer": "Here you can make all the settings.",
+      "network": "Here you can make all the settings.",
+      "locationservices": "Here you can make all the settings.",
+      "desktopdeployment": "Here you can make all the settings.",
+      "wlan": "Here you can make all the settings.",
+      "mobiledevices": "Here you can make all the settings.",
+      "virtualization": "Here you can make all the settings.",
+      "firewall": "Here you can make all the settings.",
+      "antimalware": "Here you can make all the settings.",
+      "backup": "Here you can make all the settings.",
+      "aichat": "Here you can make all the settings.",
+      "linuxmuster": "Here you can make all the settings.",
+      "whiteboard": "Here you can make all the settings.",
+      "bulletinboard": "Configure the user groups that have access to the Blackboard Editor app here. The categories can be used to control for which users and groups the notice board with the messages is displayed instead of the classic dashboard."
+    },
     "appconfig": {
       "sections": {
-        "onlyOffice": "Only Office Integration",
-        "bulletinBoard": "Bulletin Board Categories",
-        "general": "General"
+        "onlyOffice": {
+          "title": "Only Office Integration",
+          "description": ""
+        },
+        "bulletinBoard": {
+          "title": "Categories",
+          "description": "Add new categories or edit existing ones to control for which users and groups the bulletin board should be displayed instead of the classic dashboard."
+        },
+        "general": {
+          "title": "General",
+          "description": ""
+        }
       },
       "update": {
         "success": "App saved successfully",

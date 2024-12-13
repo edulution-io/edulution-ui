@@ -14,10 +14,10 @@ import CircleLoader from '@/components/ui/CircleLoader';
 interface AddAppConfigDialogProps {
   option: string;
   setOption: (option: string) => void;
-  filteredAppOptions: () => { id: string; name: string }[];
+  getFilteredAppOptions: () => { id: string; name: string }[];
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, filteredAppOptions }) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, getFilteredAppOptions }) => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
         <DropdownMenu
-          options={filteredAppOptions()}
+          options={getFilteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
@@ -60,6 +60,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
 
       await updateAppConfig(updatedConfig);
       if (!error) {
+        setOption('');
         setIsAddAppConfigDialogOpen(false);
       }
     }
