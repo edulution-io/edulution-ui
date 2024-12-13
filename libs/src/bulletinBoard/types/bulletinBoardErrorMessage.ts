@@ -9,6 +9,7 @@ enum BulletinBoardErrorMessage {
   BULLETIN_NOT_FOUND = 'bulletinboard.errors.bulletinNotFound',
   UNAUTHORIZED_UPDATE_BULLETIN = 'bulletinboard.errors.unauthorizedUpdateBulletin',
   UNAUTHORIZED_DELETE_BULLETIN = 'bulletinboard.errors.unauthorizedDeleteBulletin',
+  CATEGORY_NAME_ALREADY_EXISTS = 'bulletinboard.errors.categoryNameAlreadyExists',
 }
 
 export default BulletinBoardErrorMessage;

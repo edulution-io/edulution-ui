@@ -2,6 +2,7 @@ import { Button } from '@/components/shared/Button';
 import { MdDelete, MdUpdate } from 'react-icons/md';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 
 interface CreateAndUpdateBulletinCategoryFooterProps {
   handleFormSubmit: (e: React.FormEvent) => void;
@@ -30,7 +31,7 @@ const CreateAndUpdateBulletinCategoryFooter = ({
             type="button"
             onClick={() => handleDeleteCategory()}
           >
-            <MdDelete size={20} />
+            <MdDelete size={BUTTONS_ICON_WIDTH} />
             {t('common.delete')}
           </Button>
         )}
@@ -41,7 +42,7 @@ const CreateAndUpdateBulletinCategoryFooter = ({
           disabled={isSaveButtonDisabled()}
           type="submit"
         >
-          <MdUpdate size={20} />
+          <MdUpdate size={BUTTONS_ICON_WIDTH} />
           {t('common.save')}
         </Button>
       </div>

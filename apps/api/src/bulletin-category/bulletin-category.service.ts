@@ -87,6 +87,12 @@ class BulletinCategoryService {
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
+    const existingCategory = await this.checkIfNameExists(dto.name);
+
+    if (existingCategory.exists) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NAME_ALREADY_EXISTS, HttpStatus.CONFLICT);
+    }
+
     const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,

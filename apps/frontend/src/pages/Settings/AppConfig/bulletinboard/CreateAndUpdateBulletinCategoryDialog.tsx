@@ -81,7 +81,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   const isCurrentNameEqualToSelected = () =>
     watch('name').trim() === (selectedCategory?.name || '').trim() && watch('name').trim() !== '';
 
-  const isNameValidationFailed = () => isNameCheckingLoading || (isCurrentNameEqualToSelected() && nameExistsAlready);
+  const isNameValidationFailed = () => isNameCheckingLoading || (!isCurrentNameEqualToSelected() && nameExistsAlready);
 
   const isSaveButtonDisabled = () => isNameValidationFailed() || !form.formState.isValid;
 
