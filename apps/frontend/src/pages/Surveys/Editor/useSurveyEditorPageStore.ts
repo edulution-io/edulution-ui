@@ -1,10 +1,34 @@
 import { create } from 'zustand';
-import SurveyEditorPageStore from '@libs/survey/types/editor/surveyEditorPageStore';
-import SurveyEditorPageStoreInitialState from '@libs/survey/types/editor/surveyEditorPageStoreInitialState';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+
+interface SurveyEditorPageStore {
+  survey: SurveyDto | undefined;
+  setSurvey: (survey: SurveyDto | undefined) => void;
+
+  isOpenSaveSurveyDialog: boolean;
+  setIsOpenSaveSurveyDialog: (state: boolean) => void;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
+  isLoading: boolean;
+
+  isOpenSharePublicSurveyDialog: boolean;
+  publicSurveyId: string;
+  closeSharePublicSurveyDialog: () => void;
+
+  reset: () => void;
+}
+
+const SurveyEditorPageStoreInitialState = {
+  survey: undefined,
+
+  isOpenSaveSurveyDialog: false,
+  isLoading: false,
+
+  isOpenSharePublicSurveyDialog: false,
+  publicSurveyId: '',
+};
 
 const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
   ...SurveyEditorPageStoreInitialState,

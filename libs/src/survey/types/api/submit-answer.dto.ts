@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { CompleteEvent } from 'survey-core';
 
-interface CommitAnswerDto {
+interface SubmitAnswerDto {
   surveyId: mongoose.Types.ObjectId;
 
   saveNo: number;
@@ -13,4 +13,4 @@ interface CommitAnswerDto {
   isPublic: boolean;
 }
 
-export default CommitAnswerDto;
+export default SubmitAnswerDto;

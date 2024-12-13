@@ -60,10 +60,10 @@ describe('SurveyService', () => {
         lean: jest.fn().mockReturnValue(publicSurvey01),
       });
 
-      const result = await service.findPublicSurvey(idOfPublicSurvey01);
+      const result = await service.findPublicSurvey(idOfPublicSurvey01.toString());
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01.toString(), isPublic: true });
     });
 
     it('should throw an error if the database access fails', async () => {
@@ -76,12 +76,12 @@ describe('SurveyService', () => {
       });
 
       try {
-        await service.findPublicSurvey(idOfPublicSurvey01);
+        await service.findPublicSurvey(idOfPublicSurvey01.toString());
       } catch (e) {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01.toString(), isPublic: true });
     });
   });
 

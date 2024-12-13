@@ -97,7 +97,7 @@ describe(SurveysController.name, () => {
         lean: jest.fn().mockReturnValue(publicSurvey01),
       });
 
-      const result = await controller.findOne(idOfPublicSurvey01.toString('hex'), firstUsername);
+      const result = await controller.findOne(idOfPublicSurvey01.toString(), firstUsername);
       expect(result).toEqual(publicSurvey01);
 
       expect(surveyModel.findOne).toHaveBeenCalledWith({
@@ -109,7 +109,7 @@ describe(SurveysController.name, () => {
               { invitedAttendees: { $elemMatch: { username: firstUsername } } },
             ],
           },
-          { _id: idOfPublicSurvey01 },
+          { _id: idOfPublicSurvey01.toString() },
         ],
       });
     });
@@ -168,13 +168,13 @@ describe(SurveysController.name, () => {
         .fn()
         .mockReturnValue([firstUsersSurveyAnswerAnsweredSurvey01, secondUsersSurveyAnswerAnsweredSurvey01]);
 
-      const result = await controller.getSurveyResult(idOfAnsweredSurvey01.toString('hex'));
+      const result = await controller.getSurveyResult(idOfAnsweredSurvey01.toString());
       expect(result).toEqual([
         firstUsersSurveyAnswerAnsweredSurvey01.answer,
         secondUsersSurveyAnswerAnsweredSurvey01.answer,
       ]);
 
-      expect(surveyAnswerService.getPublicAnswers).toHaveBeenCalledWith(idOfAnsweredSurvey01);
+      expect(surveyAnswerService.getPublicAnswers).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString());
     });
   });
 

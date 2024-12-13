@@ -1,7 +1,7 @@
 import React from 'react';
 import mongoose from 'mongoose';
 import { Survey } from 'survey-react-ui';
-import { CompleteEvent, Model } from 'survey-core';
+import { Model } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/french';
@@ -12,6 +12,7 @@ import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
+import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 
 interface ParticipateSurveyProps {
   surveyId: mongoose.Types.ObjectId;
@@ -21,15 +22,9 @@ interface ParticipateSurveyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  updateOpenSurveys: () => void;
-  updateAnsweredSurveys: () => void;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
+  submitAnswer: (answerDto: SubmitAnswerDto) => Promise<boolean>;
+  updateOpenSurveys?: () => void;
+  updateAnsweredSurveys?: () => void;
   isPublic?: boolean;
   className?: string;
 }
@@ -75,9 +70,13 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-
     _options.showSaveInProgress();
-    const success = await submitAnswer(surveyId, saveNo, answer /* , _options */);
+    const success = await submitAnswer({
+      surveyId,
+      saveNo,
+      answer /* , surveyEditorCallbackOnSave: _options */,
+      isPublic,
+    });
     if (!isPublic) {
       updateOpenSurveys();
       updateAnsweredSurveys();

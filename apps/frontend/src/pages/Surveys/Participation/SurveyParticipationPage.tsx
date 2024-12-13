@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticpateDialogStore';
+import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ParticipateSurvey from '@/pages/Surveys/Participation/components/ParticipateSurvey';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
@@ -52,7 +52,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
           setAnswer={setAnswer}
           pageNo={pageNo}
           setPageNo={setPageNo}
-          commitAnswer={answerSurvey}
+          submitAnswer={answerSurvey}
           className="survey-participation"
           isPublic={isPublic}
         />

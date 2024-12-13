@@ -5,7 +5,7 @@ import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableCol
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
 import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
-import CommitedAnswersDialog from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialog';
+import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
@@ -64,7 +64,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <ResultTableDialog />
           <ResultVisualizationDialog />
-          <CommitedAnswersDialog />
+          <SubmittedAnswersDialog />
         </div>
       </TooltipProvider>
     </>

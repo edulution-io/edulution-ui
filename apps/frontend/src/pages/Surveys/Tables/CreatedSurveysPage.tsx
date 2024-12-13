@@ -7,18 +7,25 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const CreatedSurveysPage = () => {
-  const { selectedSurvey, selectSurvey, createdSurveys, isFetchingCreatedSurveys, updateCreatedSurveys } =
-    useSurveyTablesPageStore();
+  const {
+    selectedSurvey,
+    selectSurvey,
+    setSelectedRows,
+    answeredSurveys,
+    isFetchingAnsweredSurveys,
+    updateAnsweredSurveys,
+  } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
   const fetch = useCallback(() => {
-    if (!isFetchingCreatedSurveys) {
-      void updateCreatedSurveys();
+    if (!isFetchingAnsweredSurveys) {
+      void updateAnsweredSurveys();
     }
   }, []);
 
   useEffect(() => {
+    setSelectedRows({});
     selectSurvey(undefined);
     void fetch();
   }, []);
@@ -29,17 +36,18 @@ const CreatedSurveysPage = () => {
 
   return (
     <>
-      {isFetchingCreatedSurveys ? <LoadingIndicator isOpen={isFetchingCreatedSurveys} /> : null}
+      {isFetchingAnsweredSurveys ? <LoadingIndicator isOpen={isFetchingAnsweredSurveys} /> : null}
       <SurveyTablePage
-        title={t('surveys.view.created')}
+        title={t('surveys.view.created.title')}
+        description={t('surveys.view.created.description')}
         selectedSurvey={selectedSurvey}
-        surveys={createdSurveys}
-        selectSurvey={selectSurvey}
+        surveys={answeredSurveys}
+        isLoading={isFetchingAnsweredSurveys}
         canDelete
         canEdit
         canShowResults
         canParticipate
-        canShowCommitedAnswers
+        canShowSubmittedAnswers
       />
     </>
   );

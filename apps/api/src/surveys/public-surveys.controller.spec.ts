@@ -80,23 +80,23 @@ describe(PublicSurveysController.name, () => {
       });
       surveysService.findPublicSurvey = jest.fn().mockReturnValue(publicSurvey01);
 
-      const result = await controller.find({ surveyId: idOfPublicSurvey01.toString('hex') });
+      const result = await controller.find({ surveyId: idOfPublicSurvey01.toString() });
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(idOfPublicSurvey01);
+      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(idOfPublicSurvey01.toString());
     });
 
     it('throw an error when the survey with the given id does not exist', async () => {
       surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
 
       try {
-        await controller.find({ surveyId: unknownSurveyId.toString('hex') });
+        await controller.find({ surveyId: unknownSurveyId.toString() });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
 
-      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(unknownSurveyId);
+      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(unknownSurveyId.toString());
     });
   });
 
@@ -160,13 +160,13 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
       const result = await controller.getChoices({
-        surveyId: idOfPublicSurvey02.toString('hex'),
+        surveyId: idOfPublicSurvey02.toString(),
         questionId: publicSurvey02QuestionIdWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString(),
         publicSurvey02QuestionIdWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
@@ -185,13 +185,13 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02AfterAddingValidAnswer);
 
       const result = await controller.getChoices({
-        surveyId: idOfPublicSurvey02.toString('hex'),
+        surveyId: idOfPublicSurvey02.toString(),
         questionId: publicSurvey02QuestionIdWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString(),
         publicSurvey02QuestionIdWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);

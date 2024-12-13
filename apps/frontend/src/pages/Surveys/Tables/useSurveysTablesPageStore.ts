@@ -10,11 +10,14 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveysTablesPageStore {
-  selectedPageView: SurveysPageView;
-  updateSelectedPageView: (pageView: SurveysPageView) => void;
-
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
+
+  updateSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
+  isFetching: boolean;
+
+  canParticipateSelectedSurvey: () => Promise<void>;
+  canParticipate: boolean;
 
   updateUsersSurveys: () => Promise<void>;
 
@@ -39,9 +42,9 @@ interface SurveysTablesPageStore {
 }
 
 const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
-  selectedPageView: SurveysPageView.OPEN,
-
   selectedSurvey: undefined,
+
+  canParticipate: false,
 
   answeredSurveys: [],
   isFetchingAnsweredSurveys: false,

@@ -6,7 +6,7 @@ import { Survey } from '../survey.schema';
 import Attendee from '../../conferences/attendee.schema';
 
 const throwErrorIfParticipationIsNotPossible = (survey: Survey, username?: string, isPublic?: boolean): void => {
-  const { expires = false, canSubmitMultipleAnswers = false } = survey;
+  const { expires = false, canSubmitMultipleAnswers = false, canUpdateFormerAnswer = false } = survey;
   if (expires && expires < new Date()) {
     throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
   }
@@ -15,7 +15,7 @@ const throwErrorIfParticipationIsNotPossible = (survey: Survey, username?: strin
     const hasParticipated = survey.participatedAttendees.find(
       (participant: Attendee) => participant.username === username,
     );
-    if (hasParticipated && !canSubmitMultipleAnswers) {
+    if (hasParticipated && !canSubmitMultipleAnswers && !canUpdateFormerAnswer) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorAlreadyParticipated, HttpStatus.FORBIDDEN);
     }
 
