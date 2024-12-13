@@ -12,16 +12,16 @@ const initialValues = {
   isLoading: true,
   selectedCategory: null,
   isBulletinCategoryDialogOpen: false,
-  isNameChecking: false,
+  isNameCheckingLoading: false,
   tableContentData: [],
-  nameExistsAlready: null,
+  nameExistsAlready: false,
 };
 
 const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTableStore>> =
   create<BulletinCategoryTableStore>((set) => ({
     ...initialValues,
-    setIsNameChecking: (isNameChecking) => set({ isNameChecking }),
-    setNameExists: (nameExistsAlready) => set({ nameExistsAlready }),
+    setNameCheckingIsLoading: (isNameCheckingLoading) => set({ isNameCheckingLoading }),
+    setNameAllReadyExists: (nameExistsAlready) => set({ nameExistsAlready }),
     setIsLoading: (isLoading) => set({ isLoading }),
     setIsDialogOpen: (isOpen) => set({ isDialogOpen: isOpen }),
     setEditBulletinCategoryDialogOpen: (isOpen) => set({ isBulletinCategoryDialogOpen: isOpen }),
@@ -52,12 +52,15 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
       }
     },
 
-    checkIfNameExists: async (name): Promise<boolean> => {
+    checkIfNameAllReadyExists: async (name): Promise<void> => {
       try {
+        set({ isNameCheckingLoading: true });
         const response = await eduApi.post<{ exists: boolean }>(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${name}`);
-        return response.data.exists;
+        set({ nameExistsAlready: response.data.exists });
       } catch (error) {
-        return false;
+        set({ nameExistsAlready: true });
+      } finally {
+        set({ isNameCheckingLoading: false });
       }
     },
 
