@@ -22,7 +22,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
       translationId: 'bulletinboard.name',
     },
 
-    accessorFn: (row) => row.title,
+    accessorFn: (row) => row.title?.toLowerCase(),
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (

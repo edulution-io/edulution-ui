@@ -58,6 +58,7 @@
       "fileNotProvided": "File not provided",
       "fileNotFound": "File not found",
       "invalidCategory": "Invalid category",
+      "invalidFileType": "Invalid file type",
       "bulletinNotFound": "Bulletin not found",
       "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
       "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin"

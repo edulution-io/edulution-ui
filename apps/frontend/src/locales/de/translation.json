@@ -58,6 +58,7 @@
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "fileNotFound": "Datei nicht gefunden",
       "invalidCategory": "Ungültige Kategorie",
+      "invalidFileType": "Ungültiger Dateityp",
       "bulletinNotFound": "Bulletin nicht gefunden",
       "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
       "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen"

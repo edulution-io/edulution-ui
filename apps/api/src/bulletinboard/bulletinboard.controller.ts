@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -8,9 +20,11 @@ import { Response } from 'express';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
+import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags(APPS.BULLETIN_BOARD)
@@ -64,7 +78,10 @@ class BulletinBoardController {
         if (BULLETIN_BOARD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
           callback(null, true);
         } else {
-          callback(new Error('Invalid file type. Only images, audio, video, and office files are allowed.'), false);
+          callback(
+            new CustomHttpException(BulletinBoardErrorMessage.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
+            false,
+          );
         }
       },
     }),

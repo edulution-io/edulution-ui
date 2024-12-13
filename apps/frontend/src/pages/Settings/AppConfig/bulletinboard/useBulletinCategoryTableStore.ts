@@ -45,10 +45,8 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
       try {
         const response = await eduApi.get<BulletinCategoryResponseDto[]>(BULLETIN_CATEGORY_EDU_API_ENDPOINT);
         set({ tableContentData: response.data });
-        return response.data || [];
       } catch (error) {
         handleApiError(error, set);
-        return [];
       } finally {
         set({ isLoading: false });
       }

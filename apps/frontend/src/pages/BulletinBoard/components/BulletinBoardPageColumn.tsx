@@ -40,7 +40,8 @@ const BulletinBoardPageColumn = ({
 
   return (
     <div
-      className={cn('flex h-full w-1/2 flex-shrink-0 flex-col rounded-lg p-4', {
+      className={cn('flex h-full w-full min-w-[300px] flex-shrink-0 flex-col rounded-lg p-4', {
+        'w-1/2': categoryCount === 2,
         'w-1/3': categoryCount === 3,
         'w-[300px]': categoryCount >= 4,
       })}
