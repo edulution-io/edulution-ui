@@ -27,21 +27,19 @@ const Home: React.FC = () => {
   );
 
   const column2 = (
-    <div className="basis-1/2">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col justify-between gap-4 md:flex-row">
-          <div
-            id={GROUPS_ID}
-            className="flex-1"
-          >
-            <Groups />
-          </div>
-          <div className="flex-1">
-            <MobileFileAccessCard />
-          </div>
+    <div className="flex basis-1/2 flex-col gap-8">
+      <div className="flex flex-col justify-between gap-4 md:flex-row">
+        <div
+          id={GROUPS_ID}
+          className="flex-1"
+        >
+          <Groups />
         </div>
-        <QuotaCard />
+        <div className="flex-1">
+          <MobileFileAccessCard />
+        </div>
       </div>
+      <QuotaCard />
     </div>
   );
 

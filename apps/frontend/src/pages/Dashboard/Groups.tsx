@@ -16,13 +16,13 @@ const Groups = () => {
   return (
     <Card
       variant="organisation"
-      className="max-h-[initial] min-h-[280px] w-full"
+      className="max-h-[initial] min-h-[200px] w-full"
     >
       <CardContent>
         <div className="flex flex-col gap-2 p-0">
           <h4 className="mb-4 font-bold">{t('groups.classes')}</h4>
           <div
-            className="overflow-y-auto"
+            className="overflow-y-auto scrollbar-thin"
             style={{ height: `${cardContentHeight}px` }}
           >
             <BadgeField

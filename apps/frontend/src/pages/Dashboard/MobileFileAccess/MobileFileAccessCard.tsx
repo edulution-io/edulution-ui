@@ -11,7 +11,7 @@ const MobileFileAccess: React.FC = () => {
   return (
     <Card
       variant="security"
-      className="h-full"
+      className="max-h-[initial] min-h-[200px] w-full"
     >
       <CardContent>
         <h4 className="mb-6 font-bold">{t('dashboard.mobileAccess.title')}</h4>
