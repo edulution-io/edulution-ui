@@ -54,6 +54,7 @@
       "GetUserSchoolClassFailed": "Get user school class failed",
       "GetUserProjectsFailed": "Get user projects failed",
       "GetUserFailed": "Fetching failed",
+      "UpdateUserFailed": "Update failed",
       "GetCurrentUserRoomFailed": "Get current user room failed",
       "CreateProjectFailed": "Create project failed",
       "RemoveProjectFailed": "Remove project failed",
@@ -73,17 +74,18 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
-      "title": "E-Mail Importer",
-      "provider": "E-Mail Provider",
-      "configName": "Name der Konfiguration",
+      "title": "Email Importer",
+      "provider": "Email Provider",
+      "configName": "Configuration name",
       "hostname": "Hostname",
       "port": "Port",
       "encryption": "Encryption",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "mailAddress": "E-Mail Address"
+      "rowsSelected": "{{selected}} of {{total}} jobs selected",
+      "rowSelected": "{{selected}} of {{total}} job selected",
+      "mailAddress": "Email address"
     }
   },
   "chat": {
@@ -98,12 +100,16 @@
     "errors": {
       "MeetingNotFound": "A meeting with this ID was not found",
       "BbbServerNotReachable": "The external BBB is not reachable",
+      "CouldNotStartConference": "The conference could not be started",
+      "CouldNotStopConference": "The conference could not be stopped",
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
       "YouAreNotTheCreator": "You are not the creator of the conference",
       "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
       "DBAccessFailed": "Database access failed"
     },
+    "started": "Conference started",
+    "stopped": "Conference stopped",
     "title": "CONFERENCES",
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
@@ -125,7 +131,8 @@
     "privacyStatus": "Access",
     "public": "Public",
     "private": "Private",
-    "selected-x-rows": "{{selected}} of {{total}} selected",
+    "rowsSelected": "{{selected}} of {{total}} conferences selected",
+    "rowSelected": "{{selected}} of {{total}} conference selected",
     "cancel": "Cancel",
     "password_required": "No Password entered",
     "error": "Error",
@@ -155,6 +162,8 @@
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
+    "rowsSelected": "{{selected}} of {{total}} files selected",
+    "rowSelected": "{{selected}} of {{total}} file selected",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -303,6 +312,7 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
@@ -322,9 +332,11 @@
     "errors": {
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
       "deleteError": "Not able to delete the surveys.",
+      "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
       "notFoundError": "Survey not found.",
+      "surveyFormulaStructuralError": "The formula of the survey has structural issues.",
       "participationErrorUserNotAssigned": "User is no participant of the survey.",
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
@@ -336,7 +348,7 @@
     "errors": {
       "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database.",
       "notAbleToFindSurveyAnswerError": "Survey answers not found.",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the commited survey answer.",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
       "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
     }
@@ -344,19 +356,35 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
+    "rowsSelected": "{{selected}} of {{total}} surveys selected",
+    "rowSelected": "{{selected}} of {{total}} surveys selected",
     "view": {
-      "open": "Open Surveys",
-      "created": "Owned Surveys",
-      "answered": "Answered Surveys",
-      "editor": "Create new"
+      "open": {
+        "menu": "Open Surveys",
+        "title": "Open Surveys",
+        "description": "Here you find the surveys you were invited to participate."
+      },
+      "created": {
+        "menu": "Own Surveys",
+        "title": "Own Surveys",
+        "description": "Here you find the surveys that you have created by yourself."
+      },
+      "answered": {
+        "menu": "Answered Surveys",
+        "title": "Answered Surveys",
+        "description": "Here you find the surveys that you have already participated in."
+      },
+      "editor": {
+        "menu": "Create new"
+      }
     },
     "actions": {
       "showResultsChart": "Chart",
       "showResultsTable": "Table",
-      "showCommittedAnswers": "Answers"
+      "showSubmittedAnswers": "Answers"
     },
-    "commitedAnswersDialog": {
-      "title": "Commited survey answer"
+    "submittedAnswersDialog": {
+      "title": "Submitted survey answer"
     },
     "saveDialog": {
       "title": "Save and assign to participants",
@@ -462,6 +490,10 @@
     "delete": "Remove",
     "description": "Here you can make all settings.",
     "appconfig": {
+      "sections": {
+        "onlyOffice": "Only Office Integration",
+        "general": "General"
+      },
       "update": {
         "success": "App saved successfully",
         "failed": "Update failed"
@@ -490,6 +522,26 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "details": {
+      "title": "User details",
+      "description": "Here you see and edit some of your personal information.",
+      "userInformation": "User related information",
+      "dateOfBirth": "Date of birth",
+      "givenName": "Given name",
+      "displayName": "Display name",
+      "name": "Username",
+      "role": "Role",
+      "schoolName": "School name",
+      "schoolSubjects": "School subjects",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "proxyAddresses": "Mail Proxies",
+      "addNew": "Type to add",
+      "badgeAlreadyExists": "This entry exists already",
+      "sophomorixCustom1_teacher": "Schoolsubject 1",
+      "sophomorixCustom2_teacher": "Schoolsubject 2",
+      "sophomorixCustomMulti1_teacher": "Coffee-brands"
+    },
     "security": {
       "title": "Security",
       "sidebar": "Security",
@@ -504,7 +556,7 @@
       }
     },
     "mails": {
-      "title": "E-Mail"
+      "title": "Email"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -515,6 +567,13 @@
       "enable": "Enable",
       "disabled": "disabled",
       "disable": "Disable"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Please select the language for the user interface.",
+      "german": "German",
+      "english": "English",
+      "system": "System language"
     },
     "addTotp": {
       "title": "QR-Code",
@@ -555,6 +614,8 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "join": "Join",
+    "details": "Details",
     "actions": "Actions",
     "forward": "Forward",
     "showOptions": "Show options",
@@ -605,14 +666,15 @@
     "connect": "Connect",
     "custom": "Custom",
     "select": "Select...",
+    "none": "None",
     "edit": "Edit",
     "copy": "Copy",
     "participate": "Participate",
     "participated": "Participated",
-    "not-available": "'Not available'",
+    "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Zurücksetzen"
+    "revert": "Revert"
   },
   "form": {
     "path": "Path",
@@ -639,7 +701,8 @@
     "filename": "Filename",
     "size": "Size",
     "lastModified": "Last Modified",
-    "type": "Type"
+    "type": "Type",
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
   },
   "filesharingUpload": {
     "title": "Upload Files",
@@ -661,7 +724,6 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} of {{total}} row(s) selected",
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
@@ -777,8 +839,8 @@
   "accountData": {
     "account_info": "Account Information",
     "name": "Name",
-    "email": "E-Mail",
-    "school": "Schule",
+    "email": "Email",
+    "school": "School",
     "role": "Role",
     "classes": "Classes",
     "change_password": "Change Password",
@@ -820,7 +882,7 @@
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number",
-      "MailProviderNotFound": "E-Mail provider not found",
+      "MailProviderNotFound": "Email provider not found",
       "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
       "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
       "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"

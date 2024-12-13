@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import FileSharingTable from '@/pages/FileSharing/table/FileSharingTable';
-import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
@@ -10,20 +9,21 @@ import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import isValidFile from '@libs/filesharing/utils/isValidFile';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import { appExtendedOptions, AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface FileSharingLayoutProps {
   files: DirectoryFileDTO[];
 }
 
-const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
+const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
   const isMobileView = useIsMobileView();
   const { setShowEditor, showEditor } = useFileEditorStore();
   const { currentlyEditingFile } = useFileSharingStore();
   const { appConfigs } = useAppConfigsStore();
 
   const documentServerURL = useMemo(
-    () => getExtendedOptionValue(appConfigs, appExtendedOptions, AppExtendedOptions.ONLY_OFFICE_URL),
+    () => getExtendedOptionValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL),
     [appConfigs],
   );
 
@@ -43,10 +43,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = ({ files }) => {
   return (
     <div className="flex flex-row">
       <div className={shouldShowEditor ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
-        <FileSharingTable
-          columns={FileSharingTableColumns}
-          data={files}
-        />
+        <FileSharingTable />
       </div>
       {shouldShowEditor && (
         <div

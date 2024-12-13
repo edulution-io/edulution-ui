@@ -3,10 +3,10 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 
 type AppConfigsStore = {
   appConfigs: AppConfigDto[];
@@ -39,7 +39,7 @@ const initialState = {
       appType: APP_INTEGRATION_VARIANT.NATIVE,
       options: {},
       accessGroups: [],
-      extendedOptions: [],
+      extendedOptions: {},
     },
   ],
   isLoading: false,
@@ -82,7 +82,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
       updateAppConfig: async (appConfigs) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.put<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT, appConfigs);
+          await eduApi.put(EDU_API_CONFIG_ENDPOINTS.ROOT, appConfigs);
           set({ appConfigs });
           toast.success(i18n.t('settings.appconfig.update.success'));
         } catch (e) {

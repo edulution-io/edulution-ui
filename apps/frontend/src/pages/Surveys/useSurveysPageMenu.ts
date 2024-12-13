@@ -5,20 +5,22 @@ import {
   CREATOR_SURVEYS_PAGE,
   OPEN_SURVEYS_PAGE,
 } from '@libs/survey/constants/surveys-endpoint';
-import { MenuBarEntryProps } from '@/datatypes/types';
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import APPS from '@libs/appconfig/constants/apps';
 
 const useSurveysPageMenu = () => {
   const navigate = useNavigate();
 
-  const menuBar = (): MenuBarEntryProps => ({
+  const menuBar = (): MenuBarEntry => ({
     title: 'surveys.title',
     icon: SurveysSidebarIcon,
     color: 'hover:bg-ciGreenToBlue',
+    appName: APPS.SURVEYS,
     menuItems: [
       {
         id: 'overview-open-surveys',
-        label: 'surveys.view.open',
+        label: 'surveys.view.open.menu',
         icon: SurveysViewOpenIcon,
         action: () => {
           navigate(OPEN_SURVEYS_PAGE);
@@ -26,7 +28,7 @@ const useSurveysPageMenu = () => {
       },
       {
         id: 'overview-answered-surveys',
-        label: 'surveys.view.answered',
+        label: 'surveys.view.answered.menu',
         icon: SurveysViewAnsweredIcon,
         action: () => {
           navigate(ANSWERED_SURVEYS_PAGE);
@@ -34,7 +36,7 @@ const useSurveysPageMenu = () => {
       },
       {
         id: 'overview-created-surveys',
-        label: 'surveys.view.created',
+        label: 'surveys.view.created.menu',
         icon: UserIcon,
         action: () => {
           navigate(CREATED_SURVEYS_PAGE);
@@ -42,7 +44,7 @@ const useSurveysPageMenu = () => {
       },
       {
         id: 'survey-editor-view',
-        label: 'surveys.view.editor',
+        label: 'surveys.view.editor.menu',
         icon: PlusIcon,
         action: () => {
           navigate(CREATOR_SURVEYS_PAGE);

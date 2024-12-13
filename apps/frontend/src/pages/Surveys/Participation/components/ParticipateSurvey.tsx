@@ -1,31 +1,37 @@
 import React from 'react';
 import mongoose from 'mongoose';
-import i18next from 'i18next';
 import { Survey } from 'survey-react-ui';
-import { Model } from 'survey-core';
+import { CompleteEvent, Model } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/spanish';
 import 'survey-core/i18n/italian';
-import CommitAnswerDto from '@libs/survey/types/api/commit-answer.dto';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import useLanguage from '@/hooks/useLanguage';
+import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
-import surveyTheme from '@/pages/Surveys/theme/theme';
 
 interface ParticipateSurveyProps {
   surveyId: mongoose.Types.ObjectId;
   saveNo: number;
-  formula: JSON;
+  formula: TSurveyFormula;
   answer: JSON;
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  commitAnswer: (answer: CommitAnswerDto) => Promise<boolean>;
-  className?: string;
-  updateOpenSurveys?: () => void;
-  updateAnsweredSurveys?: () => void;
+  submitAnswer: (
+    surveyId: mongoose.Types.ObjectId,
+    saveNo: number,
+    answer: JSON,
+    options?: CompleteEvent,
+  ) => Promise<void>;
+  updateOpenSurveys: () => void;
+  updateAnsweredSurveys: () => void;
+  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   isPublic?: boolean;
+  className?: string;
 }
 
 const ParticipateSurvey = (props: ParticipateSurveyProps) => {
@@ -37,17 +43,19 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
     setAnswer,
     pageNo,
     setPageNo,
-    commitAnswer,
-    className,
+    submitAnswer,
     updateOpenSurveys = () => {},
     updateAnsweredSurveys = () => {},
     isPublic = false,
+    className = '',
   } = props;
+
+  const { language } = useLanguage();
 
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
-  surveyModel.locale = i18next.options.lng || 'en';
+  surveyModel.locale = language;
 
   if (surveyModel.pages.length > 3) {
     surveyModel.showProgressBar = 'top';
@@ -67,8 +75,9 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
+
     _options.showSaveInProgress();
-    const success = await commitAnswer({ surveyId, saveNo, answer, surveyEditorCallbackOnSave: _options, isPublic });
+    const success = await submitAnswer(surveyId, saveNo, answer /* , _options */);
     if (!isPublic) {
       updateOpenSurveys();
       updateAnsweredSurveys();

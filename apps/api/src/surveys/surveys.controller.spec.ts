@@ -178,13 +178,13 @@ describe(SurveysController.name, () => {
     });
   });
 
-  describe('getCommittedSurveyAnswers', () => {
-    it('should return the commited answer of the current user', async () => {
+  describe('getSubmittedSurveyAnswers', () => {
+    it('should return the submitted answer of the current user', async () => {
       jest.spyOn(surveyAnswerService, 'getPrivateAnswer');
 
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
 
-      const result = await controller.getCommittedSurveyAnswers(
+      const result = await controller.getSubmittedSurveyAnswers(
         { surveyId: idOfAnsweredSurvey01, attendee: undefined },
         firstUsername,
       );
@@ -193,12 +193,12 @@ describe(SurveysController.name, () => {
       expect(surveyAnswerService.getPrivateAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01, firstUsername);
     });
 
-    it('should return the commited answer of a given user', async () => {
+    it('should return the submitted answer of a given user', async () => {
       jest.spyOn(surveyAnswerService, 'getPrivateAnswer');
 
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
 
-      const result = await controller.getCommittedSurveyAnswers(
+      const result = await controller.getSubmittedSurveyAnswers(
         { surveyId: idOfAnsweredSurvey01, attendee: secondUsername },
         firstUsername,
       );

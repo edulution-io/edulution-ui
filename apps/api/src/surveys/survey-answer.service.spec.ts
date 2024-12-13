@@ -394,7 +394,7 @@ describe('SurveyAnswerService', () => {
 
     it(
       'should return an error if the has already participated and can not' +
-        ' update the answer or commit multiple answers',
+        ' update the answer or submit multiple answers',
       async () => {
         jest.spyOn(service, 'addAnswer');
 
@@ -447,7 +447,7 @@ describe('SurveyAnswerService', () => {
       );
     });
 
-    it('should create an answer object if there is none for the survey commited by the given user', async () => {
+    it('should create an answer object if there is none for the survey submitted by the given user', async () => {
       jest.spyOn(service, 'addAnswer');
 
       surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey04);
@@ -509,7 +509,7 @@ describe('SurveyAnswerService', () => {
   });
 
   describe('getPrivateAnswer', () => {
-    it('should return the commited answer of a given user', async () => {
+    it('should return the submitted answer of a given user', async () => {
       jest.spyOn(service, 'getPrivateAnswer');
 
       model.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);

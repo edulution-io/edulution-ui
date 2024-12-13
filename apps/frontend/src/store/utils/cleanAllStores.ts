@@ -18,10 +18,11 @@ import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLice
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticpateDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
+import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticpateDialogStore';
+import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -46,10 +47,12 @@ const cleanAllStores = () => {
   useSidebarStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
-  useParticipateSurveyStore.getState().reset();
   useResultDialogStore.getState().reset();
   useCommitedAnswersDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
+  useParticipateSurveyStore.getState().reset();
+  useParticipatePublicSurveyStore.getState().reset();
+  localStorage.removeItem('i18nextLng');
 };
 
 export default cleanAllStores;

@@ -8,7 +8,6 @@ export const createdSurvey01: Survey = {
   id: createdSurveyId01,
   creator: firstMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Created Survey 01',
     description: 'This is a test survey',
     elements: [
@@ -25,8 +24,7 @@ export const createdSurvey01: Survey = {
   answers: [],
   saveNo: 1,
   created: new Date('2021-06-26T00:00:00.000Z'),
-  expirationDate: new Date('2044-08-22'),
-  expirationTime: '12:00',
+  expires: new Date('2044-08-22T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
@@ -38,7 +36,6 @@ export const createdSurvey02: Survey = {
   id: createdSurveyId02,
   creator: firstMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'New Create Created Survey',
     description: 'This is a test survey',
     elements: [
@@ -55,8 +52,7 @@ export const createdSurvey02: Survey = {
   answers: [],
   saveNo: 12,
   created: new Date('2021-06-26T00:00:00.000Z'),
-  expirationDate: new Date('2044-08-22'),
-  expirationTime: '12:00',
+  expires: new Date('2044-08-22T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,

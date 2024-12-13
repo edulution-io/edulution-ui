@@ -5,7 +5,7 @@ import Feed from '@/pages/Dashboard/Feed/Feed';
 import useUserStore from '@/store/UserStore/UserStore';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
-import Quota from './Quota';
+import QuotaCard from './QuotaCard';
 import Groups from './Groups';
 
 const Home: React.FC = () => {
@@ -14,7 +14,7 @@ const Home: React.FC = () => {
   const { user } = useUserStore();
 
   return (
-    <div className="md:ml-4">
+    <div className="h-full overflow-y-auto scrollbar-thin md:mx-4">
       <div>
         {isMobileView ? (
           <h2>
@@ -43,7 +43,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
               <div>
-                <Quota />
+                <QuotaCard />
               </div>
             </div>
           </div>

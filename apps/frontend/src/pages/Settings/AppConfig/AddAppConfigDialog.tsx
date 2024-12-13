@@ -7,9 +7,9 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface AddAppConfigDialogProps {
   option: string;
@@ -26,7 +26,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const selectedOption = option.toLowerCase().split('.')[0];
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
       <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
@@ -54,7 +54,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         appType: APP_INTEGRATION_VARIANT.FORWARDED,
         options: {},
         accessGroups: [],
-        extendedOptions: [],
+        extendedOptions: {},
       };
       const updatedConfig = [...appConfigs, newConfig];
 
