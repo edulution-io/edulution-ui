@@ -47,6 +47,8 @@
     "cancel": "Cancel",
     "title": "Title",
     "content": "Content",
+    "editCategory": "Edit category",
+    "createNewCategory": "Create category",
     "categories": {
       "visibleByUsersAndGroups": "Visible by users and groups",
       "editableByUsersAndGroups": "Editable by users and groups"
@@ -420,8 +422,6 @@
     "rowSelected": "{{selected}} of {{total}} survey selected",
     "title": "SURVEYS",
     "sidebar": "Surveys",
-    "rowsSelected": "{{selected}} of {{total}} surveys selected",
-    "rowSelected": "{{selected}} of {{total}} surveys selected",
     "view": {
       "open": {
         "menu": "Open Surveys",

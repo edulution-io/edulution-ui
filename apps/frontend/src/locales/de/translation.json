@@ -47,6 +47,8 @@
     "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
     "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
     "categoryDeletedSuccessfully": "Kategorie erfolgreich gelöscht",
+    "editCategory": "Kategorie bearbeiten",
+    "createNewCategory": "Kategorie erstellen",
     "categories": {
       "visibleByUsersAndGroups": "Diese Kategorie ist sichtbar für Nutzer und Gruppen",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen"
@@ -421,8 +423,6 @@
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
-    "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
-    "rowSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "view": {
       "open": {
         "menu": "Offene Umfragen",

@@ -1,23 +1,14 @@
 import React, { useEffect } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
-import { MdDelete, MdUpdate } from 'react-icons/md';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
-import useUserStore from '@/store/UserStore/UserStore';
-import useGroupStore from '@/store/GroupStore';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { useTranslation } from 'react-i18next';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
-import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
-import { Button } from '@/components/shared/Button';
-import DialogSwitch from '@/components/shared/DialogSwitch';
+import CreateAndUpdateBulletinCategoryFooter from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryFooter';
+import { useForm } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
-import { Form } from '@/components/ui/Form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
+import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
 
 const CreateAndUpdateBulletinCategoryDialog = () => {
   const {
@@ -31,6 +22,8 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
+
+  const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
 
   const initialFormValues = selectedCategory || {
     name: '',
@@ -47,23 +40,11 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     defaultValues: initialFormValues,
   });
 
-  const { setValue, watch, reset, getValues } = form;
+  const { reset, watch, getValues } = form;
 
   useEffect(() => {
     reset(initialFormValues);
-  }, [selectedCategory]);
-
-  const { searchAttendees } = useUserStore();
-  const { searchGroups } = useGroupStore();
-
-  const currentName = watch('name');
-  const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
-
-  const isCurrentNameEqualToSelected = () =>
-    currentName.trim() === (selectedCategory?.name || '').trim() && currentName.trim() !== '';
-
-  const isSaveButtonDisabled = () =>
-    isNameCheckingLoading || (isCurrentNameEqualToSelected() && nameExistsAlready) || !form.formState.isValid;
+  }, [selectedCategory, reset]);
 
   const closeDialog = () => {
     setDialogOpen(false);
@@ -90,98 +71,35 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     closeDialog();
   };
 
-  const getFooter = () => (
-    <form
-      onSubmit={handleFormSubmit}
-      className="space-y-4"
-    >
-      <div className="mt-4 flex justify-end space-x-2">
-        {isCurrentNameEqualToSelected() && (
-          <Button
-            variant="btn-attention"
-            size="lg"
-            type="button"
-            onClick={async () => {
-              await deleteCategory(selectedCategory?.id || '');
-              setDialogOpen(false);
-              setSelectedCategory(null);
-            }}
-          >
-            <MdDelete size={20} />
-            {t('common.delete')}
-          </Button>
-        )}
+  const handleDeleteCategory = async (categoryId: string | undefined, resetSelection: () => void) => {
+    if (!categoryId) return;
+    await deleteCategory(categoryId);
+    closeDialog();
+    resetSelection();
+  };
 
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          disabled={isSaveButtonDisabled()}
-          type="submit"
-        >
-          <MdUpdate size={20} />
-          {t('common.save')}
-        </Button>
-      </div>
-    </form>
+  const isCurrentNameEqualToSelected = () =>
+    watch('name').trim() === (selectedCategory?.name || '').trim() && watch('name').trim() !== '';
+
+  const isNameValidationFailed = () => isNameCheckingLoading || (isCurrentNameEqualToSelected() && nameExistsAlready);
+
+  const isSaveButtonDisabled = () => isNameValidationFailed() || !form.formState.isValid;
+
+  const getFooter = () => (
+    <CreateAndUpdateBulletinCategoryFooter
+      handleFormSubmit={(e: React.FormEvent) => handleFormSubmit(e)}
+      isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
+      isSaveButtonDisabled={isSaveButtonDisabled}
+      handleDeleteCategory={() => handleDeleteCategory(selectedCategory?.id, () => setSelectedCategory(null))}
+    />
   );
 
-  const handleVisibleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
-    setValue('visibleForUsers', attendees, { shouldValidate: true });
-  };
-
-  const handleEditableAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
-    setValue('editableByUsers', attendees, { shouldValidate: true });
-  };
-
-  const handleNameChange = (newName: string) => {
-    setValue('name', newName, { shouldValidate: true });
-  };
-
   const getDialogBody = () => (
-    <Form {...form}>
-      <form
-        onSubmit={handleFormSubmit}
-        className="space-y-4"
-      >
-        <div className="flex items-center space-x-2">
-          <p>{t('bulletinboard.categoryName')}:</p>
-          <NameInputWithAvailability
-            register={form.register('name')}
-            placeholder={t('bulletinboard.categoryName')}
-            onValueChange={handleNameChange}
-            shouldAvailabilityStatusShow={form.formState.isValid && !isCurrentNameEqualToSelected()}
-          />
-        </div>
-
-        <DialogSwitch
-          translationId="bulletinboard.isActive"
-          checked={watch('isActive')}
-          onCheckedChange={(isChecked) => {
-            form.setValue('isActive', isChecked);
-          }}
-        />
-        <p className="pt-4 text-foreground">{t('bulletinboard.categories.visibleByUsersAndGroups')}</p>
-        <SearchUsersOrGroups
-          users={watch('visibleForUsers') as AttendeeDto[]}
-          onSearch={searchAttendees}
-          onUserChange={handleVisibleAttendeesChange}
-          groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
-          onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-          variant="light"
-        />
-        <p className="pt-4 text-foreground">{t('bulletinboard.categories.editableByUsersAndGroups')}</p>
-        <SearchUsersOrGroups
-          users={watch('editableByUsers') as AttendeeDto[]}
-          onSearch={searchAttendees}
-          onUserChange={handleEditableAttendeesChange}
-          groups={watch('editableByGroups') as MultipleSelectorGroup[]}
-          onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-          variant="light"
-        />
-      </form>
-    </Form>
+    <CreateAndUpdateBulletinCategoryBody
+      handleFormSubmit={(e: React.FormEvent) => handleFormSubmit(e)}
+      form={form}
+      isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
+    />
   );
 
   return (
@@ -191,7 +109,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
         setDialogOpen(!isDialogOpen);
         setSelectedCategory(null);
       }}
-      title=""
+      title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}
       body={getDialogBody()}
       footer={getFooter()}
       mobileContentClassName="bg-black h-fit h-max-1/2"
