@@ -2,12 +2,11 @@ import { Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, copyFileSync } from 'fs';
 import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
-
+import folderPaths from '@libs/common/constants/folderPaths';
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
 
@@ -25,11 +24,16 @@ async function bootstrap() {
   const reflector = new Reflector();
   app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
 
-  if (!existsSync(TRAEFIK_CONFIG_FILES_PATH)) {
-    mkdirSync(TRAEFIK_CONFIG_FILES_PATH, { recursive: true });
-  }
+  folderPaths.forEach((path) => {
+    if (!existsSync(path)) {
+      mkdirSync(path, { recursive: true });
+    }
+  });
 
   if (process.env.NODE_ENV === 'development') {
+    if (existsSync('edulution.pem')) {
+      copyFileSync('edulution.pem', 'data/edulution.pem');
+    }
     const swaggerConfig = new DocumentBuilder()
       .setTitle('edulution-api')
       .setDescription('Test API for edulution-io')
