@@ -3,6 +3,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import UserLanguageType from '@libs/user/types/userLanguageType';
+import UserAppearance from '@libs/user/constants/userAppearance';
+import UserAppearanceType from '@libs/user/types/userAppearanceType';
 
 export type UserDocument = User & Document;
 
@@ -37,6 +39,9 @@ export class User {
 
   @Prop({ type: String, default: UserLanguage.SYSTEM })
   language: UserLanguageType;
+
+  @Prop({ type: String, default: UserAppearance.SYSTEM })
+  appearance: UserAppearanceType;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

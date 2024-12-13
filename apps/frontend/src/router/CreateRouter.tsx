@@ -4,6 +4,7 @@ import { AppConfigDto } from '@libs/appconfig/types';
 import type TApps from '@libs/appconfig/types/appsType';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import {
+  APPEARANCE_PATH,
   LANGUAGE_PATH,
   MAILS_PATH,
   SECURITY_PATH,
@@ -23,6 +24,7 @@ import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettings
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
+import AppearanceSettingsPage from '@/pages/UserSettings/UIAppearance/AppearanceSettingsPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -78,6 +80,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 <Route
                   path={LANGUAGE_PATH}
                   element={<LanguageSettingsPage />}
+                />
+                <Route
+                  path={APPEARANCE_PATH}
+                  element={<AppearanceSettingsPage />}
                 />
               </Route>
               {isSuperAdmin ? (

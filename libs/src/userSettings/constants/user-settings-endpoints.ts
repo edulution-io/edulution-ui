@@ -8,7 +8,11 @@ export const MAILS_PATH = 'mails';
 
 export const LANGUAGE_PATH = 'language';
 
+export const APPEARANCE_PATH = 'appearance';
+
 export const USER_SETTINGS_LANGUAGE_PATH = `${USER_SETTINGS_PATH}/${LANGUAGE_PATH}`;
+
+export const USER_SETTINGS_APPEARANCE_PATH = `${USER_SETTINGS_PATH}/${APPEARANCE_PATH}`;
 
 export const USER_SETTINGS_SECURITY_PATH = `${USER_SETTINGS_PATH}/${SECURITY_PATH}`;
 
