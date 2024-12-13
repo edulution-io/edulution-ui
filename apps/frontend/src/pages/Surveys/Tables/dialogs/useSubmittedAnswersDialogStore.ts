@@ -3,9 +3,9 @@ import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import SurveysPageView from '@libs/survey/types/api/page-view';
 
 interface SubmittedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;

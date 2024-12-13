@@ -47,7 +47,7 @@ const SurveysList = (props: SurveysListProps) => {
           <NavLink
             to={APPS.SURVEYS}
             onClick={() => selectSurvey(item)}
-            key={item.id.toString('base64')}
+            key={item.id.toString()}
             className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             {getSurveyInfo(item)}
