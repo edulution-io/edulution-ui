@@ -19,11 +19,15 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
   const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { tableContentData, isLoading } = useBulletinCategoryTableStore();
+  const { tableContentData, isLoading, fetchTableContent } = useBulletinCategoryTableStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
   const [isPermanentlyActive, setIsPermanentlyActive] = useState<boolean>(!isVisibilityDateSet);
+
+  useEffect(() => {
+    void fetchTableContent();
+  }, []);
 
   useEffect(() => {
     setIsPermanentlyActive(!isVisibilityDateSet);
