@@ -1,6 +1,9 @@
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import eduApi from '@/api/eduApi';
-import { BULLETIN_CATEGORY_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
+import {
+  BULLETIN_BOARD_EDU_API_ENDPOINT,
+  BULLETIN_CATEGORY_EDU_API_ENDPOINT,
+} from '@libs/bulletinBoard/constants/apiEndpoints';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
@@ -86,6 +89,7 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
     deleteCategory: async (id) => {
       set({ error: null, isDeleteDialogLoading: true });
       try {
+        await eduApi.delete(`${BULLETIN_BOARD_EDU_API_ENDPOINT}/${id}`);
         await eduApi.delete(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${id}`);
         toast.success(i18n.t('bulletinboard.categoryDeletedSuccessfully'));
         set({ selectedCategory: null });

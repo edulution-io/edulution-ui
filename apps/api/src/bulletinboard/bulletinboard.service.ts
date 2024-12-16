@@ -62,6 +62,20 @@ class BulletinBoardService implements OnModuleInit {
     return res;
   }
 
+  async removeAllBulletinsByCategory(currentUser: JwtUser, categoryId: string): Promise<void> {
+    const bulletins = await this.bulletinModel
+      .find<BulletinResponseDto>({ category: new Types.ObjectId(categoryId) })
+      .exec();
+
+    if (!bulletins.length) {
+      return;
+    }
+
+    const bulletinIds = bulletins.map((bulletin) => bulletin.id);
+
+    await this.removeBulletins(currentUser, bulletinIds);
+  }
+
   async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategories> {
     const bulletinCategoriesWithViewPermission: BulletinCategoryResponseDto[] =
       await this.bulletinCategoryService.findAll(currentUser, BulletinCategoryPermission.VIEW, true);
@@ -146,6 +160,7 @@ class BulletinBoardService implements OnModuleInit {
     return this.bulletinModel.create({
       creator,
       title: dto.title,
+      attachmentFileNames: dto.attachmentFileNames,
       content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
@@ -201,16 +216,19 @@ class BulletinBoardService implements OnModuleInit {
     return bulletin.save();
   }
 
-  async removeBulletins(username: string, ids: string[]) {
+  async removeBulletins(currentUser: JwtUser, ids: string[]) {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
 
     if (bulletins.length !== ids.length) {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    const unauthorizedBulletins = bulletins.filter((bulletin) => bulletin.creator.username !== username);
+    const unauthorizedBulletins = bulletins.filter(
+      (bulletin) => bulletin.creator.username !== currentUser.preferred_username,
+    );
 
-    if (unauthorizedBulletins.length > 0) {
+    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
