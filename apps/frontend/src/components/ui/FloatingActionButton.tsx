@@ -1,16 +1,11 @@
 import React, { useMemo } from 'react';
 import { Button } from '@/components/shared/Button';
-import {
-  DropdownMenuContent as Content,
-  DropdownMenuItem as MenuItem,
-  DropdownMenuSH as DropdownMenu,
-  DropdownMenuTrigger as Trigger,
-} from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
 import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
+import { useTranslation } from 'react-i18next';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
-import { useTranslation } from 'react-i18next';
+import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface FloatingActionButtonProps {
   icon: IconType;
@@ -37,8 +32,8 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   const renderContent = () => {
     if (variant === 'dropdown' && options.length > 0) {
       return (
-        <DropdownMenu>
-          <Trigger asChild>
+        <DropdownMenu
+          trigger={
             <Button
               type="button"
               variant="btn-hexagon"
@@ -49,30 +44,20 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
                 <Icon />
               </IconContext.Provider>
             </Button>
-          </Trigger>
-          <Content className="z-[100]">
-            {options.map((option) => (
-              <MenuItem
-                key={option.title}
-                onSelect={() => {
-                  if (onSelectFileSelect) {
-                    onSelectFileSelect(option.type);
-                  }
-                  if (onClick) {
-                    onClick();
-                  }
-                }}
-              >
-                <div className="flex flex-row items-center space-x-2">
-                  <option.icon style={{ color: option.iconColor }} />
-                  <span>{option.title}</span>
-                </div>
-              </MenuItem>
-            ))}
-          </Content>
-        </DropdownMenu>
+          }
+          items={options.map((option) => ({
+            label: option.title,
+            onClick: () => {
+              if (onSelectFileSelect) onSelectFileSelect(option.type);
+              if (onClick) onClick();
+            },
+            icon: option.icon as IconType,
+            iconColor: option.iconColor,
+          }))}
+        />
       );
     }
+
     return (
       <Button
         type={type}

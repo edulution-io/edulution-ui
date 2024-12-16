@@ -52,9 +52,15 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items }) => {
               <DropdownMenuItem
                 key={`item-${item.label}`}
                 onSelect={item.onClick}
-                className="cursor-pointer rounded-lg bg-gray-800 px-4 py-2 hover:bg-gray-600"
+                className="flex cursor-pointer items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 hover:bg-gray-600"
               >
-                {item.label}
+                {item.icon && (
+                  <item.icon
+                    style={{ color: item.iconColor || 'white' }}
+                    className="h-5 w-5"
+                  />
+                )}
+                <span>{item.label}</span>
               </DropdownMenuItem>
             );
           })}
