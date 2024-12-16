@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import type VeyonAuthDto from '@libs/veyon/types/veyonAuth.dto';
 import { Response } from 'express';
 import VeyonService from './veyon.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -11,9 +10,9 @@ import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 class VeyonController {
   constructor(private readonly veyonService: VeyonService) {}
 
-  @Post()
-  async authentication(@Body() body: VeyonAuthDto, @GetCurrentUsername() username: string) {
-    return this.veyonService.authenticate(body, username);
+  @Post(':ip')
+  async authentication(@Param('ip') ip: string, @GetCurrentUsername() username: string) {
+    return this.veyonService.authenticate(ip, username);
   }
 
   @Get('framebuffer/:connectionUid')

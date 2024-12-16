@@ -6,6 +6,7 @@ import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserC
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
 import { useTranslation } from 'react-i18next';
+import FrameBufferImage from './FrameBufferImage';
 
 interface UserCardProps {
   user: UserLmnInfo;
@@ -92,8 +93,14 @@ const UserCard = ({
             )}
             onClick={(event) => event.stopPropagation()}
           >
-            {givenName.slice(0, 1)}
-            {surname.slice(0, 1)}
+            {user.sophomorixIntrinsic3.length > 0 ? (
+              <FrameBufferImage user={user} />
+            ) : (
+              <>
+                {givenName.slice(0, 1)}
+                {surname.slice(0, 1)}
+              </>
+            )}
           </button>
         </div>
         {isSelectable ? (
