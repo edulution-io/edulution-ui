@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosError } from 'axios';
+import { Readable } from 'stream';
 import type VeyonAuthDto from '@libs/veyon/types/veyonAuth.dto';
 import type VeyonApiAuthResponse from '@libs/veyon/types/veyonApiAuthResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
@@ -50,6 +51,35 @@ class VeyonService {
     return {
       successfulResponses,
     };
+  }
+
+  async getFrameBufferStream(connectionUid: string): Promise<Readable> {
+    const params = {
+      format: 'jpeg',
+      compression: 9,
+      quality: 25,
+      width: 720,
+      height: 480,
+    };
+    try {
+      const response = await this.veyonApi.get<Readable>(`/framebuffer`, {
+        params,
+        responseType: 'stream',
+        headers: {
+          'Connection-Uid': connectionUid,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new HttpException(
+          error instanceof AxiosError ? error.message : 'Unknown error',
+          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw new HttpException('An unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 }
 
