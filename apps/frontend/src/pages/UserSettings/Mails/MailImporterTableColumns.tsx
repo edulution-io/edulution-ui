@@ -9,11 +9,13 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     id: 'hostname',
     header: ({ table, column }) => (
       <SortableHeader<SyncJobDto, unknown>
-        titleTranslationId="mail.importer.hostname"
         table={table}
         column={column}
       />
     ),
+    meta: {
+      translationId: 'mail.importer.hostname',
+    },
     accessorFn: (row) => row.host1,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -24,12 +26,10 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: 'port',
-    header: ({ column }) => (
-      <SortableHeader<SyncJobDto, unknown>
-        titleTranslationId="mail.importer.port"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
+    meta: {
+      translationId: 'mail.importer.port',
+    },
     accessorFn: (row) => row.port1,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -40,12 +40,10 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: 'encryption',
-    header: ({ column }) => (
-      <SortableHeader<SyncJobDto, unknown>
-        titleTranslationId="mail.importer.encryption"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
+    meta: {
+      translationId: 'mail.importer.encryption',
+    },
     accessorFn: (row) => row.enc1,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -56,12 +54,10 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: 'username',
-    header: ({ column }) => (
-      <SortableHeader<SyncJobDto, unknown>
-        titleTranslationId="common.username"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.username',
+    },
     accessorFn: (row) => row.user1,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -72,12 +68,10 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: 'sync-interval',
-    header: ({ column }) => (
-      <SortableHeader<SyncJobDto, unknown>
-        titleTranslationId="mail.importer.interval"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
+    meta: {
+      translationId: 'mail.importer.interval',
+    },
     accessorFn: (row) => row.mins_interval,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -88,12 +82,10 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: 'isActive',
-    header: ({ column }) => (
-      <SortableHeader<SyncJobDto, unknown>
-        titleTranslationId="mail.importer.isActive"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
+    meta: {
+      translationId: 'mail.importer.isActive',
+    },
     accessorFn: (row) => row.active,
     cell: ({ row }) => (
       <div className="flex justify-center">

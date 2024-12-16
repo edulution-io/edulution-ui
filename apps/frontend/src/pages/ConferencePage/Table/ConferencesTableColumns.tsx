@@ -49,11 +49,15 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ table, column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className="min-w-32"
-        titleTranslationId="conferences.conference"
         table={table}
         column={column}
       />
     ),
+
+    meta: {
+      translationId: 'conferences.conference',
+    },
+
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -83,10 +87,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.creator"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.creator',
+    },
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -115,10 +121,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.password"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.password',
+    },
     accessorFn: (row) => !!row.password,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -161,10 +169,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.invitedAttendees"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.invitedAttendees',
+    },
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -197,10 +207,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.joinedAttendees"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.joinedAttendees',
+    },
     accessorFn: (row) => row.joinedAttendees.length,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -211,12 +223,10 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   },
   {
     id: 'conference-action-button',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        titleTranslationId="conferences.action"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
+    meta: {
+      translationId: 'conferences.action',
+    },
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;

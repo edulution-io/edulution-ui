@@ -23,12 +23,18 @@ import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialog
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
   UserStore.getState().resetUserSlice();
   useAppConfigsStore.getState().reset();
+  useBulletinCategoryTableStore.getState().reset();
+  useBulletinBoardEditorialStore.getState().reset();
+  useBulletinBoardStore.getState().reset();
   useClassManagementStore.getState().reset();
   useSubmittedAnswersDialogStore.getState().reset();
   useCommunityLicenseStore.getState().reset();

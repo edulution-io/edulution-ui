@@ -8,13 +8,14 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import surveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
+import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import { useTranslation } from 'react-i18next';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -23,6 +24,7 @@ interface SurveyEditorFormProps {
 const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { editMode = false } = props;
 
+  const { t } = useTranslation();
   const { user } = useUserStore();
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -53,7 +55,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
-    resolver: zodResolver(surveyEditorFormSchema),
+    resolver: zodResolver(getSurveyEditorFormSchema(t)),
     defaultValues: initialFormValues,
   });
 

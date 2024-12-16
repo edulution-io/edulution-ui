@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import mongoose from 'mongoose';
-import { ColumnDef, OnChangeFn, RowSelectionState, SortingState } from '@tanstack/react-table';
+import { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import APPS from '@libs/appconfig/constants/apps';
 import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
@@ -22,8 +22,6 @@ const SurveyTable = <TData extends MongoId, TValue>({
   data,
   isLoading = false,
 }: DataTableProps<TData, TValue>) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-
   const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -35,12 +33,12 @@ const SurveyTable = <TData extends MongoId, TValue>({
     <ScrollableTable
       columns={columns}
       data={data}
+      filterKey="select-survey"
+      filterPlaceHolderText="survey.filterPlaceHolderText"
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedRows}
       isLoading={isLoading}
-      sorting={sorting}
       getRowId={(originalRow: TData) => originalRow.id.toString()}
-      setSorting={setSorting}
       applicationName={APPS.SURVEYS}
       scrollContainerOffsetElementIds={{
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,

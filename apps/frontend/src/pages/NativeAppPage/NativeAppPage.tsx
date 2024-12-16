@@ -7,6 +7,7 @@ import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPa
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import SurveysPage from '@/pages/Surveys/SurveysPage';
 import type TApps from '@libs/appconfig/types/appsType';
+import BulletinBoardEditorialPage from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPage';
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -17,6 +18,7 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.SURVEYS]: <SurveysPage />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
+  [APPS.BULLETIN_BOARD]: <BulletinBoardEditorialPage />,
 };
 
 type NativeAppPageProps = {
