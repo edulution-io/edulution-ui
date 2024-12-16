@@ -2,14 +2,14 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import handleApiError from '@/utils/handleApiError';
-import BulletinsByCategory from '@libs/bulletinBoard/types/bulletinsByCategory';
+import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 
 export interface BulletinBoardTableStore {
   reset: () => void;
   isLoading: boolean;
   error: Error | null;
   getBulletinsByCategories: () => Promise<void>;
-  bulletinsByCategories: BulletinsByCategory | null;
+  bulletinsByCategories: BulletinsByCategories | null;
 }
 
 const initialValues = {
@@ -26,7 +26,7 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
     if (get().isLoading) return;
     set({ isLoading, error: null });
     try {
-      const { data } = await eduApi.get<BulletinsByCategory>(BULLETIN_BOARD_EDU_API_ENDPOINT);
+      const { data } = await eduApi.get<BulletinsByCategories>(BULLETIN_BOARD_EDU_API_ENDPOINT);
       set({ bulletinsByCategories: data });
     } catch (error) {
       handleApiError(error, set);

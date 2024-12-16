@@ -7,7 +7,7 @@ import { join } from 'path';
 import { createReadStream, existsSync, mkdirSync } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import BulletinsByCategory from '@libs/bulletinBoard/types/bulletinsByCategory';
+import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
@@ -61,7 +61,7 @@ class BulletinBoardService implements OnModuleInit {
     return res;
   }
 
-  async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategory> {
+  async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategories> {
     const bulletinCategoriesWithViewPermission: BulletinCategoryResponseDto[] =
       await this.bulletinCategoryService.findAll(currentUser, BulletinCategoryPermission.VIEW, true);
     const bulletinCategoriesWithEditPermission: BulletinCategoryResponseDto[] =
