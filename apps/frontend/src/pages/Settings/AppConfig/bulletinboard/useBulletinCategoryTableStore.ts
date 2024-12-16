@@ -5,27 +5,24 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
-import { BulletinBoardTableStore } from '@libs/appconfig/types/bulletinBoardTableStore';
+import { BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 
 const initialValues = {
   isDialogOpen: false,
   isLoading: false,
   selectedCategory: null,
-  isNameAvailable: false,
-  isNameChecking: false,
+  isNameCheckingLoading: false,
   tableContentData: [],
-  nameExists: null,
+  nameExistsAlready: false,
   isDeleteDialogOpen: false,
   isDeleteDialogLoading: false,
   error: null,
 };
 
-const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableStore>> =
-  create<BulletinBoardTableStore>((set, get) => ({
+const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTableStore>> =
+  create<BulletinCategoryTableStore>((set, get) => ({
     ...initialValues,
-    setIsNameChecking: (isNameChecking) => set({ isNameChecking }),
-    setNameExists: (nameExists) => set({ nameExists }),
     setIsLoading: (isLoading) => set({ isLoading }),
     setIsDialogOpen: (isOpen) => set({ isDialogOpen: isOpen }),
     setIsDeleteDialogOpen: (isOpen) => set({ isDeleteDialogOpen: isOpen }),
@@ -46,7 +43,7 @@ const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableS
 
     fetchTableContent: async () => {
       if (get().isLoading) {
-        return [];
+        return;
       }
 
       set({ error: null, isLoading: true });
@@ -55,21 +52,22 @@ const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableS
           `${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${BulletinCategoryPermission.EDIT}`,
         );
         set({ tableContentData: response.data });
-        return response.data || [];
       } catch (error) {
         handleApiError(error, set);
-        return [];
       } finally {
         set({ isLoading: false });
       }
     },
 
-    checkIfNameExists: async (name): Promise<boolean> => {
+    checkIfNameAllReadyExists: async (name): Promise<void> => {
       try {
+        set({ isNameCheckingLoading: true });
         const response = await eduApi.post<{ exists: boolean }>(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${name}`);
-        return response.data.exists;
+        set({ nameExistsAlready: response.data.exists });
       } catch (error) {
-        return false;
+        set({ nameExistsAlready: true });
+      } finally {
+        set({ isNameCheckingLoading: false });
       }
     },
 
@@ -90,6 +88,7 @@ const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableS
       try {
         await eduApi.delete(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${id}`);
         toast.success(i18n.t('bulletinboard.categoryDeletedSuccessfully'));
+        set({ selectedCategory: null });
       } catch (error) {
         handleApiError(error, set);
       } finally {
@@ -100,4 +99,4 @@ const useAppConfigBulletinTableStore: UseBoundStore<StoreApi<BulletinBoardTableS
     reset: () => set(initialValues),
   }));
 
-export default useAppConfigBulletinTableStore;
+export default useBulletinCategoryTableStore;

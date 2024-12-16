@@ -15,7 +15,7 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
-import outputFolder from '@libs/filesharing/utils/outputFolder';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import UsersService from '../users/users.service';
 
 const pipelineAsync = promisify(pipeline);
@@ -68,7 +68,7 @@ class FilesystemService {
 
     try {
       const response = await axios.get<ArrayBuffer>(body.url, { responseType: 'arraybuffer' });
-      const filePath = join(`${outputFolder}/${filename}`);
+      const filePath = join(`${PUBLIC_DOWNLOADS_PATH}/${filename}`);
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, new Uint8Array(response.data));
       const fileBuffer = readFileSync(filePath);
@@ -88,7 +88,7 @@ class FilesystemService {
   }
 
   static async deleteFile(fileName: string): Promise<void> {
-    const filePath = resolve(outputFolder, fileName);
+    const filePath = resolve(PUBLIC_DOWNLOADS_PATH, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
@@ -105,7 +105,7 @@ class FilesystemService {
     client: AxiosInstance,
   ): Promise<WebdavStatusReplay> {
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-    FilesystemService.ensureDirectoryExists(outputFolder);
+    FilesystemService.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
       const user = await this.userService.findOne(username);
@@ -114,7 +114,7 @@ class FilesystemService {
       }
       const responseStream = await FilesystemService.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
-      const outputFilePath = FilesystemService.getOutputFilePath(outputFolder, hashedFilename);
+      const outputFilePath = FilesystemService.getOutputFilePath(PUBLIC_DOWNLOADS_PATH, hashedFilename);
 
       await FilesystemService.saveFileStream(responseStream, outputFilePath);
       return {

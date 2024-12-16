@@ -3,7 +3,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import CircleLoader from '@/components/ui/CircleLoader';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 
 interface DeleteBulletinsCategoriesDialogProps {
   trigger?: React.ReactNode;
@@ -18,10 +18,10 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
     isDeleteDialogOpen,
     setIsDeleteDialogOpen,
     isDeleteDialogLoading,
+    fetchTableContent,
     error,
-  } = useAppConfigBulletinTableStore();
+  } = useBulletinCategoryTableStore();
 
-  const { fetchTableContent } = useAppConfigBulletinTableStore();
   const { t } = useTranslation();
 
   if (!selectedCategory) return null;
@@ -33,7 +33,8 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
   };
 
   const onSubmit = async () => {
-    await deleteCategory(selectedCategory.id || '');
+    if (!selectedCategory.id) return;
+    await deleteCategory(selectedCategory.id);
     await fetchTableContent();
     handleClose();
   };

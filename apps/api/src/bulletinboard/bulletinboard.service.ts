@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -14,25 +14,27 @@ import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardEr
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
-import { BULLETIN_ATTACHMENTS_PATH } from './paths';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 
 @Injectable()
-class BulletinBoardService {
+class BulletinBoardService implements OnModuleInit {
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
-  ) {
+  ) {}
+
+  private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
+
+  onModuleInit() {
     if (!existsSync(this.attachmentsPath)) {
       mkdirSync(this.attachmentsPath, { recursive: true });
     }
   }
-
-  private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   static checkAttachmentFile(file: Express.Multer.File): string {
     if (!file) {
@@ -128,6 +130,7 @@ class BulletinBoardService {
       currentUser.preferred_username,
       dto.category.id,
       BulletinCategoryPermission.EDIT,
+      currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN),
     );
     if (!hasUserPermission) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN, HttpStatus.FORBIDDEN);
@@ -159,7 +162,8 @@ class BulletinBoardService {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    if (bulletin.creator.username !== currentUser.preferred_username) {
+    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
@@ -168,12 +172,13 @@ class BulletinBoardService {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
+    const hasUserPermissionToCategory = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
       dto.category.id,
       BulletinCategoryPermission.EDIT,
+      isUserSuperAdmin,
     );
-    if (!hasUserPermission) {
+    if (!hasUserPermissionToCategory) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.FORBIDDEN);
     }
 

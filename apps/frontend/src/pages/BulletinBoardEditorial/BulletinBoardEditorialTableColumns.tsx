@@ -22,7 +22,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
       translationId: 'bulletinboard.name',
     },
 
-    accessorFn: (row) => row.title,
+    accessorFn: (row) => row.title?.toLowerCase(),
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
@@ -45,7 +45,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
       translationId: 'bulletinboard.category',
     },
 
-    accessorFn: (row) => row.category,
+    accessorFn: (row) => row.category.name,
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
@@ -66,7 +66,13 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     meta: {
       translationId: 'bulletinboard.isActiveOrExpired',
     },
-    accessorFn: (row) => row.isActive,
+    accessorFn: (row) => {
+      const currentDate = new Date();
+      const startDate = row.isVisibleStartDate ? new Date(row.isVisibleStartDate) : null;
+      const endDate = row.isVisibleEndDate ? new Date(row.isVisibleEndDate) : null;
+      const isExpired = (startDate && currentDate < startDate) || (endDate && currentDate > endDate);
+      return row.isActive && !isExpired;
+    },
     cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
 

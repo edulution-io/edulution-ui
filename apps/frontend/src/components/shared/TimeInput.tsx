@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { getHours, getMinutes, setHours, setMinutes } from 'date-fns';
 import Input from '@/components/shared/Input';
 import cn from '@libs/common/utils/className';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-interface TimeInputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
-  fieldName: string;
+interface TimeInputProps<T extends FieldValues> {
+  form: UseFormReturn<T>;
+  fieldName: Path<T>;
   date?: Date | null;
   disabled?: boolean;
 }
 
-const TimeInput = ({ form, disabled, fieldName, date }: TimeInputProps) => {
+const TimeInput = <T extends FieldValues>({ form, disabled, fieldName, date }: TimeInputProps<T>) => {
   const { t } = useTranslation();
   const { setValue } = form;
 
@@ -31,7 +30,7 @@ const TimeInput = ({ form, disabled, fieldName, date }: TimeInputProps) => {
     updateExpiration = setHours(updateExpiration, Number(time[0]));
     updateExpiration = setMinutes(updateExpiration, Number(time[1]));
     setExpirationTime(e.target.value);
-    setValue(fieldName, updateExpiration.toISOString());
+    setValue(fieldName, updateExpiration.toISOString() as PathValue<T, Path<T>>);
   };
 
   useEffect(() => {

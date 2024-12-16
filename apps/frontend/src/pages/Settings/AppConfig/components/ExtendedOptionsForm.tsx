@@ -59,18 +59,20 @@ const ExtendedOptionsForm = <T extends FieldValues>({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       {extendedOptions &&
         Object.entries(extendedOptions).map(([section, options]) => (
           <AccordionSH
             type="multiple"
             key={section}
+            defaultValue={[section]}
           >
-            <AccordionItem value="onlyOffice">
+            <AccordionItem value={section}>
               <AccordionTrigger className="flex text-xl font-bold">
-                <h4>{t(`settings.appconfig.sections.${section}`)}</h4>
+                <h4>{t(`settings.appconfig.sections.${section}.title`)}</h4>
               </AccordionTrigger>
               <AccordionContent>
+                <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
                 {options?.map((option: AppConfigExtendedOption) => renderComponent(option))}
               </AccordionContent>
             </AccordionItem>

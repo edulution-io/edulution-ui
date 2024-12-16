@@ -122,14 +122,15 @@ const BulletinBoardPageColumn = ({
 
   return (
     <div
-      className={cn('ml-[-5px] flex h-full w-1/2 flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3', {
+      className={cn('flex h-full w-full min-w-[300px] flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3', {
+        'w-1/2': categoryCount === 2,
         'w-1/3': categoryCount === 3,
         'w-[300px]': categoryCount >= 4,
       })}
     >
       <Card
         variant="security"
-        className="sticky mx-0 mb-4 flex items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
+        className="sticky mx-0 mb-4 flex min-h-[44px] items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
       >
         <h4 className="flex-1 truncate text-white">{category.name}</h4>
         <DropdownMenu

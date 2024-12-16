@@ -6,6 +6,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 
 interface WysiwygEditorProps {
   value: string;
@@ -22,7 +23,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   const handleImage = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
+    input.setAttribute('accept', BULLETIN_BOARD_ALLOWED_MIME_TYPES.join(', '));
     input.click();
 
     input.onchange = async () => {

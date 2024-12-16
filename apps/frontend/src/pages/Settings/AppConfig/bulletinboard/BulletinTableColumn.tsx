@@ -4,11 +4,11 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
-import useAppConfigBulletinTableStore from '@/pages/BulletinBoard/useAppConfigBulletinTableStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import useAppConfigTableDialogStore from '../Settings/AppConfig/components/table/useAppConfigTableDialogStore';
+import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
-const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
+const BulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
     id: 'name',
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
@@ -18,7 +18,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     },
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
+      const { setSelectedCategory } = useBulletinCategoryTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
@@ -41,7 +41,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     },
     accessorFn: (row) => row.isActive,
     cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
+      const { setSelectedCategory } = useBulletinCategoryTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
@@ -65,7 +65,7 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
     },
     accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
-      const { setSelectedCategory } = useAppConfigBulletinTableStore();
+      const { setSelectedCategory } = useBulletinCategoryTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
@@ -81,4 +81,4 @@ const AppConfigBulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   },
 ];
 
-export default AppConfigBulletinTableColumn;
+export default BulletinTableColumn;

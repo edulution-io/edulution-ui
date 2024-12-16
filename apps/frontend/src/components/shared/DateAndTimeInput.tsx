@@ -3,29 +3,28 @@ import DatePicker from '@/components/shared/DatePicker';
 import TimeInput from '@/components/shared/TimeInput';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa6';
 import { FormMessage } from '@/components/ui/Form';
 
-const DateAndTimeInput = ({
-  form,
-  name,
-  translationId,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
-  name: string;
+interface DateAndTimeInputProps<T extends FieldValues> {
+  form: UseFormReturn<T>;
+  name: Path<T>;
   translationId: string;
-}) => {
+}
+
+const DateAndTimeInput = <T extends FieldValues>({ form, name, translationId }: DateAndTimeInputProps<T>) => {
   const { t } = useTranslation();
   const { setValue, watch, formState } = form;
 
   const handleIsVisibleStartDateChange = (value: Date | undefined) => {
-    setValue(name, value ? value.toISOString() : null, { shouldValidate: true });
+    setValue(name, value ? (value.toISOString() as T[typeof name]) : (null as T[typeof name]), {
+      shouldValidate: true,
+    });
   };
 
   const handleResetButton = () => {
-    setValue(name, null, { shouldValidate: true });
+    setValue(name, null as T[typeof name], { shouldValidate: true });
   };
 
   const selectedDate = watch(name) as Date;

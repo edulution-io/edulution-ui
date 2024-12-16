@@ -1,5 +1,5 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -73,7 +73,10 @@ class BulletinCategoryService {
     username: string,
     bulletinCategoryId: string,
     permission: BulletinCategoryPermissionType,
+    isUserSuperAdmin = false,
   ): Promise<boolean> {
+    if (isUserSuperAdmin) return true;
+
     const usersWithPermission = await this.getUsersWithPermissionCached(bulletinCategoryId, permission);
     return usersWithPermission.includes(username);
   }
@@ -156,9 +159,11 @@ class BulletinCategoryService {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_CATEGORY, HttpStatus.FORBIDDEN);
     }
     try {
-      await this.bulletinModel.deleteMany({ category: id }).exec();
+      const objectId = new Types.ObjectId(id);
 
-      await this.bulletinCategoryModel.findByIdAndDelete(id).exec();
+      await this.bulletinModel.deleteMany({ category: objectId }).exec();
+
+      await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
     } catch (error) {
       throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
