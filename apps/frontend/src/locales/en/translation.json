@@ -80,7 +80,8 @@
       "unauthorizedCreateBulletin": "No permission to create this bulletin",
       "unauthorizedCreateCategory": "No permission to create this category",
       "unauthorizedDeleteCategory": "No permission to delete this category",
-      "unauthorizedUpdateCategory": "No permission to update this category"
+      "unauthorizedUpdateCategory": "No permission to update this category",
+      "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
   "dashboard": {

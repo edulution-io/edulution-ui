@@ -14,6 +14,7 @@ enum BulletinBoardErrorMessage {
   UNAUTHORIZED_CREATE_CATEGORY = 'bulletinboard.errors.unauthorizedCreateCategory',
   UNAUTHORIZED_DELETE_CATEGORY = 'bulletinboard.errors.unauthorizedDeleteCategory',
   UNAUTHORIZED_UPDATE_CATEGORY = 'bulletinboard.errors.unauthorizedUpdateCategory',
+  ATTACHMENT_DELETION_FAILED = 'bulletinboard.errors.attachmentDeletionFailed',
 }
 
 export default BulletinBoardErrorMessage;

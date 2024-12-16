@@ -15,6 +15,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import { unlink } from 'fs-extra';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -213,7 +214,29 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
-    await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+    try {
+      await Promise.all(
+        bulletins.map(async (bulletin) => {
+          if (bulletin.attachmentFileNames?.length) {
+            await Promise.all(
+              bulletin.attachmentFileNames.map(async (fileName) => {
+                const filePath = join(this.attachmentsPath, fileName);
+                if (existsSync(filePath)) {
+                  await unlink(filePath);
+                }
+              }),
+            );
+          }
+        }),
+      );
+
+      await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+    } catch (error) {
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
 
