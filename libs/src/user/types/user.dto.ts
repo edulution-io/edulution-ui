@@ -20,6 +20,8 @@ class UserDto {
   mfaEnabled?: boolean;
 
   language?: string;
+
+  appearance?: string;
 }
 
 export default UserDto;

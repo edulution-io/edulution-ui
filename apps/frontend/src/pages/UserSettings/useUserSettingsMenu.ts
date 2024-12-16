@@ -1,6 +1,7 @@
 import { LanguageIcon, MailIcon, SecurityIcon, UserDetailsSettingsIcon, UserIcon } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
+  USER_SETTINGS_APPEARANCE_PATH,
   USER_SETTINGS_LANGUAGE_PATH,
   USER_SETTINGS_MAILS_PATH,
   USER_SETTINGS_SECURITY_PATH,
@@ -41,6 +42,12 @@ const useUserSettingsMenu = () => {
         label: 'usersettings.language.title',
         icon: LanguageIcon,
         action: () => navigate(USER_SETTINGS_LANGUAGE_PATH),
+      },
+      {
+        id: 'appearance',
+        label: 'usersettings.language.title',
+        icon: LanguageIcon,
+        action: () => navigate(USER_SETTINGS_APPEARANCE_PATH),
       },
     ],
   };
