@@ -7,9 +7,9 @@ import type { RedisClientOptions } from 'redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { resolve } from 'path';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -27,7 +27,7 @@ import VeyonModule from '../veyon/veyon.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, '..', 'public', 'downloads'),
+      rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
     }),
     AuthModule,

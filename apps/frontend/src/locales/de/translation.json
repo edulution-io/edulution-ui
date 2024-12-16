@@ -313,6 +313,7 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "newTitle": "Neue Umfrage",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
@@ -354,6 +355,8 @@
   "surveys": {
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
+    "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "view": {
       "open": {
         "menu": "Offene Umfragen",

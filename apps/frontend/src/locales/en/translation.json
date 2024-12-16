@@ -312,6 +312,7 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
@@ -353,6 +354,8 @@
   "surveys": {
     "title": "SURVEYS",
     "sidebar": "Surveys",
+    "rowsSelected": "{{selected}} of {{total}} surveys selected",
+    "rowSelected": "{{selected}} of {{total}} surveys selected",
     "view": {
       "open": {
         "menu": "Open Surveys",
