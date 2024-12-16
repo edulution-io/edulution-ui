@@ -60,8 +60,10 @@
     "editCategory": "Edit category",
     "createNewCategory": "Create category",
     "categories": {
-      "visibleByUsersAndGroups": "Visible by users and groups",
-      "editableByUsersAndGroups": "Editable by users and groups"
+      "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups on the homepage",
+      "visibleByUsersAndGroupsTitle": "Homepage",
+      "editableByUsersAndGroups": "This category is editable by users and groups in the Bulletin Board app",
+      "editableByUsersAndGroupsTitle": "Manage Bulletins"
     },
     "errors": {
       "categoryNotFound": "Category not found",

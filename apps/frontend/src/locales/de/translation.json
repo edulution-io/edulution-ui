@@ -60,8 +60,10 @@
     "editCategory": "Kategorie bearbeiten",
     "createNewCategory": "Kategorie erstellen",
     "categories": {
-      "visibleByUsersAndGroups": "Diese Kategorie ist sichtbar für Nutzer und Gruppen",
-      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen"
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
+      "visibleByUsersAndGroupsTitle": "Startseite",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",
