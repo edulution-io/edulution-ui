@@ -3,8 +3,8 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface SaveSurveyDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +22,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
   const { t } = useTranslation();
 
   const getDialogBody = () => {
-    if (isSubmitting) return <LoadingIndicator isOpen={isSubmitting} />;
+    if (isSubmitting) return <CircleLoader className="mx-auto" />;
     return <SaveSurveyDialogBody form={form} />;
   };
 

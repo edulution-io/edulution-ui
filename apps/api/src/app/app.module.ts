@@ -22,6 +22,8 @@ import FilesharingModule from '../filesharing/filesharing.module';
 import LicenseModule from '../license/license.module';
 import SurveysModule from '../surveys/surveys.module';
 import AuthModule from '../auth/auth.module';
+import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
+import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import VeyonModule from '../veyon/veyon.module';
 
 @Module({
@@ -41,6 +43,8 @@ import VeyonModule from '../veyon/veyon.module';
     VdiModule,
     LicenseModule,
     SurveysModule,
+    BulletinCategoryModule,
+    BulletinBoardModule,
     VeyonModule,
     JwtModule.register({
       global: true,
