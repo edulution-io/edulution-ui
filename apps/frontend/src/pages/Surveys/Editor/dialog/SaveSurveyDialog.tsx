@@ -3,26 +3,26 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface SaveSurveyDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
-  commitSurvey: () => void;
-  isCommitting: boolean;
+  submitSurvey: () => void;
+  isSubmitting: boolean;
   trigger?: React.ReactNode;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { trigger, form, commitSurvey, isCommitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
+  const { trigger, form, submitSurvey, isSubmitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
 
   const { t } = useTranslation();
 
   const getDialogBody = () => {
-    if (isCommitting) return <LoadingIndicator isOpen={isCommitting} />;
+    if (isSubmitting) return <CircleLoader className="mx-auto" />;
     return <SaveSurveyDialogBody form={form} />;
   };
 
@@ -31,13 +31,13 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          commitSurvey();
+          submitSurvey();
         }}
       >
         <Button
           type="submit"
           variant="btn-collaboration"
-          disabled={isCommitting}
+          disabled={isSubmitting}
           size="lg"
         >
           {t('common.save')}

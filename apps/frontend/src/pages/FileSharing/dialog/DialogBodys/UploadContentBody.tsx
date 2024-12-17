@@ -1,9 +1,8 @@
 import DropZone from '@/pages/FileSharing/utilities/DropZone';
 import React from 'react';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
-import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 
-const UploadContentBody: React.FC<EmptyDialogProps> = () => {
+const UploadContentBody: React.FC = () => {
   const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
   return (
     <DropZone

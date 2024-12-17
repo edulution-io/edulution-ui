@@ -8,6 +8,8 @@ import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enu
 import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import { useInterval } from 'usehooks-ts';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VdiCard from './components/VdiCard';
@@ -85,15 +87,20 @@ const DesktopDeploymentPage: React.FC = () => {
     void postRequestVdi(VirtualMachineOs.WIN10);
   };
 
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 20;
+
   return (
     <>
-      <div className="bottom-8 left-4 right-0 top-3 h-screen md:left-64 md:right-[--sidebar-width]">
+      <div className="w-screen pr-5 md:w-[calc(100%-var(--sidebar-width))]">
         <NativeAppHeader
           title={t('desktopdeployment.topic')}
           description={t('desktopdeployment.description')}
           iconSrc={DesktopDeploymentIcon}
         />
-        <div className="flex flex-col gap-10 md:flex-row">
+        <div
+          className="flex w-full flex-1 flex-col gap-10 overflow-auto pl-3 pr-3.5 scrollbar-thin md:flex-row"
+          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+        >
           {osConfigs.map(({ os, title }) => (
             <VdiCard
               key={os}
