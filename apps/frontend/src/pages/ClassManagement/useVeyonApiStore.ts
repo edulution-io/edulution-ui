@@ -2,11 +2,12 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
 import handleApiError from '@/utils/handleApiError';
+import { framebufferConfigHigh, framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
 
 type VeyonApiStore = {
   isLoading: boolean;
   authenticateVeyonClients: (ip: string) => Promise<string>;
-  getFrameBufferStream: (connectionUid: string) => Promise<Blob | null>;
+  getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob | null>;
 };
 
 const useVeyonApiStore = create<VeyonApiStore>((set) => ({
@@ -22,10 +23,14 @@ const useVeyonApiStore = create<VeyonApiStore>((set) => ({
     }
   },
 
-  getFrameBufferStream: async (connectionUid: string) => {
+  getFrameBufferStream: async (connectionUid: string, highQuality = false) => {
     set({ isLoading: true });
+    const framebufferConfig = highQuality ? framebufferConfigHigh : framebufferConfigLow;
     try {
-      const response = await eduApi.get<Blob>(`veyon/framebuffer/${connectionUid}`, { responseType: 'blob' });
+      const response = await eduApi.get<Blob>(`veyon/framebuffer/${connectionUid}`, {
+        responseType: 'blob',
+        params: framebufferConfig,
+      });
       return response.data;
     } catch (error) {
       handleApiError(error, set);

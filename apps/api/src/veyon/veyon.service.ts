@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 import { Readable } from 'stream';
 import type VeyonApiAuthResponse from '@libs/veyon/types/veyonApiAuthResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
+import type FrameBufferConfig from '@libs/veyon/types/framebufferConfig';
 import UsersService from '../users/users.service';
 
 const { VEYON_API_HOST_URL } = process.env;
@@ -47,17 +48,10 @@ class VeyonService {
     }
   }
 
-  async getFrameBufferStream(connectionUid: string): Promise<Readable> {
-    const params = {
-      format: 'jpeg',
-      compression: 9,
-      quality: 25,
-      width: 640,
-      height: 480,
-    };
+  async getFrameBufferStream(connectionUid: string, framebufferConfig: FrameBufferConfig): Promise<Readable> {
     try {
       const response = await this.veyonApi.get<Readable>(`/framebuffer`, {
-        params,
+        params: framebufferConfig,
         responseType: 'stream',
         headers: {
           'Connection-Uid': connectionUid,
