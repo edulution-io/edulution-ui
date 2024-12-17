@@ -12,13 +12,13 @@ export interface BulletinCategoryTableStore extends AppConfigTable<BulletinCateg
   setSelectedCategory: (category: BulletinCategoryResponseDto | null) => void;
   selectedCategory: BulletinCategoryResponseDto | null;
   checkIfNameAllReadyExists: (name: string) => Promise<void>;
-  setEditBulletinCategoryDialogOpen: (isOpen: boolean) => void;
-  isBulletinCategoryDialogOpen: boolean;
   updateCategory: (id: string, category: CreateBulletinCategoryDto) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   nameExistsAlready: boolean;
-  setNameAllReadyExists: (isNameAvailable: boolean) => void;
   isNameCheckingLoading: boolean;
-  setNameCheckingIsLoading: (isNameChecking: boolean) => void;
   reset: () => void;
+  isDeleteDialogOpen: boolean;
+  isDeleteDialogLoading: boolean;
+  setIsDeleteDialogOpen: (isOpen: boolean) => void;
+  error: null | Error;
 }

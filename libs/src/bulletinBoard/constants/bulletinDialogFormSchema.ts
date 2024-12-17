@@ -10,10 +10,13 @@ const getBulletinFormSchema = (t: TFunction<'translation', undefined>) =>
         .max(255, { message: t('common.max_chars', { count: 100 }) }),
       content: z.string().min(17, { message: t('common.min_chars', { count: 10 }) }),
       isActive: z.boolean(),
-      category: z.object({
-        id: z.string(),
-        name: z.string(),
-      }),
+      category: z
+        .object({
+          id: z.string().min(1, { message: t('common.required') }),
+          name: z.string().min(1, { message: t('common.required') }),
+        })
+        .optional()
+        .refine((val) => val !== undefined, { message: t('bulletinboard.categoryIsRequired') }),
 
       isVisibleStartDate: z
         .string()

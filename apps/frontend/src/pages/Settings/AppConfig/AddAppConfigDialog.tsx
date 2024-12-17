@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -10,6 +10,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 interface AddAppConfigDialogProps {
   option: string;
@@ -30,7 +31,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
     return (
       <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
-        <DropdownMenu
+        <DropdownSelect
           options={getFilteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
@@ -68,7 +69,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
 
   useEffect(() => {
     if (!isAddAppConfigDialogOpen) {
-      navigate(selectedOption ? `/settings/${selectedOption}` : '/settings', { replace: true });
+      navigate(selectedOption ? `/${SETTINGS_PATH}/${selectedOption}` : `/${SETTINGS_PATH}`, { replace: true });
     }
   }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
 

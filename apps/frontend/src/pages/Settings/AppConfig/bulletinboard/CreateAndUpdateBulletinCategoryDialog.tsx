@@ -9,16 +9,17 @@ import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinC
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
+import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
 
 const CreateAndUpdateBulletinCategoryDialog = () => {
   const {
     selectedCategory,
     setSelectedCategory,
     updateCategory,
-    deleteCategory,
     addNewCategory,
     nameExistsAlready,
     isNameCheckingLoading,
+    setIsDeleteDialogOpen,
   } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
@@ -71,13 +72,6 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     closeDialog();
   };
 
-  const handleDeleteCategory = async (categoryId: string | undefined, resetSelection: () => void) => {
-    if (!categoryId) return;
-    await deleteCategory(categoryId);
-    closeDialog();
-    resetSelection();
-  };
-
   const isCurrentNameEqualToSelected = () =>
     watch('name').trim() === (selectedCategory?.name || '').trim() && watch('name').trim() !== '';
 
@@ -90,7 +84,10 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
       handleFormSubmit={(e: React.FormEvent) => handleFormSubmit(e)}
       isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
       isSaveButtonDisabled={isSaveButtonDisabled}
-      handleDeleteCategory={() => handleDeleteCategory(selectedCategory?.id, () => setSelectedCategory(null))}
+      handleDeleteCategory={() => {
+        setDialogOpen(false);
+        setIsDeleteDialogOpen(true);
+      }}
     />
   );
 
@@ -103,17 +100,20 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   );
 
   return (
-    <AdaptiveDialog
-      isOpen={isDialogOpen}
-      handleOpenChange={() => {
-        setDialogOpen(!isDialogOpen);
-        setSelectedCategory(null);
-      }}
-      title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}
-      body={getDialogBody()}
-      footer={getFooter()}
-      mobileContentClassName="bg-black h-fit h-max-1/2"
-    />
+    <>
+      <AdaptiveDialog
+        isOpen={isDialogOpen}
+        handleOpenChange={() => {
+          setDialogOpen(false);
+          setSelectedCategory(null);
+        }}
+        title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}
+        body={getDialogBody()}
+        footer={getFooter()}
+        mobileContentClassName="bg-black h-fit h-max-1/2"
+      />
+      <DeleteBulletinsCategoriesDialog />
+    </>
   );
 };
 

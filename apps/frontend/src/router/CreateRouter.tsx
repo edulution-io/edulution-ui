@@ -23,6 +23,7 @@ import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettings
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -82,7 +83,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
               </Route>
               {isSuperAdmin ? (
                 <Route
-                  path="settings"
+                  path={SETTINGS_PATH}
                   element={<AppConfigPage />}
                 >
                   {appConfigs.map((item) => (

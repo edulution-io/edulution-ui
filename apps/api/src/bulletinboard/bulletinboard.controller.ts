@@ -34,8 +34,8 @@ class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
   @Get('')
-  getBulletinsByCategoryNames(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
-    return this.bulletinBoardService.getBulletinsByCategoryNames(currentUser, token);
+  getBulletinsByCategory(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
+    return this.bulletinBoardService.getBulletinsByCategory(currentUser, token);
   }
 
   @Get('bulletins')

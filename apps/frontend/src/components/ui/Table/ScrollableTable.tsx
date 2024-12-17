@@ -16,15 +16,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 import Input from '@/components/shared/Input';
-import {
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent as Content,
-  DropdownMenuSH as DropdownMenu,
-  DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenuSH';
 
 import { Button } from '@/components/shared/Button';
 import { ChevronDown } from 'lucide-react';
+import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,7 +38,7 @@ interface DataTableProps<TData, TValue> {
     tableHeaderId?: string;
     others?: string[];
   };
-  usedInAppConfig?: boolean;
+  tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   enableMultiRowSelection?: boolean;
 }
@@ -62,7 +57,7 @@ const ScrollableTable = <TData, TValue>({
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
   enableMultiRowSelection,
-  usedInAppConfig = false,
+  tableIsUsedOnAppConfigPage = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -117,48 +112,52 @@ const ScrollableTable = <TData, TValue>({
         </div>
       ) : (
         <>
-          {!usedInAppConfig && <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>}
+          {!tableIsUsedOnAppConfigPage && (
+            <div
+              id={selectedRowsMessageId}
+              className="flex-1 text-sm text-muted-foreground text-white"
+            >
+              &nbsp;
+            </div>
+          )}
           <p />
         </>
       )}
 
       <div
-        className={`w-full flex-1 overflow-auto scrollbar-thin ${!usedInAppConfig ? 'pl-3 pr-3.5' : ''}`}
+        className={`w-full flex-1 overflow-auto scrollbar-thin ${!tableIsUsedOnAppConfigPage ? 'pl-3 pr-3.5' : ''}`}
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <div className="w-full">
-          <div className="flex items-center py-4">
-            <Input
-              placeholder={t(filterPlaceHolderText)}
-              value={filterValue}
-              onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-              className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="btn-small"
-                  className="ml-auto h-8 bg-ciDarkGrey text-ciLightGrey"
-                >
-                  {t('common.columns')} <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <Content align="end">
-                {table
+          {!!data.length && (
+            <div className="flex items-center py-4">
+              <Input
+                placeholder={t(filterPlaceHolderText)}
+                value={filterValue}
+                onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
+                className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
+              />
+              <DropdownMenu
+                trigger={
+                  <Button
+                    variant="btn-small"
+                    className="ml-auto bg-ciDarkGrey text-ciLightGrey"
+                  >
+                    {t('common.columns')} <ChevronDown />
+                  </Button>
+                }
+                items={table
                   .getAllColumns()
                   .filter((column) => column.getCanHide())
-                  .map((column) => (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(value)}
-                    >
-                      {t(column.columnDef.meta?.translationId ?? column.id)}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-              </Content>
-            </DropdownMenu>
-          </div>
+                  .map((column) => ({
+                    label: t(column.columnDef.meta?.translationId ?? column.id),
+                    isCheckbox: true,
+                    checked: column.getIsVisible(),
+                    onCheckedChange: (value) => column.toggleVisibility(value),
+                  }))}
+              />
+            </div>
+          )}
           <Table>
             <TableHeader
               className="text-foreground scrollbar-thin"
