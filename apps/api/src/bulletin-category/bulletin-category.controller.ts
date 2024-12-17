@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -12,8 +12,8 @@ import BulletinCategoryService from './bulletin-category.service';
 class BulletinCategoryController {
   constructor(private readonly bulletinBoardService: BulletinCategoryService) {}
 
-  @Get(':permission')
-  findAll(@GetCurrentUser() currentUser: JWTUser, @Param('permission') permission: BulletinCategoryPermissionType) {
+  @Get()
+  findAll(@GetCurrentUser() currentUser: JWTUser, @Query('permission') permission: BulletinCategoryPermissionType) {
     return this.bulletinBoardService.findAll(currentUser, permission);
   }
 

@@ -12,6 +12,7 @@ import DropdownMenu from '@/components/shared/DropdownMenu';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
 import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
@@ -58,7 +59,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (
-    <Breadcrumb style={style}>
+    <Breadcrumb
+      style={style}
+      id={BREADCRUMB_ID}
+    >
       <p className="mr-2 text-background">{t('currentDirectory')}</p>
       <BreadcrumbList>
         {showHome && (

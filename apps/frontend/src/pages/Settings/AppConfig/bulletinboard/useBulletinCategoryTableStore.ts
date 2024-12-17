@@ -3,6 +3,7 @@ import eduApi from '@/api/eduApi';
 import {
   BULLETIN_BOARD_EDU_API_ENDPOINT,
   BULLETIN_CATEGORY_EDU_API_ENDPOINT,
+  BULLETIN_CATEGORY_WITH_PERMISSION_EDU_API_ENDPOINT,
 } from '@libs/bulletinBoard/constants/apiEndpoints';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import handleApiError from '@/utils/handleApiError';
@@ -52,7 +53,7 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
       set({ error: null, isLoading: true });
       try {
         const response = await eduApi.get<BulletinCategoryResponseDto[]>(
-          `${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${BulletinCategoryPermission.EDIT}`,
+          `${BULLETIN_CATEGORY_WITH_PERMISSION_EDU_API_ENDPOINT}${BulletinCategoryPermission.EDIT}`,
         );
         set({ tableContentData: response.data });
       } catch (error) {

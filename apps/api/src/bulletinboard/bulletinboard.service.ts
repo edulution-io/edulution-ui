@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
-import { createReadStream, existsSync, mkdirSync } from 'fs';
+import { createReadStream, existsSync, mkdirSync, promises } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
@@ -15,7 +15,6 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import { unlink } from 'fs-extra';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -240,7 +239,7 @@ class BulletinBoardService implements OnModuleInit {
               bulletin.attachmentFileNames.map(async (fileName) => {
                 const filePath = join(this.attachmentsPath, fileName);
                 if (existsSync(filePath)) {
-                  await unlink(filePath);
+                  await promises.unlink(filePath);
                 }
               }),
             );

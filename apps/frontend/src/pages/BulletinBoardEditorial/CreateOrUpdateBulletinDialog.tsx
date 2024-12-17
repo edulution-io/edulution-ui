@@ -56,7 +56,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   useEffect(() => {
     form.reset(initialFormValues);
-  }, [selectedBulletinToEdit, categories, form]);
+  }, [selectedBulletinToEdit, form]);
 
   const handleSubmit = async () => {
     if (selectedBulletinToEdit?.id) {
