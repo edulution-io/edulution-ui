@@ -5,6 +5,7 @@ import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions'
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const useAppConfigPageMenu = () => {
           id: item.id,
           label: `${item.id}.sidebar`,
           icon: item.icon,
-          action: () => navigate(`/settings/${item.id}`),
+          action: () => navigate(`/${SETTINGS_PATH}/${item.id}`),
         }),
       ),
       ...settingsMenuBarEntry.menuItems.map((item) => ({

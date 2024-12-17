@@ -1,5 +1,5 @@
-import MailDto from '@libs/mail/types/mail.dto';
 import { RowSelectionState } from '@tanstack/react-table';
+import MailDto from '@libs/mail/types/mail.dto';
 import MailProviderConfigDto from './mailProviderConfig.dto';
 import CreateSyncJobDto from './mailcow-create-sync-job.dto';
 import SyncJobDto from './mailcow-sync-job.dto';

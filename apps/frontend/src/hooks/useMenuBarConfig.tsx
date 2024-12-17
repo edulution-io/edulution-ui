@@ -3,20 +3,15 @@ import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import { getFromPathName } from '@libs/common/utils';
 import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
-import useConferencesPageMenu from '@/pages/ConferencePage/useConferencesPageMenu';
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
-import DESKTOP_DEPLOYMENT_MENUBAR_CONFIG from '@/pages/DesktopDeployment/config';
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
-import useMailPageMenu from '@/pages/Mail/useMailPageMenu';
-import useLinuxmusterPageMenu from '@/pages/LinuxmusterPage/useLinuxmusterPageMenu';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
-import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
-import { toast } from 'sonner';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
@@ -25,16 +20,13 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const SETTINGS_MENU_CONFIG = useAppConfigPageMenu();
   const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
-  const CONFERENCES_MENUBAR_CONFIG = useConferencesPageMenu();
-  const MAIL_MENUBAR_CONFIG = useMailPageMenu();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
-  const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
 
-    if (rootPathName === 'settings') return SETTINGS_MENU_CONFIG;
+    if (rootPathName === SETTINGS_PATH) return SETTINGS_MENU_CONFIG;
     if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
 
     const defaultReturnMenuBarEntry = {
@@ -42,7 +34,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
       title: '',
       icon: '',
       color: '',
-      disabled: false,
+      disabled: true,
       appName: APPS.NONE,
     };
 
@@ -50,30 +42,13 @@ const useMenuBarConfig = (): MenuBarEntry => {
       case APPS.FILE_SHARING: {
         return FILE_SHARING_MENUBAR_CONFIG;
       }
-      case APPS.CONFERENCES: {
-        return CONFERENCES_MENUBAR_CONFIG;
-      }
       case APPS.SURVEYS: {
         return SURVEYS_MENUBAR_CONFIG;
-      }
-      case APPS.MAIL: {
-        return MAIL_MENUBAR_CONFIG;
-      }
-      case APPS.LINUXMUSTER: {
-        return LINUXMUSTER_MENUBAR_CONFIG;
       }
       case APPS.CLASS_MANAGEMENT: {
         return CLASS_MANAGEMENT_MENUBAR_CONFIG;
       }
-      case APPS.DESKTOP_DEPLOYMENT: {
-        return DESKTOP_DEPLOYMENT_MENUBAR_CONFIG;
-      }
       default: {
-        if (!rootPathName) {
-          return defaultReturnMenuBarEntry;
-        }
-        console.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
-        toast.error(t(AppConfigErrorMessages.UnsupportedAppConfiguration, { rootPathName }));
         return defaultReturnMenuBarEntry;
       }
     }

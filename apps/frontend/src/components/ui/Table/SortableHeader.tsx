@@ -6,18 +6,12 @@ import cn from '@libs/common/utils/className';
 import i18n from '@/i18n';
 
 interface SortableHeaderProps<TData, TValue> {
-  titleTranslationId: string;
   table?: Table<TData>;
   column: Column<TData, TValue>;
   className?: string;
 }
 
-const SortableHeader = <TData, TValue>({
-  titleTranslationId,
-  table,
-  column,
-  className,
-}: SortableHeaderProps<TData, TValue>) => (
+const SortableHeader = <TData, TValue>({ table, column, className }: SortableHeaderProps<TData, TValue>) => (
   <div className={cn('flex items-center space-x-2', className)}>
     {table ? (
       <Checkbox
@@ -31,7 +25,7 @@ const SortableHeader = <TData, TValue>({
       onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
     >
       <div className="flex items-center">
-        {i18n.t(titleTranslationId)}
+        {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
         {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
       </div>
     </button>

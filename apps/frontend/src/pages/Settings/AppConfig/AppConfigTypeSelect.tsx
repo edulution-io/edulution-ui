@@ -1,10 +1,10 @@
 import React from 'react';
 import { Control } from 'react-hook-form';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
-import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { EmbeddedIcon, ForwardIcon, NativeIcon } from '@/assets/icons';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 
 interface AppConfigTypeSelectProps {
   control: Control;

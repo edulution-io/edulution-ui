@@ -1,20 +1,21 @@
 import React, { useMemo } from 'react';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useUserStore from '@/store/UserStore/UserStore';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import { useTranslation } from 'react-i18next';
 
 interface SurveyEditorFormProps {
   editMode?: boolean;
@@ -23,6 +24,7 @@ interface SurveyEditorFormProps {
 const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   const { editMode = false } = props;
 
+  const { t } = useTranslation();
   const { user } = useUserStore();
 
   const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -51,89 +53,9 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     [selectedSurvey],
   );
 
-  const formSchema = z.object({
-    id: z.number(),
-    formula: z.object({
-      title: z.string(),
-      description: z.string().optional(),
-      pages: z.array(
-        z.object({
-          name: z.string(),
-          description: z.string().optional(),
-          elements: z.array(
-            z.object({
-              type: z.string(),
-              name: z.string(),
-              description: z.string().optional(),
-              isRequired: z.boolean().optional(),
-              choices: z
-                .array(
-                  z.object({
-                    value: z.string(),
-                    label: z.string(),
-                  }),
-                )
-                .optional(),
-              choicesByUrl: z
-                .object({
-                  url: z.string(),
-                })
-                .optional(),
-            }),
-          ),
-        }),
-      ),
-    }),
-    saveNo: z.number().optional(),
-    creator: z.intersection(
-      z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        username: z.string(),
-      }),
-      z.object({
-        value: z.string(),
-        label: z.string(),
-      }),
-    ),
-    invitedAttendees: z.array(
-      z.intersection(
-        z.object({
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          username: z.string(),
-        }),
-        z.object({
-          value: z.string(),
-          label: z.string(),
-        }),
-      ),
-    ),
-    invitedGroups: z.array(z.object({})),
-    participatedAttendees: z.array(
-      z.intersection(
-        z.object({
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          username: z.string(),
-        }),
-        z.object({
-          value: z.string(),
-          label: z.string(),
-        }),
-      ),
-    ),
-    answers: z.any(),
-    created: z.date().optional(),
-    expires: z.date().optional(),
-    isAnonymous: z.boolean().optional(),
-    isPublic: z.boolean().optional(),
-    canSubmitMultipleAnswers: z.boolean().optional(),
-  });
-
   const form = useForm<SurveyDto>({
     mode: 'onChange',
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(getSurveyEditorFormSchema(t)),
     defaultValues: initialFormValues,
   });
 
@@ -174,20 +96,6 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
     setIsOpenSaveSurveyDialog(false);
   };
 
-  const formulaWatcher = form.watch('formula');
-  const saveNoWatcher = form.watch('saveNo');
-
-  const getSurveyEditor = useMemo(
-    () => (
-      <SurveyEditor
-        form={form}
-        formula={formulaWatcher}
-        saveNumber={saveNoWatcher}
-      />
-    ),
-    [formulaWatcher, saveNoWatcher],
-  );
-
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
     keyPrefix: 'surveys-page-floating-button_',
@@ -196,7 +104,7 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
-      {getSurveyEditor}
+      <SurveyEditor form={form} />
       <FloatingButtonsBar config={config} />
       <SaveSurveyDialog
         form={form}

@@ -10,6 +10,7 @@ import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -23,6 +24,7 @@ type ErrorMessage =
   | FileSharingErrorMessage
   | MailsErrorMessages
   | SurveyErrorMessages
+  | BulletinBoardErrorMessage
   | SurveyAnswerErrorMessages;
 
 export default ErrorMessage;

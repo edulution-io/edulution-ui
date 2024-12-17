@@ -1,5 +1,4 @@
 import React from 'react';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -17,6 +16,7 @@ import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPub
 import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import UseIsMobileView from '@/hooks/useIsMobileView';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -62,7 +62,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
 
   const handleFormSubmit = form.handleSubmit(onSubmit);
   const getDialogBody = () => {
-    if (isLoading || !selectedConference) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading || !selectedConference) return <CircleLoader className="mx-auto mt-5" />;
 
     const showQrCode = !!selectedConference.meetingID && stringToBoolean(form.watch('isPublic'));
 
@@ -104,6 +104,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
       desktopContentClassName="max-w-4xl"
       body={getDialogBody()}
       footer={getFooter()}
+      variant="tertiary"
     />
   );
 };

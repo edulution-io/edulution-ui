@@ -8,40 +8,37 @@ import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import { TFunction } from 'i18next';
+import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
 import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import copyToClipboard from '@/utils/copyToClipboard';
+import { toast } from 'sonner';
+import delay from '@libs/common/utils/delay';
 
-function getRowAction(
-  isRunning: boolean,
-  isLoading: boolean,
-  isUserTheCreator: boolean,
-  t: TFunction<'translation', undefined>,
-) {
+function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
     return {
       icon: <MdPending />,
-      text: t('common.loading'),
+      text: i18next.t('common.loading'),
     };
   }
   if (isUserTheCreator) {
     if (isRunning) {
       return {
         icon: <MdStop />,
-        text: t('conferences.stop'),
+        text: i18next.t('conferences.stop'),
       };
     }
     return {
       icon: <MdPlayArrow />,
-      text: t('conferences.start'),
+      text: i18next.t('conferences.start'),
     };
   }
   if (isRunning) {
     return {
       icon: <MdLogin />,
-      text: t('conferences.join'),
+      text: i18next.t('conferences.join'),
     };
   }
   return { icon: undefined, text: '' };
@@ -55,11 +52,15 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ table, column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className="min-w-32"
-        titleTranslationId="conferences.conference"
         table={table}
         column={column}
       />
     ),
+
+    meta: {
+      translationId: 'conferences.conference',
+    },
+
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -89,10 +90,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.creator"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.creator',
+    },
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -121,10 +124,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.isPublic"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.isPublic',
+    },
     accessorFn: (row) => row.isPublic,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -165,10 +170,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.password"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.password',
+    },
     accessorFn: (row) => !!row.password,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -206,10 +213,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.invitedAttendees"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.invitedAttendees',
+    },
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
       const { t } = useTranslation();
@@ -242,10 +251,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.joinedAttendees"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.joinedAttendees',
+    },
     accessorFn: (row) => row.joinedAttendees.length,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -256,33 +267,39 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   },
   {
     id: 'conference-action-button',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        titleTranslationId="conferences.action"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
+    meta: {
+      translationId: 'conferences.action',
+    },
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
-      const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, setJoinConferenceUrl, joinConferenceUrl } = useConferenceDetailsDialogStore();
-      const { toggleConferenceRunningState, toggleConferenceRunningStateIsLoading: isLoading } = useConferenceStore();
+      const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+      const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
       const isUserTheCreator = user?.username === creator?.username;
-      const { icon, text } = getRowAction(isRunning, isLoading, isUserTheCreator, t);
-      const onClick = async () => {
-        if (isUserTheCreator) {
-          await toggleConferenceRunningState(meetingID);
-          if (!isRunning) {
-            await joinConference(meetingID);
-          } else if (joinConferenceUrl.includes(meetingID)) {
-            setJoinConferenceUrl('');
-          }
-        } else if (isRunning) {
-          await joinConference(meetingID);
-        }
-      };
+      const isRowLoading = row.original.meetingID === loadingMeetingId;
+
+      const { icon, text } = getRowAction(isRunning, isRowLoading, isUserTheCreator);
+
+      const onClick =
+        isRowLoading || !isUserTheCreator
+          ? undefined
+          : async () => {
+              if (isUserTheCreator) {
+                await toggleConferenceRunningState(meetingID, isRunning);
+                if (!isRunning) {
+                  await joinConference(meetingID);
+                } else if (joinConferenceUrl.includes(meetingID)) {
+                  setJoinConferenceUrl('');
+                }
+              } else if (isRunning) {
+                await joinConference(meetingID);
+              }
+              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+              await delay(5000);
+              await getConferences();
+            };
       return (
         <SelectableTextCell
           onClick={isUserTheCreator || isRunning ? onClick : undefined}

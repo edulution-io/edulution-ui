@@ -9,21 +9,17 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
-import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()
 @Controller(CONFERENCES_EDU_API_ENDPOINT)
 class ConferencesController {
-  private conferencesSseConnections: UserConnections = new Map();
-
   constructor(private readonly conferencesService: ConferencesService) {}
 
   @Post()
   create(@Body() createConferenceDto: CreateConferenceDto, @GetCurrentUser() user: JWTUser) {
-    return this.conferencesService.create(createConferenceDto, user, this.conferencesSseConnections);
+    return this.conferencesService.create(createConferenceDto, user);
   }
 
   @Get('join/:meetingID')
@@ -44,24 +40,26 @@ class ConferencesController {
   }
 
   @Put()
-  async toggleIsRunning(@Body() conference: Pick<Conference, 'meetingID'>, @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.toggleConferenceIsRunning(
+  async toggleIsRunning(
+    @Body() conference: Pick<Conference, 'meetingID' | 'isRunning'>,
+    @GetCurrentUser() user: JWTUser,
+  ) {
+    return this.conferencesService.toggleConferenceIsRunning(
       conference.meetingID,
+      conference.isRunning,
       user.preferred_username,
-      this.conferencesSseConnections,
     );
-    return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
   @Delete()
   async remove(@Body() meetingIDs: string[], @GetCurrentUser() user: JWTUser) {
-    await this.conferencesService.remove(meetingIDs, user.preferred_username, this.conferencesSseConnections);
+    await this.conferencesService.remove(meetingIDs, user.preferred_username);
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
   @Sse('sse')
   sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.conferencesSseConnections, res);
+    return this.conferencesService.subscribe(username, res);
   }
 
   @Public()
@@ -79,7 +77,7 @@ class ConferencesController {
   @Public()
   @Sse('sse/public')
   publicSse(@Query('meetingID') meetingID: string, @Res() res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(meetingID, this.conferencesSseConnections, res);
+    return this.conferencesService.subscribe(meetingID, res);
   }
 }
 

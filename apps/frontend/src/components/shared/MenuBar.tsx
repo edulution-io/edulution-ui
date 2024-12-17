@@ -93,48 +93,44 @@ const MenuBar: React.FC = () => {
     </div>
   );
 
-  return (
-    <div>
-      {isMobileView ? (
-        <>
-          {isOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-black bg-opacity-50"
-              role="button"
-              tabIndex={0}
-              onClickCapture={toggle}
-            />
-          )}
-
-          <VerticalMenubar
-            className={cn(
-              'fixed top-0 z-50 h-full overflow-y-scroll bg-gray-700 bg-opacity-90 duration-300 ease-in-out',
-              !isOpen ? 'w-0' : 'w-64',
-              'bg-black',
-            )}
-          >
-            {isOpen && renderMenuBarContent()}
-          </VerticalMenubar>
-
-          <div
-            role="button"
-            tabIndex={0}
-            className={cn(
-              'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
-              !isOpen ? 'left-0' : 'left-64',
-            )}
-            onClickCapture={toggle}
-          >
-            <p className="text-xl text-white">{!isOpen ? '≡' : '×'}</p>
-          </div>
-        </>
-      ) : (
-        <div className="relative flex h-screen">
-          <VerticalMenubar className="w-64 overflow-y-auto bg-black bg-opacity-40 scrollbar-thin">
-            {renderMenuBarContent()}
-          </VerticalMenubar>
-        </div>
+  return isMobileView ? (
+    <>
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black bg-opacity-50"
+          role="button"
+          tabIndex={0}
+          onClickCapture={toggle}
+        />
       )}
+
+      <VerticalMenubar
+        className={cn(
+          'fixed top-0 z-50 h-full overflow-y-scroll bg-gray-700 duration-300 ease-in-out',
+          !isOpen ? 'w-0' : 'w-64',
+          'bg-black',
+        )}
+      >
+        {isOpen && renderMenuBarContent()}
+      </VerticalMenubar>
+
+      <div
+        role="button"
+        tabIndex={0}
+        className={cn(
+          'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
+          !isOpen ? 'left-0' : 'left-64',
+        )}
+        onClickCapture={toggle}
+      >
+        <p className="text-xl text-white">{!isOpen ? '≡' : '×'}</p>
+      </div>
+    </>
+  ) : (
+    <div className="relative flex h-screen">
+      <VerticalMenubar className="w-64 overflow-y-auto bg-black bg-opacity-40 scrollbar-thin">
+        {renderMenuBarContent()}
+      </VerticalMenubar>
     </div>
   );
 };
