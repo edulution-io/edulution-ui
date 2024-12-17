@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DashboardPage } from '@/pages/Dashboard';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { findAppConfigByName } from '@/utils/common';
-import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const HomePage: React.FC = () => {
-  const { appConfigs } = useAppConfigsStore();
-  const bulletinBoardConfig = findAppConfigByName(appConfigs, APPS.BULLETIN_BOARD);
+  const { bulletinsByCategories, getBulletinsByCategories, isLoading } = useBulletinBoardStore();
 
-  if (bulletinBoardConfig) return <BulletinBoardPage />;
+  useEffect(() => {
+    void getBulletinsByCategories();
+  }, []);
+
+  if (isLoading) {
+    return <LoadingIndicator isOpen />;
+  }
+
+  if (bulletinsByCategories && Object.keys(bulletinsByCategories).length) return <BulletinBoardPage />;
 
   return <DashboardPage />;
 };

@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
-import { DropdownMenu } from '@/components';
-import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import { DropdownSelect } from '@/components';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
@@ -18,8 +17,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { tableContentData, isLoading } = useBulletinCategoryTableStore();
+  const { uploadAttachment, categories, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -37,7 +35,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
-    form.setValue('category', tableContentData.find((c) => c.name === categoryName) || tableContentData[0]);
+    form.setValue('category', categories.find((c) => c.name === categoryName) || categories[0]);
   };
 
   const handleUpload = async (file: File): Promise<string> => {
@@ -57,46 +55,58 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           event.preventDefault();
         }}
       >
-        <div>{t('bulletinboard.category')}</div>
-        <DropdownMenu
-          options={tableContentData}
-          selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
-          handleChange={handleCategoryChange}
-          variant="light"
-        />
+        <div>
+          <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
+          <DropdownSelect
+            options={categories}
+            selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
+            handleChange={handleCategoryChange}
+            variant="light"
+          />
+          <div>
+            {formState.errors.category && (
+              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                {formState.errors.category.message?.toString()}
+              </FormMessage>
+            )}
+          </div>
+        </div>
 
-        <DialogSwitch
-          translationId="bulletinboard.isActive"
-          checked={isActive}
-          onCheckedChange={(isChecked) => {
-            setValue('isActive', isChecked);
-          }}
-        />
-
-        {isActive && (
+        <div className="space-y-2">
+          <div className="font-bold">{t('bulletinboard.settings')}</div>
           <DialogSwitch
-            translationId="bulletinboard.isPermanentlyActive"
-            checked={isPermanentlyActive}
+            translationId="bulletinboard.isActive"
+            checked={isActive}
             onCheckedChange={(isChecked) => {
-              setIsPermanentlyActive(isChecked);
+              setValue('isActive', isChecked);
             }}
           />
-        )}
 
-        {isActive && !isPermanentlyActive && (
-          <>
-            <DateAndTimeInput
-              form={form}
-              name="isVisibleStartDate"
-              translationId="bulletinboard.activeFrom"
+          {isActive && (
+            <DialogSwitch
+              translationId="bulletinboard.isPermanentlyActive"
+              checked={isPermanentlyActive}
+              onCheckedChange={(isChecked) => {
+                setIsPermanentlyActive(isChecked);
+              }}
             />
-            <DateAndTimeInput
-              form={form}
-              name="isVisibleEndDate"
-              translationId="bulletinboard.activeUntil"
-            />
-          </>
-        )}
+          )}
+
+          {isActive && !isPermanentlyActive && (
+            <>
+              <DateAndTimeInput
+                form={form}
+                name="isVisibleStartDate"
+                translationId="bulletinboard.activeFrom"
+              />
+              <DateAndTimeInput
+                form={form}
+                name="isVisibleEndDate"
+                translationId="bulletinboard.activeUntil"
+              />
+            </>
+          )}
+        </div>
 
         <FormField
           name="title"
@@ -105,16 +115,20 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           labelTranslationId={t('bulletinboard.title')}
           variant="default"
         />
-        <div>{t('bulletinboard.content')}</div>
-        <WysiwygEditor
-          value={watch('content')}
-          onChange={(value) => setValue('content', value)}
-          onUpload={handleUpload}
-        />
         <div>
-          {formState.errors.content && (
-            <FormMessage className="text-p">{formState.errors.content.message?.toString()}</FormMessage>
-          )}
+          <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>
+          <WysiwygEditor
+            value={watch('content')}
+            onChange={(value) => setValue('content', value)}
+            onUpload={handleUpload}
+          />
+          <div>
+            {formState.errors.content && (
+              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                {formState.errors.content.message?.toString()}
+              </FormMessage>
+            )}
+          </div>
         </div>
       </form>
     </Form>

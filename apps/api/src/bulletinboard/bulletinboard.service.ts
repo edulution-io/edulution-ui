@@ -4,13 +4,15 @@ import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
-import { createReadStream, existsSync, mkdirSync } from 'fs';
+import { createReadStream, existsSync, mkdirSync, promises } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import BulletinsByCategoryNames from '@libs/bulletinBoard/types/bulletinsByCategoryNames';
+import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -59,18 +61,33 @@ class BulletinBoardService implements OnModuleInit {
     return res;
   }
 
-  async getBulletinsByCategoryNames(currentUser: JwtUser, token: string): Promise<BulletinsByCategoryNames> {
-    const bulletinCategories = await this.bulletinCategoryService.findAll(currentUser, true);
+  async removeAllBulletinsByCategory(currentUser: JwtUser, categoryId: string): Promise<void> {
+    const bulletins = await this.bulletinModel
+      .find<BulletinResponseDto>({ category: new Types.ObjectId(categoryId) })
+      .exec();
+
+    if (!bulletins.length) {
+      return;
+    }
+
+    const bulletinIds = bulletins.map((bulletin) => bulletin.id);
+
+    await this.removeBulletins(currentUser, bulletinIds);
+  }
+
+  async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategories> {
+    const bulletinCategoriesWithViewPermission: BulletinCategoryResponseDto[] =
+      await this.bulletinCategoryService.findAll(currentUser, BulletinCategoryPermission.VIEW, true);
+    const bulletinCategoriesWithEditPermission: BulletinCategoryResponseDto[] =
+      await this.bulletinCategoryService.findAll(currentUser, BulletinCategoryPermission.EDIT, true);
 
     const bulletins = await this.findAllBulletins(currentUser, token, true);
 
-    const bulletinsByCategory: BulletinsByCategoryNames = {};
-
-    bulletinCategories.forEach((category) => {
-      bulletinsByCategory[category.name] = bulletins.filter((bulletin) => bulletin.category.id === category.id);
-    });
-
-    return bulletinsByCategory;
+    return bulletinCategoriesWithViewPermission.map((category) => ({
+      category,
+      canEditCategory: bulletinCategoriesWithEditPermission.some((editCategory) => editCategory.id === category.id),
+      bulletins: bulletins.filter((bulletin) => bulletin.category.id === category.id),
+    }));
   }
 
   async findAllBulletins(
@@ -83,7 +100,7 @@ class BulletinBoardService implements OnModuleInit {
     if (filterOnlyActiveBulletins !== undefined) {
       filter.isActive = filterOnlyActiveBulletins;
     } else if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      filter.creator = { username: currentUser.preferred_username };
+      filter['creator.username'] = currentUser.preferred_username;
     }
 
     const bulletins = await this.bulletinModel.find(filter).populate('category').exec();
@@ -123,6 +140,16 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
+      currentUser.preferred_username,
+      dto.category.id,
+      BulletinCategoryPermission.EDIT,
+      currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN),
+    );
+    if (!hasUserPermission) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN, HttpStatus.FORBIDDEN);
+    }
+
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -132,6 +159,7 @@ class BulletinBoardService implements OnModuleInit {
     return this.bulletinModel.create({
       creator,
       title: dto.title,
+      attachmentFileNames: dto.attachmentFileNames,
       content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
@@ -149,16 +177,24 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    if (
-      bulletin.creator.username !== currentUser.preferred_username &&
-      !currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)
-    ) {
+    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    const hasUserPermissionToCategory = await this.bulletinCategoryService.hasUserPermission(
+      currentUser.preferred_username,
+      dto.category.id,
+      BulletinCategoryPermission.EDIT,
+      isUserSuperAdmin,
+    );
+    if (!hasUserPermissionToCategory) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.FORBIDDEN);
     }
 
     const updatedBy = {
@@ -179,20 +215,45 @@ class BulletinBoardService implements OnModuleInit {
     return bulletin.save();
   }
 
-  async removeBulletins(username: string, ids: string[]) {
+  async removeBulletins(currentUser: JwtUser, ids: string[]) {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
 
     if (bulletins.length !== ids.length) {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    const unauthorizedBulletins = bulletins.filter((bulletin) => bulletin.creator.username !== username);
+    const unauthorizedBulletins = bulletins.filter(
+      (bulletin) => bulletin.creator.username !== currentUser.preferred_username,
+    );
 
-    if (unauthorizedBulletins.length > 0) {
+    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
-    await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+    try {
+      await Promise.all(
+        bulletins.map(async (bulletin) => {
+          if (bulletin.attachmentFileNames?.length) {
+            await Promise.all(
+              bulletin.attachmentFileNames.map(async (fileName) => {
+                const filePath = join(this.attachmentsPath, fileName);
+                if (existsSync(filePath)) {
+                  await promises.unlink(filePath);
+                }
+              }),
+            );
+          }
+        }),
+      );
+
+      await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+    } catch (error) {
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
 

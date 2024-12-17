@@ -24,7 +24,7 @@ import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAtt
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinBoardService from './bulletinboard.service';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags(APPS.BULLETIN_BOARD)
@@ -34,8 +34,8 @@ class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
   @Get('')
-  getBulletinsByCategoryNames(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
-    return this.bulletinBoardService.getBulletinsByCategoryNames(currentUser, token);
+  getBulletinsByCategory(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
+    return this.bulletinBoardService.getBulletinsByCategory(currentUser, token);
   }
 
   @Get('bulletins')
@@ -54,8 +54,13 @@ class BulletinBoardController {
   }
 
   @Delete()
-  removeBulletins(@GetCurrentUsername() currentUsername: string, @Body() ids: string[]) {
-    return this.bulletinBoardService.removeBulletins(currentUsername, ids);
+  removeBulletins(@GetCurrentUser() currentUser: JWTUser, @Body() ids: string[]) {
+    return this.bulletinBoardService.removeBulletins(currentUser, ids);
+  }
+
+  @Delete(':categoryId')
+  removeAllBulletinsByCategory(@GetCurrentUser() currentUser: JWTUser, @Param('categoryId') categoryId: string) {
+    return this.bulletinBoardService.removeAllBulletinsByCategory(currentUser, categoryId);
   }
 
   @Get('attachments/:filename')

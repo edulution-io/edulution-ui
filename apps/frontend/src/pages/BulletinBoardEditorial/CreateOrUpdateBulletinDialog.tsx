@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
-import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import { MdDelete, MdUpdate } from 'react-icons/md';
@@ -14,35 +13,39 @@ import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 
 interface BulletinCreateDialogProps {
   trigger?: React.ReactNode;
+  onSubmit?: () => Promise<void>;
 }
 
-const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) => {
+const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialogProps) => {
   const { t } = useTranslation();
   const {
     isDialogLoading,
     isCreateBulletinDialogOpen,
     updateBulletin,
     getBulletins,
+    categories,
+    getCategories,
     createBulletin,
     deleteBulletins,
     selectedBulletinToEdit,
     setSelectedBulletinToEdit,
     setIsCreateBulletinDialogOpen,
   } = useBulletinBoardEditorialStore();
-  const { tableContentData, fetchTableContent } = useBulletinCategoryTableStore();
 
   useEffect(() => {
-    void fetchTableContent();
-  }, []);
+    if (isCreateBulletinDialogOpen) {
+      void getCategories();
+    }
+  }, [isCreateBulletinDialogOpen]);
 
-  const initialFormValues: CreateBulletinDto = selectedBulletinToEdit || {
-    title: '',
-    category: tableContentData[0],
-    attachmentFileNames: [],
-    content: '',
-    isActive: true,
-    isVisibleEndDate: null,
-    isVisibleStartDate: null,
+  const initialFormValues: CreateBulletinDto = {
+    title: selectedBulletinToEdit?.title || '',
+    category: selectedBulletinToEdit?.category || categories[0],
+    attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
+    content: selectedBulletinToEdit?.content || '',
+    isActive: selectedBulletinToEdit?.isActive || true,
+    isVisibleEndDate: selectedBulletinToEdit?.isVisibleEndDate || null,
+    isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate || null,
   };
 
   const form = useForm<CreateBulletinDto>({
@@ -53,31 +56,35 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
 
   useEffect(() => {
     form.reset(initialFormValues);
-  }, [selectedBulletinToEdit, tableContentData, form]);
+  }, [selectedBulletinToEdit, form]);
 
-  const onSubmit = async () => {
-    if (selectedBulletinToEdit) {
+  const handleSubmit = async () => {
+    if (selectedBulletinToEdit?.id) {
       await updateBulletin(selectedBulletinToEdit.id, form.getValues());
     } else {
       await createBulletin(form.getValues());
     }
     setIsCreateBulletinDialogOpen(false);
     setSelectedBulletinToEdit(null);
-    await getBulletins();
     form.reset(initialFormValues);
+    if (onSubmit) {
+      await onSubmit();
+    } else {
+      await getBulletins();
+    }
   };
 
-  const handleFormSubmit = form.handleSubmit(onSubmit);
+  const handleFormSubmit = form.handleSubmit(handleSubmit);
 
   const getDialogBody = () => {
-    if (isDialogLoading) return <CircleLoader />;
+    if (isDialogLoading) return <CircleLoader className="mx-auto" />;
     return <CreateOrUpdateBulletinDialogBody form={form} />;
   };
 
   const getFooter = () => (
     <form onSubmit={handleFormSubmit}>
       <div className="mt-4 flex justify-end space-x-2">
-        {selectedBulletinToEdit && (
+        {!isDialogLoading && selectedBulletinToEdit?.id && (
           <Button
             variant="btn-attention"
             size="lg"
@@ -115,7 +122,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger }: BulletinCreateDialogProps) =>
         setSelectedBulletinToEdit(null);
       }}
       desktopContentClassName="max-w-2xl"
-      title={t(`bulletinboard.${selectedBulletinToEdit ? 'editBulletin' : 'createBulletin'}`)}
+      title={t(`bulletinboard.${selectedBulletinToEdit?.id ? 'editBulletin' : 'createBulletin'}`)}
       body={getDialogBody()}
       footer={getFooter()}
     />

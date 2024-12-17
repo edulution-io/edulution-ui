@@ -10,6 +10,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import type TApps from '@libs/appconfig/types/appsType';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -45,7 +46,7 @@ const Sidebar: React.FC = () => {
       ? [
           {
             title: t('settings.sidebar'),
-            link: '/settings',
+            link: SETTINGS_PATH,
             icon: SettingsIcon,
             color: 'bg-ciGreenToBlue',
           },

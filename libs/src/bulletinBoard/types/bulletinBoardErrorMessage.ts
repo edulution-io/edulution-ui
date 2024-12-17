@@ -10,6 +10,11 @@ enum BulletinBoardErrorMessage {
   UNAUTHORIZED_UPDATE_BULLETIN = 'bulletinboard.errors.unauthorizedUpdateBulletin',
   UNAUTHORIZED_DELETE_BULLETIN = 'bulletinboard.errors.unauthorizedDeleteBulletin',
   CATEGORY_NAME_ALREADY_EXISTS = 'bulletinboard.errors.categoryNameAlreadyExists',
+  UNAUTHORIZED_CREATE_BULLETIN = 'bulletinboard.errors.unauthorizedCreateBulletin',
+  UNAUTHORIZED_CREATE_CATEGORY = 'bulletinboard.errors.unauthorizedCreateCategory',
+  UNAUTHORIZED_DELETE_CATEGORY = 'bulletinboard.errors.unauthorizedDeleteCategory',
+  UNAUTHORIZED_UPDATE_CATEGORY = 'bulletinboard.errors.unauthorizedUpdateCategory',
+  ATTACHMENT_DELETION_FAILED = 'bulletinboard.errors.attachmentDeletionFailed',
 }
 
 export default BulletinBoardErrorMessage;

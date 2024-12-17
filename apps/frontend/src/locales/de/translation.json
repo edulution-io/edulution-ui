@@ -6,8 +6,13 @@
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "bulletinboard": {
+    "settings": "Einstellungen",
+    "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
+    "deleteBulletinCategory": "Kategorie löschen",
+    "confirmSingleCategoryDelete": "Soll diese Kategorie wirklich gelöscht werden?",
+    "confirmSingleCategoryDeleteWarning": "Vorsicht, es werden alle Mitteilungen in dieser Kategorie mitgelöscht!",
     "isVisibleStartDate": "Aktiv von",
     "isVisibleEndDate": "Aktiv bis",
     "isActiveOrExpired": "Aktiv/Abgelaufen",
@@ -29,6 +34,8 @@
     "editableByUsers": "Redaktionierbar von Nutzern",
     "editableByGroups": "Redaktionierbar von Gruppen",
     "editorialAccess": "Redaktioneller Zugriff",
+    "manageCategories": "Kategorien verwalten",
+    "manageBulletins": "Mitteilungen verwalten",
     "error": "Fehler",
     "delete": "Löschen",
     "deleteBulletin": "Mitteilung löschen",
@@ -44,14 +51,19 @@
     "content": "Inhalt",
     "placeholderCategoryName": "Name",
     "categoryName": "Name der Kategorie",
+    "bulletinUpdatedSuccessfully": "Mitteilung erfolgreich gespeichert",
+    "bulletinCreatedSuccessfully": "Mitteilung erfolgreich erstellt",
+    "bulletinsDeletedSuccessfully": "Mitteilungen erfolgreich gelöscht",
     "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
     "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
     "categoryDeletedSuccessfully": "Kategorie erfolgreich gelöscht",
     "editCategory": "Kategorie bearbeiten",
     "createNewCategory": "Kategorie erstellen",
     "categories": {
-      "visibleByUsersAndGroups": "Diese Kategorie ist sichtbar für Nutzer und Gruppen",
-      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen"
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
+      "visibleByUsersAndGroupsTitle": "Startseite",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",
@@ -64,7 +76,12 @@
       "bulletinNotFound": "Bulletin nicht gefunden",
       "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
       "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen",
-      "categoryNameAlreadyExists": "Kategoriename existiert bereits"
+      "categoryNameAlreadyExists": "Kategoriename existiert bereits",
+      "unauthorizedCreateBulletin": "Keine Berechtigung, um dieses Bulletin zu erstellen",
+      "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
+      "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
+      "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
   "dashboard": {
@@ -148,7 +165,8 @@
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
       "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
-      "mailAddress": "E-Mail-Adresse"
+      "mailAddress": "E-Mail-Adresse",
+      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
   },
   "chat": {
@@ -717,6 +735,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "options": "Optionen",
     "checking": "Prüfen",
     "columns": "Spalten",
     "join": "Teilnehmen",

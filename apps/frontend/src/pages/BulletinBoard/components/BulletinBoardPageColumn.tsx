@@ -1,79 +1,74 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useState } from 'react';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import cn from '@libs/common/utils/className';
-import { Card } from '@/components/shared/Card';
-import { Button } from '@/components/shared/Button';
-import { PiDotsThreeVerticalBold } from 'react-icons/pi';
-import { useTranslation } from 'react-i18next';
+import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
+import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import ImageModal from '@/components/shared/ImageModal';
+import BulletinBoardColumnHeader from '@/pages/BulletinBoard/components/BulletinBoardColumnHeader';
+import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBoardColumnItem';
 
 const BulletinBoardPageColumn = ({
   bulletins,
   categoryCount,
-  categoryName,
+  category,
+  canEditCategory,
+  canManageBulletins,
 }: {
   categoryCount: number;
-  categoryName: string;
+  category: BulletinCategoryResponseDto;
   bulletins: BulletinResponseDto[];
+  canEditCategory: boolean;
+  canManageBulletins: boolean;
 }) => {
-  const { t } = useTranslation();
+  const { getBulletinsByCategories } = useBulletinBoardStore();
+  const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
+  const [selectedImageForPreview, setSelectedImageForPreview] = useState<string | null>(null);
 
-  const getAuthorDescription = (bulletin: BulletinResponseDto) => {
-    const isCreatorLastUpdater = bulletin.creator.username === bulletin.updatedBy?.username || !bulletin.updatedBy;
-    const translationId = isCreatorLastUpdater ? 'bulletinboard.createdFrom' : 'bulletinboard.createdFromAndUpdatedBy';
-    return (
-      <div className="mt-2 text-right italic">
-        {t(translationId, {
-          createdBy: `${bulletin.creator.firstName} ${bulletin.creator.lastName}`,
-          lastUpdatedBy: `${bulletin.updatedBy?.firstName} ${bulletin.updatedBy?.lastName}`,
-          lastUpdated: new Date(bulletin.updatedAt).toLocaleString(undefined, {
-            year: '2-digit',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-        })}
-      </div>
-    );
+  const handleImagePreviewClick = (imageUrl: string) => {
+    setSelectedImageForPreview(imageUrl);
+    setIsImagePreviewModalOpen(true);
+  };
+
+  const closeImagePreviewModal = () => {
+    setSelectedImageForPreview(null);
+    setIsImagePreviewModalOpen(false);
   };
 
   return (
     <div
-      className={cn('flex h-full w-full min-w-[300px] flex-shrink-0 flex-col rounded-lg p-4', {
+      className={cn('flex h-full w-full min-w-[300px] flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3', {
         'w-1/2': categoryCount === 2,
         'w-1/3': categoryCount === 3,
         'w-[300px]': categoryCount >= 4,
       })}
     >
-      <Card
-        variant="security"
-        className="sticky mb-4 flex items-center justify-between rounded-lg px-3 py-1 opacity-90"
-      >
-        <h4 className="text-white">{categoryName}</h4>
-        <Button
-          type="button"
-          className="text-white-500 flex h-8 w-8 items-center justify-center rounded-full p-1 hover:bg-blue-600 hover:text-white"
-          title={t('common.edit')}
-        >
-          <PiDotsThreeVerticalBold className="h-12 w-12" />
-        </Button>
-      </Card>
+      <BulletinBoardColumnHeader
+        category={category}
+        canEditCategory={canEditCategory}
+      />
       <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
         {bulletins.map((bulletin) => (
-          <div
+          <BulletinBoardColumnItem
             key={bulletin.id}
-            className="break-all rounded-lg bg-white bg-opacity-5 p-4"
-          >
-            <h4>{bulletin.title}</h4>
-            <div
-              className="mt-3 text-gray-100"
-              dangerouslySetInnerHTML={{ __html: bulletin.content }}
-            />
-            {getAuthorDescription(bulletin)}
-          </div>
+            bulletin={bulletin}
+            canManageBulletins={canManageBulletins}
+            handleImageClick={handleImagePreviewClick}
+          />
         ))}
       </div>
+
+      {selectedImageForPreview && (
+        <ImageModal
+          isOpen={isImagePreviewModalOpen}
+          imageUrl={selectedImageForPreview}
+          onClose={closeImagePreviewModal}
+        />
+      )}
+
+      <CreateOrUpdateBulletinDialog onSubmit={getBulletinsByCategories} />
+      <DeleteBulletinsDialog onSubmit={getBulletinsByCategories} />
     </div>
   );
 };
