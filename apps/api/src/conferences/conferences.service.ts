@@ -328,7 +328,7 @@ class ConferencesService {
     }
   }
 
-  private static filterOutForeignPasswords(conferences: Partial<Conference>[], user?: JWTUser) {
+  private static replaceForeignConferencesPasswords(conferences: Partial<Conference>[], user?: JWTUser) {
     return conferences.map((conference) => {
       if (user && conference.creator?.username === user.preferred_username) return conference;
       return {
@@ -348,7 +348,7 @@ class ConferencesService {
       .exec();
 
     const syncedConferences = await this.syncConferencesInfoWithBBB(conferencesToBeSynced);
-    return ConferencesService.filterOutForeignPasswords(syncedConferences, user);
+    return ConferencesService.replaceForeignConferencesPasswords(syncedConferences, user);
   }
 
   async findPublicConference(publicMeetingID: string): Promise<Partial<Conference> | null> {
@@ -362,7 +362,7 @@ class ConferencesService {
       await this.syncConferencesInfoWithBBB([conferenceToBeSynced])
     )[0];
 
-    return ConferencesService.filterOutForeignPasswords([
+    return ConferencesService.replaceForeignConferencesPasswords([
       { name, creator, isPublic, meetingID, password, isRunning },
     ])[0];
   }

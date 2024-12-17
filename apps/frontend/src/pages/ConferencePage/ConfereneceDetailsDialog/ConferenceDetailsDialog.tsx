@@ -17,6 +17,7 @@ import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import UseIsMobileView from '@/hooks/useIsMobileView';
 import CircleLoader from '@/components/ui/CircleLoader';
+import Separator from '@/components/ui/Separator';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -69,6 +70,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     return (
       <>
         <CreateConferenceDialogBody form={form} />
+        <Separator />
         {showQrCode && (
           <QRCodeWithCopyButton
             qrCodeSize={isMobileView ? 'md' : 'lg'}
@@ -104,7 +106,6 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
       desktopContentClassName="max-w-4xl"
       body={getDialogBody()}
       footer={getFooter()}
-      variant="tertiary"
     />
   );
 };

@@ -45,7 +45,7 @@ const PublicConferenceJoinForm = ({
     const currentPublicConference = await updatePublicConference();
 
     if (!currentPublicConference?.isRunning) {
-      toast.error(t('conferences.conferenceIsNotRunning'));
+      toast.error(t('conferences.errors.ConferenceIsNotRunning'));
       setWaitingForConferenceToStart(true);
       return;
     }

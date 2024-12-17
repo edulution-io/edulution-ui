@@ -9,7 +9,6 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import { useForm } from 'react-hook-form';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import useIsConferenceActive from '@/pages/ConferencePage/useIsConferenceActive';
 import PublicConferenceJoinForm from '@/pages/ConferencePage/PublicConference/PublicConferenceJoinForm';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -34,7 +33,6 @@ const PublicConferencePage = (): React.ReactNode => {
   } = usePublicConferenceStore();
   const { meetingId } = useParams();
   const form = useForm<{ name: string; password: string }>();
-  const isConferenceAppActivated = useIsConferenceActive();
   const [isWaitingForConferenceToStart, setWaitingForConferenceToStart] = useState(false);
   const [publicConference, setPublicConference] = useState<Partial<ConferenceDto> | null>(null);
 
@@ -98,7 +96,7 @@ const PublicConferencePage = (): React.ReactNode => {
     }
 
     return undefined;
-  }, [publicConference, isConferenceAppActivated]);
+  }, [publicConference]);
 
   const automaticallyJoinAsRegisteredUser = async () => {
     if (

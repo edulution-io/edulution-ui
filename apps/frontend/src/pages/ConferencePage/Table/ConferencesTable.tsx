@@ -18,7 +18,7 @@ const ConferencesTable = () => {
   };
 
   useEffect(() => {
-    void getConferences(undefined);
+    void getConferences();
   }, []);
 
   return (

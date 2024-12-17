@@ -9,8 +9,6 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/joinButton';
-import { toast } from 'sonner';
-import i18n from '@/i18n';
 import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/startButton';
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
 
@@ -48,9 +46,7 @@ const ConferencesFloatingButtons: React.FC = () => {
       }, selectedConferenceIds.length > 0),
       CreateButton(openCreateConferenceDialog),
       ReloadButton(() => {
-        getConferences()
-          .then(() => toast.success(i18n.t('conferences.conferenceFetchedSuccessfully')))
-          .catch((e) => console.error(e));
+        void getConferences(false, true);
       }),
     ],
     keyPrefix: 'conference-page-floating-button_',

@@ -23,7 +23,7 @@ const QRCodeWithCopyButton = ({
 
   return (
     <>
-      <p>{t(titleTranslationId)}</p>
+      <p className="font-bold">{t(titleTranslationId)}</p>
       <div className="flex flex-col items-center justify-center">
         <QRCodeDisplay
           value={url}
