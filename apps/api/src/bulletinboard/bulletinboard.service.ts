@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
-import { createReadStream, existsSync, mkdirSync } from 'fs';
+import { createReadStream, existsSync, mkdirSync, promises } from 'fs';
 import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
@@ -59,6 +59,20 @@ class BulletinBoardService implements OnModuleInit {
     fileStream.pipe(res);
 
     return res;
+  }
+
+  async removeAllBulletinsByCategory(currentUser: JwtUser, categoryId: string): Promise<void> {
+    const bulletins = await this.bulletinModel
+      .find<BulletinResponseDto>({ category: new Types.ObjectId(categoryId) })
+      .exec();
+
+    if (!bulletins.length) {
+      return;
+    }
+
+    const bulletinIds = bulletins.map((bulletin) => bulletin.id);
+
+    await this.removeBulletins(currentUser, bulletinIds);
   }
 
   async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategories> {
@@ -145,6 +159,7 @@ class BulletinBoardService implements OnModuleInit {
     return this.bulletinModel.create({
       creator,
       title: dto.title,
+      attachmentFileNames: dto.attachmentFileNames,
       content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
@@ -200,20 +215,45 @@ class BulletinBoardService implements OnModuleInit {
     return bulletin.save();
   }
 
-  async removeBulletins(username: string, ids: string[]) {
+  async removeBulletins(currentUser: JwtUser, ids: string[]) {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
 
     if (bulletins.length !== ids.length) {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    const unauthorizedBulletins = bulletins.filter((bulletin) => bulletin.creator.username !== username);
+    const unauthorizedBulletins = bulletins.filter(
+      (bulletin) => bulletin.creator.username !== currentUser.preferred_username,
+    );
 
-    if (unauthorizedBulletins.length > 0) {
+    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
 
-    await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+    try {
+      await Promise.all(
+        bulletins.map(async (bulletin) => {
+          if (bulletin.attachmentFileNames?.length) {
+            await Promise.all(
+              bulletin.attachmentFileNames.map(async (fileName) => {
+                const filePath = join(this.attachmentsPath, fileName);
+                if (existsSync(filePath)) {
+                  await promises.unlink(filePath);
+                }
+              }),
+            );
+          }
+        }),
+      );
+
+      await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+    } catch (error) {
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
 

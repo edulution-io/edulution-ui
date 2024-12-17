@@ -36,6 +36,7 @@ const FileSharingTable = () => {
       selectedRows={selectedRows}
       getRowId={(row) => row.filename}
       applicationName={appName}
+      additionalScrollContainerOffset={20}
       scrollContainerOffsetElementIds={{
         others: [BREADCRUMB_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
       }}
