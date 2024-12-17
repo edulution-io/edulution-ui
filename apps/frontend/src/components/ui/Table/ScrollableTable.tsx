@@ -38,7 +38,7 @@ interface DataTableProps<TData, TValue> {
     tableHeaderId?: string;
     others?: string[];
   };
-  usedInAppConfig?: boolean;
+  tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   enableMultiRowSelection?: boolean;
 }
@@ -57,7 +57,7 @@ const ScrollableTable = <TData, TValue>({
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
   enableMultiRowSelection,
-  usedInAppConfig = false,
+  tableIsUsedOnAppConfigPage = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -112,13 +112,20 @@ const ScrollableTable = <TData, TValue>({
         </div>
       ) : (
         <>
-          {!usedInAppConfig && <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>}
+          {!tableIsUsedOnAppConfigPage && (
+            <div
+              id={selectedRowsMessageId}
+              className="flex-1 text-sm text-muted-foreground text-white"
+            >
+              &nbsp;
+            </div>
+          )}
           <p />
         </>
       )}
 
       <div
-        className={`w-full flex-1 overflow-auto scrollbar-thin ${!usedInAppConfig ? 'pl-3 pr-3.5' : ''}`}
+        className={`w-full flex-1 overflow-auto scrollbar-thin ${!tableIsUsedOnAppConfigPage ? 'pl-3 pr-3.5' : ''}`}
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <div className="w-full">

@@ -4,7 +4,6 @@ import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import { DropdownSelect } from '@/components';
-import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
@@ -18,16 +17,11 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const { uploadAttachment } = useBulletinBoardEditorialStore();
-  const { tableContentData, isLoading, fetchTableContent } = useBulletinCategoryTableStore();
+  const { uploadAttachment, categories, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
   const [isPermanentlyActive, setIsPermanentlyActive] = useState<boolean>(!isVisibilityDateSet);
-
-  useEffect(() => {
-    void fetchTableContent();
-  }, []);
 
   useEffect(() => {
     setIsPermanentlyActive(!isVisibilityDateSet);
@@ -41,7 +35,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
-    form.setValue('category', tableContentData.find((c) => c.name === categoryName) || tableContentData[0]);
+    form.setValue('category', categories.find((c) => c.name === categoryName) || categories[0]);
   };
 
   const handleUpload = async (file: File): Promise<string> => {
@@ -64,8 +58,8 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         <div>
           <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
           <DropdownSelect
-            options={tableContentData}
-            selectedVal={isLoading ? t('common.loading') : watch('category')?.name}
+            options={categories}
+            selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
             handleChange={handleCategoryChange}
             variant="light"
           />
