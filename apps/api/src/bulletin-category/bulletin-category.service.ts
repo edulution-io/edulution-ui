@@ -15,12 +15,10 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
-import { Bulletin, BulletinDocument } from '../bulletinboard/bulletin.schema';
 
 @Injectable()
 class BulletinCategoryService {
   constructor(
-    @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -160,8 +158,6 @@ class BulletinCategoryService {
     }
     try {
       const objectId = new Types.ObjectId(id);
-
-      await this.bulletinModel.deleteMany({ category: objectId }).exec();
 
       await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
     } catch (error) {

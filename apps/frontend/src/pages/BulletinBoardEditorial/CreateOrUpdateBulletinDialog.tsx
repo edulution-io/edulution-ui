@@ -64,14 +64,14 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     } else {
       await createBulletin(form.getValues());
     }
+    setIsCreateBulletinDialogOpen(false);
+    setSelectedBulletinToEdit(null);
+    form.reset(initialFormValues);
     if (onSubmit) {
       await onSubmit();
     } else {
       await getBulletins();
     }
-    setIsCreateBulletinDialogOpen(false);
-    setSelectedBulletinToEdit(null);
-    form.reset(initialFormValues);
   };
 
   const handleFormSubmit = form.handleSubmit(handleSubmit);

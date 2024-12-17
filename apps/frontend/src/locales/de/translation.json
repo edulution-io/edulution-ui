@@ -80,7 +80,8 @@
       "unauthorizedCreateBulletin": "Keine Berechtigung, um dieses Bulletin zu erstellen",
       "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
-      "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren"
+      "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
   "dashboard": {
