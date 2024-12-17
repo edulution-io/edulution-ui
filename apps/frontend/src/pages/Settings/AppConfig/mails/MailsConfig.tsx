@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto } from '@libs/mail/types';
@@ -71,7 +71,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
     <div className="space-y-4">
       <h4>{t(`mail.importer.title`)}</h4>
       <div className="flex gap-4">
-        <DropdownMenu
+        <DropdownSelect
           options={mailProviderDropdownOptions}
           selectedVal={t(option)}
           handleChange={setOption}

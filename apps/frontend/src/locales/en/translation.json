@@ -6,8 +6,13 @@
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
   "bulletinboard": {
+    "settings": "Settings",
+    "categoryIsRequired": "Selecting a category is required",
     "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
+    "deleteBulletinCategory": "Delete category",
+    "confirmSingleCategoryDelete": "Do you really want to delete this category?",
+    "confirmSingleCategoryDeleteWarning": "Warning: All bulletins in this category will also be deleted!",
     "isVisibleStartDate": "Active from",
     "isVisibleEndDate": "Active until",
     "isActiveOrExpired": "Active/Expired",
@@ -30,8 +35,13 @@
     "isPermanentlyActive": "Permanently active",
     "error": "Error",
     "filterPlaceHolderText": "Search for categoriename",
+    "manageCategories": "Manage categories",
+    "manageBulletins": "Manage bulletins",
     "placeholderCategoryName": "Name",
     "categoryName": "Category name",
+    "bulletinUpdatedSuccessfully": "Bulletin updated successfully",
+    "bulletinCreatedSuccessfully": "Bulletin created successfully",
+    "bulletinsDeletedSuccessfully": "Bulletins deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
     "categoryDeletedSuccessfully": "Category deleted successfully",
@@ -50,8 +60,10 @@
     "editCategory": "Edit category",
     "createNewCategory": "Create category",
     "categories": {
-      "visibleByUsersAndGroups": "Visible by users and groups",
-      "editableByUsersAndGroups": "Editable by users and groups"
+      "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups on the homepage",
+      "visibleByUsersAndGroupsTitle": "Homepage",
+      "editableByUsersAndGroups": "This category is editable by users and groups in the Bulletin Board app",
+      "editableByUsersAndGroupsTitle": "Manage Bulletins"
     },
     "errors": {
       "categoryNotFound": "Category not found",
@@ -64,7 +76,11 @@
       "bulletinNotFound": "Bulletin not found",
       "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
       "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin",
-      "categoryNameAlreadyExists": "Category name already exists"
+      "categoryNameAlreadyExists": "Category name already exists",
+      "unauthorizedCreateBulletin": "No permission to create this bulletin",
+      "unauthorizedCreateCategory": "No permission to create this category",
+      "unauthorizedDeleteCategory": "No permission to delete this category",
+      "unauthorizedUpdateCategory": "No permission to update this category"
     }
   },
   "dashboard": {
@@ -719,6 +735,7 @@
       "envAccessError": "Not able to read environment variables"
     },
     "checking": "Checking",
+    "options": "Options",
     "columns": "Columns",
     "join": "Join",
     "details": "Details",

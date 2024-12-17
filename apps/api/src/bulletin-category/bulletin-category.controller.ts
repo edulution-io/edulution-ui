@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()
@@ -13,19 +13,13 @@ class BulletinCategoryController {
   constructor(private readonly bulletinBoardService: BulletinCategoryService) {}
 
   @Get()
-  findAll(@GetCurrentUser() currentUser: JWTUser) {
-    return this.bulletinBoardService.findAll(currentUser);
+  findAll(@GetCurrentUser() currentUser: JWTUser, @Query('permission') permission: BulletinCategoryPermissionType) {
+    return this.bulletinBoardService.findAll(currentUser, permission);
   }
 
   @Post()
   create(@GetCurrentUser() currentUser: JWTUser, @Body() bulletinCategory: CreateBulletinCategoryDto) {
     return this.bulletinBoardService.create(currentUser, bulletinCategory);
-  }
-
-  @Get(':name')
-  @UseGuards(AppConfigGuard)
-  getConfigByName(@Param('name') name: string) {
-    return this.bulletinBoardService.getConfigByName(name);
   }
 
   @Post(':name')
@@ -34,13 +28,17 @@ class BulletinCategoryController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() bulletinCategory: CreateBulletinCategoryDto) {
-    return this.bulletinBoardService.update(id, bulletinCategory);
+  update(
+    @GetCurrentUser() currentUser: JWTUser,
+    @Param('id') id: string,
+    @Body() bulletinCategory: CreateBulletinCategoryDto,
+  ) {
+    return this.bulletinBoardService.update(currentUser, id, bulletinCategory);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bulletinBoardService.remove(id);
+  remove(@GetCurrentUser() currentUser: JWTUser, @Param('id') id: string) {
+    return this.bulletinBoardService.remove(currentUser, id);
   }
 }
 

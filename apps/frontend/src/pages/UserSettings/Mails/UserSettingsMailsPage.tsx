@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -123,7 +123,7 @@ const UserSettingsMailsPage: React.FC = () => {
         >
           <h3>{t('mail.importer.title')}</h3>
           <div className="space-y-4">
-            <DropdownMenu
+            <DropdownSelect
               options={externalMailProviderConfig}
               selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
               handleChange={setOption}

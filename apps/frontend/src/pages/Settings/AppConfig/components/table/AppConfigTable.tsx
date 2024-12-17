@@ -47,7 +47,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
           data={tableContentData}
           applicationName={applicationName}
           enableRowSelection={false}
-          usedInAppConfig
+          tableIsUsedOnAppConfigPage
         />
         {showAddButton && (
           <div className="flex w-full">

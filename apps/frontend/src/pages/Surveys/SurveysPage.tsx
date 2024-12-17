@@ -39,7 +39,7 @@ const SurveysPage = () => {
     <>
       {renderPage()}
       <TooltipProvider>
-        <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+        <div className="absolute bottom-8 flex flex-row items-center space-x-8">
           <ResultTableDialog />
           <ResultVisualizationDialog />
           <ParticipateDialog />
