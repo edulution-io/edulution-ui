@@ -11,7 +11,7 @@ import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
 import Groups from './Groups';
 
-const Home: React.FC = () => {
+const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
 
   const isMobileView = useIsMobileView();
@@ -74,4 +74,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default DashboardPage;

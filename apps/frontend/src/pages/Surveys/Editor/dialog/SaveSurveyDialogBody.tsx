@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import { setHours, setMinutes, getHours, getMinutes } from 'date-fns';
-import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/UserStore';
-import Input from '@/components/shared/Input';
 import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
+import TimeInput from '@/components/shared/TimeInput';
 
 interface SaveSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,15 +18,11 @@ interface SaveSurveyDialogBodyProps {
 
 const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const { form } = props;
-  const { setValue, getValues, watch } = form;
+  const { setValue, watch, getValues } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
-
-  const [expirationTime, setExpirationTime] = useState<string>(
-    `${getHours(getValues('expires')) || '00'}:${getMinutes(getValues('expires')) || '00'}`,
-  );
 
   const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -52,15 +46,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
   const handleExpirationDateChange = (value: Date | undefined) => {
-    setValue('expires', value /* , { shouldValidate: true } */);
-  };
-  const handleExpirationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setExpirationTime(e.target.value);
-    const time = e.target.value.split(':');
-    let updateExpiration = getValues('expires') as Date;
-    updateExpiration = setHours(updateExpiration, Number(time[0]));
-    updateExpiration = setMinutes(updateExpiration, Number(time[1]));
-    setValue('expires', updateExpiration);
+    setValue('expires', value);
   };
 
   return (
@@ -85,14 +71,10 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         </div>
       </div>
       <div className="flex items-center text-foreground">
-        {t('common.time')}
-        <Input
-          type="time"
-          value={expirationTime}
-          onChange={handleExpirationTimeChange}
-          variant="default"
-          className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
+        <TimeInput
+          form={form}
           disabled={!getValues('expires')}
+          fieldName="expires"
         />
       </div>
       <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>

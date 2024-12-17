@@ -5,10 +5,12 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import cn from '@libs/common/utils/className';
-import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Calendar } from '@/components/ui/Calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import useUserStore from '@/store/UserStore/UserStore';
+import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
+import UserLanguage from '@libs/user/constants/userLanguage';
 
 interface DatePickerProps {
   selected: Date | undefined;
@@ -17,10 +19,10 @@ interface DatePickerProps {
 
 const DatePicker = (props: DatePickerProps) => {
   const { selected, onSelect } = props;
-
+  const { user } = useUserStore();
   const { t } = useTranslation();
 
-  const locale = getLocaleDateFormat();
+  const locale = getLocaleDateFormat(user?.language === UserLanguage.SYSTEM ? navigator.language : user?.language);
 
   return (
     <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto text-gray-900">
@@ -29,7 +31,7 @@ const DatePicker = (props: DatePickerProps) => {
           <ButtonSH
             variant="outline"
             className={cn(
-              'h-8 justify-start rounded py-0 text-left font-normal text-foreground',
+              'h-9 justify-start rounded py-0 text-left font-normal text-foreground',
               !selected && 'text-muted-foreground',
             )}
           >

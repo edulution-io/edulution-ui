@@ -8,7 +8,7 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdClose, MdSave } from 'react-icons/md';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import { useTranslation } from 'react-i18next';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
@@ -127,7 +127,7 @@ const LessonPage = () => {
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
           <div className="md:w-1/3">
-            <DropdownMenu
+            <DropdownSelect
               options={sessionOptions}
               selectedVal={groupName || t('classmanagement.selectSavedSession')}
               handleChange={handleSessionSelect}

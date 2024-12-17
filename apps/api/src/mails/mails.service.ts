@@ -195,7 +195,11 @@ class MailsService {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs(username: string) {
+  async getSyncJobs(username: string): Promise<SyncJobDto[]> {
+    if (!MAIL_API_URL || !MAIL_API_KEY) {
+      return [];
+    }
+
     try {
       const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
 
@@ -203,7 +207,7 @@ class MailsService {
 
       return filteredSyncJobs;
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -216,7 +220,7 @@ class MailsService {
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -230,7 +234,7 @@ class MailsService {
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 }

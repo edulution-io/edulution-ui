@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -10,14 +10,15 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 interface AddAppConfigDialogProps {
   option: string;
   setOption: (option: string) => void;
-  filteredAppOptions: () => { id: string; name: string }[];
+  getFilteredAppOptions: () => { id: string; name: string }[];
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, filteredAppOptions }) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, getFilteredAppOptions }) => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
@@ -30,8 +31,8 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
     return (
       <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
-        <DropdownMenu
-          options={filteredAppOptions()}
+        <DropdownSelect
+          options={getFilteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
@@ -60,6 +61,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
 
       await updateAppConfig(updatedConfig);
       if (!error) {
+        setOption('');
         setIsAddAppConfigDialogOpen(false);
       }
     }
@@ -67,7 +69,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
 
   useEffect(() => {
     if (!isAddAppConfigDialogOpen) {
-      navigate(selectedOption ? `/settings/${selectedOption}` : '/settings', { replace: true });
+      navigate(selectedOption ? `/${SETTINGS_PATH}/${selectedOption}` : `/${SETTINGS_PATH}`, { replace: true });
     }
   }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
 
