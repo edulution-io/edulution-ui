@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import surveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
@@ -21,6 +22,8 @@ const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
   const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
     useSurveyEditorPageStore();
+
+  const { t } = useTranslation();
   const { user } = useUserStore();
 
   const { surveyId } = useParams();
@@ -47,7 +50,7 @@ const SurveyEditorPage = () => {
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
-    resolver: zodResolver(surveyEditorFormSchema),
+    resolver: zodResolver(getSurveyEditorFormSchema(t)),
     defaultValues: initialFormValues,
   });
 

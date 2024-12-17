@@ -22,6 +22,7 @@ import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKey
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -42,7 +43,7 @@ const AppConfigPage: React.FC = () => {
 
   useEffect(() => {
     const selectedAppConfig = pathname.split('/').filter((p) => p)[1] || '';
-    setSettingLocation(pathname === '/settings' ? '' : selectedAppConfig);
+    setSettingLocation(pathname === `/${SETTINGS_PATH}` ? '' : selectedAppConfig);
   }, [pathname]);
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
@@ -217,13 +218,11 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    <div className="space-y-10">
-                      <ExtendedOptionsForm
-                        extendedOptions={item.extendedOptions}
-                        control={control}
-                        baseName={settingLocation}
-                      />
-                    </div>
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
+                    />
                     <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
                   </div>
                 ) : null}
@@ -247,7 +246,7 @@ const AppConfigPage: React.FC = () => {
     const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
 
     setSettingLocation('');
-    navigate(`/settings`);
+    navigate(`/${SETTINGS_PATH}`);
 
     await deleteAppConfigEntry(deleteOptionName);
   };
@@ -257,7 +256,7 @@ const AppConfigPage: React.FC = () => {
       <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
         <NativeAppHeader
           title={t(isAnAppConfigSelected ? `${settingLocation}.sidebar` : 'settings.sidebar')}
-          description={!isMobileView ? t('settings.description') : null}
+          description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
         {settingsForm()}
@@ -271,7 +270,7 @@ const AppConfigPage: React.FC = () => {
       <AddAppConfigDialog
         option={option}
         setOption={setOption}
-        filteredAppOptions={filteredAppOptions}
+        getFilteredAppOptions={filteredAppOptions}
       />
       <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
     </>

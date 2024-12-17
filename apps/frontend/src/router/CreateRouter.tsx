@@ -10,6 +10,7 @@ import {
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
@@ -85,7 +86,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
               </Route>
               {isSuperAdmin ? (
                 <Route
-                  path="settings"
+                  path={SETTINGS_PATH}
                   element={<AppConfigPage />}
                 >
                   {appConfigs.map((item) => (

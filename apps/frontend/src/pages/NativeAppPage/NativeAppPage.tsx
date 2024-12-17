@@ -6,6 +6,7 @@ import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
+import BulletinBoardEditorialPage from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPage';
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -15,6 +16,7 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.WHITEBOARD]: <FramePlaceholder />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
+  [APPS.BULLETIN_BOARD]: <BulletinBoardEditorialPage />,
 };
 
 type NativeAppPageProps = {

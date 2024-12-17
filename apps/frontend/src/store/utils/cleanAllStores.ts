@@ -22,12 +22,18 @@ import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSur
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
   UserStore.getState().resetUserSlice();
   useAppConfigsStore.getState().reset();
+  useBulletinCategoryTableStore.getState().reset();
+  useBulletinBoardEditorialStore.getState().reset();
+  useBulletinBoardStore.getState().reset();
   useClassManagementStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();

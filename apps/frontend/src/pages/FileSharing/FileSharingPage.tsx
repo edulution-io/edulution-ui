@@ -33,7 +33,7 @@ const FileSharingPage = () => {
           <FileSharingLayout files={files} />
         </div>
       </div>
-      <div className="fixed bottom-8 mt-10 flex flex-row space-x-24 bg-opacity-90">
+      <div className="fixed bottom-8 mt-10 flex flex-row space-x-24">
         <ActionContentDialog />
         <FileSharingFloatingButtonsBar />
       </div>

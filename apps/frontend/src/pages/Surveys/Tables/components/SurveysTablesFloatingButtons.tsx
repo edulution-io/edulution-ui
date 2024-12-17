@@ -28,10 +28,10 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     canDelete = false,
     canShowSubmittedAnswers = false,
     canParticipate = false,
-    canShowResults = false
+    canShowResults = false,
   } = props;
 
-  const { selectedSurvey: survey, updateUsersSurveys} = useSurveyTablesPageStore();
+  const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
 
   const canShowResultsTable = canShowResults && (survey?.canShowResultsTable || true);
   const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
@@ -95,7 +95,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   return (
     <TooltipProvider>
-      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-ciDarkGrey bg-opacity-90">
+      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-ciDarkGrey">
         <FloatingButtonsBar config={config} />
       </div>
     </TooltipProvider>
