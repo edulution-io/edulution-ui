@@ -1,17 +1,17 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import Checkbox from '@/components/ui/Checkbox';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import GroupForm from '@libs/groups/types/groupForm';
+import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';
 
 dayjs.extend(customParseFormat);
 
 type GroupProperty = {
   labelTranslationId: string;
-  name: keyof GroupForm;
+  name: keyof Omit<GroupForm, 'admins' | 'admingroups' | 'members' | 'membergroups'>;
   disabled?: boolean;
   component: 'checkbox' | 'text' | 'date' | 'number';
 };

@@ -7,9 +7,9 @@ import { Request, Response } from 'express';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
-import { AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import AppConfigService from '../appconfig/appconfig.service';
-import FilesystemService from './filesystem.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class OnlyofficeService {
@@ -20,14 +20,11 @@ class OnlyofficeService {
 
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName('filesharing');
-    const jwtSecret = appConfig?.extendedOptions.find(
-      (option) => option.name === AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
-    );
+    const jwtSecret = appConfig?.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET];
     if (!jwtSecret) {
       throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const secret = jwtSecret.value;
-    return this.jwtService.sign(payload, { secret });
+    return this.jwtService.sign(payload, { secret: jwtSecret });
   }
 
   static async handleCallback(

@@ -4,6 +4,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import delay from '@libs/common/utils/delay';
 
 interface ConferencesStore {
   selectedRows: RowSelectionState;
@@ -17,8 +18,8 @@ interface ConferencesStore {
   deleteConferences: (conferences: ConferenceDto[]) => Promise<void>;
   isDeleteConferencesDialogOpen: boolean;
   setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
-  toggleConferenceRunningState: (conferenceID: string) => Promise<void>;
-  toggleConferenceRunningStateIsLoading: boolean;
+  toggleConferenceRunningState: (conferenceID: string, isRunning: boolean) => Promise<void>;
+  loadingMeetingId: string | null;
   toggleConferenceRunningStateError: Error | null;
   reset: () => void;
 }
@@ -30,7 +31,7 @@ const initialValues = {
   error: null,
   selectedRows: {},
   toggleConferenceRunningStateError: null,
-  toggleConferenceRunningStateIsLoading: false,
+  loadingMeetingId: null,
   isDeleteConferencesDialogOpen: false,
 };
 
@@ -70,15 +71,15 @@ const useConferenceStore = create<ConferencesStore>((set, get) => ({
       set({ isLoading: false });
     }
   },
-  toggleConferenceRunningState: async (meetingID) => {
-    set({ toggleConferenceRunningStateIsLoading: true });
+  toggleConferenceRunningState: async (meetingID, isRunning) => {
+    set({ loadingMeetingId: meetingID });
     try {
-      const { data } = await eduApi.put<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT, { meetingID });
-      set({ conferences: data });
+      await eduApi.put<ConferenceDto>(CONFERENCES_EDU_API_ENDPOINT, { meetingID, isRunning });
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');
     } finally {
-      set({ toggleConferenceRunningStateIsLoading: false });
+      await delay(5000);
+      set({ loadingMeetingId: null });
     }
   },
   reset: () => set(initialValues),

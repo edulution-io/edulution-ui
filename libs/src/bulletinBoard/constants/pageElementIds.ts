@@ -1,0 +1,2 @@
+const BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER = 'conferences-page-table-header';
+export default BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER;

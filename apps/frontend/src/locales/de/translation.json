@@ -5,6 +5,85 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "bulletinboard": {
+    "settings": "Einstellungen",
+    "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
+    "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
+    "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
+    "deleteBulletinCategory": "Kategorie löschen",
+    "confirmSingleCategoryDelete": "Soll diese Kategorie wirklich gelöscht werden?",
+    "confirmSingleCategoryDeleteWarning": "Vorsicht, es werden alle Mitteilungen in dieser Kategorie mitgelöscht!",
+    "isVisibleStartDate": "Aktiv von",
+    "isVisibleEndDate": "Aktiv bis",
+    "isActiveOrExpired": "Aktiv/Abgelaufen",
+    "activeFrom": "Aktiv von",
+    "activeUntil": "Aktiv bis",
+    "appTitle": "Schwarzes Brett",
+    "description": "Verwalte deine Mitteilungen",
+    "filterPlaceHolderText": "Suche nach Kategoriename",
+    "sidebar": "Schwarzes Brett",
+    "newCategorie": "Neue Kategorie",
+    "category": "Kategorie",
+    "name": "Name",
+    "editCategorie": "Kategorie bearbeiten",
+    "isActive": "Aktiv",
+    "isPermanentlyActive": "Ist permanent aktiv",
+    "visibleFor": "Sichtbar für",
+    "visibleForUsers": "Sichtbar für Nutzer",
+    "visibleForGroups": "Sichtbar für Gruppen",
+    "editableByUsers": "Redaktionierbar von Nutzern",
+    "editableByGroups": "Redaktionierbar von Gruppen",
+    "editorialAccess": "Redaktioneller Zugriff",
+    "manageCategories": "Kategorien verwalten",
+    "manageBulletins": "Mitteilungen verwalten",
+    "error": "Fehler",
+    "delete": "Löschen",
+    "deleteBulletin": "Mitteilung löschen",
+    "deleteBulletins": "{{count}} Mitteilungen löschen",
+    "editBulletin": "Mitteilung bearbeiten",
+    "createBulletin": "Mitteilung erstellen",
+    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
+    "cancel": "Abbrechen",
+    "title": "Titel",
+    "content": "Inhalt",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Name der Kategorie",
+    "bulletinUpdatedSuccessfully": "Mitteilung erfolgreich gespeichert",
+    "bulletinCreatedSuccessfully": "Mitteilung erfolgreich erstellt",
+    "bulletinsDeletedSuccessfully": "Mitteilungen erfolgreich gelöscht",
+    "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
+    "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
+    "categoryDeletedSuccessfully": "Kategorie erfolgreich gelöscht",
+    "editCategory": "Kategorie bearbeiten",
+    "createNewCategory": "Kategorie erstellen",
+    "categories": {
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
+      "visibleByUsersAndGroupsTitle": "Startseite",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
+    },
+    "errors": {
+      "categoryNotFound": "Kategorie nicht gefunden",
+      "categoryDeleteFailed": "Kategorie konnte nicht gelöscht werden",
+      "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
+      "fileNotProvided": "Datei wurde nicht bereitgestellt",
+      "fileNotFound": "Datei nicht gefunden",
+      "invalidCategory": "Ungültige Kategorie",
+      "invalidFileType": "Ungültiger Dateityp",
+      "bulletinNotFound": "Bulletin nicht gefunden",
+      "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
+      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen",
+      "categoryNameAlreadyExists": "Kategoriename existiert bereits",
+      "unauthorizedCreateBulletin": "Keine Berechtigung, um dieses Bulletin zu erstellen",
+      "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
+      "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
+      "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
+    }
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -54,6 +133,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
       "RemoveProjectFailed": "Entfernen des Projekts fehlgeschlagen",
@@ -73,6 +153,7 @@
     "title": "MAIL",
     "sidebar": "Mail",
     "importer": {
+      "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "configName": "Name der Konfiguration",
@@ -84,7 +165,8 @@
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
       "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
-      "mailAddress": "E-Mail-Adresse"
+      "mailAddress": "E-Mail-Adresse",
+      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
   },
   "chat": {
@@ -93,18 +175,24 @@
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
-    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
   },
   "conferences": {
     "errors": {
       "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
+      "CouldNotStartConference": "Die Konference konnte nicht gestartet werden",
+      "CouldNotStopConference": "Die Konferenz konnte nicht gestoppt werden",
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
       "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen"
     },
+    "filterPlaceHolderText": "Suche nach Konferenzname",
+    "started": "Konferenz gestartet",
+    "stopped": "Konferenz gestoppt",
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
@@ -150,6 +238,7 @@
     "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
+    "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
@@ -311,6 +400,8 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "newTitle": "Neue Umfrage",
+    "filterPlaceHolderText": "Suche nach Umfragename",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
@@ -332,6 +423,7 @@
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "surveyFormulaStructuralError": "Das Formular der Umfrage weist Struktureller Fehler auf.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
@@ -349,20 +441,36 @@
     }
   },
   "surveys": {
+    "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
-      "open": "Offene Umfragen",
-      "created": "Eigene Umfragen",
-      "answered": "Schon beantwortet",
-      "editor": "Neue erstellen"
+      "open": {
+        "menu": "Offene Umfragen",
+        "title": "Offene Umfragen",
+        "description": "Hier findest du die Umfragen, zu denen du eingeladen wurdest."
+      },
+      "created": {
+        "menu": "Eigene Umfragen",
+        "title": "Eigens erstellte Umfragen",
+        "description": "Hier findest du die Umfragen, die du selbst erstellt hast."
+      },
+      "answered": {
+        "menu": "Schon beantwortet",
+        "title": "Schon beantwortete Umfragen",
+        "description": "Hier findest du die Umfragen, an denen du bereits teilgenommen hast."
+      },
+      "editor": {
+        "menu": "Neue erstellen"
+      }
     },
     "actions": {
       "showResultsChart": "Schaubild",
       "showResultsTable": "Tabelle",
-      "showCommittedAnswers": "Antworten"
+      "showSubmittedAnswers": "Antworten"
     },
-    "commitedAnswersDialog": {
+    "submittedAnswersDialog": {
       "title": "Eingereichte Abgabe des Nutzers"
     },
     "saveDialog": {
@@ -467,8 +575,49 @@
       "description": "Möchtest du diese App sicher löschen?"
     },
     "delete": "Löschen",
-    "description": "Hier können Sie alle Einstellungen vornehmen.",
+    "description": {
+      "ticketsystem": "Hier kannst du alle Einstellungen vornehmen.",
+      "mail": "Hier kannst du alle Einstellungen vornehmen.",
+      "chat": "Hier kannst du alle Einstellungen vornehmen.",
+      "conferences": "Hier kannst du alle Einstellungen vornehmen.",
+      "surveys": "Hier kannst du alle Einstellungen vornehmen.",
+      "knowledgebase": "Hier kannst du alle Einstellungen vornehmen.",
+      "filesharing": "Hier kannst du alle Einstellungen vornehmen.",
+      "forums": "Hier kannst du alle Einstellungen vornehmen.",
+      "roombooking": "Hier kannst du alle Einstellungen vornehmen.",
+      "learningmanagement": "Hier kannst du alle Einstellungen vornehmen.",
+      "schoolinformation": "Hier kannst du alle Einstellungen vornehmen.",
+      "classmanagement": "Hier kannst du alle Einstellungen vornehmen.",
+      "printer": "Hier kannst du alle Einstellungen vornehmen.",
+      "network": "Hier kannst du alle Einstellungen vornehmen.",
+      "locationservices": "Hier kannst du alle Einstellungen vornehmen.",
+      "desktopdeployment": "Hier kannst du alle Einstellungen vornehmen.",
+      "wlan": "Hier kannst du alle Einstellungen vornehmen.",
+      "mobiledevices": "Hier kannst du alle Einstellungen vornehmen.",
+      "virtualization": "Hier kannst du alle Einstellungen vornehmen.",
+      "firewall": "Hier kannst du alle Einstellungen vornehmen.",
+      "antimalware": "Hier kannst du alle Einstellungen vornehmen.",
+      "backup": "Hier kannst du alle Einstellungen vornehmen.",
+      "aichat": "Hier kannst du alle Einstellungen vornehmen.",
+      "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
+      "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen ,die Zugriff auf die App Schwarzes Brett Editor haben. Über die Kategorieren kann gesteuert werden, bei welchen Nutzern und Gruppen das Schwarze Brett mit den Mitteilungen statt dem klassischen Dashboard angezeigt wird."
+    },
     "appconfig": {
+      "sections": {
+        "onlyOffice": {
+          "title": "Only Office Integration",
+          "description": ""
+        },
+        "bulletinBoard": {
+          "title": "Kategorien",
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
+        },
+        "general": {
+          "title": "Allgemein",
+          "description": ""
+        }
+      },
       "update": {
         "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"
@@ -487,8 +636,7 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
-      "UnsupportedAppConfiguration": "Nicht unterstützte App-Konfiguration für rootPathName: {{rootPathName}}"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -498,6 +646,26 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "details": {
+      "title": "Benutzerdetails",
+      "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
+      "userInformation": "Benutzerbezogene Informationen",
+      "dateOfBirth": "Geburtsdatum",
+      "givenName": "Vorname",
+      "displayName": "Anzeigename",
+      "name": "Benutzername",
+      "role": "Rolle",
+      "schoolName": "Schulname",
+      "schoolSubjects": "Klassen",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "proxyAddresses": "E-Mail Proxy-Addressen",
+      "addNew": "Tippen um hinzuzufügen",
+      "badgeAlreadyExists": "Der Eintrag existiert bereits",
+      "sophomorixCustom1_teacher": "Schulfach 1",
+      "sophomorixCustom2_teacher": "Schulfach 2",
+      "sophomorixCustomMulti1_teacher": "Kaffeesorten"
+    },
     "security": {
       "title": "Sicherheit",
       "sidebar": "Sicherheit",
@@ -566,9 +734,17 @@
   },
   "common": {
     "errors": {
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "options": "Optionen",
+    "checking": "Prüfen",
+    "columns": "Spalten",
+    "join": "Teilnehmen",
+    "details": "Details",
+    "createdAt": "Erstellt am",
+    "updatedAt": "Bearbeitet am",
     "actions": "Aktionen",
     "forward": "Weiterleiten",
     "showOptions": "Optionen zeigen",
@@ -619,11 +795,12 @@
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
+    "none": "Keine",
     "edit": "Bearbeiten",
     "copy": "Kopieren",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
-    "not-available": "'Nicht verfügbar'",
+    "not-available": "Nicht verfügbar",
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen"
@@ -653,7 +830,8 @@
     "filename": "Dateiname",
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
-    "type": "Typ"
+    "type": "Typ",
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {

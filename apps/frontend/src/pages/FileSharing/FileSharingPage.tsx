@@ -13,7 +13,6 @@ const FileSharingPage = () => {
   const { files } = useFileSharingStore();
   return (
     <div className="w-full overflow-x-auto">
-      {isLoading && <LoadingIndicator isOpen={isLoading} />}
       <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
         <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2">
           <DirectoryBreadcrumb
@@ -34,7 +33,7 @@ const FileSharingPage = () => {
           <FileSharingLayout files={files} />
         </div>
       </div>
-      <div className="fixed bottom-8 mt-10 flex flex-row space-x-24 bg-opacity-90">
+      <div className="fixed bottom-8 mt-10 flex flex-row space-x-24">
         <ActionContentDialog />
         <FileSharingFloatingButtonsBar />
       </div>

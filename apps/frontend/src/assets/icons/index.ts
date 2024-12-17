@@ -16,6 +16,7 @@ export { default as ChatIcon } from '@/assets/icons/edulution/Chat.svg';
 export { default as WlanIcon } from '@/assets/icons/edulution/Wlan.svg';
 export { default as KnowledgeBaseIcon } from '@/assets/icons/edulution/Wissensdatenbank.svg';
 export { default as UserIcon } from '@/assets/icons/edulution/Benutzer.svg';
+export { default as UserDetailsSettingsIcon } from '@/assets/icons/edulution/Benutzer_Einstellungen.svg';
 export { default as SettingsIcon } from '@/assets/icons/edulution/Wartung.svg';
 export { default as OneSourceIcon } from '@/assets/icons/edulution/Aus_einer_Hand.svg';
 export { default as EducationIcon } from '@/assets/icons/edulution/Education.svg';
@@ -37,7 +38,9 @@ export { default as MobileDevicesIcon } from '@/assets/icons/edulution/Mobile_En
 export { default as AntiMalwareIcon } from '@/assets/icons/edulution/Anti_Malware.svg';
 export { default as BackupIcon } from '@/assets/icons/edulution/Backup.svg';
 export { default as TrashIcon } from '@/assets/icons/trash.png';
+export { default as EyeLightIcon } from '@/assets/icons/eye.png';
 export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
+export { default as EyeLightSlashIcon } from '@/assets/icons/eye-slash-light.svg';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
 export { default as SurveysSidebarIcon } from '@/assets/icons/survey-sidebar.svg';
@@ -45,6 +48,7 @@ export { default as SurveysViewAnsweredIcon } from '@/assets/icons/survey-view-a
 export { default as SurveysViewOpenIcon } from '@/assets/icons/survey-view-open-surveys.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
+export { default as BulletinBoardIcon } from '@/assets/icons/kanban.svg';
 export { default as SecurityIcon } from '@/assets/icons/security.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';
 export { default as EnrolIcon } from '@/assets/icons/enrol.svg';
