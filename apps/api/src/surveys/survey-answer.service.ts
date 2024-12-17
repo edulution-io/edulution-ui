@@ -43,6 +43,10 @@ class SurveyAnswersService {
   };
 
   public getSelectableChoices = async (surveyId: string, questionId: string): Promise<ChoiceDto[]> => {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
@@ -66,6 +70,10 @@ class SurveyAnswersService {
   };
 
   async countChoiceSelections(surveyId: string, questionId: string, choiceId: string): Promise<number> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     return this.surveyAnswerModel.countDocuments({
       surveyId,
       [`answer.${questionId}`]: choiceId,

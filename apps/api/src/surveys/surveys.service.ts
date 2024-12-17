@@ -22,6 +22,10 @@ class SurveysService {
   ) {}
 
   async findSurvey(surveyId: string, username: string): Promise<Survey | null> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     const survey = await this.surveyModel
       .findOne({
         $and: [
@@ -45,6 +49,10 @@ class SurveysService {
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
+    if (!mongoose.isValidObjectId(surveyId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     try {
       return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
     } catch (error) {

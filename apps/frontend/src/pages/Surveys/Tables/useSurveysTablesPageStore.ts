@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { Row, RowSelectionState } from '@tanstack/react-table';
-import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT, {
   PUBLIC_SURVEYS_ENDPOINT,
   SURVEY_CAN_PARTICIPATE_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveysTablesPageStore {
@@ -158,7 +158,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
-  onClickSurveysTableCell: (row: Row<SurveyDto>) => row.toggleSelected(),
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => {
+    set({ selectedSurvey: row.original });
+    row.toggleSelected();
+  },
 }));
 
 export default useSurveyTablesPageStore;

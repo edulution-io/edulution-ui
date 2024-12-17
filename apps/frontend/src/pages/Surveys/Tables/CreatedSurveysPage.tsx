@@ -11,16 +11,16 @@ const CreatedSurveysPage = () => {
     selectedSurvey,
     selectSurvey,
     setSelectedRows,
-    answeredSurveys,
-    isFetchingAnsweredSurveys,
-    updateAnsweredSurveys,
+    createdSurveys,
+    isFetchingCreatedSurveys,
+    updateCreatedSurveys,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
   const fetch = useCallback(() => {
-    if (!isFetchingAnsweredSurveys) {
-      void updateAnsweredSurveys();
+    if (!isFetchingCreatedSurveys) {
+      void updateCreatedSurveys();
     }
   }, []);
 
@@ -36,13 +36,13 @@ const CreatedSurveysPage = () => {
 
   return (
     <>
-      {isFetchingAnsweredSurveys ? <LoadingIndicator isOpen={isFetchingAnsweredSurveys} /> : null}
+      {isFetchingCreatedSurveys ? <LoadingIndicator isOpen={isFetchingCreatedSurveys} /> : null}
       <SurveyTablePage
         title={t('surveys.view.created.title')}
         description={t('surveys.view.created.description')}
         selectedSurvey={selectedSurvey}
-        surveys={answeredSurveys}
-        isLoading={isFetchingAnsweredSurveys}
+        surveys={createdSurveys}
+        isLoading={isFetchingCreatedSurveys}
         canDelete
         canEdit
         canShowResults
