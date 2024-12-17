@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { Button } from '@/components/shared/Button';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
@@ -12,7 +12,7 @@ const SharePublicSurveyDialog = () => {
 
   const { t } = useTranslation();
 
-  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS_ENDPOINT}/${publicSurveyId}` : '';
+  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
 
   const copyToClipboard = () => {
     navigator.clipboard

@@ -119,7 +119,6 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02,
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
-        true,
       );
     });
 

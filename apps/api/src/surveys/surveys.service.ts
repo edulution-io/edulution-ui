@@ -22,7 +22,8 @@ class SurveysService {
   ) {}
 
   async findSurvey(surveyId: string, username: string): Promise<Survey | null> {
-    if (!mongoose.isValidObjectId(surveyId)) {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
@@ -36,7 +37,7 @@ class SurveysService {
               { invitedAttendees: { $elemMatch: { username } } },
             ],
           },
-          { _id: surveyId },
+          { _id: mongoId },
         ],
       })
       .lean();
@@ -49,12 +50,13 @@ class SurveysService {
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
-    if (!mongoose.isValidObjectId(surveyId)) {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
     try {
-      return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
+      return await this.surveyModel.findOne<Survey>({ _id: mongoId, isPublic: true }).lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
@@ -107,7 +109,20 @@ class SurveysService {
     }
   }
 
-  async updateOrCreateSurvey(survey: Survey, surveysSseConnections: UserConnections): Promise<Survey | null> {
+  async updateOrCreateSurvey(surveyDto: SurveyDto, surveysSseConnections: UserConnections): Promise<Survey | null> {
+    const { id, created = new Date() } = surveyDto;
+
+    const mongoId = new mongoose.Types.ObjectId(id);
+    if (!mongoose.isValidObjectId(mongoId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    const survey: Survey = {
+      ...surveyDto,
+      _id: mongoId,
+      created,
+    };
+
     const updatedSurvey = await this.updateSurvey(survey, surveysSseConnections);
     if (updatedSurvey != null) {
       return updatedSurvey;

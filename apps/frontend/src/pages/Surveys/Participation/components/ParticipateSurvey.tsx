@@ -70,21 +70,15 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    _options.showSaveInProgress();
-    const success = await submitAnswer({
+    await submitAnswer({
       surveyId,
       saveNo,
-      answer /* , surveyEditorCallbackOnSave: _options */,
+      answer,
       isPublic,
     });
     if (!isPublic) {
       updateOpenSurveys();
       updateAnsweredSurveys();
-    }
-    if (success) {
-      _options.showSaveSuccess();
-    } else {
-      _options.showSaveError();
     }
   });
 

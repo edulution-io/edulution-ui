@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import SURVEYS_ENDPOINT, { PUBLIC_SURVEYS_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -31,28 +31,22 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set) => ({
   setPageNo: (pageNo: number) => set({ pageNo }),
 
   answerSurvey: async (answerDto: SubmitAnswerDto): Promise<boolean> => {
-    const { surveyId, saveNo, answer, surveyEditorCallbackOnSave, isPublic = false } = answerDto;
+    const { surveyId, saveNo, answer, isPublic = false } = answerDto;
     set({ isSubmitting: true });
     try {
-      surveyEditorCallbackOnSave?.showSaveInProgress();
-
       if (isPublic) {
-        await eduApi.post<string>(PUBLIC_SURVEYS_ENDPOINT, { surveyId, saveNo, answer });
+        await eduApi.post<string>(PUBLIC_SURVEYS, { surveyId, saveNo, answer });
       } else {
-        await eduApi.patch<string>(SURVEYS_ENDPOINT, { surveyId, saveNo, answer });
+        await eduApi.patch<string>(SURVEYS, { surveyId, saveNo, answer });
       }
-
-      surveyEditorCallbackOnSave?.showSaveSuccess();
       set({ hasFinished: true });
       return true;
     } catch (error) {
-      surveyEditorCallbackOnSave?.showSaveError();
       handleApiError(error, set);
       return false;
     } finally {
       set({ isSubmitting: false });
     }
-    return false;
   },
 
   setHasFinished: (hasFinished: boolean) => set({ hasFinished }),

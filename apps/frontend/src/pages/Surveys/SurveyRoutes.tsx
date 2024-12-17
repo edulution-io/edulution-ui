@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
 import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
@@ -10,8 +10,8 @@ import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyPartici
 
 const getSurveyRoutes = () => [
   <Route
-    key={SURVEYS_ENDPOINT}
-    path={SURVEYS_ENDPOINT}
+    key={SURVEYS}
+    path={SURVEYS}
   >
     <Route
       path=""

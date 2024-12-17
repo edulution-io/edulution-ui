@@ -7,8 +7,16 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const OpenSurveysPage = () => {
-  const { selectedSurvey, selectSurvey, setSelectedRows, openSurveys, updateOpenSurveys, isFetchingOpenSurveys } =
-    useSurveyTablesPageStore();
+  const {
+    selectedSurvey,
+    selectSurvey,
+    setSelectedRows,
+    openSurveys,
+    updateOpenSurveys,
+    isFetchingOpenSurveys,
+    hasAnswers,
+    canParticipate,
+  } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
@@ -37,8 +45,8 @@ const OpenSurveysPage = () => {
         surveys={openSurveys || []}
         selectedSurvey={selectedSurvey}
         isLoading={isFetchingOpenSurveys}
-        canShowResults
-        canParticipate
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
       />
     </>
   );

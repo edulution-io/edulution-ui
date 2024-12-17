@@ -20,34 +20,41 @@ class SurveyAnswersService {
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
   ) {}
 
-  public canUserParticipateSurvey = async (
-    surveyId: string,
-    username: string,
-    isPublic?: boolean,
-  ): Promise<boolean> => {
-    if (!mongoose.isValidObjectId(surveyId)) {
+  public canUserParticipateSurvey = async (surveyId: string, username: string): Promise<boolean> => {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    const survey = await this.surveyModel.findById<Survey>(surveyId);
+    const survey = await this.surveyModel.findById<Survey>(mongoId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
     try {
-      throwErrorIfParticipationIsNotPossible(survey, username, isPublic);
+      throwErrorIfParticipationIsNotPossible(survey, username);
     } catch (error) {
       return false;
     }
     return true;
   };
 
-  public getSelectableChoices = async (surveyId: string, questionId: string): Promise<ChoiceDto[]> => {
+  public hasAlreadySubmittedSurveyAnswers = async (surveyId: string): Promise<boolean> => {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    const survey = await this.surveyModel.findById(surveyId);
+    const answers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId });
+    return answers.length !== 0;
+  };
+
+  public getSelectableChoices = async (surveyId: string, questionId: string): Promise<ChoiceDto[]> => {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    const survey = await this.surveyModel.findById(mongoId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
@@ -61,7 +68,7 @@ class SurveyAnswersService {
 
     const filteredChoices = await Promise.all(
       possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionId, choice.name)) < choice.limit;
+        const isVisible = (await this.countChoiceSelections(mongoId, questionId, choice.name)) < choice.limit;
         return isVisible ? choice : null;
       }),
     );
@@ -69,7 +76,11 @@ class SurveyAnswersService {
     return filteredChoices.filter((choice) => choice !== null);
   };
 
-  async countChoiceSelections(surveyId: string, questionId: string, choiceId: string): Promise<number> {
+  async countChoiceSelections(
+    surveyId: mongoose.Types.ObjectId,
+    questionId: string,
+    choiceId: string,
+  ): Promise<number> {
     if (!mongoose.isValidObjectId(surveyId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
@@ -87,7 +98,7 @@ class SurveyAnswersService {
 
   async getOpenSurveys(username: string): Promise<Survey[]> {
     const currentDate = new Date();
-    const openSurveys = await this.surveyModel.find<Survey>({
+    return this.surveyModel.find<Survey>({
       $or: [
         {
           $and: [
@@ -113,7 +124,6 @@ class SurveyAnswersService {
         },
       ],
     });
-    return openSurveys;
   }
 
   async getAnswers(username: string): Promise<SurveyAnswer[]> {
@@ -145,31 +155,37 @@ class SurveyAnswersService {
     surveyId: mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
-    isPublic?: boolean,
     user?: JWTUser,
   ): Promise<SurveyAnswer | undefined> {
-    if (!mongoose.isValidObjectId(surveyId)) {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    const survey = await this.surveyModel.findById<Survey>(surveyId);
+    const survey = await this.surveyModel.findById<Survey>(mongoId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
+    const { isPublic = false, canSubmitMultipleAnswers = false, canUpdateFormerAnswer = false } = survey;
     const username = user?.preferred_username;
     const attendee =
       user && !isPublic
         ? { firstName: user.given_name, lastName: user.family_name, username }
-        : { username: `public-${surveyId.toString()}` };
+        : { username: `public-${mongoId.getTimestamp().toTimeString()}` };
 
-    throwErrorIfParticipationIsNotPossible(survey, username, isPublic);
+    try {
+      throwErrorIfParticipationIsNotPossible(survey, username);
+    } catch (error) {
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
+    }
+
     if (!isPublic) {
       const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
         $and: [{ 'attendee.username': username }, { surveyId }],
       });
-      if (idExistingUsersAnswer && !survey.canSubmitMultipleAnswers) {
-        if (!survey.canUpdateFormerAnswer) {
+      if (idExistingUsersAnswer && !canSubmitMultipleAnswers) {
+        if (!canUpdateFormerAnswer) {
           throw new CustomHttpException(
             SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
             HttpStatus.FORBIDDEN,
@@ -206,7 +222,7 @@ class SurveyAnswersService {
       );
     }
 
-    const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
+    const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(mongoId, {
       participatedAttendees:
         attendee && !isPublic ? [...survey.participatedAttendees, attendee] : survey.participatedAttendees,
       answers: [...survey.answers, newSurveyAnswer.id],

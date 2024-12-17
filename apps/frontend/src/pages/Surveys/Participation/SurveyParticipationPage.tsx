@@ -14,15 +14,14 @@ interface SurveyParticipationPageProps {
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
   const { selectedSurvey, updateSelectedSurvey, isFetching } = useSurveyTablesPageStore();
-  const { answer, setAnswer, pageNo, setPageNo, answerSurvey, hasFinished, setHasFinished } =
-    useParticipateSurveyStore();
+  const { answer, setAnswer, pageNo, setPageNo, answerSurvey, hasFinished, reset } = useParticipateSurveyStore();
 
   const { t } = useTranslation();
 
   const { surveyId } = useParams();
 
   useEffect(() => {
-    setHasFinished(false);
+    reset();
     void updateSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
 

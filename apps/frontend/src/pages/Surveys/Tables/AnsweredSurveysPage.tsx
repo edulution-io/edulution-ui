@@ -14,6 +14,8 @@ const AnsweredSurveysPage = () => {
     answeredSurveys,
     isFetchingAnsweredSurveys,
     updateAnsweredSurveys,
+    canParticipate,
+    hasAnswers,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
@@ -43,9 +45,9 @@ const AnsweredSurveysPage = () => {
         selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
-        canShowResults
-        canParticipate
-        canShowSubmittedAnswers
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
+        canShowSubmittedAnswers={hasAnswers}
       />
     </>
   );

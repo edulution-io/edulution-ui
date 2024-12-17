@@ -4,9 +4,11 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageE
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
-  ANSWER_ENDPOINT,
-  RESULT_ENDPOINT,
-  SURVEY_CAN_PARTICIPATE_ENDPOINT,
+  FIND_ONE,
+  ANSWER,
+  RESULT,
+  CAN_PARTICIPATE,
+  HAS_ANSWERS,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -14,7 +16,6 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
-import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -32,14 +33,28 @@ class SurveysController {
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
-  @Get(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}:surveyId`)
-  canParticipate(@Param('surveyId') surveyId: string, @GetCurrentUsername() username: string) {
+  @Get(`${FIND_ONE}/:surveyId`)
+  async findOne(@Param() params: { surveyId: string }, @GetCurrentUsername() username: string) {
+    const { surveyId } = params;
+    return this.surveyService.findSurvey(surveyId, username);
+  }
+
+  @Get(`${CAN_PARTICIPATE}/:surveyId`)
+  async canParticipate(@Param() params: { surveyId: string }, @GetCurrentUsername() username: string) {
+    const { surveyId } = params;
     return this.surveyAnswerService.canUserParticipateSurvey(surveyId, username);
   }
 
-  @Get(':surveyId')
-  async findOne(@Param('surveyId') surveyId: string, @GetCurrentUsername() username: string) {
-    return this.surveyService.findSurvey(surveyId, username);
+  @Get(`${HAS_ANSWERS}/:surveyId`)
+  async hasAnswers(@Param() params: { surveyId: string }) {
+    const { surveyId } = params;
+    return this.surveyAnswerService.hasAlreadySubmittedSurveyAnswers(surveyId);
+  }
+
+  @Get(`${RESULT}/:surveyId`)
+  async getSurveyResult(@Param() params: { surveyId: string }) {
+    const { surveyId } = params;
+    return this.surveyAnswerService.getPublicAnswers(surveyId);
   }
 
   @Get()
@@ -47,12 +62,7 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, username);
   }
 
-  @Get(`${RESULT_ENDPOINT}:surveyId`)
-  async getSurveyResult(@Param('surveyId') surveyId: string) {
-    return this.surveyAnswerService.getPublicAnswers(surveyId);
-  }
-
-  @Post(ANSWER_ENDPOINT)
+  @Post(ANSWER)
   async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, attendee } = getAnswerDto;
     return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
@@ -60,15 +70,7 @@ class SurveysController {
 
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
-    const { id, created = new Date() } = surveyDto;
-
-    const survey: Survey = {
-      ...surveyDto,
-      _id: id,
-      created,
-    };
-
-    return this.surveyService.updateOrCreateSurvey(survey, this.surveysSseConnections);
+    return this.surveyService.updateOrCreateSurvey(surveyDto, this.surveysSseConnections);
   }
 
   @Delete()
@@ -81,7 +83,7 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, false, user);
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
   }
 
   @Sse('sse')

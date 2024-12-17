@@ -5,12 +5,13 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { Survey } from '../survey.schema';
 import Attendee from '../../conferences/attendee.schema';
 
-const throwErrorIfParticipationIsNotPossible = (survey: Survey, username?: string, isPublic?: boolean): void => {
+const throwErrorIfParticipationIsNotPossible = (survey: Survey, username?: string): void => {
   const { expires = false, canSubmitMultipleAnswers = false, canUpdateFormerAnswer = false } = survey;
   if (expires && expires < new Date()) {
     throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
   }
 
+  const { isPublic = false } = survey;
   if (username && !isPublic) {
     const hasParticipated = survey.participatedAttendees.find(
       (participant: Attendee) => participant.username === username,

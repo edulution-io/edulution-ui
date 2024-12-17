@@ -14,6 +14,8 @@ const CreatedSurveysPage = () => {
     createdSurveys,
     isFetchingCreatedSurveys,
     updateCreatedSurveys,
+    hasAnswers,
+    canParticipate,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
@@ -45,9 +47,9 @@ const CreatedSurveysPage = () => {
         isLoading={isFetchingCreatedSurveys}
         canDelete
         canEdit
-        canShowResults
-        canParticipate
-        canShowSubmittedAnswers
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
+        canShowSubmittedAnswers={hasAnswers}
       />
     </>
   );

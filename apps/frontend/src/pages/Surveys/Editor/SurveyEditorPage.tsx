@@ -19,37 +19,41 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading } =
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
     useSurveyEditorPageStore();
   const { user } = useUserStore();
 
   const { surveyId } = useParams();
 
   useEffect(() => {
+    reset();
     void updateSelectedSurvey(surveyId, false);
   }, [surveyId]);
 
-  if (!user || !user.username) {
-    return null;
-  }
+  const initialFormValues: SurveyDto | undefined = useMemo(() => {
+    if (!user || !user.username) {
+      return undefined;
+    }
 
-  const surveyCreator: AttendeeDto = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    value: user.username,
-    label: `${user.firstName} ${user.lastName}`,
-  };
-  const initialFormValues: SurveyDto = useMemo(
-    () => new InitialSurveyForm(surveyCreator, selectedSurvey),
-    [selectedSurvey],
-  );
+    const surveyCreator: AttendeeDto = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      value: user.username,
+      label: `${user.firstName} ${user.lastName}`,
+    };
+    return new InitialSurveyForm(surveyCreator, selectedSurvey);
+  }, [selectedSurvey]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
     resolver: zodResolver(surveyEditorFormSchema),
     defaultValues: initialFormValues,
   });
+
+  useEffect(() => {
+    form.reset(initialFormValues);
+  }, [initialFormValues]);
 
   const saveSurvey = async () => {
     const {

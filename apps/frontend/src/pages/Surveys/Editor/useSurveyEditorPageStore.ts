@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -41,7 +41,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
   updateOrCreateSurvey: async (survey: SurveyDto): Promise<void> => {
     set({ isLoading: true });
     try {
-      const result = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
+      const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
       const resultingSurvey = result.data;
       if (resultingSurvey && survey.isPublic) {
         set({
