@@ -51,7 +51,7 @@ const UserSettingsMailsPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (externalMailProviderConfig.length > 0) {
+    if (isMailConfigured && externalMailProviderConfig.length > 0) {
       setOption(externalMailProviderConfig[0].name);
       void getSyncJob();
     }
@@ -146,7 +146,9 @@ const UserSettingsMailsPage: React.FC = () => {
           </div>
           <FloatingButtonsBar config={config} />
         </div>
-      ) : null}
+      ) : (
+        <p>{t('mail.importer.noMailConfigured')}</p>
+      )}
     </div>
   );
 };
