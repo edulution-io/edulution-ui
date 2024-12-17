@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { SyncJobDto } from '@libs/mail/types';
@@ -7,14 +7,11 @@ import APPS from '@libs/appconfig/constants/apps';
 import MailImporterTableColumns from './MailImporterTableColumns';
 
 const MailImporterTable: React.FC = () => {
-  const { syncJobs, selectedSyncJob, setSelectedSyncJob, getSyncJob } = useMailsStore();
+  const { syncJobs, selectedSyncJob, setSelectedSyncJob } = useMailsStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedSyncJob) : updaterOrValue;
     setSelectedSyncJob(newValue);
   };
-  useEffect(() => {
-    void getSyncJob();
-  }, []);
 
   return (
     <ScrollableTable

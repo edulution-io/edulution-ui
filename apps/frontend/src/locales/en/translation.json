@@ -165,7 +165,8 @@
       "syncJobsTable": "Importer Jobs",
       "rowsSelected": "{{selected}} of {{total}} jobs selected",
       "rowSelected": "{{selected}} of {{total}} job selected",
-      "mailAddress": "Email address"
+      "mailAddress": "Email address",
+      "noMailConfigured": "Mail app is not active. Please contact your system administrator."
     }
   },
   "chat": {
