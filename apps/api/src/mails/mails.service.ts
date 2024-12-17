@@ -195,9 +195,9 @@ class MailsService {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs(username: string) {
+  async getSyncJobs(username: string): Promise<SyncJobDto[]> {
     if (!MAIL_API_URL || !MAIL_API_KEY) {
-      return [] as SyncJobDto[];
+      return [];
     }
 
     try {
