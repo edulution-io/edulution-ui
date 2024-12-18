@@ -23,6 +23,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import splitAtLastWhitespace from '@libs/common/utils/splitStringAtLastWhitespace';
+import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
@@ -147,11 +148,9 @@ class ConferencesService {
       }),
     );
 
-    const invitedMembersList = Array.from(
+    return Array.from(
       new Set([...createConferenceDto.invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]),
     );
-
-    return invitedMembersList;
   }
 
   async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
@@ -166,6 +165,7 @@ class ConferencesService {
       creator,
       meetingID: uuidv4(),
       password: createConferenceDto.password,
+      isPublic: createConferenceDto.isPublic,
       invitedAttendees: [...createConferenceDto.invitedAttendees, creator],
       invitedGroups: createConferenceDto.invitedGroups,
       isMeetingStarted: false,
@@ -230,8 +230,9 @@ class ConferencesService {
       );
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
+      const publicConferencesSubscriber = conference.meetingID;
       SseService.sendEventToUsers(
-        invitedMembersList,
+        [...invitedMembersList, publicConferencesSubscriber],
         conferencesSseConnections,
         conference.meetingID,
         SSE_MESSAGE_TYPE.STARTED,
@@ -260,8 +261,9 @@ class ConferencesService {
       );
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
+      const publicConferencesSubscriber = conference.meetingID;
       SseService.sendEventToUsers(
-        invitedMembersList,
+        [...invitedMembersList, publicConferencesSubscriber],
         conferencesSseConnections,
         conference.meetingID,
         SSE_MESSAGE_TYPE.STOPPED,
@@ -280,16 +282,23 @@ class ConferencesService {
     return { conference, isCreator: conference.creator.username === username };
   }
 
-  async join(meetingID: string, user: JWTUser): Promise<string> {
-    try {
-      const { preferred_username: username, given_name: givenName, family_name: familyName } = user;
+  async join(meetingID: string, user: JWTUser, password?: string): Promise<string> {
+    const { preferred_username: username, given_name: givenName, family_name: familyName } = user;
 
-      let role = ConferenceRole.Viewer;
-      const { isCreator } = await this.isCurrentUserTheCreator(meetingID, username);
-      if (isCreator) {
-        role = ConferenceRole.Moderator;
+    let role = ConferenceRole.Viewer;
+    const { isCreator, conference } = await this.isCurrentUserTheCreator(meetingID, username);
+    if (isCreator) {
+      role = ConferenceRole.Moderator;
+    } else {
+      const invitedMembers = await this.getInvitedMembers(conference);
+      const isInvitedMember = invitedMembers.find((member) => member === username);
+      const isCorrectPassword = conference.password ? conference.password === password : true;
+      if (!isInvitedMember && !isCorrectPassword) {
+        throw new CustomHttpException(ConferencesErrorMessage.WrongPassword, HttpStatus.UNAUTHORIZED);
       }
+    }
 
+    try {
       const fullName = `${givenName} ${familyName}`;
       const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
       const checksum = await this.createChecksum('join', query);
@@ -300,7 +309,44 @@ class ConferencesService {
     }
   }
 
-  async findAllConferencesTheUserHasAccessTo(user: JWTUser): Promise<Conference[]> {
+  async joinPublicConference(joinDetails: JoinPublicConferenceDetails): Promise<string> {
+    const { meetingId, password, name, userId } = joinDetails;
+    if (!meetingId || !userId || !name) {
+      throw new CustomHttpException(ConferencesErrorMessage.MissingMandatoryParameters, HttpStatus.BAD_REQUEST);
+    }
+
+    const conference = await this.findOne(meetingId);
+    if (!conference) {
+      throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingId });
+    } else if (conference.password !== password) {
+      throw new CustomHttpException(ConferencesErrorMessage.WrongPassword, HttpStatus.UNAUTHORIZED);
+    } else if (!conference.isRunning) {
+      throw new CustomHttpException(ConferencesErrorMessage.ConferenceIsNotRunning, HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      const role = ConferenceRole.Viewer;
+
+      const query = `meetingID=${meetingId}&fullName=${encodeURIComponent(name)}&role=${role}&userID=${encodeURIComponent(userId)}&redirect=true`;
+      const checksum = await this.createChecksum('join', query);
+
+      return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
+    } catch (e) {
+      throw new CustomHttpException(ConferencesErrorMessage.BbbServerNotReachable, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  private static replaceForeignConferencesPasswords(conferences: Partial<Conference>[], user?: JWTUser) {
+    return conferences.map((conference) => {
+      if (user && conference.creator?.username === user.preferred_username) return conference;
+      return {
+        ...conference,
+        password: conference.password ? '*******' : '',
+      };
+    });
+  }
+
+  async findAllConferencesTheUserHasAccessTo(user: JWTUser): Promise<Partial<Conference>[]> {
     const groupPathConditions = user.ldapGroups.map((groupPath) => ({ 'invitedGroups.path': groupPath }));
 
     const conferencesToBeSynced = await this.conferenceModel
@@ -309,7 +355,24 @@ class ConferencesService {
       })
       .exec();
 
-    return this.syncConferencesInfoWithBBB(conferencesToBeSynced);
+    const syncedConferences = await this.syncConferencesInfoWithBBB(conferencesToBeSynced);
+    return ConferencesService.replaceForeignConferencesPasswords(syncedConferences, user);
+  }
+
+  async findPublicConference(publicMeetingID: string): Promise<Partial<Conference> | null> {
+    const conferenceToBeSynced = await this.conferenceModel
+      .findOne({ meetingID: publicMeetingID, isPublic: true })
+      .exec();
+
+    if (!conferenceToBeSynced) return null;
+
+    const { name, creator, isPublic, meetingID, password, isRunning } = (
+      await this.syncConferencesInfoWithBBB([conferenceToBeSynced])
+    )[0];
+
+    return ConferencesService.replaceForeignConferencesPasswords([
+      { name, creator, isPublic, meetingID, password, isRunning },
+    ])[0];
   }
 
   async findOne(meetingID: string): Promise<Conference | null> {

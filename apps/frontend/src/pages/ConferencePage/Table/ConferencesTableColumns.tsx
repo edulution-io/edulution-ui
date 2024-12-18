@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { LockClosedIcon, LockOpen1Icon } from '@radix-ui/react-icons';
+import { LockClosedIcon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
@@ -10,6 +10,9 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
+import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
+import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import copyToClipboard from '@/utils/copyToClipboard';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
 
@@ -72,12 +75,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       return (
         <SelectableTextCell
           onClick={onClick}
-          isFirstColumn
           icon={isRunning ? <MdLogin /> : undefined}
           text={name}
           textOnHover={isRunning ? t('common.join') : ''}
           row={user?.username === creator?.username ? row : undefined}
           className="min-w-32"
+          isFirstColumn
         />
       );
     },
@@ -112,6 +115,52 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           }
           text={`${firstName} ${lastName}`}
           textOnHover={isUserTheCreator ? t('common.details') : ''}
+        />
+      );
+    },
+  },
+  {
+    id: 'conference-isPublic',
+    header: ({ column }) => (
+      <SortableHeader<ConferenceDto, unknown>
+        className={hideOnMobileClassName}
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'conferences.isPublic',
+    },
+    accessorFn: (row) => row.isPublic,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const iconSize = 16;
+      const { isPublic } = row.original;
+      const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
+      return (
+        <SelectableTextCell
+          className={hideOnMobileClassName}
+          onClick={
+            isPublic
+              ? () => {
+                  copyToClipboard(url);
+                }
+              : undefined
+          }
+          text={t(`conferences.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
+          textOnHover={isPublic ? t('common.copy.link') : ''}
+          icon={
+            isPublic ? (
+              <PiEyeLight
+                width={iconSize}
+                height={iconSize}
+              />
+            ) : (
+              <PiEyeSlash
+                width={iconSize}
+                height={iconSize}
+              />
+            )
+          }
         />
       );
     },
@@ -153,12 +202,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
                 width={iconSize}
                 height={iconSize}
               />
-            ) : (
-              <LockOpen1Icon
-                width={iconSize}
-                height={iconSize}
-              />
-            )
+            ) : undefined
           }
         />
       );
@@ -252,9 +296,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else if (isRunning) {
                 await joinConference(meetingID);
               }
-              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
               await delay(5000);
               await getConferences();
+              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
             };
       return (
         <SelectableTextCell

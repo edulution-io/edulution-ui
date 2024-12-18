@@ -7,7 +7,6 @@ import {
   getFileCategorie,
   parseDate,
 } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
@@ -18,6 +17,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import i18n from '@/i18n';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -161,9 +161,9 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     cell: function Cell({ row }) {
       const renderFileCategorize = (item: DirectoryFileDTO) => {
         if (row.original.type === ContentType.FILE) {
-          return translateKey(`fileCategory.${getFileCategorie(item.filename)}`);
+          return i18n.t(`fileCategory.${getFileCategorie(item.filename)}`);
         }
-        return translateKey('fileCategory.folder');
+        return i18n.t('fileCategory.folder');
       };
 
       return (
