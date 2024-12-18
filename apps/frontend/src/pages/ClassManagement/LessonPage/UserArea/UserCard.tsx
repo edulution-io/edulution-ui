@@ -57,7 +57,7 @@ const UserCard = ({
   return (
     <Card
       variant="security"
-      className={cn('my-2 ml-1 mr-4 flex h-64 w-[297px] min-w-64 cursor-pointer', isActive && 'opacity-90')}
+      className={cn('my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer', isActive && 'opacity-90')}
       onClick={onCardClick}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
@@ -76,7 +76,7 @@ const UserCard = ({
             <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>{displayName}</div>
           </div>
 
-          <div className="-mt-1 ml-2 flex justify-between">
+          <div className="-my-1 ml-2 flex justify-between">
             <div className={cn('mt-1 h-6 rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
               {sophomorixAdminClass}
             </div>
@@ -88,7 +88,7 @@ const UserCard = ({
           <button
             type="button"
             className={cn(
-              'mt-1 flex flex-grow items-center justify-center rounded-xl text-2xl',
+              'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
               isActive ? 'bg-ciGrey' : 'bg-ciDarkGrey',
             )}
             onClick={(event) => event.stopPropagation()}

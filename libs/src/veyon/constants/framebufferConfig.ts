@@ -1,15 +1,15 @@
-export const framebufferConfigLow = {
+import FrameBufferConfig from '../types/framebufferConfig';
+
+export const framebufferConfigLow: FrameBufferConfig = {
   format: 'jpeg',
   compression: 9,
-  quality: 50,
+  quality: 25,
   width: 256,
-  height: 192,
+  height: 144,
 };
 
-export const framebufferConfigHigh = {
+export const framebufferConfigHigh: FrameBufferConfig = {
   format: 'jpeg',
   compression: 9,
-  quality: 75,
-  width: 1920,
-  height: 1080,
+  quality: 25,
 };

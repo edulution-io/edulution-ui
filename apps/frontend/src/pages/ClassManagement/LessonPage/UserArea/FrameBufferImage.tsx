@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useInterval } from 'usehooks-ts';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
-import { MdBlock } from 'react-icons/md';
+import { MdBlock, MdCropFree } from 'react-icons/md';
 import delay from '@libs/common/utils/delay';
-import VEYON_REFRESH_INTERVAL from '@libs/veyon/constants/refreshInterval';
+import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
+import ImageModal from '@/components/shared/ImageModal';
 import useVeyonApiStore from '../../useVeyonApiStore';
 
 type FrameBufferImageProps = {
@@ -15,6 +16,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const [imageSrc, setImageSrc] = useState<string>('');
   const { authenticateVeyonClients, getFrameBufferStream, getVeyonUser } = useVeyonApiStore();
   const [connUid, setConnUid] = useState<string>('');
+  const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
 
   const verifyVeyonUser = async (connectionUid: string) => {
     const veyonUser = await getVeyonUser(connectionUid);
@@ -42,7 +44,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   }, [user]);
 
   const fetchImage = async (connectionUid: string) => {
-    const response = await getFrameBufferStream(connectionUid);
+    const response = await getFrameBufferStream(connectionUid, isImagePreviewModalOpen);
     if (!response) return null;
 
     const objectURL = URL.createObjectURL(response);
@@ -57,20 +59,49 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
     }
   }, [connUid]);
 
-  useInterval(() => {
-    if (connUid !== '') {
-      void fetchImage(connUid);
-    }
-  }, VEYON_REFRESH_INTERVAL);
+  useInterval(
+    () => {
+      if (connUid !== '') {
+        void fetchImage(connUid);
+      }
+    },
+    isImagePreviewModalOpen ? VEYON_REFRESH_INTERVAL_HIGH : VEYON_REFRESH_INTERVAL,
+  );
+
+  const handleImagePreviewClick = () => {
+    setIsImagePreviewModalOpen(true);
+  };
+
+  const closeImagePreviewModal = () => {
+    setIsImagePreviewModalOpen(false);
+  };
 
   const renderContent = () => {
     if (imageSrc) {
       return (
-        <img
-          className="rounded-xl"
-          src={imageSrc}
-          alt="framebuffer"
-        />
+        <>
+          <div className="group absolute bottom-3 right-14 z-10 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
+            <button
+              type="button"
+              onClick={() => handleImagePreviewClick()}
+              className="relative flex items-center"
+            >
+              <MdCropFree />
+            </button>
+          </div>
+          <img
+            className="h-36 w-64 rounded-xl"
+            src={imageSrc}
+            alt="framebuffer"
+          />
+          {isImagePreviewModalOpen && (
+            <ImageModal
+              isOpen={isImagePreviewModalOpen}
+              imageUrl={imageSrc}
+              onClose={closeImagePreviewModal}
+            />
+          )}
+        </>
       );
     }
 
