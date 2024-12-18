@@ -21,9 +21,42 @@ class SurveysService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
+  async findSurvey(surveyId: string, username: string): Promise<Survey | null> {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [
+          {
+            $or: [
+              { isPublic: true },
+              { 'creator.username': username },
+              { invitedAttendees: { $elemMatch: { username } } },
+            ],
+          },
+          { _id: mongoId },
+        ],
+      })
+      .lean();
+
+    if (!survey) {
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    return survey;
+  }
+
+  async findPublicSurvey(surveyId: string): Promise<Survey | null> {
+    const mongoId = new mongoose.Types.ObjectId(surveyId);
+    if (!mongoose.isValidObjectId(mongoId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     try {
-      return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
+      return await this.surveyModel.findOne<Survey>({ _id: mongoId, isPublic: true }).lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
@@ -48,7 +81,7 @@ class SurveysService {
           survey._id,
           { ...survey },
         )
-        .exec();
+        .lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
@@ -76,7 +109,20 @@ class SurveysService {
     }
   }
 
-  async updateOrCreateSurvey(survey: Survey, surveysSseConnections: UserConnections): Promise<Survey | null> {
+  async updateOrCreateSurvey(surveyDto: SurveyDto, surveysSseConnections: UserConnections): Promise<Survey | null> {
+    const { id, created = new Date() } = surveyDto;
+
+    const mongoId = new mongoose.Types.ObjectId(id);
+    if (!mongoose.isValidObjectId(mongoId)) {
+      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    const survey: Survey = {
+      ...surveyDto,
+      _id: mongoId,
+      created,
+    };
+
     const updatedSurvey = await this.updateSurvey(survey, surveysSseConnections);
     if (updatedSurvey != null) {
       return updatedSurvey;

@@ -1,35 +1,40 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useInterval } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
+import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-const AnsweredSurveys = () => {
+const AnsweredSurveysPage = () => {
   const {
-    selectedPageView,
-    updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
     setSelectedRows,
     answeredSurveys,
     isFetchingAnsweredSurveys,
     updateAnsweredSurveys,
+    canParticipate,
+    hasAnswers,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
-  useSurveysPageHook(
-    selectedPageView,
-    SurveysPageView.ANSWERED,
-    updateSelectedPageView,
-    selectSurvey,
-    setSelectedRows,
-    updateAnsweredSurveys,
-    isFetchingAnsweredSurveys,
-    answeredSurveys,
-  );
+  const fetch = useCallback(() => {
+    if (!isFetchingAnsweredSurveys) {
+      void updateAnsweredSurveys();
+    }
+  }, []);
+
+  useEffect(() => {
+    selectSurvey(undefined);
+    setSelectedRows({});
+    void fetch();
+  }, []);
+
+  useInterval(() => {
+    void fetch();
+  }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   return (
     <>
@@ -40,12 +45,12 @@ const AnsweredSurveys = () => {
         selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
-        canShowResults
-        canParticipate
-        canShowSubmittedAnswers
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
+        canShowSubmittedAnswers={hasAnswers}
       />
     </>
   );
 };
 
-export default AnsweredSurveys;
+export default AnsweredSurveysPage;

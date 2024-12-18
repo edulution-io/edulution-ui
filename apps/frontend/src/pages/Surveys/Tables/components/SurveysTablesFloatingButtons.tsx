@@ -1,21 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUpSquare } from 'react-icons/ai';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
+import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useDeleteSurveyStore from './useDeleteSurveyStore';
 
 interface SurveysTablesFloatingButtonsProps {
   canEdit: boolean;
-  editSurvey?: () => void;
   canDelete: boolean;
   canParticipate: boolean;
   canShowSubmittedAnswers: boolean;
@@ -23,7 +23,13 @@ interface SurveysTablesFloatingButtonsProps {
 }
 
 const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
-  const { canEdit, editSurvey, canDelete, canShowSubmittedAnswers, canParticipate, canShowResults } = props;
+  const {
+    canEdit = false,
+    canDelete = false,
+    canShowSubmittedAnswers = false,
+    canParticipate = false,
+    canShowResults = false,
+  } = props;
 
   const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
 
@@ -32,18 +38,9 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
 
-  const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
-
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
   const { deleteSurvey } = useDeleteSurveyStore();
-
-  const { t } = useTranslation();
-
-  if (!survey) {
-    return null;
-  }
-
   const handleDeleteSurvey = () => {
     if (survey) {
       void deleteSurvey([survey.id]);
@@ -51,9 +48,20 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     }
   };
 
+  const navigate = useNavigate();
+
+  const { t } = useTranslation();
+
+  if (!survey) {
+    return null;
+  }
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      EditButton(editSurvey ? () => editSurvey() : () => {}, canEdit),
+      EditButton(() => {
+        navigate(`/${EDIT_SURVEY_PAGE}/${survey.id.toString()}`);
+      }, canEdit),
+
       DeleteButton(handleDeleteSurvey, canDelete),
       {
         icon: HiOutlineArrowDownOnSquare,
@@ -76,7 +84,9 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
       {
         icon: AiOutlineUpSquare,
         text: t('common.participate'),
-        onClick: () => setIsOpenParticipateSurveyDialog(true),
+        onClick: () => {
+          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${survey.id.toString()}`);
+        },
         isVisible: canParticipate,
       },
     ],

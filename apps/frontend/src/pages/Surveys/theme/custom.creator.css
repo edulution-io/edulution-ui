@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 .survey-editor {
+  .sd-completedpage h3 {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
   .sd-element {
     padding: 5px;
   }

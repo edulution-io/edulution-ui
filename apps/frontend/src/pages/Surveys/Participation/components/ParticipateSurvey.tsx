@@ -1,7 +1,7 @@
 import React from 'react';
 import mongoose from 'mongoose';
 import { Survey } from 'survey-react-ui';
-import { CompleteEvent, Model } from 'survey-core';
+import { Model } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/french';
@@ -12,8 +12,9 @@ import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
+import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 
-interface ParticipateDialogBodyProps {
+interface ParticipateSurveyProps {
   surveyId: mongoose.Types.ObjectId;
   saveNo: number;
   formula: TSurveyFormula;
@@ -21,19 +22,14 @@ interface ParticipateDialogBodyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  updateOpenSurveys: () => void;
-  updateAnsweredSurveys: () => void;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
+  submitAnswer: (answerDto: SubmitAnswerDto) => Promise<boolean>;
+  updateOpenSurveys?: () => void;
+  updateAnsweredSurveys?: () => void;
+  isPublic?: boolean;
   className?: string;
 }
 
-const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
+const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   const {
     surveyId,
     saveNo,
@@ -43,10 +39,10 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     pageNo,
     setPageNo,
     submitAnswer,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
-    setIsOpenParticipateSurveyDialog,
-    className,
+    updateOpenSurveys = () => {},
+    updateAnsweredSurveys = () => {},
+    isPublic = false,
+    className = '',
   } = props;
 
   const { language } = useLanguage();
@@ -56,7 +52,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
 
   surveyModel.locale = language;
 
-  if (surveyModel.pages.length > 1) {
+  if (surveyModel.pages.length > 3) {
     surveyModel.showProgressBar = 'top';
   }
 
@@ -74,15 +70,22 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    await submitAnswer(surveyId, saveNo, answer /* , _options */);
-    updateOpenSurveys();
-    updateAnsweredSurveys();
-    setIsOpenParticipateSurveyDialog(false);
+    await submitAnswer({
+      surveyId,
+      saveNo,
+      answer,
+      isPublic,
+    });
+    if (!isPublic) {
+      updateOpenSurveys();
+      updateAnsweredSurveys();
+    }
   });
+
   return (
     <div className={className}>
       <Survey model={surveyModel} />
     </div>
   );
 };
-export default ParticipateDialogBody;
+export default ParticipateSurvey;

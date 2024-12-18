@@ -35,7 +35,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     isAutoSave: true,
     maxNestedPanels: 0,
     showJSONEditorTab: true,
-    showPreviewTab: true,
+    showPreviewTab: false,
     showLogicTab: true,
     questionTypes: [
       'radiogroup',

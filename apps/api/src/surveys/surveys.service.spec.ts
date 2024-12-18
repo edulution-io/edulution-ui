@@ -60,10 +60,10 @@ describe('SurveyService', () => {
         lean: jest.fn().mockReturnValue(publicSurvey01),
       });
 
-      const result = await service.findPublicSurvey(idOfPublicSurvey01);
+      const result = await service.findPublicSurvey(idOfPublicSurvey01.toString());
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01.toString(), isPublic: true });
     });
 
     it('should throw an error if the database access fails', async () => {
@@ -76,12 +76,12 @@ describe('SurveyService', () => {
       });
 
       try {
-        await service.findPublicSurvey(idOfPublicSurvey01);
+        await service.findPublicSurvey(idOfPublicSurvey01.toString());
       } catch (e) {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01.toString(), isPublic: true });
     });
   });
 
@@ -143,13 +143,10 @@ describe('SurveyService', () => {
   describe('updateSurvey', () => {
     it('should update a survey', async () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
-      const surveyMock: Survey = {
-        ...surveyUpdateUpdatedSurvey,
-        _id: surveyUpdateUpdatedSurvey.id,
-        created: surveyUpdateUpdatedSurvey.created,
-      };
+      const surveyMock = surveyUpdateUpdatedSurvey;
+
       const result = await service.updateSurvey(surveyMock, mockSseConnections);
 
       expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
@@ -161,7 +158,7 @@ describe('SurveyService', () => {
 
     it('should throw an error if the survey update fails', async () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        exec: jest
+        lean: jest
           .fn()
           .mockRejectedValue(
             new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
@@ -181,7 +178,7 @@ describe('SurveyService', () => {
   describe('updateOrCreateSurvey', () => {
     it('should create a survey if it does not exist', async () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(null),
+        lean: jest.fn().mockReturnValue(null),
       });
       surveyModel.create = jest.fn().mockReturnValue(surveyUpdateInitialSurvey);
 
@@ -194,7 +191,7 @@ describe('SurveyService', () => {
 
     it('should update a survey', async () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
       const result = await service.updateOrCreateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);

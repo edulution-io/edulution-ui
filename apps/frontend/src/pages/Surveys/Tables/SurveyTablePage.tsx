@@ -3,6 +3,10 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
+import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
+import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
+import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface SurveysTablePageProps {
@@ -13,7 +17,6 @@ interface SurveysTablePageProps {
   isLoading?: boolean;
 
   canEdit?: boolean;
-  editSurvey?: () => void;
   canDelete?: boolean;
   canShowSubmittedAnswers?: boolean;
   canParticipate?: boolean;
@@ -29,7 +32,6 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     isLoading = false,
 
     canEdit = false,
-    editSurvey = () => {},
     canDelete = false,
     canShowSubmittedAnswers = false,
     canParticipate = false,
@@ -52,13 +54,19 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
       {selectedSurvey ? (
         <SurveysTablesFloatingButtons
           canEdit={canEdit}
-          editSurvey={editSurvey}
           canDelete={canDelete}
           canShowSubmittedAnswers={canShowSubmittedAnswers}
           canParticipate={canParticipate}
           canShowResults={canShowResults}
         />
       ) : null}
+      <TooltipProvider>
+        <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+          <ResultTableDialog />
+          <ResultVisualizationDialog />
+          <SubmittedAnswersDialog />
+        </div>
+      </TooltipProvider>
     </>
   );
 };

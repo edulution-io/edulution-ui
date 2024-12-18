@@ -1,40 +1,40 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useInterval } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
+import { FEED_PULL_TIME_INTERVAL_SLOW } from '@libs/dashboard/constants/pull-time-interval';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-interface CreatedSurveysProps {
-  edit: () => void;
-}
-
-const CreatedSurveys = (props: CreatedSurveysProps) => {
-  const { edit } = props;
+const CreatedSurveysPage = () => {
   const {
-    selectedPageView,
-    updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
     setSelectedRows,
     createdSurveys,
     isFetchingCreatedSurveys,
     updateCreatedSurveys,
+    hasAnswers,
+    canParticipate,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
-  useSurveysPageHook(
-    selectedPageView,
-    SurveysPageView.CREATED,
-    updateSelectedPageView,
-    selectSurvey,
-    setSelectedRows,
-    updateCreatedSurveys,
-    isFetchingCreatedSurveys,
-    createdSurveys,
-  );
+  const fetch = useCallback(() => {
+    if (!isFetchingCreatedSurveys) {
+      void updateCreatedSurveys();
+    }
+  }, []);
+
+  useEffect(() => {
+    setSelectedRows({});
+    selectSurvey(undefined);
+    void fetch();
+  }, []);
+
+  useInterval(() => {
+    void fetch();
+  }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   return (
     <>
@@ -47,13 +47,12 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
         isLoading={isFetchingCreatedSurveys}
         canDelete
         canEdit
-        editSurvey={edit}
-        canShowResults
-        canParticipate
-        canShowSubmittedAnswers
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
+        canShowSubmittedAnswers={hasAnswers}
       />
     </>
   );
 };
 
-export default CreatedSurveys;
+export default CreatedSurveysPage;

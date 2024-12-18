@@ -10,8 +10,13 @@ import {
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
+import getPublicRoutes from '@/router/routes/PublicRoutes';
+import getSettingsRoutes from '@/router/routes/SettingsRoutes';
+import getForwardedRoutes from '@/router/routes/ForwardedRoutes';
+import getEmbeddedRoutes from '@/router/routes/EmbeddedRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import { HomePage } from '@/pages/Home';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
@@ -21,12 +26,9 @@ import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDe
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import getSurveyRoutes from '@/pages/Surveys/SurveyRoutes';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
-import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import getSettingsRoutes from './routes/SettingsRoutes';
-import getForwardedRoutes from './routes/ForwardedRoutes';
-import getEmbeddedRoutes from './routes/EmbeddedRoutes';
 
 const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
   const { isSuperAdmin } = useLdapGroups();
@@ -34,6 +36,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <>
+        {getPublicRoutes()}
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>
@@ -105,6 +108,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 ) : null,
               )}
               {getClassManagementRoutes()}
+              {getSurveyRoutes()}
               {getSettingsRoutes(appConfigs)}
             </Route>
           </>
