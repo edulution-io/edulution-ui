@@ -3,7 +3,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Column, Table } from '@tanstack/react-table';
 import Checkbox from '@/components/ui/Checkbox';
 import cn from '@libs/common/utils/className';
-import { translateKey } from '@/utils/common';
+import i18n from '@/i18n';
 
 interface SortableHeaderProps<TData, TValue> {
   table?: Table<TData>;
@@ -25,7 +25,7 @@ const SortableHeader = <TData, TValue>({ table, column, className }: SortableHea
       onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
     >
       <div className="flex items-center">
-        {translateKey(String(column.columnDef.meta?.translationId || column.id))}
+        {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
         {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
       </div>
     </button>

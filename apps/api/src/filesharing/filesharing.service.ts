@@ -273,14 +273,14 @@ class FilesharingService {
       try {
         await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
 
       try {
         const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
         await FilesharingService.copyFileViaWebDAV(client, encodeURI(fullOriginPath), sanitizedDestinationPath);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
     });
 
@@ -301,7 +301,11 @@ class FilesharingService {
       }
       return resp.data;
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${username} ${filePath}`,
+      );
     }
   }
 
@@ -333,20 +337,20 @@ class FilesharingService {
     try {
       await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     } catch (error) {
-      Logger.log(error);
+      Logger.error(error);
     }
 
     const operations = collectFileRequestDTO.map(async (item) => {
       try {
         await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
 
       try {
         await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
     });
 

@@ -9,6 +9,8 @@ import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
+import stringToBoolean from '@libs/common/utils/stringToBoolean';
+import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
 import CircleLoader from '@/components/ui/CircleLoader';
 
 interface CreateConferenceDialogProps {
@@ -30,6 +32,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   const initialFormValues: ConferencesForm = {
     name: '',
     password: '',
+    isPublic: CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value,
     invitedAttendees: [],
     invitedGroups: [],
   };
@@ -44,6 +47,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
+      isPublic: stringToBoolean(form.getValues('isPublic')),
       invitedAttendees: form.getValues('invitedAttendees'),
       invitedGroups: form.getValues('invitedGroups'),
     };

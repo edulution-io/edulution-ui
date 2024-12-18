@@ -7,6 +7,9 @@ enum ConferencesErrorMessage {
   AppNotProperlyConfigured = 'conferences.errors.AppNotProperlyConfigured',
   YouAreNotTheCreator = 'conferences.errors.YouAreNotTheCreator',
   DBAccessFailed = 'conferences.errors.DBAccessFailed',
+  WrongPassword = 'conferences.errors.WrongPassword',
+  ConferenceIsNotRunning = 'conferences.errors.ConferenceIsNotRunning',
+  MissingMandatoryParameters = 'conferences.errors.MissingMandatoryParameters',
 }
 
 export default ConferencesErrorMessage;

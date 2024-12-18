@@ -6,7 +6,7 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import cn from '@libs/common/utils/className';
-import { translateKey } from '@/utils/common';
+import i18n from '@/i18n';
 
 const Sheet = SheetPrimitive.Root;
 
@@ -83,7 +83,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
           )}
         >
           <Cross2Icon className="h-4 w-4" />
-          <span className="sr-only">{translateKey('dialog.close')}</span>
+          <span className="sr-only">{i18n.t('dialog.close')}</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
     </SheetPortal>

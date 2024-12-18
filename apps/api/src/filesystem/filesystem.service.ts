@@ -35,7 +35,7 @@ class FilesystemService {
       const fileStream = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
       return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
     }
   }
 
@@ -93,8 +93,11 @@ class FilesystemService {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
     } catch (error) {
-      console.error(`Error deleting file at ${filePath}:`, error);
-      throw new CustomHttpException(FileSharingErrorMessage.DeleteFromServerFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DeleteFromServerFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
+      );
     }
   }
 

@@ -24,6 +24,7 @@ import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettings
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
+import getPublicRoutes from '@/router/routes/PublicRoutes';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
@@ -35,6 +36,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
   return createBrowserRouter(
     createRoutesFromElements(
       <>
+        {getPublicRoutes()}
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>
