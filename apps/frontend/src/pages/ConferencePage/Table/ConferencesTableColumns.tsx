@@ -296,9 +296,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else if (isRunning) {
                 await joinConference(meetingID);
               }
-              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
               await delay(5000);
               await getConferences();
+              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
             };
       return (
         <SelectableTextCell

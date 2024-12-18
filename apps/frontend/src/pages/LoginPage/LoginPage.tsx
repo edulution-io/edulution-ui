@@ -54,22 +54,18 @@ const LoginPage: React.FC = () => {
   }, [auth.error]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
-    try {
-      const username = form.getValues('username') as string;
-      const password = form.getValues('password') as string;
-      const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
-      const requestUser = await auth.signinResourceOwnerCredentials({
-        username,
-        password: passwordHash,
-      });
-      if (requestUser) {
-        const newEncryptKey = CryptoJS.lib.WordArray.random(16).toString();
-        setEncryptKey(newEncryptKey);
-        setEduApiToken(requestUser.access_token);
-        setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
-      }
-    } catch (e) {
-      console.error(e);
+    const username = form.getValues('username') as string;
+    const password = form.getValues('password') as string;
+    const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
+    const requestUser = await auth.signinResourceOwnerCredentials({
+      username,
+      password: passwordHash,
+    });
+    if (requestUser) {
+      const newEncryptKey = CryptoJS.lib.WordArray.random(16).toString();
+      setEncryptKey(newEncryptKey);
+      setEduApiToken(requestUser.access_token);
+      setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
     }
   };
 

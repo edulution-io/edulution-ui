@@ -4,7 +4,6 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import delay from '@libs/common/utils/delay';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
@@ -85,8 +84,9 @@ const useConferenceStore = create<ConferencesStore>((set, get) => ({
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');
     } finally {
-      await delay(5000);
-      set({ loadingMeetingId: null });
+      setTimeout(() => {
+        set({ loadingMeetingId: null });
+      }, 5500);
     }
   },
   reset: () => set(initialValues),

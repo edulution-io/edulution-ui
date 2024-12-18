@@ -11,6 +11,9 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/joinButton';
 import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/startButton';
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
+import delay from '@libs/common/utils/delay';
+import { toast } from 'sonner';
+import i18next from 'i18next';
 
 const ConferencesFloatingButtons: React.FC = () => {
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
@@ -22,21 +25,32 @@ const ConferencesFloatingButtons: React.FC = () => {
   const firstSelectedConference = conferences.find((c) => c.meetingID === selectedConferenceIds[0]) || null;
   const isOnlyOneConferenceSelected = selectedConferenceIds.length === 1;
 
+  const startOrStopConference = async () => {
+    if (firstSelectedConference) {
+      const { meetingID, isRunning } = firstSelectedConference;
+      void toggleConferenceRunningState(meetingID, isRunning);
+      if (isRunning) {
+        void joinConference(meetingID);
+      } else {
+        setJoinConferenceUrl('');
+      }
+      await delay(5000);
+      await getConferences();
+      toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+    }
+  };
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       EditButton(() => setSelectedConference(firstSelectedConference), isOnlyOneConferenceSelected),
-      StartButton(() => {
-        if (firstSelectedConference) {
-          void toggleConferenceRunningState(firstSelectedConference.meetingID, firstSelectedConference.isRunning);
-          void joinConference(firstSelectedConference.meetingID);
-        }
-      }, isOnlyOneConferenceSelected && !firstSelectedConference?.isRunning),
-      StopButton(() => {
-        if (firstSelectedConference) {
-          void toggleConferenceRunningState(firstSelectedConference.meetingID, firstSelectedConference.isRunning);
-          setJoinConferenceUrl('');
-        }
-      }, isOnlyOneConferenceSelected && firstSelectedConference?.isRunning),
+      StartButton(
+        async () => startOrStopConference(),
+        isOnlyOneConferenceSelected && !firstSelectedConference?.isRunning,
+      ),
+      StopButton(
+        async () => startOrStopConference(),
+        isOnlyOneConferenceSelected && firstSelectedConference?.isRunning,
+      ),
       JoinButton(() => {
         void joinConference(selectedConferenceIds[0]);
       }, isOnlyOneConferenceSelected && firstSelectedConference?.isRunning),

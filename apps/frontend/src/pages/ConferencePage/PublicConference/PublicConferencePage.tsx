@@ -12,6 +12,8 @@ import { CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT } from '@libs/conferences/const
 import PublicConferenceJoinForm from '@/pages/ConferencePage/PublicConference/PublicConferenceJoinForm';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import delay from '@libs/common/utils/delay';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 const PublicConferencePage = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -34,6 +36,7 @@ const PublicConferencePage = (): React.ReactNode => {
   const { meetingId } = useParams();
   const form = useForm<{ name: string; password: string }>();
   const [isWaitingForConferenceToStart, setWaitingForConferenceToStart] = useState(false);
+  const [isJoiningConference, setIsJoiningConference] = useState(false);
   const [publicConference, setPublicConference] = useState<Partial<ConferenceDto> | null>(null);
 
   const isInvitedUser = !!conferences.find((c) => c.meetingID === meetingId);
@@ -54,8 +57,13 @@ const PublicConferencePage = (): React.ReactNode => {
   }, [meetingId]);
 
   const joinConference = async () => {
-    await updatePublicConference();
-    if (!meetingId || !publicConference?.isRunning) return;
+    setIsJoiningConference(true);
+    await delay(3000);
+    const publicConferenceResponse = await updatePublicConference();
+    if (!meetingId || !publicConferenceResponse?.isRunning) {
+      setIsJoiningConference(false);
+      return;
+    }
 
     setWaitingForConferenceToStart(false);
 
@@ -67,10 +75,11 @@ const PublicConferencePage = (): React.ReactNode => {
     } else {
       void getJoinConferenceUrl(name, meetingId, password);
     }
+    setIsJoiningConference(false);
   };
 
   useEffect(() => {
-    if (publicConference) {
+    if (publicConference?.meetingID) {
       const eventSource = new EventSource(
         `/${EDU_API_ROOT}/${CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT}?meetingID=${publicConference.meetingID}`,
       );
@@ -96,7 +105,7 @@ const PublicConferencePage = (): React.ReactNode => {
     }
 
     return undefined;
-  }, [publicConference]);
+  }, [publicConference?.meetingID]);
 
   const automaticallyJoinAsRegisteredUser = async () => {
     if (
@@ -139,22 +148,28 @@ const PublicConferencePage = (): React.ReactNode => {
   }
 
   return (
-    <div className="mx-auto w-[90%] md:w-[400px]">
-      <div>{t('conferences.publicConference')}</div>
-      <h3 className="mt-3">{publicConference.name}</h3>
-      <div className="mb-8">
-        {t('common.from')} {publicConference.creator?.firstName} {publicConference.creator?.lastName}
+    <div className="h-full overflow-y-auto scrollbar-thin">
+      <div className="mx-auto w-[90%] md:w-[400px]">
+        <div>{t('conferences.publicConference')}</div>
+        <h3 className="mt-3">{publicConference.name}</h3>
+        <div className="mb-8">
+          {t('common.from')} {publicConference.creator?.firstName} {publicConference.creator?.lastName}
+        </div>
+        {isJoiningConference ? (
+          <CircleLoader />
+        ) : (
+          <PublicConferenceJoinForm
+            meetingId={meetingId}
+            isPermittedUser={isInvitedUser || !publicConference.password}
+            form={form}
+            joinConference={joinConference}
+            isWaitingForConferenceToStart={isWaitingForConferenceToStart}
+            setWaitingForConferenceToStart={setWaitingForConferenceToStart}
+            publicConference={publicConference}
+            updatePublicConference={updatePublicConference}
+          />
+        )}
       </div>
-      <PublicConferenceJoinForm
-        meetingId={meetingId}
-        isPermittedUser={isInvitedUser || !publicConference.password}
-        form={form}
-        joinConference={joinConference}
-        isWaitingForConferenceToStart={isWaitingForConferenceToStart}
-        setWaitingForConferenceToStart={setWaitingForConferenceToStart}
-        publicConference={publicConference}
-        updatePublicConference={updatePublicConference}
-      />
     </div>
   );
 };
