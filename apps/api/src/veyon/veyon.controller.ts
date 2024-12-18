@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import type FrameBufferConfig from '@libs/veyon/types/framebufferConfig';
+import type VeyonFeatureRequest from '@libs/veyon/types/veyonFeatureRequest';
+import type VeyonFeatureUid from '@libs/veyon/types/veyonFeatureUid';
 import VeyonService from './veyon.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
@@ -33,6 +35,15 @@ class VeyonController {
   @Get('user/:connectionUid')
   async getUser(@Param('connectionUid') connectionUid: string) {
     return this.veyonService.getUser(connectionUid);
+  }
+
+  @Put('feature/:featureUid/:connectionUid')
+  async setFeature(
+    @Param('featureUid') featureUid: VeyonFeatureUid,
+    @Body() body: VeyonFeatureRequest,
+    @Param('connectionUid') connectionUid: string,
+  ) {
+    return this.veyonService.setFeature(featureUid, body, connectionUid);
   }
 }
 

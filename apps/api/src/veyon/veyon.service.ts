@@ -5,6 +5,8 @@ import type VeyonApiAuthResponse from '@libs/veyon/types/veyonApiAuthResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import type FrameBufferConfig from '@libs/veyon/types/framebufferConfig';
 import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
+import type VeyonFeatureRequest from '@libs/veyon/types/veyonFeatureRequest';
+import type VeyonFeatureUid from '@libs/veyon/types/veyonFeatureUid';
 import UsersService from '../users/users.service';
 
 const { VEYON_API_HOST_URL } = process.env;
@@ -77,6 +79,28 @@ class VeyonService {
         headers: {
           'Connection-Uid': connectionUid,
         },
+      });
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new HttpException(
+          error instanceof AxiosError ? error.message : 'Unknown error',
+          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw new HttpException('An unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async setFeature(
+    featureUid: VeyonFeatureUid,
+    body: VeyonFeatureRequest,
+    connectionUid: string,
+  ): Promise<Record<string, never>> {
+    try {
+      const { data } = await this.veyonApi.put<Record<string, never>>(`feature/${featureUid}`, body, {
+        headers: { 'Connection-Uid': connectionUid },
       });
       return data;
     } catch (error) {
