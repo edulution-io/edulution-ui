@@ -4,7 +4,6 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -13,6 +12,7 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
 import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import CircleLoader from '@/components/ui/CircleLoader';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -116,7 +116,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           role="presentation"
           onKeyDown={handleDialogKeyDown}
         >
-          {isLoading && <LoadingIndicator isOpen={isLoading} />}
+          {isLoading && <CircleLoader className="mx-auto mt-5" />}
           <Component
             form={form}
             isRenaming

@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from '@/components/shared/Input';
-import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import MailEncryption from '@libs/mail/constants/mailEncryption';
 import { TMailEncryption } from '@libs/mail/types';
@@ -84,7 +84,7 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
             <FormItem>
               <p>{t(`mail.importer.${field.name}`)}</p>
               <FormControl>
-                <DropdownMenu
+                <DropdownSelect
                   options={encOptions}
                   selectedVal={field.value as TMailEncryption}
                   handleChange={field.onChange}

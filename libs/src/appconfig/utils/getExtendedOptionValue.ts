@@ -1,23 +1,18 @@
-import { AppConfigDto } from '@libs/appconfig/types';
-import { AppExtendedOptions, AppExtendedType } from '@libs/appconfig/constants/appExtendedType';
+import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
-const getExtendedOptionValue = (
+const getExtendedOptions = (
   appConfigs: AppConfigDto[],
-  extendedOptionsConfig: AppExtendedType,
-  optionName: AppExtendedOptions,
-): string | undefined => {
-  const validOptionNames = extendedOptionsConfig['ONLY_OFFICE'].map((item) => item.name);
+  settingLocation: string,
+  key: ExtendedOptionKeysType,
+): string => {
+  const appConfig = appConfigs.find((config) => config.name === settingLocation);
 
-  const appConfig = appConfigs.find(
-    (config) => config.extendedOptions && config.extendedOptions.some((opt) => validOptionNames.includes(opt.name)),
-  );
-
-  if (appConfig && appConfig.extendedOptions) {
-    const foundOption = appConfig.extendedOptions.find((opt) => opt.name === optionName);
-    return foundOption?.value;
+  if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
+    return '';
   }
 
-  return undefined;
+  return appConfig.extendedOptions[key] || '';
 };
 
-export default getExtendedOptionValue;
+export default getExtendedOptions;

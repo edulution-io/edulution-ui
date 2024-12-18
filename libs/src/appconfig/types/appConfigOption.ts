@@ -1,5 +1,5 @@
+import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import { AppConfigOptionsType } from './appConfigOptionsType';
-import AppConfigExtendedOptionsType from './appConfigExtendedOptions';
 
 export type AppConfigOption = {
   id: string;
@@ -7,5 +7,5 @@ export type AppConfigOption = {
   color: string;
   options?: AppConfigOptionsType[];
   isNativeApp: boolean;
-  extendedOptions?: AppConfigExtendedOptionsType[];
+  extendedOptions?: AppConfigExtendedOptionsBySections;
 };

@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Group } from '@libs/groups/types/group';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import Attendee from '../conferences/attendee.schema';
 
 export type SurveyDocument = Survey & Document;
@@ -14,8 +15,8 @@ export class Survey {
   @Prop({ required: true })
   id: mongoose.Types.ObjectId;
 
-  @Prop({ type: JSON, required: true })
-  formula: JSON;
+  @Prop({ required: true })
+  formula: TSurveyFormula;
 
   @Prop({ required: false })
   backendLimiters?: {

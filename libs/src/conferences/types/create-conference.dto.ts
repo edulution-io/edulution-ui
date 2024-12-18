@@ -9,6 +9,8 @@ class CreateConferenceDto {
   invitedAttendees: AttendeeDto[];
 
   invitedGroups: MultipleSelectorGroup[];
+
+  isPublic: boolean;
 }
 
 export default CreateConferenceDto;

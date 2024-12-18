@@ -9,7 +9,7 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
-import CommitedAnswersDialog from '@/pages/Surveys/Tables/dialogs/CommitedAnswersDialog';
+import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
 
 const SurveysPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,11 +39,11 @@ const SurveysPage = () => {
     <>
       {renderPage()}
       <TooltipProvider>
-        <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+        <div className="absolute bottom-8 flex flex-row items-center space-x-8">
           <ResultTableDialog />
           <ResultVisualizationDialog />
           <ParticipateDialog />
-          <CommitedAnswersDialog />
+          <SubmittedAnswersDialog />
         </div>
       </TooltipProvider>
     </>

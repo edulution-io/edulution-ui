@@ -7,6 +7,7 @@ import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
+import UserLanguageType from '@libs/user/types/userLanguageType';
 
 const initialState = {
   isAuthenticated: false,
@@ -101,6 +102,14 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
       return [];
     } finally {
       set({ searchIsLoading: false });
+    }
+  },
+
+  updateUserLanguage: async (language: UserLanguageType): Promise<void> => {
+    const currentUser = get().user;
+    if (currentUser) {
+      set({ user: { ...currentUser, language } });
+      await get().updateUser({ language });
     }
   },
 

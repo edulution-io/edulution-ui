@@ -17,7 +17,7 @@ import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
-import FilesystemService from './filesystem.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 
 @Injectable()
@@ -273,14 +273,14 @@ class FilesharingService {
       try {
         await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
 
       try {
         const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
         await FilesharingService.copyFileViaWebDAV(client, encodeURI(fullOriginPath), sanitizedDestinationPath);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
     });
 
@@ -293,19 +293,25 @@ class FilesharingService {
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
+      const client = await this.getClient(username);
       const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const resp = await this.fileSystemService.fetchFileStream(username, url);
+      const resp = await FilesystemService.fetchFileStream(url, client);
       if (resp instanceof Readable) {
         return resp;
       }
       return resp.data;
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${username} ${filePath}`,
+      );
     }
   }
 
   async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
-    return this.fileSystemService.fileLocation(username, filePath, filename);
+    const client = await this.getClient(username);
+    return this.fileSystemService.fileLocation(username, filePath, filename, client);
   }
 
   async getOnlyOfficeToken(payload: string) {
@@ -331,20 +337,20 @@ class FilesharingService {
     try {
       await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     } catch (error) {
-      Logger.log(error);
+      Logger.error(error);
     }
 
     const operations = collectFileRequestDTO.map(async (item) => {
       try {
         await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
 
       try {
         await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
     });
 

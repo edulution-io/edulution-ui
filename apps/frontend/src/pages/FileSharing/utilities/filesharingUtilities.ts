@@ -1,6 +1,6 @@
 import { IconType } from 'react-file-icon';
-import { translateKey } from '@/utils/common';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import i18n from '@/i18n';
 
 interface ContentFileTypes {
   [extension: string]: IconType | undefined;
@@ -73,7 +73,7 @@ export function bytesToMegabytes(bytes: number): number {
 
 export function getElapsedTime(dateParam: Date): string {
   if (!dateParam) {
-    return translateKey('timeAgo.invalidDate');
+    return i18n.t('timeAgo.invalidDate');
   }
 
   const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
@@ -86,16 +86,16 @@ export function getElapsedTime(dateParam: Date): string {
   const difference = TODAY - date.getTime();
 
   if (difference < MINUTE) {
-    return translateKey('timeAgo.justNow');
+    return i18n.t('timeAgo.justNow');
   }
   if (difference < HOUR) {
-    return translateKey('timeAgo.minuteAgo', { count: Math.round(difference / MINUTE) });
+    return i18n.t('timeAgo.minuteAgo', { count: Math.round(difference / MINUTE) });
   }
   if (difference < DAY) {
-    return translateKey('timeAgo.hourAgo', { count: Math.round(difference / HOUR) });
+    return i18n.t('timeAgo.hourAgo', { count: Math.round(difference / HOUR) });
   }
   if (difference < DAY * 7) {
-    return translateKey('timeAgo.dayAgo', { count: Math.round(difference / DAY) });
+    return i18n.t('timeAgo.dayAgo', { count: Math.round(difference / DAY) });
   }
   return date.toLocaleDateString();
 }

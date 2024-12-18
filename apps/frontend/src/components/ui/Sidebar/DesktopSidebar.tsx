@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import { SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
 import { useWindowSize } from 'usehooks-ts';
-import { SidebarItem, UserMenuButton, HomeButton, DownButton, UpButton } from './SidebarMenuItems';
+import { DownButton, HomeButton, SidebarItem, UpButton, UserMenuButton } from './SidebarMenuItems';
 
 const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -129,7 +129,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className="fixed right-0 z-[50] h-screen bg-black bg-opacity-90 md:bg-none">
+    <div className="fixed right-0 z-[50] h-screen bg-black md:bg-none">
       <HomeButton />
       {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
 

@@ -12,6 +12,7 @@ const OpenSurveys = () => {
     updateSelectedPageView,
     selectedSurvey,
     selectSurvey,
+    setSelectedRows,
     openSurveys,
     updateOpenSurveys,
     isFetchingOpenSurveys,
@@ -24,6 +25,7 @@ const OpenSurveys = () => {
     SurveysPageView.OPEN,
     updateSelectedPageView,
     selectSurvey,
+    setSelectedRows,
     updateOpenSurveys,
     isFetchingOpenSurveys,
     openSurveys,
@@ -33,10 +35,11 @@ const OpenSurveys = () => {
     <>
       {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
       <SurveyTablePage
-        title={t('surveys.view.open')}
-        selectSurvey={selectSurvey}
+        title={t('surveys.view.open.title')}
+        description={t('surveys.view.open.description')}
         surveys={openSurveys || []}
         selectedSurvey={selectedSurvey}
+        isLoading={isFetchingOpenSurveys}
         canShowResults
         canParticipate
       />

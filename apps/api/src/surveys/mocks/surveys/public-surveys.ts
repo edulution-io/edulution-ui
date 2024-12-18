@@ -12,7 +12,6 @@ export const publicSurvey01: Survey = {
   id: idOfPublicSurvey01,
   creator: firstMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Public Survey 01',
     description: 'This is a public test survey',
     pages: [
@@ -39,8 +38,7 @@ export const publicSurvey01: Survey = {
   answers: [],
   saveNo: 117,
   created: new Date('2021-06-26T00:00:00.000Z'),
-  expirationDate: new Date('2021-06-26'),
-  expirationTime: '12:00',
+  expires: new Date('2021-06-26T12:00:00.000Z'),
   isAnonymous: false,
   isPublic: true,
   canSubmitMultipleAnswers: false,
@@ -102,7 +100,6 @@ export const publicSurvey02: Survey = {
   id: idOfPublicSurvey02,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Public Survey 03',
     description: 'This is a public test survey with backend limiters',
     elements: [
@@ -125,8 +122,7 @@ export const publicSurvey02: Survey = {
   answers: [],
   saveNo: saveNoPublicSurvey02,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('9999-12-28'),
-  expirationTime: '14:30',
+  expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   isPublic: true,
   canSubmitMultipleAnswers: false,

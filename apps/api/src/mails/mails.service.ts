@@ -6,7 +6,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { InjectModel } from '@nestjs/mongoose';
 import axios, { AxiosInstance } from 'axios';
-import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
+import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
@@ -102,7 +102,11 @@ class MailsService {
         mails.push(mailDto);
       }
     } catch (err) {
-      throw new CustomHttpException(MailsErrorMessages.NotAbleToFetchMailsError, HttpStatus.INTERNAL_SERVER_ERROR, err);
+      throw new CustomHttpException(
+        MailsErrorMessages.NotAbleToFetchMailsError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        username,
+      );
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
@@ -195,7 +199,11 @@ class MailsService {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs(username: string) {
+  async getSyncJobs(username: string): Promise<SyncJobDto[]> {
+    if (!MAIL_API_URL || !MAIL_API_KEY) {
+      return [];
+    }
+
     try {
       const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
 
@@ -203,7 +211,7 @@ class MailsService {
 
       return filteredSyncJobs;
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -216,7 +224,7 @@ class MailsService {
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -230,7 +238,7 @@ class MailsService {
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 }

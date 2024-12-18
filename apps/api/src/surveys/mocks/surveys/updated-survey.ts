@@ -12,7 +12,6 @@ export const surveyUpdateInitialSurvey: Survey = {
   id: surveyUpdateSurveyId,
   creator: firstMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'The created Survey',
     description: 'This is a test survey',
     elements: [
@@ -29,8 +28,7 @@ export const surveyUpdateInitialSurvey: Survey = {
   answers: [],
   saveNo: 1,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('2025-04-22'),
-  expirationTime: '14:30',
+  expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   isPublic: false,
@@ -41,7 +39,6 @@ export const surveyUpdateUpdatedSurvey: Survey = {
   id: surveyUpdateSurveyId,
   creator: firstMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'The created Survey After the update',
     description: 'This is an updated version of the basic test survey for the created survey',
     elements: [
@@ -58,14 +55,14 @@ export const surveyUpdateUpdatedSurvey: Survey = {
   answers: [],
   saveNo: 2,
   created: new Date('2020-11-29T00:00:00.000Z'),
-  expirationDate: new Date('2025-04-22'),
-  expirationTime: '14:30',
+  expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   isPublic: false,
 };
 export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   ...surveyUpdateUpdatedSurvey,
+  formula: surveyUpdateUpdatedSurvey.formula,
   creator: {
     ...firstMockUser,
     label: 'pupil1-name1',

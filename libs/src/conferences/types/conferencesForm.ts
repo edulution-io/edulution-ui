@@ -4,6 +4,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 interface ConferencesForm {
   name: string;
   password?: string;
+  isPublic: string;
   invitedAttendees: AttendeeDto[];
   invitedGroups: MultipleSelectorGroup[];
 }

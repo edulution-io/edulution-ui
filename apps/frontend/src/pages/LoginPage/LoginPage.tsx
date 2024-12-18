@@ -69,7 +69,7 @@ const LoginPage: React.FC = () => {
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
       }
     } catch (e) {
-      //
+      console.error(e);
     }
   };
 

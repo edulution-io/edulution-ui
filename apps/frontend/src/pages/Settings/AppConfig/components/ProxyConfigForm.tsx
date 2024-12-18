@@ -10,13 +10,13 @@ import Input from '@/components/shared/Input';
 import { parse, stringify } from 'yaml';
 import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
-import AppConfigForm from '@libs/appconfig/types/appConfigForm';
+import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 
 type ProxyConfigFormProps = {
   settingLocation: string;
   item: AppConfigOption;
-  form: UseFormReturn<AppConfigForm>;
+  form: UseFormReturn<ProxyConfigFormType>;
 };
 
 const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item, form }) => {

@@ -24,6 +24,10 @@ const APPS = {
   AICHAT: 'aichat',
   LINUXMUSTER: 'linuxmuster',
   WHITEBOARD: 'whiteboard',
+  SETTINGS: 'settings',
+  USER_SETTINGS: 'usersettings',
+  BULLETIN_BOARD: 'bulletinboard',
+  NONE: 'none',
 } as const;
 
 export default APPS;

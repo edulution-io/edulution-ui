@@ -14,16 +14,14 @@ const ConferencePage: React.FC = () => {
   const { selectedConference } = useConferenceDetailsDialogStore();
 
   return (
-    <div className="p-5 lg:pr-20">
+    <div>
       <NativeAppHeader
         title={t('conferences.title')}
         description={t('conferences.description')}
         iconSrc={ConferencesIcon}
       />
 
-      <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-        <ConferencesTable />
-      </div>
+      <ConferencesTable />
 
       <ConferencesFloatingButtons />
       <CreateConferenceDialog />

@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import { Group } from '@libs/groups/types/group';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
 interface SurveyDto {
   id: mongoose.Types.ObjectId;
-  formula: JSON;
+  formula: TSurveyFormula;
   backendLimiters?: {
     questionId: string;
     choices: ChoiceDto[];

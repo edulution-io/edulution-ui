@@ -37,7 +37,7 @@ const ParticipateDialog = () => {
           setAnswer={setAnswer}
           pageNo={pageNo}
           setPageNo={setPageNo}
-          commitAnswer={answerSurvey}
+          submitAnswer={answerSurvey}
           updateOpenSurveys={updateOpenSurveys}
           updateAnsweredSurveys={updateAnsweredSurveys}
           setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}

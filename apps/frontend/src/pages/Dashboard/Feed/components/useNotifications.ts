@@ -12,6 +12,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
+import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 
 const useNotifications = () => {
   const { isSuperAdmin } = useLdapGroups();
@@ -50,7 +51,7 @@ const useNotifications = () => {
 
   useEffect(() => {
     if (isConferenceAppActivated) {
-      const eventSource = new EventSource(`${EDU_API_ROOT}/${APPS.CONFERENCES}/sse?token=${eduApiToken}`);
+      const eventSource = new EventSource(`/${EDU_API_ROOT}/${CONFERENCES_SSE_EDU_API_ENDPOINT}?token=${eduApiToken}`);
 
       const createConferenceHandler = (e: MessageEvent<string>) => {
         const conferenceDto = JSON.parse(e.data) as ConferenceDto;

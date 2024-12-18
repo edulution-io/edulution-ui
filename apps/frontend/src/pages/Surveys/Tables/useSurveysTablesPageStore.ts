@@ -1,12 +1,57 @@
 import { create } from 'zustand';
+import { Row, RowSelectionState } from '@tanstack/react-table';
 import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
-import SurveysTablesPageStoreInitialState from '@libs/survey/types/tables/surveysTablePageStoreInitialState';
 import handleApiError from '@/utils/handleApiError';
+
+interface SurveysTablesPageStore {
+  selectedPageView: SurveysPageView;
+  updateSelectedPageView: (pageView: SurveysPageView) => void;
+
+  selectedSurvey: SurveyDto | undefined;
+  selectSurvey: (survey: SurveyDto | undefined) => void;
+
+  updateUsersSurveys: () => Promise<void>;
+
+  openSurveys: SurveyDto[];
+  updateOpenSurveys: () => Promise<void>;
+  isFetchingOpenSurveys: boolean;
+
+  createdSurveys: SurveyDto[];
+  updateCreatedSurveys: () => Promise<void>;
+  isFetchingCreatedSurveys: boolean;
+
+  answeredSurveys: SurveyDto[];
+  updateAnsweredSurveys: () => Promise<void>;
+  isFetchingAnsweredSurveys: boolean;
+
+  selectedRows: RowSelectionState;
+  setSelectedRows: (rows: RowSelectionState) => void;
+
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => void;
+
+  reset: () => void;
+}
+
+const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
+  selectedPageView: SurveysPageView.OPEN,
+
+  selectedSurvey: undefined,
+
+  answeredSurveys: [],
+  isFetchingAnsweredSurveys: false,
+
+  createdSurveys: [],
+  isFetchingCreatedSurveys: false,
+
+  openSurveys: [],
+  isFetchingOpenSurveys: false,
+
+  selectedRows: {},
+};
 
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
@@ -61,6 +106,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
       set({ isFetchingAnsweredSurveys: false });
     }
   },
+
+  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => row.toggleSelected(),
 }));
 
 export default useSurveyTablesPageStore;

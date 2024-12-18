@@ -1,2 +1,2 @@
-export { default as DropdownMenu } from '@/components/ui/DropdownMenu/DropdownMenu';
+export { default as DropdownSelect } from '@/components/ui/DropdownSelect/DropdownSelect';
 export { default as Sidebar } from '@/components/ui/Sidebar/Sidebar';
