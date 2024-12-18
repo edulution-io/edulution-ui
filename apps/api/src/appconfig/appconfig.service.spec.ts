@@ -12,7 +12,9 @@ jest.mock('fs');
 const mockAppConfigModel = {
   insertMany: jest.fn(),
   bulkWrite: jest.fn(),
-  find: jest.fn(),
+  find: jest.fn().mockReturnValue({
+    lean: jest.fn(),
+  }),
   findOne: jest.fn(),
   deleteOne: jest.fn(),
 };
@@ -129,6 +131,9 @@ describe('AppConfigService', () => {
       }));
 
       const ldapGroups = ['group1', 'group2'];
+      jest.spyOn(mockAppConfigModel, 'find').mockReturnValueOnce({
+        lean: jest.fn().mockResolvedValue(appConfigs),
+      });
 
       mockAppConfigModel.find.mockResolvedValue(appConfigs);
 

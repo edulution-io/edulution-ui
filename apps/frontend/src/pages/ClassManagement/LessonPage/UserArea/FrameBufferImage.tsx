@@ -80,7 +80,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
     if (imageSrc) {
       return (
         <>
-          <div className="group absolute bottom-3 right-14 z-10 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
+          <div className="group absolute bottom-3 right-14 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
             <button
               type="button"
               onClick={() => handleImagePreviewClick()}
