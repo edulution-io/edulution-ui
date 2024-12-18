@@ -6,6 +6,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import GroupForm from '@libs/groups/types/groupForm';
 import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';
+import { FormMessage } from '@/components/ui/Form';
 
 dayjs.extend(customParseFormat);
 
@@ -13,7 +14,7 @@ type GroupProperty = {
   labelTranslationId: string;
   name: keyof Omit<GroupForm, 'admins' | 'admingroups' | 'members' | 'membergroups'>;
   disabled?: boolean;
-  component: 'checkbox' | 'text' | 'date';
+  component: 'checkbox' | 'text' | 'date' | 'number';
 };
 
 interface GroupPropertiesTableProps {
@@ -23,7 +24,7 @@ interface GroupPropertiesTableProps {
 }
 
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
-  const { watch, setValue, register } = form;
+  const { watch, setValue, register, formState } = form;
   const { t } = useTranslation();
 
   const groupProperties: GroupProperty[] = [
@@ -69,6 +70,24 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
       disabled,
       component: 'checkbox',
     },
+    {
+      labelTranslationId: 'classmanagement.mailQuota',
+      name: 'mailquota',
+      disabled,
+      component: 'number',
+    },
+    {
+      labelTranslationId: 'classmanagement.proxyAddresses',
+      name: 'proxyAddresses',
+      disabled,
+      component: 'text',
+    },
+    {
+      labelTranslationId: 'classmanagement.quota',
+      name: 'quota',
+      disabled,
+      component: 'text',
+    },
   ];
 
   const getComponent = (groupProperty: GroupProperty) => {
@@ -86,6 +105,19 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         return watch(groupProperty.name)
           ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]').format()
           : '-';
+      case 'number':
+        if (groupProperty.disabled) {
+          return <>{watch(groupProperty.name)}</>;
+        }
+        return (
+          <Input
+            {...register(groupProperty.name)}
+            variant="light"
+            min="0"
+            step="1"
+            type="number"
+          />
+        );
       case 'text':
       default:
         if (groupProperty.disabled) {
@@ -113,7 +145,14 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
             .map((groupProperty) => (
               <tr key={groupProperty.name}>
                 <td className="w-1/2 border p-2 text-left ">{t(groupProperty.labelTranslationId)}</td>
-                <td className="w-1/2 border p-2">{getComponent(groupProperty)}</td>
+                <td className="w-1/2 border p-2">
+                  {getComponent(groupProperty)}
+                  {formState.errors[groupProperty.name] && (
+                    <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                      {formState.errors[groupProperty.name]?.message?.toString()}
+                    </FormMessage>
+                  )}
+                </td>
               </tr>
             ))}
         </tbody>

@@ -322,7 +322,12 @@
   "classmanagement": {
     "title": "KLASSENZIMMER",
     "sidebar": "Klassenzimmer",
+    "invalidProxyAddresses": "Proxy-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "name": "Name",
+    "mailQuota": "Mail Quota",
+    "proxyAddresses": "Proxy Adressen",
+    "quota": "Quota",
     "notMemberOfClass": "Du bist kein Mitglied einer Klasse.",
     "noGroupsToShow": "Keine Gruppen vorhanden.",
     "classes": "Klassen",

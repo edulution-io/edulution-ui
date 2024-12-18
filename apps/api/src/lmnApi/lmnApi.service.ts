@@ -395,15 +395,20 @@ class LmnApiService {
   }
 
   private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
-    admins: Array.from(new Set([...formValues.admins])),
+    admins: formValues.admins.filter((a) => a.value !== username),
     displayName: formValues.displayName,
     admingroups: formValues.admingroups,
     description: formValues.description,
     join: formValues.join,
     hide: formValues.hide,
-    members: Array.from(new Set([...formValues.members, username])),
+    members: formValues.members.filter((m) => m.value !== username),
     membergroups: formValues.membergroups,
     school: formValues.school || DEFAULT_SCHOOL,
+    mailalias: formValues.mailalias,
+    maillist: formValues.maillist,
+    mailquota: formValues.mailquota,
+    proxyAddresses: formValues.proxyAddresses,
+    quota: formValues.quota,
   });
 
   public async getUserProjects(lmnApiToken: string): Promise<LmnApiProject[]> {
@@ -430,7 +435,8 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
-      return response.data;
+      const members = response.data.members.filter((member) => response.data.sophomorixMembers.includes(member.cn));
+      return { ...response.data, members };
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.GetProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
