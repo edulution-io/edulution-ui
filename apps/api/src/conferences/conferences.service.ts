@@ -223,7 +223,11 @@ class ConferencesService {
 
       await this.update({ ...conference, isRunning: true });
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.CouldNotStartConference, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(
+        ConferencesErrorMessage.CouldNotStartConference,
+        HttpStatus.BAD_GATEWAY,
+        conference.meetingID,
+      );
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
       SseService.sendEventToUsers(
@@ -249,7 +253,11 @@ class ConferencesService {
 
       await this.update({ ...conference, isRunning: false });
     } catch (e) {
-      throw new CustomHttpException(ConferencesErrorMessage.CouldNotStopConference, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(
+        ConferencesErrorMessage.CouldNotStopConference,
+        HttpStatus.BAD_GATEWAY,
+        conference.meetingID,
+      );
     } finally {
       const invitedMembersList = await this.getInvitedMembers(conference);
       SseService.sendEventToUsers(
