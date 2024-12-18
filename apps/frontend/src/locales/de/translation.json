@@ -301,6 +301,8 @@
   "classmanagement": {
     "title": "KLASSENZIMMER",
     "sidebar": "Klassenzimmer",
+    "invalidProxyAddresses": "Proxy-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "name": "Name",
     "mailQuota": "Mail Quota",
     "proxyAddresses": "Proxy Adressen",

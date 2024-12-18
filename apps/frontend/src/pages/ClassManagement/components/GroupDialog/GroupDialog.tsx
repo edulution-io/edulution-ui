@@ -51,7 +51,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     name: '',
     displayName: '',
     description: '',
-    quota: [],
+    quota: '[]',
     mailquota: 0,
     mailalias: false,
     maillist: false,
@@ -62,7 +62,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     members: [],
     membergroups: [],
     school: user?.school || '',
-    proxyAddresses: [],
+    proxyAddresses: '',
   };
 
   const form = useForm<GroupForm>({
@@ -101,10 +101,17 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     form.setValue('join', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixJoinable || false);
     form.setValue('hide', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixHidden || false);
     form.setValue('mailalias', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailAlias || false);
+    form.setValue(
+      'quota',
+      (userGroupToEdit as LmnApiProject).quota ? JSON.stringify((userGroupToEdit as LmnApiProject).quota) : '[]',
+    );
     form.setValue('creationDate', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixCreationDate || '');
     form.setValue('maillist', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailList || false);
     form.setValue('description', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).description || '');
-    form.setValue('proxyAddresses', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses || []);
+    form.setValue(
+      'proxyAddresses',
+      (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses.join(',') || '',
+    );
     form.setValue('members', getSelectOptionsFromLmnUsers(fetchedGroup.members));
     if ((fetchedGroup as LmnApiProjectWithMembers | LmnApiSchoolClassWithMembers).admins) {
       form.setValue(

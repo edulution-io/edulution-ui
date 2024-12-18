@@ -6,6 +6,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import GroupForm from '@libs/groups/types/groupForm';
 import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';
+import { FormMessage } from '@/components/ui/Form';
 
 dayjs.extend(customParseFormat);
 
@@ -23,7 +24,7 @@ interface GroupPropertiesTableProps {
 }
 
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
-  const { watch, setValue, register } = form;
+  const { watch, setValue, register, formState } = form;
   const { t } = useTranslation();
 
   const groupProperties: GroupProperty[] = [
@@ -144,7 +145,14 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
             .map((groupProperty) => (
               <tr key={groupProperty.name}>
                 <td className="w-1/2 border p-2 text-left ">{t(groupProperty.labelTranslationId)}</td>
-                <td className="w-1/2 border p-2">{getComponent(groupProperty)}</td>
+                <td className="w-1/2 border p-2">
+                  {getComponent(groupProperty)}
+                  {formState.errors[groupProperty.name] && (
+                    <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                      {formState.errors[groupProperty.name]?.message?.toString()}
+                    </FormMessage>
+                  )}
+                </td>
               </tr>
             ))}
         </tbody>

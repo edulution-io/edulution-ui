@@ -301,6 +301,8 @@
   "classmanagement": {
     "title": "CLASS ROOM",
     "sidebar": "Class Room",
+    "invalidProxyAddresses": "Proxy-addresses must be written comma separated without spaces",
+    "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "mailQuota": "Mail Quota",
     "proxyAddresses": "Proxy Adressen",
     "quota": "Quota",
