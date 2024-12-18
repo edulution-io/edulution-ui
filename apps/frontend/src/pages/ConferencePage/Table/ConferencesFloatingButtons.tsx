@@ -13,9 +13,10 @@ import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCon
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
 import delay from '@libs/common/utils/delay';
 import { toast } from 'sonner';
-import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const ConferencesFloatingButtons: React.FC = () => {
+  const { t } = useTranslation();
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
   const { joinConference, setSelectedConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
   const { selectedRows, toggleConferenceRunningState, getConferences, setIsDeleteConferencesDialogOpen, conferences } =
@@ -36,7 +37,7 @@ const ConferencesFloatingButtons: React.FC = () => {
       }
       await delay(5000);
       await getConferences();
-      toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+      toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
     }
   };
 
