@@ -55,3 +55,9 @@ iframe {
   max-height: 70vh;
   max-width: 620px;
 }
+
+.black-centered-shadow {
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
+  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
+}

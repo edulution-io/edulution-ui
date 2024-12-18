@@ -1,8 +1,8 @@
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { findAppConfigByName } from '@/utils/common';
 import { useNavigate } from 'react-router-dom';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';

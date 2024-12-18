@@ -20,7 +20,7 @@ import useElementHeight from '@/hooks/useElementHeight';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
-import { findAppConfigByName } from '@/utils/common';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
