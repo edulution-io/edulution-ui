@@ -1,0 +1,3 @@
+const VEYON_REFRESH_INTERVAL = 5000;
+
+export default VEYON_REFRESH_INTERVAL;

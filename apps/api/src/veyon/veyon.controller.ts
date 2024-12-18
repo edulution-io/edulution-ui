@@ -29,6 +29,11 @@ class VeyonController {
     });
     frameBufferStream.pipe(res);
   }
+
+  @Get('user/:connectionUid')
+  async getUser(@Param('connectionUid') connectionUid: string) {
+    return this.veyonService.getUser(connectionUid);
+  }
 }
 
 export default VeyonController;

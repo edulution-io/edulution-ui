@@ -57,7 +57,7 @@ const UserCard = ({
   return (
     <Card
       variant="security"
-      className={cn('my-2 ml-1 mr-4 flex h-64 w-64 min-w-64 cursor-pointer', isActive && 'opacity-90')}
+      className={cn('my-2 ml-1 mr-4 flex h-64 w-[297px] min-w-64 cursor-pointer', isActive && 'opacity-90')}
       onClick={onCardClick}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}

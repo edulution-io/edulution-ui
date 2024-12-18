@@ -1,9 +1,9 @@
 export const framebufferConfigLow = {
   format: 'jpeg',
   compression: 9,
-  quality: 25,
-  width: 640,
-  height: 480,
+  quality: 50,
+  width: 256,
+  height: 192,
 };
 
 export const framebufferConfigHigh = {

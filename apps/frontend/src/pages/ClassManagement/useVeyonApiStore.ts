@@ -3,11 +3,13 @@ import eduApi from '@/api/eduApi';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
 import handleApiError from '@/utils/handleApiError';
 import { framebufferConfigHigh, framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
+import VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 
 type VeyonApiStore = {
   isLoading: boolean;
   authenticateVeyonClients: (ip: string) => Promise<string>;
   getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob | null>;
+  getVeyonUser: (connectionUid: string) => Promise<VeyonUserResponse | null>;
 };
 
 const useVeyonApiStore = create<VeyonApiStore>((set) => ({
@@ -37,6 +39,16 @@ const useVeyonApiStore = create<VeyonApiStore>((set) => ({
       return null;
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  getVeyonUser: async (connectionUid: string) => {
+    try {
+      const { data } = await eduApi.get<VeyonUserResponse>(`veyon/user/${connectionUid}`);
+      return data;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
     }
   },
 }));

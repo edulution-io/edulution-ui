@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useInterval } from 'usehooks-ts';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { MdBlock } from 'react-icons/md';
+import delay from '@libs/common/utils/delay';
+import VEYON_REFRESH_INTERVAL from '@libs/veyon/constants/refreshInterval';
 import useVeyonApiStore from '../../useVeyonApiStore';
 
 type FrameBufferImageProps = {
@@ -10,19 +13,27 @@ type FrameBufferImageProps = {
 
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { authenticateVeyonClients, getFrameBufferStream } = useVeyonApiStore();
-  const [connUid, setConUid] = useState<string>('');
+  const { authenticateVeyonClients, getFrameBufferStream, getVeyonUser } = useVeyonApiStore();
+  const [connUid, setConnUid] = useState<string>('');
+
+  const verifyVeyonUser = async (connectionUid: string) => {
+    const veyonUser = await getVeyonUser(connectionUid);
+    if (!veyonUser || !veyonUser.login) return false;
+
+    const veyonUsername = veyonUser.login.split('\\')[1];
+    return veyonUsername === user.name;
+  };
 
   useEffect(() => {
     if (user.sophomorixIntrinsic3.length > 0) {
       const connIp = user.sophomorixIntrinsic3[0];
 
       const getConnUid = async () => {
-        try {
-          const response = await authenticateVeyonClients(connIp);
-          setConUid(response);
-        } catch (error) {
-          console.error(error);
+        const connectionUid = await authenticateVeyonClients(connIp);
+        if (connectionUid !== '') {
+          await delay(500);
+          const isVeyonUserActualUser = await verifyVeyonUser(connectionUid);
+          setConnUid(isVeyonUserActualUser ? connectionUid : '');
         }
       };
 
@@ -30,51 +41,47 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
     }
   }, [user]);
 
+  const fetchImage = async (connectionUid: string) => {
+    const response = await getFrameBufferStream(connectionUid);
+    if (!response) return null;
+
+    const objectURL = URL.createObjectURL(response);
+    setImageSrc(objectURL);
+
+    return () => URL.revokeObjectURL(objectURL);
+  };
+
   useEffect(() => {
-    if (connUid === '') {
-      return;
+    if (connUid !== '') {
+      void fetchImage(connUid);
     }
-    const fetchImage = async () => {
-      const response = await getFrameBufferStream(connUid);
-      if (response === null) return;
-      const objectURL = URL.createObjectURL(response);
-      setImageSrc(objectURL);
-    };
-
-    void fetchImage();
-  }, []);
-
-  const delay = 5000;
+  }, [connUid]);
 
   useInterval(() => {
-    if (connUid === '') {
-      return;
+    if (connUid !== '') {
+      void fetchImage(connUid);
     }
-    const fetchImage = async () => {
-      if (connUid === '') {
-        return;
-      }
-      try {
-        const response = await getFrameBufferStream(connUid);
-        if (response === null) return;
-        const objectURL = URL.createObjectURL(response);
-        setImageSrc(objectURL);
-      } catch (error) {
-        console.error('Error fetching the image:', error);
-      }
-    };
+  }, VEYON_REFRESH_INTERVAL);
 
-    void fetchImage();
-  }, delay);
+  const renderContent = () => {
+    if (imageSrc) {
+      return (
+        <img
+          className="rounded-xl"
+          src={imageSrc}
+          alt="framebuffer"
+        />
+      );
+    }
 
-  return imageSrc ? (
-    <img
-      src={imageSrc}
-      alt="framebuffer"
-    />
-  ) : (
-    connUid !== '' && <CircleLoader />
-  );
+    if (connUid !== '') {
+      return <CircleLoader />;
+    }
+
+    return <MdBlock />;
+  };
+
+  return renderContent();
 };
 
 export default FrameBufferImage;

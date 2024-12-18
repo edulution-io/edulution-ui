@@ -4,6 +4,7 @@ import { Readable } from 'stream';
 import type VeyonApiAuthResponse from '@libs/veyon/types/veyonApiAuthResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import type FrameBufferConfig from '@libs/veyon/types/framebufferConfig';
+import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import UsersService from '../users/users.service';
 
 const { VEYON_API_HOST_URL } = process.env;
@@ -58,6 +59,26 @@ class VeyonService {
         },
       });
       return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new HttpException(
+          error instanceof AxiosError ? error.message : 'Unknown error',
+          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw new HttpException('An unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async getUser(connectionUid: string): Promise<VeyonUserResponse> {
+    try {
+      const { data } = await this.veyonApi.get<VeyonUserResponse>(`/user`, {
+        headers: {
+          'Connection-Uid': connectionUid,
+        },
+      });
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new HttpException(
