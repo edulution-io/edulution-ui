@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import RectangleSize from '@libs/ui/types/rectangleSize';
 
 interface FrameStore {
   loadedEmbeddedFrames: string[];
@@ -11,6 +12,11 @@ interface FrameStore {
   setWindowedFrameOpen: (appName: string, isOpen: boolean) => void;
   minimizedWindowedFrames: string[];
   setWindowedFrameMinimized: (appName: string, isMinimized: boolean) => void;
+  currentWindowedFrameSizes: { [appName: string]: RectangleSize };
+  setCurrentWindowedFrameSize: (appName: string, size: RectangleSize) => void;
+  windowedFramesZIndices: { [appName: string]: number };
+  setWindowedFramesZIndices: (appName: string) => void;
+  hasFramedWindowHighestZIndex: (appName: string) => boolean;
   reset: () => void;
 }
 
@@ -20,6 +26,8 @@ const initialStore = {
 
   openWindowedFrames: [],
   minimizedWindowedFrames: [],
+  currentWindowedFrameSizes: {},
+  windowedFramesZIndices: { default: 0 },
 };
 
 const useFrameStore = create<FrameStore>()(
@@ -49,6 +57,24 @@ const useFrameStore = create<FrameStore>()(
             ? [...state.minimizedWindowedFrames, appName].sort()
             : state.minimizedWindowedFrames.filter((frame) => frame !== appName).sort(),
         }));
+      },
+
+      setCurrentWindowedFrameSize: (appName, currentWindowedFrameSize) =>
+        set({ currentWindowedFrameSizes: { ...get().currentWindowedFrameSizes, [appName]: currentWindowedFrameSize } }),
+
+      setWindowedFramesZIndices: (appName) => {
+        const currentIndices = get().windowedFramesZIndices;
+        const highestZIndex = Math.max(...Object.values(currentIndices));
+        set({ windowedFramesZIndices: { ...currentIndices, [appName]: highestZIndex + 1 } });
+      },
+
+      hasFramedWindowHighestZIndex: (appName) => {
+        const [highestAppName] = Object.entries(get().windowedFramesZIndices).reduce(
+          (highest, [id, zIndex]) => (zIndex > highest[1] ? [id, zIndex] : highest),
+          [null, 0] as [string | null, number],
+        );
+
+        return highestAppName === appName;
       },
 
       reset: () => set({ ...initialStore }),

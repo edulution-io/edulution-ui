@@ -91,30 +91,28 @@ const DesktopDeploymentPage: React.FC = () => {
 
   return (
     <>
-      <div className="w-screen pr-5 md:w-[calc(100%-var(--sidebar-width))]">
-        <NativeAppHeader
-          title={t('desktopdeployment.topic')}
-          description={t('desktopdeployment.description')}
-          iconSrc={DesktopDeploymentIcon}
-        />
-        <div
-          className="flex w-full flex-1 flex-col gap-10 overflow-auto pl-3 pr-3.5 scrollbar-thin md:flex-row"
-          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-        >
-          {osConfigs.map(({ os, title }) => (
-            <VdiCard
-              key={os}
-              title={t(title)}
-              availableClients={getAvailableClients(os, virtualMachines)}
-              onClick={() => handleConnect()}
-              osType={os}
-              disabled={getAvailableClients(os, virtualMachines) === 0}
-            />
-          ))}
-        </div>
-        <ConnectionErrorDialog handleReload={handleReload} />
-        <LoadingIndicator isOpen={isLoading} />
+      <NativeAppHeader
+        title={t('desktopdeployment.topic')}
+        description={t('desktopdeployment.description')}
+        iconSrc={DesktopDeploymentIcon}
+      />
+      <div
+        className="ml-4 flex w-full flex-1 flex-col gap-10 overflow-y-auto scrollbar-thin md:ml-0 md:flex-row"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        {osConfigs.map(({ os, title }) => (
+          <VdiCard
+            key={os}
+            title={t(title)}
+            availableClients={getAvailableClients(os, virtualMachines)}
+            onClick={() => handleConnect()}
+            osType={os}
+            disabled={getAvailableClients(os, virtualMachines) === 0}
+          />
+        ))}
       </div>
+      <ConnectionErrorDialog handleReload={handleReload} />
+      <LoadingIndicator isOpen={isLoading} />
       <DesktopDeploymentFloatingButtons
         handleConnect={handleConnect}
         handleReload={handleReload}

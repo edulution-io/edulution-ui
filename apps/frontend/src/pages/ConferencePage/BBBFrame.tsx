@@ -1,7 +1,7 @@
 import React from 'react';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import { createPortal } from 'react-dom';
-import ResizableWindow from '@/components/framing/ResizableWindow';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';
 
 const BBBIFrame = () => {

@@ -77,7 +77,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   },
 
   postRequestVdi: async (group: string) => {
-    set({ isLoading: true });
+    set({ error: null, isLoading: true });
 
     const vdiConnectionRequestBody = {
       group,

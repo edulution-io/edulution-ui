@@ -1,29 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Guacamole from 'guacamole-common-js';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
-import { SIDEBAR_WIDTH } from '@libs/ui/constants';
-import ResizableWindow from '@/components/framing/ResizableWindow';
-import { useTranslation } from 'react-i18next';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import useFrameStore from '@/components/framing/FrameStore';
+import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
-  const { t } = useTranslation();
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
   const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
     useDesktopDeploymentStore();
   const [clientState, setClientState] = useState(0);
+  const [hasCurrentFrameSizeLoaded, setHasCurrentFrameSizeLoaded] = useState(false);
+  const { currentWindowedFrameSizes, minimizedWindowedFrames } = useFrameStore();
 
   const handleDisconnect = () => {
     if (guacRef.current) {
       guacRef.current.disconnect();
     }
     setIsVdiConnectionOpen(false);
+    setClientState(0);
+    setHasCurrentFrameSizeLoaded(false);
   };
 
+  const id = 'desktopdeployment.topic';
+  const width = currentWindowedFrameSizes[id]?.width;
+  const height = (currentWindowedFrameSizes[id]?.height || MAXIMIZED_BAR_HEIGHT) - MAXIMIZED_BAR_HEIGHT;
+  const isMinimized = minimizedWindowedFrames.includes(id);
+
   useEffect(() => {
-    if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen) return () => {};
+    if (!hasCurrentFrameSizeLoaded) {
+      setHasCurrentFrameSizeLoaded(!!width && !!height);
+    }
+  }, [currentWindowedFrameSizes[id]]);
+
+  useEffect(() => {
+    if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
 
     const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
@@ -35,8 +49,8 @@ const VDIFrame = () => {
       GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
-      GUAC_WIDTH: window.innerWidth - SIDEBAR_WIDTH,
-      GUAC_HEIGHT: window.innerHeight,
+      GUAC_WIDTH: width,
+      GUAC_HEIGHT: height,
       GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
       GUAC_AUDIO: ['audio/L8', 'audio/L16'],
@@ -104,21 +118,13 @@ const VDIFrame = () => {
     return () => {
       handleDisconnect();
     };
-  }, [guacToken, isVdiConnectionOpen]);
+  }, [guacToken, isVdiConnectionOpen, hasCurrentFrameSizeLoaded]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (guacRef.current) {
-        guacRef.current.sendSize(window.innerWidth - SIDEBAR_WIDTH, window.innerHeight);
-      }
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [guacRef.current]);
+    if (guacRef.current && !isMinimized) {
+      guacRef.current.sendSize(width, height);
+    }
+  }, [guacRef.current, width, height, isMinimized]);
 
   if (!isVdiConnectionOpen || error) {
     return null;
@@ -126,13 +132,14 @@ const VDIFrame = () => {
 
   return (
     <ResizableWindow
-      titleTranslationId={t('desktopdeployment.topic')}
+      titleTranslationId={id}
       handleClose={handleDisconnect}
+      disableToggleMaximizeWindow
     >
       <div
         id="display"
         ref={displayRef}
-        className="h-full w-full border-none"
+        className="h-full w-full border-none bg-black"
       />
       {clientState < 3 && <LoadingIndicator isOpen />}
     </ResizableWindow>

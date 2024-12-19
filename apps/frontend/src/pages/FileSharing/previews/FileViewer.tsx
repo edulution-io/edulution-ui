@@ -3,7 +3,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
 import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
-import ResizableWindow from '@/components/framing/ResizableWindow';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
@@ -27,7 +27,8 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
     >
       {isFullScreenEditingEnabled && !isOpenedInNewTab ? (
         <ResizableWindow
-          disableWindowControls
+          disableMinimizeWindow
+          disableToggleMaximizeWindow
           titleTranslationId={t('filesharing.fileEditor')}
           handleClose={() => setIsFullScreenEditingEnabled(false)}
         >
