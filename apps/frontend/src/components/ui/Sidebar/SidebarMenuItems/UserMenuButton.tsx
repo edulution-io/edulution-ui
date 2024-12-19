@@ -6,12 +6,14 @@ import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-s
 import Avatar from '@/components/shared/Avatar';
 import useLogout from '@/hooks/useLogout';
 import DropdownMenu from '@/components/shared/DropdownMenu';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useAuth();
   const handleLogout = useLogout();
+  const { user } = useUserStore();
 
   const handleUserSettingsClick = () => {
     navigate(USER_SETTINGS_SECURITY_PATH);
@@ -29,7 +31,7 @@ const UserMenuButton: React.FC = () => {
               <p className="text-md font-bold md:hidden">
                 {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
               </p>
-              <Avatar />
+              <Avatar user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }} />
             </div>
           }
           items={[
