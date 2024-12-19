@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { GROUPS_ID } from '@libs/dashboard/constants/pageElementIds';
+import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
 import useElementHeight from '@/hooks/useElementHeight';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { Card, CardContent } from '@/components/shared/Card';
