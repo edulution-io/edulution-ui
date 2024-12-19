@@ -11,17 +11,18 @@ import APPS from '@libs/appconfig/constants/apps';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import { AppConfig } from '../appconfig/appconfig.schema';
-import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
 const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
 class MailsService {
   private mailcowApi: AxiosInstance;
+
   private imapClient: ImapFlow;
 
   constructor(
@@ -40,7 +41,7 @@ class MailsService {
   async getMails(username: string, password: string): Promise<MailDto[]> {
     const appConfigs = await this.appConfigModel.find();
 
-    let imapOptions = getExtendedOptionValue(
+    const imapOptions = getExtendedOptionValue(
       appConfigs,
       APPS.MAIL,
       AppConfigSectionsKeys.imapMailFeed as ExtendedOptionKeysType,
