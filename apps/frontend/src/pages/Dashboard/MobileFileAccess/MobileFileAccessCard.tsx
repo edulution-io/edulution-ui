@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { AppleLogo } from '@/assets/icons';
 import { Card, CardContent } from '@/components/shared/Card';
-import { useTranslation } from 'react-i18next';
 import MobileFileAccessSetupDialog from './MobileFileAccessSetupDialog';
 
 const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
-    <Card
-      variant="security"
-      className="max-h-[initial] min-h-[200px] w-full"
-    >
+    <Card variant="security">
       <CardContent>
         <h4 className="mb-6 font-bold">{t('dashboard.mobileAccess.title')}</h4>
         <p className="mb-6">{t('dashboard.mobileAccess.content')}</p>

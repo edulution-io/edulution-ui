@@ -1,36 +1,30 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { GROUPS_ID } from '@libs/dashboard/constants/pageElementIds';
-import { Card, CardContent } from '@/components/shared/Card';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import BadgeField from '@/components/shared/BadgeField';
 import useElementHeight from '@/hooks/useElementHeight';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import { Card, CardContent } from '@/components/shared/Card';
+import BadgeField from '@/components/shared/BadgeField';
 
 const Groups = () => {
   const { user } = useLmnApiStore();
 
   const { t } = useTranslation();
 
-  const cardContentHeight = useElementHeight([GROUPS_ID]) - 110;
-
+  const cardContentHeight = Math.max(useElementHeight([GROUPS_ID]) - 110, 0);
   return (
-    <Card
-      variant="organisation"
-      className="max-h-[initial] min-h-[200px] w-full"
-    >
+    <Card variant="organisation">
       <CardContent>
-        <div className="flex flex-col gap-2 p-0">
-          <h4 className="mb-4 font-bold">{t('groups.classes')}</h4>
-          <div
-            className="overflow-y-auto scrollbar-thin"
-            style={{ height: `${cardContentHeight}px` }}
-          >
-            <BadgeField
-              value={user?.schoolclasses || []}
-              onChange={() => {}}
-              readOnly
-            />
-          </div>
+        <h4 className="mb-6 font-bold">{t('groups.classes')}</h4>
+        <div
+          className="overflow-y-auto scrollbar-thin"
+          style={{ flexShrink: 0, flexGrow: 0, height: `${cardContentHeight}px` }}
+        >
+          <BadgeField
+            value={user?.schoolclasses || []}
+            onChange={() => {}}
+            readOnly
+          />
         </div>
       </CardContent>
     </Card>

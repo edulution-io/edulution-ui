@@ -1,10 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { GROUPS_ID, DASHBOARD_DESCRIPTION_ID } from '@libs/dashboard/constants/pageElementIds';
-import { BLANK_LAYOUT_HEADER_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import useElementHeight from '@/hooks/useElementHeight';
 import Feed from '@/pages/Dashboard/Feed/Feed';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
@@ -18,8 +16,6 @@ const DashboardPage: React.FC = () => {
 
   const { user } = useUserStore();
 
-  const pageBarsHeight = useElementHeight([BLANK_LAYOUT_HEADER_ID, DASHBOARD_DESCRIPTION_ID, FOOTER_ID]);
-
   const column1 = (
     <div className="basis-1/4">
       <AccountInformation />
@@ -28,7 +24,7 @@ const DashboardPage: React.FC = () => {
 
   const column2 = (
     <div className="flex basis-1/2 flex-col gap-8">
-      <div className="flex flex-col justify-between gap-4 md:flex-row">
+      <div className="flex flex-col justify-between gap-8 md:flex-row">
         <div
           id={GROUPS_ID}
           className="flex-1"
@@ -64,7 +60,7 @@ const DashboardPage: React.FC = () => {
       </div>
 
       <div className="md:my-17 my-10">
-        <div className={`flex flex-col-reverse gap-8 md:flex-row md:max-h-[${pageBarsHeight}px]`}>
+        <div className="flex flex-col-reverse gap-8 md:flex-row">
           {column1}
           {column2}
           {column3}
