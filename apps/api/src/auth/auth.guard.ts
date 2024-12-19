@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { CanActivate, ExecutionContext, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
@@ -53,9 +53,13 @@ class AuthenticationGuard implements CanActivate {
       request.token = this.token;
 
       return true;
-    } catch (e) {
-      Logger.warn(e, AuthenticationGuard.name);
-      throw new CustomHttpException(AuthErrorMessages.TokenExpired, HttpStatus.UNAUTHORIZED);
+    } catch (error) {
+      throw new CustomHttpException(
+        AuthErrorMessages.TokenExpired,
+        HttpStatus.UNAUTHORIZED,
+        error,
+        AuthenticationGuard.name,
+      );
     }
   }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { MdClose } from 'react-icons/md';
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -22,17 +23,17 @@ const ImageModal: React.FC<ImageModalProps> = ({ isOpen, imageUrl, onClose }) =>
       <button
         type="button"
         onClick={onClose}
-        className="fixed right-4 top-4 z-50 rounded-full bg-white/50 px-4 py-3 text-2xl hover:bg-gray-600"
+        className="fixed right-4 top-4 z-50 rounded-full bg-white/50 px-3 py-3 text-2xl hover:bg-gray-600"
         aria-label="Close Modal"
       >
-        ✕
+        <MdClose />
       </button>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
       <img
         onClick={(e) => e.stopPropagation()}
         src={imageUrl}
         alt="Preview"
-        className="max-h-screen max-w-full rounded-md"
+        className="w-[80%] rounded-md"
       />
     </div>,
     document.body,

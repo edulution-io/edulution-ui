@@ -116,6 +116,7 @@ interface UserLmnInfo {
   sophomorixFirstnameInitial: string;
   sophomorixFirstPassword: string;
   sophomorixIntrinsic2: string[];
+  sophomorixIntrinsic3: string[];
   sophomorixMailQuotaCalculated: string[];
   sophomorixMailQuotaUsed: string[];
   sophomorixQuota: string[];
