@@ -50,10 +50,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
           className="w-1/2 2xl:w-1/3"
           data-testid="test-id-file-preview"
         >
-          <FileViewer
-            mode="view"
-            editWindow={false}
-          />
+          <FileViewer editMode={false} />
         </div>
       )}
     </div>

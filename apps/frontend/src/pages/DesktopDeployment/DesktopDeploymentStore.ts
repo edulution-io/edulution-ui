@@ -12,7 +12,6 @@ const initialState = {
   isLoading: false,
   error: null,
   connections: null,
-  isVdiConnectionMinimized: false,
   isVdiConnectionOpen: false,
   guacId: '',
   virtualMachines: null,
@@ -27,7 +26,6 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setGuacToken: (guacToken) => set({ guacToken }),
-  setIsVdiConnectionMinimized: (isVdiConnectionMinimized) => set({ isVdiConnectionMinimized }),
   setIsVdiConnectionOpen: (isVdiConnectionOpen) => set({ isVdiConnectionOpen }),
   setGuacId: (guacId) => set({ guacId }),
   setVirtualMachines: (virtualMachines) => set({ virtualMachines }),
@@ -38,7 +36,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const response = await eduApi.get<GuacamoleDto>(EDU_API_VDI_ENDPOINT);
 
       const { authToken, dataSource } = response.data;
-      set({ guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
+      set({ guacToken: authToken, dataSource });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -79,7 +77,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   },
 
   postRequestVdi: async (group: string) => {
-    set({ isLoading: true });
+    set({ error: null, isLoading: true });
 
     const vdiConnectionRequestBody = {
       group,

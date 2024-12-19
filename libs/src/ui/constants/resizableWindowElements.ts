@@ -1,0 +1,2 @@
+export const DEFAULT_MINIMIZED_BAR_HEIGHT = 29;
+export const MAXIMIZED_BAR_HEIGHT = 40;
