@@ -5,6 +5,7 @@ import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
+import Avatar from '@/components/shared/Avatar';
 import { useTranslation } from 'react-i18next';
 
 interface UserCardProps {
@@ -92,8 +93,11 @@ const UserCard = ({
             )}
             onClick={(event) => event.stopPropagation()}
           >
-            {givenName.slice(0, 1)}
-            {surname.slice(0, 1)}
+            <Avatar
+              user={{ username: name, firstName: givenName, lastName: surname }}
+              imageSrc={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${name}`}
+              className="h-32 w-32"
+            />
           </button>
         </div>
         {isSelectable ? (
