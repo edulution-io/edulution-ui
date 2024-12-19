@@ -627,6 +627,10 @@
           "title": "Only Office Integration",
           "description": ""
         },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
+          "description": ""
+        },
         "bulletinBoard": {
           "title": "Kategorien",
           "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
@@ -1048,7 +1052,15 @@
     "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Bitte gib eine gültige URL an um die Mailbox per IMAP zu verbinden",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Bitte gib den gültigen Port an über den die Verbindung aufgebaut werden soll (z.B. 'sicher': 993, 'unsicher': 143)",
+    "mailImapSecureTitle": "Sichere Verbindung",
+    "mailImapSecureDescription": "Bitte wähle ob die Verbindung über TLS ('sicher') oder STARTTLS ('unsicher') aufgebaut werden soll",
+    "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
+    "mailImapRejectUnauthorizedDescription": "Bitte wähle aus ob auch selbst zertifizierte Verbindungen erlaubt sind"
   },
   "preview": {
     "failedToLoadImage": "Bild konnte nicht geladen werden"
