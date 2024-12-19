@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
@@ -7,6 +8,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
+import EVENT_EMITTER_EVENTS from '@libs/common/constants/eventEmitterEvents';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
@@ -17,6 +19,7 @@ class AppConfigService implements OnModuleInit {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async onModuleInit() {
@@ -76,6 +79,7 @@ class AppConfigService implements OnModuleInit {
       });
 
       await this.appConfigModel.bulkWrite(bulkOperations);
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     } catch (e) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,

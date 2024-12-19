@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { AppConfigDto } from '@libs/appconfig/types';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 
@@ -15,7 +16,9 @@ const mockAppConfigModel = {
   find: jest.fn().mockReturnValue({
     lean: jest.fn(),
   }),
-  findOne: jest.fn(),
+  findOne: jest.fn().mockReturnValue({
+    lean: jest.fn(),
+  }),
   deleteOne: jest.fn(),
 };
 
@@ -43,6 +46,7 @@ describe('AppConfigService', () => {
           provide: getConnectionToken(),
           useValue: mockConnection,
         },
+        { provide: EventEmitter2, useValue: { emit: jest.fn() } },
       ],
     }).compile();
 
@@ -160,6 +164,10 @@ describe('AppConfigService', () => {
           [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
         },
       };
+
+      jest.spyOn(mockAppConfigModel, 'findOne').mockReturnValueOnce({
+        lean: jest.fn().mockResolvedValue(expectedConfig),
+      });
 
       mockAppConfigModel.findOne.mockResolvedValue(expectedConfig);
 

@@ -31,23 +31,30 @@ describe('VeyonController', () => {
     it('should call VeyonService.authenticate with correct parameters', async () => {
       const ip = '192.168.1.1';
       const username = 'testuser';
-      const expectedResponse = { ip: '192.168.1.1', connectionUid: '1234', validUntil: 1234567890 };
+      const body = { veyonUser: 'testuser' };
+      const expectedResponse = {
+        ip: '192.168.1.1',
+        veyonUsername: 'testuser',
+        connectionUid: '1234',
+        validUntil: 1234567890,
+      };
       jest.spyOn(veyonService, 'authenticate').mockResolvedValue(expectedResponse);
 
-      const result = await veyonController.authentication(ip, username);
+      const result = await veyonController.authentication(ip, username, body);
 
-      expect(veyonService.authenticate).toHaveBeenCalledWith(ip, username);
+      expect(veyonService.authenticate).toHaveBeenCalledWith(ip, username, body.veyonUser);
       expect(result).toEqual(expectedResponse);
     });
 
     it('should handle errors thrown by VeyonService.authenticate', async () => {
       const ip = '192.168.1.1';
       const username = 'testuser';
+      const body = { veyonUser: 'testuser' };
       const error = new Error('Authentication failed');
       jest.spyOn(veyonService, 'authenticate').mockRejectedValue(error);
 
-      await expect(veyonController.authentication(ip, username)).rejects.toThrow('Authentication failed');
-      expect(veyonService.authenticate).toHaveBeenCalledWith(ip, username);
+      await expect(veyonController.authentication(ip, username, body)).rejects.toThrow('Authentication failed');
+      expect(veyonService.authenticate).toHaveBeenCalledWith(ip, username, body.veyonUser);
     });
   });
 });

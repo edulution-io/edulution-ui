@@ -3,22 +3,24 @@ import eduApi from '@/api/eduApi';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
 import handleApiError from '@/utils/handleApiError';
 import { framebufferConfigHigh, framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
-import VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 
 type VeyonApiStore = {
   isLoading: boolean;
-  authenticateVeyonClients: (ip: string) => Promise<string>;
-  getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob | null>;
-  getVeyonUser: (connectionUid: string) => Promise<VeyonUserResponse | null>;
+  authenticateVeyonClients: (ip: string, veyonUser: string) => Promise<string>;
+  getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob>;
 };
 
 const useVeyonApiStore = create<VeyonApiStore>((set) => ({
   isLoading: false,
 
-  authenticateVeyonClients: async (ip: string) => {
+  authenticateVeyonClients: async (ip: string, veyonUser: string) => {
     try {
-      const { data } = await eduApi.post<SuccessfullVeyonAuthResponse>(`veyon/${ip}`, null, { timeout: 10000 });
-      return data.connectionUid;
+      const { data } = await eduApi.post<SuccessfullVeyonAuthResponse | Record<string, never>>(
+        `veyon/${ip}`,
+        { veyonUser },
+        { timeout: 10000 },
+      );
+      return data.connectionUid || '';
     } catch (error) {
       handleApiError(error, set);
       return '';
@@ -29,26 +31,16 @@ const useVeyonApiStore = create<VeyonApiStore>((set) => ({
     set({ isLoading: true });
     const framebufferConfig = highQuality ? framebufferConfigHigh : framebufferConfigLow;
     try {
-      const response = await eduApi.get<Blob>(`veyon/framebuffer/${connectionUid}`, {
+      const { data } = await eduApi.get<Blob>(`veyon/framebuffer/${connectionUid}`, {
         responseType: 'blob',
         params: framebufferConfig,
       });
-      return response.data;
-    } catch (error) {
-      handleApiError(error, set);
-      return null;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  getVeyonUser: async (connectionUid: string) => {
-    try {
-      const { data } = await eduApi.get<VeyonUserResponse>(`veyon/user/${connectionUid}`);
       return data;
     } catch (error) {
       handleApiError(error, set);
-      return null;
+      return new Blob([], { type: 'application/octet-stream' });
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

@@ -14,8 +14,13 @@ class VeyonController {
   constructor(private readonly veyonService: VeyonService) {}
 
   @Post(':ip')
-  async authentication(@Param('ip') ip: string, @GetCurrentUsername() username: string) {
-    return this.veyonService.authenticate(ip, username);
+  async authentication(
+    @Param('ip') ip: string,
+    @GetCurrentUsername() username: string,
+    @Body() body: { veyonUser: string },
+  ) {
+    const { veyonUser } = body;
+    return this.veyonService.authenticate(ip, username, veyonUser);
   }
 
   @Get('framebuffer/:connectionUid')
@@ -30,11 +35,6 @@ class VeyonController {
       'Content-Disposition': `inline; filename="framebuffer_${connectionUid}.jpg"`,
     });
     frameBufferStream.pipe(res);
-  }
-
-  @Get('user/:connectionUid')
-  async getUser(@Param('connectionUid') connectionUid: string) {
-    return this.veyonService.getUser(connectionUid);
   }
 
   @Put('feature/:featureUid/:connectionUid')

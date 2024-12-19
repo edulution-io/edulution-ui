@@ -3,7 +3,6 @@ import { useInterval } from 'usehooks-ts';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
 import { MdBlock, MdCropFree } from 'react-icons/md';
-import delay from '@libs/common/utils/delay';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
 import ImageModal from '@/components/shared/ImageModal';
 import useVeyonApiStore from '../../useVeyonApiStore';
@@ -14,29 +13,17 @@ type FrameBufferImageProps = {
 
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { authenticateVeyonClients, getFrameBufferStream, getVeyonUser } = useVeyonApiStore();
+  const { authenticateVeyonClients, getFrameBufferStream } = useVeyonApiStore();
   const [connUid, setConnUid] = useState<string>('');
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
-
-  const verifyVeyonUser = async (connectionUid: string) => {
-    const veyonUser = await getVeyonUser(connectionUid);
-    if (!veyonUser || !veyonUser.login) return false;
-
-    const veyonUsername = veyonUser.login.split('\\')[1];
-    return veyonUsername === user.name;
-  };
 
   useEffect(() => {
     if (user.sophomorixIntrinsic3.length > 0) {
       const connIp = user.sophomorixIntrinsic3[0];
 
       const getConnUid = async () => {
-        const connectionUid = await authenticateVeyonClients(connIp);
-        if (connectionUid !== '') {
-          await delay(500);
-          const isVeyonUserActualUser = await verifyVeyonUser(connectionUid);
-          setConnUid(isVeyonUserActualUser ? connectionUid : '');
-        }
+        const connectionUid = await authenticateVeyonClients(connIp, user.name);
+        setConnUid(connectionUid);
       };
 
       void getConnUid();
@@ -44,13 +31,12 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   }, [user]);
 
   const fetchImage = async (connectionUid: string) => {
-    const response = await getFrameBufferStream(connectionUid, isImagePreviewModalOpen);
-    if (!response) return null;
+    const image = await getFrameBufferStream(connectionUid, isImagePreviewModalOpen);
+    if (!image.size) return null;
 
-    const objectURL = URL.createObjectURL(response);
-    setImageSrc(objectURL);
-
-    return () => URL.revokeObjectURL(objectURL);
+    const imageURL = URL.createObjectURL(image);
+    setImageSrc(imageURL);
+    return () => URL.revokeObjectURL(imageURL);
   };
 
   useEffect(() => {
