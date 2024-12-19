@@ -2,31 +2,32 @@ import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import { InjectModel } from '@nestjs/mongoose';
 import axios, { AxiosInstance } from 'axios';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
+import APPS from '@libs/appconfig/constants/apps';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
+import { AppConfig } from '../appconfig/appconfig.schema';
+import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
-const {
-  MAIL_IMAP_URL,
-  MAIL_API_URL,
-  MAIL_IMAP_PORT,
-  MAIL_IMAP_SECURE,
-  MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
-  MAIL_API_KEY,
-} = process.env;
+const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
 class MailsService {
   private mailcowApi: AxiosInstance;
-
   private imapClient: ImapFlow;
 
-  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
+  constructor(
+    @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
+    @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+  ) {
     this.mailcowApi = axios.create({
       baseURL: `${MAIL_API_URL}/api/v1`,
       headers: {
@@ -37,20 +38,34 @@ class MailsService {
   }
 
   async getMails(username: string, password: string): Promise<MailDto[]> {
+    const appConfigs = await this.appConfigModel.find();
+
+    let imapOptions = getExtendedOptionValue(
+      appConfigs,
+      APPS.MAIL,
+      AppConfigSectionsKeys.imapMailFeed as ExtendedOptionKeysType,
+    ) as unknown as { name: string; value: string }[];
+    const imapUrl = imapOptions.find((option) => option.name === ExtendedOptionKeys.MAIL_IMAP_URL)?.value;
+    const imapPort = imapOptions.find((option) => option.name === ExtendedOptionKeys.MAIL_IMAP_PORT)?.value;
+    const imapSecure = imapOptions.find((option) => option.name === ExtendedOptionKeys.MAIL_IMAP_SECURE)?.value;
+    const imapRejectUnauthorized = imapOptions.find(
+      (option) => option.name === ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
+    )?.value;
+
     // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT || !MAIL_IMAP_SECURE || !MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) {
+    if (!imapUrl || !imapPort || !imapSecure || !imapRejectUnauthorized) {
       return [];
     }
-    if (Number.isNaN(Number(MAIL_IMAP_PORT))) {
+    if (Number.isNaN(Number(imapPort))) {
       throw new CustomHttpException(MailsErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
     }
 
     this.imapClient = new ImapFlow({
-      host: MAIL_IMAP_URL,
-      port: Number(MAIL_IMAP_PORT),
-      secure: MAIL_IMAP_SECURE === 'true',
+      host: imapUrl,
+      port: Number(imapPort),
+      secure: imapSecure === 'true',
       tls: {
-        rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',
+        rejectUnauthorized: imapRejectUnauthorized === 'true',
       },
       auth: {
         user: username,
@@ -80,7 +95,7 @@ class MailsService {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { or: [{ new: true }, { seen: false }, { recent: true }] },
+        ':*', // { or: [{ new: true }, { seen: false }, { recent: true }] },
         {
           source: true,
           envelope: true,

@@ -626,6 +626,10 @@
           "title": "Only Office Integration",
           "description": ""
         },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
+          "description": ""
+        },
         "bulletinBoard": {
           "title": "Categories",
           "description": "Add new categories or edit existing ones to control for which users and groups the bulletin board should be displayed instead of the classic dashboard."
@@ -1030,7 +1034,15 @@
     "onlyOfficeUrl": "Please enter the OnlyOffice URL",
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Please enter a valid URL to connect to the mailbox via IMAP",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Please enter the valid port to connect to the mailbox via IMAP (e.g. secure: 993, unsecure: 143)",
+    "mailImapSecureTitle": "Secure Connection",
+    "mailImapSecureDescription": "Please select if the connection should be established via TLS (more secure) or STARTTLS",
+    "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
+    "mailImapRejectUnauthorizedDescription": "Please select if self-signed certificates should be rejected or allowed"
   },
   "mails": {
     "errors": {
