@@ -55,9 +55,10 @@ const BadgeField = (props: BadgeFieldProps) => {
       <div className="flex flex-row flex-wrap gap-2">
         {isEmpty && <BadgeSH className={cn('bg-ciDarkGreyDisabled px-4', className)}>{t('common.none')}</BadgeSH>}
         {!isEmpty &&
-          badges.map((listItem) => (
+          badges.map((listItem, index) => (
             <BadgeSH
-              key={`badge-${listItem}`}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`badge${index}_-_${listItem}`}
               className={cn(
                 'h-[36px] py-0',
                 { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },

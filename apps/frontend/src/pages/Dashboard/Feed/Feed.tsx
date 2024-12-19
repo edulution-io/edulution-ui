@@ -18,8 +18,8 @@ const Feed = () => {
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>
+        <h4 className="mb-6 font-bold">{t('feed.title')}</h4>
         <div className="flex flex-col gap-3 p-0">
-          <h4 className="font-bold">{t('feed.title')}</h4>
           <ScrollArea className="scrollbar-thin">
             <AccordionSH
               type="multiple"

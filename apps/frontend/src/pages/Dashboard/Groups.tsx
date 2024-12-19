@@ -1,21 +1,25 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
+import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
+import useElementHeight from '@/hooks/useElementHeight';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import { Card, CardContent } from '@/components/shared/Card';
 import BadgeField from '@/components/shared/BadgeField';
 
 const Groups = () => {
   const { user } = useLmnApiStore();
 
   const { t } = useTranslation();
+
+  const cardContentHeight = Math.max(useElementHeight([GROUPS_ID]) - 110, 0);
   return (
-    <Card
-      variant="organisation"
-      className="h-full"
-    >
+    <Card variant="organisation">
       <CardContent>
-        <div className="flex flex-col gap-1">
-          <h4 className="text-md font-bold">{t('groups.classes')}</h4>
+        <h4 className="mb-6 font-bold">{t('groups.classes')}</h4>
+        <div
+          className="overflow-y-auto scrollbar-thin"
+          style={{ flexShrink: 0, flexGrow: 0, height: `${cardContentHeight}px` }}
+        >
           <BadgeField
             value={user?.schoolclasses || []}
             onChange={() => {}}
