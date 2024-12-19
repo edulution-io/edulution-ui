@@ -4,8 +4,8 @@ import useElementHeight from '@/hooks/useElementHeight';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { findAppConfigByName } from '@/utils/common';
 import APPS from '@libs/appconfig/constants/apps';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 
 const BulletinBoardPage = () => {
   const { bulletinsByCategories } = useBulletinBoardStore();
