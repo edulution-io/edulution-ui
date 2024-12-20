@@ -54,6 +54,21 @@ jobs:
           fi
           echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
 
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4.2.0
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Build Frontend
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
@@ -93,6 +108,21 @@ jobs:
           fi
           echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
 
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4.2.0
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Build Backend
         run: npm run build:api
 
@@ -120,6 +150,21 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4.2.0
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Run Checks and Tests
         run: |
           npm run check-circular-deps
