@@ -1,8 +1,9 @@
 import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ParsedMail, simpleParser } from 'mailparser';
-import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -12,17 +13,15 @@ import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
-// import { OnEvent } from '@nestjs/event-emitter';
-// import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 
 const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
-class MailsService {
-  // implements OnModuleInit {
+class MailsService implements OnModuleInit {
   private mailcowApi: AxiosInstance;
 
   private imapClient: ImapFlow;
@@ -48,11 +47,11 @@ class MailsService {
     });
   }
 
-  // onModuleInit() {
-  //   void this.updateImapConfig();
-  // }
+  onModuleInit() {
+    void this.updateImapConfig();
+  }
 
-  // @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
   async updateImapConfig() {
     try {
       const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
@@ -69,8 +68,6 @@ class MailsService {
   }
 
   async getMails(username: string, password: string): Promise<Partial<MailDto>[]> {
-    await this.updateImapConfig();
-
     if (!this.imapUrl || !this.imapPort || !this.imapSecure || !this.imapRejectUnauthorized) {
       return [];
     }

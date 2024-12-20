@@ -3,8 +3,7 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
 const MAIL_IMAP_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  // TODO: ENABLE BOOLEAN TYPE WITH A SWITCH AS INPUT COMPONENT
-  // TODO: ENABLE THE DEFINITION OF THE USED SPACE FOR THE INPUT ELEMENT
+  // TODO: ENABLE BOOLEAN TYPE WITH A SWITCH AS INPUT COMPONENT (ADDITIONALLY WIDTH OF THE COMPONENT) (https://github.com/edulution-io/edulution-ui/issues/342)
   {
     name: ExtendedOptionKeys.MAIL_IMAP_URL,
     description: 'appExtendedOptions.onlyOfficeUrl',
