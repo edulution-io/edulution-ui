@@ -7,6 +7,7 @@ import type { RedisClientOptions } from 'redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
@@ -63,6 +64,7 @@ import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
         port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
       },
     }),
+    EventEmitterModule.forRoot(),
   ],
   providers: [
     {
