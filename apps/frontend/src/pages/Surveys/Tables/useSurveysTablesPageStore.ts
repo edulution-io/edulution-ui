@@ -9,6 +9,7 @@ import {
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
+import { HttpStatus } from '@nestjs/common';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -104,10 +105,13 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     }
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}/${surveyId}`);
-      set({ canParticipate: response.data });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
+      if (response.statusText === HttpStatus.OK) {
+        set({ canParticipate: response.data });
+      }
     } catch (error) {
-      handleApiError(error, set);
       set({ canParticipate: false });
+      handleApiError(error, set);
     }
   },
 
@@ -118,10 +122,13 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     }
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_HAS_ANSWERS_ENDPOINT}/${surveyId}`);
-      set({ hasAnswers: response.data });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
+      if (response.status === HttpStatus.OK) {
+        set({ hasAnswers: response.data });
+      }
     } catch (error) {
-      handleApiError(error, set);
       set({ hasAnswers: false });
+      handleApiError(error, set);
     }
   },
 
@@ -177,8 +184,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   onClickSurveysTableCell: (row: Row<SurveyDto>) => {
     const wasSelectedPreviously = row.getIsSelected();
-    row.toggleSelected();
-
     if (!wasSelectedPreviously) {
       const { canParticipateSelectedSurvey, hasAnswersSelectedSurvey } = get();
       set({ selectedSurvey: row.original });
@@ -187,6 +192,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     } else {
       set({ selectedSurvey: undefined, canParticipate: false, hasAnswers: false });
     }
+    row.toggleSelected();
   },
 }));
 
