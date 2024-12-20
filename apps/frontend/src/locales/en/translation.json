@@ -1040,9 +1040,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Please enter the valid port to connect to the mailbox via IMAP (e.g. secure: 993, unsecure: 143)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Please select if the connection should be established via TLS (more secure) or STARTTLS",
+    "mailImapSecureDescription": "Please enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Please select if self-signed certificates should be rejected or allowed"
+    "mailImapRejectUnauthorizedDescription": "Please enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
   },
   "mails": {
     "errors": {

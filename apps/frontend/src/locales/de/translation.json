@@ -1058,9 +1058,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Bitte gib den gültigen Port an über den die Verbindung aufgebaut werden soll (z.B. 'sicher': 993, 'unsicher': 143)",
     "mailImapSecureTitle": "Sichere Verbindung",
-    "mailImapSecureDescription": "Bitte wähle ob die Verbindung über TLS ('sicher') oder STARTTLS ('unsicher') aufgebaut werden soll",
+    "mailImapSecureDescription": "Bitte gib 'true' ein, wenn die Verbindung über TLS ('sicher') aufgebaut werden soll, ansonsten wird 'false' (STARTTLS ('unsicher')) vorrausgesetzt",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Bitte wähle aus ob auch selbst zertifizierte Verbindungen erlaubt sind"
+    "mailImapRejectUnauthorizedDescription": "Bitte gib 'true' ein, wenn nur zertifizierte Verbindungen erlaubt sind, ansonsten wird 'false' ('unsicher') vorrausgesetzt"
   },
   "preview": {
     "failedToLoadImage": "Bild konnte nicht geladen werden"
