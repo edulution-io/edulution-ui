@@ -44,15 +44,21 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Generate Docker Tags
-        id: generate_docker_tags
+      - name: Generate Frontend Docker Tags
+        id: generate_docker_tags_fe
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-ui"
-          docker_tags="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
-          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]; then
-            docker_tags+=",$docker_registry_path:latest"
+          docker_tags_fe="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
+          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]
+          then
+            docker_tags_fe+=",$docker_registry_path:latest"
           fi
-          echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
+          echo "docker_tags_fe=$docker_tags_fe" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ github.token }}
 
       - name: Use Node.js
         uses: actions/setup-node@v4.1.0
@@ -60,7 +66,7 @@ jobs:
           node-version: 18.x
           cache: 'npm'
 
-      - name: Cache Node.js modules
+      - name: Restore cached Node.js modules
         uses: actions/cache@v4.2.0
         with:
           path: |
@@ -81,16 +87,16 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
 
-      - name: Build and Push Docker Image
+      - name: Build and push docker image
         uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
             buildId=${{ github.sha }}
-            version=${{ steps.generate_docker_tags.outputs.docker_tags }}
+            version=${{ steps.generate_docker_tags_fe.outputs.docker_tags_fe }}
           context: .
           file: apps/frontend/Dockerfile
           push: true
-          tags: ${{ steps.generate_docker_tags.outputs.docker_tags }}
+          tags: ${{ steps.generate_docker_tags_fe.outputs.docker_tags_fe }}
 
   build-api:
     runs-on: ubuntu-22.04
@@ -98,15 +104,21 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Generate Docker Tags
-        id: generate_docker_tags
+      - name: Generate API Docker Tags
+        id: generate_docker_tags_api
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-api"
-          docker_tags="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
-          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]; then
-            docker_tags+=",$docker_registry_path:latest"
+          docker_tags_api="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
+          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]
+          then
+            docker_tags_api+=",$docker_registry_path:latest"
           fi
-          echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
+          echo "docker_tags_api=$docker_tags_api" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ github.token }}
 
       - name: Use Node.js
         uses: actions/setup-node@v4.1.0
@@ -114,7 +126,7 @@ jobs:
           node-version: 18.x
           cache: 'npm'
 
-      - name: Cache Node.js modules
+      - name: Restore cached Node.js modules
         uses: actions/cache@v4.2.0
         with:
           path: |
@@ -133,16 +145,16 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
 
-      - name: Build and Push Docker Image
+      - name: Build and push docker image
         uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
             buildId=${{ github.sha }}
-            version=${{ steps.generate_docker_tags.outputs.docker_tags }}
+            version=${{ steps.generate_docker_tags_api.outputs.docker_tags_api }}
           context: .
           file: apps/api/Dockerfile
           push: true
-          tags: ${{ steps.generate_docker_tags.outputs.docker_tags }}
+          tags: ${{ steps.generate_docker_tags_api.outputs.docker_tags_api }}
 
   test:
     runs-on: ubuntu-22.04
@@ -150,13 +162,18 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ github.token }}
+
       - name: Use Node.js
         uses: actions/setup-node@v4.1.0
         with:
           node-version: 18.x
           cache: 'npm'
 
-      - name: Cache Node.js modules
+      - name: Restore cached Node.js modules
         uses: actions/cache@v4.2.0
         with:
           path: |
