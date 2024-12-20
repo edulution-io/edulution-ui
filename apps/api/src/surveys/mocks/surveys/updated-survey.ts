@@ -34,6 +34,24 @@ export const surveyUpdateInitialSurvey: Survey = {
   isPublic: false,
 };
 
+export const surveyUpdateInitialSurveyDto: SurveyDto = {
+  ...surveyUpdateInitialSurvey,
+  formula: surveyUpdateInitialSurvey.formula,
+  creator: {
+    ...firstMockUser,
+    label: 'pupil1-name1',
+    value: firstUsername,
+  },
+  invitedAttendees: mockedParticipants,
+  invitedGroups: [],
+  participatedAttendees: [
+    { ...firstMockUser, label: 'pupil1-name1', value: firstUsername },
+    { ...secondMockUser, label: 'pupil2-name2', value: secondUsername },
+  ],
+  saveNo: 1,
+  isPublic: false,
+};
+
 export const surveyUpdateUpdatedSurvey: Survey = {
   _id: surveyUpdateSurveyId,
   id: surveyUpdateSurveyId,

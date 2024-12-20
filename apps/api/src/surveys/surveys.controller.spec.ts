@@ -109,7 +109,7 @@ describe(SurveysController.name, () => {
               { invitedAttendees: { $elemMatch: { username: firstUsername } } },
             ],
           },
-          { _id: idOfPublicSurvey01.toString() },
+          { _id: idOfPublicSurvey01 },
         ],
       });
     });

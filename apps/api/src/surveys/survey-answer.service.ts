@@ -174,11 +174,7 @@ class SurveyAnswersService {
         ? { firstName: user.given_name, lastName: user.family_name, username }
         : { username: `public-${mongoId.getTimestamp().toTimeString()}` };
 
-    try {
-      throwErrorIfParticipationIsNotPossible(survey, username);
-    } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
-    }
+    throwErrorIfParticipationIsNotPossible(survey, username);
 
     if (!isPublic) {
       const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({

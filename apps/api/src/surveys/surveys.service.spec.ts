@@ -16,6 +16,7 @@ import {
   surveyUpdateUpdatedSurvey,
   unknownSurveyId,
 } from './mocks';
+import { surveyUpdateInitialSurveyDto, surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
@@ -63,7 +64,7 @@ describe('SurveyService', () => {
       const result = await service.findPublicSurvey(idOfPublicSurvey01.toString());
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01.toString(), isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
     });
 
     it('should throw an error if the database access fails', async () => {
@@ -81,7 +82,7 @@ describe('SurveyService', () => {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01.toString(), isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
     });
   });
 
@@ -151,9 +152,7 @@ describe('SurveyService', () => {
 
       expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
 
-      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, {
-        ...surveyUpdateUpdatedSurvey,
-      });
+      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateUpdatedSurvey);
     });
 
     it('should throw an error if the survey update fails', async () => {
@@ -182,11 +181,11 @@ describe('SurveyService', () => {
       });
       surveyModel.create = jest.fn().mockReturnValue(surveyUpdateInitialSurvey);
 
-      const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurvey, mockSseConnections);
+      const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurveyDto, mockSseConnections);
       expect(result).toStrictEqual(surveyUpdateInitialSurvey);
 
-      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateInitialSurvey);
-      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateInitialSurveyDto);
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
     });
 
     it('should update a survey', async () => {
@@ -194,10 +193,10 @@ describe('SurveyService', () => {
         lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
-      const result = await service.updateOrCreateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);
+      const result = await service.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, mockSseConnections);
       expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
 
-      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateUpdatedSurvey);
+      expect(surveyModel.findByIdAndUpdate).toHaveBeenCalledWith(surveyUpdateSurveyId, surveyUpdateUpdatedSurveyDto);
     });
 
     it('should throw an error if the survey update and the creation of the survey failed', async () => {
@@ -205,7 +204,7 @@ describe('SurveyService', () => {
       jest.spyOn(service, 'createSurvey').mockResolvedValue(null);
 
       try {
-        await service.updateOrCreateSurvey(surveyUpdateInitialSurvey, mockSseConnections);
+        await service.updateOrCreateSurvey(surveyUpdateInitialSurveyDto, mockSseConnections);
       } catch (e) {
         const error = e as Error;
         expect(error.message).toBe(SurveyErrorMessages.UpdateOrCreateError);
