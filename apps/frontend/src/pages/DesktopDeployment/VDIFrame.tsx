@@ -130,8 +130,9 @@ const VDIFrame = () => {
   }, [guacToken, isVdiConnectionOpen, hasCurrentFrameSizeLoaded]);
 
   useEffect(() => {
-    if (guacRef.current && !isMinimized) {
+    if (guacRef.current && !isMinimized && displayRef.current) {
       guacRef.current.sendSize(width, height);
+      displayRef.current.focus();
     }
   }, [guacRef.current, width, height, isMinimized]);
 
