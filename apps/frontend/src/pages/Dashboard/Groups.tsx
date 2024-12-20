@@ -15,7 +15,7 @@ const Groups = () => {
   return (
     <Card
       variant="organisation"
-      className="h-full"
+      className="h-full min-h-[200px] md:min-h-[100px]"
     >
       <CardContent>
         <h4 className="mb-6 font-bold">{t('groups.classes')}</h4>

@@ -42,7 +42,7 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
     return (
       <SHCardContent
         ref={ref}
-        className={cn('h-full w-full p-[20px]', className)}
+        className={cn('p-[20px]', className)}
         {...props}
       />
     );
