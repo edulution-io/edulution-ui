@@ -1,11 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import { Button } from '@/components/shared/Button';
-import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 
 const SharePublicSurveyDialog = () => {
   const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorPageStore();
@@ -14,32 +12,15 @@ const SharePublicSurveyDialog = () => {
 
   const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
 
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        toast.info(t('surveys.sharePublicSurveyDialog.savedToClipboard'));
-      })
-      .catch(() => {
-        toast.error(t('surveys.sharePublicSurveyDialog.savedToClipboardError'));
-      });
-  };
-
   const getDialogBody = () => (
-    <>
-      <p>{t('surveys.sharePublicSurveyDialog.description')}</p>
-      <div className="flex flex-col items-center justify-center">
-        <QRCodeDisplay value={url} />
-        <div className="mb-4 mt-4 truncate rounded-xl bg-ciLightGrey px-2 py-1">{url}</div>
-        <Button
-          type="button"
-          variant="btn-collaboration"
-          onClick={() => copyToClipboard()}
-        >
-          {t('common.copy')}
-        </Button>
-      </div>
-    </>
+    <QRCodeWithCopyButton
+      url={url}
+      titleTranslationId="surveys.sharePublicSurveyDialog.description"
+      toasterTranslationIds={{
+        success: 'surveys.sharePublicSurveyDialog.savedToClipboard',
+        error: 'surveys.sharePublicSurveyDialog.savedToClipboardError',
+      }}
+    />
   );
 
   return (

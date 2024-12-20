@@ -22,6 +22,7 @@ import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSur
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
@@ -49,6 +50,8 @@ const cleanAllStores = () => {
   useLmnApiStore.getState().reset();
   useMailsStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
+  usePublicConferenceStore.getState().reset();
+  useResultDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();

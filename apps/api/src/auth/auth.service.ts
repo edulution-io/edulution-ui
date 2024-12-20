@@ -3,11 +3,11 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { Request } from 'express';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { TOTP, Secret } from 'otpauth';
-import { OidcMetadata, SigninResponse, ErrorResponse } from 'oidc-client-ts';
+import { Secret, TOTP } from 'otpauth';
+import { ErrorResponse, OidcMetadata, SigninResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
@@ -56,9 +56,7 @@ class AuthService {
           }),
         );
       }),
-      catchError((error) =>
-        throwError(() => new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error)),
-      ),
+      catchError(() => throwError(() => new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED))),
     );
   }
 
@@ -87,7 +85,7 @@ class AuthService {
         const errorMessage: ErrorResponse = error.response.data as ErrorResponse;
         throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
       }
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error);
+      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, body);
     }
   }
 

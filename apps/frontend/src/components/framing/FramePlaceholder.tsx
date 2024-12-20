@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '@/components/ui/Sidebar/Sidebar';
-import { findAppConfigByName } from '@/utils/common';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { getFromPathName } from '@libs/common/utils';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 
 const FramePlaceholder: React.FC = () => {
   const { pathname } = useLocation();
