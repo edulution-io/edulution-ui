@@ -3,14 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import MailsController from './mails.controller';
 import MailsService from './mails.service';
 import { MailProvider, MailProviderSchema } from './mail-provider.schema';
-import { AppConfig, AppConfigSchema } from '../appconfig/appconfig.schema';
+import AppConfigService from '../appconfig/appconfig.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: MailProvider.name, schema: MailProviderSchema }]),
-    MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: MailProvider.name, schema: MailProviderSchema }])],
   controllers: [MailsController],
-  providers: [MailsService],
+  providers: [MailsService, AppConfigService],
 })
 export default class MailsModule {}

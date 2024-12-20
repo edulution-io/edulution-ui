@@ -11,23 +11,33 @@ import APPS from '@libs/appconfig/constants/apps';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
-import { AppConfig } from '../appconfig/appconfig.schema';
+import AppConfigService from '../appconfig/appconfig.service';
+// import { OnEvent } from '@nestjs/event-emitter';
+// import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 
 const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
 class MailsService {
+  // implements OnModuleInit {
   private mailcowApi: AxiosInstance;
 
   private imapClient: ImapFlow;
 
+  private imapUrl: string;
+
+  private imapPort: number;
+
+  private imapSecure: boolean;
+
+  private imapRejectUnauthorized: boolean;
+
   constructor(
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
-    @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+    private readonly appConfigService: AppConfigService,
   ) {
     this.mailcowApi = axios.create({
       baseURL: `${MAIL_API_URL}/api/v1`,
@@ -38,35 +48,39 @@ class MailsService {
     });
   }
 
-  async getMails(username: string, password: string): Promise<MailDto[]> {
-    const appConfigs = await this.appConfigModel.find();
+  // onModuleInit() {
+  //   void this.updateImapConfig();
+  // }
 
-    const imapOptions = getExtendedOptionValue(
-      appConfigs,
-      APPS.MAIL,
-      AppConfigSectionsKeys.imapMailFeed as ExtendedOptionKeysType,
-    ) as unknown as { name: string; value: string }[];
-    const imapUrl = imapOptions.find((option) => option.name === ExtendedOptionKeys.MAIL_IMAP_URL)?.value;
-    const imapPort = imapOptions.find((option) => option.name === ExtendedOptionKeys.MAIL_IMAP_PORT)?.value;
-    const imapSecure = imapOptions.find((option) => option.name === ExtendedOptionKeys.MAIL_IMAP_SECURE)?.value;
-    const imapRejectUnauthorized = imapOptions.find(
-      (option) => option.name === ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
-    )?.value;
+  // @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  async updateImapConfig() {
+    try {
+      const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
+      this.imapUrl = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_URL);
+      this.imapPort = Number(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_PORT));
+      this.imapSecure = Boolean(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_SECURE));
+      this.imapRejectUnauthorized =
+        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) === 'true';
 
-    // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    if (!imapUrl || !imapPort || !imapSecure || !imapRejectUnauthorized) {
-      return [];
+      Logger.warn(this.imapUrl, this.imapPort, this.imapSecure, this.imapRejectUnauthorized, MailsService.name);
+    } catch (error) {
+      throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    if (Number.isNaN(Number(imapPort))) {
-      throw new CustomHttpException(MailsErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
+  }
+
+  async getMails(username: string, password: string): Promise<Partial<MailDto>[]> {
+    await this.updateImapConfig();
+
+    if (!this.imapUrl || !this.imapPort || !this.imapSecure || !this.imapRejectUnauthorized) {
+      return [];
     }
 
     this.imapClient = new ImapFlow({
-      host: imapUrl,
-      port: Number(imapPort),
-      secure: imapSecure === 'true',
+      host: this.imapUrl,
+      port: this.imapPort,
+      secure: this.imapSecure,
       tls: {
-        rejectUnauthorized: imapRejectUnauthorized === 'true',
+        rejectUnauthorized: this.imapRejectUnauthorized,
       },
       auth: {
         user: username,
@@ -91,20 +105,24 @@ class MailsService {
     });
 
     let mailboxLock: MailboxLockObject | undefined;
-    const mails: MailDto[] = [];
+    const mails: Partial<MailDto>[] = [];
     try {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        ':*', // { or: [{ new: true }, { seen: false }, { recent: true }] },
-        {
-          source: true,
-          envelope: true,
-          bodyStructure: true,
-          flags: true,
-          labels: true,
-        },
+        { seen: false, since: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        { envelope: true, labels: true },
       );
+
+      // eslint-disable-next-line no-restricted-syntax
+      for await (const mail of fetchMail) {
+        const mailDto: Partial<MailDto> = {
+          id: mail.uid,
+          subject: mail.envelope.subject,
+          labels: mail.labels,
+        };
+        mails.push(mailDto);
+      }
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail || []) {
