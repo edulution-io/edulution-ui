@@ -106,7 +106,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}/${surveyId}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
-      if (response.statusText === HttpStatus.OK) {
+      if (response.status === HttpStatus.OK) {
         set({ canParticipate: response.data });
       }
     } catch (error) {
