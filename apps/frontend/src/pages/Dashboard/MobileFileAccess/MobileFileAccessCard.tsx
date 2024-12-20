@@ -9,7 +9,10 @@ const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
-    <Card variant="security">
+    <Card
+      variant="security"
+      className="h-full"
+    >
       <CardContent>
         <h4 className="mb-6 font-bold">{t('dashboard.mobileAccess.title')}</h4>
         <p className="mb-6">{t('dashboard.mobileAccess.content')}</p>

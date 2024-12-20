@@ -13,7 +13,10 @@ const Groups = () => {
 
   const cardContentHeight = Math.max(useElementHeight([GROUPS_ID]) - 110, 0);
   return (
-    <Card variant="organisation">
+    <Card
+      variant="organisation"
+      className="h-full"
+    >
       <CardContent>
         <h4 className="mb-6 font-bold">{t('groups.classes')}</h4>
         <div
