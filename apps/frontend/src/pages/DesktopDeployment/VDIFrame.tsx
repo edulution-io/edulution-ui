@@ -37,12 +37,21 @@ const VDIFrame = () => {
   }, [currentWindowedFrameSizes[id]]);
 
   useEffect(() => {
+    if (displayRef.current) {
+      if (isVdiConnectionOpen && !isMinimized) {
+        displayRef.current.focus();
+      }
+    }
+  }, [displayRef.current, isVdiConnectionOpen, isMinimized]);
+
+  useEffect(() => {
     if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
 
     const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
+    displayElement.tabIndex = 0;
 
     const guacamoleConfig = {
       token: guacToken,
@@ -85,7 +94,7 @@ const VDIFrame = () => {
     touch.ontouchend = guac.sendTouchState.bind(guac);
     touch.ontouchmove = guac.sendTouchState.bind(guac);
 
-    const keyboard = new Guacamole.Keyboard(document);
+    const keyboard = new Guacamole.Keyboard(displayElement);
     keyboard.onkeydown = (keysym) => guac.sendKeyEvent(1, keysym);
     keyboard.onkeyup = (keysym) => guac.sendKeyEvent(0, keysym);
 
