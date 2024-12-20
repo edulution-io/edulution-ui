@@ -12,7 +12,7 @@ class AppConfigGuard implements CanActivate {
     const { user } = request;
 
     if (!user) {
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.NOT_FOUND, '', AppConfigGuard.name);
     }
 
     const ldapGroups = user.ldapGroups || [];
@@ -20,7 +20,7 @@ class AppConfigGuard implements CanActivate {
     if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return true;
     }
-    throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED);
+    throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED, '', AppConfigGuard.name);
   }
 }
 
