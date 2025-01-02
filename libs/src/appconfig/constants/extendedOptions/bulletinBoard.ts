@@ -8,6 +8,7 @@ const BULLETIN_BOARD_EXTENDED_OPTIONS = [
     title: 'appExtendedOptions.bulletinBoardUrlTitle',
     type: ExtendedOptionField.table,
     value: '',
+    width: 'full',
   },
 ];
 

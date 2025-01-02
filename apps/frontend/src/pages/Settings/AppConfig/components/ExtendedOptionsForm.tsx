@@ -9,6 +9,7 @@ import { z } from 'zod';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
+import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
@@ -34,6 +35,17 @@ const ExtendedOptionsForm = <T extends FieldValues>({
             fieldPath={fieldPath}
             control={control}
             option={option}
+            type="text"
+          />
+        );
+      case ExtendedOptionField.number:
+        return (
+          <AppConfigFormField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
+            type="number"
           />
         );
       case ExtendedOptionField.password:
@@ -51,6 +63,14 @@ const ExtendedOptionsForm = <T extends FieldValues>({
           <AppConfigTable
             key={fieldPath}
             applicationName={settingLocation || ''}
+          />
+        );
+      case ExtendedOptionField.boolean:
+        return (
+          <AppConfigSwitch
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
           />
         );
       default:
@@ -73,7 +93,14 @@ const ExtendedOptionsForm = <T extends FieldValues>({
               </AccordionTrigger>
               <AccordionContent>
                 <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
-                {options?.map((option: AppConfigExtendedOption) => renderComponent(option))}
+                {options?.map((option: AppConfigExtendedOption) => (
+                  <div
+                    key={`key_${section}_${option.name}`}
+                    className={option.width === 'full' ? 'w-full' : 'w-[calc(50%-12px)]'}
+                  >
+                    {renderComponent(option)}
+                  </div>
+                ))}
               </AccordionContent>
             </AccordionItem>
           </AccordionSH>

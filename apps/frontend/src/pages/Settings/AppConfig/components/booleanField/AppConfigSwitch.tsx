@@ -1,25 +1,19 @@
-import React, { HTMLInputTypeAttribute } from 'react';
-import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
+import React from 'react';
 import { Control, FieldValues, Path } from 'react-hook-form';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
+import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import Switch from '@/components/ui/Switch';
 
-type AppConfigFormFieldProps<T extends FieldValues> = {
+type AppConfigSwitchProps<T extends FieldValues> = {
   fieldPath: Path<T>;
   control: Control<z.infer<typeof formSchema>, T>;
   option: AppConfigExtendedOption;
-  type?: HTMLInputTypeAttribute | undefined;
 };
 
-const AppConfigFormField = <T extends FieldValues>({
-  fieldPath,
-  control,
-  option,
-  type = 'text',
-}: AppConfigFormFieldProps<T>) => {
+const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: AppConfigSwitchProps<T>) => {
   const { t } = useTranslation();
 
   return (
@@ -30,11 +24,11 @@ const AppConfigFormField = <T extends FieldValues>({
         <FormItem>
           <div>{t(option.title)}</div>
           <FormControl>
-            <Input
-              autoComplete="new-password"
+            <Switch
               {...field}
-              type={type}
-              variant="lightGray"
+              checked={field.value as boolean}
+              onCheckedChange={() => field.onChange(!(field.value as boolean))}
+              disabled={field.disabled}
             />
           </FormControl>
           <FormMessage className="text-p" />
@@ -44,4 +38,4 @@ const AppConfigFormField = <T extends FieldValues>({
   );
 };
 
-export default AppConfigFormField;
+export default AppConfigSwitch;
