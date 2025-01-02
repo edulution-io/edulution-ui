@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { create } from 'zustand';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -13,7 +12,7 @@ const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  deleteSurvey: async (surveyIds: mongoose.Types.ObjectId[]): Promise<void> => {
+  deleteSurvey: async (surveyIds: string[]): Promise<void> => {
     set({ isLoading: true });
     try {
       await eduApi.delete(SURVEYS_ENDPOINT, { data: { surveyIds } });

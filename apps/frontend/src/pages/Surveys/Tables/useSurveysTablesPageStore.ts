@@ -11,6 +11,7 @@ interface SurveysTablesPageStore {
   selectedPageView: SurveysPageView;
   updateSelectedPageView: (pageView: SurveysPageView) => void;
 
+  // TODO: THIS CAN BE REMOVED SINCE WE NOW USE THE ROW SELECTION STATE
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
