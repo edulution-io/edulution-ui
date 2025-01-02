@@ -44,6 +44,7 @@
     }
   },
   "ignorePatterns": [
+    "apps/frontend/public/excalidraw/**",
     "prettier.config.js",
     "vitest.workspace.ts",
     "jest.preset.cjs",
