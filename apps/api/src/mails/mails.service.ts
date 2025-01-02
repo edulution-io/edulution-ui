@@ -67,7 +67,7 @@ class MailsService implements OnModuleInit {
     }
   }
 
-  async getMails(username: string, password: string): Promise<Partial<MailDto>[]> {
+  async getMails(username: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort || !this.imapSecure || !this.imapRejectUnauthorized) {
       return [];
     }
@@ -102,7 +102,7 @@ class MailsService implements OnModuleInit {
     });
 
     let mailboxLock: MailboxLockObject | undefined;
-    const mails: Partial<MailDto>[] = [];
+    const mails: MailDto[] = [];
     try {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
@@ -113,7 +113,7 @@ class MailsService implements OnModuleInit {
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail) {
-        const mailDto: Partial<MailDto> = {
+        const mailDto: MailDto = {
           id: mail.uid,
           subject: mail.envelope.subject,
           labels: mail.labels,
