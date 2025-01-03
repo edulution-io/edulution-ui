@@ -25,12 +25,8 @@ interface SurveysTablesFloatingButtonsProps {
 const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
   const { canEdit, editSurvey, canDelete, canShowSubmittedAnswers, canParticipate, canShowResults } = props;
 
-  const { selectedSurvey: survey, updateUsersSurveys, selectedRows } = useSurveyTablesPageStore();
-
-  const isSingleSurveySelected = Object.entries(selectedRows).length === 1;
-
-  const canShowResultsTable = canShowResults && (survey?.canShowResultsTable || true);
-  const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
+  const { selectedSurvey, isNoSurveySelected, isExactlyOneSurveySelected, updateUsersSurveys, selectedRows } =
+    useSurveyTablesPageStore();
 
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
 
@@ -38,21 +34,26 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
-  const { deleteSurvey } = useDeleteSurveyStore();
+  const { deleteSurveys } = useDeleteSurveyStore();
 
   const { t } = useTranslation();
 
-  if (Object.entries(selectedRows).length === 0) {
+  const noSurveyIsSelected = isNoSurveySelected();
+  if (noSurveyIsSelected) {
     return null;
   }
 
   const handleDeleteSurvey = () => {
-    const ids = Object.entries(selectedRows).map(([key, _value]) => key);
+    const ids = Object.keys(selectedRows);
     if (ids) {
-      void deleteSurvey(ids);
+      void deleteSurveys(ids);
       void updateUsersSurveys();
     }
   };
+
+  const isSingleSurveySelected = isExactlyOneSurveySelected();
+  const canShowResultsTable = canShowResults && (selectedSurvey?.canShowResultsTable || false);
+  const canShowResultsChart = canShowResults && (selectedSurvey?.canShowResultsChart || false);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [

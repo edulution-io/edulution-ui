@@ -1,17 +1,16 @@
 import { create } from 'zustand';
 import { Row, RowSelectionState } from '@tanstack/react-table';
-import eduApi from '@/api/eduApi';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyStatus from '@libs/survey/survey-status-enum';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveysTablesPageStore {
   selectedPageView: SurveysPageView;
   updateSelectedPageView: (pageView: SurveysPageView) => void;
 
-  // TODO: THIS CAN BE REMOVED SINCE WE NOW USE THE ROW SELECTION STATE
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
@@ -32,6 +31,8 @@ interface SurveysTablesPageStore {
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
 
+  isNoSurveySelected: () => boolean;
+  isExactlyOneSurveySelected: () => boolean;
   onClickSurveysTableCell: (row: Row<SurveyDto>) => void;
 
   reset: () => void;
@@ -110,7 +111,16 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
-  onClickSurveysTableCell: (row: Row<SurveyDto>) => row.toggleSelected(),
+  isNoSurveySelected: (): boolean => Object.entries(get().selectedRows).length === 0,
+  isExactlyOneSurveySelected: (): boolean => Object.entries(get().selectedRows).length === 1,
+  onClickSurveysTableCell: (row: Row<SurveyDto>) => {
+    if (get().isNoSurveySelected()) {
+      set({ selectedSurvey: row.original });
+    } else {
+      set({ selectedSurvey: undefined });
+    }
+    row.toggleSelected();
+  },
 }));
 
 export default useSurveyTablesPageStore;
