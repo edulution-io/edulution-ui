@@ -58,12 +58,11 @@ class MailsService implements OnModuleInit {
       this.imapUrl = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_URL);
       this.imapPort = Number(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_PORT));
       this.imapSecure = Boolean(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_SECURE));
-      this.imapRejectUnauthorized =
-        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) === 'true';
-
-      Logger.warn(this.imapUrl, this.imapPort, this.imapSecure, this.imapRejectUnauthorized, MailsService.name);
+      this.imapRejectUnauthorized = Boolean(
+        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED),
+      );
     } catch (error) {
-      throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

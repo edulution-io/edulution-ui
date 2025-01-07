@@ -1046,6 +1046,7 @@
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Could not read the configuration for imap",
       "NotAbleToConnectClientError": "Could not connect to the imap server",
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
