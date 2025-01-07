@@ -23,7 +23,7 @@ const FileViewerLayout: FC<FileViewerLayoutProps> = ({ isLoading, children, edit
 
   const openInNewTab = () => {
     if (currentlyEditingFile) {
-      window.open(`${ONLY_OFFICE_ROUTE}?tab=true`, '_blank');
+      window.open(`/${ONLY_OFFICE_ROUTE}?tab=true`, '_blank');
     }
   };
 

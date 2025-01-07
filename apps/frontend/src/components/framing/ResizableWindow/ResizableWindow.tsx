@@ -137,6 +137,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   return createPortal(
     <Rnd
+      dragHandleClassName="drag-handle"
       minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
       minWidth={isMinimized ? minimizedWidth : undefined}
       size={{
@@ -177,14 +178,19 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         role="button"
         tabIndex={0}
         style={{ height: isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : MAXIMIZED_BAR_HEIGHT }}
-        className={cn('flex items-center justify-between bg-gray-900 text-white', {
+        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-white', {
           'cursor-default': isMinimized,
           'cursor-move hover:bg-gray-800': isMinimized && !isMobileView,
         })}
       >
-        <span className="ml-2 w-[230px] overflow-hidden truncate text-ellipsis whitespace-nowrap px-3 text-base font-semibold">
-          {t(titleTranslationId)}
-        </span>
+        <div className="drag-handle h-full w-[calc(100%-40px)] overflow-hidden truncate text-ellipsis">
+          <div
+            style={{ lineHeight: `${isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : MAXIMIZED_BAR_HEIGHT}px` }}
+            className={cn('ml-2 whitespace-nowrap px-3 text-base font-semibold', { 'ml-0': isMinimized })}
+          >
+            {t(titleTranslationId)}
+          </div>
+        </div>
         <div className="flex">
           {!isMinimized && !disableMinimizeWindow && <MinimizeButton minimizeWindow={minimizeWindow} />}
           {((isMinimized && !disableMinimizeWindow && disableToggleMaximizeWindow) || !disableToggleMaximizeWindow) && (
@@ -200,11 +206,14 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
               setWindowedFrameMinimized(titleTranslationId, false);
               setWindowedFrameOpen(titleTranslationId, false);
             }}
-            className={isMinimized ? 'h-5 w-8 text-sm' : ''}
+            className={isMinimized ? 'h-7 w-7 px-1' : ''}
           />
         </div>
       </div>
-      <div className={isMinimized ? 'h-0 w-0' : 'h-[calc(100%-32px)] w-full overflow-auto scrollbar-thin'}>
+      <div
+        style={{ height: isMinimized ? 0 : `calc(100% - ${MAXIMIZED_BAR_HEIGHT}px)` }} // here i want the equivalent of h-[calc(100%-40px)]
+        className={isMinimized ? 'hidden w-0' : 'w-full overflow-hidden'}
+      >
         {children}
       </div>
     </Rnd>,
