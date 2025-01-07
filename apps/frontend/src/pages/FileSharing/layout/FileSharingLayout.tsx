@@ -32,7 +32,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
     [currentlyEditingFile],
   );
 
-  const shouldShowEditor = showEditor && validFile && documentServerURL !== '' && !isMobileView;
+  const shouldShowEditor = showEditor && validFile && documentServerURL && documentServerURL !== '' && !isMobileView;
 
   useEffect(() => {
     if (currentlyEditingFile) {

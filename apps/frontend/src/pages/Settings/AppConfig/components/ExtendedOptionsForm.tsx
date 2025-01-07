@@ -1,11 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
+import { z } from 'zod';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import cn from '@libs/common/utils/className';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
-import { z } from 'zod';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
@@ -91,12 +92,17 @@ const ExtendedOptionsForm = <T extends FieldValues>({
               <AccordionTrigger className="flex text-xl font-bold">
                 <h4>{t(`settings.appconfig.sections.${section}.title`)}</h4>
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
                 <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
                 {options?.map((option: AppConfigExtendedOption) => (
                   <div
                     key={`key_${section}_${option.name}`}
-                    className={option.width === 'full' ? 'w-full' : 'w-[calc(50%-12px)]'}
+                    className={cn(
+                      { 'w-full': option.width === 'full' },
+                      { 'w-[calc(50%-12px)]': option.width === 'half' },
+                      { 'w-[calc(33%-24px)]': option.width === 'third' },
+                      { 'w-[calc(25%-36px)]': option.width === 'quarter' },
+                    )}
                   >
                     {renderComponent(option)}
                   </div>
