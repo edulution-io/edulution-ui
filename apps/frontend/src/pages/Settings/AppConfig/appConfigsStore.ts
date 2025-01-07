@@ -18,6 +18,7 @@ type AppConfigsStore = {
   setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen: boolean) => void;
   setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
+  createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -59,6 +60,24 @@ const useAppConfigsStore = create<AppConfigsStore>(
 
       setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen) => {
         set({ isDeleteAppConfigDialogOpen });
+      },
+
+      createAppConfig: async (appConfig) => {
+        set({ isLoading: true, error: null });
+        try {
+          const { data: newAppConfig } = await eduApi.post<AppConfigDto | undefined>(
+            EDU_API_CONFIG_ENDPOINTS.ROOT,
+            appConfig,
+          );
+          if (newAppConfig) {
+            set({ appConfigs: [...get().appConfigs, newAppConfig] });
+            toast.success(i18n.t('settings.appconfig.update.success'));
+          }
+        } catch (e) {
+          handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
+        }
       },
 
       getAppConfigs: async () => {

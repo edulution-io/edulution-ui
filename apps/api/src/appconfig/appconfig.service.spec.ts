@@ -11,7 +11,7 @@ import { AppConfig } from './appconfig.schema';
 jest.mock('fs');
 
 const mockAppConfigModel = {
-  insertMany: jest.fn(),
+  create: jest.fn(),
   bulkWrite: jest.fn(),
   find: jest.fn().mockReturnValue({
     lean: jest.fn(),
@@ -28,6 +28,24 @@ const mockConnection = {
       toArray: jest.fn().mockResolvedValue([]),
     }),
     createCollection: jest.fn().mockResolvedValue({}),
+  },
+};
+
+const mockAppConfig: AppConfigDto = {
+  name: 'Test',
+  icon: 'icon-path',
+  appType: APP_INTEGRATION_VARIANT.EMBEDDED,
+  options: {
+    url: 'test/path',
+    apiKey: '123456789',
+  },
+  accessGroups: [
+    { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+    { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+  ],
+  extendedOptions: {
+    [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
+    [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
   },
 };
 
@@ -55,75 +73,23 @@ describe('AppConfigService', () => {
 
   describe('insertConfig', () => {
     it('should successfully insert configs', async () => {
-      const appConfigs: AppConfigDto[] = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {
-            url: 'test/path',
-            apiKey: '123456789',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-        },
-      ];
-      await service.insertConfig(appConfigs);
-      expect(mockAppConfigModel.insertMany).toHaveBeenCalledWith(appConfigs);
+      await service.insertConfig(mockAppConfig);
+      expect(mockAppConfigModel.create).toHaveBeenCalledWith(mockAppConfig);
     });
   });
 
   describe('updateConfig', () => {
     it('should successfully update configs', async () => {
-      const appConfigs: AppConfigDto[] = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {
-            url: 'test/path',
-            apiKey: '123456789',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-        },
-      ];
+      const appConfigs: AppConfigDto[] = [mockAppConfig];
 
       await service.updateConfig(appConfigs);
-      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(expect.any(Array)); // Oder detailliertere Prüfung
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(expect.any(Array));
     });
   });
 
   describe('getAppConfigs', () => {
     it('should return app configs', async () => {
-      const appConfigs: AppConfigDto[] = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: { url: 'test/path' },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-        },
-      ];
+      const appConfigs: AppConfigDto[] = [mockAppConfig];
 
       const expectedConfigs = appConfigs.map((config) => ({
         name: config.name,

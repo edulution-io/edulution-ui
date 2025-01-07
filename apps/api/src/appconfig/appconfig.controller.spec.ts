@@ -47,26 +47,25 @@ describe('AppConfigController', () => {
 
   describe('createConfig', () => {
     it('should call insertConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
+      const appConfigDto: AppConfigDto = {
+        name: 'TestConfig',
+        icon: 'test-icon',
+        appType: APP_INTEGRATION_VARIANT.NATIVE,
+        options: {
+          url: 'https://example.com/api/',
+          apiKey: 'secret-key',
         },
-      ];
-      controller.createConfig(appConfigDto);
+        extendedOptions: {
+          [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
+          [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+        },
+        accessGroups: [
+          { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+          { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+        ],
+      };
+
+      void controller.createConfig(appConfigDto);
       expect(service.insertConfig).toHaveBeenCalledWith(appConfigDto);
     });
 
@@ -90,7 +89,7 @@ describe('AppConfigController', () => {
           ],
         },
       ];
-      controller.updateConfig(appConfigDto);
+      void controller.updateConfig(appConfigDto);
       expect(service.updateConfig).toHaveBeenCalledWith(appConfigDto);
     });
   });
@@ -106,7 +105,7 @@ describe('AppConfigController', () => {
   describe('deleteConfig', () => {
     it('should call deleteConfig method of appConfigService with correct arguments', () => {
       const name = 'TestConfig';
-      controller.deleteConfig(name);
+      void controller.deleteConfig(name);
       expect(service.deleteConfig).toHaveBeenCalledWith(name);
     });
   });

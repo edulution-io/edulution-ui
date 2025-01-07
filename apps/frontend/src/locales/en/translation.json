@@ -407,7 +407,12 @@
     "saveSession": "Save session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "proxyAdress": "Proxy Adress"
+    }
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -633,6 +638,11 @@
         "general": {
           "title": "General",
           "description": ""
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Search for proxy"
         }
       },
       "update": {

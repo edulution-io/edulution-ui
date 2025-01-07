@@ -407,7 +407,12 @@
     "saveSession": "Sitzung speichern",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "proxyAdress": "Proxy Addresse"
+    }
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
@@ -634,6 +639,11 @@
         "general": {
           "title": "Allgemein",
           "description": ""
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Suche nach Proxy-Name"
         }
       },
       "update": {

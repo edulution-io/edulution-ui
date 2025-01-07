@@ -28,9 +28,9 @@ class AppConfigService implements OnModuleInit {
     await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
   }
 
-  async insertConfig(appConfigDto: AppConfigDto[]) {
+  async insertConfig(appConfigDto: AppConfigDto) {
     try {
-      await this.appConfigModel.insertMany(appConfigDto);
+      return await this.appConfigModel.create(appConfigDto);
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,

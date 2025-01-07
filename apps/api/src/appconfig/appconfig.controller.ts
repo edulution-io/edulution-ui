@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
@@ -15,14 +15,14 @@ class AppConfigController {
 
   @Post()
   @UseGuards(AppConfigGuard)
-  createConfig(@Body() appConfigDto: AppConfigDto[]) {
-    this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.error(e, AppConfigController.name));
+  createConfig(@Body() appConfigDto: AppConfigDto) {
+    return this.appConfigService.insertConfig(appConfigDto);
   }
 
   @Put()
   @UseGuards(AppConfigGuard)
   updateConfig(@Body() appConfigDto: AppConfigDto[]) {
-    this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.error(e, AppConfigController.name));
+    return this.appConfigService.updateConfig(appConfigDto);
   }
 
   @Get()
@@ -33,7 +33,7 @@ class AppConfigController {
   @Delete(':name')
   @UseGuards(AppConfigGuard)
   deleteConfig(@Param('name') name: string) {
-    this.appConfigService.deleteConfig(name).catch((e) => Logger.error(e, AppConfigController.name));
+    return this.appConfigService.deleteConfig(name);
   }
 
   @Get(EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG)

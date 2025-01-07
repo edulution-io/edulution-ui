@@ -38,6 +38,7 @@ class VeyonService implements OnModuleInit {
         return;
       }
 
+      // ToDo: Add support for more proxies
       const veyonProxies = appConfig.extendedOptions.VEYON_PROXYS as VeyonProxyItem[];
       const veyonApiUrl = veyonProxies[0].proxyAdress;
 
