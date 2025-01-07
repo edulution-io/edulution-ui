@@ -8,7 +8,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
-import EVENT_EMITTER_EVENTS from '@libs/common/constants/eventEmitterEvents';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
@@ -35,7 +35,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
-        '',
+        undefined,
         AppConfigService.name,
       );
     }
@@ -84,7 +84,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
-        '',
+        undefined,
         AppConfigService.name,
       );
     }
@@ -122,7 +122,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
-        '',
+        undefined,
         AppConfigService.name,
       );
     }
@@ -143,7 +143,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
-        '',
+        undefined,
         AppConfigService.name,
       );
     }
@@ -159,7 +159,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        '',
+        undefined,
         AppConfigService.name,
       );
     }
@@ -174,7 +174,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        '',
+        undefined,
         AppConfigService.name,
       );
     }
