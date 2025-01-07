@@ -8,7 +8,7 @@
     "test:frontend": "nx run frontend:test",
     "test-with-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "dev": "nx serve frontend",
+    "dev": "nx run frontend:serve:development --host",
     "api": "nx serve api",
     "demo": "nx run frontend:serve:demo",
     "serveFrontendAndApi": "nx run-many --target=serve --projects=frontend,api",
