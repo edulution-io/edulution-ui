@@ -1031,6 +1031,7 @@
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Auslesen der IMAP configuration ist nicht möglich",
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
