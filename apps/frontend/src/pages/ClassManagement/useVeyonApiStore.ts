@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
-import handleApiError from '@/utils/handleApiError';
 import { framebufferConfigHigh, framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
 
 type VeyonApiStore = {
@@ -22,7 +21,6 @@ const useVeyonApiStore = create<VeyonApiStore>((set) => ({
       );
       return data.connectionUid || '';
     } catch (error) {
-      handleApiError(error, set);
       return '';
     }
   },
@@ -37,7 +35,6 @@ const useVeyonApiStore = create<VeyonApiStore>((set) => ({
       });
       return data;
     } catch (error) {
-      handleApiError(error, set);
       return new Blob([], { type: 'application/octet-stream' });
     } finally {
       set({ isLoading: false });

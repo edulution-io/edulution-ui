@@ -12,7 +12,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import VeyonErrorMessages from '@libs/veyon/constants/veyonErrorMessages';
 import delay from '@libs/common/utils/delay';
-import EVENT_EMITTER_EVENTS from '@libs/common/constants/eventEmitterEvents';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
