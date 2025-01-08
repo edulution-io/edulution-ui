@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
+import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
@@ -15,14 +15,28 @@ class AppConfigController {
 
   @Post()
   @UseGuards(AppConfigGuard)
-  createConfig(@Body() appConfigDto: AppConfigDto) {
-    return this.appConfigService.insertConfig(appConfigDto);
+  createConfig(@GetCurrentUserGroups() ldapGroups: string[], @Body() appConfigDto: AppConfigDto) {
+    return this.appConfigService.insertConfig(appConfigDto, ldapGroups);
   }
 
-  @Put()
+  @Put(':name')
   @UseGuards(AppConfigGuard)
-  updateConfig(@Body() appConfigDto: AppConfigDto[]) {
-    return this.appConfigService.updateConfig(appConfigDto);
+  updateConfig(
+    @Param('name') name: string,
+    @Body() appConfigDto: AppConfigDto,
+    @GetCurrentUserGroups() ldapGroups: string[],
+  ) {
+    return this.appConfigService.updateConfig(name, appConfigDto, ldapGroups);
+  }
+
+  @Patch(':name')
+  @UseGuards(AppConfigGuard)
+  patchConfig(
+    @Param('name') name: string,
+    @Body() patchConfigDto: PatchConfigDto,
+    @GetCurrentUserGroups() ldapGroups: string[],
+  ) {
+    return this.appConfigService.patchConfig(name, patchConfigDto, ldapGroups);
   }
 
   @Get()
@@ -32,8 +46,8 @@ class AppConfigController {
 
   @Delete(':name')
   @UseGuards(AppConfigGuard)
-  deleteConfig(@Param('name') name: string) {
-    return this.appConfigService.deleteConfig(name);
+  deleteConfig(@Param('name') name: string, @GetCurrentUserGroups() ldapGroups: string[]) {
+    return this.appConfigService.deleteConfig(name, ldapGroups);
   }
 
   @Get(EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG)

@@ -17,6 +17,8 @@ const mockAppConfigModel = {
   deleteOne: jest.fn(),
 };
 
+const mockLdapGroup = ['/role-globaladministrator'];
+
 describe('AppConfigController', () => {
   let controller: AppConfigController;
   let service: AppConfigService;
@@ -65,39 +67,36 @@ describe('AppConfigController', () => {
         ],
       };
 
-      void controller.createConfig(appConfigDto);
-      expect(service.insertConfig).toHaveBeenCalledWith(appConfigDto);
+      void controller.createConfig(mockLdapGroup, appConfigDto);
+      expect(service.insertConfig).toHaveBeenCalledWith(appConfigDto, mockLdapGroup);
     });
 
     it('should call updateConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
+      const appConfigDto: AppConfigDto = {
+        name: 'TestConfig',
+        icon: 'test-icon',
+        appType: APP_INTEGRATION_VARIANT.NATIVE,
+        options: {
+          url: 'https://example.com/api/',
+          apiKey: 'secret-key',
         },
-      ];
-      void controller.updateConfig(appConfigDto);
-      expect(service.updateConfig).toHaveBeenCalledWith(appConfigDto);
+        extendedOptions: {
+          [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
+          [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+        },
+        accessGroups: [
+          { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
+          { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
+        ],
+      };
+      void controller.updateConfig(appConfigDto.name, appConfigDto, mockLdapGroup);
+      expect(service.updateConfig).toHaveBeenCalledWith(appConfigDto.name, appConfigDto, mockLdapGroup);
     });
   });
 
   describe('getAppConfigs', () => {
-    const ldapGroups = ['group1', 'group2'];
     it('should call getAppConfigs method of appConfigService', async () => {
-      await controller.getAppConfigs(ldapGroups);
+      await controller.getAppConfigs(mockLdapGroup);
       expect(service.getAppConfigs).toHaveBeenCalled();
     });
   });
@@ -105,8 +104,8 @@ describe('AppConfigController', () => {
   describe('deleteConfig', () => {
     it('should call deleteConfig method of appConfigService with correct arguments', () => {
       const name = 'TestConfig';
-      void controller.deleteConfig(name);
-      expect(service.deleteConfig).toHaveBeenCalledWith(name);
+      void controller.deleteConfig(name, mockLdapGroup);
+      expect(service.deleteConfig).toHaveBeenCalledWith(name, mockLdapGroup);
     });
   });
 

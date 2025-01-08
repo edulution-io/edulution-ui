@@ -1,4 +1,5 @@
 type VeyonProxyItem = {
+  veyonProxyId: string;
   subnet: string;
   proxyAdress: string;
 };
