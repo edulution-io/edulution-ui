@@ -196,6 +196,8 @@
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
     "stopped": "Conference stopped",
+    "isStarting": "Conference is starting",
+    "isStopping": "Conference is stopping",
     "conferenceFetchedSuccessfully": "Conferences successfully fetched",
     "tryManually": "Join manually",
     "changeUser": "Change user",
