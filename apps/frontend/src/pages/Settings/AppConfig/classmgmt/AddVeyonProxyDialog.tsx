@@ -136,6 +136,7 @@ const AddVeyonProxyDialog = () => {
                   variant="login"
                 />
               </FormControl>
+              <p>{t('classmanagement.veyonConfigTable.subnetDescription')}</p>
               <FormMessage className="text-p" />
             </FormItem>
           )}

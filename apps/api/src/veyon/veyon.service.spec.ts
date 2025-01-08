@@ -5,9 +5,10 @@ import axios, { AxiosInstance } from 'axios';
 import { Readable } from 'stream';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import { AppConfigDto } from '@libs/appconfig/types';
-import VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import { framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
+import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
+import { type AppConfigDto } from '@libs/appconfig/types';
+import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import VeyonService from './veyon.service';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -107,7 +108,7 @@ describe('VeyonService', () => {
     it('should return authentication data if successful', async () => {
       const mockPassword = 'test-password';
       const mockResponse = {
-        'connection-uid': 'test-uid',
+        [VEYON_API_AUTH_RESPONSE_KEYS.CONNECTION_UID]: 'test-uid',
         validUntil: 1234567890,
       };
 

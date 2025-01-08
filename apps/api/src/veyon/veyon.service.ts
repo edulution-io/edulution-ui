@@ -3,17 +3,18 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 import { Readable } from 'stream';
 import { OnEvent } from '@nestjs/event-emitter';
 import type VeyonApiAuthResponse from '@libs/veyon/types/veyonApiAuthResponse';
-import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import type FrameBufferConfig from '@libs/veyon/types/framebufferConfig';
 import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import type VeyonFeatureRequest from '@libs/veyon/types/veyonFeatureRequest';
 import type VeyonFeatureUid from '@libs/veyon/types/veyonFeatureUid';
+import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import VeyonErrorMessages from '@libs/veyon/constants/veyonErrorMessages';
 import delay from '@libs/common/utils/delay';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
-import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
@@ -38,7 +39,7 @@ class VeyonService implements OnModuleInit {
         return;
       }
 
-      // ToDo: Add support for more proxies
+      // ToDo: Add support for more proxies https://github.com/edulution-io/edulution-ui/issues/352
       const veyonProxies = appConfig.extendedOptions.VEYON_PROXYS as VeyonProxyItem[];
       const veyonApiUrl = veyonProxies[0].proxyAdress;
 
@@ -64,7 +65,7 @@ class VeyonService implements OnModuleInit {
         },
       );
 
-      const connectionUid = data['connection-uid'];
+      const connectionUid = data[VEYON_API_AUTH_RESPONSE_KEYS.CONNECTION_UID];
       await delay(200);
       const user = await this.getUser(connectionUid);
       const veyonUsername = user.login.split('\\')[1];
