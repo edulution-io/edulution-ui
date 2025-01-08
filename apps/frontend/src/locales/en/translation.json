@@ -1052,6 +1052,7 @@
     }
   },
   "preview": {
+    "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
   }
 }

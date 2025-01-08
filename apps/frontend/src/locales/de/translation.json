@@ -1052,6 +1052,7 @@
     "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
   },
   "preview": {
+    "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
   }
 }
