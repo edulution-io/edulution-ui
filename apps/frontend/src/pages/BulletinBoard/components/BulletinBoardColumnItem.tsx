@@ -127,7 +127,7 @@ const BulletinBoardColumnItem = ({
       className="relative flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4"
     >
       <div className="w-full flex-1">
-        <h4 className="w-[calc(100%-20px)] overflow-x-hidden break-normal text-lg font-bold text-white">
+        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-white">
           {bulletin.title}
         </h4>
         <div className="mt-2 text-gray-100">
