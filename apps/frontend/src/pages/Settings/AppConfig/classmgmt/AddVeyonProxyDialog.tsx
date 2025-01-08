@@ -4,12 +4,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { v4 as uuidv4 } from 'uuid';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
-import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
-import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
+import createVeyonProxyConfigSchema from '@libs/classManagement/constants/createVeyonProxyConfigSchema';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
@@ -36,11 +35,11 @@ const AddVeyonProxyDialog = () => {
 
   const form = useForm<VeyonProxyItem>({
     mode: 'onChange',
-    resolver: zodResolver(getCreateNewCategorieSchema(t)),
+    resolver: zodResolver(createVeyonProxyConfigSchema(t)),
     defaultValues: initialFormValues,
   });
 
-  const { reset, control, getValues } = form;
+  const { reset, control, getValues, formState } = form;
 
   useEffect(() => {
     reset(initialFormValues);
@@ -99,6 +98,7 @@ const AddVeyonProxyDialog = () => {
           variant="btn-collaboration"
           size="lg"
           type="submit"
+          disabled={!formState.isValid}
         >
           {t('common.save')}
         </Button>
@@ -115,74 +115,58 @@ const AddVeyonProxyDialog = () => {
     </form>
   );
 
+  const renderFormFields = (fields: Array<keyof VeyonProxyItem>) =>
+    fields.map((name) => (
+      <FormFieldSH
+        key={name}
+        control={control}
+        name={name}
+        defaultValue=""
+        render={({ field }) => (
+          <FormItem>
+            <h4>{t(`classmanagement.veyonConfigTable.${name}`)}</h4>
+            <FormControl>
+              <Input
+                {...field}
+                shouldTrim
+                placeholder={t(`classmanagement.veyonConfigTable.${name}Placeholder`)}
+                variant="login"
+              />
+            </FormControl>
+            <p>{t(`classmanagement.veyonConfigTable.${name}Description`)}</p>
+            <FormMessage className="text-p" />
+          </FormItem>
+        )}
+      />
+    ));
+
   const getDialogBody = () => (
     <Form {...form}>
       <form
         onSubmit={handleFormSubmit}
         className="space-y-4"
       >
-        <FormFieldSH
-          control={form.control}
-          name="subnet"
-          defaultValue=""
-          render={({ field }) => (
-            <FormItem>
-              <h4>{t(`classmanagement.veyonConfigTable.subnet`)}</h4>
-              <FormControl>
-                <Input
-                  {...field}
-                  shouldTrim
-                  placeholder={field.name}
-                  variant="login"
-                />
-              </FormControl>
-              <p>{t('classmanagement.veyonConfigTable.subnetDescription')}</p>
-              <FormMessage className="text-p" />
-            </FormItem>
-          )}
-        />
-        <FormFieldSH
-          control={control}
-          name="proxyAdress"
-          render={({ field }) => (
-            <FormItem>
-              <h4>{t(`classmanagement.veyonConfigTable.proxyAdress`)}</h4>
-              <FormControl>
-                <Input
-                  {...field}
-                  shouldTrim
-                  placeholder={field.name}
-                  variant="login"
-                />
-              </FormControl>
-              <p>{t('classmanagement.veyonConfigTable.proxyAdressDescription')}</p>
-              <FormMessage className="text-p" />
-            </FormItem>
-          )}
-        />
+        {renderFormFields(['subnet', 'proxyAdress'])}
       </form>
     </Form>
   );
 
   return (
-    <>
-      <AdaptiveDialog
-        isOpen={isDialogOpen}
-        handleOpenChange={() => {
-          setDialogOpen(false);
-          setSelectedConfig(null);
-        }}
-        title={
-          selectedConfig
-            ? t('classmanagement.veyonConfigTable.editConfig')
-            : t('classmanagement.veyonConfigTable.createConfig')
-        }
-        body={getDialogBody()}
-        footer={getFooter()}
-        mobileContentClassName="bg-black h-fit h-max-1/2"
-      />
-      <DeleteBulletinsCategoriesDialog />
-    </>
+    <AdaptiveDialog
+      isOpen={isDialogOpen}
+      handleOpenChange={() => {
+        setDialogOpen(false);
+        setSelectedConfig(null);
+      }}
+      title={
+        selectedConfig
+          ? t('classmanagement.veyonConfigTable.editConfig')
+          : t('classmanagement.veyonConfigTable.createConfig')
+      }
+      body={getDialogBody()}
+      footer={getFooter()}
+      mobileContentClassName="bg-background h-fit h-max-1/2"
+    />
   );
 };
 

@@ -412,8 +412,10 @@
       "id": "ID",
       "subnet": "Subnet",
       "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
       "proxyAdress": "Proxy Adress",
       "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
     }
