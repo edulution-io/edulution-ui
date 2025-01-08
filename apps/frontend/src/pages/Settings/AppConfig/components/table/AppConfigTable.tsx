@@ -6,18 +6,20 @@ import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import { IoAdd } from 'react-icons/io5';
 import { Button } from '@/components/shared/Button';
+import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 
 const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
   const { t } = useTranslation();
 
-  const configs = getAppConfigTableConfig(applicationName);
+  const configs = getAppConfigTableConfig(applicationName) as AppConfigTableConfig[];
 
   if (!configs) {
     return <div>{t('common.error')}</div>;
   }
 
   const renderConfig = (config: AppConfigTableConfig, index: number) => {
-    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey } = config;
+    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey, type } = config;
     const { tableContentData, fetchTableContent } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
 
@@ -35,20 +37,45 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
       setDialogOpen(true);
     };
 
+    const getScrollableTable = () => {
+      switch (type) {
+        case 'veyon': {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as VeyonProxyItem[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        case 'bulletin': {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as BulletinCategoryResponseDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        default:
+          return null;
+      }
+    };
+
     return (
       <div
         key={config.key || index}
         className="mb-8"
       >
-        <ScrollableTable
-          columns={columns}
-          filterKey={filterKey}
-          filterPlaceHolderText={filterPlaceHolderText}
-          data={tableContentData}
-          applicationName={applicationName}
-          enableRowSelection={false}
-          tableIsUsedOnAppConfigPage
-        />
+        {getScrollableTable()}
         {showAddButton && (
           <div className="flex w-full">
             <Button

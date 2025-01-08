@@ -411,7 +411,11 @@
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",
-      "proxyAdress": "Proxy Addresse"
+      "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
+      "proxyAdress": "Proxy Addresse",
+      "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
+      "createConfig": "Konfiguration erstellen",
+      "editConfig": "Konfiguration bearbeiten"
     }
   },
   "select": "Auswählen",
