@@ -11,21 +11,9 @@ import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages
 import { HttpStatus } from '@nestjs/common';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
+import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
 
 jest.mock('fs');
-
-const mockAppConfigModel = {
-  create: jest.fn(),
-  bulkWrite: jest.fn(),
-  find: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
-  findOne: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
-  updateOne: jest.fn(),
-  deleteOne: jest.fn(),
-};
 
 const mockConnection = {
   db: {
@@ -33,26 +21,6 @@ const mockConnection = {
       toArray: jest.fn().mockResolvedValue([]),
     }),
     createCollection: jest.fn().mockResolvedValue({}),
-  },
-};
-
-const mockLdapGroup = ['/role-globaladministrator'];
-
-const mockAppConfig: AppConfigDto = {
-  name: 'Test',
-  icon: 'icon-path',
-  appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-  options: {
-    url: 'test/path',
-    apiKey: '123456789',
-  },
-  accessGroups: [
-    { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-    { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-  ],
-  extendedOptions: {
-    [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-    [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
   },
 };
 
