@@ -46,7 +46,7 @@ const UserSettingsDetailsPage: React.FC = () => {
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <UserImageConfig />
-        <Separator className="bg-ciGrey" />
+        <Separator className="my-4 bg-ciGrey" />
 
         <div className="md:max-w-[75%]">
           <h3>{t('usersettings.details.userInformation')}</h3>
