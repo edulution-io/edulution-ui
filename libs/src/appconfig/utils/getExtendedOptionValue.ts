@@ -12,7 +12,7 @@ const getExtendedOptions = (
     return '';
   }
 
-  return appConfig.extendedOptions[key] || '';
+  return String(appConfig.extendedOptions[key]) || '';
 };
 
 export default getExtendedOptions;

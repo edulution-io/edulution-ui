@@ -31,16 +31,27 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
 
-      const newValue = shouldTrim ? value.trim() : value;
-
       if (onChange) {
-        onChange({
-          ...event,
-          target: {
-            ...event.target,
-            value: newValue,
-          },
-        });
+        if (type === 'text' || type === 'password') {
+          const newValue = shouldTrim ? value.trim() : value;
+          onChange({
+            ...event,
+            target: {
+              ...event.target,
+              value: newValue,
+            },
+          });
+        } else if (type === 'number') {
+          const newValue = Number(value);
+          onChange({
+            ...event,
+            target: {
+              ...event.target,
+              // @ts-expect-error - number type
+              value: newValue,
+            },
+          });
+        }
       }
     };
 

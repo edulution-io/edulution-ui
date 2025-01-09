@@ -39,16 +39,6 @@ const ExtendedOptionsForm = <T extends FieldValues>({
             type="text"
           />
         );
-      case ExtendedOptionField.number:
-        return (
-          <AppConfigFormField
-            key={fieldPath}
-            fieldPath={fieldPath}
-            control={control}
-            option={option}
-            type="number"
-          />
-        );
       case ExtendedOptionField.password:
         return (
           <AppConfigFormField
@@ -57,6 +47,17 @@ const ExtendedOptionsForm = <T extends FieldValues>({
             control={control}
             option={option}
             type="password"
+          />
+        );
+
+      case ExtendedOptionField.number:
+        return (
+          <AppConfigFormField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
+            type="number"
           />
         );
       case ExtendedOptionField.table:
