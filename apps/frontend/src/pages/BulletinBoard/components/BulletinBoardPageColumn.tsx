@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import cn from '@libs/common/utils/className';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
@@ -36,19 +35,18 @@ const BulletinBoardPageColumn = ({
     setIsImagePreviewModalOpen(false);
   };
 
+  const width = `${100 / categoryCount}%`;
+
   return (
     <div
-      className={cn('flex h-full w-full min-w-[300px] flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3', {
-        'w-1/2': categoryCount === 2,
-        'w-1/3': categoryCount === 3,
-        'w-[300px]': categoryCount >= 4,
-      })}
+      style={{ width }}
+      className="flex h-full w-full min-w-[400px] flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3"
     >
       <BulletinBoardColumnHeader
         category={category}
         canEditCategory={canEditCategory}
       />
-      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
+      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
             key={bulletin.id}

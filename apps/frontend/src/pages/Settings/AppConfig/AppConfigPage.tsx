@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
@@ -23,6 +22,7 @@ import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedO
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -31,20 +31,15 @@ import formSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 
 const AppConfigPage: React.FC = () => {
-  const { pathname } = useLocation();
+  const { settingLocation = '' } = useParams<{ settingLocation: string }>();
+
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
-  const [settingLocation, setSettingLocation] = useState('');
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
-
-  useEffect(() => {
-    const selectedAppConfig = pathname.split('/').filter((p) => p)[1] || '';
-    setSettingLocation(pathname === `/${SETTINGS_PATH}` ? '' : selectedAppConfig);
-  }, [pathname]);
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
     mode: 'onChange',
@@ -245,7 +240,6 @@ const AppConfigPage: React.FC = () => {
   const handleDeleteSettingsItem = async () => {
     const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
 
-    setSettingLocation('');
     navigate(`/${SETTINGS_PATH}`);
 
     await deleteAppConfigEntry(deleteOptionName);

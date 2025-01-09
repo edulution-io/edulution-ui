@@ -17,10 +17,10 @@ const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) =>
 
 const NativeFrames = () => {
   const { appConfigs } = useAppConfigsStore();
-  const { loadedFrames } = useFrameStore();
+  const { loadedEmbeddedFrames } = useFrameStore();
 
   return appConfigs
-    .filter((appConfig) => isActiveNativeFrame(appConfig, loadedFrames))
+    .filter((appConfig) => isActiveNativeFrame(appConfig, loadedEmbeddedFrames))
     .map((appConfig) => {
       switch (appConfig.name as TApps) {
         case APPS.MAIL:
