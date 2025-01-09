@@ -15,6 +15,7 @@ interface UpdateUserDetailsDto {
   sophomorixCustomMulti3: string[];
   sophomorixCustomMulti4: string[];
   sophomorixCustomMulti5: string[];
+  thumbnailPhoto: string;
 }
 
 export default UpdateUserDetailsDto;

@@ -328,20 +328,16 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<null> {
+  ): Promise<UserLmnInfo> {
     try {
-      const response = await this.enqueue<null>(() =>
-        this.lmnApi.post<null>(
-          `${USERS_LMN_API_ENDPOINT}/${username}`,
-          { ...userDetails },
-          {
-            headers: {
-              [HTTP_HEADERS.XApiKey]: lmnApiToken,
-            },
+      await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(`${USERS_LMN_API_ENDPOINT}/${username}`, userDetails, {
+          headers: {
+            [HTTP_HEADERS.XApiKey]: lmnApiToken,
           },
-        ),
+        }),
       );
-      return response.data;
+      return await this.getUser(lmnApiToken, username);
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.UpdateUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }

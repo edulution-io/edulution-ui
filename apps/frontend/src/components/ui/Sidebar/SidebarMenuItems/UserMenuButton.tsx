@@ -37,7 +37,6 @@ const UserMenuButton: React.FC = () => {
               <Avatar
                 user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }}
                 imageSrc={thumbnailPhoto}
-                className={thumbnailPhoto && 'p-1'}
               />
             </div>
           }
