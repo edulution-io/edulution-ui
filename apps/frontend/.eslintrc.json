@@ -1,12 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": [
-    "public/excalidraw/**",
-    "jest.config.ts",
-    "vite.config.ts",
-    "postcss.config.js",
-    "tailwind.config.ts"
-  ],
+  "ignorePatterns": ["jest.config.ts", "vite.config.ts", "postcss.config.js", "tailwind.config.ts"],
   "env": {
     "browser": true,
     "es2022": true
