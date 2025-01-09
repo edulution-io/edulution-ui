@@ -65,8 +65,14 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const renderContent = () => {
     if (imageSrc) {
       return (
-        <>
-          <div className="group absolute bottom-3 right-14 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
+        <div className="relative inline-block">
+          <img
+            className="h-36 w-64 rounded-xl"
+            src={imageSrc}
+            alt="framebuffer"
+          />
+
+          <div className="group absolute bottom-3 right-3 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
             <button
               type="button"
               onClick={() => handleImagePreviewClick()}
@@ -75,11 +81,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
               <MdCropFree />
             </button>
           </div>
-          <img
-            className="h-36 w-64 rounded-xl"
-            src={imageSrc}
-            alt="framebuffer"
-          />
+
           {isImagePreviewModalOpen && (
             <ImageModal
               isOpen={isImagePreviewModalOpen}
@@ -87,7 +89,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
               onClose={closeImagePreviewModal}
             />
           )}
-        </>
+        </div>
       );
     }
 
