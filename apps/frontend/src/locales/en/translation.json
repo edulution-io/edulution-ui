@@ -1036,7 +1036,7 @@
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret",
     "mailImapUrlTitle": "URL",
-    "mailImapUrlDescription": "Please enter a valid URL to connect to the mailbox via IMAP",
+    "mailImapUrlDescription": "Please enter a valid URL (FQDN i.e. 'imap.example.com') to connect to the mailbox via IMAP",
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Please enter the valid port to connect to the mailbox via IMAP (e.g. secure: 993, unsecure: 143)",
     "mailImapSecureTitle": "Secure Connection",
