@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,20 +31,15 @@ import formSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 
 const AppConfigPage: React.FC = () => {
-  const { pathname } = useLocation();
+  const { settingLocation = '' } = useParams<{ settingLocation: string }>();
+
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
-  const [settingLocation, setSettingLocation] = useState('');
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
-
-  useEffect(() => {
-    const selectedAppConfig = pathname.split('/').filter((p) => p)[1] || '';
-    setSettingLocation(pathname === `/${SETTINGS_PATH}` ? '' : selectedAppConfig);
-  }, [pathname]);
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
     mode: 'onChange',
@@ -245,7 +240,6 @@ const AppConfigPage: React.FC = () => {
   const handleDeleteSettingsItem = async () => {
     const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
 
-    setSettingLocation('');
     navigate(`/${SETTINGS_PATH}`);
 
     await deleteAppConfigEntry(deleteOptionName);

@@ -4,39 +4,30 @@ import VideoComponent from '@/components/ui/VideoComponent';
 import OnlyOffice from '@/pages/FileSharing/previews/onlyOffice/OnlyOffice';
 import FileContentLoadingIndicator from '@/components/shared/FileContentLoadingIndicator';
 import { t } from 'i18next';
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isDocumentExtension from '@libs/filesharing/utils/isDocumentExtension';
 import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
+import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 
 interface FileRendererProps {
-  isLoading: boolean;
-  isError: boolean;
-  fileUrl: string | null;
-  fileExtension: string | undefined;
-  publicDownloadLink: string | null;
-  showEditor: boolean;
-  mode: 'view' | 'edit';
-  isMobile: boolean;
-  editWindow: boolean;
-  currentlyEditingFile: DirectoryFileDTO | null;
+  editMode: boolean;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({
-  isLoading,
-  isError,
-  fileUrl,
-  fileExtension,
-  publicDownloadLink,
-  showEditor,
-  mode,
-  isMobile,
-  currentlyEditingFile,
-  editWindow,
-}) => {
-  if (isLoading || isError || !fileUrl) {
+const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
+  const isMobileView = useIsMobileView();
+  const { showEditor } = useFileEditorStore();
+  const { downloadLinkURL: fileUrl, publicDownloadLink, isEditorLoading, isError } = useFileSharingStore();
+  const { currentlyEditingFile } = useFileSharingStore();
+
+  if (!currentlyEditingFile) return null;
+  const fileExtension = getFileExtension(currentlyEditingFile?.filename);
+
+  if (isEditorLoading || isError || !fileUrl) {
     return (
-      <div className="flex h-full items-center justify-center pt-20">
+      <div className="bg-global flex h-full items-center justify-center py-20">
         <p>{t('preparing')}</p>
       </div>
     );
@@ -53,13 +44,13 @@ const FileRenderer: FC<FileRendererProps> = ({
   }
 
   if (isDocumentExtension(fileExtension)) {
-    return publicDownloadLink && currentlyEditingFile && (showEditor || editWindow) ? (
+    return publicDownloadLink && currentlyEditingFile && (showEditor || editMode) ? (
       <OnlyOffice
         url={publicDownloadLink}
         fileName={currentlyEditingFile.basename}
         filePath={currentlyEditingFile.filename}
-        mode={mode}
-        type={isMobile ? 'mobile' : 'desktop'}
+        mode={editMode ? 'edit' : 'view'}
+        type={isMobileView ? 'mobile' : 'desktop'}
       />
     ) : (
       <FileContentLoadingIndicator />
