@@ -7,6 +7,7 @@ import Avatar from '@/components/shared/Avatar';
 import useLogout from '@/hooks/useLogout';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useUserStore from '@/store/UserStore/UserStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
@@ -14,6 +15,8 @@ const UserMenuButton: React.FC = () => {
   const auth = useAuth();
   const handleLogout = useLogout();
   const { user } = useUserStore();
+  const { user: lmnApiUser } = useLmnApiStore();
+  const thumbnailPhoto = lmnApiUser?.thumbnailPhoto || '';
 
   const handleUserSettingsClick = () => {
     navigate(USER_SETTINGS_SECURITY_PATH);
@@ -31,7 +34,11 @@ const UserMenuButton: React.FC = () => {
               <p className="text-md font-bold md:hidden">
                 {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
               </p>
-              <Avatar user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }} />
+              <Avatar
+                user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }}
+                imageSrc={thumbnailPhoto}
+                className={thumbnailPhoto && 'p-1'}
+              />
             </div>
           }
           items={[

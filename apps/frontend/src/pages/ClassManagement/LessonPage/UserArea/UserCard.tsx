@@ -24,7 +24,7 @@ const UserCard = ({
   isTeacherInSameSchool,
 }: UserCardProps) => {
   const { t } = useTranslation();
-  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
+  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto } = user;
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
@@ -95,8 +95,8 @@ const UserCard = ({
           >
             <Avatar
               user={{ username: name, firstName: givenName, lastName: surname }}
-              imageSrc={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${name}`}
-              className="h-32 w-32"
+              imageSrc={thumbnailPhoto}
+              className={thumbnailPhoto && 'h-24 w-24 p-2'}
             />
           </button>
         </div>
