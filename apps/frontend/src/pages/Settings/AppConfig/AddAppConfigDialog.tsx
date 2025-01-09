@@ -67,10 +67,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   };
 
   useEffect(() => {
-    if (!isAddAppConfigDialogOpen) {
-      navigate(selectedOption ? `/${SETTINGS_PATH}/${selectedOption}` : `/${SETTINGS_PATH}`, { replace: true });
+    if (selectedOption && !isAddAppConfigDialogOpen) {
+      navigate(`/${SETTINGS_PATH}/${selectedOption}`);
     }
-  }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
+  }, [isAddAppConfigDialogOpen, selectedOption]);
 
   const dialogFooter = (
     <div className="mt-4 flex justify-end">
