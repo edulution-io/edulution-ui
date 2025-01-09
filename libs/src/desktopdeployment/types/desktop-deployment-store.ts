@@ -10,12 +10,10 @@ type DesktopDeploymentStore = {
   isLoading: boolean;
   error: AxiosError | null;
   connections: Connections | null;
-  isVdiConnectionMinimized: boolean;
   isVdiConnectionOpen: boolean;
   guacId: string;
   virtualMachines: VirtualMachines | null;
   setError: (error: AxiosError | null) => void;
-  setIsVdiConnectionMinimized: (isVdiConnectionMinimized: boolean) => void;
   setIsVdiConnectionOpen: (isVdiConnectionOpen: boolean) => void;
   setGuacToken: (guacToken: string) => void;
   setIsLoading: (isLoading: boolean) => void;

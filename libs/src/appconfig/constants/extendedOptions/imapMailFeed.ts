@@ -16,7 +16,7 @@ const MAIL_IMAP_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     title: 'appExtendedOptions.mailImapPortTitle',
     description: 'appExtendedOptions.mailImapPortDescription',
     type: ExtendedOptionField.number,
-    value: '993',
+    value: 993,
     width: 'third',
   },
   {
@@ -24,7 +24,7 @@ const MAIL_IMAP_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     title: 'appExtendedOptions.mailImapSecureTitle',
     description: 'appExtendedOptions.mailImapSecureDescription',
     type: ExtendedOptionField.boolean,
-    value: 'true',
+    value: true,
     width: 'third',
   },
   {
@@ -32,7 +32,7 @@ const MAIL_IMAP_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     title: 'appExtendedOptions.mailImapRejectUnauthorizedTitle',
     description: 'appExtendedOptions.mailImapRejectUnauthorizedDescription',
     type: ExtendedOptionField.boolean,
-    value: 'false',
+    value: false,
     width: 'third',
   },
 ];

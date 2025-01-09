@@ -1,6 +1,5 @@
 import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
-import { ParsedMail, simpleParser } from 'mailparser';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -57,17 +56,16 @@ class MailsService implements OnModuleInit {
       const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
       this.imapUrl = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_URL);
       this.imapPort = Number(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_PORT));
-      this.imapSecure = Boolean(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_SECURE));
-      this.imapRejectUnauthorized = Boolean(
-        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED),
-      );
+      this.imapSecure = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_SECURE) === true;
+      this.imapRejectUnauthorized =
+        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) === false;
     } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async getMails(username: string, password: string): Promise<MailDto[]> {
-    if (!this.imapUrl || !this.imapPort || !this.imapSecure || !this.imapRejectUnauthorized) {
+    if (!this.imapUrl || !this.imapPort) {
       return [];
     }
 
@@ -106,7 +104,7 @@ class MailsService implements OnModuleInit {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { seen: false, since: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        { seen: false },
         { envelope: true, labels: true },
       );
 
@@ -115,18 +113,6 @@ class MailsService implements OnModuleInit {
         const mailDto: MailDto = {
           id: mail.uid,
           subject: mail.envelope.subject,
-          labels: mail.labels,
-        };
-        mails.push(mailDto);
-      }
-
-      // eslint-disable-next-line no-restricted-syntax
-      for await (const mail of fetchMail || []) {
-        const parsedMail: ParsedMail = await simpleParser(mail.source);
-        const mailDto: MailDto = {
-          ...parsedMail,
-          id: mail.uid,
-          flags: mail.flags,
           labels: mail.labels,
         };
         mails.push(mailDto);

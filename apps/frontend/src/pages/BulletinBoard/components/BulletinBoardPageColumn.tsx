@@ -46,7 +46,7 @@ const BulletinBoardPageColumn = ({
         category={category}
         canEditCategory={canEditCategory}
       />
-      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
+      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
             key={bulletin.id}

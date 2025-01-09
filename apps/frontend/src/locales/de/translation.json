@@ -264,6 +264,7 @@
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "fileEditor": "Datei Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -1031,7 +1032,7 @@
   },
   "mails": {
     "errors": {
-      "NotAbleToGetImapOption": "Auslesen der IMAP configuration ist nicht möglich",
+      "NotAbleToGetImapOption": "Auslesen der 'IMAP-Konfiguration' ist nicht möglich",
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
@@ -1055,7 +1056,7 @@
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an",
     "mailImapUrlTitle": "URL",
-    "mailImapUrlDescription": "Bitte gib eine gültige URL an um die Mailbox per IMAP zu verbinden",
+    "mailImapUrlDescription": "Bitte gib eine gültige URL (FQDN z.B. 'imap.example.com') an um die Mailbox per IMAP zu verbinden",
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Bitte gib den gültigen Port an über den die Verbindung aufgebaut werden soll (z.B. 'sicher': 993, 'unsicher': 143)",
     "mailImapSecureTitle": "Sichere Verbindung",
