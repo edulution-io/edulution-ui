@@ -49,7 +49,7 @@ const BadgeField = (props: BadgeFieldProps) => {
     <>
       {labelTranslationId && (
         <Label>
-          <p className="font-bold text-foreground">{t(labelTranslationId)}</p>
+          <p className="font-bold text-background">{t(labelTranslationId)}</p>
         </Label>
       )}
       <div className="flex flex-row flex-wrap gap-2">
@@ -61,8 +61,8 @@ const BadgeField = (props: BadgeFieldProps) => {
               key={`badge${index}_-_${listItem}`}
               className={cn(
                 'h-[36px] py-0',
-                { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },
-                { 'color-white text-white': !readOnly },
+                { 'bg-ciDarkGreyDisabled text-muted': readOnly },
+                { 'color-background text-background': !readOnly },
                 className,
               )}
             >

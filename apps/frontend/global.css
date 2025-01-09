@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --floating-buttons-height: 150px;
+    --sidebar-width: 56px;
+    --radius: 0.25rem;
+  }
+
+  .light {
+    --background: #000000;
+    --foreground: #ffffff;
+    --muted-foreground: #505050;
+    --primary: #2c78dc;
+    --primary-foreground: #ffffff;
+    --secondary: #2e2a24;
+    --secondary-foreground: #f2f2f2;
+    --muted: #7b7b6c;
+    --accent: #d2d2cf;
+    --input: #1d170f;
+    --card: transparent; /* bleibt transparent */
+    --card-foreground: #000000; /* Invertiert von #FFFFFF */
+    --popover: #000000; /* Invertiert von #FFFFFF */
+    --popover-foreground: #f0e8d5; /* Invertiert von #0F172A */
+    --border: #342b1b;
+    --destructive: #00ffff;
+    --destructive-foreground: #130800;
+    --ring: #735b49;
+  }
+  .dark {
+    --background: #ffffff;
+    --foreground: #000000;
+    --muted-foreground: #bbbbbb;
+    --primary: #0281c7;
+    --primary-foreground: #ffffff;
+    --secondary: #d1d5db; /* früher ciLightGrey */
+    --secondary-foreground: #2d2d30;
+    --muted: #848493; /* früher ciGrey       */
+    --accent: #2d2d30; /* früher ciDarkGrey   */
+    --input: #e2e8f0;
+    --card: transparent;
+    --card-foreground: #ffffff;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --border: #cbd4e4; /* 214.3 31.8% 91.4%  */
+    --destructive: #ff0000; /* 0 100% 50%         */
+    --destructive-foreground: #ecf7ff; /* 210 40% 98%  */
+    --ring: #8ca4b6; /* 215 20.2% 65.1%    */
+  }
+}

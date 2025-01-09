@@ -64,10 +64,10 @@ const CreateAndUpdateBulletinCategoryBody = ({
             form.setValue('isActive', isChecked);
           }}
         />
-        <p className="pt-4 text-lg font-bold text-foreground">
+        <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
         </p>
-        <p className="text-foreground">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
+        <p className="text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
         <SearchUsersOrGroups
           users={watch('visibleForUsers') as AttendeeDto[]}
           onSearch={searchAttendees}
@@ -75,12 +75,11 @@ const CreateAndUpdateBulletinCategoryBody = ({
           groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-          variant="light"
         />
-        <p className="pt-4 text-lg font-bold text-foreground">
+        <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
         </p>
-        <p className="text-foreground">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
+        <p className="text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
         <SearchUsersOrGroups
           users={watch('editableByUsers') as AttendeeDto[]}
           onSearch={searchAttendees}
@@ -88,7 +87,6 @@ const CreateAndUpdateBulletinCategoryBody = ({
           groups={watch('editableByGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-          variant="light"
         />
       </form>
     </Form>

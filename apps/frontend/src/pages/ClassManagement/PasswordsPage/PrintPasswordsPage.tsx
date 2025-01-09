@@ -53,7 +53,6 @@ const PrintPasswordsPage: React.FC = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
         id={FILTER_BAR_ID}
         className="my-2"
       />

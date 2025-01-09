@@ -31,7 +31,6 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
             <FormControl>
               <Input
                 placeholder=""
-                variant="lightGray"
                 {...field}
               />
             </FormControl>
@@ -50,7 +49,6 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
               <Input
                 placeholder="https://"
                 {...field}
-                variant="lightGray"
               />
             </FormControl>
             <FormMessage className="text-p" />
@@ -69,7 +67,6 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
                 <Input
                   placeholder={field.name}
                   {...field}
-                  variant="lightGray"
                 />
               </FormControl>
               <FormMessage className="text-p" />

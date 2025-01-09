@@ -40,7 +40,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     <>
       <div className="py-2">
         <p className="text-background">{title}</p>
-        <p className="text-sm font-normal text-ciGrey">{description}</p>
+        <p className="text-sm font-normal text-muted">{description}</p>
       </div>
       <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">
         <SurveyTable

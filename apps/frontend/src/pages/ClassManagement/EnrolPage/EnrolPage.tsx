@@ -73,7 +73,6 @@ const EnrolPage: React.FC = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
         id={FILTER_BAR_ID}
         className="mb-2"
       />

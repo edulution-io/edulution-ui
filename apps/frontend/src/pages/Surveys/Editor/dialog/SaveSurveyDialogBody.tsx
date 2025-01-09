@@ -58,10 +58,10 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         groups={watch('invitedGroups') as MultipleSelectorGroup[]}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
-        variant="light"
+        variant="dark"
       />
-      <p className="text-m font-bold text-foreground">{t('survey.expirationDate')}</p>
-      <div className="flex items-center text-foreground">
+      <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
+      <div className="flex items-center">
         {t('common.date')}
         <div className="ml-2">
           <DatePicker
@@ -70,15 +70,15 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
           />
         </div>
       </div>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         <TimeInput
           form={form}
           disabled={!getValues('expires')}
           fieldName="expires"
         />
       </div>
-      <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="flex items-center text-foreground">
+      <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
+      <div className="ttext-background flex items-center">
         <Checkbox
           checked={isAnonymousWatched}
           onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
@@ -87,7 +87,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.isAnonymous')}
       </div>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         <Checkbox
           checked={isPublicWatched}
           onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
@@ -96,7 +96,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.isPublic')}
       </div>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         <Checkbox
           checked={canSubmitMultipleAnswersWatched}
           onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}

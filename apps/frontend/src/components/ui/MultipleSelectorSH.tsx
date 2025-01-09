@@ -219,7 +219,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               handleUnselect(selected[selected.length - 1]);
             }
           }
-          // This is not a default behavior of the <input /> field
           if (e.key === 'Escape') {
             input.blur();
           }
@@ -357,7 +356,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         }}
         className={cn(
           'overflow-visible',
-          variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
+          variant === 'dark' ? 'bg-accent text-secondary' : '',
           commandProps?.className,
         )}
         shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
@@ -366,7 +365,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         <div
           className={cn(
             'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-            variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
+            variant === 'dark' ? 'bg-accent text-secondary' : '',
             variant === 'light' ? 'border border-input' : '',
             className,
           )}
@@ -404,8 +403,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     <X
                       className={
                         variant === 'dark'
-                          ? 'h-3 w-3 text-ciLightGrey hover:text-foreground'
-                          : 'h-3 w-3 text-muted-foreground hover:text-foreground'
+                          ? 'h-3 w-3 text-secondary hover:text-background'
+                          : 'h-3 w-3 text-muted-foreground hover:text-background'
                       }
                     />
                   </button>
@@ -434,7 +433,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
               className={cn(
                 'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
-                variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey placeholder:text-ciLightGrey' : '',
+                variant === 'dark' ? 'bg-accent text-secondary placeholder:text-secondary' : '',
                 inputProps?.className,
               )}
             />
@@ -445,7 +444,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             <CommandList
               className={cn(
                 'absolute top-0 z-50 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in',
-                variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : 'bg-white',
+                variant === 'dark' ? 'bg-accent text-secondary' : 'bg-white',
               )}
             >
               {isLoading ? (
@@ -464,7 +463,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     <CommandGroup
                       key={key}
                       heading={key}
-                      className={variant === 'dark' ? 'h-full overflow-auto text-ciLightGrey' : 'h-full overflow-auto'}
+                      className={variant === 'dark' ? 'h-full overflow-auto text-secondary' : 'h-full overflow-auto'}
                     >
                       <>
                         {dropdowns.map((option) => (
@@ -488,7 +487,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                             }}
                             className={cn(
                               'cursor-pointer',
-                              variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : 'bg-white text-black',
+                              variant === 'dark' ? 'bg-accent text-secondary' : 'bg-background text-foreground',
                               option.disable &&
                                 (variant === 'dark'
                                   ? 'cursor-default text-muted-foreground'

@@ -66,8 +66,8 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetPrimitive.Content
         ref={ref}
         className={cn(
-          { 'color-black text-foreground': variant === 'primary' },
-          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          { 'color-black text-background': variant === 'primary' },
+          { 'color-white text-foreground': variant === 'secondary' || variant === 'tertiary' },
           sheetVariants({ side, variant }),
           'max-h-[90vh] overflow-auto',
           className,
@@ -95,8 +95,8 @@ interface SheetHeaderProps extends React.HTMLAttributes<HTMLDivElement>, Variant
 const SheetHeader = ({ className, variant, ...props }: SheetHeaderProps) => (
   <div
     className={cn(
-      { 'color-black text-foreground': variant === 'primary' },
-      { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+      { 'color-black text-background': variant === 'primary' },
+      { 'color-white text-foreground': variant === 'secondary' || variant === 'tertiary' },
       'flex flex-col space-y-2 text-center sm:text-left',
       className,
     )}

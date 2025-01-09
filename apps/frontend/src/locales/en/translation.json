@@ -727,6 +727,15 @@
       "confirmPasswordRequired": "Repeat the new password for the confirmation",
       "passwordsDoNotMatch": "Passwords do not match",
       "passwordLength": "Password must be at least 8 characters long"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Here you can change the appearance of the user interface.",
+      "theme": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
     }
   },
   "forwardingpage": {

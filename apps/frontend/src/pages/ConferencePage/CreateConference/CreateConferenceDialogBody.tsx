@@ -55,7 +55,6 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.name')}
           disabled={searchGroupsIsLoading}
-          variant="default"
         />
         <SearchUsersOrGroups
           users={watch('invitedAttendees') as AttendeeDto[]}
@@ -64,7 +63,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           groups={watch('invitedGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={handleGroupsChange}
-          variant="light"
+          variant="dark"
         />
         <FormField
           name="password"
@@ -73,13 +72,12 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           labelTranslationId={t('conferences.password')}
           type="password"
           disabled={searchGroupsIsLoading}
-          variant="default"
         />
 
         <RadioGroupFormField
           control={form.control}
           name="isPublic"
-          labelClassname="text-base font-bold text-foreground"
+          labelClassname="text-base font-bold text-background"
           titleTranslationId={t('conferences.isPublic')}
           defaultValue={CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value}
           items={CONFERENCES_IS_PUBLIC_FORM_VALUES}

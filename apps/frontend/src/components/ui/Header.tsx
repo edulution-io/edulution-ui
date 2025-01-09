@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
     return (
       <h2
         id={BLANK_LAYOUT_HEADER_ID}
-        className="ml-4 items-center text-2xl font-bold text-white"
+        className="ml-4 items-center text-2xl font-bold text-background"
       >
         {t('heading', {
           givenName: user?.firstName || '-',

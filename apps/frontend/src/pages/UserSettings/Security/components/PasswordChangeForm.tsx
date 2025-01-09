@@ -42,12 +42,11 @@ const PasswordChangeForm: FC = () => {
             htmlFor="currentPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.currentPassword')}</p>
+            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.currentPassword')}</p>
           </Label>
           <Input
             id="currentPassword"
             type="password"
-            variant="lightGray"
             {...register('currentPassword', { required: t('usersettings.errors.currentPasswordRequired') })}
             className={`mb-4 mt-1 mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.currentPassword ? 'border-red-500' : ''
@@ -58,12 +57,11 @@ const PasswordChangeForm: FC = () => {
             htmlFor="newPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.newPassword')}</p>
+            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.newPassword')}</p>
           </Label>
           <Input
             id="newPassword"
             type="password"
-            variant="lightGray"
             {...register('newPassword', {
               required: t('usersettings.errors.newPasswordRequired'),
               minLength: { value: 8, message: t('usersettings.errors.passwordLength') },
@@ -77,12 +75,11 @@ const PasswordChangeForm: FC = () => {
             htmlFor="confirmPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.confirmPassword')}</p>
+            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.confirmPassword')}</p>
           </Label>
           <Input
             id="confirmPassword"
             type="password"
-            variant="lightGray"
             {...register('confirmPassword', {
               required: t('usersettings.errors.confirmPasswordRequired'),
               validate: (value) => value === watch('newPassword') || t('usersettings.errors.passwordsDoNotMatch'),

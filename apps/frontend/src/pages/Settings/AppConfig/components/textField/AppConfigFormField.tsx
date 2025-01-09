@@ -34,7 +34,6 @@ const AppConfigFormField = <T extends FieldValues>({
               autoComplete="new-password"
               {...field}
               type={type}
-              variant="lightGray"
             />
           </FormControl>
           <FormMessage className="text-p" />

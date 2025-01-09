@@ -88,13 +88,12 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           form={form}
           labelTranslationId={t('classmanagement.name')}
           isLoading={searchGroupsIsLoading}
-          variant="default"
         />
 
         <AccordionSH type="multiple">
           {type !== UserGroups.Sessions ? (
             <AccordionItem value="properties">
-              <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
+              <AccordionTrigger className="w-full text-start text-lg font-bold text-background">
                 {t('common.properties')}
               </AccordionTrigger>
               <AccordionContent className="overflow-auto">
@@ -109,7 +108,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
 
           {type === UserGroups.Projects ? (
             <AccordionItem value="addAdmins">
-              <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
+              <AccordionTrigger className="w-full text-start text-lg font-bold text-background">
                 {adminsAccordionTitle}
               </AccordionTrigger>
               <AccordionContent className="overflow-auto">
@@ -121,7 +120,6 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                   onGroupSearch={searchGroups}
                   onGroupsChange={handleAdminGroupsChange}
                   disabled={disabled}
-                  variant="light"
                 />
                 <div className="h-16 w-16" />
               </AccordionContent>
@@ -129,7 +127,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           ) : null}
 
           <AccordionItem value="addUsers">
-            <AccordionTrigger className="w-full text-start text-lg font-bold text-foreground">
+            <AccordionTrigger className="w-full text-start text-lg font-bold text-background">
               {standardUsersAccordionTitle}
             </AccordionTrigger>
             <AccordionContent className="overflow-auto">
@@ -142,7 +140,6 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                 onGroupsChange={handleGroupsChange}
                 disabled={disabled}
                 hideGroupSearch={type === UserGroups.Sessions}
-                variant="light"
               />
               <div className="h-16 w-16" />
             </AccordionContent>

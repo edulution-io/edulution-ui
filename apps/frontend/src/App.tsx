@@ -32,6 +32,11 @@ const App = () => {
     }
   }, [user?.language]);
 
+  useEffect(() => {
+    document.documentElement.classList.remove('dark', 'light', 'system');
+    document.documentElement.classList.add('dark');
+  }, []);
+
   const oidcConfig: AuthProviderProps = {
     authority: `${window.location.origin}/${EDU_API_ROOT}/auth`,
     client_id: ' ',

@@ -42,7 +42,7 @@ const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttribut
   ({ className, ...props }, ref) => (
     <tfoot
       ref={ref}
-      className={cn('border-t bg-muted/50 font-medium [&>tr]:last:border-b-0', className)}
+      className={cn('bg-muted/50 border-t font-medium [&>tr]:last:border-b-0', className)}
       {...props}
     />
   ),
@@ -54,7 +54,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={cn(
-        ' truncate text-black transition-colors data-[state=selected]:bg-muted hover:bg-white/10',
+        ' truncate text-foreground transition-colors data-[state=selected]:bg-muted hover:bg-white/10',
         'py-0',
         className,
       )}
@@ -69,7 +69,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'mr-4 h-8 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'mr-4 h-8 px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
@@ -83,7 +83,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
     <td
       ref={ref}
       className={cn(
-        'mr-4 h-8 truncate px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'mr-4 h-8 truncate px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         'py-0 hover:bg-white/10',
         className,
       )}
@@ -97,7 +97,7 @@ const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttribu
   ({ className, ...props }, ref) => (
     <caption
       ref={ref}
-      className={cn('mt-4 text-sm text-muted-foreground', className)}
+      className={cn('mt-4 text-sm text-background', className)}
       {...props}
     />
   ),

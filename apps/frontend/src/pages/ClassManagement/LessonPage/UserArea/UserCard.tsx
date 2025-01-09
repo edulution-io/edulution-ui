@@ -88,7 +88,7 @@ const UserCard = ({
             type="button"
             className={cn(
               'mt-1 flex flex-grow items-center justify-center rounded-xl text-2xl',
-              isActive ? 'bg-ciGrey' : 'bg-ciDarkGrey',
+              isActive ? 'bg-muted' : 'bg-accent',
             )}
             onClick={(event) => event.stopPropagation()}
           >

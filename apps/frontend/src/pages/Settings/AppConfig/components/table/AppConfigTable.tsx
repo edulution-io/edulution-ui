@@ -52,11 +52,11 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
         {showAddButton && (
           <div className="flex w-full">
             <Button
-              className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-ciDarkGrey"
+              className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
               onClick={handleAddClick}
               type="button"
             >
-              <IoAdd className="text-xl text-white" />
+              <IoAdd className="text-xl text-background" />
             </Button>
           </div>
         )}

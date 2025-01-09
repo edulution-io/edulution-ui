@@ -50,7 +50,7 @@ const UserPasswordDialogBody = ({
   };
 
   return (
-    <div className="flex flex-col text-base text-foreground">
+    <div className="flex flex-col text-base text-background">
       <table className="w-full table-fixed">
         <tbody>
           <tr>

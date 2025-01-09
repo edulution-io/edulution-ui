@@ -47,17 +47,15 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
               form={form}
               labelTranslationId=""
               disabled={false}
-              variant="default"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
             />
           </div>
           {isRenaming && extension && selectedItems[0].type === ContentType.FILE && (
-            <div className="w-16 pt-2 text-center">
+            <div className="w-16 text-center">
               <Input
                 type="text"
                 value={extension}
-                variant="default"
                 onChange={(e) => e.preventDefault()}
               />
             </div>

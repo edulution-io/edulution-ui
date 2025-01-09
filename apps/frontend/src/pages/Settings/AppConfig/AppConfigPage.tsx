@@ -195,10 +195,7 @@ const AppConfigPage: React.FC = () => {
                             <FormItem>
                               <h4>{t(`form.${itemOption}`)}</h4>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                  variant="lightGray"
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage className="text-p" />
                             </FormItem>

@@ -102,7 +102,6 @@ const UserSettingsMailsPage: React.FC = () => {
       type={type}
       defaultValue=""
       className="mb-4 mt-2"
-      variant="lightGray"
     />
   );
 

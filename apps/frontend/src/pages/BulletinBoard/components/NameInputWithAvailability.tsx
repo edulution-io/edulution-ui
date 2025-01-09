@@ -55,7 +55,6 @@ const NameInputWithAvailability = ({
         placeholder={placeholder}
         className="input-class"
         onChange={handleChange}
-        variant="light"
       />
       {shouldAvailabilityStatusShow && renderAvailabilityStatus()}
     </div>

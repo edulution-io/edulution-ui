@@ -728,6 +728,16 @@
       "confirmPasswordRequired": "Erneute Eingabe des Passwortes ist erforderlich zur Bestätigung",
       "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
       "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein"
+    },
+
+    "appearance": {
+      "title": "Erscheinungsbild",
+      "description": "Wählen Sie hier das Erscheinungsbild der Benutzeroberfläche aus.",
+      "theme": {
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "System"
+      }
     }
   },
   "forwardingpage": {

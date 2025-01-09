@@ -88,7 +88,6 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
                   <FormControl>
                     <Input
                       {...field}
-                      variant="lightGray"
                       onChange={(e) => {
                         field.onChange(e);
                         updateYaml();
@@ -110,7 +109,6 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
                   <FormControl>
                     <Input
                       {...field}
-                      variant="lightGray"
                       onChange={(e) => {
                         field.onChange(e);
                         updateYaml();

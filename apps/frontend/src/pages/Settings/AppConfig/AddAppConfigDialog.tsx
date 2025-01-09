@@ -29,7 +29,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
-      <div className="my-12 text-foreground">
+      <div className="my-12 text-background">
         <p>{t('settings.addApp.description')}</p>
         <DropdownSelect
           options={getFilteredAppOptions()}

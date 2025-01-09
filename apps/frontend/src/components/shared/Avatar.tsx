@@ -14,7 +14,7 @@ const Avatar: React.FC = () => {
 
   return (
     <AvatarSH>
-      <AvatarFallback className="bg-ciGrey text-black">{getAvatarFallbackText()}</AvatarFallback>
+      <AvatarFallback className="bg-muted text-foreground">{getAvatarFallbackText()}</AvatarFallback>
     </AvatarSH>
   );
 };

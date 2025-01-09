@@ -124,7 +124,6 @@ const PublicConferenceJoinForm = ({
                   value={publicUserFullName}
                   onChange={(e) => setPublicUserFullName(e.target.value)}
                   placeholder={t('conferences.yourFullName')}
-                  variant="lightGray"
                   rules={{
                     required: t('common.min_chars', { count: 3 }),
                     minLength: {
@@ -146,7 +145,6 @@ const PublicConferenceJoinForm = ({
                   onChange={(e) => setStoredPasswordByMeetingId(meetingId, e.target.value)}
                   value={atob(storedPasswordsByMeetingIds[meetingId] || '')}
                   placeholder={t('conferences.passwordOfConference')}
-                  variant="lightGray"
                   rules={{
                     required: t('common.min_chars', { count: 1 }),
                   }}
