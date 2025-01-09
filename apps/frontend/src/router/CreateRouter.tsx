@@ -19,6 +19,7 @@ import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import ONLY_OFFICE_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import EmptyLayout from '@/components/layout/EmptyLayout';
@@ -41,13 +42,8 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
           <>
             <Route element={<EmptyLayout />}>
               <Route
-                path="/onlyoffice"
-                element={
-                  <FileViewer
-                    mode="edit"
-                    editWindow
-                  />
-                }
+                path={ONLY_OFFICE_ROUTE}
+                element={<FileViewer editMode />}
               />
             </Route>
             {getForwardedRoutes(appConfigs)}

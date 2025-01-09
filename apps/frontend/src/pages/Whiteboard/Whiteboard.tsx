@@ -5,9 +5,9 @@ import useFrameStore from '@/components/framing/FrameStore';
 import APPS from '@libs/appconfig/constants/apps';
 
 const Whiteboard = () => {
-  const { activeFrame } = useFrameStore();
+  const { activeEmbeddedFrame } = useFrameStore();
 
-  const getStyle = () => (activeFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
+  const getStyle = () => (activeEmbeddedFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
 
   return (
     <div
