@@ -264,6 +264,7 @@
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "fileEditor": "Datei Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
