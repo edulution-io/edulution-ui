@@ -25,7 +25,7 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant, shouldTrim = false, onChange, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
