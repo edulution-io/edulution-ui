@@ -103,7 +103,9 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         );
       case 'date':
         return watch(groupProperty.name)
-          ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]').format()
+          ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]')
+              .toDate()
+              .toLocaleString()
           : '-';
       case 'number':
         if (groupProperty.disabled) {

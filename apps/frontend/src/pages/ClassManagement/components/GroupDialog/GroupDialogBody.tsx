@@ -24,7 +24,7 @@ interface GroupDialogBodyProps {
 }
 
 const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBodyProps) => {
-  const { setValue, watch } = form;
+  const { setValue, watch, getValues } = form;
   const { user, searchAttendees } = useUserStore();
   const { searchGroups, searchGroupsIsLoading } = useGroupStore();
   const { isSessionLoading, isSchoolClassLoading, isProjectLoading } = useClassManagementStore();
@@ -90,6 +90,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           name="displayName"
           disabled={disabled}
           form={form}
+          defaultValue={getValues('displayName')}
           labelTranslationId={t('classmanagement.name')}
           isLoading={searchGroupsIsLoading}
           variant="default"

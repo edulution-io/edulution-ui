@@ -22,6 +22,7 @@ import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -101,10 +102,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     form.setValue('join', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixJoinable || false);
     form.setValue('hide', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixHidden || false);
     form.setValue('mailalias', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailAlias || false);
-    form.setValue(
-      'quota',
-      (userGroupToEdit as LmnApiProject).quota ? JSON.stringify((userGroupToEdit as LmnApiProject).quota) : '[]',
-    );
+    form.setValue('quota', parseSophomorixQuota((userGroupToEdit as LmnApiProject).sophomorixAddQuota));
     form.setValue('creationDate', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixCreationDate || '');
     form.setValue('maillist', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailList || false);
     form.setValue('description', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).description || '');
@@ -145,12 +143,13 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           break;
         default:
       }
+      setIsFetching(false);
+
       if (!fetchedGroup) {
         return;
       }
 
       setFormInitialValues(fetchedGroup);
-      setIsFetching(false);
     };
     void fetchData();
   }, [userGroupToEdit?.name]);

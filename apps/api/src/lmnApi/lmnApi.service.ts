@@ -395,7 +395,7 @@ class LmnApiService {
   }
 
   private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
-    admins: formValues.admins.filter((a) => a.value !== username),
+    admins: formValues.admins,
     displayName: formValues.displayName,
     admingroups: formValues.admingroups,
     description: formValues.description,
