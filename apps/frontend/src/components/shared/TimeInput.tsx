@@ -42,6 +42,7 @@ const TimeInput = <T extends FieldValues>({ form, disabled, fieldName, date }: T
   }, [date]);
 
   return (
+    // TODO change the background color to bg-foreground @Dominik
     <>
       {t('common.time')}
       <Input

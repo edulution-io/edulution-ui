@@ -67,6 +67,10 @@ module.exports = {
           DEFAULT: 'var(--card)',
           foreground: 'var(--card-foreground)',
         },
+        overlay: {
+          DEFAULT: 'var(--overlay)',
+          foreground: 'var(--overlay-foreground)',
+        },
       },
       backgroundImage: {
         ciGreenToBlue: 'linear-gradient(45deg, #88D840, #0081C6)',

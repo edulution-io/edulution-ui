@@ -36,7 +36,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
-          variant="light"
         />
       </div>
     );

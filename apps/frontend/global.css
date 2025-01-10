@@ -28,6 +28,8 @@
     --destructive: #00ffff;
     --destructive-foreground: #130800;
     --ring: #735b49;
+    --overlay: #333333;
+    --overlay-foreground: #ffffff;
   }
   .dark {
     --background: #ffffff;
@@ -48,5 +50,7 @@
     --destructive: #ff0000; /* 0 100% 50%         */
     --destructive-foreground: #ecf7ff; /* 210 40% 98%  */
     --ring: #8ca4b6; /* 215 20.2% 65.1%    */
+    --overlay: #1e2938;
+    --overlay-foreground: #ffffff;
   }
 }
