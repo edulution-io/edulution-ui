@@ -1,24 +1,22 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Input from '@/components/shared/Input';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { Button } from '@/components/shared/Button';
 import { UseFormReturn } from 'react-hook-form';
 import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDialogForm';
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import generateRandomString from '@libs/common/utils/generateRandomString';
+import FormField from '@/components/shared/FormField';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import { toast } from 'sonner';
 
 interface UserPasswordDialogBodyProps {
   user: UserLmnInfo;
   form: UseFormReturn<UserPasswordDialogForm>;
 }
 
-const UserPasswordDialogBody = ({
-  user: { cn: commonName, sophomorixFirstPassword },
-  form,
-}: UserPasswordDialogBodyProps) => {
+const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDialogBodyProps) => {
   const {
-    register,
     formState: { errors },
     getValues,
     watch,
@@ -26,27 +24,33 @@ const UserPasswordDialogBody = ({
   } = form;
   const { t } = useTranslation();
 
+  const { fetchUser } = useLmnApiStore();
   const { setFirstPassword, setCurrentPassword } = UseLmnApiPasswordStore();
 
   const onSaveCurrentPasswordClick = async () => {
-    await setCurrentPassword(commonName, getValues('currentPassword'));
+    await setCurrentPassword(username, getValues('currentPassword'));
   };
 
   const onSaveFirstPasswordClick = async () => {
     setValue('currentPassword', '');
-    await setFirstPassword(commonName, getValues('firstPassword'));
+    await setFirstPassword(username, getValues('firstPassword'));
   };
 
   const onGenerateFirstPasswordClick = async () => {
     setValue('currentPassword', '');
     const randomPassword = generateRandomString(8);
     setValue('firstPassword', randomPassword);
-    await setFirstPassword(commonName, randomPassword);
+    await setFirstPassword(username, randomPassword);
   };
 
   const onRestoreFirstPasswordClick = async () => {
     setValue('currentPassword', '');
-    await setCurrentPassword(commonName, sophomorixFirstPassword);
+    const user = await fetchUser(username, true);
+    if (user?.sophomorixFirstPassword) {
+      await setCurrentPassword(username, user.sophomorixFirstPassword);
+    } else {
+      toast.success(t('classmanagement.firstPasswordNotSet'));
+    }
   };
 
   return (
@@ -55,20 +59,21 @@ const UserPasswordDialogBody = ({
         <tbody>
           <tr>
             <td className="w-1/3 border p-2 text-left">{t('loginname')}</td>
-            <td className="w-2/3 border p-2">{commonName}</td>
+            <td className="w-2/3 border p-2">{username}</td>
           </tr>
           <tr>
             <td className="w-1/3 border p-2 text-left">{t('classmanagement.firstPassword')}</td>
             <td className="w-2/3 border p-2">
               <div className="mb-2 flex flex-col items-stretch space-y-2 md:flex-row md:space-y-0">
                 <div className="mt-0.5 flex-grow">
-                  <Input
+                  <FormField
+                    name="firstPassword"
+                    form={form}
+                    variant="default"
+                    defaultValue={form.getValues('firstPassword')}
                     type="password"
-                    {...register('firstPassword')}
                     className="w-full flex-grow"
-                    defaultValue={sophomorixFirstPassword}
                   />
-                  {errors.firstPassword && <p className="text-red-500">{errors.firstPassword.message}</p>}
                 </div>
                 <Button
                   variant="btn-infrastructure"
@@ -95,11 +100,14 @@ const UserPasswordDialogBody = ({
             <td className="w-2/3 border p-2">
               <div className="mb-2 flex flex-col items-stretch space-y-2 md:flex-row md:space-y-0">
                 <div className="mt-0.5 flex-grow">
-                  <Input
+                  <FormField
+                    name="currentPassword"
+                    form={form}
+                    defaultValue={form.getValues('currentPassword')}
+                    variant="default"
                     type="password"
-                    {...register('currentPassword')}
+                    className="w-full flex-grow"
                   />
-                  {errors.currentPassword && <p className="text-red-500">{errors.currentPassword.message}</p>}
                 </div>
                 <Button
                   variant="btn-infrastructure"
@@ -113,7 +121,7 @@ const UserPasswordDialogBody = ({
               </div>
               <Button
                 variant="btn-collaboration"
-                className="mt-2 md:mt-0 md:w-auto"
+                className="mt-2 whitespace-normal md:mt-0 md:w-auto"
                 onClick={onRestoreFirstPasswordClick}
                 size="lg"
               >

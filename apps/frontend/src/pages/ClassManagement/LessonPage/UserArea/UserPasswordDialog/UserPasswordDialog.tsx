@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDialogForm';
@@ -8,6 +8,9 @@ import { z } from 'zod';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UserPasswordDialogBody from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialogBody';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import { Form } from '@/components/ui/Form';
 
 interface UserPasswordDialogProps {
   trigger?: React.ReactNode;
@@ -17,14 +20,12 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
   const { t } = useTranslation();
 
   const { isLoading, setCurrentUser, currentUser } = UseLmnApiPasswordStore();
-
-  if (!currentUser) return null;
-
-  const { sophomorixFirstPassword, displayName } = currentUser;
+  const { isFetchUserLoading, fetchUser } = useLmnApiStore();
+  const [user, setUser] = useState<UserLmnInfo | null>(null);
 
   const initialFormValues: UserPasswordDialogForm = {
     currentPassword: '',
-    firstPassword: sophomorixFirstPassword,
+    firstPassword: '',
   };
 
   const passwordValidationSchema = z
@@ -44,18 +45,47 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
     defaultValues: initialFormValues,
   });
 
+  useEffect(() => {
+    const getUser = async () => {
+      if (currentUser?.cn) {
+        const result = await fetchUser(currentUser?.cn, true);
+        setUser(result);
+      }
+    };
+
+    void getUser();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (user?.sophomorixFirstPassword) {
+      form.setValue('firstPassword', user.sophomorixFirstPassword);
+    } else {
+      setUser(null);
+    }
+  }, [user]);
+
   const onClose = () => {
     setCurrentUser(null);
     form.reset();
   };
 
   const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
+    if (!user || isLoading || isFetchUserLoading) return <CircleLoader className="mx-auto" />;
     return (
-      <UserPasswordDialogBody
-        user={currentUser}
-        form={form}
-      />
+      <Form
+        {...form}
+        data-testid="test-id-login-page-form"
+      >
+        <form
+          className="space-y-4"
+          data-testid="test-id-login-page-form"
+        >
+          <UserPasswordDialogBody
+            user={user}
+            form={form}
+          />
+        </form>
+      </Form>
     );
   };
 
@@ -63,10 +93,10 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <div onClick={(e) => e.stopPropagation()}>
       <AdaptiveDialog
-        isOpen={!!currentUser}
+        isOpen={!!user || isFetchUserLoading}
         trigger={trigger}
         handleOpenChange={onClose}
-        title={t('classmanagement.userPasswordDialogTitle', { displayName })}
+        title={t('classmanagement.userPasswordDialogTitle', { displayName: user?.displayName })}
         desktopContentClassName="max-w-4xl"
         body={getDialogBody()}
         footer={null}

@@ -24,7 +24,7 @@ interface UseLmnApiStore {
   usersQuota: QuotaResponse | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
-  fetchUser: (name: string) => Promise<UserLmnInfo | null>;
+  fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<UserLmnInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
   patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
   reset: () => void;
@@ -81,13 +81,18 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      fetchUser: async (username): Promise<UserLmnInfo | null> => {
+      fetchUser: async (username, checkIfFirstPasswordIsSet): Promise<UserLmnInfo | null> => {
+        if (get().isFetchUserLoading) return null;
+
         set({ isFetchUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<UserLmnInfo>(`${USER}/${username}`, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          });
+          const response = await eduApi.get<UserLmnInfo>(
+            `${USER}/${username}?check_first_pw=${!!checkIfFirstPasswordIsSet}`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
           return response.data;
         } catch (error) {
           handleApiError(error, set);

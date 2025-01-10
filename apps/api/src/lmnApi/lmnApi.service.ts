@@ -538,10 +538,12 @@ class LmnApiService {
     newPassword: string,
     bypassSecurityCheck: boolean = false,
   ): Promise<null> {
-    const password = await this.userService.getPassword(username);
+    if (!bypassSecurityCheck) {
+      const currentPassword = await this.userService.getPassword(username);
 
-    if (!bypassSecurityCheck && oldPassword !== password) {
-      throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
+      if (oldPassword !== currentPassword) {
+        throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
+      }
     }
 
     try {
